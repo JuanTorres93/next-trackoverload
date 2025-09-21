@@ -23,7 +23,9 @@ describe('Ingredient', () => {
   });
 
   it('should create an ingredient if no createdAt or updatedAt is provided', async () => {
+    // eslint-disable-next-line
     const { createdAt, updatedAt, ...propsWithoutDates } = validIngredientProps;
+    // @ts-expect-error .create actually expects createdAt and updatedAt
     const ingredient = Ingredient.create(propsWithoutDates);
 
     expect(ingredient).toBeInstanceOf(Ingredient);
@@ -58,7 +60,7 @@ describe('Ingredient', () => {
 
     for (const invalidProp of invalidProps) {
       const props = { ...validIngredientProps, ...invalidProp };
-      // NOTE: the error comes precisely because it should not be created
+      // @ts-expect-error the error comes precisely because it should not be created
       expect(() => Ingredient.create(props)).toThrow();
     }
   });
