@@ -1,6 +1,9 @@
 import { ValidationError } from './errors';
 
-export const validateString = (value: string, context: string): void => {
+export const validateNonEmptyString = (
+  value: string,
+  context: string
+): void => {
   if (typeof value !== 'string' || value.trim().length === 0) {
     throw new ValidationError(`${context && context}: Invalid string`);
   }

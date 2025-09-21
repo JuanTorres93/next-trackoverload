@@ -9,7 +9,6 @@ const nutritionalInfoPer100g = {
 const validIngredientProps = {
   id: '1',
   name: 'Sugar',
-  quantityInGrams: 200,
   nutritionalInfoPer100g,
   createdAt: new Date(),
   updatedAt: new Date(),
@@ -33,24 +32,12 @@ describe('Ingredient', () => {
     expect(ingredient.updatedAt instanceof Date).toBe(true);
   });
 
-  it('should calculate total calories correctly', async () => {
-    const ingredient = Ingredient.create(validIngredientProps);
-    expect(ingredient.totalCalories).toBe(200);
-  });
-
-  it('should calculate total protein correctly', async () => {
-    const ingredient = Ingredient.create(validIngredientProps);
-    expect(ingredient.totalProtein).toBe(20);
-  });
-
   it('should not create an ingredient with invalid props', async () => {
     const invalidProps = [
       { id: '' },
       { id: 3 },
       { name: '' },
       { name: 3 },
-      { quantityInGrams: -10 },
-      { quantityInGrams: 'a' },
       { nutritionalInfoPer100g: null },
       { nutritionalInfoPer100g: { calories: -10, protein: 5 } },
       { nutritionalInfoPer100g: { calories: 100, protein: -5 } },

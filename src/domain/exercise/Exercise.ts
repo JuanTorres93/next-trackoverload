@@ -1,4 +1,4 @@
-import { validateString, validateDate } from '../common/validation';
+import { validateNonEmptyString, validateDate } from '../common/validation';
 
 export type ExerciseProps = {
   id: string;
@@ -11,8 +11,8 @@ export class Exercise {
   private constructor(private readonly props: ExerciseProps) {}
 
   static create(props: ExerciseProps): Exercise {
-    validateString(props.id, 'Exercise id');
-    validateString(props.name, 'Exercise name');
+    validateNonEmptyString(props.id, 'Exercise id');
+    validateNonEmptyString(props.name, 'Exercise name');
 
     const now = new Date();
     if (props.createdAt) {

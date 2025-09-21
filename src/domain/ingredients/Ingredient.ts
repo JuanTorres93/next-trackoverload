@@ -1,5 +1,5 @@
 import {
-  validateString,
+  validateNonEmptyString,
   validateGreaterThanZero,
   validateDate,
   validateObject,
@@ -13,7 +13,6 @@ type NutritionalInfoPer100g = {
 export type IngredientProps = {
   id: string;
   name: string;
-  quantityInGrams: number;
   nutritionalInfoPer100g: NutritionalInfoPer100g;
   createdAt: Date;
   updatedAt: Date;
@@ -23,12 +22,8 @@ export class Ingredient {
   private constructor(private readonly props: IngredientProps) {}
 
   static create(props: IngredientProps): Ingredient {
-    validateString(props.id, 'Ingredient id');
-    validateString(props.name, 'Ingredient name');
-    validateGreaterThanZero(
-      props.quantityInGrams,
-      'Ingredient quantityInGrams'
-    );
+    validateNonEmptyString(props.id, 'Ingredient id');
+    validateNonEmptyString(props.name, 'Ingredient name');
     validateObject(
       props.nutritionalInfoPer100g,
       'Ingredient nutritionalInfoPer100g'
@@ -65,10 +60,6 @@ export class Ingredient {
     return this.props.name;
   }
 
-  get quantityInGrams() {
-    return this.props.quantityInGrams;
-  }
-
   get nutritionalInfoPer100g() {
     return { ...this.props.nutritionalInfoPer100g };
   }
@@ -79,20 +70,5 @@ export class Ingredient {
 
   get updatedAt() {
     return this.props.updatedAt;
-  }
-
-  get totalCalories() {
-    return (
-      (this.props.nutritionalInfoPer100g.calories *
-        this.props.quantityInGrams) /
-      100
-    );
-  }
-
-  get totalProtein() {
-    return (
-      (this.props.nutritionalInfoPer100g.protein * this.props.quantityInGrams) /
-      100
-    );
   }
 }
