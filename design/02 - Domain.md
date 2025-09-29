@@ -16,7 +16,7 @@
 - [ ] Tiene una lista de ingredientes
 - [ ] Cada ingrediente tiene su cantidad
 - [ ] Puede calcular su información nutricional a partir de los ingredientes
-- [ ] Actúa como plantilla para Meal. Tal vez esta clase tiene la fábrica de Meal
+- [ ] Actúa como plantilla para Meal. Tal vez esta clase tiene que llamar a la fábrica de Meal
 - [ ] Se puede editar sin modificar Meals pasados, pero sí modificando los futuros
 - [ ] Puede añadir ingredientes
 - [ ] Puede eliminar ingredientes
@@ -49,40 +49,65 @@
 
 # WorkoutTemplate
 
-- [ ]
+- [ ] Tiene un nombre
+- [ ] Tiene una lista ordenada de ejercicios.
+- [ ] El orden en la lista determina el orden en el entrenamiento
+- [ ] Cada elemento de la lista tiene el ejercicio y el número de reps
+- [ ] Se utiliza como plantilla para entrenamientos, por lo que puede que tenga que llamar a la fábrica de Workout
+- [ ] Se puede modificar sin afectar a Workouts anteriores, pero sí a futuros.
 - [ ]
 
 # Workout
 
+- [ ] Tiene un nombre
+- [ ] Tiene ejercicios ordenados según la plantilla
+- [ ] Tiene un registro del último entrenamiento hecho con esa plantilla
+- [ ] Los ejercicios, después de ordenador por plantilla, también se ordenan según el set
+- [ ] Puede actualizar el valor de cada set
+- [ ] Puede añadir/quitar ejercicios sin afectar a la plantilla
+- [ ]
+
+# Day
+
+- [ ] Puede guardar información de comidas registradas
+- [ ] Se puede añadir tanto en el pasado, como en el presente y el futuro
+- [ ] Se puede modificar la comida de todos los días
+- [ ] Puede quitar comidas
+- [ ] Puede mostrar un resumen de la información nutricional
 - [ ]
 - [ ]
 
 # User
 
-- [ ]
+- [ ] Tiene nombre
+- [ ] Tiene customer id
 - [ ]
 
 # IngredientService
 
-- [ ]
+- [ ] Puede leer información de ingredientes
+- [ ] Puede crear información de ingredientes
+- [ ] Puede borrar información de ingredientes
+- [ ] Puede actualizar información de ingredientes
 - [ ]
 
 # ExerciseService
 
-- [ ]
+- [ ] Puede leer información de ingredientes
+- [ ] Puede crear información de ingredientes
+- [ ] Puede borrar información de ingredientes
+- [ ] Puede actualizar información de ingredientes
 - [ ]
 
 # PaymentsService
 
-- [ ]
+- [ ] Puede iniciar suscripción
+- [ ] Puede cancelar
 - [ ]
 
 # AuthService
 
-- [ ]
-- [ ]
-
-# Day
-
-- [ ]
+- [ ] Registrar
+- [ ] Login
+- [ ] Cambiar contraseña
 - [ ]
