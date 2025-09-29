@@ -12,14 +12,14 @@
 
 # Recipe
 
-- [ ] Tiene nombre
-- [ ] Tiene una lista de ingredientes
-- [ ] Cada ingrediente tiene su cantidad
-- [ ] Puede calcular su información nutricional a partir de los ingredientes
-- [ ] Actúa como plantilla para Meal. Tal vez esta clase tiene que llamar a la fábrica de Meal
-- [ ] Se puede editar sin modificar Meals pasados, pero sí modificando los futuros
-- [ ] Puede añadir ingredientes
-- [ ] Puede eliminar ingredientes
+- [x] Tiene nombre
+- [x] Tiene una lista de ingredientes
+- [x] Cada ingrediente tiene su cantidad
+- [x] Puede calcular su información nutricional a partir de los ingredientes
+- [ ] Actúa como plantilla para Meal. Tal vez esta clase tiene que llamar a la fábrica de Meal. O hacerlo mejor desde un USE CASE
+- [ ] Se puede editar sin modificar Meals pasados, pero sí modificando los futuros (creo que ya está, pero confirmar cuando haga los Use cases)
+- [x] Puede añadir ingredientes
+- [x] Puede eliminar ingredientes
 - [ ]
 - [ ]
 
