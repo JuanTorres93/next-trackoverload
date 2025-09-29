@@ -1,4 +1,5 @@
-import { validateNonEmptyString, validateDate } from '../common/validation';
+import { handleCreatedAt, handleUpdatedAt } from '../common/utils';
+import { validateNonEmptyString } from '../common/validation';
 
 export type ExerciseProps = {
   id: string;
@@ -14,17 +15,8 @@ export class Exercise {
     validateNonEmptyString(props.id, 'Exercise id');
     validateNonEmptyString(props.name, 'Exercise name');
 
-    const now = new Date();
-    if (props.createdAt) {
-      validateDate(props.createdAt, 'Exercise createdAt');
-    } else {
-      props.createdAt = now;
-    }
-    if (props.updatedAt) {
-      validateDate(props.updatedAt, 'Exercise updatedAt');
-    } else {
-      props.updatedAt = now;
-    }
+    props.createdAt = handleCreatedAt(props.createdAt);
+    props.updatedAt = handleUpdatedAt(props.updatedAt);
 
     return new Exercise(props);
   }
