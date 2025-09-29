@@ -2,7 +2,7 @@
 
 - [x] Tiene nombre
 - [x] Tiene información nutricional
-- [ ] Puede modificar su información nutricional
+- [x] Puede modificar su información nutricional
 - [ ]
 
 # Exercise
