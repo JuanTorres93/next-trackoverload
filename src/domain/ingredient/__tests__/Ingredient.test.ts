@@ -32,6 +32,32 @@ describe('Ingredient', () => {
     expect(ingredient.updatedAt instanceof Date).toBe(true);
   });
 
+  it('should update its nutritional info', async () => {
+    const ingredient = Ingredient.create(validIngredientProps);
+    const newNutritionalInfo = {
+      calories: 200,
+      protein: 20,
+    };
+    ingredient.updateNutritionalInfo(newNutritionalInfo);
+    expect(ingredient.nutritionalInfoPer100g).toEqual(newNutritionalInfo);
+  });
+
+  it('should not update its nutritional info with invalid data', async () => {
+    const ingredient = Ingredient.create(validIngredientProps);
+    const invalidNutritionalInfos = [
+      null,
+      { calories: -10, protein: 5 },
+      { calories: 100, protein: -5 },
+    ];
+
+    for (const invalidNutritionalInfo of invalidNutritionalInfos) {
+      expect(() =>
+        // @ts-expect-error the error comes precisely because it should not be updated
+        ingredient.updateNutritionalInfo(invalidNutritionalInfo)
+      ).toThrow();
+    }
+  });
+
   it('should not create an ingredient with invalid props', async () => {
     const invalidProps = [
       { id: '' },

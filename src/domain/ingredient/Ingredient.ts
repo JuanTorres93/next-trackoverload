@@ -1,9 +1,9 @@
 import {
   validateNonEmptyString,
   validateGreaterThanZero,
-  validateDate,
   validateObject,
 } from '../common/validation';
+import { handleCreatedAt, handleUpdatedAt } from '../common/utils';
 
 type NutritionalInfoPer100g = {
   calories: number;
@@ -36,20 +36,25 @@ export class Ingredient {
       props.nutritionalInfoPer100g.protein,
       'Ingredient nutritionalInfoPer100g protein'
     );
-
-    const now = new Date();
-    if (props.createdAt) {
-      validateDate(props.createdAt, 'Ingredient createdAt');
-    } else {
-      props.createdAt = now;
-    }
-    if (props.updatedAt) {
-      validateDate(props.updatedAt, 'Ingredient updatedAt');
-    } else {
-      props.updatedAt = now;
-    }
+    props.createdAt = handleCreatedAt(props.createdAt);
+    props.updatedAt = handleUpdatedAt(props.updatedAt);
 
     return new Ingredient(props);
+  }
+
+  updateNutritionalInfo(newNutritionalInfo: NutritionalInfoPer100g) {
+    validateObject(newNutritionalInfo, 'Ingredient nutritionalInfoPer100g');
+    validateGreaterThanZero(
+      newNutritionalInfo.calories,
+      'Ingredient nutritionalInfoPer100g calories'
+    );
+    validateGreaterThanZero(
+      newNutritionalInfo.protein,
+      'Ingredient nutritionalInfoPer100g protein'
+    );
+
+    this.props.nutritionalInfoPer100g = newNutritionalInfo;
+    this.props.updatedAt = new Date();
   }
 
   get id() {
