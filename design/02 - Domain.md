@@ -25,10 +25,12 @@
 
 # Meal
 
-- [ ] Tiene nombre
-- [ ] Representa una comida creada a partir de una receta.
-- [ ] Puede modificar sus ingredientes sin afectar a la receta ni a comidas pasadas/futuras
-- [ ] Puede calcular su información nutricional
+- [x] Tiene nombre
+- [x] Representa una comida creada a partir de una receta.
+- [ ] Puede modificar sus ingredientes sin afectar a la receta ni a comidas pasadas/futuras (Hacerlo como borrar un ingrediente e incluirlo con la nueva info?)
+- [x] Puede añadir ingredientes
+- [x] Puede eliminar ingredientes
+- [x] Puede calcular su información nutricional
 - [ ]
 - [ ]
 
