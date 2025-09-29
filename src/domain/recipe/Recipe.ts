@@ -3,7 +3,7 @@ import { validateNonEmptyString } from '../common/validation';
 import { ValidationError } from '../common/errors';
 import { handleCreatedAt, handleUpdatedAt } from '../common/utils';
 
-type RecipeProps = {
+export type RecipeProps = {
   id: string;
   name: string;
   ingredientLines: IngredientLine[];
@@ -12,7 +12,6 @@ type RecipeProps = {
 };
 
 export class Recipe {
-  // TODO NEXT test a keep developing this class
   private constructor(private readonly props: RecipeProps) {}
 
   static create(props: RecipeProps): Recipe {
