@@ -2,6 +2,8 @@ import { IngredientLine } from '../ingredient/IngredientLine';
 import { validateNonEmptyString } from '../common/validation';
 import { ValidationError } from '../common/errors';
 import { handleCreatedAt, handleUpdatedAt } from '../common/utils';
+import { Protein } from '../interfaces/Protein';
+import { Calories } from '../interfaces/Calories';
 
 export type RecipeProps = {
   id: string;
@@ -11,7 +13,7 @@ export type RecipeProps = {
   updatedAt: Date;
 };
 
-export class Recipe {
+export class Recipe implements Protein, Calories {
   private constructor(private readonly props: RecipeProps) {}
 
   static create(props: RecipeProps): Recipe {
@@ -87,14 +89,14 @@ export class Recipe {
     return this.props.updatedAt;
   }
 
-  get totalCalories() {
+  get calories() {
     return this.props.ingredientLines.reduce(
       (total, line) => total + line.calories,
       0
     );
   }
 
-  get totalProtein() {
+  get protein() {
     return this.props.ingredientLines.reduce(
       (total, line) => total + line.protein,
       0

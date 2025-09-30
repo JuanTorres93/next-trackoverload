@@ -49,7 +49,7 @@ describe('Recipe', () => {
   });
 
   it('should compute total calories', async () => {
-    expect(recipe.totalCalories).toBe(100);
+    expect(recipe.calories).toBe(100);
 
     const anotherIngredientLine = IngredientLine.create({
       id: '2',
@@ -71,11 +71,11 @@ describe('Recipe', () => {
       ingredientLines: [validIngredientLine, anotherIngredientLine],
     });
 
-    expect(recipeWithTwoLines.totalCalories).toBe(200);
+    expect(recipeWithTwoLines.calories).toBe(200);
   });
 
   it('should compute total protein', async () => {
-    expect(recipe.totalProtein).toBe(10);
+    expect(recipe.protein).toBe(10);
 
     const anotherIngredientLine = IngredientLine.create({
       id: '2',
@@ -97,7 +97,7 @@ describe('Recipe', () => {
       ingredientLines: [validIngredientLine, anotherIngredientLine],
     });
 
-    expect(recipeWithTwoLines.totalProtein).toBe(20);
+    expect(recipeWithTwoLines.protein).toBe(20);
   });
 
   it('should update its name', async () => {

@@ -2,6 +2,8 @@ import { ValidationError } from '../common/errors';
 import { handleCreatedAt, handleUpdatedAt } from '../common/utils';
 import { validateNonEmptyString } from '../common/validation';
 import { IngredientLine } from '../ingredient/IngredientLine';
+import { Protein } from '../interfaces/Protein';
+import { Calories } from '../interfaces/Calories';
 
 export type MealProps = {
   id: string;
@@ -11,7 +13,7 @@ export type MealProps = {
   updatedAt: Date;
 };
 
-export class Meal {
+export class Meal implements Calories, Protein {
   private constructor(private readonly props: MealProps) {}
 
   static create(props: MealProps): Meal {
@@ -57,7 +59,7 @@ export class Meal {
     this.props.updatedAt = new Date();
   }
 
-  totalCalories(): number {
+  get calories(): number {
     return this.props.ingredientLines.reduce((total, line) => {
       const caloriesPerGram =
         line.ingredient.nutritionalInfoPer100g.calories / 100;
@@ -65,7 +67,7 @@ export class Meal {
     }, 0);
   }
 
-  totalProtein(): number {
+  get protein(): number {
     return this.props.ingredientLines.reduce((total, line) => {
       const proteinPerGram =
         line.ingredient.nutritionalInfoPer100g.protein / 100;

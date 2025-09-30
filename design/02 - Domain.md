@@ -36,10 +36,12 @@
 
 # FakeMeal
 
-- [ ] Tiene nombre
+- [x] Tiene nombre
 - [ ] Sirve para hacer logeos rápidos
-- [ ] Puede modificar su información nutricional
-- [ ] NO tiene ingredientes
+- [x] Puede modificar su información nutricional
+- [x] NO tiene ingredientes
+- [x] Tiene calorías
+- [x] Tiene proteínas
 - [ ]
 
 # MealBatch
@@ -75,7 +77,7 @@
 - [ ] Se puede añadir tanto en el pasado, como en el presente y el futuro
 - [ ] Se puede modificar la comida de todos los días
 - [ ] Puede quitar comidas
-- [ ] Puede mostrar un resumen de la información nutricional
+- [ ] Puede mostrar un resumen de la información nutricional (tanto meals como fake meals)
 - [ ]
 - [ ]
 

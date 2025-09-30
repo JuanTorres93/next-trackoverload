@@ -50,7 +50,7 @@ describe('Meal', () => {
   });
 
   it('should compute the correct total calories', async () => {
-    const totalCalories = meal.totalCalories();
+    const totalCalories = meal.calories;
     expect(totalCalories).toBe(100);
 
     // More than one ingredient line
@@ -73,12 +73,12 @@ describe('Meal', () => {
 
     meal.addIngredientLine(anotherIngredientLine);
 
-    const newTotalCalories = meal.totalCalories();
+    const newTotalCalories = meal.calories;
     expect(newTotalCalories).toBe(200);
   });
 
   it('should compute the correct total protein', async () => {
-    const totalProtein = meal.totalProtein();
+    const totalProtein = meal.protein;
     expect(totalProtein).toBe(10);
 
     // More than one ingredient line
@@ -100,7 +100,7 @@ describe('Meal', () => {
     });
     meal.addIngredientLine(anotherIngredientLine);
 
-    const newTotalProtein = meal.totalProtein();
+    const newTotalProtein = meal.protein;
     expect(newTotalProtein).toBe(20);
   });
 
