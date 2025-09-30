@@ -44,7 +44,7 @@
 - [x] Tiene proteínas
 - [ ]
 
-# MealBatch
+# MealBatch (Creo que no es necesario)
 
 - [ ] Es un conjunto de comidas, a las que se les asigna un día
 - [ ] Mecanismo por el cual se distribuyen las comidas a su día
@@ -53,12 +53,16 @@
 
 # WorkoutTemplate
 
-- [ ] Tiene un nombre
-- [ ] Tiene una lista ordenada de ejercicios.
-- [ ] El orden en la lista determina el orden en el entrenamiento
-- [ ] Cada elemento de la lista tiene el ejercicio y el número de reps
-- [ ] Se utiliza como plantilla para entrenamientos, por lo que puede que tenga que llamar a la fábrica de Workout
-- [ ] Se puede modificar sin afectar a Workouts anteriores, pero sí a futuros.
+- [x] Tiene un nombre
+- [x] Tiene una lista ordenada de ejercicios.
+- [ ] El orden en la lista determina el orden en el entrenamiento (testear en workout / use-case)
+- [x] Cada elemento de la lista tiene el ejercicio y el número de sets
+- [ ] Se utiliza como plantilla para entrenamientos, por lo que puede que tenga que llamar a la fábrica de Workout (Hacer en USE CASE)
+- [ ] Se puede modificar sin afectar a Workouts anteriores, pero sí a futuros. (Comprobar en use case?)
+- [x] Puede añadir ejercicios
+- [x] Puede eliminar ejercicios
+- [x] Puede editar ejercicios
+- [x] Puede reordenar ejercicios
 - [ ]
 
 # Workout

@@ -1,0 +1,119 @@
+import { ValidationError } from '../common/errors';
+import { handleCreatedAt, handleUpdatedAt } from '../common/utils';
+import {
+  validateGreaterThanZero,
+  validateNonEmptyString,
+} from '../common/validation';
+
+type TemplateLine = {
+  exerciseId: string;
+  sets: number;
+};
+
+type TemplateLineUpdateProps = {
+  sets?: number;
+};
+
+export type WorkoutTemplateProps = {
+  id: string;
+  name: string;
+  exercises: TemplateLine[];
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export class WorkoutTemplate {
+  private constructor(private readonly props: WorkoutTemplateProps) {}
+
+  static create(props: WorkoutTemplateProps): WorkoutTemplate {
+    validateNonEmptyString(props.id, 'WorkoutTemplate id');
+    validateNonEmptyString(props.name, 'WorkoutTemplate name');
+
+    if (!Array.isArray(props.exercises)) {
+      throw new ValidationError('WorkoutTemplate exercises must be an array');
+    }
+
+    for (const line of props.exercises) {
+      if (
+        !line.exerciseId ||
+        !line.sets ||
+        typeof line.sets !== 'number' ||
+        line.sets <= 0
+      ) {
+        throw new ValidationError(
+          'WorkoutTemplate exercises must be instances of TemplateLine'
+        );
+      }
+    }
+
+    props.createdAt = handleCreatedAt(props.createdAt);
+    props.updatedAt = handleUpdatedAt(props.updatedAt);
+
+    return new WorkoutTemplate(props);
+  }
+
+  addExercise({ exerciseId, sets }: TemplateLine) {
+    // NOTE: maybe allow duplicates in the future?
+    const existingLine = this.props.exercises.find(
+      (line) => line.exerciseId === exerciseId
+    );
+    if (existingLine) {
+      throw new ValidationError('WorkoutTemplate: Exercise already exists');
+    }
+    this.props.exercises.push({ exerciseId, sets });
+  }
+
+  removeExercise(exerciseId: string) {
+    this.props.exercises = this.props.exercises.filter(
+      (line) => line.exerciseId !== exerciseId
+    );
+  }
+
+  reorderExercise(exerciseId: string, newIndex: number) {
+    const exercise = this.props.exercises.find(
+      (line) => line.exerciseId === exerciseId
+    );
+    if (!exercise) return;
+
+    this.props.exercises = this.props.exercises.filter(
+      (line) => line.exerciseId !== exerciseId
+    );
+    this.props.exercises.splice(newIndex, 0, exercise);
+  }
+
+  updateExercise(exerciseId: string, updateProps: TemplateLineUpdateProps) {
+    const exercise = this.props.exercises.find(
+      (line) => line.exerciseId === exerciseId
+    );
+    if (!exercise) return;
+
+    if (updateProps.sets !== undefined) {
+      validateGreaterThanZero(
+        updateProps.sets,
+        'WorkoutTemplate updateExercise sets'
+      );
+      exercise.sets = updateProps.sets;
+    }
+  }
+
+  // Getters
+  get id() {
+    return this.props.id;
+  }
+
+  get name() {
+    return this.props.name;
+  }
+
+  get exercises() {
+    return [...this.props.exercises];
+  }
+
+  get createdAt() {
+    return this.props.createdAt;
+  }
+
+  get updatedAt() {
+    return this.props.updatedAt;
+  }
+}
