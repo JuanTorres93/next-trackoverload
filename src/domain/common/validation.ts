@@ -15,6 +15,15 @@ export const validateNumber = (value: number, context: string): void => {
   }
 };
 
+export const validatePositiveNumber = (
+  value: number,
+  context: string
+): void => {
+  if (typeof value !== 'number' || isNaN(value) || value < 0) {
+    throw new ValidationError(`${context}: Number must be positive`);
+  }
+};
+
 export const validateGreaterThanZero = (
   value: number,
   context: string

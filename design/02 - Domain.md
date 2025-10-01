@@ -67,12 +67,14 @@
 
 # Workout
 
-- [ ] Tiene un nombre
-- [ ] Tiene ejercicios ordenados según la plantilla
-- [ ] Tiene un registro del último entrenamiento hecho con esa plantilla
-- [ ] Los ejercicios, después de ordenador por plantilla, también se ordenan según el set
+- [x] Tiene un nombre
+- [ ] Tiene ejercicios ordenados según la plantilla (testear en USE CASE)
+- [ ] Tiene un registro del último entrenamiento hecho con esa plantilla (testeas en USE CASE)
+- [ ] Los ejercicios, después de ordenados por plantilla, también se ordenan según el set (testear en USE CASE)
 - [ ] Puede actualizar el valor de cada set
-- [ ] Puede añadir/quitar ejercicios sin afectar a la plantilla
+- [ ] Puede añadir/quitar ejercicios sin afectar a la plantilla (testear en USE CASE)
+- [x] Puede añadir ejercicios
+- [x] Puede eliminar ejercicios
 - [ ]
 
 # Day
