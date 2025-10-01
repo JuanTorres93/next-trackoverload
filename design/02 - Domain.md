@@ -79,12 +79,11 @@
 
 # Day
 
-- [ ] Puede guardar información de comidas registradas
-- [ ] Se puede añadir tanto en el pasado, como en el presente y el futuro
-- [ ] Se puede modificar la comida de todos los días
-- [ ] Puede quitar comidas
-- [ ] Puede mostrar un resumen de la información nutricional (tanto meals como fake meals)
-- [ ]
+- [x] Puede guardar información de comidas registradas
+- [ ] Se puede añadir tanto en el pasado, como en el presente y el futuro (testear en USE CASE)
+- [ ] Se puede modificar la comida de todos los días (testear en USE CASE)
+- [x] Puede quitar comidas
+- [x] Puede mostrar un resumen de la información nutricional (tanto meals como fake meals)
 - [ ]
 
 # User
