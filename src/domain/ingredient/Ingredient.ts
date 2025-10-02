@@ -1,6 +1,7 @@
 import {
   validateNonEmptyString,
   validateGreaterThanZero,
+  validatePositiveNumber,
   validateObject,
 } from '../common/validation';
 import { handleCreatedAt, handleUpdatedAt } from '../common/utils';
@@ -8,6 +9,12 @@ import { handleCreatedAt, handleUpdatedAt } from '../common/utils';
 type NutritionalInfoPer100g = {
   calories: number;
   protein: number;
+};
+
+export type IngredientUpdateProps = {
+  name?: string;
+  calories?: number;
+  protein?: number;
 };
 
 export type IngredientProps = {
@@ -42,18 +49,26 @@ export class Ingredient {
     return new Ingredient(props);
   }
 
-  updateNutritionalInfo(newNutritionalInfo: NutritionalInfoPer100g) {
-    validateObject(newNutritionalInfo, 'Ingredient nutritionalInfoPer100g');
-    validateGreaterThanZero(
-      newNutritionalInfo.calories,
-      'Ingredient nutritionalInfoPer100g calories'
-    );
-    validateGreaterThanZero(
-      newNutritionalInfo.protein,
-      'Ingredient nutritionalInfoPer100g protein'
-    );
+  update(patch: IngredientUpdateProps): void {
+    if (patch.name !== undefined) {
+      validateNonEmptyString(patch.name, 'Ingredient name');
+      this.props.name = patch.name;
+    }
+    if (patch.calories !== undefined) {
+      validatePositiveNumber(
+        patch.calories,
+        'Ingredient nutritionalInfoPer100g calories'
+      );
+      this.props.nutritionalInfoPer100g.calories = patch.calories;
+    }
+    if (patch.protein !== undefined) {
+      validatePositiveNumber(
+        patch.protein,
+        'Ingredient nutritionalInfoPer100g protein'
+      );
+      this.props.nutritionalInfoPer100g.protein = patch.protein;
+    }
 
-    this.props.nutritionalInfoPer100g = newNutritionalInfo;
     this.props.updatedAt = new Date();
   }
 

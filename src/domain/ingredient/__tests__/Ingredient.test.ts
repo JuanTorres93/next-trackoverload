@@ -1,5 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, beforeEach } from 'vitest';
 import { Ingredient } from '../Ingredient';
+import { ValidationError } from '@/domain/common/errors';
 
 const nutritionalInfoPer100g = {
   calories: 100,
@@ -15,9 +16,13 @@ const validIngredientProps = {
 };
 
 describe('Ingredient', () => {
-  it('should create a valid ingredient', () => {
-    const ingredient = Ingredient.create(validIngredientProps);
+  let ingredient: Ingredient;
 
+  beforeEach(() => {
+    ingredient = Ingredient.create(validIngredientProps);
+  });
+
+  it('should create a valid ingredient', () => {
     expect(ingredient).toBeInstanceOf(Ingredient);
   });
 
@@ -32,29 +37,31 @@ describe('Ingredient', () => {
     expect(ingredient.updatedAt instanceof Date).toBe(true);
   });
 
-  it('should update its nutritional info', async () => {
-    const ingredient = Ingredient.create(validIngredientProps);
-    const newNutritionalInfo = {
-      calories: 200,
-      protein: 20,
-    };
-    ingredient.updateNutritionalInfo(newNutritionalInfo);
-    expect(ingredient.nutritionalInfoPer100g).toEqual(newNutritionalInfo);
+  it('should update ingredient', async () => {
+    const patch = { name: 'Updated Ingredient', calories: 150, protein: 15 };
+
+    ingredient.update(patch);
+
+    expect(ingredient.name).toBe('Updated Ingredient');
+    expect(ingredient.nutritionalInfoPer100g).toEqual({
+      calories: 150,
+      protein: 15,
+    });
   });
 
-  it('should not update its nutritional info with invalid data', async () => {
-    const ingredient = Ingredient.create(validIngredientProps);
-    const invalidNutritionalInfos = [
-      null,
-      { calories: -10, protein: 5 },
-      { calories: 100, protein: -5 },
+  it('should not update ingredient with invalid props', async () => {
+    const invalidProps = [
+      { name: '' },
+      { name: 3 },
+      { calories: -10 },
+      { calories: 'invalid' },
+      { protein: -5 },
+      { protein: 'invalid' },
     ];
 
-    for (const invalidNutritionalInfo of invalidNutritionalInfos) {
-      expect(() =>
-        // @ts-expect-error the error comes precisely because it should not be updated
-        ingredient.updateNutritionalInfo(invalidNutritionalInfo)
-      ).toThrow();
+    for (const invalidProp of invalidProps) {
+      // @ts-expect-error the error comes precisely because it should not be updated
+      expect(() => ingredient.update(invalidProp)).toThrow(ValidationError);
     }
   });
 

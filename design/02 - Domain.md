@@ -93,26 +93,26 @@
 - [x] Puede cambiar su nombre
 - [ ]
 
-# IngredientService
+# IngredientsRepo
 
-- [ ] Puede leer información de ingredientes
-- [ ] Puede crear información de ingredientes
-- [ ] Puede borrar información de ingredientes
-- [ ] Puede actualizar información de ingredientes
+- [x] Puede leer información de ingredientes
+- [x] Puede crear información de ingredientes
+- [x] Puede borrar información de ingredientes
+- [x] Puede actualizar información de ingredientes
 - [ ]
 
-# ExerciseService
+# ExercisesRepo
 
-- [ ] Puede leer información de ingredientes
-- [ ] Puede crear información de ingredientes
-- [ ] Puede borrar información de ingredientes
-- [ ] Puede actualizar información de ingredientes
+- [ ] Puede leer información de ejercicios
+- [ ] Puede crear información de ejercicios
+- [ ] Puede borrar información de ejercicios
+- [ ] Puede actualizar información de ejercicios
 - [ ]
 
 # PaymentsService
 
-- [ ] Puede iniciar suscripción
-- [ ] Puede cancelar
+- [ ] Puede crear suscripción
+- [ ] Puede cancelar suscripción
 - [ ]
 
 # AuthService

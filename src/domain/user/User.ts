@@ -1,4 +1,3 @@
-import { ValidationError } from '../common/errors';
 import { handleCreatedAt, handleUpdatedAt } from '../common/utils';
 import { validateNonEmptyString } from '../common/validation';
 
