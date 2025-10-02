@@ -1,12 +1,12 @@
 import { Ingredient, IngredientUpdateProps } from '../ingredient/Ingredient';
 
-export interface IngredientsService {
+export interface IngredientsRepo {
   getAllIngredients(): Promise<Ingredient[]>;
   getIngredientById(id: string): Promise<Ingredient | null>;
   saveIngredient(ingredient: Ingredient): Promise<void>;
   deleteIngredient(id: string): Promise<void>;
   updateIngredient(
-    ingredient: Ingredient,
+    id: string,
     patch: IngredientUpdateProps
   ): Promise<Ingredient>;
 }

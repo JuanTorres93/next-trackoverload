@@ -1,6 +1,10 @@
 import { handleCreatedAt, handleUpdatedAt } from '../common/utils';
 import { validateNonEmptyString } from '../common/validation';
 
+export type ExerciseUpdateProps = {
+  name?: string;
+};
+
 export type ExerciseProps = {
   id: string;
   name: string;

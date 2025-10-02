@@ -96,17 +96,17 @@
 # IngredientsRepo
 
 - [x] Puede leer información de ingredientes
-- [x] Puede crear información de ingredientes
+- [x] Puede guardar información de ingredientes
 - [x] Puede borrar información de ingredientes
 - [x] Puede actualizar información de ingredientes
 - [ ]
 
 # ExercisesRepo
 
-- [ ] Puede leer información de ejercicios
-- [ ] Puede crear información de ejercicios
-- [ ] Puede borrar información de ejercicios
-- [ ] Puede actualizar información de ejercicios
+- [x] Puede leer información de ejercicios
+- [x] Puede guardar información de ejercicios
+- [x] Puede borrar información de ejercicios
+- [x] Puede actualizar información de ejercicios
 - [ ]
 
 # PaymentsService

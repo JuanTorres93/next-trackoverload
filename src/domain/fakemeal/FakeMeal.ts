@@ -6,7 +6,7 @@ import {
 import { Protein } from '../interfaces/Protein';
 import { Calories } from '../interfaces/Calories';
 
-type FakeMealPatch = {
+export type FakeUpdateProps = {
   name?: string;
   calories?: number;
   protein?: number;
@@ -36,7 +36,7 @@ export class FakeMeal implements Protein, Calories {
     return new FakeMeal(props);
   }
 
-  update(patch: FakeMealPatch) {
+  update(patch: FakeUpdateProps) {
     if (patch.name !== undefined) {
       validateNonEmptyString(patch.name, 'FakeMeal name');
       this.props.name = patch.name;
