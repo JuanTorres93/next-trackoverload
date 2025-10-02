@@ -88,8 +88,9 @@
 
 # User
 
-- [ ] Tiene nombre
-- [ ] Tiene customer id
+- [x] Tiene nombre
+- [x] Tiene customer id
+- [x] Puede cambiar su nombre
 - [ ]
 
 # IngredientService
