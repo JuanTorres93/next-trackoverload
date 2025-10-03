@@ -111,13 +111,14 @@
 
 # PaymentsService
 
-- [ ] Puede crear suscripción
-- [ ] Puede cancelar suscripción
+- [x] Puede crear suscripción
+- [x] Puede cancelar suscripción
+- [x] Puede leer el estado actual de la suscripción
 - [ ]
 
 # AuthService
 
-- [ ] Registrar
-- [ ] Login
-- [ ] Cambiar contraseña
+- [x] Registrar
+- [x] Login
+- [x] Cambiar contraseña
 - [ ]
