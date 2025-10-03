@@ -1,5 +1,5 @@
-import { handleCreatedAt, handleUpdatedAt } from '../common/utils';
-import { validateNonEmptyString } from '../common/validation';
+import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
+import { validateNonEmptyString } from '../../common/validation';
 
 type UserUpdateProps = {
   name?: string;

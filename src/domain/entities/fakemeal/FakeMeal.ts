@@ -1,10 +1,10 @@
-import { handleCreatedAt, handleUpdatedAt } from '../common/utils';
+import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 import {
   validateNonEmptyString,
   validateGreaterThanZero,
-} from '../common/validation';
-import { Protein } from '../interfaces/Protein';
-import { Calories } from '../interfaces/Calories';
+} from '../../common/validation';
+import { Protein } from '../../interfaces/Protein';
+import { Calories } from '../../interfaces/Calories';
 
 export type FakeUpdateProps = {
   name?: string;

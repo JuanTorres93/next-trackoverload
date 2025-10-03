@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { Ingredient } from '@/domain/ingredient/Ingredient';
-import { IngredientLine } from '@/domain/ingredient/IngredientLine';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { FakeMeal } from '../../fakemeal/FakeMeal';
 import { Meal } from '../../meal/Meal';
 import { Day } from '../Day';

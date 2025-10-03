@@ -1,10 +1,10 @@
-import { ValidationError } from '../common/errors';
-import { handleCreatedAt, handleUpdatedAt } from '../common/utils';
-import { validatePositiveNumber, validateDate } from '../common/validation';
+import { ValidationError } from '../../common/errors';
+import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
+import { validatePositiveNumber, validateDate } from '../../common/validation';
 import { Meal } from '../meal/Meal';
 import { FakeMeal } from '../fakemeal/FakeMeal';
-import { Protein } from '../interfaces/Protein';
-import { Calories } from '../interfaces/Calories';
+import { Protein } from '../../interfaces/Protein';
+import { Calories } from '../../interfaces/Calories';
 
 export type DayProps = {
   id: Date;

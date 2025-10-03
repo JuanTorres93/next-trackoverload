@@ -1,7 +1,7 @@
 import { Ingredient } from './Ingredient';
-import { ValidationError } from '../common/errors';
-import { validateNonEmptyString } from '../common/validation';
-import { handleCreatedAt, handleUpdatedAt } from '../common/utils';
+import { ValidationError } from '../../common/errors';
+import { validateNonEmptyString } from '../../common/validation';
+import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 
 type IngredientLineProps = {
   id: string;

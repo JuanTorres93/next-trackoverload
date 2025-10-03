@@ -1,9 +1,9 @@
-import { ValidationError } from '../common/errors';
-import { handleCreatedAt, handleUpdatedAt } from '../common/utils';
+import { ValidationError } from '../../common/errors';
+import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 import {
   validateGreaterThanZero,
   validateNonEmptyString,
-} from '../common/validation';
+} from '../../common/validation';
 
 type TemplateLine = {
   exerciseId: string;

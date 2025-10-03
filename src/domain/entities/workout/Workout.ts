@@ -1,10 +1,10 @@
-import { ValidationError } from '../common/errors';
-import { handleCreatedAt, handleUpdatedAt } from '../common/utils';
+import { ValidationError } from '../../common/errors';
+import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 import {
   validateNonEmptyString,
   validateGreaterThanZero,
   validatePositiveNumber,
-} from '../common/validation';
+} from '../../common/validation';
 
 type ExerciseLine = {
   exerciseId: string;

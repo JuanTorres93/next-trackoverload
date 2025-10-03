@@ -2,8 +2,8 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import { Meal, MealProps } from '../Meal';
 import { ValidationError } from '@/domain/common/errors';
-import { Ingredient } from '@/domain/ingredient/Ingredient';
-import { IngredientLine } from '@/domain/ingredient/IngredientLine';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 
 const nutritionalInfoPer100g = {
   calories: 100,

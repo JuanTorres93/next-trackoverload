@@ -3,8 +3,8 @@ import {
   validateGreaterThanZero,
   validatePositiveNumber,
   validateObject,
-} from '../common/validation';
-import { handleCreatedAt, handleUpdatedAt } from '../common/utils';
+} from '../../common/validation';
+import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 
 type NutritionalInfoPer100g = {
   calories: number;

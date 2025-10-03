@@ -1,9 +1,9 @@
-import { ValidationError } from '../common/errors';
-import { handleCreatedAt, handleUpdatedAt } from '../common/utils';
-import { validateNonEmptyString } from '../common/validation';
+import { ValidationError } from '../../common/errors';
+import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
+import { validateNonEmptyString } from '../../common/validation';
 import { IngredientLine } from '../ingredient/IngredientLine';
-import { Protein } from '../interfaces/Protein';
-import { Calories } from '../interfaces/Calories';
+import { Protein } from '../../interfaces/Protein';
+import { Calories } from '../../interfaces/Calories';
 
 export type MealProps = {
   id: string;

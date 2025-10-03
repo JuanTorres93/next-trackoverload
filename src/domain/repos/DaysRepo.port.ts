@@ -1,4 +1,4 @@
-import { Day } from '../day/Day';
+import { Day } from '../entities/day/Day';
 
 export interface DaysRepo {
   getAllDays(): Promise<Day[]>;
