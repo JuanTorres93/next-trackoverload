@@ -1,4 +1,4 @@
-import { User } from '../user/User';
+import { User } from '../entities/user/User';
 
 export interface UsersRepo {
   getAllUsers(): Promise<User[]>;

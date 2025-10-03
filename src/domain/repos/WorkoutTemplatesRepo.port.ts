@@ -1,4 +1,4 @@
-import { WorkoutTemplate } from '../workouttemplate/WorkoutTemplate';
+import { WorkoutTemplate } from '../entities/workouttemplate/WorkoutTemplate';
 
 export interface WorkoutTemplatesRepo {
   getAllWorkoutTemplates(): Promise<WorkoutTemplate[]>;

@@ -1,4 +1,4 @@
-import { FakeMeal } from '../fakemeal/FakeMeal';
+import { FakeMeal } from '../entities/fakemeal/FakeMeal';
 
 export interface FakeMealsRepo {
   getAllFakeMeals(): Promise<FakeMeal[]>;

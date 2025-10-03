@@ -1,4 +1,4 @@
-import { Ingredient } from '../ingredient/Ingredient';
+import { Ingredient } from '../entities/ingredient/Ingredient';
 
 export interface IngredientsRepo {
   getAllIngredients(): Promise<Ingredient[]>;

@@ -1,4 +1,4 @@
-import { Workout } from '../workout/Workout';
+import { Workout } from '../entities/workout/Workout';
 
 export interface WorkoutsRepo {
   getAllWorkouts(): Promise<Workout[]>;
