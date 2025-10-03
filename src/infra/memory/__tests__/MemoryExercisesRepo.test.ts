@@ -40,6 +40,19 @@ describe('MemoryExercisesRepo', () => {
     expect(fetchedExercise?.name).toBe(validExerciseProps.name);
   });
 
+  it('should update an existing exercise', async () => {
+    const updatedExercise = Exercise.create({
+      ...validExerciseProps,
+      name: 'Updated Push Up',
+      updatedAt: new Date('2023-01-03'),
+    });
+    await repo.saveExercise(updatedExercise);
+
+    const fetchedExercise = await repo.getExerciseById(validExerciseProps.id);
+    expect(fetchedExercise).not.toBeNull();
+    expect(fetchedExercise?.name).toBe('Updated Push Up');
+  });
+
   it('should return null for non-existent exercise ID', async () => {
     const fetchedExercise = await repo.getExerciseById('non-existent-id');
     expect(fetchedExercise).toBeNull();

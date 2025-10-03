@@ -6,7 +6,12 @@ export class MemoryExercisesRepo implements ExercisesRepo {
   private exercises: Exercise[] = [];
 
   async saveExercise(exercise: Exercise): Promise<void> {
-    this.exercises.push(exercise);
+    const index = this.exercises.findIndex((ex) => ex.id === exercise.id);
+    if (index === -1) {
+      this.exercises.push(exercise);
+    } else {
+      this.exercises[index] = exercise;
+    }
   }
 
   async getAllExercises(): Promise<Exercise[]> {
