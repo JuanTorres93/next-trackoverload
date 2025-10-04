@@ -1,7 +1,15 @@
 import { Ingredient } from './Ingredient';
 import { ValidationError } from '../../common/errors';
-import { validateNonEmptyString } from '../../common/validation';
+import {
+  validateNonEmptyString,
+  validateGreaterThanZero,
+} from '../../common/validation';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
+
+type IngredientLineUpdateProps = {
+  ingredient?: Ingredient;
+  quantityInGrams?: number;
+};
 
 type IngredientLineProps = {
   id: string;
@@ -35,6 +43,33 @@ export class IngredientLine {
     return new IngredientLine(props);
   }
 
+  update(patch: IngredientLineUpdateProps): IngredientLine {
+    const newIngredient = patch.ingredient ?? this.props.ingredient;
+    const newQuantity = patch.quantityInGrams ?? this.props.quantityInGrams;
+
+    if (patch.ingredient && !(patch.ingredient instanceof Ingredient)) {
+      throw new ValidationError('IngredientLine update ingredient');
+    }
+
+    if (patch.quantityInGrams !== undefined)
+      validateGreaterThanZero(
+        patch.quantityInGrams,
+        'IngredientLine update quantityInGrams'
+      );
+
+    return IngredientLine.create({
+      id: this.props.id,
+      ingredient: newIngredient,
+      quantityInGrams: newQuantity,
+      createdAt: this.props.createdAt,
+      updatedAt: new Date(),
+    });
+  }
+
+  get id() {
+    return this.props.id;
+  }
+
   get ingredient() {
     return this.props.ingredient;
   }
@@ -57,5 +92,13 @@ export class IngredientLine {
         this.props.quantityInGrams) /
       100
     );
+  }
+
+  get createdAt() {
+    return this.props.createdAt;
+  }
+
+  get updatedAt() {
+    return this.props.updatedAt;
   }
 }
