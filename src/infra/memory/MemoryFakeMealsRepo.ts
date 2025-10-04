@@ -1,6 +1,5 @@
 import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { NotFoundError } from '@/domain/common/errors';
 
 export class MemoryFakeMealsRepo implements FakeMealsRepo {
   private fakeMeals: FakeMeal[] = [];
@@ -28,8 +27,8 @@ export class MemoryFakeMealsRepo implements FakeMealsRepo {
 
   async deleteFakeMeal(id: string): Promise<void> {
     const index = this.fakeMeals.findIndex((fm) => fm.id === id);
-    if (index === -1)
-      throw new NotFoundError('MemoryFakeMealsRepo: FakeMeal not found');
+    // NOTE: Throw error in use case in order not to have false positives in tests
+    if (index === -1) return Promise.reject(null);
 
     this.fakeMeals.splice(index, 1);
   }

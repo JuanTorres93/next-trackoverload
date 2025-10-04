@@ -1,6 +1,5 @@
-import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { User } from '@/domain/entities/user/User';
-import { NotFoundError } from '@/domain/common/errors';
+import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 
 export class MemoryUsersRepo implements UsersRepo {
   private users: User[] = [];
@@ -16,8 +15,8 @@ export class MemoryUsersRepo implements UsersRepo {
 
   async deleteUser(id: string): Promise<void> {
     const index = this.users.findIndex((u) => u.id === id);
-    if (index === -1)
-      throw new NotFoundError('MemoryUsersRepo: User not found');
+    // NOTE: Throw error in use case in order not to have false positives in tests
+    if (index === -1) return Promise.reject(null);
 
     this.users.splice(index, 1);
   }

@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryFakeMealsRepo } from '../MemoryFakeMealsRepo';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { NotFoundError } from '@/domain/common/errors';
 
 const validFakeMealProps = {
   id: '1',
@@ -70,11 +69,5 @@ describe('MemoryFakeMealsRepo', () => {
 
     const allFakeMealsAfterDeletion = await repo.getAllFakeMeals();
     expect(allFakeMealsAfterDeletion.length).toBe(0);
-  });
-
-  it('should throw NotFoundError when deleting non-existent fake meal', async () => {
-    await expect(repo.deleteFakeMeal('non-existent-id')).rejects.toThrow(
-      NotFoundError
-    );
   });
 });

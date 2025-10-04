@@ -1,6 +1,5 @@
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { Day } from '@/domain/entities/day/Day';
-import { NotFoundError } from '@/domain/common/errors';
 
 export class MemoryDaysRepo implements DaysRepo {
   private days: Day[] = [];
@@ -32,7 +31,8 @@ export class MemoryDaysRepo implements DaysRepo {
     const index = this.days.findIndex(
       (d) => d.id.getTime() === dayDate.getTime()
     );
-    if (index === -1) throw new NotFoundError('MemoryDaysRepo: Day not found');
+    // NOTE: Throw error in use case in order not to have false positives in tests
+    if (index === -1) return Promise.reject(null);
 
     this.days.splice(index, 1);
   }

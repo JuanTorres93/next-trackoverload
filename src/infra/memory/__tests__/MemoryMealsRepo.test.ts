@@ -3,7 +3,6 @@ import { MemoryMealsRepo } from '../MemoryMealsRepo';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-import { NotFoundError } from '@/domain/common/errors';
 
 const validIngredientProps = {
   id: '1',
@@ -94,11 +93,5 @@ describe('MemoryMealsRepo', () => {
 
     const allMealsAfterDeletion = await repo.getAllMeals();
     expect(allMealsAfterDeletion.length).toBe(0);
-  });
-
-  it('should throw NotFoundError when deleting non-existent meal', async () => {
-    await expect(repo.deleteMeal('non-existent-id')).rejects.toThrow(
-      NotFoundError
-    );
   });
 });

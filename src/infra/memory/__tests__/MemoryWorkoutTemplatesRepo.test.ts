@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryWorkoutTemplatesRepo } from '../MemoryWorkoutTemplatesRepo';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
-import { NotFoundError } from '@/domain/common/errors';
 
 const validWorkoutTemplateProps = {
   id: '1',
@@ -77,11 +76,5 @@ describe('MemoryWorkoutTemplatesRepo', () => {
     const allWorkoutTemplatesAfterDeletion =
       await repo.getAllWorkoutTemplates();
     expect(allWorkoutTemplatesAfterDeletion.length).toBe(0);
-  });
-
-  it('should throw NotFoundError when deleting non-existent workout template', async () => {
-    await expect(repo.deleteWorkoutTemplate('non-existent-id')).rejects.toThrow(
-      NotFoundError
-    );
   });
 });

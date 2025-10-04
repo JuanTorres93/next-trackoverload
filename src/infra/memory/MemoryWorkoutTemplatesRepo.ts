@@ -1,6 +1,5 @@
 import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
-import { NotFoundError } from '@/domain/common/errors';
 
 export class MemoryWorkoutTemplatesRepo implements WorkoutTemplatesRepo {
   private workoutTemplates: WorkoutTemplate[] = [];
@@ -28,10 +27,8 @@ export class MemoryWorkoutTemplatesRepo implements WorkoutTemplatesRepo {
 
   async deleteWorkoutTemplate(id: string): Promise<void> {
     const index = this.workoutTemplates.findIndex((wt) => wt.id === id);
-    if (index === -1)
-      throw new NotFoundError(
-        'MemoryWorkoutTemplatesRepo: WorkoutTemplate not found'
-      );
+    // NOTE: Throw error in use case in order not to have false positives in tests
+    if (index === -1) return Promise.reject(null);
 
     this.workoutTemplates.splice(index, 1);
   }

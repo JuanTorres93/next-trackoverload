@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryWorkoutsRepo } from '../MemoryWorkoutsRepo';
 import { Workout } from '@/domain/entities/workout/Workout';
-import { NotFoundError } from '@/domain/common/errors';
 
 const validExerciseLine = {
   exerciseId: 'ex1',
@@ -75,11 +74,5 @@ describe('MemoryWorkoutsRepo', () => {
 
     const allWorkoutsAfterDeletion = await repo.getAllWorkouts();
     expect(allWorkoutsAfterDeletion.length).toBe(0);
-  });
-
-  it('should throw NotFoundError when deleting non-existent workout', async () => {
-    await expect(repo.deleteWorkout('non-existent-id')).rejects.toThrow(
-      NotFoundError
-    );
   });
 });

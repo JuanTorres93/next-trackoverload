@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryUsersRepo } from '../MemoryUsersRepo';
 import { User } from '@/domain/entities/user/User';
-import { NotFoundError } from '@/domain/common/errors';
 
 const validUserProps = {
   id: '1',
@@ -56,11 +55,5 @@ describe('MemoryUsersRepo', () => {
 
     const allUsersAfterDeletion = await repo.getAllUsers();
     expect(allUsersAfterDeletion.length).toBe(0);
-  });
-
-  it('should throw NotFoundError when deleting non-existent user', async () => {
-    await expect(repo.deleteUser('non-existent-id')).rejects.toThrow(
-      NotFoundError
-    );
   });
 });

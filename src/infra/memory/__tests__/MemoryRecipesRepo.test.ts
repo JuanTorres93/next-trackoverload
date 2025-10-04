@@ -3,7 +3,6 @@ import { MemoryRecipesRepo } from '../MemoryRecipesRepo';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-import { NotFoundError } from '@/domain/common/errors';
 
 const validIngredientProps = {
   id: '1',
@@ -94,11 +93,5 @@ describe('MemoryRecipesRepo', () => {
 
     const allRecipesAfterDeletion = await repo.getAllRecipes();
     expect(allRecipesAfterDeletion.length).toBe(0);
-  });
-
-  it('should throw NotFoundError when deleting non-existent recipe', async () => {
-    await expect(repo.deleteRecipe('non-existent-id')).rejects.toThrow(
-      NotFoundError
-    );
   });
 });

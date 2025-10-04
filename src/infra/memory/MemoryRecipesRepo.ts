@@ -1,6 +1,5 @@
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
-import { NotFoundError } from '@/domain/common/errors';
 
 export class MemoryRecipesRepo implements RecipesRepo {
   private recipes: Recipe[] = [];
@@ -26,8 +25,8 @@ export class MemoryRecipesRepo implements RecipesRepo {
 
   async deleteRecipe(id: string): Promise<void> {
     const index = this.recipes.findIndex((rec) => rec.id === id);
-    if (index === -1)
-      throw new NotFoundError('MemoryRecipesRepo: Recipe not found');
+    // NOTE: Throw error in use case in order not to have false positives in tests
+    if (index === -1) return Promise.reject(null);
 
     this.recipes.splice(index, 1);
   }

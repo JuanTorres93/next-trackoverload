@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryDaysRepo } from '../MemoryDaysRepo';
 import { Day } from '@/domain/entities/day/Day';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { NotFoundError } from '@/domain/common/errors';
 
 const validFakeMealProps = {
   id: 'fakemeal1',
@@ -79,9 +78,5 @@ describe('MemoryDaysRepo', () => {
 
     const allDaysAfterDeletion = await repo.getAllDays();
     expect(allDaysAfterDeletion.length).toBe(0);
-  });
-
-  it('should throw NotFoundError when deleting non-existent day', async () => {
-    await expect(repo.deleteDay('2023-12-31')).rejects.toThrow(NotFoundError);
   });
 });
