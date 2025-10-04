@@ -1,6 +1,5 @@
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { NotFoundError } from '@/domain/common/errors';
 
 export class MemoryIngredientsRepo implements IngredientsRepo {
   private ingredients: Ingredient[] = [];
@@ -28,8 +27,8 @@ export class MemoryIngredientsRepo implements IngredientsRepo {
 
   async deleteIngredient(id: string): Promise<void> {
     const index = this.ingredients.findIndex((ing) => ing.id === id);
-    if (index === -1)
-      throw new NotFoundError('MemoryIngredientsRepo: Ingredient not found');
+    // Validation is done in the use case to avoid false positives when using a real repo
+    if (index === -1) return Promise.reject(null);
 
     this.ingredients.splice(index, 1);
   }

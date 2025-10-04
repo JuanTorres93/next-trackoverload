@@ -77,10 +77,4 @@ describe('MemoryIngredientsRepo', () => {
     const allIngredientsAfterDeletion = await repo.getAllIngredients();
     expect(allIngredientsAfterDeletion.length).toBe(0);
   });
-
-  it('should throw NotFoundError when deleting non-existent ingredient', async () => {
-    await expect(repo.deleteIngredient('non-existent-id')).rejects.toThrow(
-      NotFoundError
-    );
-  });
 });
