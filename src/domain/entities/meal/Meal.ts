@@ -5,6 +5,10 @@ import { IngredientLine } from '../ingredient/IngredientLine';
 import { Protein } from '../../interfaces/Protein';
 import { Calories } from '../../interfaces/Calories';
 
+export type MealUpdateProps = {
+  name?: string;
+};
+
 export type MealProps = {
   id: string;
   name: string;
@@ -56,6 +60,15 @@ export class Meal implements Calories, Protein {
         `Meal: No ingredient line found with ingredient id ${ingredientId}`
       );
     }
+    this.props.updatedAt = new Date();
+  }
+
+  update(patch: MealUpdateProps): void {
+    if (patch.name !== undefined) {
+      validateNonEmptyString(patch.name, 'Meal name');
+      this.props.name = patch.name;
+    }
+
     this.props.updatedAt = new Date();
   }
 
