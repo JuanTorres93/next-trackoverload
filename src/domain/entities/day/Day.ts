@@ -8,17 +8,36 @@ import { Calories } from '../../interfaces/Calories';
 
 export type DayProps = {
   id: Date;
+  // TODO: add userId for composed primary key in DB?
   meals: (Meal | FakeMeal)[];
   createdAt: Date;
   updatedAt: Date;
 };
 
+function validateMeal(meal: Meal | FakeMeal) {
+  if (!(meal instanceof Meal) && !(meal instanceof FakeMeal)) {
+    throw new ValidationError(
+      'Day: meal must be an instance of Meal or FakeMeal'
+    );
+  }
+  validatePositiveNumber(meal.calories, 'Day meal calories');
+  validatePositiveNumber(meal.protein, 'Day meal protein');
+}
+
 export class Day implements Protein, Calories {
   private constructor(private readonly props: DayProps) {}
 
   static create(props: DayProps): Day {
-    // Validation
     validateDate(props.id, 'Day id');
+
+    // Validate meals is instance of Meal or FakeMeal
+    if (!Array.isArray(props.meals)) {
+      throw new ValidationError('Day: meals must be an array');
+    }
+    for (const meal of props.meals) {
+      validateMeal(meal);
+    }
+
     props.createdAt = handleCreatedAt(props.createdAt);
     props.updatedAt = handleUpdatedAt(props.updatedAt);
 
@@ -26,8 +45,7 @@ export class Day implements Protein, Calories {
   }
 
   addMeal(meal: Meal | FakeMeal): void {
-    validatePositiveNumber(meal.calories, 'Day meal calories');
-    validatePositiveNumber(meal.protein, 'Day meal protein');
+    validateMeal(meal);
 
     this.props.meals.push(meal);
     this.props.updatedAt = new Date();

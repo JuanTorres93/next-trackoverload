@@ -1,0 +1,27 @@
+import { DaysRepo } from '@/domain/repos/DaysRepo.port';
+import { Day } from '@/domain/entities/day/Day';
+import { Meal } from '@/domain/entities/meal/Meal';
+import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+
+export type CreateDayUsecaseRequest = {
+  date: Date;
+  meals?: (Meal | FakeMeal)[];
+};
+
+export class CreateDayUsecase {
+  constructor(private daysRepo: DaysRepo) {}
+
+  async execute(request: CreateDayUsecaseRequest): Promise<Day> {
+    // NOTE: id and meals are validated in the entity
+    const newDay = Day.create({
+      id: request.date,
+      meals: request.meals || [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    await this.daysRepo.saveDay(newDay);
+
+    return newDay;
+  }
+}

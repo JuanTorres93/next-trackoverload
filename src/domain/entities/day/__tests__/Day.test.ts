@@ -5,6 +5,7 @@ import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { FakeMeal } from '../../fakemeal/FakeMeal';
 import { Meal } from '../../meal/Meal';
 import { Day } from '../Day';
+import { ValidationError } from '@/domain/common/errors';
 
 const validFakeMealProps = {
   id: 'fakemeal1',
@@ -65,6 +66,31 @@ describe('Day', () => {
     expect(day).toBeInstanceOf(Day);
   });
 
+  it('should throw error if meals are not Meal or FakeMeal instances', async () => {
+    const invalidMeals = [
+      {},
+      3,
+      'invalid',
+      { id: 'not-a-meal' },
+      null,
+      undefined,
+      42,
+      [fakeMeal],
+    ];
+
+    invalidMeals.forEach((invalidMeal) => {
+      expect(() =>
+        Day.create({
+          id: new Date('2023-10-01'),
+          // @ts-expect-error Testing invalid input
+          meals: [invalidMeal],
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })
+      ).toThrow(ValidationError);
+    });
+  });
+
   it('should compute total calories', async () => {
     const totalCalories = day.calories;
     expect(totalCalories).toBe(400);
@@ -89,6 +115,26 @@ describe('Day', () => {
     day.addMeal(newMeal);
     expect(day.meals).toHaveLength(initialLength + 1);
     expect(day.meals[day.meals.length - 1]).toEqual(newMeal);
+  });
+
+  it('should not add invalid meal', async () => {
+    const initialLength = day.meals.length;
+
+    const invalidMeals = [
+      {},
+      3,
+      'invalid',
+      { id: 'not-a-meal' },
+      null,
+      42,
+      [fakeMeal],
+    ];
+
+    invalidMeals.forEach((invalidMeal) => {
+      // @ts-expect-error Testing invalid input
+      expect(() => day.addMeal(invalidMeal)).toThrow(ValidationError);
+      expect(day.meals).toHaveLength(initialLength);
+    });
   });
 
   it('should remove meal', async () => {
