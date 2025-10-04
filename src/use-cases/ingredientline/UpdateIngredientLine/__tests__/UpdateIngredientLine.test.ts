@@ -128,7 +128,7 @@ describe('UpdateIngredientLineUsecase', () => {
       const originalUpdatedAt = testIngredientLine.updatedAt;
 
       // Wait a bit to ensure different timestamp
-      await new Promise((resolve) => setTimeout(resolve, 1));
+      await new Promise((resolve) => setTimeout(resolve, 2));
 
       const request = {
         ingredientLineId: testIngredientLine.id,

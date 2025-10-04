@@ -131,7 +131,7 @@ describe('AddIngredientToMealUsecase', () => {
     const originalUpdatedAt = testMeal.updatedAt;
 
     // Wait a bit to ensure timestamp difference
-    await new Promise((resolve) => setTimeout(resolve, 1));
+    await new Promise((resolve) => setTimeout(resolve, 2));
 
     const request = {
       mealId: testMeal.id,
