@@ -33,6 +33,12 @@ export const validateGreaterThanZero = (
   }
 };
 
+export const validateInteger = (value: number, context: string): void => {
+  if (typeof value !== 'number' || isNaN(value) || !Number.isInteger(value)) {
+    throw new ValidationError(`${context}: Invalid integer`);
+  }
+};
+
 export const validateObject = (value: object, context: string): void => {
   if (typeof value !== 'object' || value === null) {
     throw new ValidationError(`${context}: Invalid object`);
