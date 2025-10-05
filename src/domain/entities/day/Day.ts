@@ -1,6 +1,10 @@
 import { ValidationError } from '../../common/errors';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
-import { validatePositiveNumber, validateDate } from '../../common/validation';
+import {
+  validatePositiveNumber,
+  validateDate,
+  validateNonEmptyString,
+} from '../../common/validation';
 import { Meal } from '../meal/Meal';
 import { FakeMeal } from '../fakemeal/FakeMeal';
 import { Protein } from '../../interfaces/Protein';
@@ -52,6 +56,8 @@ export class Day implements Protein, Calories {
   }
 
   removeMealById(mealId: string): void {
+    validateNonEmptyString(mealId, 'Day removeMealById mealId');
+
     const initialLength = this.props.meals.length;
     this.props.meals = this.props.meals.filter((meal) => meal.id !== mealId);
 
