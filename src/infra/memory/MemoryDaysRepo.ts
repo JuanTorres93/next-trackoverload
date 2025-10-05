@@ -26,14 +26,22 @@ export class MemoryDaysRepo implements DaysRepo {
     return day || null;
   }
 
+  async getDaysByDateRange(startDate: Date, endDate: Date): Promise<Day[]> {
+    return this.days.filter((day) => {
+      const dayTime = day.id.getTime();
+      return dayTime >= startDate.getTime() && dayTime <= endDate.getTime();
+    });
+  }
+
   async deleteDay(id: string): Promise<void> {
     const dayDate = new Date(id);
     const index = this.days.findIndex(
       (d) => d.id.getTime() === dayDate.getTime()
     );
-    // NOTE: Throw error in use case in order not to have false positives in tests
-    if (index === -1) return Promise.reject(null);
 
-    this.days.splice(index, 1);
+    if (index !== -1) {
+      this.days.splice(index, 1);
+    }
+    // No error for non-existent days - consistent with other repos
   }
 }
