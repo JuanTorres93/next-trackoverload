@@ -1,0 +1,48 @@
+import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
+import { Workout } from '@/domain/entities/workout/Workout';
+import { NotFoundError } from '@/domain/common/errors';
+import { validateNonEmptyString } from '@/domain/common/validation';
+
+export type UpdateExerciseInWorkoutUsecaseRequest = {
+  workoutId: string;
+  exerciseId: string;
+  setNumber?: number;
+  reps?: number;
+  weight?: number;
+};
+
+export class UpdateExerciseInWorkoutUsecase {
+  constructor(private workoutsRepo: WorkoutsRepo) {}
+
+  async execute(
+    request: UpdateExerciseInWorkoutUsecaseRequest
+  ): Promise<Workout> {
+    validateNonEmptyString(
+      request.workoutId,
+      'UpdateExerciseInWorkout workoutId'
+    );
+    validateNonEmptyString(
+      request.exerciseId,
+      'UpdateExerciseInWorkout exerciseId'
+    );
+
+    const workout = await this.workoutsRepo.getWorkoutById(request.workoutId);
+
+    if (!workout) {
+      throw new NotFoundError(
+        'UpdateExerciseInWorkoutUsecase: Workout not found'
+      );
+    }
+
+    // NOTE: The validation of the update properties is handled in the entity
+    workout.updateExercise(request.exerciseId, {
+      setNumber: request.setNumber,
+      reps: request.reps,
+      weight: request.weight,
+    });
+
+    await this.workoutsRepo.saveWorkout(workout);
+
+    return workout;
+  }
+}
