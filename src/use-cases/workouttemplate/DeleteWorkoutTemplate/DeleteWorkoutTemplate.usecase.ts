@@ -15,10 +15,14 @@ export class DeleteWorkoutTemplateUsecase {
     const workoutTemplate =
       await this.workoutTemplatesRepo.getWorkoutTemplateById(request.id);
 
-    if (!workoutTemplate) {
+    const isDeleted = workoutTemplate?.isDeleted ?? false;
+
+    if (!workoutTemplate || isDeleted) {
       throw new NotFoundError('WorkoutTemplate not found');
     }
 
-    await this.workoutTemplatesRepo.deleteWorkoutTemplate(request.id);
+    workoutTemplate.markAsDeleted();
+
+    await this.workoutTemplatesRepo.saveWorkoutTemplate(workoutTemplate);
   }
 }

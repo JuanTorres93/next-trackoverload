@@ -174,4 +174,35 @@ describe('WorkoutTemplate', () => {
     expect(newTemplate.createdAt).toBeInstanceOf(Date);
     expect(newTemplate.updatedAt).toBeInstanceOf(Date);
   });
+
+  it('should not be deleted by default', () => {
+    expect(workoutTemplate.isDeleted).toBe(false);
+    expect(workoutTemplate.deletedAt).toBeUndefined();
+  });
+
+  it('should mark template as deleted', () => {
+    const beforeDelete = new Date();
+    workoutTemplate.markAsDeleted();
+    const afterDelete = new Date();
+
+    expect(workoutTemplate.isDeleted).toBe(true);
+    expect(workoutTemplate.deletedAt).toBeDefined();
+    expect(workoutTemplate.deletedAt!.getTime()).toBeGreaterThanOrEqual(
+      beforeDelete.getTime()
+    );
+    expect(workoutTemplate.deletedAt!.getTime()).toBeLessThanOrEqual(
+      afterDelete.getTime()
+    );
+  });
+
+  it('should update updatedAt when marking as deleted', () => {
+    const originalUpdatedAt = workoutTemplate.updatedAt;
+    // Wait a bit to ensure different timestamps
+    setTimeout(() => {
+      workoutTemplate.markAsDeleted();
+      expect(workoutTemplate.updatedAt.getTime()).toBeGreaterThan(
+        originalUpdatedAt.getTime()
+      );
+    }, 2);
+  });
 });

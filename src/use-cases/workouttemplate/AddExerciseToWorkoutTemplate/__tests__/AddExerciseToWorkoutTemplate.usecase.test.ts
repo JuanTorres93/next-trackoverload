@@ -152,4 +152,34 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
 
     await expect(usecase.execute(request)).rejects.toThrow(/Exercise not/i);
   });
+
+  it('should throw NotFoundError when trying to add exercise to deleted template', async () => {
+    // Delete the template
+    await workoutTemplatesRepo.deleteWorkoutTemplate('1');
+
+    const request = {
+      workoutTemplateId: '1',
+      exerciseId: 'shoulder-press',
+      sets: 3,
+    };
+
+    await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+    await expect(usecase.execute(request)).rejects.toThrow(
+      'WorkoutTemplate not found'
+    );
+  });
+
+  it('should throw error when trying to add exercise to a template marked as deleted', async () => {
+    // Mark the template as deleted without removing it from repo
+    existingTemplate.markAsDeleted();
+    await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
+
+    const request = {
+      workoutTemplateId: '1',
+      exerciseId: 'shoulder-press',
+      sets: 3,
+    };
+
+    await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+  });
 });

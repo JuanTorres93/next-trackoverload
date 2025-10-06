@@ -90,4 +90,46 @@ describe('UpdateWorkoutTemplateUsecase', () => {
       await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
     }
   });
+
+  it('should throw NotFoundError when trying to update deleted template', async () => {
+    const existingTemplate = WorkoutTemplate.create({
+      id: '1',
+      name: 'Push Day',
+      exercises: [{ exerciseId: 'ex1', sets: 3 }],
+      createdAt: new Date('2023-01-01'),
+      updatedAt: new Date('2023-01-01'),
+    });
+
+    await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
+
+    // Delete the template
+    await workoutTemplatesRepo.deleteWorkoutTemplate('1');
+
+    const request = {
+      id: '1',
+      name: 'Updated Name',
+    };
+
+    await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+  });
+
+  it('should throw NotFoundError when trying to update deleted template', async () => {
+    const existingTemplate = WorkoutTemplate.create({
+      id: '1',
+      name: 'Push Day',
+      exercises: [{ exerciseId: 'ex1', sets: 3 }],
+      createdAt: new Date('2023-01-01'),
+      updatedAt: new Date('2023-01-01'),
+    });
+
+    existingTemplate.markAsDeleted();
+    await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
+
+    const request = {
+      id: '1',
+      name: 'Updated Name',
+    };
+
+    await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+  });
 });

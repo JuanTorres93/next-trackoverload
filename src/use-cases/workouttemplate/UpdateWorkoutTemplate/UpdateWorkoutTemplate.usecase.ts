@@ -19,7 +19,9 @@ export class UpdateWorkoutTemplateUsecase {
     const workoutTemplate =
       await this.workoutTemplatesRepo.getWorkoutTemplateById(request.id);
 
-    if (!workoutTemplate) {
+    const isDeleted = workoutTemplate?.isDeleted ?? false;
+
+    if (!workoutTemplate || isDeleted) {
       throw new NotFoundError('WorkoutTemplate not found');
     }
 

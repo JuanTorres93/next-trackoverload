@@ -20,6 +20,7 @@ export type WorkoutTemplateProps = {
   exercises: TemplateLine[];
   createdAt: Date;
   updatedAt: Date;
+  deletedAt?: Date;
 };
 
 export class WorkoutTemplate {
@@ -115,5 +116,19 @@ export class WorkoutTemplate {
 
   get updatedAt() {
     return this.props.updatedAt;
+  }
+
+  get deletedAt() {
+    return this.props.deletedAt;
+  }
+
+  get isDeleted() {
+    return this.props.deletedAt !== undefined;
+  }
+
+  markAsDeleted() {
+    const now = new Date();
+    this.props.deletedAt = now;
+    this.props.updatedAt = now;
   }
 }

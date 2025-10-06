@@ -31,7 +31,9 @@ export class DuplicateWorkoutTemplateUsecase {
         request.originalTemplateId
       );
 
-    if (!originalTemplate) {
+    const isDeleted = originalTemplate?.isDeleted ?? false;
+
+    if (!originalTemplate || isDeleted) {
       throw new NotFoundError('WorkoutTemplate not found');
     }
 

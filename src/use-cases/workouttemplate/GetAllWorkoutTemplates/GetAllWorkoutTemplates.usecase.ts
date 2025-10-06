@@ -8,6 +8,8 @@ export class GetAllWorkoutTemplatesUsecase {
     const workoutTemplates =
       await this.workoutTemplatesRepo.getAllWorkoutTemplates();
 
-    return workoutTemplates || [];
+    const nonDeletedTemplates = workoutTemplates.filter((t) => !t.isDeleted);
+
+    return nonDeletedTemplates || [];
   }
 }

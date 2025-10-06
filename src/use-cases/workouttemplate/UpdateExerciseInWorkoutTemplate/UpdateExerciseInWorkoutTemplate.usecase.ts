@@ -29,7 +29,9 @@ export class UpdateExerciseInWorkoutTemplateUsecase {
         request.workoutTemplateId
       );
 
-    if (!workoutTemplate) {
+    const isDeleted = workoutTemplate?.isDeleted ?? false;
+
+    if (!workoutTemplate || isDeleted) {
       throw new NotFoundError(
         'UpdateExerciseInWorkoutTemplate WorkoutTemplate not found'
       );

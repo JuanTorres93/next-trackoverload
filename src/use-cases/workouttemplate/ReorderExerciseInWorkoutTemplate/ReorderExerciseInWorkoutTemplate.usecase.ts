@@ -43,7 +43,9 @@ export class ReorderExerciseInWorkoutTemplateUsecase {
         request.workoutTemplateId
       );
 
-    if (!workoutTemplate) {
+    const isDeleted = workoutTemplate?.isDeleted ?? false;
+
+    if (!workoutTemplate || isDeleted) {
       throw new NotFoundError(
         'ReorderExerciseInWorkoutTemplate WorkoutTemplate not found'
       );

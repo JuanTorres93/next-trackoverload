@@ -21,15 +21,23 @@ export class MemoryWorkoutTemplatesRepo implements WorkoutTemplatesRepo {
   }
 
   async getWorkoutTemplateById(id: string): Promise<WorkoutTemplate | null> {
-    const workoutTemplate = this.workoutTemplates.find((wt) => wt.id === id);
+    const workoutTemplate = this.workoutTemplates.find(
+      (wt) => wt.id === id && !wt.isDeleted
+    );
+
     return workoutTemplate || null;
   }
 
   async deleteWorkoutTemplate(id: string): Promise<void> {
-    const index = this.workoutTemplates.findIndex((wt) => wt.id === id);
+    const workoutTemplate = this.workoutTemplates.find((wt) => wt.id === id);
     // NOTE: Throw error in use case in order not to have false positives in tests
-    if (index === -1) return Promise.reject(null);
+    if (!workoutTemplate) return Promise.reject(null);
 
-    this.workoutTemplates.splice(index, 1);
+    workoutTemplate.markAsDeleted();
+  }
+
+  // Used sparingly in tests to verify internal state (specifically for soft deletes)
+  get workoutTemplatesForTesting(): WorkoutTemplate[] {
+    return [...this.workoutTemplates];
   }
 }

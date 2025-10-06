@@ -120,4 +120,26 @@ describe('RemoveExerciseFromWorkoutTemplateUsecase', () => {
       await expect(usecase.execute(request)).rejects.toThrowError();
     }
   });
+
+  it('should throw error if template is deleted', async () => {
+    const existingTemplate = WorkoutTemplate.create({
+      id: '1',
+      name: 'Push Day',
+      exercises: [{ exerciseId: 'bench-press', sets: 3 }],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      deletedAt: new Date(),
+    });
+
+    existingTemplate.markAsDeleted();
+
+    await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
+
+    const request = {
+      workoutTemplateId: '1',
+      exerciseId: 'bench-press',
+    };
+
+    await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+  });
 });

@@ -174,4 +174,25 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
       await expect(usecase.execute(request)).rejects.toThrowError();
     }
   });
+
+  it('should throw NotFoundError when trying to duplicate deleted template', async () => {
+    const originalTemplate = WorkoutTemplate.create({
+      id: '1',
+      name: 'Push Day',
+      exercises: [{ exerciseId: 'bench-press', sets: 3 }],
+      createdAt: new Date('2023-01-01'),
+      updatedAt: new Date('2023-01-01'),
+    });
+
+    await workoutTemplatesRepo.saveWorkoutTemplate(originalTemplate);
+
+    // Delete the template
+    await workoutTemplatesRepo.deleteWorkoutTemplate('1');
+
+    const request = {
+      originalTemplateId: '1',
+    };
+
+    await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+  });
 });

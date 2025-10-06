@@ -190,4 +190,30 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
     const allTemplates = await workoutTemplatesRepo.getAllWorkoutTemplates();
     expect(allTemplates).toHaveLength(0);
   });
+
+  it('should throw error if template is deleted', async () => {
+    const existingTemplate = WorkoutTemplate.create({
+      id: '1',
+      name: 'Push Day',
+      exercises: [
+        { exerciseId: 'bench-press', sets: 3 },
+        { exerciseId: 'shoulder-press', sets: 3 },
+        { exerciseId: 'tricep-dips', sets: 3 },
+      ],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    existingTemplate.markAsDeleted();
+
+    await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
+
+    const request = {
+      workoutTemplateId: '1',
+      exerciseId: 'tricep-dips',
+      newIndex: 0,
+    };
+
+    await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+  });
 });

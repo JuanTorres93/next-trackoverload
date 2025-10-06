@@ -145,4 +145,25 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
       await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
     }
   });
+
+  it('should throw error when trying to create workout from deleted template', async () => {
+    const template = WorkoutTemplate.create({
+      id: '1',
+      name: 'Push Day',
+      exercises: [{ exerciseId: 'bench-press', sets: 3 }],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    await workoutTemplatesRepo.saveWorkoutTemplate(template);
+
+    // Delete the template
+    await workoutTemplatesRepo.deleteWorkoutTemplate('1');
+
+    const request = {
+      workoutTemplateId: '1',
+    };
+
+    await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+  });
 });

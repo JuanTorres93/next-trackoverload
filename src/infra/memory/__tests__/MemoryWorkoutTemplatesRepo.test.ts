@@ -67,14 +67,53 @@ describe('MemoryWorkoutTemplatesRepo', () => {
     expect(fetchedWorkoutTemplate).toBeNull();
   });
 
-  it('should delete a workout template by ID', async () => {
+  it('should soft delete a workout template by ID', async () => {
     const allWorkoutTemplates = await repo.getAllWorkoutTemplates();
     expect(allWorkoutTemplates.length).toBe(1);
 
     await repo.deleteWorkoutTemplate('1');
 
-    const allWorkoutTemplatesAfterDeletion =
-      await repo.getAllWorkoutTemplates();
+    const allWorkoutTemplatesAfterDeletion = (
+      await repo.getAllWorkoutTemplates()
+    ).filter((t) => !t.isDeleted);
     expect(allWorkoutTemplatesAfterDeletion.length).toBe(0);
+  });
+
+  it('should filter out deleted templates from getWorkoutTemplateById', async () => {
+    await repo.deleteWorkoutTemplate('1');
+
+    const fetchedWorkoutTemplate = await repo.getWorkoutTemplateById('1');
+    expect(fetchedWorkoutTemplate).toBeNull();
+  });
+
+  it('should mark template as deleted instead of removing it', async () => {
+    await repo.deleteWorkoutTemplate('1');
+
+    // Template should still exist in internal storage but marked as deleted
+    const templateIncludingDeleted = repo.workoutTemplatesForTesting.find(
+      (t) => t.id === '1'
+    );
+    expect(templateIncludingDeleted).not.toBeNull();
+    expect(templateIncludingDeleted?.isDeleted).toBe(true);
+  });
+
+  it('should update updatedAt when soft deleting', async () => {
+    const originalUpdatedAt = workoutTemplate.updatedAt;
+    await new Promise((resolve) => setTimeout(resolve, 1)); // Ensure different timestamp
+
+    await repo.deleteWorkoutTemplate('1');
+
+    const deletedTemplate = await repo.workoutTemplatesForTesting.find(
+      (t) => t.id === '1'
+    );
+    expect(deletedTemplate).not.toBeNull();
+    expect(deletedTemplate?.isDeleted).toBe(true);
+    expect(deletedTemplate?.updatedAt.getTime()).toBeGreaterThan(
+      originalUpdatedAt.getTime()
+    );
+  });
+
+  it('should handle deletion of non-existent template', async () => {
+    await expect(repo.deleteWorkoutTemplate('non-existent')).rejects.toBe(null);
   });
 });
