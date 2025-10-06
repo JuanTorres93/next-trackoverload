@@ -23,6 +23,10 @@ export class MemoryWorkoutsRepo implements WorkoutsRepo {
     return workout || null;
   }
 
+  async getWorkoutsByTemplateId(templateId: string): Promise<Workout[]> {
+    return this.workouts.filter((w) => w.workoutTemplateId === templateId);
+  }
+
   async deleteWorkout(id: string): Promise<void> {
     const index = this.workouts.findIndex((w) => w.id === id);
     // NOTE: Throw error in use case in order not to have false positives in tests

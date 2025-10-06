@@ -1,0 +1,68 @@
+import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
+import { ExercisesRepo } from '@/domain/repos/ExercisesRepo.port';
+import { Workout } from '@/domain/entities/workout/Workout';
+import { NotFoundError } from '@/domain/common/errors';
+import {
+  validateGreaterThanZero,
+  validateInteger,
+  validateNonEmptyString,
+  validatePositiveNumber,
+} from '@/domain/common/validation';
+
+export type AddExerciseToWorkoutUsecaseRequest = {
+  workoutId: string;
+  exerciseId: string;
+  setNumber: number;
+  reps: number;
+  weight: number;
+};
+
+export class AddExerciseToWorkoutUsecase {
+  constructor(
+    private workoutsRepo: WorkoutsRepo,
+    private exercisesRepo: ExercisesRepo
+  ) {}
+
+  async execute(request: AddExerciseToWorkoutUsecaseRequest): Promise<Workout> {
+    validateNonEmptyString(request.workoutId, 'AddExerciseToWorkout workoutId');
+    validateNonEmptyString(
+      request.exerciseId,
+      'AddExerciseToWorkout exerciseId'
+    );
+    validateGreaterThanZero(
+      request.setNumber,
+      'AddExerciseToWorkout setNumber'
+    );
+    validateInteger(request.setNumber, 'AddExerciseToWorkout setNumber');
+    validatePositiveNumber(request.reps, 'AddExerciseToWorkout reps');
+    validateInteger(request.reps, 'AddExerciseToWorkout reps');
+    validatePositiveNumber(request.weight, 'AddExerciseToWorkout weight');
+
+    const workout = await this.workoutsRepo.getWorkoutById(request.workoutId);
+
+    if (!workout) {
+      throw new NotFoundError('AddExerciseToWorkoutUsecase: Workout not found');
+    }
+
+    const exercise = await this.exercisesRepo.getExerciseById(
+      request.exerciseId
+    );
+    if (!exercise) {
+      throw new NotFoundError(
+        'AddExerciseToWorkoutUsecase: Exercise not found'
+      );
+    }
+
+    // NOTE: duplicate exercise handled in entity
+    workout.addExercise({
+      exerciseId: request.exerciseId,
+      setNumber: request.setNumber,
+      reps: request.reps,
+      weight: request.weight,
+    });
+
+    await this.workoutsRepo.saveWorkout(workout);
+
+    return workout;
+  }
+}
