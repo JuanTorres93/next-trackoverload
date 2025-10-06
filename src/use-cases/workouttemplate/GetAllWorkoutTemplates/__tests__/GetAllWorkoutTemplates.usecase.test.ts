@@ -60,11 +60,9 @@ describe('GetAllWorkoutTemplatesUsecase', () => {
       updatedAt: new Date(),
     });
 
+    template1.markAsDeleted();
     await workoutTemplatesRepo.saveWorkoutTemplate(template1);
     await workoutTemplatesRepo.saveWorkoutTemplate(template2);
-
-    // Delete one template
-    await workoutTemplatesRepo.deleteWorkoutTemplate('1');
 
     const result = await usecase.execute();
 

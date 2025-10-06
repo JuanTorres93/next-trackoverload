@@ -55,10 +55,8 @@ describe('GetWorkoutTemplateByIdUsecase', () => {
       updatedAt: new Date(),
     });
 
+    template.markAsDeleted();
     await workoutTemplatesRepo.saveWorkoutTemplate(template);
-
-    // Delete the template
-    await workoutTemplatesRepo.deleteWorkoutTemplate('1');
 
     await expect(usecase.execute({ id: '1' })).rejects.toThrow(NotFoundError);
   });

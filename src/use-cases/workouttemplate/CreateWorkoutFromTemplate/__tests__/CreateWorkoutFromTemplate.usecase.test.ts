@@ -155,10 +155,8 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
       updatedAt: new Date(),
     });
 
+    template.markAsDeleted();
     await workoutTemplatesRepo.saveWorkoutTemplate(template);
-
-    // Delete the template
-    await workoutTemplatesRepo.deleteWorkoutTemplate('1');
 
     const request = {
       workoutTemplateId: '1',

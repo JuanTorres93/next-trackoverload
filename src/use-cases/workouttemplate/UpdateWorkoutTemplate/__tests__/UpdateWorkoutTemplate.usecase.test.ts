@@ -100,10 +100,8 @@ describe('UpdateWorkoutTemplateUsecase', () => {
       updatedAt: new Date('2023-01-01'),
     });
 
+    existingTemplate.markAsDeleted();
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
-
-    // Delete the template
-    await workoutTemplatesRepo.deleteWorkoutTemplate('1');
 
     const request = {
       id: '1',

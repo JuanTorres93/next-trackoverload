@@ -184,10 +184,8 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
       updatedAt: new Date('2023-01-01'),
     });
 
+    originalTemplate.markAsDeleted();
     await workoutTemplatesRepo.saveWorkoutTemplate(originalTemplate);
-
-    // Delete the template
-    await workoutTemplatesRepo.deleteWorkoutTemplate('1');
 
     const request = {
       originalTemplateId: '1',

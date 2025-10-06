@@ -28,14 +28,6 @@ export class MemoryWorkoutTemplatesRepo implements WorkoutTemplatesRepo {
     return workoutTemplate || null;
   }
 
-  async deleteWorkoutTemplate(id: string): Promise<void> {
-    const workoutTemplate = this.workoutTemplates.find((wt) => wt.id === id);
-    // NOTE: Throw error in use case in order not to have false positives in tests
-    if (!workoutTemplate) return Promise.reject(null);
-
-    workoutTemplate.markAsDeleted();
-  }
-
   // Used sparingly in tests to verify internal state (specifically for soft deletes)
   get workoutTemplatesForTesting(): WorkoutTemplate[] {
     return [...this.workoutTemplates];

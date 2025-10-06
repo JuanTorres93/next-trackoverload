@@ -155,7 +155,7 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
 
   it('should throw NotFoundError when trying to add exercise to deleted template', async () => {
     // Delete the template
-    await workoutTemplatesRepo.deleteWorkoutTemplate('1');
+    existingTemplate.markAsDeleted();
 
     const request = {
       workoutTemplateId: '1',
