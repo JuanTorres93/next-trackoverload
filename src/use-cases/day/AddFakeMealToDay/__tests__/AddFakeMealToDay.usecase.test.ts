@@ -6,6 +6,8 @@ import { Day } from '@/domain/entities/day/Day';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { ValidationError } from '@/domain/common/errors';
 
+import * as vp from '@/../tests/createProps';
+
 describe('AddFakeMealToDayUsecase', () => {
   let daysRepo: MemoryDaysRepo;
   let fakeMealsRepo: MemoryFakeMealsRepo;
@@ -22,19 +24,12 @@ describe('AddFakeMealToDayUsecase', () => {
 
   it('should add fake meal to existing day', async () => {
     const date = new Date('2023-10-01');
+    const userId = 'user-1';
     const day = Day.create({
-      id: date,
-      meals: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      ...vp.validDayProps,
     });
     const fakeMeal = FakeMeal.create({
-      id: 'fake-meal-1',
-      name: 'Quick Snack',
-      calories: 200,
-      protein: 10,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      ...vp.validFakeMealProps,
     });
 
     await daysRepo.saveDay(day);
@@ -42,7 +37,8 @@ describe('AddFakeMealToDayUsecase', () => {
 
     const result = await addFakeMealToDayUsecase.execute({
       date,
-      fakeMealId: 'fake-meal-1',
+      userId,
+      fakeMealId: fakeMeal.id,
     });
 
     expect(result.meals).toHaveLength(1);
@@ -51,20 +47,17 @@ describe('AddFakeMealToDayUsecase', () => {
 
   it('should add fake meal and create new day if it does not exist', async () => {
     const date = new Date('2023-10-01');
+    const userId = 'user-1';
     const fakeMeal = FakeMeal.create({
-      id: 'fake-meal-1',
-      name: 'Quick Snack',
-      calories: 200,
-      protein: 10,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      ...vp.validFakeMealProps,
     });
 
     await fakeMealsRepo.saveFakeMeal(fakeMeal);
 
     const result = await addFakeMealToDayUsecase.execute({
       date,
-      fakeMealId: 'fake-meal-1',
+      userId,
+      fakeMealId: fakeMeal.id,
     });
 
     expect(result.id).toEqual(date);
@@ -74,9 +67,87 @@ describe('AddFakeMealToDayUsecase', () => {
 
   it('should throw error if fake meal does not exist', async () => {
     const date = new Date('2023-10-01');
+    const userId = 'user-1';
 
     await expect(
-      addFakeMealToDayUsecase.execute({ date, fakeMealId: 'non-existent' })
+      addFakeMealToDayUsecase.execute({
+        date,
+        userId,
+        fakeMealId: 'non-existent',
+      })
     ).rejects.toThrow(ValidationError);
+  });
+
+  it('should throw error if invalid date', async () => {
+    const invalidDates = [
+      new Date('invalid-date'),
+      new Date(''),
+      null,
+      undefined,
+      842,
+      '2023-10-01',
+      [],
+    ];
+
+    for (const date of invalidDates) {
+      await expect(
+        addFakeMealToDayUsecase.execute({
+          // @ts-expect-error testing invalid values
+          date,
+          userId: 'user-1',
+          fakeMealId: 'fakemeal1',
+        })
+      ).rejects.toThrow(ValidationError);
+    }
+  });
+
+  it('should throw error if invalid userId', async () => {
+    const invalidUserIds = [
+      null,
+      '',
+      '   ',
+      undefined,
+      842,
+      [],
+      {},
+      true,
+      false,
+    ];
+
+    for (const userId of invalidUserIds) {
+      await expect(
+        addFakeMealToDayUsecase.execute({
+          date: new Date('2023-10-01'),
+          // @ts-expect-error testing invalid values
+          userId,
+          fakeMealId: 'fakemeal1',
+        })
+      ).rejects.toThrow(ValidationError);
+    }
+  });
+
+  it('should throw error if invalid fakeMealId', async () => {
+    const invalidFakeMealIds = [
+      null,
+      '',
+      '   ',
+      undefined,
+      842,
+      [],
+      {},
+      true,
+      false,
+    ];
+
+    for (const fakeMealId of invalidFakeMealIds) {
+      await expect(
+        addFakeMealToDayUsecase.execute({
+          date: new Date('2023-10-01'),
+          userId: 'user-1',
+          // @ts-expect-error testing invalid values
+          fakeMealId,
+        })
+      ).rejects.toThrow(ValidationError);
+    }
   });
 });

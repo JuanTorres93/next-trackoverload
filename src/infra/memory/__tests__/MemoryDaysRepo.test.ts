@@ -2,15 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryDaysRepo } from '../MemoryDaysRepo';
 import { Day } from '@/domain/entities/day/Day';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-
-const validFakeMealProps = {
-  id: 'fakemeal1',
-  name: 'Protein Shake',
-  protein: 30,
-  calories: 200,
-  createdAt: new Date('2023-01-01'),
-  updatedAt: new Date('2023-01-01'),
-};
+import * as vp from '@/../tests/createProps';
 
 describe('MemoryDaysRepo', () => {
   let repo: MemoryDaysRepo;
@@ -19,13 +11,11 @@ describe('MemoryDaysRepo', () => {
 
   beforeEach(async () => {
     repo = new MemoryDaysRepo();
-    fakeMeal = FakeMeal.create(validFakeMealProps);
+    fakeMeal = FakeMeal.create(vp.validFakeMealProps);
 
     day = Day.create({
-      id: new Date('2023-10-01'),
+      ...vp.validDayProps,
       meals: [fakeMeal],
-      createdAt: new Date('2023-01-01'),
-      updatedAt: new Date('2023-01-01'),
     });
 
     await repo.saveDay(day);
@@ -33,10 +23,9 @@ describe('MemoryDaysRepo', () => {
 
   it('should save a day', async () => {
     const newDay = Day.create({
+      ...vp.validDayProps,
       id: new Date('2023-10-02'),
       meals: [fakeMeal],
-      createdAt: new Date('2023-01-02'),
-      updatedAt: new Date('2023-01-02'),
     });
     await repo.saveDay(newDay);
 
@@ -47,10 +36,8 @@ describe('MemoryDaysRepo', () => {
 
   it('should update an existing day', async () => {
     const updatedDay = Day.create({
-      id: new Date('2023-10-01'),
+      ...vp.validDayProps,
       meals: [], // No meals
-      createdAt: new Date('2023-01-01'),
-      updatedAt: new Date('2023-01-03'),
     });
     await repo.saveDay(updatedDay);
 

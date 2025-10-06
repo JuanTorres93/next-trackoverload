@@ -5,6 +5,7 @@ import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 
 export type CreateDayUsecaseRequest = {
   date: Date;
+  userId: string;
   meals?: (Meal | FakeMeal)[];
 };
 
@@ -12,9 +13,10 @@ export class CreateDayUsecase {
   constructor(private daysRepo: DaysRepo) {}
 
   async execute(request: CreateDayUsecaseRequest): Promise<Day> {
-    // NOTE: id and meals are validated in the entity
+    // NOTE: id, userId and meals are validated in the entity
     const newDay = Day.create({
       id: request.date,
+      userId: request.userId,
       meals: request.meals || [],
       createdAt: new Date(),
       updatedAt: new Date(),

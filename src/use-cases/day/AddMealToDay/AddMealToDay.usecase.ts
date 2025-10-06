@@ -5,6 +5,7 @@ import { ValidationError } from '@/domain/common/errors';
 
 export type AddMealToDayUsecaseRequest = {
   date: Date;
+  userId: string;
   mealId: string;
 };
 
@@ -17,11 +18,15 @@ export class AddMealToDayUsecase {
       throw new ValidationError(`Meal with id ${request.mealId} not found`);
     }
 
-    let day = await this.daysRepo.getDayById(request.date.toISOString());
+    let day = await this.daysRepo.getDayByIdAndUserId(
+      request.date.toISOString(),
+      request.userId
+    );
     if (!day) {
-      // NOTE: date is validated in the entity
+      // NOTE: date and userId are validated in the entity
       day = Day.create({
         id: request.date,
+        userId: request.userId,
         meals: [],
         createdAt: new Date(),
         updatedAt: new Date(),

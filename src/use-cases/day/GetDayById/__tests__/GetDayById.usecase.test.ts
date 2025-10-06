@@ -4,43 +4,79 @@ import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
 import { Day } from '@/domain/entities/day/Day';
 import { ValidationError } from '@/domain/common/errors';
 
+import * as vp from '@/../tests/createProps';
+
 describe('GetDayByIdUsecase', () => {
   let daysRepo: MemoryDaysRepo;
   let getDayByIdUsecase: GetDayByIdUsecase;
+  let day: Day;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     daysRepo = new MemoryDaysRepo();
     getDayByIdUsecase = new GetDayByIdUsecase(daysRepo);
+    day = Day.create({
+      ...vp.validDayProps,
+    });
+    await daysRepo.saveDay(day);
   });
 
   it('should return a day if it exists', async () => {
-    const date = new Date('2023-10-01');
-    const day = Day.create({
-      id: date,
-      meals: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
+    const result = await getDayByIdUsecase.execute({
+      date: vp.dateId,
+      userId: vp.userId,
     });
-    await daysRepo.saveDay(day);
-
-    const result = await getDayByIdUsecase.execute({ date });
 
     expect(result).toEqual(day);
   });
 
   it('should return null if day does not exist', async () => {
-    const date = new Date('2023-10-01');
-
-    const result = await getDayByIdUsecase.execute({ date });
+    const nonExistentDate = new Date('2023-12-31');
+    const result = await getDayByIdUsecase.execute({
+      date: nonExistentDate,
+      userId: vp.userId,
+    });
 
     expect(result).toBeNull();
   });
 
   it('should throw error when date is invalid', async () => {
-    const date = new Date('invalid');
+    const invalidDates = [
+      null,
+      undefined,
+      '2023-10-10',
+      123,
+      {},
+      [],
+      true,
+      false,
+    ];
 
-    await expect(getDayByIdUsecase.execute({ date })).rejects.toThrow(
-      ValidationError
-    );
+    for (const date of invalidDates) {
+      await expect(
+        // @ts-expect-error testing invalid inputs
+        getDayByIdUsecase.execute({ date, userId: vp.userId })
+      ).rejects.toThrow(ValidationError);
+    }
+  });
+
+  it('should throw error when userId is invalid', async () => {
+    const invalidUserIds = [
+      '',
+      '   ',
+      null,
+      undefined,
+      123,
+      {},
+      [],
+      true,
+      false,
+    ];
+
+    for (const userId of invalidUserIds) {
+      await expect(
+        // @ts-expect-error testing invalid inputs
+        getDayByIdUsecase.execute({ date: vp.dateId, userId })
+      ).rejects.toThrow(ValidationError);
+    }
   });
 });

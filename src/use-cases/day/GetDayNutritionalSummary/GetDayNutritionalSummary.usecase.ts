@@ -1,9 +1,13 @@
 import { NotFoundError } from '@/domain/common/errors';
-import { validateDate } from '@/domain/common/validation';
+import {
+  validateDate,
+  validateNonEmptyString,
+} from '@/domain/common/validation';
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 
 export type GetDayNutritionalSummaryUsecaseRequest = {
   date: Date;
+  userId: string;
 };
 
 export type DayNutritionalSummary = {
@@ -20,12 +24,21 @@ export class GetDayNutritionalSummaryUsecase {
     request: GetDayNutritionalSummaryUsecaseRequest
   ): Promise<DayNutritionalSummary> {
     validateDate(request.date, 'GetDayNutritionalSummaryUsecase date');
+    validateNonEmptyString(
+      request.userId,
+      'GetDayNutritionalSummaryUsecase userId'
+    );
 
-    const day = await this.daysRepo.getDayById(request.date.toISOString());
+    const day = await this.daysRepo.getDayByIdAndUserId(
+      request.date.toISOString(),
+      request.userId
+    );
 
     if (!day) {
       throw new NotFoundError(
-        `GetDayNutritionalSummaryUsecase: Day not found for date ${request.date.toISOString()}`
+        `GetDayNutritionalSummaryUsecase: Day not found for date ${request.date.toISOString()} and userId ${
+          request.userId
+        }`
       );
     }
 

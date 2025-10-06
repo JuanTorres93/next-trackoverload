@@ -1,10 +1,14 @@
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { Day } from '@/domain/entities/day/Day';
 import { ValidationError } from '@/domain/common/errors';
-import { validateDate } from '@/domain/common/validation';
+import {
+  validateDate,
+  validateNonEmptyString,
+} from '@/domain/common/validation';
 
 export type RemoveMealFromDayUsecaseRequest = {
   date: Date;
+  userId: string;
   mealId: string;
 };
 
@@ -13,11 +17,18 @@ export class RemoveMealFromDayUsecase {
 
   async execute(request: RemoveMealFromDayUsecaseRequest): Promise<Day> {
     validateDate(request.date, 'RemoveMealFromDayUsecase: date');
+    validateNonEmptyString(request.userId, 'RemoveMealFromDayUsecase: userId');
+    validateNonEmptyString(request.mealId, 'RemoveMealFromDayUsecase: mealId');
 
-    const day = await this.daysRepo.getDayById(request.date.toISOString());
+    const day = await this.daysRepo.getDayByIdAndUserId(
+      request.date.toISOString(),
+      request.userId
+    );
     if (!day) {
       throw new ValidationError(
-        `RemoveMealFromDayUsecase: Day not found for date ${request.date.toISOString()}`
+        `RemoveMealFromDayUsecase: Day not found for date ${request.date.toISOString()} and userId ${
+          request.userId
+        }`
       );
     }
 

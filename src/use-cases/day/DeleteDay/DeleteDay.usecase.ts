@@ -1,9 +1,13 @@
 import { NotFoundError } from '@/domain/common/errors';
-import { validateDate } from '@/domain/common/validation';
+import {
+  validateDate,
+  validateNonEmptyString,
+} from '@/domain/common/validation';
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 
 export type DeleteDayUsecaseRequest = {
   date: Date;
+  userId: string;
 };
 
 export class DeleteDayUsecase {
@@ -11,8 +15,12 @@ export class DeleteDayUsecase {
 
   async execute(request: DeleteDayUsecaseRequest): Promise<void> {
     validateDate(request.date, 'DeleteDayUsecase date');
+    validateNonEmptyString(request.userId, 'DeleteDayUsecase userId');
 
-    const day = await this.daysRepo.getDayById(request.date.toISOString());
+    const day = await this.daysRepo.getDayByIdAndUserId(
+      request.date.toISOString(),
+      request.userId
+    );
     if (!day) {
       throw new NotFoundError('DeleteDayUsecase: Day not found');
     }

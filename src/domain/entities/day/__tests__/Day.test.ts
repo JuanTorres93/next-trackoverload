@@ -7,25 +7,7 @@ import { Meal } from '../../meal/Meal';
 import { Day } from '../Day';
 import { ValidationError } from '@/domain/common/errors';
 
-const validFakeMealProps = {
-  id: 'fakemeal1',
-  name: 'Fake Chicken Breast',
-  protein: 30,
-  calories: 200,
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
-
-const validIngredientProps = {
-  id: 'ing1',
-  name: 'Chicken Breast',
-  nutritionalInfoPer100g: {
-    calories: 100,
-    protein: 15,
-  },
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
+import * as vp from '@/../tests/createProps';
 
 describe('Day', () => {
   let day: Day;
@@ -35,30 +17,22 @@ describe('Day', () => {
   let meal: Meal;
 
   beforeEach(() => {
-    fakeMeal = FakeMeal.create(validFakeMealProps);
-    ingredient = Ingredient.create(validIngredientProps);
+    fakeMeal = FakeMeal.create(vp.validFakeMealProps);
+    ingredient = Ingredient.create(vp.validIngredientProps);
 
     ingredientLine = IngredientLine.create({
-      id: 'line1',
+      ...vp.ingredientLinePropsNoIngredient,
       ingredient,
-      quantityInGrams: 200,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     meal = Meal.create({
-      id: 'meal1',
-      name: 'Chicken Meal',
+      ...vp.mealPropsNoIngredientLines,
       ingredientLines: [ingredientLine],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     day = Day.create({
-      id: new Date('2023-10-01'),
+      ...vp.validDayProps,
       meals: [fakeMeal, meal],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
   });
 
@@ -81,11 +55,9 @@ describe('Day', () => {
     invalidMeals.forEach((invalidMeal) => {
       expect(() =>
         Day.create({
-          id: new Date('2023-10-01'),
+          ...vp.validDayProps,
           // @ts-expect-error Testing invalid input
           meals: [invalidMeal],
-          createdAt: new Date(),
-          updatedAt: new Date(),
         })
       ).toThrow(ValidationError);
     });
@@ -105,11 +77,10 @@ describe('Day', () => {
     const initialLength = day.meals.length;
 
     const newMeal = Meal.create({
+      ...vp.mealPropsNoIngredientLines,
       id: 'meal2',
       name: 'Another Meal',
       ingredientLines: [ingredientLine],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     day.addMeal(newMeal);

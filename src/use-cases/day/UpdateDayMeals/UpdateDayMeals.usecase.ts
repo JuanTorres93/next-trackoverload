@@ -6,6 +6,7 @@ import { validateDate } from '@/domain/common/validation';
 
 export type UpdateDayMealsUsecaseRequest = {
   date: Date;
+  userId: string;
   meals: (Meal | FakeMeal)[];
 };
 
@@ -15,21 +16,26 @@ export class UpdateDayMealsUsecase {
   async execute(request: UpdateDayMealsUsecaseRequest): Promise<Day> {
     validateDate(request.date, 'UpdateDayMealsUsecase: date');
 
-    let day = await this.daysRepo.getDayById(request.date.toISOString());
+    let day = await this.daysRepo.getDayByIdAndUserId(
+      request.date.toISOString(),
+      request.userId
+    );
 
     if (!day) {
       day = Day.create({
         id: request.date,
+        userId: request.userId,
         meals: [],
         createdAt: new Date(),
         updatedAt: new Date(),
       });
     }
 
-    // NOTE: meal validation is done inside the Day entity
+    // NOTE: userId and meal validation is done inside the Day entity
     // Create a new day with updated meals
     const updatedDay = Day.create({
       id: day.id,
+      userId: day.userId,
       meals: [...request.meals], // Replace all meals
       createdAt: day.createdAt,
       updatedAt: new Date(),

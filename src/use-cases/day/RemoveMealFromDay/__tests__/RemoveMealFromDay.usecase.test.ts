@@ -5,6 +5,8 @@ import { Day } from '@/domain/entities/day/Day';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { ValidationError } from '@/domain/common/errors';
 
+import * as vp from '@/../tests/createProps';
+
 describe('RemoveMealFromDayUsecase', () => {
   let daysRepo: MemoryDaysRepo;
   let removeMealFromDayUsecase: RemoveMealFromDayUsecase;
@@ -17,25 +19,19 @@ describe('RemoveMealFromDayUsecase', () => {
   it('should remove meal from day', async () => {
     const date = new Date('2023-10-01');
     const fakeMeal = FakeMeal.create({
-      id: 'fake-meal-1',
-      name: 'Quick Snack',
-      calories: 200,
-      protein: 10,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      ...vp.validFakeMealProps,
     });
     const day = Day.create({
-      id: date,
+      ...vp.validDayProps,
       meals: [fakeMeal],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await daysRepo.saveDay(day);
 
     const result = await removeMealFromDayUsecase.execute({
       date,
-      mealId: 'fake-meal-1',
+      userId: vp.userId,
+      mealId: vp.validFakeMealProps.id,
     });
 
     expect(result.meals).toHaveLength(0);
@@ -45,44 +41,80 @@ describe('RemoveMealFromDayUsecase', () => {
     const date = new Date('2023-10-01');
 
     await expect(
-      removeMealFromDayUsecase.execute({ date, mealId: 'fake-meal-1' })
+      removeMealFromDayUsecase.execute({
+        date,
+        userId: vp.userId,
+        mealId: vp.validFakeMealProps.id,
+      })
     ).rejects.toThrow(ValidationError);
   });
 
   it('should throw error if meal does not exist in day', async () => {
-    const date = new Date('2023-10-01');
     const day = Day.create({
-      id: date,
+      ...vp.validDayProps,
       meals: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await daysRepo.saveDay(day);
 
     await expect(
-      removeMealFromDayUsecase.execute({ date, mealId: 'non-existent' })
+      removeMealFromDayUsecase.execute({
+        date: vp.dateId,
+        userId: vp.userId,
+        mealId: 'non-existent',
+      })
     ).rejects.toThrow(ValidationError);
   });
 
   it('should throw error if mealId is invalid', async () => {
-    const date = new Date('2023-10-01');
-    const invalidMealIds = ['', '   ', null];
+    const invalidMealIds = ['', '   ', null, 3, undefined, {}, [], true];
 
     for (const mealId of invalidMealIds) {
       await expect(
-        removeMealFromDayUsecase.execute({ date, mealId: mealId as string })
+        removeMealFromDayUsecase.execute({
+          date: vp.dateId,
+          userId: vp.userId,
+          mealId: mealId as string,
+        })
       ).rejects.toThrow(ValidationError);
     }
   });
 
   it('should throw error if date is invalid', async () => {
-    const invalidDates = [null, undefined, new Date('invalid-date')];
+    const invalidDates = [
+      null,
+      undefined,
+      new Date('invalid-date'),
+      123,
+      '2023-10-01',
+      {},
+      [],
+      true,
+    ];
 
     for (const date of invalidDates) {
       await expect(
-        // @ts-expect-error testing invalid dates
-        removeMealFromDayUsecase.execute({ date, mealId: 'fake-meal-1' })
+        removeMealFromDayUsecase.execute({
+          // @ts-expect-error testing invalid dates
+          date,
+          userId: vp.userId,
+          mealId: 'fake-meal-1',
+        })
+      ).rejects.toThrow(ValidationError);
+    }
+  });
+
+  it('should throw error if userId is invalid', async () => {
+    const invalidUserIds = ['', '   ', null, 3, undefined, {}, [], true];
+
+    for (const userId of invalidUserIds) {
+      await expect(
+        removeMealFromDayUsecase.execute({
+          date: vp.dateId,
+          // @ts-expect-error testing invalid userIds
+          userId,
+          mealId: 'fake-meal-1',
+        })
       ).rejects.toThrow(ValidationError);
     }
   });

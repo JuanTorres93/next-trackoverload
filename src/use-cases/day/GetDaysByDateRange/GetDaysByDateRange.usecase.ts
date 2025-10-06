@@ -1,11 +1,15 @@
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { Day } from '@/domain/entities/day/Day';
 import { ValidationError } from '@/domain/common/errors';
-import { validateDate } from '@/domain/common/validation';
+import {
+  validateDate,
+  validateNonEmptyString,
+} from '@/domain/common/validation';
 
 export type GetDaysByDateRangeUsecaseRequest = {
   startDate: Date;
   endDate: Date;
+  userId: string;
 };
 
 export class GetDaysByDateRangeUsecase {
@@ -14,6 +18,7 @@ export class GetDaysByDateRangeUsecase {
   async execute(request: GetDaysByDateRangeUsecaseRequest): Promise<Day[]> {
     validateDate(request.startDate, 'GetDaysByDateRangeUsecase startDate');
     validateDate(request.endDate, 'GetDaysByDateRangeUsecase endDate');
+    validateNonEmptyString(request.userId, 'GetDaysByDateRangeUsecase userId');
 
     if (request.startDate > request.endDate) {
       throw new ValidationError(
@@ -21,9 +26,10 @@ export class GetDaysByDateRangeUsecase {
       );
     }
 
-    const days = await this.daysRepo.getDaysByDateRange(
+    const days = await this.daysRepo.getDaysByDateRangeAndUserId(
       request.startDate,
-      request.endDate
+      request.endDate,
+      request.userId
     );
 
     return days || [];

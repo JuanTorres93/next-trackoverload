@@ -7,53 +7,45 @@ import { Meal } from '@/domain/entities/meal/Meal';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { ValidationError } from '@/domain/common/errors';
+import * as vp from '@/../tests/createProps';
 
 describe('AddMealToDayUsecase', () => {
   let daysRepo: MemoryDaysRepo;
   let mealsRepo: MemoryMealsRepo;
   let addMealToDayUsecase: AddMealToDayUsecase;
+  let day: Day;
+  let ingredient: Ingredient;
+  let ingredientLine: IngredientLine;
+  let meal: Meal;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     daysRepo = new MemoryDaysRepo();
     mealsRepo = new MemoryMealsRepo();
     addMealToDayUsecase = new AddMealToDayUsecase(daysRepo, mealsRepo);
-  });
-
-  it('should add meal to existing day', async () => {
-    const date = new Date('2023-10-01');
-    const day = Day.create({
-      id: date,
-      meals: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
+    day = Day.create({
+      ...vp.validDayProps,
     });
-    const ingredient = Ingredient.create({
-      id: 'ingredient-1',
-      name: 'Chicken',
-      nutritionalInfoPer100g: { calories: 200, protein: 25 },
-      createdAt: new Date(),
-      updatedAt: new Date(),
+    ingredient = Ingredient.create({
+      ...vp.validIngredientProps,
     });
-    const ingredientLine = IngredientLine.create({
-      id: 'line-1',
+    ingredientLine = IngredientLine.create({
+      ...vp.ingredientLinePropsNoIngredient,
       ingredient,
-      quantityInGrams: 100,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
-    const meal = Meal.create({
+    meal = Meal.create({
+      ...vp.mealPropsNoIngredientLines,
       id: 'meal-1',
-      name: 'Breakfast',
       ingredientLines: [ingredientLine],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await daysRepo.saveDay(day);
     await mealsRepo.saveMeal(meal);
+  });
 
+  it('should add meal to existing day', async () => {
     const result = await addMealToDayUsecase.execute({
-      date,
+      date: vp.dateId,
+      userId: vp.userId,
       mealId: 'meal-1',
     });
 
@@ -62,21 +54,7 @@ describe('AddMealToDayUsecase', () => {
   });
 
   it('should create new day and add meal if day does not exist', async () => {
-    const date = new Date('2023-10-01');
-    const ingredient = Ingredient.create({
-      id: 'ingredient-1',
-      name: 'Chicken',
-      nutritionalInfoPer100g: { calories: 200, protein: 25 },
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
-    const ingredientLine = IngredientLine.create({
-      id: 'line-1',
-      ingredient,
-      quantityInGrams: 100,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
+    const date = new Date('2023-10-02');
     const meal = Meal.create({
       id: 'meal-1',
       name: 'Breakfast',
@@ -89,6 +67,7 @@ describe('AddMealToDayUsecase', () => {
 
     const result = await addMealToDayUsecase.execute({
       date,
+      userId: vp.userId,
       mealId: 'meal-1',
     });
 
@@ -99,9 +78,10 @@ describe('AddMealToDayUsecase', () => {
 
   it('should throw error if meal does not exist', async () => {
     const date = new Date('2023-10-01');
+    const userId = 'user-1';
 
     await expect(
-      addMealToDayUsecase.execute({ date, mealId: 'non-existent' })
+      addMealToDayUsecase.execute({ date, userId, mealId: 'non-existent' })
     ).rejects.toThrow(ValidationError);
   });
 });

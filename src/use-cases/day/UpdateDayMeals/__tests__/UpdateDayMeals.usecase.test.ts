@@ -7,6 +7,7 @@ import { Meal } from '@/domain/entities/meal/Meal';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { ValidationError } from '@/domain/common/errors';
+import * as vp from '@/../tests/createProps';
 
 describe('UpdateDayMealsUsecase', () => {
   let daysRepo: MemoryDaysRepo;
@@ -18,56 +19,38 @@ describe('UpdateDayMealsUsecase', () => {
   });
 
   it('should update meals for existing day', async () => {
-    const date = new Date('2023-10-01');
     const oldFakeMeal = FakeMeal.create({
-      id: 'old-fake-meal',
-      name: 'Old Snack',
-      calories: 100,
-      protein: 5,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      ...vp.validFakeMealProps,
     });
     const day = Day.create({
-      id: date,
+      ...vp.validDayProps,
       meals: [oldFakeMeal],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await daysRepo.saveDay(day);
 
     const newFakeMeal = FakeMeal.create({
+      ...vp.validFakeMealProps,
       id: 'new-fake-meal',
-      name: 'New Snack',
       calories: 200,
       protein: 10,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
     const ingredient = Ingredient.create({
-      id: 'ingredient-1',
-      name: 'Rice',
+      ...vp.validIngredientProps,
       nutritionalInfoPer100g: { calories: 150, protein: 3 },
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
     const ingredientLine = IngredientLine.create({
-      id: 'line-1',
+      ...vp.ingredientLinePropsNoIngredient,
       ingredient,
-      quantityInGrams: 200,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
     const newMeal = Meal.create({
-      id: 'new-meal',
-      name: 'New Meal',
+      ...vp.mealPropsNoIngredientLines,
       ingredientLines: [ingredientLine],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     const result = await updateDayMealsUsecase.execute({
-      date,
+      date: vp.dateId,
+      userId: vp.userId,
       meals: [newFakeMeal, newMeal],
     });
 
@@ -80,22 +63,18 @@ describe('UpdateDayMealsUsecase', () => {
   });
 
   it('should create new day if it does not exist', async () => {
-    const date = new Date('2023-10-01');
+    const nonExistentDate = new Date('2023-10-11');
     const fakeMeal = FakeMeal.create({
-      id: 'fake-meal',
-      name: 'Snack',
-      calories: 150,
-      protein: 8,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      ...vp.validFakeMealProps,
     });
 
     const result = await updateDayMealsUsecase.execute({
-      date,
+      date: nonExistentDate,
+      userId: vp.userId,
       meals: [fakeMeal],
     });
 
-    expect(result.id).toEqual(date);
+    expect(result.id).toEqual(nonExistentDate);
     expect(result.meals).toHaveLength(1);
     expect(result.meals[0]).toEqual(fakeMeal);
   });
@@ -103,24 +82,18 @@ describe('UpdateDayMealsUsecase', () => {
   it('should handle empty meals array', async () => {
     const date = new Date('2023-10-01');
     const fakeMeal = FakeMeal.create({
-      id: 'fake-meal',
-      name: 'Snack',
-      calories: 150,
-      protein: 8,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      ...vp.validFakeMealProps,
     });
     const day = Day.create({
-      id: date,
+      ...vp.validDayProps,
       meals: [fakeMeal],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await daysRepo.saveDay(day);
 
     const result = await updateDayMealsUsecase.execute({
       date,
+      userId: vp.userId,
       meals: [],
     });
 
@@ -130,19 +103,18 @@ describe('UpdateDayMealsUsecase', () => {
   });
 
   it('should preserve createdAt but update updatedAt', async () => {
-    const date = new Date('2023-10-01');
     const originalCreatedAt = new Date('2023-09-01');
     const day = Day.create({
-      id: date,
-      meals: [],
+      ...vp.validDayProps,
       createdAt: originalCreatedAt,
-      updatedAt: new Date('2023-09-01'),
+      updatedAt: originalCreatedAt,
     });
 
     await daysRepo.saveDay(day);
 
     const result = await updateDayMealsUsecase.execute({
-      date,
+      date: vp.dateId,
+      userId: vp.userId,
       meals: [],
     });
 
@@ -153,12 +125,36 @@ describe('UpdateDayMealsUsecase', () => {
   });
 
   it('should throw error if date is invalid', async () => {
-    const invalidDates = [null, undefined, new Date('invalid-date')];
+    const invalidDates = [
+      null,
+      undefined,
+      new Date('invalid-date'),
+      123,
+      '2023-10-01',
+      {},
+      [],
+      true,
+      NaN,
+    ];
 
     for (const date of invalidDates) {
       await expect(
         // @ts-expect-error testing invalid dates
         updateDayMealsUsecase.execute({ date, meals: [] })
+      ).rejects.toThrow(ValidationError);
+    }
+  });
+
+  it('should throw error if userId is invalid', async () => {
+    const invalidUserIds = ['', '   ', null, 3, undefined, {}, [], true];
+
+    for (const userId of invalidUserIds) {
+      await expect(
+        updateDayMealsUsecase.execute({
+          date: vp.dateId,
+          userId: userId as string,
+          meals: [],
+        })
       ).rejects.toThrow(ValidationError);
     }
   });

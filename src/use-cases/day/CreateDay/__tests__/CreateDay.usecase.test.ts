@@ -13,7 +13,7 @@ describe('CreateDayUsecase', () => {
   });
 
   it('should create and save a new day', async () => {
-    const request = { date: new Date('2023-10-01') };
+    const request = { date: new Date('2023-10-01'), userId: 'user-1' };
 
     const day = await createDayUsecase.execute(request);
 
@@ -31,6 +31,7 @@ describe('CreateDayUsecase', () => {
   it('should create a day with initial meals', async () => {
     const request = {
       date: new Date('2023-10-01'),
+      userId: 'user-1',
       meals: [],
     };
 
@@ -41,7 +42,7 @@ describe('CreateDayUsecase', () => {
   });
 
   it('should throw an error if date is invalid', async () => {
-    const request = { date: new Date('invalid') };
+    const request = { date: new Date('invalid'), userId: 'user-1' };
 
     await expect(createDayUsecase.execute(request)).rejects.toThrow(
       ValidationError
@@ -56,6 +57,7 @@ describe('CreateDayUsecase', () => {
         expect(
           createDayUsecase.execute({
             date: new Date('2023-10-01'),
+            userId: 'user-1',
             // @ts-expect-error Testing invalid inputs
             meals: [invalidMeal],
           })

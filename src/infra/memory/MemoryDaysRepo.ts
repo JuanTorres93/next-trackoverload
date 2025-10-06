@@ -20,9 +20,21 @@ export class MemoryDaysRepo implements DaysRepo {
     return [...this.days];
   }
 
+  async getAllDaysByUserId(userId: string): Promise<Day[]> {
+    return this.days.filter((day) => day.userId === userId);
+  }
+
   async getDayById(id: string): Promise<Day | null> {
     const dayDate = new Date(id);
     const day = this.days.find((d) => d.id.getTime() === dayDate.getTime());
+    return day || null;
+  }
+
+  async getDayByIdAndUserId(id: string, userId: string): Promise<Day | null> {
+    const dayDate = new Date(id);
+    const day = this.days.find(
+      (d) => d.id.getTime() === dayDate.getTime() && d.userId === userId
+    );
     return day || null;
   }
 
@@ -30,6 +42,21 @@ export class MemoryDaysRepo implements DaysRepo {
     return this.days.filter((day) => {
       const dayTime = day.id.getTime();
       return dayTime >= startDate.getTime() && dayTime <= endDate.getTime();
+    });
+  }
+
+  async getDaysByDateRangeAndUserId(
+    startDate: Date,
+    endDate: Date,
+    userId: string
+  ): Promise<Day[]> {
+    return this.days.filter((day) => {
+      const dayTime = day.id.getTime();
+      return (
+        dayTime >= startDate.getTime() &&
+        dayTime <= endDate.getTime() &&
+        day.userId === userId
+      );
     });
   }
 

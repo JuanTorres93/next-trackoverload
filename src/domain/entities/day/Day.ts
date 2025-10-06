@@ -12,7 +12,7 @@ import { Calories } from '../../interfaces/Calories';
 
 export type DayProps = {
   id: Date;
-  // TODO: add userId for composed primary key in DB?
+  userId: string;
   meals: (Meal | FakeMeal)[];
   createdAt: Date;
   updatedAt: Date;
@@ -33,6 +33,7 @@ export class Day implements Protein, Calories {
 
   static create(props: DayProps): Day {
     validateDate(props.id, 'Day id');
+    validateNonEmptyString(props.userId, 'Day userId');
 
     // Validate meals is instance of Meal or FakeMeal
     if (!Array.isArray(props.meals)) {
@@ -70,6 +71,10 @@ export class Day implements Protein, Calories {
   // Getters
   get id() {
     return this.props.id;
+  }
+
+  get userId() {
+    return this.props.userId;
   }
 
   get meals() {
