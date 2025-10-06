@@ -4,6 +4,7 @@ import {
   validateNonEmptyString,
   validateGreaterThanZero,
   validatePositiveNumber,
+  validateInteger,
 } from '../../common/validation';
 
 type ExerciseLine = {
@@ -16,7 +17,8 @@ type ExerciseLine = {
 const validateExerciseLine = (line: ExerciseLine) => {
   validateNonEmptyString(line.exerciseId, 'ExerciseLine exerciseId');
   validateGreaterThanZero(line.setNumber, 'ExerciseLine setNumber');
-  validateGreaterThanZero(line.reps, 'ExerciseLine reps');
+  validatePositiveNumber(line.reps, 'ExerciseLine reps');
+  validateInteger(line.reps, 'ExerciseLine reps');
   validatePositiveNumber(line.weight, 'ExerciseLine weight');
 };
 
@@ -96,7 +98,8 @@ export class Workout {
       line.setNumber = updateProps.setNumber;
     }
     if (updateProps.reps !== undefined) {
-      validateGreaterThanZero(updateProps.reps, 'Workout ExerciseLine reps');
+      validatePositiveNumber(updateProps.reps, 'Workout ExerciseLine reps');
+      validateInteger(updateProps.reps, 'Workout ExerciseLine reps');
       line.reps = updateProps.reps;
     }
     if (updateProps.weight !== undefined) {
