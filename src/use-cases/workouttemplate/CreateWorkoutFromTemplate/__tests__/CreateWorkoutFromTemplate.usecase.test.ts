@@ -40,6 +40,7 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
     const result = await usecase.execute(request);
 
     expect(result.name).toContain('Push Day');
+    expect(result.workoutTemplateId).toBe('1');
     expect(result.exercises).toHaveLength(5); // 3 sets + 2 sets
 
     // Check bench press sets
@@ -89,6 +90,7 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
     const result = await usecase.execute(request);
 
     expect(result.name).toBe('My Custom Workout');
+    expect(result.workoutTemplateId).toBe('1');
     expect(result.exercises).toHaveLength(2);
     expect(result.exercises[0]).toEqual({
       exerciseId: 'bench-press',

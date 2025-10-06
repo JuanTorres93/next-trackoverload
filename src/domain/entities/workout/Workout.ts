@@ -31,6 +31,7 @@ type ExerciseLineUpdateProps = {
 export type WorkoutProps = {
   id: string;
   name: string;
+  workoutTemplateId: string;
   exercises: ExerciseLine[];
   createdAt: Date;
   updatedAt: Date;
@@ -42,6 +43,10 @@ export class Workout {
   static create(props: WorkoutProps): Workout {
     validateNonEmptyString(props.id, 'Workout id');
     validateNonEmptyString(props.name, 'Workout name');
+    validateNonEmptyString(
+      props.workoutTemplateId,
+      'Workout workoutTemplateId'
+    );
 
     if (!Array.isArray(props.exercises)) {
       throw new ValidationError('Workout: exercises must be an array');
@@ -117,6 +122,10 @@ export class Workout {
 
   get name() {
     return this.props.name;
+  }
+
+  get workoutTemplateId() {
+    return this.props.workoutTemplateId;
   }
 
   get exercises() {

@@ -18,6 +18,7 @@ describe('Workout', () => {
     validWorkoutProps = {
       id: '1',
       name: 'Push',
+      workoutTemplateId: 'template-1',
       exercises: [validExerciseLine],
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -78,5 +79,15 @@ describe('Workout', () => {
       reps: 99,
       weight: 88,
     });
+  });
+
+  it('should throw error if workoutTemplateId is invalid', async () => {
+    const invalidIds = ['', '   ', null, undefined, 3, [], {}, true];
+
+    for (const id of invalidIds) {
+      const props = { ...validWorkoutProps, workoutTemplateId: id };
+      // @ts-expect-error testing invalid inputs
+      expect(() => Workout.create(props)).toThrow(ValidationError);
+    }
   });
 });

@@ -12,6 +12,7 @@ const validExerciseLine = {
 const validWorkoutProps = {
   id: '1',
   name: 'Push Day',
+  workoutTemplateId: 'template-1',
   exercises: [validExerciseLine],
   createdAt: new Date('2023-01-01'),
   updatedAt: new Date('2023-01-01'),
@@ -31,6 +32,7 @@ describe('MemoryWorkoutsRepo', () => {
     const newWorkout = Workout.create({
       id: '2',
       name: 'Pull Day',
+      workoutTemplateId: 'template-2',
       exercises: [validExerciseLine],
       createdAt: new Date('2023-01-02'),
       updatedAt: new Date('2023-01-02'),
