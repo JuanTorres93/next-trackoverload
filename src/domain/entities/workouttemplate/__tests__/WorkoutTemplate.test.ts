@@ -119,12 +119,18 @@ describe('WorkoutTemplate', () => {
     );
   });
 
-  it('should throw ValidationError if name is empty', () => {
-    const templateProps = { ...validWorkoutTemplateProps };
-    templateProps.name = '';
-    expect(() => WorkoutTemplate.create(templateProps)).toThrow(
-      ValidationError
-    );
+  it('should throw ValidationError if name is invalid', () => {
+    const invalidNames = [null, undefined, '', '   ', 3, {}, [], true, false];
+
+    for (const invalidName of invalidNames) {
+      const templateProps = { ...validWorkoutTemplateProps };
+
+      // @ts-expect-error name is invalid
+      templateProps.name = invalidName;
+      expect(() => WorkoutTemplate.create(templateProps)).toThrow(
+        ValidationError
+      );
+    }
   });
 
   it('should throw ValidationError if exercises is not an array', () => {
