@@ -87,6 +87,31 @@ export class Workout {
     }
   }
 
+  removeSet(exerciseId: string, setNumber: number) {
+    const initialLength = this.props.exercises.length;
+
+    // Remove the specific set
+    this.props.exercises = this.props.exercises.filter(
+      (line) =>
+        !(line.exerciseId === exerciseId && line.setNumber === setNumber)
+    );
+
+    // If a set was actually removed, reorder the remaining sets for this exercise
+    if (this.props.exercises.length !== initialLength) {
+      // Get all sets for this exercise and sort by setNumber
+      const exerciseSets = this.props.exercises
+        .filter((line) => line.exerciseId === exerciseId)
+        .sort((a, b) => a.setNumber - b.setNumber);
+
+      // Reorder set numbers to be consecutive (1, 2, 3, ...)
+      exerciseSets.forEach((set, index) => {
+        set.setNumber = index + 1;
+      });
+
+      this.props.updatedAt = new Date();
+    }
+  }
+
   updateExercise(exerciseId: string, updateProps: ExerciseLineUpdateProps) {
     const line = this.props.exercises.find(
       (line) => line.exerciseId === exerciseId
