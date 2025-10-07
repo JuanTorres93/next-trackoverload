@@ -3,28 +3,38 @@ import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { validateNonEmptyString } from '@/domain/common/validation';
 import { ValidationError } from '@/domain/common/errors';
 
-export type GetRecipesByIdsUsecaseRequest = {
+export type GetRecipesByIdsForUserUsecaseRequest = {
   ids: string[];
+  userId: string;
 };
 
-export class GetRecipesByIdsUsecase {
+export class GetRecipesByIdsForUserUsecase {
   constructor(private recipesRepo: RecipesRepo) {}
 
-  async execute(request: GetRecipesByIdsUsecaseRequest): Promise<Recipe[]> {
+  async execute(
+    request: GetRecipesByIdsForUserUsecaseRequest
+  ): Promise<Recipe[]> {
     if (!Array.isArray(request.ids) || request.ids.length === 0) {
       throw new ValidationError(
-        'GetRecipesByIdsUsecase: ids must be a non-empty array'
+        'GetRecipesByIdsForUserUsecase: ids must be a non-empty array'
       );
     }
+
+    validateNonEmptyString(
+      request.userId,
+      'GetRecipesByIdsForUserUsecase userId'
+    );
 
     const uniqueIds = Array.from(new Set(request.ids));
 
     uniqueIds.forEach((id) => {
-      validateNonEmptyString(id, `GetRecipesByIdsUsecase id  ${id}`);
+      validateNonEmptyString(id, `GetRecipesByIdsForUserUsecase id  ${id}`);
     });
 
     const recipes = await Promise.all(
-      uniqueIds.map((id) => this.recipesRepo.getRecipeById(id))
+      uniqueIds.map((id) =>
+        this.recipesRepo.getRecipeByIdAndUserId(id, request.userId)
+      )
     );
 
     // Filter out null values (recipes that weren't found)

@@ -1,54 +1,39 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { GetRecipesByIdsUsecase } from '../GetRecipesByIds.usecase';
-import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
-import { Recipe } from '@/domain/entities/recipe/Recipe';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import * as vp from '@/../tests/createProps';
 import { ValidationError } from '@/domain/common/errors';
-import { v4 as uuidv4 } from 'uuid';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { GetRecipesByIdsForUserUsecase } from '../GetRecipesByIdsForUser.usecase';
 
-describe('GetRecipesByIdsUsecase', () => {
+describe('GetRecipesByIdsForUserUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
-  let getRecipesByIdsUsecase: GetRecipesByIdsUsecase;
+  let getRecipesByIdsUsecase: GetRecipesByIdsForUserUsecase;
   let testRecipes: Recipe[];
 
   beforeEach(() => {
     recipesRepo = new MemoryRecipesRepo();
-    getRecipesByIdsUsecase = new GetRecipesByIdsUsecase(recipesRepo);
+    getRecipesByIdsUsecase = new GetRecipesByIdsForUserUsecase(recipesRepo);
 
     const testIngredient = Ingredient.create({
-      id: uuidv4(),
-      name: 'Chicken Breast',
-      nutritionalInfoPer100g: {
-        calories: 165,
-        protein: 31,
-      },
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      ...vp.validIngredientProps,
     });
 
     const testIngredientLine = IngredientLine.create({
-      id: uuidv4(),
+      ...vp.ingredientLinePropsNoIngredient,
       ingredient: testIngredient,
-      quantityInGrams: 200,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     testRecipes = [
       Recipe.create({
-        id: uuidv4(),
-        name: 'Grilled Chicken',
+        ...vp.recipePropsNoIngredientLines,
         ingredientLines: [testIngredientLine],
-        createdAt: new Date(),
-        updatedAt: new Date(),
       }),
       Recipe.create({
-        id: uuidv4(),
-        name: 'Chicken Salad',
+        ...vp.recipePropsNoIngredientLines,
+        id: 'recipe2',
         ingredientLines: [testIngredientLine],
-        createdAt: new Date(),
-        updatedAt: new Date(),
       }),
     ];
   });
@@ -60,6 +45,7 @@ describe('GetRecipesByIdsUsecase', () => {
 
     const request = {
       ids: [testRecipes[0].id, testRecipes[1].id],
+      userId: vp.userId,
     };
 
     const result = await getRecipesByIdsUsecase.execute(request);
@@ -73,6 +59,7 @@ describe('GetRecipesByIdsUsecase', () => {
 
     const request = {
       ids: [testRecipes[0].id, 'non-existent-id'],
+      userId: vp.userId,
     };
 
     const result = await getRecipesByIdsUsecase.execute(request);
@@ -85,6 +72,7 @@ describe('GetRecipesByIdsUsecase', () => {
     // NOTE: this test will change to throw ValidationError
     const request = {
       ids: ['non-existent-1', 'non-existent-2'],
+      userId: vp.userId,
     };
 
     const result = await getRecipesByIdsUsecase.execute(request);
@@ -93,7 +81,7 @@ describe('GetRecipesByIdsUsecase', () => {
   });
 
   it('should throw ValidationError for empty ids array', async () => {
-    const request = { ids: [] };
+    const request = { ids: [], userId: vp.userId };
 
     await expect(getRecipesByIdsUsecase.execute(request)).rejects.toThrow(
       ValidationError
@@ -101,7 +89,7 @@ describe('GetRecipesByIdsUsecase', () => {
   });
 
   it('should throw ValidationError for invalid id in array', async () => {
-    const request = { ids: ['valid-id', ''] };
+    const request = { ids: ['valid-id', ''], userId: vp.userId };
 
     await expect(getRecipesByIdsUsecase.execute(request)).rejects.toThrow(
       ValidationError
@@ -113,6 +101,7 @@ describe('GetRecipesByIdsUsecase', () => {
 
     const request = {
       ids: [testRecipes[0].id, testRecipes[0].id],
+      userId: vp.userId,
     };
 
     const result = await getRecipesByIdsUsecase.execute(request);
