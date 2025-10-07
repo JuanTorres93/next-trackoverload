@@ -5,6 +5,7 @@ import { NotFoundError } from '@/domain/common/errors';
 
 export type RemoveIngredientFromRecipeUsecaseRequest = {
   recipeId: string;
+  userId: string;
   ingredientId: string;
 };
 
@@ -19,12 +20,17 @@ export class RemoveIngredientFromRecipeUsecase {
       'RemoveIngredientFromRecipeUsecase recipeId'
     );
     validateNonEmptyString(
+      request.userId,
+      'RemoveIngredientFromRecipeUsecase userId'
+    );
+    validateNonEmptyString(
       request.ingredientId,
       'RemoveIngredientFromRecipeUsecase ingredientId'
     );
 
-    const existingRecipe = await this.recipesRepo.getRecipeById(
-      request.recipeId
+    const existingRecipe = await this.recipesRepo.getRecipeByIdAndUserId(
+      request.recipeId,
+      request.userId
     );
     if (!existingRecipe) {
       throw new NotFoundError(

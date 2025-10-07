@@ -4,16 +4,7 @@ import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 
-const validIngredientProps = {
-  id: '1',
-  name: 'Flour',
-  nutritionalInfoPer100g: {
-    calories: 364,
-    protein: 10,
-  },
-  createdAt: new Date('2023-01-01'),
-  updatedAt: new Date('2023-01-01'),
-};
+import * as vp from '@/../tests/createProps';
 
 describe('MemoryRecipesRepo', () => {
   let repo: MemoryRecipesRepo;
@@ -23,22 +14,17 @@ describe('MemoryRecipesRepo', () => {
 
   beforeEach(async () => {
     repo = new MemoryRecipesRepo();
-    ingredient = Ingredient.create(validIngredientProps);
+    ingredient = Ingredient.create(vp.validIngredientProps);
 
     ingredientLine = IngredientLine.create({
-      id: '1',
+      ...vp.ingredientLinePropsNoIngredient,
       ingredient,
       quantityInGrams: 200,
-      createdAt: new Date('2023-01-01'),
-      updatedAt: new Date('2023-01-01'),
     });
 
     recipe = Recipe.create({
-      id: '1',
-      name: 'Basic Bread',
+      ...vp.recipePropsNoIngredientLines,
       ingredientLines: [ingredientLine],
-      createdAt: new Date('2023-01-01'),
-      updatedAt: new Date('2023-01-01'),
     });
 
     await repo.saveRecipe(recipe);
@@ -46,11 +32,10 @@ describe('MemoryRecipesRepo', () => {
 
   it('should save a recipe', async () => {
     const newRecipe = Recipe.create({
+      ...vp.recipePropsNoIngredientLines,
       id: '2',
       name: 'Cake',
       ingredientLines: [ingredientLine],
-      createdAt: new Date('2023-01-02'),
-      updatedAt: new Date('2023-01-02'),
     });
     await repo.saveRecipe(newRecipe);
 
@@ -61,11 +46,9 @@ describe('MemoryRecipesRepo', () => {
 
   it('should update an existing recipe', async () => {
     const updatedRecipe = Recipe.create({
-      id: '1',
-      name: 'Updated Bread',
+      ...vp.recipePropsNoIngredientLines,
       ingredientLines: [ingredientLine],
-      createdAt: new Date('2023-01-01'),
-      updatedAt: new Date('2023-01-03'),
+      name: 'Updated Bread',
     });
     await repo.saveRecipe(updatedRecipe);
 
@@ -75,9 +58,11 @@ describe('MemoryRecipesRepo', () => {
   });
 
   it('should retrieve a recipe by ID', async () => {
-    const fetchedRecipe = await repo.getRecipeById('1');
+    const fetchedRecipe = await repo.getRecipeById(
+      vp.recipePropsNoIngredientLines.id
+    );
     expect(fetchedRecipe).not.toBeNull();
-    expect(fetchedRecipe?.name).toBe('Basic Bread');
+    expect(fetchedRecipe?.name).toBe(vp.recipePropsNoIngredientLines.name);
   });
 
   it('should return null for non-existent recipe ID', async () => {
@@ -89,7 +74,7 @@ describe('MemoryRecipesRepo', () => {
     const allRecipes = await repo.getAllRecipes();
     expect(allRecipes.length).toBe(1);
 
-    await repo.deleteRecipe('1');
+    await repo.deleteRecipe(vp.recipePropsNoIngredientLines.id);
 
     const allRecipesAfterDeletion = await repo.getAllRecipes();
     expect(allRecipesAfterDeletion.length).toBe(0);

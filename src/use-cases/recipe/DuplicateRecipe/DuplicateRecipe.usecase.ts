@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export type DuplicateRecipeUsecaseRequest = {
   recipeId: string;
+  userId: string;
   newName?: string;
 };
 
@@ -14,9 +15,11 @@ export class DuplicateRecipeUsecase {
 
   async execute(request: DuplicateRecipeUsecaseRequest): Promise<Recipe> {
     validateNonEmptyString(request.recipeId, 'DuplicateRecipeUsecase recipeId');
+    validateNonEmptyString(request.userId, 'DuplicateRecipeUsecase userId');
 
-    const originalRecipe = await this.recipesRepo.getRecipeById(
-      request.recipeId
+    const originalRecipe = await this.recipesRepo.getRecipeByIdAndUserId(
+      request.recipeId,
+      request.userId
     );
     if (!originalRecipe) {
       throw new NotFoundError(
@@ -28,6 +31,7 @@ export class DuplicateRecipeUsecase {
 
     const duplicatedRecipe = Recipe.create({
       id: uuidv4(),
+      userId: request.userId,
       name: newName,
       ingredientLines: originalRecipe.ingredientLines,
       createdAt: new Date(),

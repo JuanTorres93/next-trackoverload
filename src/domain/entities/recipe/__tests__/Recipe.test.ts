@@ -5,18 +5,7 @@ import { Ingredient } from '../../ingredient/Ingredient';
 import { IngredientLine } from '../../ingredient/IngredientLine';
 import { ValidationError } from '@/domain/common/errors';
 
-const nutritionalInfoPer100g = {
-  calories: 100,
-  protein: 10,
-};
-
-const validIngredientProps = {
-  id: '1',
-  name: 'Sugar',
-  nutritionalInfoPer100g,
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
+import * as vp from '@/../tests/createProps';
 
 describe('Recipe', () => {
   let recipe: Recipe;
@@ -24,22 +13,17 @@ describe('Recipe', () => {
   let validIngredientLine: IngredientLine;
 
   beforeEach(() => {
-    const validIngredient = Ingredient.create(validIngredientProps);
+    const validIngredient = Ingredient.create(vp.validIngredientProps);
 
     validIngredientLine = IngredientLine.create({
-      id: '1',
+      ...vp.ingredientLinePropsNoIngredient,
       ingredient: validIngredient,
       quantityInGrams: 100,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     validRecipeProps = {
-      id: '1',
-      name: 'Cake',
+      ...vp.recipePropsNoIngredientLines,
       ingredientLines: [validIngredientLine],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     };
     recipe = Recipe.create(validRecipeProps);
   });
@@ -52,22 +36,21 @@ describe('Recipe', () => {
     expect(recipe.calories).toBe(100);
 
     const anotherIngredientLine = IngredientLine.create({
+      ...vp.ingredientLinePropsNoIngredient,
       id: '2',
+      quantityInGrams: 50,
       ingredient: Ingredient.create({
-        ...validIngredientProps,
+        ...vp.validIngredientProps,
         id: '2',
         nutritionalInfoPer100g: {
           calories: 200,
           protein: 20,
         },
       }),
-      quantityInGrams: 50,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     const recipeWithTwoLines = Recipe.create({
-      ...validRecipeProps,
+      ...vp.recipePropsNoIngredientLines,
       ingredientLines: [validIngredientLine, anotherIngredientLine],
     });
 
@@ -75,21 +58,22 @@ describe('Recipe', () => {
   });
 
   it('should compute total protein', async () => {
-    expect(recipe.protein).toBe(10);
+    expect(recipe.protein).toBe(
+      vp.validIngredientProps.nutritionalInfoPer100g.protein
+    );
 
     const anotherIngredientLine = IngredientLine.create({
+      ...vp.ingredientLinePropsNoIngredient,
       id: '2',
       ingredient: Ingredient.create({
-        ...validIngredientProps,
+        ...vp.validIngredientProps,
         id: '2',
         nutritionalInfoPer100g: {
           calories: 200,
-          protein: 20,
+          protein: 10,
         },
       }),
-      quantityInGrams: 50,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      quantityInGrams: 100,
     });
 
     const recipeWithTwoLines = Recipe.create({
@@ -97,11 +81,13 @@ describe('Recipe', () => {
       ingredientLines: [validIngredientLine, anotherIngredientLine],
     });
 
-    expect(recipeWithTwoLines.protein).toBe(20);
+    expect(recipeWithTwoLines.protein).toBe(
+      vp.validIngredientProps.nutritionalInfoPer100g.protein + 10
+    );
   });
 
   it('should update its name', async () => {
-    expect(recipe.name).toBe('Cake');
+    expect(recipe.name).toBe(vp.recipePropsNoIngredientLines.name);
     recipe.rename('New Cake');
     expect(recipe.name).toBe('New Cake');
   });
@@ -109,18 +95,17 @@ describe('Recipe', () => {
   it('should add a new ingredient line', async () => {
     expect(recipe.ingredientLines.length).toBe(1);
     const anotherIngredientLine = IngredientLine.create({
-      id: '2',
+      ...vp.ingredientLinePropsNoIngredient,
       ingredient: Ingredient.create({
-        ...validIngredientProps,
+        ...vp.validIngredientProps,
         id: '2',
         nutritionalInfoPer100g: {
           calories: 200,
           protein: 20,
         },
       }),
+      id: '2',
       quantityInGrams: 50,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
     recipe.addIngredientLine(anotherIngredientLine);
     expect(recipe.ingredientLines.length).toBe(2);
@@ -130,9 +115,10 @@ describe('Recipe', () => {
     expect(recipe.ingredientLines.length).toBe(1);
     recipe.addIngredientLine(
       IngredientLine.create({
+        ...vp.ingredientLinePropsNoIngredient,
         id: '2',
         ingredient: Ingredient.create({
-          ...validIngredientProps,
+          ...vp.validIngredientProps,
           id: '2',
           nutritionalInfoPer100g: {
             calories: 200,
@@ -140,20 +126,18 @@ describe('Recipe', () => {
           },
         }),
         quantityInGrams: 50,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       })
     );
     expect(recipe.ingredientLines.length).toBe(2);
 
-    recipe.removeIngredientLineByIngredientId('1');
+    recipe.removeIngredientLineByIngredientId(vp.validIngredientProps.id);
     expect(recipe.ingredientLines.length).toBe(1);
   });
 
   it('should throw an error if ingredientLines is empty', async () => {
     expect(() => {
       Recipe.create({
-        ...validRecipeProps,
+        ...vp.recipePropsNoIngredientLines,
         ingredientLines: [],
       });
     }).toThrowError(ValidationError);
@@ -162,7 +146,7 @@ describe('Recipe', () => {
   it('should throw an error if ingredientLines contains invalid items', async () => {
     expect(() => {
       Recipe.create({
-        ...validRecipeProps,
+        ...vp.recipePropsNoIngredientLines,
         ingredientLines: [validIngredientLine, {} as unknown as IngredientLine],
       });
     }).toThrowError(ValidationError);

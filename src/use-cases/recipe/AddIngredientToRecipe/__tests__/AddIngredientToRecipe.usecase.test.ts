@@ -1,11 +1,11 @@
+import * as vp from '@/../tests/createProps';
+import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { AddIngredientToRecipeUsecase } from '../AddIngredientToRecipe.usecase';
-import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
-import { Recipe } from '@/domain/entities/recipe/Recipe';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { ValidationError, NotFoundError } from '@/domain/common/errors';
-import { v4 as uuidv4 } from 'uuid';
 
 describe('AddIngredientToRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
@@ -20,49 +20,26 @@ describe('AddIngredientToRecipeUsecase', () => {
     );
 
     const testIngredient = Ingredient.create({
-      id: uuidv4(),
-      name: 'Chicken Breast',
-      nutritionalInfoPer100g: {
-        calories: 165,
-        protein: 31,
-      },
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      ...vp.validIngredientProps,
     });
 
     const testIngredientLine = IngredientLine.create({
-      id: uuidv4(),
+      ...vp.ingredientLinePropsNoIngredient,
       ingredient: testIngredient,
-      quantityInGrams: 200,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     testRecipe = Recipe.create({
-      id: uuidv4(),
-      name: 'Grilled Chicken',
+      ...vp.recipePropsNoIngredientLines,
       ingredientLines: [testIngredientLine],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     const newIngredient = Ingredient.create({
-      id: uuidv4(),
-      name: 'Rice',
-      nutritionalInfoPer100g: {
-        calories: 130,
-        protein: 2.7,
-      },
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      ...vp.validIngredientProps,
     });
 
     newIngredientLine = IngredientLine.create({
-      id: uuidv4(),
+      ...vp.ingredientLinePropsNoIngredient,
       ingredient: newIngredient,
-      quantityInGrams: 150,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
   });
 
@@ -72,6 +49,7 @@ describe('AddIngredientToRecipeUsecase', () => {
 
     const request = {
       recipeId: testRecipe.id,
+      userId: vp.userId,
       ingredientLine: newIngredientLine,
     };
 
@@ -84,6 +62,7 @@ describe('AddIngredientToRecipeUsecase', () => {
   it('should throw NotFoundError when recipe does not exist', async () => {
     const request = {
       recipeId: 'non-existent-id',
+      userId: vp.userId,
       ingredientLine: newIngredientLine,
     };
 
@@ -95,6 +74,7 @@ describe('AddIngredientToRecipeUsecase', () => {
   it('should throw ValidationError for invalid recipeId', async () => {
     const request = {
       recipeId: '',
+      userId: vp.userId,
       ingredientLine: newIngredientLine,
     };
 
@@ -106,14 +86,20 @@ describe('AddIngredientToRecipeUsecase', () => {
   it('should throw error for invalid ingredientLine', async () => {
     await recipesRepo.saveRecipe(testRecipe);
 
-    const request = {
-      recipeId: testRecipe.id,
-      ingredientLine: {} as IngredientLine,
-    };
+    const invalidIngredientLines = [null, {}, { id: '123' }, []];
 
-    await expect(addIngredientToRecipeUsecase.execute(request)).rejects.toThrow(
-      ValidationError
-    );
+    for (const invalidLine of invalidIngredientLines) {
+      const request = {
+        recipeId: testRecipe.id,
+        userId: vp.userId,
+        ingredientLine: invalidLine,
+      };
+
+      await expect(
+        // @ts-expect-error testing invalid inputs
+        addIngredientToRecipeUsecase.execute(request)
+      ).rejects.toThrow(ValidationError);
+    }
   });
 
   it('should update recipe updatedAt timestamp', async () => {
@@ -124,6 +110,7 @@ describe('AddIngredientToRecipeUsecase', () => {
     await new Promise((resolve) => setTimeout(resolve, 2));
 
     const request = {
+      userId: vp.userId,
       recipeId: testRecipe.id,
       ingredientLine: newIngredientLine,
     };
@@ -133,5 +120,22 @@ describe('AddIngredientToRecipeUsecase', () => {
     expect(result.updatedAt.getTime()).toBeGreaterThan(
       originalUpdatedAt.getTime()
     );
+  });
+
+  it('should throw ValidationError for invalid userId', async () => {
+    const invalidUserIds = [null, '', '   ', 123, {}, []];
+
+    for (const invalidUserId of invalidUserIds) {
+      const request = {
+        recipeId: testRecipe.id,
+        userId: invalidUserId,
+        ingredientLine: newIngredientLine,
+      };
+
+      await expect(
+        // @ts-expect-error testing invalid inputs
+        addIngredientToRecipeUsecase.execute(request)
+      ).rejects.toThrow(ValidationError);
+    }
   });
 });

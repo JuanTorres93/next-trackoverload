@@ -1,11 +1,12 @@
+import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { RemoveIngredientFromRecipeUsecase } from '../RemoveIngredientFromRecipe.usecase';
-import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
-import { Recipe } from '@/domain/entities/recipe/Recipe';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { ValidationError, NotFoundError } from '@/domain/common/errors';
-import { v4 as uuidv4 } from 'uuid';
+
+import * as vp from '@/../tests/createProps';
 
 describe('RemoveIngredientFromRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
@@ -21,49 +22,33 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
     );
 
     testIngredient = Ingredient.create({
-      id: uuidv4(),
+      ...vp.validIngredientProps,
       name: 'Chicken Breast',
       nutritionalInfoPer100g: {
         calories: 165,
         protein: 31,
       },
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     secondIngredient = Ingredient.create({
-      id: uuidv4(),
-      name: 'Rice',
-      nutritionalInfoPer100g: {
-        calories: 130,
-        protein: 2.7,
-      },
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      ...vp.validIngredientProps,
+      id: 'ingredient-2',
     });
 
     const firstIngredientLine = IngredientLine.create({
-      id: uuidv4(),
+      ...vp.ingredientLinePropsNoIngredient,
       ingredient: testIngredient,
-      quantityInGrams: 200,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     const secondIngredientLine = IngredientLine.create({
-      id: uuidv4(),
+      ...vp.ingredientLinePropsNoIngredient,
+      id: 'ingredient-line-2',
       ingredient: secondIngredient,
-      quantityInGrams: 150,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     testRecipe = Recipe.create({
-      id: uuidv4(),
-      name: 'Chicken with Rice',
+      ...vp.recipePropsNoIngredientLines,
       ingredientLines: [firstIngredientLine, secondIngredientLine],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
   });
 
@@ -74,6 +59,7 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
     const request = {
       recipeId: testRecipe.id,
       ingredientId: testIngredient.id,
+      userId: vp.userId,
     };
 
     const result = await removeIngredientFromRecipeUsecase.execute(request);
@@ -95,6 +81,7 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
     const request = {
       recipeId: 'non-existent-id',
       ingredientId: testIngredient.id,
+      userId: vp.userId,
     };
 
     await expect(
@@ -105,6 +92,7 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
   it('should throw ValidationError for invalid recipeId', async () => {
     const request = {
       recipeId: '',
+      userId: vp.userId,
       ingredientId: testIngredient.id,
     };
 
@@ -118,18 +106,24 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
 
     const request = {
       recipeId: testRecipe.id,
+      userId: vp.userId,
       ingredientId: '',
     };
 
     await expect(
       removeIngredientFromRecipeUsecase.execute(request)
     ).rejects.toThrow(ValidationError);
+
+    await expect(
+      removeIngredientFromRecipeUsecase.execute(request)
+    ).rejects.toThrow(/ingredientId/i);
   });
 
   it('should throw error when ingredient not found in recipe', async () => {
     await recipesRepo.saveRecipe(testRecipe);
 
     const request = {
+      userId: vp.userId,
       recipeId: testRecipe.id,
       ingredientId: 'non-existent-ingredient-id',
     };
@@ -149,6 +143,7 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
     const request = {
       recipeId: testRecipe.id,
       ingredientId: testIngredient.id,
+      userId: vp.userId,
     };
 
     const result = await removeIngredientFromRecipeUsecase.execute(request);
@@ -156,5 +151,22 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
     expect(result.updatedAt.getTime()).toBeGreaterThan(
       originalUpdatedAt.getTime()
     );
+  });
+
+  it('should throw error if userId is invalid', async () => {
+    const invalidUserIds = [null, '', '   ', 123, {}, []];
+
+    for (const invalidUserId of invalidUserIds) {
+      const request = {
+        recipeId: testRecipe.id,
+        ingredientId: testIngredient.id,
+        userId: invalidUserId,
+      };
+
+      await expect(
+        // @ts-expect-error testing invalid inputs
+        removeIngredientFromRecipeUsecase.execute(request)
+      ).rejects.toThrow(ValidationError);
+    }
   });
 });

@@ -9,6 +9,14 @@ export const validDayProps = {
   updatedAt: new Date(),
 };
 
+export const recipePropsNoIngredientLines = {
+  id: 'recipe1',
+  userId,
+  name: 'Test Recipe',
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
 export const validFakeMealProps = {
   id: 'fakemeal1',
   name: 'Fake Chicken Breast',

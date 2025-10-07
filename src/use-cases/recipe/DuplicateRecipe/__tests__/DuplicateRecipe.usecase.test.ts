@@ -1,11 +1,11 @@
+import * as vp from '@/../tests/createProps';
+import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { DuplicateRecipeUsecase } from '../DuplicateRecipe.usecase';
-import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
-import { Recipe } from '@/domain/entities/recipe/Recipe';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { ValidationError, NotFoundError } from '@/domain/common/errors';
-import { v4 as uuidv4 } from 'uuid';
 
 describe('DuplicateRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
@@ -17,30 +17,17 @@ describe('DuplicateRecipeUsecase', () => {
     duplicateRecipeUsecase = new DuplicateRecipeUsecase(recipesRepo);
 
     const testIngredient = Ingredient.create({
-      id: uuidv4(),
-      name: 'Chicken Breast',
-      nutritionalInfoPer100g: {
-        calories: 165,
-        protein: 31,
-      },
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      ...vp.validIngredientProps,
     });
 
     const testIngredientLine = IngredientLine.create({
-      id: uuidv4(),
+      ...vp.ingredientLinePropsNoIngredient,
       ingredient: testIngredient,
-      quantityInGrams: 200,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     testRecipe = Recipe.create({
-      id: uuidv4(),
-      name: 'Grilled Chicken',
+      ...vp.recipePropsNoIngredientLines,
       ingredientLines: [testIngredientLine],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
   });
 
@@ -49,6 +36,7 @@ describe('DuplicateRecipeUsecase', () => {
 
     const request = {
       recipeId: testRecipe.id,
+      userId: vp.userId,
     };
 
     const result = await duplicateRecipeUsecase.execute(request);
@@ -70,6 +58,7 @@ describe('DuplicateRecipeUsecase', () => {
     const request = {
       recipeId: testRecipe.id,
       newName: 'My Custom Recipe Copy',
+      userId: vp.userId,
     };
 
     const result = await duplicateRecipeUsecase.execute(request);
@@ -81,6 +70,7 @@ describe('DuplicateRecipeUsecase', () => {
   it('should throw NotFoundError when recipe does not exist', async () => {
     const request = {
       recipeId: 'non-existent-id',
+      userId: vp.userId,
     };
 
     await expect(duplicateRecipeUsecase.execute(request)).rejects.toThrow(
@@ -91,6 +81,7 @@ describe('DuplicateRecipeUsecase', () => {
   it('should throw ValidationError for invalid recipeId', async () => {
     const request = {
       recipeId: '',
+      userId: vp.userId,
     };
 
     await expect(duplicateRecipeUsecase.execute(request)).rejects.toThrow(
@@ -100,28 +91,21 @@ describe('DuplicateRecipeUsecase', () => {
 
   it('should preserve all ingredient lines from original recipe', async () => {
     const secondIngredient = Ingredient.create({
-      id: uuidv4(),
-      name: 'Rice',
-      nutritionalInfoPer100g: {
-        calories: 130,
-        protein: 2.7,
-      },
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      ...vp.validIngredientProps,
+      id: 'second-ingredient-id',
     });
 
     const secondIngredientLine = IngredientLine.create({
-      id: uuidv4(),
+      ...vp.ingredientLinePropsNoIngredient,
+      id: 'second-ingredient-line-id',
       ingredient: secondIngredient,
-      quantityInGrams: 150,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     testRecipe.addIngredientLine(secondIngredientLine);
     await recipesRepo.saveRecipe(testRecipe);
 
     const request = {
+      userId: vp.userId,
       recipeId: testRecipe.id,
     };
 
@@ -136,6 +120,7 @@ describe('DuplicateRecipeUsecase', () => {
 
     const request = {
       recipeId: testRecipe.id,
+      userId: vp.userId,
     };
 
     const duplicatedRecipe = await duplicateRecipeUsecase.execute(request);
@@ -157,6 +142,7 @@ describe('DuplicateRecipeUsecase', () => {
 
     const request = {
       recipeId: testRecipe.id,
+      userId: vp.userId,
     };
 
     const result = await duplicateRecipeUsecase.execute(request);
@@ -167,5 +153,21 @@ describe('DuplicateRecipeUsecase', () => {
     expect(result.updatedAt.getTime()).toBeGreaterThan(
       testRecipe.updatedAt.getTime()
     );
+  });
+
+  it('should throw ValidationError for invalid userId', async () => {
+    const invalidUserIds = ['', '   ', null, 123, {}, []];
+
+    for (const userId of invalidUserIds) {
+      const request = {
+        recipeId: testRecipe.id,
+        userId: userId,
+      };
+
+      // @ts-expect-error testing invalid inputs
+      await expect(duplicateRecipeUsecase.execute(request)).rejects.toThrow(
+        ValidationError
+      );
+    }
   });
 });

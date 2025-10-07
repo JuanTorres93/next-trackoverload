@@ -6,6 +6,7 @@ import { NotFoundError, ValidationError } from '@/domain/common/errors';
 
 export type AddIngredientToRecipeUsecaseRequest = {
   recipeId: string;
+  userId: string;
   ingredientLine: IngredientLine;
 };
 
@@ -17,6 +18,10 @@ export class AddIngredientToRecipeUsecase {
       request.recipeId,
       'AddIngredientToRecipeUsecase recipeId'
     );
+    validateNonEmptyString(
+      request.userId,
+      'AddIngredientToRecipeUsecase userId'
+    );
 
     if (!(request.ingredientLine instanceof IngredientLine)) {
       throw new ValidationError(
@@ -24,8 +29,9 @@ export class AddIngredientToRecipeUsecase {
       );
     }
 
-    const existingRecipe = await this.recipesRepo.getRecipeById(
-      request.recipeId
+    const existingRecipe = await this.recipesRepo.getRecipeByIdAndUserId(
+      request.recipeId,
+      request.userId
     );
     if (!existingRecipe) {
       throw new NotFoundError(`Recipe with id ${request.recipeId} not found`);

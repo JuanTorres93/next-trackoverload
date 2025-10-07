@@ -7,6 +7,7 @@ import { Calories } from '../../interfaces/Calories';
 
 export type RecipeProps = {
   id: string;
+  userId: string;
   name: string;
   ingredientLines: IngredientLine[];
   createdAt: Date;
@@ -18,6 +19,7 @@ export class Recipe implements Protein, Calories {
 
   static create(props: RecipeProps): Recipe {
     validateNonEmptyString(props.id, 'Recipe id');
+    validateNonEmptyString(props.userId, 'Recipe userId');
     validateNonEmptyString(props.name, 'Recipe name');
 
     if (
@@ -71,6 +73,10 @@ export class Recipe implements Protein, Calories {
 
   get id() {
     return this.props.id;
+  }
+
+  get userId() {
+    return this.props.userId;
   }
 
   get name() {

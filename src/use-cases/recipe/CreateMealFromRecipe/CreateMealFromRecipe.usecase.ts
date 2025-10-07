@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export type CreateMealFromRecipeUsecaseRequest = {
   recipeId: string;
+  userId: string;
   mealName?: string;
 };
 
@@ -18,6 +19,10 @@ export class CreateMealFromRecipeUsecase {
       request.recipeId,
       'CreateMealFromRecipeUsecase recipeId'
     );
+    validateNonEmptyString(
+      request.userId,
+      'CreateMealFromRecipeUsecase userId'
+    );
 
     if (request.mealName !== undefined)
       validateNonEmptyString(
@@ -25,7 +30,10 @@ export class CreateMealFromRecipeUsecase {
         'CreateMealFromRecipeUsecase mealName'
       );
 
-    const recipe = await this.recipesRepo.getRecipeById(request.recipeId);
+    const recipe = await this.recipesRepo.getRecipeByIdAndUserId(
+      request.recipeId,
+      request.userId
+    );
     if (!recipe) {
       throw new NotFoundError(
         `CreateMealFromRecipeUsecase: Recipe with id ${request.recipeId} not found`

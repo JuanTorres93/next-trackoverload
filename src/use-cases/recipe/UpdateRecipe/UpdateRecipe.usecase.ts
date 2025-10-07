@@ -6,6 +6,7 @@ import { NotFoundError } from '@/domain/common/errors';
 
 export type UpdateRecipeUsecaseRequest = {
   id: string;
+  userId: string;
   name?: string;
   ingredientLines?: IngredientLine[];
 };
@@ -15,8 +16,12 @@ export class UpdateRecipeUsecase {
 
   async execute(request: UpdateRecipeUsecaseRequest): Promise<Recipe> {
     validateNonEmptyString(request.id, 'UpdateRecipeUsecase id');
+    validateNonEmptyString(request.userId, 'UpdateRecipeUsecase userId');
 
-    const existingRecipe = await this.recipesRepo.getRecipeById(request.id);
+    const existingRecipe = await this.recipesRepo.getRecipeByIdAndUserId(
+      request.id,
+      request.userId
+    );
     if (!existingRecipe) {
       throw new NotFoundError(
         `UpdateRecipeUsecase: Recipe with id ${request.id} not found`

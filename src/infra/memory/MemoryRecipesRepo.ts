@@ -18,8 +18,22 @@ export class MemoryRecipesRepo implements RecipesRepo {
     return [...this.recipes];
   }
 
+  async getAllRecipesByUserId(userId: string): Promise<Recipe[]> {
+    return this.recipes.filter((recipe) => recipe.userId === userId);
+  }
+
   async getRecipeById(id: string): Promise<Recipe | null> {
     const recipe = this.recipes.find((rec) => rec.id === id);
+    return recipe || null;
+  }
+
+  async getRecipeByIdAndUserId(
+    id: string,
+    userId: string
+  ): Promise<Recipe | null> {
+    const recipe = this.recipes.find(
+      (rec) => rec.id === id && rec.userId === userId
+    );
     return recipe || null;
   }
 
