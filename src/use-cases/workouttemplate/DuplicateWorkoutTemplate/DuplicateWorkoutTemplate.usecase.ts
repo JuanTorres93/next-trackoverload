@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { validateNonEmptyString } from '@/domain/common/validation';
 
 export type DuplicateWorkoutTemplateUsecaseRequest = {
+  userId: string;
   originalTemplateId: string;
   newTemplateName?: string;
 };
@@ -15,6 +16,7 @@ export class DuplicateWorkoutTemplateUsecase {
   async execute(
     request: DuplicateWorkoutTemplateUsecaseRequest
   ): Promise<WorkoutTemplate> {
+    validateNonEmptyString(request.userId, 'DuplicateWorkoutTemplate userId');
     validateNonEmptyString(
       request.originalTemplateId,
       'DuplicateWorkoutTemplate originalTemplateId'
@@ -27,8 +29,9 @@ export class DuplicateWorkoutTemplateUsecase {
       );
 
     const originalTemplate =
-      await this.workoutTemplatesRepo.getWorkoutTemplateById(
-        request.originalTemplateId
+      await this.workoutTemplatesRepo.getWorkoutTemplateByIdAndUserId(
+        request.originalTemplateId,
+        request.userId
       );
 
     const isDeleted = originalTemplate?.isDeleted ?? false;
@@ -42,6 +45,7 @@ export class DuplicateWorkoutTemplateUsecase {
 
     const duplicatedTemplate = WorkoutTemplate.create({
       id: uuidv4(),
+      userId: request.userId,
       name: newTemplateName,
       exercises: [...originalTemplate.exercises],
       createdAt: new Date(),

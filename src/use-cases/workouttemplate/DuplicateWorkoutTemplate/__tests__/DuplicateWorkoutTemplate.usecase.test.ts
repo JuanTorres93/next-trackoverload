@@ -3,6 +3,7 @@ import { DuplicateWorkoutTemplateUsecase } from '../DuplicateWorkoutTemplate.use
 import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import { NotFoundError } from '@/domain/common/errors';
+import * as vp from '@/../tests/createProps';
 
 describe('DuplicateWorkoutTemplateUsecase', () => {
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
@@ -15,24 +16,24 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
 
   it('should duplicate workout template with default copy name', async () => {
     const originalTemplate = WorkoutTemplate.create({
-      id: '1',
+      ...vp.validWorkoutTemplateProps,
       name: 'Push Day',
       exercises: [
         { exerciseId: 'bench-press', sets: 3 },
         { exerciseId: 'shoulder-press', sets: 2 },
       ],
-      createdAt: new Date('2023-01-01'),
-      updatedAt: new Date('2023-01-01'),
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(originalTemplate);
 
     const request = {
+      userId: vp.userId,
       originalTemplateId: '1',
     };
 
     const result = await usecase.execute(request);
 
+    expect(result.userId).toBe(vp.userId);
     expect(result.name).toBe('Push Day (Copy)');
     expect(result.id).not.toBe(originalTemplate.id);
     expect(result.exercises).toEqual(originalTemplate.exercises);
@@ -49,16 +50,14 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
 
   it('should duplicate workout template with custom name', async () => {
     const originalTemplate = WorkoutTemplate.create({
-      id: '1',
-      name: 'Push Day',
+      ...vp.validWorkoutTemplateProps,
       exercises: [{ exerciseId: 'bench-press', sets: 3 }],
-      createdAt: new Date('2023-01-01'),
-      updatedAt: new Date('2023-01-01'),
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(originalTemplate);
 
     const request = {
+      userId: vp.userId,
       originalTemplateId: '1',
       newTemplateName: 'Push Day Advanced',
     };
@@ -79,6 +78,7 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
 
   it('should throw NotFoundError when original template does not exist', async () => {
     const request = {
+      userId: vp.userId,
       originalTemplateId: 'non-existent',
     };
 
@@ -91,17 +91,16 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
 
   it('should duplicate template with empty exercises', async () => {
     const originalTemplate = WorkoutTemplate.create({
-      id: '1',
+      ...vp.validWorkoutTemplateProps,
       name: 'Empty Template',
       exercises: [],
-      createdAt: new Date('2023-01-01'),
-      updatedAt: new Date('2023-01-01'),
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(originalTemplate);
 
     const request = {
-      originalTemplateId: '1',
+      userId: vp.userId,
+      originalTemplateId: vp.validWorkoutTemplateProps.id,
     };
 
     const result = await usecase.execute(request);
@@ -119,17 +118,16 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
 
   it('should create independent copy of exercises array', async () => {
     const originalTemplate = WorkoutTemplate.create({
-      id: '1',
+      ...vp.validWorkoutTemplateProps,
       name: 'Push Day',
       exercises: [{ exerciseId: 'bench-press', sets: 3 }],
-      createdAt: new Date('2023-01-01'),
-      updatedAt: new Date('2023-01-01'),
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(originalTemplate);
 
     const request = {
-      originalTemplateId: '1',
+      userId: vp.userId,
+      originalTemplateId: vp.validWorkoutTemplateProps.id,
     };
 
     const result = await usecase.execute(request);
@@ -142,11 +140,21 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
     expect(result.exercises).toHaveLength(2);
   });
 
+  it('should throw error if userId is invalid', async () => {
+    const invalidUserIds = ['', '   ', null, undefined, 8, {}, [], true, false];
+
+    for (const userId of invalidUserIds) {
+      const request = { userId, originalTemplateId: '1' };
+      // @ts-expect-error testing invalid inputs
+      await expect(usecase.execute(request)).rejects.toThrowError();
+    }
+  });
+
   it('should throw error if originalTemplateId is invalid', async () => {
     const invalidIds = ['', '   ', null, undefined, 8, {}, [], true, false];
 
     for (const id of invalidIds) {
-      const request = { originalTemplateId: id };
+      const request = { userId: vp.userId, originalTemplateId: id };
       // @ts-expect-error testing invalid inputs
       await expect(usecase.execute(request)).rejects.toThrowError();
     }
@@ -156,18 +164,16 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
     const invalidNames = ['', '   ', null, 8, {}, [], true, false];
 
     const originalTemplate = WorkoutTemplate.create({
-      id: '1',
-      name: 'Push Day',
+      ...vp.validWorkoutTemplateProps,
       exercises: [{ exerciseId: 'bench-press', sets: 3 }],
-      createdAt: new Date('2023-01-01'),
-      updatedAt: new Date('2023-01-01'),
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(originalTemplate);
 
     for (const name of invalidNames) {
       const request = {
-        originalTemplateId: '1',
+        userId: vp.userId,
+        originalTemplateId: vp.validWorkoutTemplateProps.id,
         newTemplateName: name,
       };
       // @ts-expect-error testing invalid inputs
@@ -177,20 +183,44 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
 
   it('should throw NotFoundError when trying to duplicate deleted template', async () => {
     const originalTemplate = WorkoutTemplate.create({
-      id: '1',
-      name: 'Push Day',
+      ...vp.validWorkoutTemplateProps,
       exercises: [{ exerciseId: 'bench-press', sets: 3 }],
-      createdAt: new Date('2023-01-01'),
-      updatedAt: new Date('2023-01-01'),
     });
 
     originalTemplate.markAsDeleted();
     await workoutTemplatesRepo.saveWorkoutTemplate(originalTemplate);
 
     const request = {
-      originalTemplateId: '1',
+      userId: vp.userId,
+      originalTemplateId: vp.validWorkoutTemplateProps.id,
     };
 
     await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+  });
+
+  it('should throw NotFoundError when trying to duplicate template from different user', async () => {
+    const originalTemplate = WorkoutTemplate.create({
+      ...vp.validWorkoutTemplateProps,
+      exercises: [{ exerciseId: 'bench-press', sets: 3 }],
+    });
+
+    await workoutTemplatesRepo.saveWorkoutTemplate(originalTemplate);
+
+    const request = {
+      userId: 'other-user',
+      originalTemplateId: vp.validWorkoutTemplateProps.id,
+    };
+
+    await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+  });
+
+  it('should throw error if userId is invalid', async () => {
+    const invalidUserIds = ['', '   ', null, undefined, 8, {}, [], true, false];
+
+    for (const userId of invalidUserIds) {
+      const request = { userId, originalTemplateId: '1' };
+      // @ts-expect-error testing invalid inputs
+      await expect(usecase.execute(request)).rejects.toThrowError();
+    }
   });
 });

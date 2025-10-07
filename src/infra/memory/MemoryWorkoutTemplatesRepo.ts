@@ -20,9 +20,28 @@ export class MemoryWorkoutTemplatesRepo implements WorkoutTemplatesRepo {
     return [...this.workoutTemplates];
   }
 
+  async getAllWorkoutTemplatesByUserId(
+    userId: string
+  ): Promise<WorkoutTemplate[]> {
+    return this.workoutTemplates.filter(
+      (wt) => wt.userId === userId && !wt.isDeleted
+    );
+  }
+
   async getWorkoutTemplateById(id: string): Promise<WorkoutTemplate | null> {
     const workoutTemplate = this.workoutTemplates.find(
       (wt) => wt.id === id && !wt.isDeleted
+    );
+
+    return workoutTemplate || null;
+  }
+
+  async getWorkoutTemplateByIdAndUserId(
+    id: string,
+    userId: string
+  ): Promise<WorkoutTemplate | null> {
+    const workoutTemplate = this.workoutTemplates.find(
+      (wt) => wt.id === id && wt.userId === userId && !wt.isDeleted
     );
 
     return workoutTemplate || null;

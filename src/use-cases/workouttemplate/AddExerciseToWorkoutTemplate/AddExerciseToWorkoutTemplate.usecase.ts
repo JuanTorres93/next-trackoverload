@@ -9,6 +9,7 @@ import {
 } from '@/domain/common/validation';
 
 export type AddExerciseToWorkoutTemplateUsecaseRequest = {
+  userId: string;
   workoutTemplateId: string;
   exerciseId: string;
   sets: number;
@@ -24,6 +25,10 @@ export class AddExerciseToWorkoutTemplateUsecase {
     request: AddExerciseToWorkoutTemplateUsecaseRequest
   ): Promise<WorkoutTemplate> {
     validateNonEmptyString(
+      request.userId,
+      'AddExerciseToWorkoutTemplate userId'
+    );
+    validateNonEmptyString(
       request.workoutTemplateId,
       'AddExerciseToWorkoutTemplate workoutTemplateId'
     );
@@ -36,8 +41,9 @@ export class AddExerciseToWorkoutTemplateUsecase {
     validateInteger(request.sets, 'AddExerciseToWorkoutTemplate sets');
 
     const workoutTemplate =
-      await this.workoutTemplatesRepo.getWorkoutTemplateById(
-        request.workoutTemplateId
+      await this.workoutTemplatesRepo.getWorkoutTemplateByIdAndUserId(
+        request.workoutTemplateId,
+        request.userId
       );
 
     const isDeleted = workoutTemplate?.isDeleted ?? false;

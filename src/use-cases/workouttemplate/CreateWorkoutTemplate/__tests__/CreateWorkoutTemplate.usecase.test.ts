@@ -13,11 +13,13 @@ describe('CreateWorkoutTemplateUsecase', () => {
 
   it('should create a new workout template with the given name', async () => {
     const request = {
+      userId: 'user1',
       name: 'Push Day',
     };
 
     const result = await usecase.execute(request);
 
+    expect(result.userId).toBe('user1');
     expect(result.name).toBe('Push Day');
     expect(result.exercises).toEqual([]);
     expect(result.id).toBeDefined();
@@ -27,6 +29,7 @@ describe('CreateWorkoutTemplateUsecase', () => {
 
   it('should save the workout template in the repository', async () => {
     const request = {
+      userId: 'user1',
       name: 'Pull Day',
     };
 
@@ -36,14 +39,25 @@ describe('CreateWorkoutTemplateUsecase', () => {
       result.id
     );
     expect(savedTemplate).not.toBeNull();
+    expect(savedTemplate!.userId).toBe('user1');
     expect(savedTemplate!.name).toBe('Pull Day');
+  });
+
+  it('should throw error if userId is invalid', async () => {
+    const invalidUserIds = ['', '   ', null, undefined, 8, {}, [], true, false];
+
+    for (const userId of invalidUserIds) {
+      const request = { userId, name: 'Test' };
+      // @ts-expect-error testing invalid inputs
+      await expect(usecase.execute(request)).rejects.toThrowError();
+    }
   });
 
   it('should throw error if name is invalid', async () => {
     const invalidNames = ['', '   ', null, undefined, 8, {}, [], true, false];
 
     for (const name of invalidNames) {
-      const request = { name };
+      const request = { userId: 'user1', name };
       // @ts-expect-error testing invalid inputs
       await expect(usecase.execute(request)).rejects.toThrowError();
     }

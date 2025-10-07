@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import { WorkoutTemplate, WorkoutTemplateProps } from '../WorkoutTemplate';
 import { ValidationError } from '@/domain/common/errors';
+import * as vp from '@/../tests/createProps';
 
 describe('WorkoutTemplate', () => {
   let workoutTemplate: WorkoutTemplate;
@@ -9,15 +10,9 @@ describe('WorkoutTemplate', () => {
 
   beforeEach(() => {
     validWorkoutTemplateProps = {
-      id: '1',
-      name: 'Push',
-      exercises: [
-        { exerciseId: 'ex1', sets: 3 },
-        { exerciseId: 'ex2', sets: 4 },
-      ],
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      ...vp.validWorkoutTemplateProps,
     };
+
     workoutTemplate = WorkoutTemplate.create(validWorkoutTemplateProps);
   });
 
@@ -117,6 +112,20 @@ describe('WorkoutTemplate', () => {
     expect(() => WorkoutTemplate.create(templateProps)).toThrow(
       ValidationError
     );
+  });
+
+  it('should throw ValidationError if userId is invalid', () => {
+    const invalidUserIds = [null, undefined, '', '   ', 3, {}, [], true, false];
+
+    for (const invalidUserId of invalidUserIds) {
+      const templateProps = { ...validWorkoutTemplateProps };
+
+      // @ts-expect-error userId is invalid
+      templateProps.userId = invalidUserId;
+      expect(() => WorkoutTemplate.create(templateProps)).toThrow(
+        ValidationError
+      );
+    }
   });
 
   it('should throw ValidationError if name is invalid', () => {

@@ -1,17 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryWorkoutTemplatesRepo } from '../MemoryWorkoutTemplatesRepo';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
-
-const validWorkoutTemplateProps = {
-  id: '1',
-  name: 'Push Template',
-  exercises: [
-    { exerciseId: 'ex1', sets: 3 },
-    { exerciseId: 'ex2', sets: 4 },
-  ],
-  createdAt: new Date('2023-01-01'),
-  updatedAt: new Date('2023-01-01'),
-};
+import * as vp from '@/../tests/createProps';
 
 describe('MemoryWorkoutTemplatesRepo', () => {
   let repo: MemoryWorkoutTemplatesRepo;
@@ -19,20 +9,19 @@ describe('MemoryWorkoutTemplatesRepo', () => {
 
   beforeEach(async () => {
     repo = new MemoryWorkoutTemplatesRepo();
-    workoutTemplate = WorkoutTemplate.create(validWorkoutTemplateProps);
+    workoutTemplate = WorkoutTemplate.create(vp.validWorkoutTemplateProps);
     await repo.saveWorkoutTemplate(workoutTemplate);
   });
 
   it('should save a workout template', async () => {
     const newWorkoutTemplate = WorkoutTemplate.create({
+      ...vp.validWorkoutTemplateProps,
       id: '2',
       name: 'Pull Template',
       exercises: [
         { exerciseId: 'ex3', sets: 3 },
         { exerciseId: 'ex4', sets: 5 },
       ],
-      createdAt: new Date('2023-01-02'),
-      updatedAt: new Date('2023-01-02'),
     });
     await repo.saveWorkoutTemplate(newWorkoutTemplate);
 
@@ -43,9 +32,8 @@ describe('MemoryWorkoutTemplatesRepo', () => {
 
   it('should update an existing workout template', async () => {
     const updatedWorkoutTemplate = WorkoutTemplate.create({
-      ...validWorkoutTemplateProps,
+      ...vp.validWorkoutTemplateProps,
       name: 'Updated Push Template',
-      updatedAt: new Date('2023-01-03'),
     });
     await repo.saveWorkoutTemplate(updatedWorkoutTemplate);
 
@@ -55,9 +43,13 @@ describe('MemoryWorkoutTemplatesRepo', () => {
   });
 
   it('should retrieve a workout template by ID', async () => {
-    const fetchedWorkoutTemplate = await repo.getWorkoutTemplateById('1');
+    const fetchedWorkoutTemplate = await repo.getWorkoutTemplateById(
+      vp.validWorkoutTemplateProps.id
+    );
     expect(fetchedWorkoutTemplate).not.toBeNull();
-    expect(fetchedWorkoutTemplate?.name).toBe('Push Template');
+    expect(fetchedWorkoutTemplate?.name).toBe(
+      vp.validWorkoutTemplateProps.name
+    );
   });
 
   it('should return null for non-existent workout template ID', async () => {

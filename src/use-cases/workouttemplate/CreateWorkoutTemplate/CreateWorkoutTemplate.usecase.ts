@@ -3,6 +3,7 @@ import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTempla
 import { v4 as uuidv4 } from 'uuid';
 
 export type CreateWorkoutTemplateUsecaseRequest = {
+  userId: string;
   name: string;
 };
 
@@ -15,6 +16,7 @@ export class CreateWorkoutTemplateUsecase {
     // NOTE: validation is done at the entity level
     const newWorkoutTemplate = WorkoutTemplate.create({
       id: uuidv4(),
+      userId: request.userId,
       name: request.name,
       exercises: [],
       createdAt: new Date(),

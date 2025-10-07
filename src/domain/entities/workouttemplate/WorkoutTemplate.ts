@@ -16,6 +16,7 @@ type TemplateLineUpdateProps = {
 
 export type WorkoutTemplateProps = {
   id: string;
+  userId: string;
   name: string;
   exercises: TemplateLine[];
   createdAt: Date;
@@ -24,10 +25,17 @@ export type WorkoutTemplateProps = {
 };
 
 export class WorkoutTemplate {
-  private constructor(private readonly props: WorkoutTemplateProps) {}
+  private constructor(private readonly props: WorkoutTemplateProps) {
+    // Deep copy to prevent external mutations in tests
+    this.props = {
+      ...props,
+      exercises: props.exercises.map((exercise) => ({ ...exercise })),
+    };
+  }
 
   static create(props: WorkoutTemplateProps): WorkoutTemplate {
     validateNonEmptyString(props.id, 'WorkoutTemplate id');
+    validateNonEmptyString(props.userId, 'WorkoutTemplate userId');
     validateNonEmptyString(props.name, 'WorkoutTemplate name');
 
     if (!Array.isArray(props.exercises)) {
@@ -100,6 +108,10 @@ export class WorkoutTemplate {
   // Getters
   get id() {
     return this.props.id;
+  }
+
+  get userId() {
+    return this.props.userId;
   }
 
   get name() {

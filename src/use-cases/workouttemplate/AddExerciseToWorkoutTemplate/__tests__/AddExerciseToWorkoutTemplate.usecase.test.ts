@@ -6,6 +6,7 @@ import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTempla
 import { Exercise } from '@/domain/entities/exercise/Exercise';
 import { NotFoundError } from '@/domain/common/errors';
 import { ValidationError } from '@/domain/common/errors';
+import * as vp from '@/../tests/createProps';
 
 describe('AddExerciseToWorkoutTemplateUsecase', () => {
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
@@ -23,17 +24,13 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
 
     // Create the exercises that will be used in tests
     const benchPressExercise = Exercise.create({
+      ...vp.validExerciseProps,
       id: 'bench-press',
-      name: 'Bench Press',
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     const shoulderPressExercise = Exercise.create({
+      ...vp.validExerciseProps,
       id: 'shoulder-press',
-      name: 'Shoulder Press',
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await exercisesRepo.saveExercise(benchPressExercise);
@@ -41,11 +38,8 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
 
     // Create a template with one existing exercise
     existingTemplate = WorkoutTemplate.create({
-      id: '1',
-      name: 'Push Day',
+      ...vp.validWorkoutTemplateProps,
       exercises: [{ exerciseId: 'bench-press', sets: 3 }],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
@@ -53,6 +47,7 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
 
   it('should add exercise to workout template', async () => {
     const request = {
+      userId: vp.userId,
       workoutTemplateId: '1',
       exerciseId: 'shoulder-press',
       sets: 4,
@@ -79,6 +74,7 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
 
   it('should throw NotFoundError when workout template does not exist', async () => {
     const request = {
+      userId: vp.userId,
       workoutTemplateId: 'non-existent',
       exerciseId: 'bench-press',
       sets: 3,
@@ -89,6 +85,7 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
 
   it('should throw ValidationError when adding duplicate exercise', async () => {
     const request = {
+      userId: vp.userId,
       workoutTemplateId: '1',
       exerciseId: 'bench-press',
       sets: 4,
@@ -102,6 +99,7 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
 
     for (const invalidId of invalidIds) {
       const request = {
+        userId: vp.userId,
         workoutTemplateId: invalidId,
         exerciseId: 'shoulder-press',
         sets: 3,
@@ -117,6 +115,7 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
 
     for (const invalidId of invalidIds) {
       const request = {
+        userId: vp.userId,
         workoutTemplateId: '1',
         exerciseId: invalidId,
         sets: 3,
@@ -132,6 +131,7 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
 
     for (const sets of invalidSets) {
       const request = {
+        userId: vp.userId,
         workoutTemplateId: '1',
         exerciseId: 'shoulder-press',
         sets,
@@ -143,6 +143,7 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
 
   it('should throw error if exercise does not exist', async () => {
     const request = {
+      userId: vp.userId,
       workoutTemplateId: '1',
       exerciseId: 'non-existent-exercise',
       sets: 3,
@@ -158,6 +159,7 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
     existingTemplate.markAsDeleted();
 
     const request = {
+      userId: vp.userId,
       workoutTemplateId: '1',
       exerciseId: 'shoulder-press',
       sets: 3,
@@ -175,11 +177,28 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
     const request = {
+      userId: vp.userId,
       workoutTemplateId: '1',
       exerciseId: 'shoulder-press',
       sets: 3,
     };
 
     await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+  });
+
+  it('should throw error if userId is invalid', async () => {
+    const invalidIds = [null, undefined, '', '   ', 4, {}, [], true];
+
+    for (const invalidId of invalidIds) {
+      const request = {
+        userId: invalidId,
+        workoutTemplateId: '1',
+        exerciseId: 'shoulder-press',
+        sets: 3,
+      };
+
+      // @ts-expect-error testing invalid inputs
+      await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
+    }
   });
 });
