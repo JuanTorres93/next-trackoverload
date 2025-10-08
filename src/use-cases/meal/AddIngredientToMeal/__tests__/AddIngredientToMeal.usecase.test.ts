@@ -1,11 +1,15 @@
+import * as vp from '@/../tests/createProps';
+import {
+  AuthError,
+  NotFoundError,
+  ValidationError,
+} from '@/domain/common/errors';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { Meal } from '@/domain/entities/meal/Meal';
+import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { AddIngredientToMealUsecase } from '../AddIngredientToMeal.usecase';
-import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
-import { Meal } from '@/domain/entities/meal/Meal';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { ValidationError, NotFoundError } from '@/domain/common/errors';
-import { v4 as uuidv4 } from 'uuid';
 
 describe('AddIngredientToMealUsecase', () => {
   let mealsRepo: MemoryMealsRepo;
@@ -18,49 +22,38 @@ describe('AddIngredientToMealUsecase', () => {
     addIngredientToMealUsecase = new AddIngredientToMealUsecase(mealsRepo);
 
     const testIngredient = Ingredient.create({
-      id: uuidv4(),
+      ...vp.validIngredientProps,
       name: 'Chicken Breast',
       nutritionalInfoPer100g: {
         calories: 165,
         protein: 31,
       },
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     const testIngredientLine = IngredientLine.create({
-      id: uuidv4(),
+      ...vp.ingredientLinePropsNoIngredient,
       ingredient: testIngredient,
       quantityInGrams: 200,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     testMeal = Meal.create({
-      id: uuidv4(),
-      name: 'Grilled Chicken Meal',
+      ...vp.mealPropsNoIngredientLines,
       ingredientLines: [testIngredientLine],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     const newIngredient = Ingredient.create({
-      id: uuidv4(),
+      ...vp.validIngredientProps,
       name: 'Rice',
       nutritionalInfoPer100g: {
         calories: 130,
         protein: 2.7,
       },
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     newIngredientLine = IngredientLine.create({
-      id: uuidv4(),
+      ...vp.ingredientLinePropsNoIngredient,
       ingredient: newIngredient,
       quantityInGrams: 150,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
   });
 
@@ -71,6 +64,7 @@ describe('AddIngredientToMealUsecase', () => {
     const request = {
       mealId: testMeal.id,
       ingredientLine: newIngredientLine,
+      userId: vp.userId,
     };
 
     const result = await addIngredientToMealUsecase.execute(request);
@@ -83,6 +77,7 @@ describe('AddIngredientToMealUsecase', () => {
     const request = {
       mealId: 'non-existent-id',
       ingredientLine: newIngredientLine,
+      userId: vp.userId,
     };
 
     await expect(addIngredientToMealUsecase.execute(request)).rejects.toThrow(
@@ -134,6 +129,7 @@ describe('AddIngredientToMealUsecase', () => {
     await new Promise((resolve) => setTimeout(resolve, 2));
 
     const request = {
+      userId: vp.userId,
       mealId: testMeal.id,
       ingredientLine: newIngredientLine,
     };
@@ -142,6 +138,35 @@ describe('AddIngredientToMealUsecase', () => {
 
     expect(result.updatedAt.getTime()).toBeGreaterThan(
       originalUpdatedAt.getTime()
+    );
+  });
+
+  it('should throw error if userId is invalid', async () => {
+    const invalidUserIds = [null, undefined, 23, true, {}, ''];
+
+    for (const invalidUserId of invalidUserIds) {
+      await expect(
+        addIngredientToMealUsecase.execute({
+          mealId: testMeal.id,
+          ingredientLine: newIngredientLine,
+          // @ts-expect-error Testing invalid inputs
+          userId: invalidUserId,
+        })
+      ).rejects.toThrow(ValidationError);
+    }
+  });
+
+  it("should not add ingredient to another user's meal", async () => {
+    await mealsRepo.saveMeal(testMeal);
+
+    const request = {
+      userId: 'another-user-id',
+      mealId: testMeal.id,
+      ingredientLine: newIngredientLine,
+    };
+
+    await expect(addIngredientToMealUsecase.execute(request)).rejects.toThrow(
+      AuthError
     );
   });
 });

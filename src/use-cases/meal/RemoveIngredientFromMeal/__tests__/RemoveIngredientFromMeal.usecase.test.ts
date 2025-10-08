@@ -4,8 +4,13 @@ import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { ValidationError, NotFoundError } from '@/domain/common/errors';
+import {
+  ValidationError,
+  NotFoundError,
+  AuthError,
+} from '@/domain/common/errors';
 import { v4 as uuidv4 } from 'uuid';
+import * as vp from '@/../tests/createProps';
 
 describe('RemoveIngredientFromMealUsecase', () => {
   let mealsRepo: MemoryMealsRepo;
@@ -21,49 +26,27 @@ describe('RemoveIngredientFromMealUsecase', () => {
     );
 
     testIngredient = Ingredient.create({
-      id: uuidv4(),
-      name: 'Chicken Breast',
-      nutritionalInfoPer100g: {
-        calories: 165,
-        protein: 31,
-      },
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      ...vp.validIngredientProps,
     });
 
     secondIngredient = Ingredient.create({
+      ...vp.validIngredientProps,
       id: uuidv4(),
-      name: 'Rice',
-      nutritionalInfoPer100g: {
-        calories: 130,
-        protein: 2.7,
-      },
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     const firstIngredientLine = IngredientLine.create({
-      id: uuidv4(),
+      ...vp.ingredientLinePropsNoIngredient,
       ingredient: testIngredient,
-      quantityInGrams: 200,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     const secondIngredientLine = IngredientLine.create({
-      id: uuidv4(),
+      ...vp.ingredientLinePropsNoIngredient,
       ingredient: secondIngredient,
-      quantityInGrams: 150,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     testMeal = Meal.create({
-      id: uuidv4(),
-      name: 'Chicken with Rice Meal',
+      ...vp.mealPropsNoIngredientLines,
       ingredientLines: [firstIngredientLine, secondIngredientLine],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
   });
 
@@ -72,6 +55,7 @@ describe('RemoveIngredientFromMealUsecase', () => {
     const originalIngredientCount = testMeal.ingredientLines.length;
 
     const request = {
+      userId: vp.userId,
       mealId: testMeal.id,
       ingredientId: testIngredient.id,
     };
@@ -95,6 +79,7 @@ describe('RemoveIngredientFromMealUsecase', () => {
     const request = {
       mealId: 'non-existent-id',
       ingredientId: testIngredient.id,
+      userId: vp.userId,
     };
 
     await expect(
@@ -106,17 +91,13 @@ describe('RemoveIngredientFromMealUsecase', () => {
     await mealsRepo.saveMeal(testMeal);
 
     const nonExistentIngredient = Ingredient.create({
+      ...vp.validIngredientProps,
       id: uuidv4(),
       name: 'Non-existent',
-      nutritionalInfoPer100g: {
-        calories: 100,
-        protein: 10,
-      },
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     const request = {
+      userId: vp.userId,
       mealId: testMeal.id,
       ingredientId: nonExistentIngredient.id,
     };
@@ -162,6 +143,7 @@ describe('RemoveIngredientFromMealUsecase', () => {
     await new Promise((resolve) => setTimeout(resolve, 2));
 
     const request = {
+      userId: vp.userId,
       mealId: testMeal.id,
       ingredientId: testIngredient.id,
     };
@@ -171,5 +153,34 @@ describe('RemoveIngredientFromMealUsecase', () => {
     expect(result.updatedAt.getTime()).toBeGreaterThan(
       originalUpdatedAt.getTime()
     );
+  });
+
+  it('should throw error when userId is invalid', async () => {
+    const invalidUserIds = [null, undefined, 3, '', true, {}];
+
+    for (const invalidUserId of invalidUserIds) {
+      await expect(
+        removeIngredientFromMealUsecase.execute({
+          mealId: testMeal.id,
+          ingredientId: testIngredient.id,
+          // @ts-expect-error Testing invalid inputs
+          userId: invalidUserId,
+        })
+      ).rejects.toThrow(ValidationError);
+    }
+  });
+
+  it('should throw error when trying to remove an ingredient from other users meal', async () => {
+    await mealsRepo.saveMeal(testMeal);
+
+    const request = {
+      userId: 'other-user-id',
+      mealId: testMeal.id,
+      ingredientId: testIngredient.id,
+    };
+
+    await expect(
+      removeIngredientFromMealUsecase.execute(request)
+    ).rejects.toThrow(AuthError);
   });
 });

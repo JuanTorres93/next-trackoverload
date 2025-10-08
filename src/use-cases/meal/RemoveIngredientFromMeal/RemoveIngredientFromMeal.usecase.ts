@@ -1,9 +1,10 @@
 import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { validateNonEmptyString } from '@/domain/common/validation';
-import { NotFoundError } from '@/domain/common/errors';
+import { AuthError, NotFoundError } from '@/domain/common/errors';
 
 export type RemoveIngredientFromMealUsecaseRequest = {
+  userId: string;
   mealId: string;
   ingredientId: string;
 };
@@ -14,6 +15,10 @@ export class RemoveIngredientFromMealUsecase {
   async execute(
     request: RemoveIngredientFromMealUsecaseRequest
   ): Promise<Meal> {
+    validateNonEmptyString(
+      request.userId,
+      'RemoveIngredientFromMealUsecase userId'
+    );
     validateNonEmptyString(
       request.mealId,
       'RemoveIngredientFromMealUsecase mealId'
@@ -27,6 +32,12 @@ export class RemoveIngredientFromMealUsecase {
     if (!existingMeal) {
       throw new NotFoundError(
         `RemoveIngredientFromMealUsecase: Meal with id ${request.mealId} not found`
+      );
+    }
+
+    if (existingMeal.userId !== request.userId) {
+      throw new AuthError(
+        `RemoveIngredientFromMealUsecase: Meal with id ${request.mealId} not found for user ${request.userId}`
       );
     }
 

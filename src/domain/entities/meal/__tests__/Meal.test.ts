@@ -4,19 +4,7 @@ import { Meal, MealProps } from '../Meal';
 import { ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-
-const nutritionalInfoPer100g = {
-  calories: 100,
-  protein: 10,
-};
-
-const validIngredientProps = {
-  id: '1',
-  name: 'Sugar',
-  nutritionalInfoPer100g,
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
+import * as vp from '@/../tests/createProps';
 
 describe('Meal', () => {
   let meal: Meal;
@@ -25,22 +13,17 @@ describe('Meal', () => {
   let validIngredientLine: IngredientLine;
 
   beforeEach(() => {
-    validIngredient = Ingredient.create(validIngredientProps);
+    validIngredient = Ingredient.create(vp.validIngredientProps);
 
     validIngredientLine = IngredientLine.create({
-      id: '1',
+      ...vp.ingredientLinePropsNoIngredient,
       ingredient: validIngredient,
       quantityInGrams: 100,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     validMealProps = {
-      id: '1',
-      name: 'Cake',
+      ...vp.mealPropsNoIngredientLines,
       ingredientLines: [validIngredientLine],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     };
     meal = Meal.create(validMealProps);
   });
@@ -55,20 +38,16 @@ describe('Meal', () => {
 
     // More than one ingredient line
     const anotherIngredientLine = IngredientLine.create({
-      id: '2',
+      ...vp.ingredientLinePropsNoIngredient,
       ingredient: Ingredient.create({
-        ...validIngredientProps,
+        ...vp.validIngredientProps,
         id: '2',
         nutritionalInfoPer100g: {
           calories: 200,
           protein: 20,
         },
-        createdAt: new Date(),
-        updatedAt: new Date(),
       }),
       quantityInGrams: 50,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     meal.addIngredientLine(anotherIngredientLine);
@@ -79,41 +58,40 @@ describe('Meal', () => {
 
   it('should compute the correct total protein', async () => {
     const totalProtein = meal.protein;
-    expect(totalProtein).toBe(10);
+    expect(totalProtein).toBe(
+      vp.validIngredientProps.nutritionalInfoPer100g.protein
+    );
 
     // More than one ingredient line
     const anotherIngredientLine = IngredientLine.create({
+      ...vp.ingredientLinePropsNoIngredient,
       id: '2',
       ingredient: Ingredient.create({
-        ...validIngredientProps,
+        ...vp.validIngredientProps,
         id: '2',
         nutritionalInfoPer100g: {
           calories: 200,
           protein: 20,
         },
-        createdAt: new Date(),
-        updatedAt: new Date(),
       }),
       quantityInGrams: 50,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
     meal.addIngredientLine(anotherIngredientLine);
 
     const newTotalProtein = meal.protein;
-    expect(newTotalProtein).toBe(20);
+    expect(newTotalProtein).toBe(
+      vp.validIngredientProps.nutritionalInfoPer100g.protein + 10
+    );
   });
 
   it('should add a new ingredient line', async () => {
     const newIngredientLine = IngredientLine.create({
+      ...vp.ingredientLinePropsNoIngredient,
       id: '2',
       ingredient: Ingredient.create({
-        ...validIngredientProps,
+        ...vp.validIngredientProps,
         id: '2',
       }),
-      quantityInGrams: 50,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     meal.addIngredientLine(newIngredientLine);
@@ -145,5 +123,19 @@ describe('Meal', () => {
         ingredientLines: [],
       })
     ).toThrow(ValidationError);
+  });
+
+  it('should throw error if userId is invalid', async () => {
+    const invalidIds = [null, undefined, 23, true, {}, '', '  ', []];
+
+    for (const invalidId of invalidIds) {
+      expect(() =>
+        Meal.create({
+          ...validMealProps,
+          // @ts-expect-error Testing invalid inputs
+          userId: invalidId,
+        })
+      ).toThrow(ValidationError);
+    }
   });
 });

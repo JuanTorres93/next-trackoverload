@@ -18,8 +18,17 @@ export class MemoryMealsRepo implements MealsRepo {
     return [...this.meals];
   }
 
+  async getAllMealsForUser(userId: string): Promise<Meal[]> {
+    return this.meals.filter((meal) => meal.userId === userId);
+  }
+
   async getMealById(id: string): Promise<Meal | null> {
     const meal = this.meals.find((m) => m.id === id);
+    return meal || null;
+  }
+
+  async getMealByIdForUser(id: string, userId: string): Promise<Meal | null> {
+    const meal = this.meals.find((m) => m.id === id && m.userId === userId);
     return meal || null;
   }
 

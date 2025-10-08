@@ -11,6 +11,7 @@ export type MealUpdateProps = {
 
 export type MealProps = {
   id: string;
+  userId: string;
   name: string;
   ingredientLines: IngredientLine[];
   createdAt: Date;
@@ -22,6 +23,7 @@ export class Meal implements Calories, Protein {
 
   static create(props: MealProps): Meal {
     validateNonEmptyString(props.id, 'Meal id');
+    validateNonEmptyString(props.userId, 'Meal userId');
     validateNonEmptyString(props.name, 'Meal name');
 
     if (
@@ -90,6 +92,10 @@ export class Meal implements Calories, Protein {
 
   get id() {
     return this.props.id;
+  }
+
+  get userId() {
+    return this.props.userId;
   }
 
   get name() {
