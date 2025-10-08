@@ -1,0 +1,93 @@
+import * as vp from '@/../tests/createProps';
+import { ValidationError } from '@/domain/common/errors';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { Meal } from '@/domain/entities/meal/Meal';
+import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { GetAllMealsForUserUsecase } from '../GetAllMealsForUser.usecase';
+
+describe('GetAllMealsUsecase', () => {
+  let mealsRepo: MemoryMealsRepo;
+  let getAllMealsUsecase: GetAllMealsForUserUsecase;
+
+  beforeEach(() => {
+    mealsRepo = new MemoryMealsRepo();
+    getAllMealsUsecase = new GetAllMealsForUserUsecase(mealsRepo);
+  });
+
+  it('should return all meals', async () => {
+    const ingredient1 = Ingredient.create({
+      ...vp.validIngredientProps,
+    });
+
+    const ingredient2 = Ingredient.create({
+      ...vp.validIngredientProps,
+    });
+
+    const ingredientLine1 = IngredientLine.create({
+      ...vp.ingredientLinePropsNoIngredient,
+      ingredient: ingredient1,
+    });
+
+    const ingredientLine2 = IngredientLine.create({
+      ...vp.ingredientLinePropsNoIngredient,
+      ingredient: ingredient2,
+    });
+
+    const meal1 = Meal.create({
+      ...vp.mealPropsNoIngredientLines,
+      id: '1',
+      name: 'Protein Meal',
+      ingredientLines: [ingredientLine1],
+    });
+
+    const meal2 = Meal.create({
+      ...vp.mealPropsNoIngredientLines,
+      id: '2',
+      name: 'Carb Meal',
+      ingredientLines: [ingredientLine2],
+    });
+
+    await mealsRepo.saveMeal(meal1);
+    await mealsRepo.saveMeal(meal2);
+
+    const meals = await getAllMealsUsecase.execute({
+      userId: vp.userId,
+    });
+
+    expect(meals).toHaveLength(2);
+    expect(meals).toContain(meal1);
+    expect(meals).toContain(meal2);
+  });
+
+  it('should return empty array when no meals exist', async () => {
+    const meals = await getAllMealsUsecase.execute({ userId: vp.userId });
+
+    expect(meals).toHaveLength(0);
+    expect(meals).toEqual([]);
+  });
+
+  it('should throw error for invalid userId', async () => {
+    const invalidUserIds = [
+      null,
+      undefined,
+      '',
+      '   ',
+      123,
+      {},
+      [],
+      true,
+      false,
+    ];
+
+    for (const invalidUserId of invalidUserIds) {
+      await expect(async () => {
+        await getAllMealsUsecase.execute({
+          // @ts-expect-error Testing invalid input
+          userId: invalidUserId,
+        });
+      }).rejects.toThrow(ValidationError);
+    }
+  });
+});
