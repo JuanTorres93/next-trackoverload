@@ -4,6 +4,7 @@ import { NotFoundError } from '@/domain/common/errors';
 import { validateNonEmptyString } from '@/domain/common/validation';
 
 export type UpdateExerciseInWorkoutTemplateUsecaseRequest = {
+  userId: string;
   workoutTemplateId: string;
   exerciseId: string;
   sets: number;
@@ -16,6 +17,10 @@ export class UpdateExerciseInWorkoutTemplateUsecase {
     request: UpdateExerciseInWorkoutTemplateUsecaseRequest
   ): Promise<WorkoutTemplate> {
     validateNonEmptyString(
+      request.userId,
+      'UpdateExerciseInWorkoutTemplate userId'
+    );
+    validateNonEmptyString(
       request.workoutTemplateId,
       'UpdateExerciseInWorkoutTemplate workoutTemplateId'
     );
@@ -25,8 +30,9 @@ export class UpdateExerciseInWorkoutTemplateUsecase {
     );
 
     const workoutTemplate =
-      await this.workoutTemplatesRepo.getWorkoutTemplateById(
-        request.workoutTemplateId
+      await this.workoutTemplatesRepo.getWorkoutTemplateByIdAndUserId(
+        request.workoutTemplateId,
+        request.userId
       );
 
     const isDeleted = workoutTemplate?.isDeleted ?? false;

@@ -3,6 +3,7 @@ import { UpdateExerciseInWorkoutTemplateUsecase } from '../UpdateExerciseInWorko
 import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import { NotFoundError } from '@/domain/common/errors';
+import * as vp from '@/../tests/createProps';
 
 describe('UpdateExerciseInWorkoutTemplateUsecase', () => {
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
@@ -15,20 +16,18 @@ describe('UpdateExerciseInWorkoutTemplateUsecase', () => {
 
   it('should update exercise sets in workout template', async () => {
     const existingTemplate = WorkoutTemplate.create({
-      id: '1',
-      name: 'Push Day',
+      ...vp.validWorkoutTemplateProps,
       exercises: [
         { exerciseId: 'bench-press', sets: 3 },
         { exerciseId: 'shoulder-press', sets: 3 },
       ],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
     const request = {
-      workoutTemplateId: '1',
+      userId: vp.userId,
+      workoutTemplateId: vp.validWorkoutTemplateProps.id,
       exerciseId: 'bench-press',
       sets: 5,
     };
@@ -58,6 +57,7 @@ describe('UpdateExerciseInWorkoutTemplateUsecase', () => {
 
   it('should throw NotFoundError when workout template does not exist', async () => {
     const request = {
+      userId: vp.userId,
       workoutTemplateId: 'non-existent',
       exerciseId: 'bench-press',
       sets: 5,
@@ -72,19 +72,17 @@ describe('UpdateExerciseInWorkoutTemplateUsecase', () => {
 
   it('should handle updating non-existent exercise gracefully', async () => {
     const existingTemplate = WorkoutTemplate.create({
-      id: '1',
-      name: 'Push Day',
+      ...vp.validWorkoutTemplateProps,
       exercises: [{ exerciseId: 'bench-press', sets: 3 }],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
     const request = {
-      workoutTemplateId: '1',
+      workoutTemplateId: vp.validWorkoutTemplateProps.id,
       exerciseId: 'non-existent-exercise',
       sets: 5,
+      userId: vp.userId,
     };
 
     const result = await usecase.execute(request);
@@ -102,6 +100,22 @@ describe('UpdateExerciseInWorkoutTemplateUsecase', () => {
     );
     expect(savedTemplate).not.toBeNull();
     expect(savedTemplate!.exercises).toHaveLength(1);
+  });
+
+  it('should throw error if userId is invalid', async () => {
+    const invalidIds = [null, undefined, '', '   ', 3, {}, [], true, false];
+
+    for (const invalidId of invalidIds) {
+      const request = {
+        workoutTemplateId: vp.validWorkoutTemplateProps.id,
+        exerciseId: 'bench-press',
+        sets: 0,
+        userId: invalidId,
+      };
+
+      // @ts-expect-error testing invalid inputs
+      await expect(usecase.execute(request)).rejects.toThrow();
+    }
   });
 
   it('should throw error if workoutTemplateId is invalid', async () => {
@@ -124,7 +138,7 @@ describe('UpdateExerciseInWorkoutTemplateUsecase', () => {
 
     for (const invalidId of invalidIds) {
       const request = {
-        workoutTemplateId: '1',
+        workoutTemplateId: vp.validWorkoutTemplateProps.id,
         exerciseId: invalidId,
         sets: 0,
       };
@@ -139,7 +153,7 @@ describe('UpdateExerciseInWorkoutTemplateUsecase', () => {
 
     for (const invalidSet of invalidSets) {
       const request = {
-        workoutTemplateId: '1',
+        workoutTemplateId: vp.validWorkoutTemplateProps.id,
         exerciseId: 'bench-press',
         sets: invalidSet,
       };
@@ -151,11 +165,8 @@ describe('UpdateExerciseInWorkoutTemplateUsecase', () => {
 
   it('should throw NotFoundError when trying to update exercise in deleted workout template', async () => {
     const existingTemplate = WorkoutTemplate.create({
-      id: '1',
-      name: 'Push Day',
+      ...vp.validWorkoutTemplateProps,
       exercises: [{ exerciseId: 'bench-press', sets: 3 }],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     existingTemplate.markAsDeleted();
@@ -163,7 +174,8 @@ describe('UpdateExerciseInWorkoutTemplateUsecase', () => {
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
     const request = {
-      workoutTemplateId: '1',
+      workoutTemplateId: vp.validWorkoutTemplateProps.id,
+      userId: vp.userId,
       exerciseId: 'bench-press',
       sets: 5,
     };

@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { validateNonEmptyString } from '@/domain/common/validation';
 
 export type CreateWorkoutFromTemplateUsecaseRequest = {
+  userId: string;
   workoutTemplateId: string;
   workoutName?: string;
 };
@@ -19,6 +20,15 @@ export class CreateWorkoutFromTemplateUsecase {
   async execute(
     request: CreateWorkoutFromTemplateUsecaseRequest
   ): Promise<Workout> {
+    validateNonEmptyString(
+      request.userId,
+      'CreateWorkoutFromTemplateUsecase userId'
+    );
+    validateNonEmptyString(
+      request.workoutTemplateId,
+      'CreateWorkoutFromTemplateUsecase workoutTemplateId'
+    );
+
     if (request.workoutName !== undefined)
       validateNonEmptyString(
         request.workoutName,
@@ -26,8 +36,9 @@ export class CreateWorkoutFromTemplateUsecase {
       );
 
     const workoutTemplate =
-      await this.workoutTemplatesRepo.getWorkoutTemplateById(
-        request.workoutTemplateId
+      await this.workoutTemplatesRepo.getWorkoutTemplateByIdAndUserId(
+        request.workoutTemplateId,
+        request.userId
       );
 
     const isDeleted = workoutTemplate?.isDeleted ?? false;

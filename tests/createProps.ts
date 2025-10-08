@@ -18,7 +18,7 @@ export const recipePropsNoIngredientLines = {
 };
 export const validWorkoutTemplateProps = {
   id: '1',
-  userId: 'user1',
+  userId,
   name: 'Push',
   exercises: [
     { exerciseId: 'ex1', sets: 3 },

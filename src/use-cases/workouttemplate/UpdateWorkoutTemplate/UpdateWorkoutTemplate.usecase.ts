@@ -5,6 +5,7 @@ import { validateNonEmptyString } from '@/domain/common/validation';
 
 export type UpdateWorkoutTemplateUsecaseRequest = {
   id: string;
+  userId: string;
   name: string;
 };
 
@@ -17,7 +18,10 @@ export class UpdateWorkoutTemplateUsecase {
     validateNonEmptyString(request.id, 'UpdateWorkoutTemplateUsecase id');
 
     const workoutTemplate =
-      await this.workoutTemplatesRepo.getWorkoutTemplateById(request.id);
+      await this.workoutTemplatesRepo.getWorkoutTemplateByIdAndUserId(
+        request.id,
+        request.userId
+      );
 
     const isDeleted = workoutTemplate?.isDeleted ?? false;
 
@@ -26,9 +30,10 @@ export class UpdateWorkoutTemplateUsecase {
     }
 
     // Create updated template with new name
-    // NOTE: name validation is done in the entity
+    // NOTE: userId and name validation are done in the entity
     const updatedTemplate = WorkoutTemplate.create({
       id: workoutTemplate.id,
+      userId: workoutTemplate.userId,
       name: request.name,
       exercises: workoutTemplate.exercises,
       createdAt: workoutTemplate.createdAt,

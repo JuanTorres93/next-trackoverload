@@ -8,6 +8,7 @@ import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTempla
 import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
 
 export type ReorderExerciseInWorkoutTemplateUsecaseRequest = {
+  userId: string;
   workoutTemplateId: string;
   exerciseId: string;
   newIndex: number;
@@ -19,6 +20,10 @@ export class ReorderExerciseInWorkoutTemplateUsecase {
   async execute(
     request: ReorderExerciseInWorkoutTemplateUsecaseRequest
   ): Promise<WorkoutTemplate> {
+    validateNonEmptyString(
+      request.userId,
+      'ReorderExerciseInWorkoutTemplate userId'
+    );
     validateNonEmptyString(
       request.workoutTemplateId,
       'ReorderExerciseInWorkoutTemplate workoutTemplateId'
@@ -39,8 +44,9 @@ export class ReorderExerciseInWorkoutTemplateUsecase {
     );
 
     const workoutTemplate =
-      await this.workoutTemplatesRepo.getWorkoutTemplateById(
-        request.workoutTemplateId
+      await this.workoutTemplatesRepo.getWorkoutTemplateByIdAndUserId(
+        request.workoutTemplateId,
+        request.userId
       );
 
     const isDeleted = workoutTemplate?.isDeleted ?? false;

@@ -3,6 +3,7 @@ import { RemoveExerciseFromWorkoutTemplateUsecase } from '../RemoveExerciseFromW
 import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import { NotFoundError } from '@/domain/common/errors';
+import * as vp from '@/../tests/createProps';
 
 describe('RemoveExerciseFromWorkoutTemplateUsecase', () => {
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
@@ -17,20 +18,18 @@ describe('RemoveExerciseFromWorkoutTemplateUsecase', () => {
 
   it('should remove exercise from workout template', async () => {
     const existingTemplate = WorkoutTemplate.create({
-      id: '1',
-      name: 'Push Day',
+      ...vp.validWorkoutTemplateProps,
       exercises: [
         { exerciseId: 'bench-press', sets: 3 },
         { exerciseId: 'shoulder-press', sets: 3 },
       ],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
     const request = {
-      workoutTemplateId: '1',
+      workoutTemplateId: vp.validWorkoutTemplateProps.id,
+      userId: vp.userId,
       exerciseId: 'bench-press',
     };
 
@@ -53,6 +52,7 @@ describe('RemoveExerciseFromWorkoutTemplateUsecase', () => {
   it('should throw NotFoundError when workout template does not exist', async () => {
     const request = {
       workoutTemplateId: 'non-existent',
+      userId: vp.userId,
       exerciseId: 'bench-press',
     };
 
@@ -65,17 +65,15 @@ describe('RemoveExerciseFromWorkoutTemplateUsecase', () => {
 
   it('should handle removing non-existent exercise gracefully', async () => {
     const existingTemplate = WorkoutTemplate.create({
-      id: '1',
-      name: 'Push Day',
+      ...vp.validWorkoutTemplateProps,
       exercises: [{ exerciseId: 'bench-press', sets: 3 }],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
     const request = {
-      workoutTemplateId: '1',
+      workoutTemplateId: vp.validWorkoutTemplateProps.id,
+      userId: vp.userId,
       exerciseId: 'non-existent-exercise',
     };
 
@@ -93,6 +91,20 @@ describe('RemoveExerciseFromWorkoutTemplateUsecase', () => {
     );
     expect(savedTemplate).not.toBeNull();
     expect(savedTemplate!.exercises).toHaveLength(1);
+  });
+
+  it('should throw error if userId is invalid', async () => {
+    const invalidIds = ['', '   ', null, undefined, 8, {}, [], true, false];
+
+    for (const userId of invalidIds) {
+      const request = {
+        userId,
+        workoutTemplateId: 'some-template',
+        exerciseId: 'some-exercise',
+      };
+      // @ts-expect-error testing invalid inputs
+      await expect(usecase.execute(request)).rejects.toThrowError();
+    }
   });
 
   it('should throw error if workoutTemplateId is invalid', async () => {
@@ -123,12 +135,8 @@ describe('RemoveExerciseFromWorkoutTemplateUsecase', () => {
 
   it('should throw error if template is deleted', async () => {
     const existingTemplate = WorkoutTemplate.create({
-      id: '1',
-      name: 'Push Day',
+      ...vp.validWorkoutTemplateProps,
       exercises: [{ exerciseId: 'bench-press', sets: 3 }],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      deletedAt: new Date(),
     });
 
     existingTemplate.markAsDeleted();
@@ -136,8 +144,9 @@ describe('RemoveExerciseFromWorkoutTemplateUsecase', () => {
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
     const request = {
-      workoutTemplateId: '1',
+      workoutTemplateId: vp.validWorkoutTemplateProps.id,
       exerciseId: 'bench-press',
+      userId: vp.userId,
     };
 
     await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
