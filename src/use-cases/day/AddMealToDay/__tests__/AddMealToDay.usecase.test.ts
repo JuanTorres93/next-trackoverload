@@ -56,11 +56,8 @@ describe('AddMealToDayUsecase', () => {
   it('should create new day and add meal if day does not exist', async () => {
     const date = new Date('2023-10-02');
     const meal = Meal.create({
-      id: 'meal-1',
-      name: 'Breakfast',
+      ...vp.mealPropsNoIngredientLines,
       ingredientLines: [ingredientLine],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await mealsRepo.saveMeal(meal);
@@ -68,7 +65,7 @@ describe('AddMealToDayUsecase', () => {
     const result = await addMealToDayUsecase.execute({
       date,
       userId: vp.userId,
-      mealId: 'meal-1',
+      mealId: vp.mealPropsNoIngredientLines.id,
     });
 
     expect(result.id).toEqual(date);
