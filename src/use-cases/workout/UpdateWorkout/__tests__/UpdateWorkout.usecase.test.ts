@@ -3,6 +3,7 @@ import { UpdateWorkoutUsecase } from '../UpdateWorkout.usecase';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import * as vp from '@/../tests/createProps';
 
 describe('UpdateWorkoutUsecase', () => {
   let workoutsRepo: MemoryWorkoutsRepo;
@@ -15,12 +16,9 @@ describe('UpdateWorkoutUsecase', () => {
 
   it('should update workout name', async () => {
     const workout = Workout.create({
+      ...vp.validWorkoutProps,
       id: '1',
-      name: 'Push Day',
-      workoutTemplateId: 'template-1',
       exercises: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await workoutsRepo.saveWorkout(workout);
@@ -38,12 +36,10 @@ describe('UpdateWorkoutUsecase', () => {
 
   it('should keep existing name when not provided', async () => {
     const workout = Workout.create({
+      ...vp.validWorkoutProps,
       id: '1',
       name: 'Push Day',
-      workoutTemplateId: 'template-1',
       exercises: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await workoutsRepo.saveWorkout(workout);
@@ -80,12 +76,10 @@ describe('UpdateWorkoutUsecase', () => {
 
   it('should throw ValidationError when name is invalid', async () => {
     const workout = Workout.create({
+      ...vp.validWorkoutProps,
       id: '1',
       name: 'Push Day',
-      workoutTemplateId: 'template-1',
       exercises: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await workoutsRepo.saveWorkout(workout);

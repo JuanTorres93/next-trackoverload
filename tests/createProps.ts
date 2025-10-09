@@ -27,6 +27,22 @@ export const validWorkoutTemplateProps = {
   createdAt: new Date(),
   updatedAt: new Date(),
 };
+
+export const validWorkoutProps = {
+  id: '1',
+  name: 'Push',
+  workoutTemplateId: 'template-1',
+  exercises: [
+    {
+      exerciseId: 'ex1',
+      setNumber: 1,
+      reps: 10,
+      weight: 50,
+    },
+  ],
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
 export const validExerciseProps = {
   id: 'ex1',
   name: 'Test Exercise',

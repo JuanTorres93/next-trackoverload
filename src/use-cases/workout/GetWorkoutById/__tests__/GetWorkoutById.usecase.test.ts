@@ -3,6 +3,7 @@ import { GetWorkoutByIdUsecase } from '../GetWorkoutById.usecase';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { ValidationError } from '@/domain/common/errors';
+import * as vp from '@/../tests/createProps';
 
 describe('GetWorkoutByIdUsecase', () => {
   let workoutsRepo: MemoryWorkoutsRepo;
@@ -15,12 +16,9 @@ describe('GetWorkoutByIdUsecase', () => {
 
   it('should return workout when it exists', async () => {
     const workout = Workout.create({
+      ...vp.validWorkoutProps,
       id: '1',
-      name: 'Push Day',
-      workoutTemplateId: 'template-1',
       exercises: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await workoutsRepo.saveWorkout(workout);

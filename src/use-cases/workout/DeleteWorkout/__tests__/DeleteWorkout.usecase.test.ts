@@ -3,6 +3,7 @@ import { DeleteWorkoutUsecase } from '../DeleteWorkout.usecase';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import * as vp from '@/../tests/createProps';
 
 describe('DeleteWorkoutUsecase', () => {
   let workoutsRepo: MemoryWorkoutsRepo;
@@ -15,12 +16,9 @@ describe('DeleteWorkoutUsecase', () => {
 
   it('should delete workout when it exists', async () => {
     const workout = Workout.create({
+      ...vp.validWorkoutProps,
       id: '1',
-      name: 'Push Day',
-      workoutTemplateId: 'template-1',
       exercises: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await workoutsRepo.saveWorkout(workout);

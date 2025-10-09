@@ -3,6 +3,7 @@ import { UpdateExerciseInWorkoutUsecase } from '../UpdateExerciseInWorkout.useca
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import * as vp from '@/../tests/createProps';
 
 describe('UpdateExerciseInWorkoutUsecase', () => {
   let workoutsRepo: MemoryWorkoutsRepo;
@@ -17,9 +18,8 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
 
   it('should update exercise reps in workout', async () => {
     const workout = Workout.create({
+      ...vp.validWorkoutProps,
       id: '1',
-      name: 'Push Day',
-      workoutTemplateId: 'template-1',
       exercises: [
         {
           exerciseId: 'exercise-1',
@@ -28,8 +28,6 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
           weight: 0,
         },
       ],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await workoutsRepo.saveWorkout(workout);

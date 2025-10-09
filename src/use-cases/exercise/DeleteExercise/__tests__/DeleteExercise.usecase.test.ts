@@ -3,6 +3,7 @@ import { DeleteExerciseUsecase } from '../DeleteExercise.usecase';
 import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
 import { NotFoundError } from '@/domain/common/errors';
+import * as vp from '@/../tests/createProps';
 
 describe('DeleteExerciseUsecase', () => {
   let exercisesRepo: MemoryExercisesRepo;
@@ -15,10 +16,9 @@ describe('DeleteExerciseUsecase', () => {
 
   it('should delete existing exercise', async () => {
     const exercise = Exercise.create({
+      ...vp.validExerciseProps,
       id: '1',
       name: 'Push Up',
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await exercisesRepo.saveExercise(exercise);

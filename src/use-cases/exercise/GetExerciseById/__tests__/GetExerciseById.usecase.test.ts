@@ -3,6 +3,7 @@ import { GetExerciseByIdUsecase } from '../GetExerciseById.usecase';
 import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
 import { ValidationError } from '@/domain/common/errors';
+import * as vp from '@/../tests/createProps';
 
 describe('GetExerciseByIdUsecase', () => {
   let exercisesRepo: MemoryExercisesRepo;
@@ -15,10 +16,9 @@ describe('GetExerciseByIdUsecase', () => {
 
   it('should return exercise when found', async () => {
     const exercise = Exercise.create({
+      ...vp.validExerciseProps,
       id: '1',
       name: 'Push Up',
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await exercisesRepo.saveExercise(exercise);

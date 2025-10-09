@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { GetAllExercisesUsecase } from '../GetAllExercises.usecase';
 import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
+import * as vp from '@/../tests/createProps';
 
 describe('GetAllExercisesUsecase', () => {
   let exercisesRepo: MemoryExercisesRepo;
@@ -14,16 +15,14 @@ describe('GetAllExercisesUsecase', () => {
 
   it('should return all exercises', async () => {
     const exercise1 = Exercise.create({
+      ...vp.validExerciseProps,
       id: '1',
       name: 'Push Up',
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
     const exercise2 = Exercise.create({
+      ...vp.validExerciseProps,
       id: '2',
       name: 'Squat',
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await exercisesRepo.saveExercise(exercise1);

@@ -5,6 +5,7 @@ import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import * as vp from '@/../tests/createProps';
 
 describe('AddExerciseToWorkoutUsecase', () => {
   let workoutsRepo: MemoryWorkoutsRepo;
@@ -22,19 +23,15 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
   it('should add exercise to workout', async () => {
     const workout = Workout.create({
+      ...vp.validWorkoutProps,
       id: '1',
-      name: 'Push Day',
-      workoutTemplateId: 'template-1',
       exercises: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     const exercise = Exercise.create({
+      ...vp.validExerciseProps,
       id: 'exercise-1',
       name: 'Push Up',
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await workoutsRepo.saveWorkout(workout);
@@ -59,10 +56,9 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
   it('should throw NotFoundError when workout does not exist', async () => {
     const exercise = Exercise.create({
+      ...vp.validExerciseProps,
       id: 'exercise-1',
       name: 'Push Up',
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await exercisesRepo.saveExercise(exercise);
@@ -80,12 +76,9 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
   it('should throw NotFoundError when exercise does not exist', async () => {
     const workout = Workout.create({
+      ...vp.validWorkoutProps,
       id: '1',
-      name: 'Push Day',
-      workoutTemplateId: 'template-1',
       exercises: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await workoutsRepo.saveWorkout(workout);
@@ -103,9 +96,8 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
   it('should throw ValidationError when trying to add duplicate exercise with same set number', async () => {
     const workout = Workout.create({
+      ...vp.validWorkoutProps,
       id: '1',
-      name: 'Push Day',
-      workoutTemplateId: 'template-1',
       exercises: [
         {
           exerciseId: 'exercise-1',
@@ -114,15 +106,12 @@ describe('AddExerciseToWorkoutUsecase', () => {
           weight: 0,
         },
       ],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     const exercise = Exercise.create({
+      ...vp.validExerciseProps,
       id: 'exercise-1',
       name: 'Push Up',
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await workoutsRepo.saveWorkout(workout);
@@ -141,9 +130,8 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
   it('should add exercise with different set number', async () => {
     const workout = Workout.create({
+      ...vp.validWorkoutProps,
       id: '1',
-      name: 'Push Day',
-      workoutTemplateId: 'template-1',
       exercises: [
         {
           exerciseId: 'exercise-1',
@@ -152,15 +140,12 @@ describe('AddExerciseToWorkoutUsecase', () => {
           weight: 0,
         },
       ],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     const exercise = Exercise.create({
+      ...vp.validExerciseProps,
       id: 'exercise-1',
       name: 'Push Up',
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await workoutsRepo.saveWorkout(workout);
@@ -185,10 +170,9 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
   it('should throw error if workoutId is invalid', async () => {
     const exercise = Exercise.create({
+      ...vp.validExerciseProps,
       id: 'exercise-1',
       name: 'Push Up',
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await exercisesRepo.saveExercise(exercise);
@@ -211,12 +195,9 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
   it('should throw error if exerciseId is invalid', async () => {
     const workout = Workout.create({
+      ...vp.validWorkoutProps,
       id: '1',
-      name: 'Push Day',
-      workoutTemplateId: 'template-1',
       exercises: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await workoutsRepo.saveWorkout(workout);
@@ -239,19 +220,15 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
   it('should throw error if setNumber is invalid', async () => {
     const workout = Workout.create({
+      ...vp.validWorkoutProps,
       id: '1',
-      name: 'Push Day',
-      workoutTemplateId: 'template-1',
       exercises: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     const exercise = Exercise.create({
+      ...vp.validExerciseProps,
       id: 'exercise-1',
       name: 'Push Up',
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await workoutsRepo.saveWorkout(workout);
@@ -286,19 +263,15 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
   it('should throw error if reps is invalid', async () => {
     const workout = Workout.create({
+      ...vp.validWorkoutProps,
       id: '1',
-      name: 'Push Day',
-      workoutTemplateId: 'template-1',
       exercises: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     const exercise = Exercise.create({
+      ...vp.validExerciseProps,
       id: 'exercise-1',
       name: 'Push Up',
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await workoutsRepo.saveWorkout(workout);
@@ -332,19 +305,15 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
   it('should throw error if weight is invalid', async () => {
     const workout = Workout.create({
+      ...vp.validWorkoutProps,
       id: '1',
-      name: 'Push Day',
-      workoutTemplateId: 'template-1',
       exercises: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     const exercise = Exercise.create({
+      ...vp.validExerciseProps,
       id: 'exercise-1',
       name: 'Push Up',
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await workoutsRepo.saveWorkout(workout);

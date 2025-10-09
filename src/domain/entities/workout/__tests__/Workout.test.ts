@@ -2,13 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import { Workout, WorkoutProps } from '../Workout';
 import { ValidationError } from '@/domain/common/errors';
-
-const validExerciseLine = {
-  exerciseId: 'ex1',
-  setNumber: 1,
-  reps: 10,
-  weight: 50,
-};
+import * as vp from '@/../tests/createProps';
 
 describe('Workout', () => {
   let workout: Workout;
@@ -16,12 +10,8 @@ describe('Workout', () => {
 
   beforeEach(() => {
     validWorkoutProps = {
-      id: '1',
-      name: 'Push',
-      workoutTemplateId: 'template-1',
-      exercises: [validExerciseLine],
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      ...vp.validWorkoutProps,
+      exercises: [...vp.validWorkoutProps.exercises],
     };
     workout = Workout.create(validWorkoutProps);
   });
@@ -56,7 +46,7 @@ describe('Workout', () => {
   it('should remove exercise', async () => {
     const newExercise = {
       exerciseId: 'ex2',
-      setNumber: 1,
+      setNumber: 2,
       reps: 12,
       weight: 60,
     };
