@@ -1,14 +1,15 @@
-import { MealsRepo } from '@/domain/repos/MealsRepo.port';
-import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
-import { Meal } from '@/domain/entities/meal/Meal';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import {
-  validateNonEmptyString,
-  validateGreaterThanZero,
-} from '@/domain/common/validation';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import {
+  validateGreaterThanZero,
+  validateNonEmptyString,
+} from '@/domain/common/validation';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { Meal } from '@/domain/entities/meal/Meal';
+import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
+import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 
 export type UpdateIngredientInMealUsecaseRequest = {
+  userId: string;
   mealId: string;
   ingredientLineId: string;
   ingredientId?: string;
@@ -22,6 +23,10 @@ export class UpdateIngredientInMealUsecase {
   ) {}
 
   async execute(request: UpdateIngredientInMealUsecaseRequest): Promise<Meal> {
+    validateNonEmptyString(
+      request.userId,
+      'UpdateIngredientInMealUsecase userId'
+    );
     validateNonEmptyString(
       request.mealId,
       'UpdateIngredientInMealUsecase mealId'
@@ -70,7 +75,10 @@ export class UpdateIngredientInMealUsecase {
     }
 
     // Get the existing meal
-    const existingMeal = await this.mealsRepo.getMealById(request.mealId);
+    const existingMeal = await this.mealsRepo.getMealByIdForUser(
+      request.mealId,
+      request.userId
+    );
 
     if (!existingMeal) {
       throw new NotFoundError(
@@ -92,6 +100,7 @@ export class UpdateIngredientInMealUsecase {
     // Create updated meal with updated ingredient line
     const updatedMeal = Meal.create({
       id: existingMeal.id,
+      userId: existingMeal.userId,
       name: existingMeal.name,
       ingredientLines: existingMeal.ingredientLines.map((line) => {
         if (line.id === request.ingredientLineId) {

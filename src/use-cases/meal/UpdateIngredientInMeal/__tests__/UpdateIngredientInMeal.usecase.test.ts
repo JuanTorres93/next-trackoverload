@@ -1,12 +1,12 @@
+import * as vp from '@/../tests/createProps';
+import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { Meal } from '@/domain/entities/meal/Meal';
+import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
+import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { UpdateIngredientInMealUsecase } from '../UpdateIngredientInMeal.usecase';
-import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
-import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
-import { Meal } from '@/domain/entities/meal/Meal';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { ValidationError, NotFoundError } from '@/domain/common/errors';
-import { v4 as uuidv4 } from 'uuid';
 
 describe('UpdateIngredientInMealUsecase', () => {
   let mealsRepo: MemoryMealsRepo;
@@ -26,41 +26,21 @@ describe('UpdateIngredientInMealUsecase', () => {
     );
 
     testIngredient = Ingredient.create({
-      id: uuidv4(),
-      name: 'Chicken Breast',
-      nutritionalInfoPer100g: {
-        calories: 165,
-        protein: 31,
-      },
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      ...vp.validIngredientProps,
     });
 
     alternativeIngredient = Ingredient.create({
-      id: uuidv4(),
-      name: 'Turkey Breast',
-      nutritionalInfoPer100g: {
-        calories: 135,
-        protein: 30,
-      },
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      ...vp.validIngredientProps,
     });
 
     testIngredientLine = IngredientLine.create({
-      id: uuidv4(),
+      ...vp.ingredientLinePropsNoIngredient,
       ingredient: testIngredient,
-      quantityInGrams: 200,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     testMeal = Meal.create({
-      id: uuidv4(),
-      name: 'Protein Meal',
+      ...vp.mealPropsNoIngredientLines,
       ingredientLines: [testIngredientLine],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
   });
 
@@ -68,6 +48,7 @@ describe('UpdateIngredientInMealUsecase', () => {
     await mealsRepo.saveMeal(testMeal);
 
     const request = {
+      userId: vp.userId,
       mealId: testMeal.id,
       ingredientLineId: testIngredientLine.id,
       quantityInGrams: 300,
@@ -86,6 +67,7 @@ describe('UpdateIngredientInMealUsecase', () => {
     await ingredientsRepo.saveIngredient(alternativeIngredient);
 
     const request = {
+      userId: vp.userId,
       mealId: testMeal.id,
       ingredientLineId: testIngredientLine.id,
       ingredientId: alternativeIngredient.id,
@@ -106,6 +88,7 @@ describe('UpdateIngredientInMealUsecase', () => {
     await ingredientsRepo.saveIngredient(alternativeIngredient);
 
     const request = {
+      userId: vp.userId,
       mealId: testMeal.id,
       ingredientLineId: testIngredientLine.id,
       ingredientId: alternativeIngredient.id,
@@ -122,6 +105,7 @@ describe('UpdateIngredientInMealUsecase', () => {
 
   it('should throw NotFoundError when meal does not exist', async () => {
     const request = {
+      userId: vp.userId,
       mealId: 'non-existent-id',
       ingredientLineId: testIngredientLine.id,
       quantityInGrams: 300,
@@ -136,6 +120,7 @@ describe('UpdateIngredientInMealUsecase', () => {
     await mealsRepo.saveMeal(testMeal);
 
     const request = {
+      userId: vp.userId,
       mealId: testMeal.id,
       ingredientLineId: 'non-existent-line-id',
       quantityInGrams: 300,
@@ -150,6 +135,7 @@ describe('UpdateIngredientInMealUsecase', () => {
     await mealsRepo.saveMeal(testMeal);
 
     const request = {
+      userId: vp.userId,
       mealId: testMeal.id,
       ingredientLineId: testIngredientLine.id,
       ingredientId: 'non-existent-ingredient-id',
@@ -162,6 +148,7 @@ describe('UpdateIngredientInMealUsecase', () => {
 
   it('should throw ValidationError when no update fields are provided', async () => {
     const request = {
+      userId: vp.userId,
       mealId: testMeal.id,
       ingredientLineId: testIngredientLine.id,
     };
@@ -213,6 +200,22 @@ describe('UpdateIngredientInMealUsecase', () => {
           ingredientLineId: testIngredientLine.id,
           // @ts-expect-error Testing invalid inputs
           quantityInGrams: invalidQuantity,
+        })
+      ).rejects.toThrow(ValidationError);
+    }
+  });
+
+  it('should throw error if userId is invalid', async () => {
+    const invalidIds = [null, undefined, 3, '', true, {}];
+
+    for (const invalidId of invalidIds) {
+      await expect(
+        updateIngredientInMealUsecase.execute({
+          // @ts-expect-error Testing invalid inputs
+          userId: invalidId,
+          mealId: testMeal.id,
+          ingredientLineId: testIngredientLine.id,
+          ingredientId: testIngredient.id,
         })
       ).rejects.toThrow(ValidationError);
     }
