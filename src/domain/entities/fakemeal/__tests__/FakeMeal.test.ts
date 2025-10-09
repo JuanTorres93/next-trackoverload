@@ -10,6 +10,7 @@ describe('FakeMeal', () => {
   beforeEach(() => {
     validFakeMealProps = {
       id: '1',
+      userId: 'user-1',
       name: 'Bocadillo de chusmarro en La Peña',
       calories: 600,
       protein: 15,
@@ -21,6 +22,7 @@ describe('FakeMeal', () => {
 
   it('should create a valid entity', () => {
     expect(fakeMeal).toBeInstanceOf(FakeMeal);
+    expect(fakeMeal.userId).toBe('user-1');
   });
 
   it('should update protein', async () => {
@@ -39,6 +41,15 @@ describe('FakeMeal', () => {
     const patch = { name: 'New Name' };
     fakeMeal.update(patch);
     expect(fakeMeal.name).toBe('New Name');
+  });
+
+  it('should throw validation error for empty userId', async () => {
+    expect(() =>
+      FakeMeal.create({
+        ...validFakeMealProps,
+        userId: '',
+      })
+    ).toThrow(ValidationError);
   });
 
   it('should throw validation error for empty name', async () => {

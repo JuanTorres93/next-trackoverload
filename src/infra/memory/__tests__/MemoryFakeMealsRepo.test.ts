@@ -4,6 +4,7 @@ import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 
 const validFakeMealProps = {
   id: '1',
+  userId: 'user-1',
   name: 'Protein Shake',
   calories: 250,
   protein: 30,
@@ -24,6 +25,7 @@ describe('MemoryFakeMealsRepo', () => {
   it('should save a fake meal', async () => {
     const newFakeMeal = FakeMeal.create({
       id: '2',
+      userId: 'user-1',
       name: 'Energy Bar',
       calories: 200,
       protein: 15,
@@ -50,10 +52,40 @@ describe('MemoryFakeMealsRepo', () => {
     expect(allFakeMeals[0].name).toBe('Updated Protein Shake');
   });
 
+  it('should retrieve all fake meals by userId', async () => {
+    const fakeMeal2 = FakeMeal.create({
+      id: '2',
+      userId: 'user-2',
+      name: 'Another Shake',
+      calories: 300,
+      protein: 25,
+      createdAt: new Date('2023-01-02'),
+      updatedAt: new Date('2023-01-02'),
+    });
+    await repo.saveFakeMeal(fakeMeal2);
+
+    const user1FakeMeals = await repo.getAllFakeMealsByUserId('user-1');
+    const user2FakeMeals = await repo.getAllFakeMealsByUserId('user-2');
+
+    expect(user1FakeMeals.length).toBe(1);
+    expect(user1FakeMeals[0].name).toBe('Protein Shake');
+    expect(user2FakeMeals.length).toBe(1);
+    expect(user2FakeMeals[0].name).toBe('Another Shake');
+  });
+
   it('should retrieve a fake meal by ID', async () => {
     const fetchedFakeMeal = await repo.getFakeMealById('1');
     expect(fetchedFakeMeal).not.toBeNull();
     expect(fetchedFakeMeal?.name).toBe('Protein Shake');
+  });
+
+  it('should retrieve a fake meal by ID and userId', async () => {
+    const fetchedFakeMeal = await repo.getFakeMealByIdAndUserId('1', 'user-1');
+    expect(fetchedFakeMeal).not.toBeNull();
+    expect(fetchedFakeMeal?.name).toBe('Protein Shake');
+
+    const notFoundFakeMeal = await repo.getFakeMealByIdAndUserId('1', 'user-2');
+    expect(notFoundFakeMeal).toBeNull();
   });
 
   it('should return null for non-existent fake meal ID', async () => {
@@ -69,5 +101,27 @@ describe('MemoryFakeMealsRepo', () => {
 
     const allFakeMealsAfterDeletion = await repo.getAllFakeMeals();
     expect(allFakeMealsAfterDeletion.length).toBe(0);
+  });
+
+  it('should delete a fake meal by ID and userId', async () => {
+    const fakeMeal2 = FakeMeal.create({
+      id: '2',
+      userId: 'user-2',
+      name: 'Another Shake',
+      calories: 300,
+      protein: 25,
+      createdAt: new Date('2023-01-02'),
+      updatedAt: new Date('2023-01-02'),
+    });
+    await repo.saveFakeMeal(fakeMeal2);
+
+    const allFakeMeals = await repo.getAllFakeMeals();
+    expect(allFakeMeals.length).toBe(2);
+
+    await repo.deleteFakeMealByIdAndUserId('1', 'user-1');
+
+    const allFakeMealsAfterDeletion = await repo.getAllFakeMeals();
+    expect(allFakeMealsAfterDeletion.length).toBe(1);
+    expect(allFakeMealsAfterDeletion[0].userId).toBe('user-2');
   });
 });

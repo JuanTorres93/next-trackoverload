@@ -14,6 +14,7 @@ describe('CreateFakeMealUsecase', () => {
 
   it('should create a fake meal successfully', async () => {
     const request = {
+      userId: 'user-1',
       name: 'Test Fake Meal',
       calories: 500,
       protein: 30,
@@ -21,6 +22,7 @@ describe('CreateFakeMealUsecase', () => {
 
     const result = await usecase.execute(request);
 
+    expect(result.userId).toBe(request.userId);
     expect(result.name).toBe(request.name);
     expect(result.calories).toBe(request.calories);
     expect(result.protein).toBe(request.protein);
@@ -32,10 +34,12 @@ describe('CreateFakeMealUsecase', () => {
     const savedFakeMeal = await fakeMealsRepo.getFakeMealById(result.id);
     expect(savedFakeMeal).toBeDefined();
     expect(savedFakeMeal?.name).toBe(request.name);
+    expect(savedFakeMeal?.userId).toBe(request.userId);
   });
 
   it('should throw ValidationError for empty name', async () => {
     const request = {
+      userId: 'user-1',
       name: '',
       calories: 500,
       protein: 30,
@@ -46,6 +50,7 @@ describe('CreateFakeMealUsecase', () => {
 
   it('should throw ValidationError for zero calories', async () => {
     const request = {
+      userId: 'user-1',
       name: 'Test Fake Meal',
       calories: 0,
       protein: 30,
@@ -56,11 +61,27 @@ describe('CreateFakeMealUsecase', () => {
 
   it('should throw ValidationError for negative protein', async () => {
     const request = {
+      userId: 'user-1',
       name: 'Test Fake Meal',
       calories: 500,
       protein: -10,
     };
 
     await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
+  });
+
+  it('should throw ValidationError for invalid userId', async () => {
+    const invalidUserIds = ['', '   ', null, undefined, 34, 0, -5, {}, []];
+    for (const userId of invalidUserIds) {
+      const request = {
+        userId,
+        name: 'Test Fake Meal',
+        calories: 500,
+        protein: 30,
+      };
+
+      // @ts-expect-error testing invalid types
+      await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
+    }
   });
 });

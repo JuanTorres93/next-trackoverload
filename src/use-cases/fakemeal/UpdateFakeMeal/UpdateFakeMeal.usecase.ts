@@ -5,6 +5,7 @@ import { NotFoundError } from '@/domain/common/errors';
 
 export type UpdateFakeMealUsecaseRequest = {
   id: string;
+  userId: string;
   patch: FakeUpdateProps;
 };
 
@@ -12,12 +13,16 @@ export class UpdateFakeMealUsecase {
   constructor(private fakeMealsRepo: FakeMealsRepo) {}
 
   async execute(request: UpdateFakeMealUsecaseRequest): Promise<FakeMeal> {
-    validateNonEmptyString(request.id, 'UpdateFakeMealUsecase id');
+    validateNonEmptyString(request.id, 'UpdateFakeMealUsecase: id');
+    validateNonEmptyString(request.userId, 'UpdateFakeMealUsecase: userId');
 
-    const fakeMeal = await this.fakeMealsRepo.getFakeMealById(request.id);
+    const fakeMeal = await this.fakeMealsRepo.getFakeMealByIdAndUserId(
+      request.id,
+      request.userId
+    );
     if (!fakeMeal) {
       throw new NotFoundError(
-        `UpdateFakeMealUsecase: FakeMeal with id ${request.id} not found`
+        `UpdateFakeMealUsecase: FakeMeal with id ${request.id} and userId ${request.userId} not found`
       );
     }
 

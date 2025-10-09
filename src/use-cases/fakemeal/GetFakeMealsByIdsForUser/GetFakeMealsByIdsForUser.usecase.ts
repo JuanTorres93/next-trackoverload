@@ -3,14 +3,19 @@ import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { validateNonEmptyString } from '@/domain/common/validation';
 import { ValidationError } from '@/domain/common/errors';
 
-export type GetFakeMealsByIdsUsecaseRequest = {
+export type GetFakeMealsByIdsForUserUsecaseRequest = {
   ids: string[];
+  userId: string;
 };
 
-export class GetFakeMealsByIdsUsecase {
+export class GetFakeMealsByIdsForUserUsecase {
   constructor(private fakeMealsRepo: FakeMealsRepo) {}
 
-  async execute(request: GetFakeMealsByIdsUsecaseRequest): Promise<FakeMeal[]> {
+  async execute(
+    request: GetFakeMealsByIdsForUserUsecaseRequest
+  ): Promise<FakeMeal[]> {
+    validateNonEmptyString(request.userId, 'GetFakeMealsByIdsUsecase: userId');
+
     if (!Array.isArray(request.ids) || request.ids.length === 0) {
       throw new ValidationError(
         'GetFakeMealsByIdsUsecase: ids must be a non-empty array'
@@ -24,7 +29,9 @@ export class GetFakeMealsByIdsUsecase {
     });
 
     const fakeMeals = await Promise.all(
-      uniqueIds.map((id) => this.fakeMealsRepo.getFakeMealById(id))
+      uniqueIds.map((id) =>
+        this.fakeMealsRepo.getFakeMealByIdAndUserId(id, request.userId)
+      )
     );
 
     // Filter out null values (fake meals that weren't found)

@@ -4,21 +4,29 @@ import { NotFoundError } from '@/domain/common/errors';
 
 export type DeleteFakeMealUsecaseRequest = {
   id: string;
+  userId: string;
 };
 
 export class DeleteFakeMealUsecase {
   constructor(private fakeMealsRepo: FakeMealsRepo) {}
 
   async execute(request: DeleteFakeMealUsecaseRequest): Promise<void> {
-    validateNonEmptyString(request.id, 'DeleteFakeMealUsecase id');
+    validateNonEmptyString(request.id, 'DeleteFakeMealUsecase: id');
+    validateNonEmptyString(request.userId, 'DeleteFakeMealUsecase: userId');
 
-    const fakeMeal = await this.fakeMealsRepo.getFakeMealById(request.id);
+    const fakeMeal = await this.fakeMealsRepo.getFakeMealByIdAndUserId(
+      request.id,
+      request.userId
+    );
     if (!fakeMeal) {
       throw new NotFoundError(
-        `DeleteFakeMealUsecase: FakeMeal with id ${request.id} not found`
+        `DeleteFakeMealUsecase: FakeMeal with id ${request.id} and userId ${request.userId} not found`
       );
     }
 
-    await this.fakeMealsRepo.deleteFakeMeal(request.id);
+    await this.fakeMealsRepo.deleteFakeMealByIdAndUserId(
+      request.id,
+      request.userId
+    );
   }
 }

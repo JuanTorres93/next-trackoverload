@@ -27,12 +27,13 @@ export class AddFakeMealToDayUsecase {
       'AddFakeMealToDayUsecase: fakeMealId'
     );
 
-    const fakeMeal = await this.fakeMealsRepo.getFakeMealById(
-      request.fakeMealId
+    const fakeMeal = await this.fakeMealsRepo.getFakeMealByIdAndUserId(
+      request.fakeMealId,
+      request.userId
     );
     if (!fakeMeal) {
       throw new ValidationError(
-        `AddFakeMealToDayUsecase: FakeMeal with id ${request.fakeMealId} not found`
+        `AddFakeMealToDayUsecase: FakeMeal with id ${request.fakeMealId} and userId ${request.userId} not found`
       );
     }
 

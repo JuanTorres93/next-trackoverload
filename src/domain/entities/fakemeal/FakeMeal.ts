@@ -14,6 +14,7 @@ export type FakeUpdateProps = {
 
 export type FakeMealProps = {
   id: string;
+  userId: string;
   name: string;
   calories: number;
   protein: number;
@@ -26,6 +27,7 @@ export class FakeMeal implements Protein, Calories {
 
   static create(props: FakeMealProps): FakeMeal {
     validateNonEmptyString(props.id, 'FakeMeal id');
+    validateNonEmptyString(props.userId, 'FakeMeal userId');
     validateNonEmptyString(props.name, 'FakeMeal name');
     validateGreaterThanZero(props.calories, 'FakeMeal calories');
     validateGreaterThanZero(props.protein, 'FakeMeal protein');
@@ -55,6 +57,10 @@ export class FakeMeal implements Protein, Calories {
   // Getters
   get id() {
     return this.props.id;
+  }
+
+  get userId() {
+    return this.props.userId;
   }
 
   get name() {

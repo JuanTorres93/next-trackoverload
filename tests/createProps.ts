@@ -36,6 +36,7 @@ export const validExerciseProps = {
 
 export const validFakeMealProps = {
   id: 'fakemeal1',
+  userId,
   name: 'Fake Chicken Breast',
   protein: 30,
   calories: 200,
