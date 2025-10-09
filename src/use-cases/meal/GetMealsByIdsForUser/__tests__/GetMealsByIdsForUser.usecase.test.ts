@@ -1,61 +1,45 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { GetMealsByIdsUsecase } from '../GetMealsByIds.usecase';
-import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
-import { Meal } from '@/domain/entities/meal/Meal';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import * as vp from '@/../tests/createProps';
 import { ValidationError } from '@/domain/common/errors';
-import { v4 as uuidv4 } from 'uuid';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { Meal } from '@/domain/entities/meal/Meal';
+import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { GetMealsByIdsForUserUsecase } from '../GetMealsByIdsForUser.usecase';
 
 describe('GetMealsByIdsUsecase', () => {
   let mealsRepo: MemoryMealsRepo;
-  let getMealsByIdsUsecase: GetMealsByIdsUsecase;
+  let getMealsByIdsUsecase: GetMealsByIdsForUserUsecase;
   let testMeals: Meal[];
 
   beforeEach(() => {
     mealsRepo = new MemoryMealsRepo();
-    getMealsByIdsUsecase = new GetMealsByIdsUsecase(mealsRepo);
+    getMealsByIdsUsecase = new GetMealsByIdsForUserUsecase(mealsRepo);
 
     const testIngredient = Ingredient.create({
-      id: uuidv4(),
-      name: 'Chicken Breast',
-      nutritionalInfoPer100g: {
-        calories: 165,
-        protein: 31,
-      },
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      ...vp.validIngredientProps,
     });
 
     const testIngredientLine = IngredientLine.create({
-      id: uuidv4(),
+      ...vp.ingredientLinePropsNoIngredient,
       ingredient: testIngredient,
-      quantityInGrams: 200,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     testMeals = [
       Meal.create({
-        id: uuidv4(),
-        name: 'Grilled Chicken Meal',
+        ...vp.mealPropsNoIngredientLines,
+        id: 'meal-1',
         ingredientLines: [testIngredientLine],
-        createdAt: new Date(),
-        updatedAt: new Date(),
       }),
       Meal.create({
-        id: uuidv4(),
-        name: 'Chicken Salad Meal',
+        ...vp.mealPropsNoIngredientLines,
+        id: 'meal-2',
         ingredientLines: [testIngredientLine],
-        createdAt: new Date(),
-        updatedAt: new Date(),
       }),
       Meal.create({
-        id: uuidv4(),
-        name: 'Protein Bowl',
+        ...vp.mealPropsNoIngredientLines,
+        id: 'meal-3',
         ingredientLines: [testIngredientLine],
-        createdAt: new Date(),
-        updatedAt: new Date(),
       }),
     ];
   });
@@ -65,7 +49,10 @@ describe('GetMealsByIdsUsecase', () => {
     await Promise.all(testMeals.map((meal) => mealsRepo.saveMeal(meal)));
 
     const ids = [testMeals[0].id, testMeals[1].id];
-    const result = await getMealsByIdsUsecase.execute({ ids });
+    const result = await getMealsByIdsUsecase.execute({
+      ids,
+      userId: vp.userId,
+    });
 
     expect(result).toHaveLength(2);
     expect(result).toContain(testMeals[0]);
@@ -77,7 +64,10 @@ describe('GetMealsByIdsUsecase', () => {
     await mealsRepo.saveMeal(testMeals[0]);
 
     const ids = [testMeals[0].id, 'non-existent-id'];
-    const result = await getMealsByIdsUsecase.execute({ ids });
+    const result = await getMealsByIdsUsecase.execute({
+      ids,
+      userId: vp.userId,
+    });
 
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(testMeals[0]);
@@ -85,7 +75,10 @@ describe('GetMealsByIdsUsecase', () => {
 
   it('should return empty array when no meals are found', async () => {
     const ids = ['non-existent-1', 'non-existent-2'];
-    const result = await getMealsByIdsUsecase.execute({ ids });
+    const result = await getMealsByIdsUsecase.execute({
+      ids,
+      userId: vp.userId,
+    });
 
     expect(result).toHaveLength(0);
     expect(result).toEqual([]);
@@ -95,7 +88,10 @@ describe('GetMealsByIdsUsecase', () => {
     await mealsRepo.saveMeal(testMeals[0]);
 
     const ids = [testMeals[0].id, testMeals[0].id, testMeals[0].id];
-    const result = await getMealsByIdsUsecase.execute({ ids });
+    const result = await getMealsByIdsUsecase.execute({
+      ids,
+      userId: vp.userId,
+    });
 
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(testMeals[0]);
@@ -109,9 +105,9 @@ describe('GetMealsByIdsUsecase', () => {
   });
 
   it('should throw error when ids array is empty', async () => {
-    await expect(getMealsByIdsUsecase.execute({ ids: [] })).rejects.toThrow(
-      ValidationError
-    );
+    await expect(
+      getMealsByIdsUsecase.execute({ ids: [], userId: vp.userId })
+    ).rejects.toThrow(ValidationError);
   });
 
   it('should throw error when any id is invalid', async () => {
@@ -125,6 +121,17 @@ describe('GetMealsByIdsUsecase', () => {
       await expect(
         // @ts-expect-error Testing invalid inputs
         getMealsByIdsUsecase.execute({ ids })
+      ).rejects.toThrow(ValidationError);
+    }
+  });
+
+  it('should throw error if userId is invalid', async () => {
+    const invalidUserIds = ['', null, undefined, '   ', 123, {}, [], true];
+
+    for (const userId of invalidUserIds) {
+      await expect(
+        // @ts-expect-error Testing invalid inputs
+        getMealsByIdsUsecase.execute({ ids: ['meal-1'], userId })
       ).rejects.toThrow(ValidationError);
     }
   });

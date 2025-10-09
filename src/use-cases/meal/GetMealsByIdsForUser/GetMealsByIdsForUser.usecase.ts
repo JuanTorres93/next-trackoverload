@@ -3,14 +3,17 @@ import { Meal } from '@/domain/entities/meal/Meal';
 import { validateNonEmptyString } from '@/domain/common/validation';
 import { ValidationError } from '@/domain/common/errors';
 
-export type GetMealsByIdsUsecaseRequest = {
+export type GetMealsByIdsForUserUsecaseRequest = {
   ids: string[];
+  userId: string;
 };
 
-export class GetMealsByIdsUsecase {
+export class GetMealsByIdsForUserUsecase {
   constructor(private mealsRepo: MealsRepo) {}
 
-  async execute(request: GetMealsByIdsUsecaseRequest): Promise<Meal[]> {
+  async execute(request: GetMealsByIdsForUserUsecaseRequest): Promise<Meal[]> {
+    validateNonEmptyString(request.userId, 'GetMealsByIdsUsecase userId');
+
     if (!Array.isArray(request.ids) || request.ids.length === 0) {
       throw new ValidationError(
         'GetMealsByIdsUsecase: ids must be a non-empty array'
@@ -24,7 +27,9 @@ export class GetMealsByIdsUsecase {
     });
 
     const meals = await Promise.all(
-      uniqueIds.map((id) => this.mealsRepo.getMealById(id))
+      uniqueIds.map((id) =>
+        this.mealsRepo.getMealByIdForUser(id, request.userId)
+      )
     );
 
     // Filter out null values (meals that weren't found)
