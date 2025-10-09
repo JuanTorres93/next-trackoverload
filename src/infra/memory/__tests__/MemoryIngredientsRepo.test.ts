@@ -1,18 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryIngredientsRepo } from '../MemoryIngredientsRepo';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { NotFoundError } from '@/domain/common/errors';
-
-const validIngredientProps = {
-  id: '1',
-  name: 'Chicken Breast',
-  nutritionalInfoPer100g: {
-    calories: 165,
-    protein: 25,
-  },
-  createdAt: new Date('2023-01-01'),
-  updatedAt: new Date('2023-01-01'),
-};
+import * as vp from '@/../tests/createProps';
 
 describe('MemoryIngredientsRepo', () => {
   let repo: MemoryIngredientsRepo;
@@ -20,19 +9,15 @@ describe('MemoryIngredientsRepo', () => {
 
   beforeEach(async () => {
     repo = new MemoryIngredientsRepo();
-    ingredient = Ingredient.create(validIngredientProps);
+    ingredient = Ingredient.create(vp.validIngredientProps);
     await repo.saveIngredient(ingredient);
   });
 
   it('should save an ingredient', async () => {
     const newIngredient = Ingredient.create({
+      ...vp.validIngredientProps,
       id: '2',
       name: 'Rice',
-      nutritionalInfoPer100g: {
-        calories: 130,
-        protein: 2.7,
-      },
-      createdAt: new Date('2023-01-02'),
       updatedAt: new Date('2023-01-02'),
     });
     await repo.saveIngredient(newIngredient);
@@ -44,7 +29,7 @@ describe('MemoryIngredientsRepo', () => {
 
   it('should update an existing ingredient', async () => {
     const updatedIngredient = Ingredient.create({
-      ...validIngredientProps,
+      ...vp.validIngredientProps,
       name: 'Updated Chicken Breast',
       updatedAt: new Date('2023-01-03'),
     });
@@ -57,10 +42,10 @@ describe('MemoryIngredientsRepo', () => {
 
   it('should retrieve an ingredient by ID', async () => {
     const fetchedIngredient = await repo.getIngredientById(
-      validIngredientProps.id
+      vp.validIngredientProps.id
     );
     expect(fetchedIngredient).not.toBeNull();
-    expect(fetchedIngredient?.name).toBe(validIngredientProps.name);
+    expect(fetchedIngredient?.name).toBe(vp.validIngredientProps.name);
   });
 
   it('should return null for non-existent ingredient ID', async () => {
@@ -72,7 +57,7 @@ describe('MemoryIngredientsRepo', () => {
     const allIngredients = await repo.getAllIngredients();
     expect(allIngredients.length).toBe(1);
 
-    await repo.deleteIngredient(validIngredientProps.id);
+    await repo.deleteIngredient(vp.validIngredientProps.id);
 
     const allIngredientsAfterDeletion = await repo.getAllIngredients();
     expect(allIngredientsAfterDeletion.length).toBe(0);

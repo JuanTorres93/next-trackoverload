@@ -94,7 +94,7 @@ describe('AddFakeMealToDayUsecase', () => {
         addFakeMealToDayUsecase.execute({
           // @ts-expect-error testing invalid values
           date,
-          userId: 'user-1',
+          userId: vp.userId,
           fakeMealId: 'fakemeal1',
         })
       ).rejects.toThrow(ValidationError);
@@ -142,8 +142,8 @@ describe('AddFakeMealToDayUsecase', () => {
     for (const fakeMealId of invalidFakeMealIds) {
       await expect(
         addFakeMealToDayUsecase.execute({
-          date: new Date('2023-10-01'),
-          userId: 'user-1',
+          date: vp.dateId,
+          userId: vp.userId,
           // @ts-expect-error testing invalid values
           fakeMealId,
         })

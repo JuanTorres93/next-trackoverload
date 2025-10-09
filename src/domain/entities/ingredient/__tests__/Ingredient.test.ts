@@ -1,25 +1,13 @@
 import { describe, expect, it, beforeEach } from 'vitest';
 import { Ingredient } from '../Ingredient';
 import { ValidationError } from '@/domain/common/errors';
-
-const nutritionalInfoPer100g = {
-  calories: 100,
-  protein: 10,
-};
-
-const validIngredientProps = {
-  id: '1',
-  name: 'Sugar',
-  nutritionalInfoPer100g,
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
+import * as vp from '@/../tests/createProps';
 
 describe('Ingredient', () => {
   let ingredient: Ingredient;
 
   beforeEach(() => {
-    ingredient = Ingredient.create(validIngredientProps);
+    ingredient = Ingredient.create(vp.validIngredientProps);
   });
 
   it('should create a valid ingredient', () => {
@@ -28,7 +16,8 @@ describe('Ingredient', () => {
 
   it('should create an ingredient if no createdAt or updatedAt is provided', async () => {
     // eslint-disable-next-line
-    const { createdAt, updatedAt, ...propsWithoutDates } = validIngredientProps;
+    const { createdAt, updatedAt, ...propsWithoutDates } =
+      vp.validIngredientProps;
     // @ts-expect-error .create actually expects createdAt and updatedAt
     const ingredient = Ingredient.create(propsWithoutDates);
 
@@ -79,7 +68,7 @@ describe('Ingredient', () => {
     ];
 
     for (const invalidProp of invalidProps) {
-      const props = { ...validIngredientProps, ...invalidProp };
+      const props = { ...vp.validIngredientProps, ...invalidProp };
       // @ts-expect-error the error comes precisely because it should not be created
       expect(() => Ingredient.create(props)).toThrow();
     }

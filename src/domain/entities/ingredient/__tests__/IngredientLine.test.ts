@@ -3,28 +3,13 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { Ingredient } from '../Ingredient';
 import { IngredientLine } from '../IngredientLine';
 import { ValidationError } from '@/domain/common/errors';
+import * as vp from '@/../tests/createProps';
 
-const nutritionalInfoPer100g = {
-  calories: 100,
-  protein: 10,
-};
-
-const validIngredientProps = {
-  id: '1',
-  name: 'Sugar',
-  nutritionalInfoPer100g,
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
-
-const validIngredient = Ingredient.create(validIngredientProps);
+const validIngredient = Ingredient.create(vp.validIngredientProps);
 
 const validIngredientLineProps = {
-  id: '1',
+  ...vp.ingredientLinePropsNoIngredient,
   ingredient: validIngredient,
-  quantityInGrams: 100,
-  createdAt: new Date(),
-  updatedAt: new Date(),
 };
 
 describe('IngredientLine', () => {
@@ -39,11 +24,11 @@ describe('IngredientLine', () => {
   });
 
   it('should compute total calories', async () => {
-    expect(ingredientLine.calories).toBe(100);
+    expect(ingredientLine.calories).toBe(200); // 100 cal per 100g * 200g = 200 cal
   });
 
   it('should compute total protein', async () => {
-    expect(ingredientLine.protein).toBe(10);
+    expect(ingredientLine.protein).toBe(30); // 15 protein per 100g * 200g = 30 protein
   });
 
   it('should throw an error if ingredient is invalid', async () => {

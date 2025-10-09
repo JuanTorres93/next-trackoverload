@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { CreateDayUsecase } from '../CreateDay.usecase';
 import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
 import { ValidationError } from '@/domain/common/errors';
+import * as vp from '@/../tests/createProps';
 
 describe('CreateDayUsecase', () => {
   let daysRepo: MemoryDaysRepo;
@@ -13,7 +14,7 @@ describe('CreateDayUsecase', () => {
   });
 
   it('should create and save a new day', async () => {
-    const request = { date: new Date('2023-10-01'), userId: 'user-1' };
+    const request = { date: vp.dateId, userId: vp.userId };
 
     const day = await createDayUsecase.execute(request);
 
@@ -30,8 +31,8 @@ describe('CreateDayUsecase', () => {
 
   it('should create a day with initial meals', async () => {
     const request = {
-      date: new Date('2023-10-01'),
-      userId: 'user-1',
+      date: vp.dateId,
+      userId: vp.userId,
       meals: [],
     };
 
@@ -42,7 +43,7 @@ describe('CreateDayUsecase', () => {
   });
 
   it('should throw an error if date is invalid', async () => {
-    const request = { date: new Date('invalid'), userId: 'user-1' };
+    const request = { date: new Date('invalid'), userId: vp.userId };
 
     await expect(createDayUsecase.execute(request)).rejects.toThrow(
       ValidationError
@@ -56,8 +57,8 @@ describe('CreateDayUsecase', () => {
       invalidMeals.map((invalidMeal) =>
         expect(
           createDayUsecase.execute({
-            date: new Date('2023-10-01'),
-            userId: 'user-1',
+            date: vp.dateId,
+            userId: vp.userId,
             // @ts-expect-error Testing invalid inputs
             meals: [invalidMeal],
           })

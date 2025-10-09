@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { CreateIngredientUsecase } from '../CreateIngredient.usecase';
 import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
 import { ValidationError } from '@/domain/common/errors';
+import * as vp from '@/../tests/createProps';
 
 describe('CreateIngredientUsecase', () => {
   let ingredientsRepo: MemoryIngredientsRepo;
@@ -14,9 +15,9 @@ describe('CreateIngredientUsecase', () => {
 
   it('should create and save a new ingredient', async () => {
     const request = {
-      name: 'Chicken Breast',
-      calories: 165,
-      protein: 31,
+      name: vp.validIngredientProps.name,
+      calories: vp.validIngredientProps.nutritionalInfoPer100g.calories,
+      protein: vp.validIngredientProps.nutritionalInfoPer100g.protein,
     };
 
     const ingredient = await createIngredientUsecase.execute(request);

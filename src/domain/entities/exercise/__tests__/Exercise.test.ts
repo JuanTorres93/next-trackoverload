@@ -1,25 +1,20 @@
 import { describe, expect, it } from 'vitest';
 import { Exercise } from '../Exercise';
-
-const validExerciseProps = {
-  id: '1',
-  name: 'Push Up',
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
+import * as vp from '@/../tests/createProps';
 
 describe('Exercise', () => {
   it('should create a valid exercise', () => {
-    const exercise = Exercise.create(validExerciseProps);
+    const exercise = Exercise.create(vp.validExerciseProps);
 
     expect(exercise).toBeInstanceOf(Exercise);
-    expect(exercise.id).toBe(validExerciseProps.id);
-    expect(exercise.name).toBe(validExerciseProps.name);
+    expect(exercise.id).toBe(vp.validExerciseProps.id);
+    expect(exercise.name).toBe(vp.validExerciseProps.name);
   });
 
   it('should create an exercise if no createdAt or updatedAt is provided', async () => {
     // eslint-disable-next-line
-    const { createdAt, updatedAt, ...propsWithoutDates } = validExerciseProps;
+    const { createdAt, updatedAt, ...propsWithoutDates } =
+      vp.validExerciseProps;
     // @ts-expect-error .create actually expects createdAt and updatedAt
     const exercise = Exercise.create(propsWithoutDates);
 
@@ -39,7 +34,7 @@ describe('Exercise', () => {
     ];
 
     for (const invalidProp of invalidProps) {
-      const props = { ...validExerciseProps, ...invalidProp };
+      const props = { ...vp.validExerciseProps, ...invalidProp };
       // @ts-expect-error the error comes precisely because it should not be created
       expect(() => Exercise.create(props)).toThrowError();
     }

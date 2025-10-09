@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { CreateExerciseUsecase } from '../CreateExercise.usecase';
 import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
 import { ValidationError } from '@/domain/common/errors';
+import * as vp from '@/../tests/createProps';
 
 describe('CreateExerciseUsecase', () => {
   let exercisesRepo: MemoryExercisesRepo;
@@ -13,7 +14,7 @@ describe('CreateExerciseUsecase', () => {
   });
 
   it('should create and save a new exercise', async () => {
-    const request = { name: 'Push Up' };
+    const request = { name: vp.validExerciseProps.name };
 
     const exercise = await createExerciseUsecase.execute(request);
 
