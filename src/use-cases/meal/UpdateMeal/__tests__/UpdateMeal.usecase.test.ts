@@ -5,6 +5,7 @@ import { Meal } from '@/domain/entities/meal/Meal';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import * as vp from '@/../tests/createProps';
 
 describe('UpdateMealUsecase', () => {
   let mealsRepo: MemoryMealsRepo;
@@ -17,41 +18,29 @@ describe('UpdateMealUsecase', () => {
 
   it('should update meal name', async () => {
     const ingredient = Ingredient.create({
-      id: '1',
-      name: 'Chicken Breast',
-      nutritionalInfoPer100g: {
-        calories: 165,
-        protein: 31,
-      },
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      ...vp.validIngredientProps,
     });
 
     const ingredientLine = IngredientLine.create({
-      id: '1',
+      ...vp.ingredientLinePropsNoIngredient,
       ingredient,
-      quantityInGrams: 100,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     const meal = Meal.create({
-      id: '1',
-      name: 'Protein Meal',
+      ...vp.mealPropsNoIngredientLines,
       ingredientLines: [ingredientLine],
-      createdAt: new Date('2023-01-01'),
-      updatedAt: new Date('2023-01-01'),
     });
 
     await mealsRepo.saveMeal(meal);
 
     const updatedMeal = await updateMealUsecase.execute({
-      id: '1',
+      id: vp.mealPropsNoIngredientLines.id,
+      userId: vp.userId,
       name: 'High Protein Meal',
     });
 
     expect(updatedMeal.name).toBe('High Protein Meal');
-    expect(updatedMeal.id).toBe('1');
+    expect(updatedMeal.id).toBe(vp.mealPropsNoIngredientLines.id);
     expect(updatedMeal.ingredientLines).toHaveLength(1);
     expect(updatedMeal.createdAt).toEqual(meal.createdAt);
     expect(updatedMeal.updatedAt).not.toEqual(meal.updatedAt);
@@ -59,36 +48,24 @@ describe('UpdateMealUsecase', () => {
 
   it('should return same meal when no changes are made', async () => {
     const ingredient = Ingredient.create({
-      id: '1',
-      name: 'Chicken Breast',
-      nutritionalInfoPer100g: {
-        calories: 165,
-        protein: 31,
-      },
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      ...vp.validIngredientProps,
     });
 
     const ingredientLine = IngredientLine.create({
-      id: '1',
+      ...vp.ingredientLinePropsNoIngredient,
       ingredient,
-      quantityInGrams: 100,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     const meal = Meal.create({
-      id: '1',
-      name: 'Protein Meal',
+      ...vp.mealPropsNoIngredientLines,
       ingredientLines: [ingredientLine],
-      createdAt: new Date('2023-01-01'),
-      updatedAt: new Date('2023-01-01'),
     });
 
     await mealsRepo.saveMeal(meal);
 
     const result = await updateMealUsecase.execute({
-      id: '1',
+      id: vp.mealPropsNoIngredientLines.id,
+      userId: vp.userId,
     });
 
     expect(result).toEqual(meal);
@@ -98,6 +75,7 @@ describe('UpdateMealUsecase', () => {
     await expect(
       updateMealUsecase.execute({
         id: 'non-existent',
+        userId: vp.userId,
         name: 'New Name',
       })
     ).rejects.toThrow(NotFoundError);
@@ -116,30 +94,17 @@ describe('UpdateMealUsecase', () => {
 
   it('should throw ValidationError when name is invalid', async () => {
     const ingredient = Ingredient.create({
-      id: '1',
-      name: 'Chicken Breast',
-      nutritionalInfoPer100g: {
-        calories: 165,
-        protein: 31,
-      },
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      ...vp.validIngredientProps,
     });
 
     const ingredientLine = IngredientLine.create({
-      id: '1',
+      ...vp.ingredientLinePropsNoIngredient,
       ingredient,
-      quantityInGrams: 100,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     const meal = Meal.create({
-      id: '1',
-      name: 'Protein Meal',
+      ...vp.mealPropsNoIngredientLines,
       ingredientLines: [ingredientLine],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await mealsRepo.saveMeal(meal);
@@ -148,8 +113,32 @@ describe('UpdateMealUsecase', () => {
 
     for (const invalidName of invalidNames) {
       await expect(
+        updateMealUsecase.execute({
+          id: vp.mealPropsNoIngredientLines.id,
+          // @ts-expect-error Testing invalid inputs
+          name: invalidName,
+        })
+      ).rejects.toThrow(ValidationError);
+    }
+  });
+
+  it('should throw error if userId is invalid', async () => {
+    const invalidUserIds = [
+      '',
+      null,
+      undefined,
+      123,
+      true,
+      {},
+      [],
+      () => {},
+      NaN,
+    ];
+
+    for (const invalidUserId of invalidUserIds) {
+      await expect(
         // @ts-expect-error Testing invalid inputs
-        updateMealUsecase.execute({ id: '1', name: invalidName })
+        updateMealUsecase.execute({ id: '1', userId: invalidUserId })
       ).rejects.toThrow(ValidationError);
     }
   });

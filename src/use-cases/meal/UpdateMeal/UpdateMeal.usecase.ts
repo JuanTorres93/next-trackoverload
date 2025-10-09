@@ -5,6 +5,7 @@ import { validateNonEmptyString } from '@/domain/common/validation';
 
 export type UpdateMealUsecaseRequest = {
   id: string;
+  userId: string;
   name?: string;
 };
 
@@ -12,9 +13,13 @@ export class UpdateMealUsecase {
   constructor(private mealsRepo: MealsRepo) {}
 
   async execute(request: UpdateMealUsecaseRequest): Promise<Meal> {
-    validateNonEmptyString(request.id, 'UpdateMealUsecase');
+    validateNonEmptyString(request.id, 'UpdateMealUsecase id');
+    validateNonEmptyString(request.userId, 'UpdateMealUsecase userId');
 
-    const existingMeal = await this.mealsRepo.getMealById(request.id);
+    const existingMeal = await this.mealsRepo.getMealByIdForUser(
+      request.id,
+      request.userId
+    );
 
     if (!existingMeal) {
       throw new NotFoundError('UpdateMealUsecase: Meal not found');
@@ -29,6 +34,7 @@ export class UpdateMealUsecase {
       // Create a new meal with the same properties
       const updatedMeal = Meal.create({
         id: existingMeal.id,
+        userId: existingMeal.userId,
         name: existingMeal.name,
         ingredientLines: existingMeal.ingredientLines,
         createdAt: existingMeal.createdAt,
