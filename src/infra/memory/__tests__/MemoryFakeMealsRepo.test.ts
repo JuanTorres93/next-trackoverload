@@ -1,16 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryFakeMealsRepo } from '../MemoryFakeMealsRepo';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-
-const validFakeMealProps = {
-  id: '1',
-  userId: 'user-1',
-  name: 'Protein Shake',
-  calories: 250,
-  protein: 30,
-  createdAt: new Date('2023-01-01'),
-  updatedAt: new Date('2023-01-01'),
-};
+import * as vp from '@/../tests/createProps';
 
 describe('MemoryFakeMealsRepo', () => {
   let repo: MemoryFakeMealsRepo;
@@ -18,19 +9,21 @@ describe('MemoryFakeMealsRepo', () => {
 
   beforeEach(async () => {
     repo = new MemoryFakeMealsRepo();
-    fakeMeal = FakeMeal.create(validFakeMealProps);
+    fakeMeal = FakeMeal.create({
+      ...vp.validFakeMealProps,
+      id: '1',
+      name: 'Protein Shake',
+      calories: 250,
+      protein: 30,
+    });
     await repo.saveFakeMeal(fakeMeal);
   });
 
   it('should save a fake meal', async () => {
     const newFakeMeal = FakeMeal.create({
+      ...vp.validFakeMealProps,
       id: '2',
-      userId: 'user-1',
       name: 'Energy Bar',
-      calories: 200,
-      protein: 15,
-      createdAt: new Date('2023-01-02'),
-      updatedAt: new Date('2023-01-02'),
     });
     await repo.saveFakeMeal(newFakeMeal);
 
@@ -41,7 +34,8 @@ describe('MemoryFakeMealsRepo', () => {
 
   it('should update an existing fake meal', async () => {
     const updatedFakeMeal = FakeMeal.create({
-      ...validFakeMealProps,
+      ...vp.validFakeMealProps,
+      id: '1',
       name: 'Updated Protein Shake',
       updatedAt: new Date('2023-01-03'),
     });
@@ -54,13 +48,10 @@ describe('MemoryFakeMealsRepo', () => {
 
   it('should retrieve all fake meals by userId', async () => {
     const fakeMeal2 = FakeMeal.create({
+      ...vp.validFakeMealProps,
       id: '2',
       userId: 'user-2',
       name: 'Another Shake',
-      calories: 300,
-      protein: 25,
-      createdAt: new Date('2023-01-02'),
-      updatedAt: new Date('2023-01-02'),
     });
     await repo.saveFakeMeal(fakeMeal2);
 
@@ -105,13 +96,10 @@ describe('MemoryFakeMealsRepo', () => {
 
   it('should delete a fake meal by ID and userId', async () => {
     const fakeMeal2 = FakeMeal.create({
+      ...vp.validFakeMealProps,
       id: '2',
       userId: 'user-2',
       name: 'Another Shake',
-      calories: 300,
-      protein: 25,
-      createdAt: new Date('2023-01-02'),
-      updatedAt: new Date('2023-01-02'),
     });
     await repo.saveFakeMeal(fakeMeal2);
 

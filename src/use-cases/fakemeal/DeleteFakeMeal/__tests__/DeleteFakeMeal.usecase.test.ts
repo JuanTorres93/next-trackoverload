@@ -3,6 +3,7 @@ import { DeleteFakeMealUsecase } from '../DeleteFakeMeal.usecase';
 import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { ValidationError, NotFoundError } from '@/domain/common/errors';
+import * as vp from '@/../tests/createProps';
 
 describe('DeleteFakeMealUsecase', () => {
   let usecase: DeleteFakeMealUsecase;
@@ -15,13 +16,8 @@ describe('DeleteFakeMealUsecase', () => {
 
   it('should delete fake meal successfully', async () => {
     const fakeMeal = FakeMeal.create({
+      ...vp.validFakeMealProps,
       id: 'test-id',
-      userId: 'user-1',
-      name: 'Test Fake Meal',
-      calories: 500,
-      protein: 30,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await fakeMealsRepo.saveFakeMeal(fakeMeal);
@@ -29,30 +25,30 @@ describe('DeleteFakeMealUsecase', () => {
     // Verify fake meal exists before deletion
     const beforeDeletion = await fakeMealsRepo.getFakeMealByIdAndUserId(
       'test-id',
-      'user-1'
+      vp.userId
     );
     expect(beforeDeletion).toBeDefined();
 
-    await usecase.execute({ id: 'test-id', userId: 'user-1' });
+    await usecase.execute({ id: 'test-id', userId: vp.userId });
 
     // Verify fake meal is deleted
     const afterDeletion = await fakeMealsRepo.getFakeMealByIdAndUserId(
       'test-id',
-      'user-1'
+      vp.userId
     );
     expect(afterDeletion).toBeNull();
   });
 
   it('should throw NotFoundError when fake meal does not exist', async () => {
     await expect(
-      usecase.execute({ id: 'non-existent-id', userId: 'user-1' })
+      usecase.execute({ id: 'non-existent-id', userId: vp.userId })
     ).rejects.toThrow(NotFoundError);
   });
 
   it('should throw ValidationError for invalid id', async () => {
     const invalidIds = ['', '   '];
     for (const id of invalidIds) {
-      await expect(usecase.execute({ id, userId: 'user-1' })).rejects.toThrow(
+      await expect(usecase.execute({ id, userId: vp.userId })).rejects.toThrow(
         ValidationError
       );
     }
@@ -60,38 +56,30 @@ describe('DeleteFakeMealUsecase', () => {
 
   it('should not affect other fake meals when deleting one', async () => {
     const fakeMeal1 = FakeMeal.create({
+      ...vp.validFakeMealProps,
       id: 'test-id-1',
-      userId: 'user-1',
       name: 'Test Fake Meal 1',
-      calories: 500,
-      protein: 30,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     const fakeMeal2 = FakeMeal.create({
+      ...vp.validFakeMealProps,
       id: 'test-id-2',
-      userId: 'user-1',
       name: 'Test Fake Meal 2',
-      calories: 300,
-      protein: 20,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await fakeMealsRepo.saveFakeMeal(fakeMeal1);
     await fakeMealsRepo.saveFakeMeal(fakeMeal2);
 
-    await usecase.execute({ id: 'test-id-1', userId: 'user-1' });
+    await usecase.execute({ id: 'test-id-1', userId: vp.userId });
 
     // Verify only the first fake meal is deleted
     const deletedFakeMeal = await fakeMealsRepo.getFakeMealByIdAndUserId(
       'test-id-1',
-      'user-1'
+      vp.userId
     );
     const remainingFakeMeal = await fakeMealsRepo.getFakeMealByIdAndUserId(
       'test-id-2',
-      'user-1'
+      vp.userId
     );
 
     expect(deletedFakeMeal).toBeNull();

@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import { FakeMeal, FakeMealProps } from '../FakeMeal';
 import { ValidationError } from '@/domain/common/errors';
+import * as vp from '@/../tests/createProps';
 
 describe('FakeMeal', () => {
   let fakeMeal: FakeMeal;
@@ -9,20 +10,15 @@ describe('FakeMeal', () => {
 
   beforeEach(() => {
     validFakeMealProps = {
-      id: '1',
-      userId: 'user-1',
+      ...vp.validFakeMealProps,
       name: 'Bocadillo de chusmarro en La Peña',
-      calories: 600,
-      protein: 15,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     };
     fakeMeal = FakeMeal.create(validFakeMealProps);
   });
 
   it('should create a valid entity', () => {
     expect(fakeMeal).toBeInstanceOf(FakeMeal);
-    expect(fakeMeal.userId).toBe('user-1');
+    expect(fakeMeal.userId).toBe(vp.userId);
   });
 
   it('should update protein', async () => {

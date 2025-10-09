@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { CreateFakeMealUsecase } from '../CreateFakeMeal.usecase';
 import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
 import { ValidationError } from '@/domain/common/errors';
+import * as vp from '@/../tests/createProps';
 
 describe('CreateFakeMealUsecase', () => {
   let usecase: CreateFakeMealUsecase;
@@ -14,10 +15,10 @@ describe('CreateFakeMealUsecase', () => {
 
   it('should create a fake meal successfully', async () => {
     const request = {
-      userId: 'user-1',
-      name: 'Test Fake Meal',
-      calories: 500,
-      protein: 30,
+      userId: vp.userId,
+      name: vp.validFakeMealProps.name,
+      calories: vp.validFakeMealProps.calories,
+      protein: vp.validFakeMealProps.protein,
     };
 
     const result = await usecase.execute(request);
@@ -39,10 +40,10 @@ describe('CreateFakeMealUsecase', () => {
 
   it('should throw ValidationError for empty name', async () => {
     const request = {
-      userId: 'user-1',
+      userId: vp.userId,
       name: '',
-      calories: 500,
-      protein: 30,
+      calories: vp.validFakeMealProps.calories,
+      protein: vp.validFakeMealProps.protein,
     };
 
     await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
@@ -50,10 +51,10 @@ describe('CreateFakeMealUsecase', () => {
 
   it('should throw ValidationError for zero calories', async () => {
     const request = {
-      userId: 'user-1',
-      name: 'Test Fake Meal',
+      userId: vp.userId,
+      name: vp.validFakeMealProps.name,
       calories: 0,
-      protein: 30,
+      protein: vp.validFakeMealProps.protein,
     };
 
     await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
@@ -61,9 +62,9 @@ describe('CreateFakeMealUsecase', () => {
 
   it('should throw ValidationError for negative protein', async () => {
     const request = {
-      userId: 'user-1',
-      name: 'Test Fake Meal',
-      calories: 500,
+      userId: vp.userId,
+      name: vp.validFakeMealProps.name,
+      calories: vp.validFakeMealProps.calories,
       protein: -10,
     };
 
@@ -75,9 +76,9 @@ describe('CreateFakeMealUsecase', () => {
     for (const userId of invalidUserIds) {
       const request = {
         userId,
-        name: 'Test Fake Meal',
-        calories: 500,
-        protein: 30,
+        name: vp.validFakeMealProps.name,
+        calories: vp.validFakeMealProps.calories,
+        protein: vp.validFakeMealProps.protein,
       };
 
       // @ts-expect-error testing invalid types
