@@ -80,4 +80,14 @@ describe('Workout', () => {
       expect(() => Workout.create(props)).toThrow(ValidationError);
     }
   });
+
+  it('should throw error if userId is invalid', async () => {
+    const invalidIds = ['', '   ', null, undefined, 3, [], {}, true];
+
+    for (const id of invalidIds) {
+      const props = { ...validWorkoutProps, userId: id };
+      // @ts-expect-error testing invalid inputs
+      expect(() => Workout.create(props)).toThrow(ValidationError);
+    }
+  });
 });

@@ -69,6 +69,7 @@ export class CreateWorkoutFromTemplateUsecase {
 
     const newWorkout = Workout.create({
       id: uuidv4(),
+      userId: request.userId,
       name:
         request.workoutName ??
         `${workoutTemplate.name} - ${new Date().toLocaleDateString()}`,

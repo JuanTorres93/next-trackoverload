@@ -18,13 +18,36 @@ export class MemoryWorkoutsRepo implements WorkoutsRepo {
     return [...this.workouts];
   }
 
+  async getAllWorkoutsByUserId(userId: string): Promise<Workout[]> {
+    return this.workouts.filter((w) => w.userId === userId);
+  }
+
   async getWorkoutById(id: string): Promise<Workout | null> {
     const workout = this.workouts.find((w) => w.id === id);
     return workout || null;
   }
 
+  async getWorkoutByIdAndUserId(
+    id: string,
+    userId: string
+  ): Promise<Workout | null> {
+    const workout = this.workouts.find(
+      (w) => w.id === id && w.userId === userId
+    );
+    return workout || null;
+  }
+
   async getWorkoutsByTemplateId(templateId: string): Promise<Workout[]> {
     return this.workouts.filter((w) => w.workoutTemplateId === templateId);
+  }
+
+  async getWorkoutsByTemplateIdAndUserId(
+    templateId: string,
+    userId: string
+  ): Promise<Workout[]> {
+    return this.workouts.filter(
+      (w) => w.workoutTemplateId === templateId && w.userId === userId
+    );
   }
 
   async deleteWorkout(id: string): Promise<void> {

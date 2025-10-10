@@ -1,22 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryWorkoutsRepo } from '../MemoryWorkoutsRepo';
 import { Workout } from '@/domain/entities/workout/Workout';
-
-const validExerciseLine = {
-  exerciseId: 'ex1',
-  setNumber: 1,
-  reps: 10,
-  weight: 50,
-};
-
-const validWorkoutProps = {
-  id: '1',
-  name: 'Push Day',
-  workoutTemplateId: 'template-1',
-  exercises: [validExerciseLine],
-  createdAt: new Date('2023-01-01'),
-  updatedAt: new Date('2023-01-01'),
-};
+import * as vp from '@/../tests/createProps';
 
 describe('MemoryWorkoutsRepo', () => {
   let repo: MemoryWorkoutsRepo;
@@ -24,18 +9,20 @@ describe('MemoryWorkoutsRepo', () => {
 
   beforeEach(async () => {
     repo = new MemoryWorkoutsRepo();
-    workout = Workout.create(validWorkoutProps);
+    workout = Workout.create({
+      ...vp.validWorkoutProps,
+      id: '1',
+      name: 'Push Day',
+    });
     await repo.saveWorkout(workout);
   });
 
   it('should save a workout', async () => {
     const newWorkout = Workout.create({
+      ...vp.validWorkoutProps,
       id: '2',
       name: 'Pull Day',
       workoutTemplateId: 'template-2',
-      exercises: [validExerciseLine],
-      createdAt: new Date('2023-01-02'),
-      updatedAt: new Date('2023-01-02'),
     });
     await repo.saveWorkout(newWorkout);
 
@@ -46,7 +33,8 @@ describe('MemoryWorkoutsRepo', () => {
 
   it('should update an existing workout', async () => {
     const updatedWorkout = Workout.create({
-      ...validWorkoutProps,
+      ...vp.validWorkoutProps,
+      id: '1',
       name: 'Updated Push Day',
       updatedAt: new Date('2023-01-03'),
     });

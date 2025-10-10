@@ -5,6 +5,7 @@ import { validateNonEmptyString } from '@/domain/common/validation';
 
 export type UpdateWorkoutUsecaseRequest = {
   id: string;
+  userId: string;
   name?: string;
 };
 
@@ -12,11 +13,15 @@ export class UpdateWorkoutUsecase {
   constructor(private workoutsRepo: WorkoutsRepo) {}
 
   async execute(request: UpdateWorkoutUsecaseRequest): Promise<Workout> {
-    validateNonEmptyString(request.id, 'UpdateWorkoutUsecase');
+    validateNonEmptyString(request.id, 'UpdateWorkoutUsecase id');
+    validateNonEmptyString(request.userId, 'UpdateWorkoutUsecase userId');
     if (request.name !== undefined)
-      validateNonEmptyString(request.name, 'UpdateWorkoutUsecase');
+      validateNonEmptyString(request.name, 'UpdateWorkoutUsecase name');
 
-    const existingWorkout = await this.workoutsRepo.getWorkoutById(request.id);
+    const existingWorkout = await this.workoutsRepo.getWorkoutByIdAndUserId(
+      request.id,
+      request.userId
+    );
 
     if (!existingWorkout) {
       throw new NotFoundError('UpdateWorkoutUsecase: Workout not found');
@@ -24,6 +29,7 @@ export class UpdateWorkoutUsecase {
 
     const updatedWorkout = Workout.create({
       id: existingWorkout.id,
+      userId: existingWorkout.userId,
       name: request.name ?? existingWorkout.name,
       workoutTemplateId: existingWorkout.workoutTemplateId,
       exercises: existingWorkout.exercises,

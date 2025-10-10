@@ -25,6 +25,7 @@ describe('UpdateWorkoutUsecase', () => {
 
     const updatedWorkout = await updateWorkoutUsecase.execute({
       id: '1',
+      userId: vp.userId,
       name: 'Updated Push Day',
     });
 
@@ -46,6 +47,7 @@ describe('UpdateWorkoutUsecase', () => {
 
     const updatedWorkout = await updateWorkoutUsecase.execute({
       id: '1',
+      userId: vp.userId,
     });
 
     expect(updatedWorkout.name).toBe('Push Day');
@@ -55,6 +57,7 @@ describe('UpdateWorkoutUsecase', () => {
     await expect(
       updateWorkoutUsecase.execute({
         id: 'non-existent',
+        userId: vp.userId,
         name: 'New Name',
       })
     ).rejects.toThrow(NotFoundError);
@@ -66,6 +69,7 @@ describe('UpdateWorkoutUsecase', () => {
     for (const invalidId of invalidIds) {
       await expect(
         updateWorkoutUsecase.execute({
+          userId: vp.userId,
           // @ts-expect-error Testing invalid inputs
           id: invalidId,
           name: 'New Name',
@@ -88,9 +92,35 @@ describe('UpdateWorkoutUsecase', () => {
     for (const invalidName of invalidNames) {
       await expect(
         updateWorkoutUsecase.execute({
+          userId: vp.userId,
           id: '1',
           // @ts-expect-error Testing invalid inputs
           name: invalidName,
+        })
+      ).rejects.toThrow(ValidationError);
+    }
+  });
+
+  it('should throw ValidationError when userId is invalid', async () => {
+    const invalidUserIds = [
+      '',
+      '   ',
+      null,
+      undefined,
+      123,
+      {},
+      [],
+      true,
+      false,
+    ];
+
+    for (const invalidUserId of invalidUserIds) {
+      await expect(
+        updateWorkoutUsecase.execute({
+          id: '1',
+          // @ts-expect-error Testing invalid inputs
+          userId: invalidUserId,
+          name: 'New Name',
         })
       ).rejects.toThrow(ValidationError);
     }

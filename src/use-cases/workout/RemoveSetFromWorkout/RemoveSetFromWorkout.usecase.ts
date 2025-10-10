@@ -8,6 +8,7 @@ import {
 } from '@/domain/common/validation';
 
 export type RemoveSetFromWorkoutUsecaseRequest = {
+  userId: string;
   workoutId: string;
   exerciseId: string;
   setNumber: number;
@@ -17,6 +18,7 @@ export class RemoveSetFromWorkoutUsecase {
   constructor(private workoutsRepo: WorkoutsRepo) {}
 
   async execute(request: RemoveSetFromWorkoutUsecaseRequest): Promise<Workout> {
+    validateNonEmptyString(request.userId, 'RemoveSetFromWorkout userId');
     validateNonEmptyString(request.workoutId, 'RemoveSetFromWorkout workoutId');
     validateNonEmptyString(
       request.exerciseId,
@@ -28,7 +30,10 @@ export class RemoveSetFromWorkoutUsecase {
     );
     validateInteger(request.setNumber, 'RemoveSetFromWorkout setNumber');
 
-    const workout = await this.workoutsRepo.getWorkoutById(request.workoutId);
+    const workout = await this.workoutsRepo.getWorkoutByIdAndUserId(
+      request.workoutId,
+      request.userId
+    );
 
     if (!workout) {
       throw new NotFoundError('RemoveSetFromWorkoutUsecase: Workout not found');

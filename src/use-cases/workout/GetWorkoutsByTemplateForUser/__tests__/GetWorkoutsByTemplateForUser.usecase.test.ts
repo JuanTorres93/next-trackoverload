@@ -1,46 +1,44 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { GetWorkoutsByTemplateUsecase } from '../GetWorkoutsByTemplate.usecase';
+import { GetWorkoutsByTemplateForUserUsecase } from '../GetWorkoutsByTemplateForUser.usecase';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { ValidationError } from '@/domain/common/errors';
+import * as vp from '@/../tests/createProps';
 
 describe('GetWorkoutsByTemplateUsecase', () => {
   let workoutsRepo: MemoryWorkoutsRepo;
-  let getWorkoutsByTemplateUsecase: GetWorkoutsByTemplateUsecase;
+  let getWorkoutsByTemplateUsecase: GetWorkoutsByTemplateForUserUsecase;
 
   beforeEach(() => {
     workoutsRepo = new MemoryWorkoutsRepo();
-    getWorkoutsByTemplateUsecase = new GetWorkoutsByTemplateUsecase(
+    getWorkoutsByTemplateUsecase = new GetWorkoutsByTemplateForUserUsecase(
       workoutsRepo
     );
   });
 
   it('should return workouts filtered by template id', async () => {
     const workout1 = Workout.create({
+      ...vp.validWorkoutProps,
       id: '1',
       name: 'Push Day #1',
       workoutTemplateId: 'template-1',
       exercises: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     const workout2 = Workout.create({
+      ...vp.validWorkoutProps,
       id: '2',
       name: 'Pull Day #1',
       workoutTemplateId: 'template-2',
       exercises: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     const workout3 = Workout.create({
+      ...vp.validWorkoutProps,
       id: '3',
       name: 'Push Day #2',
       workoutTemplateId: 'template-1',
       exercises: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await workoutsRepo.saveWorkout(workout1);
@@ -49,6 +47,7 @@ describe('GetWorkoutsByTemplateUsecase', () => {
 
     const workouts = await getWorkoutsByTemplateUsecase.execute({
       templateId: 'template-1',
+      userId: vp.userId,
     });
 
     expect(workouts).toHaveLength(2);
@@ -59,18 +58,18 @@ describe('GetWorkoutsByTemplateUsecase', () => {
 
   it('should return empty array when no workouts exist for template', async () => {
     const workout1 = Workout.create({
+      ...vp.validWorkoutProps,
       id: '1',
       name: 'Push Day #1',
       workoutTemplateId: 'template-1',
       exercises: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await workoutsRepo.saveWorkout(workout1);
 
     const workouts = await getWorkoutsByTemplateUsecase.execute({
       templateId: 'non-existent-template',
+      userId: vp.userId,
     });
 
     expect(workouts).toHaveLength(0);
@@ -79,6 +78,7 @@ describe('GetWorkoutsByTemplateUsecase', () => {
   it('should return empty array when no workouts exist at all', async () => {
     const workouts = await getWorkoutsByTemplateUsecase.execute({
       templateId: 'template-1',
+      userId: vp.userId,
     });
 
     expect(workouts).toHaveLength(0);
@@ -101,6 +101,30 @@ describe('GetWorkoutsByTemplateUsecase', () => {
       await expect(
         // @ts-expect-error testing invalid inputs
         getWorkoutsByTemplateUsecase.execute({ templateId: templateId })
+      ).rejects.toThrow(ValidationError);
+    }
+  });
+
+  it('should throw ValidationError when userId is invalid', async () => {
+    const invalidUserIds = [
+      '',
+      '   ',
+      null,
+      undefined,
+      123,
+      {},
+      [],
+      true,
+      false,
+    ];
+
+    for (const userId of invalidUserIds) {
+      await expect(
+        getWorkoutsByTemplateUsecase.execute({
+          templateId: 'template-1',
+          // @ts-expect-error testing invalid inputs
+          userId: userId,
+        })
       ).rejects.toThrow(ValidationError);
     }
   });

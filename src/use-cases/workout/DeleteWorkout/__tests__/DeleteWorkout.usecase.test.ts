@@ -17,26 +17,35 @@ describe('DeleteWorkoutUsecase', () => {
   it('should delete workout when it exists', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: '1',
       exercises: [],
     });
 
     await workoutsRepo.saveWorkout(workout);
 
     // Verify workout exists
-    const existingWorkout = await workoutsRepo.getWorkoutById('1');
+    const existingWorkout = await workoutsRepo.getWorkoutById(
+      vp.validWorkoutProps.id
+    );
     expect(existingWorkout).toBe(workout);
 
-    await deleteWorkoutUsecase.execute({ id: '1' });
+    await deleteWorkoutUsecase.execute({
+      id: vp.validWorkoutProps.id,
+      userId: vp.validWorkoutProps.userId,
+    });
 
     // Verify workout is deleted
-    const deletedWorkout = await workoutsRepo.getWorkoutById('1');
+    const deletedWorkout = await workoutsRepo.getWorkoutById(
+      vp.validWorkoutProps.id
+    );
     expect(deletedWorkout).toBeNull();
   });
 
   it('should throw NotFoundError when workout does not exist', async () => {
     await expect(
-      deleteWorkoutUsecase.execute({ id: 'non-existent' })
+      deleteWorkoutUsecase.execute({
+        id: 'non-existent',
+        userId: vp.validWorkoutProps.userId,
+      })
     ).rejects.toThrow(NotFoundError);
   });
 
@@ -48,6 +57,37 @@ describe('DeleteWorkoutUsecase', () => {
         deleteWorkoutUsecase.execute({
           // @ts-expect-error testing invalid types
           id: invalidId,
+        })
+      ).rejects.toThrow(ValidationError);
+    }
+  });
+
+  it('should throw error if userId is invalid', async () => {
+    const workout = Workout.create({
+      ...vp.validWorkoutProps,
+      exercises: [],
+    });
+
+    await workoutsRepo.saveWorkout(workout);
+
+    const invalidUserIds = [
+      '',
+      '   ',
+      null,
+      undefined,
+      123,
+      {},
+      [],
+      true,
+      false,
+    ];
+
+    for (const invalidUserId of invalidUserIds) {
+      await expect(
+        deleteWorkoutUsecase.execute({
+          id: vp.validWorkoutProps.id,
+          // @ts-expect-error testing invalid types
+          userId: invalidUserId,
         })
       ).rejects.toThrow(ValidationError);
     }

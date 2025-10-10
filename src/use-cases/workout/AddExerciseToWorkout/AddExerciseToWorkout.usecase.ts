@@ -10,6 +10,7 @@ import {
 } from '@/domain/common/validation';
 
 export type AddExerciseToWorkoutUsecaseRequest = {
+  userId: string;
   workoutId: string;
   exerciseId: string;
   setNumber: number;
@@ -24,6 +25,7 @@ export class AddExerciseToWorkoutUsecase {
   ) {}
 
   async execute(request: AddExerciseToWorkoutUsecaseRequest): Promise<Workout> {
+    validateNonEmptyString(request.userId, 'AddExerciseToWorkout userId');
     validateNonEmptyString(request.workoutId, 'AddExerciseToWorkout workoutId');
     validateNonEmptyString(
       request.exerciseId,
@@ -38,7 +40,10 @@ export class AddExerciseToWorkoutUsecase {
     validateInteger(request.reps, 'AddExerciseToWorkout reps');
     validatePositiveNumber(request.weight, 'AddExerciseToWorkout weight');
 
-    const workout = await this.workoutsRepo.getWorkoutById(request.workoutId);
+    const workout = await this.workoutsRepo.getWorkoutByIdAndUserId(
+      request.workoutId,
+      request.userId
+    );
 
     if (!workout) {
       throw new NotFoundError('AddExerciseToWorkoutUsecase: Workout not found');

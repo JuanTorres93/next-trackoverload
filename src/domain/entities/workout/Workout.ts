@@ -30,6 +30,7 @@ type ExerciseLineUpdateProps = {
 
 export type WorkoutProps = {
   id: string;
+  userId: string;
   name: string;
   workoutTemplateId: string;
   exercises: ExerciseLine[];
@@ -42,6 +43,7 @@ export class Workout {
 
   static create(props: WorkoutProps): Workout {
     validateNonEmptyString(props.id, 'Workout id');
+    validateNonEmptyString(props.userId, 'Workout userId');
     validateNonEmptyString(props.name, 'Workout name');
     validateNonEmptyString(
       props.workoutTemplateId,
@@ -143,6 +145,10 @@ export class Workout {
   // Getters
   get id() {
     return this.props.id;
+  }
+
+  get userId() {
+    return this.props.userId;
   }
 
   get name() {

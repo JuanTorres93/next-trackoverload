@@ -38,6 +38,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
     await exercisesRepo.saveExercise(exercise);
 
     const updatedWorkout = await addExerciseToWorkoutUsecase.execute({
+      userId: vp.userId,
       workoutId: '1',
       exerciseId: 'exercise-1',
       setNumber: 1,
@@ -65,6 +66,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
     await expect(
       addExerciseToWorkoutUsecase.execute({
+        userId: vp.userId,
         workoutId: 'non-existent',
         exerciseId: 'exercise-1',
         setNumber: 1,
@@ -85,6 +87,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
     await expect(
       addExerciseToWorkoutUsecase.execute({
+        userId: vp.userId,
         workoutId: '1',
         exerciseId: 'non-existent',
         setNumber: 1,
@@ -119,6 +122,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
     await expect(
       addExerciseToWorkoutUsecase.execute({
+        userId: vp.userId,
         workoutId: '1',
         exerciseId: 'exercise-1',
         setNumber: 1,
@@ -152,6 +156,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
     await exercisesRepo.saveExercise(exercise);
 
     const updatedWorkout = await addExerciseToWorkoutUsecase.execute({
+      userId: vp.userId,
       workoutId: '1',
       exerciseId: 'exercise-1',
       setNumber: 2,
@@ -330,6 +335,34 @@ describe('AddExerciseToWorkoutUsecase', () => {
           reps: 10,
           // @ts-expect-error testing invalid types
           weight: invalidWeight,
+        })
+      ).rejects.toThrow(ValidationError);
+    }
+  });
+
+  it('should throw error if userId is invalid', async () => {
+    const invalidUserIds = [
+      '',
+      '   ',
+      null,
+      undefined,
+      123,
+      {},
+      [],
+      true,
+      false,
+    ];
+
+    for (const invalidUserId of invalidUserIds) {
+      await expect(
+        addExerciseToWorkoutUsecase.execute({
+          // @ts-expect-error testing invalid types
+          userId: invalidUserId,
+          workoutId: '1',
+          exerciseId: 'exercise-1',
+          setNumber: 1,
+          reps: 10,
+          weight: 0,
         })
       ).rejects.toThrow(ValidationError);
     }
