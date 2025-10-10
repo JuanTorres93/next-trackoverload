@@ -40,6 +40,9 @@ export const validateInteger = (value: number, context: string): void => {
 };
 
 export const validateObject = (value: object, context: string): void => {
+  if (Array.isArray(value)) {
+    throw new ValidationError(`${context}: Invalid object - array provided`);
+  }
   if (typeof value !== 'object' || value === null) {
     throw new ValidationError(`${context}: Invalid object`);
   }

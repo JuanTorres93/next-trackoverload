@@ -5,7 +5,5 @@ export interface UsersRepo {
   getUserById(id: string): Promise<User | null>;
   // NOTE: implement deletion in Auth?
   deleteUser(id: string): Promise<void>;
-
-  // saveUser is implemented in Auth
-  // saveUser(user: User): Promise<void>;
+  saveUser(user: User): Promise<void>;
 }

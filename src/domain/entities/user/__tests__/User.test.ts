@@ -51,4 +51,15 @@ describe('User', () => {
     expect(userWithoutDates.createdAt).toBeInstanceOf(Date);
     expect(userWithoutDates.updatedAt).toBeInstanceOf(Date);
   });
+
+  it('should throw error if customerId is invalid', async () => {
+    const invalidCustomerIds = ['', '   ', 123, true, {}, [], null];
+
+    for (const invalidCustomerId of invalidCustomerIds) {
+      expect(() =>
+        // @ts-expect-error Testing invalid inputs
+        User.create({ ...validUserProps, customerId: invalidCustomerId })
+      ).toThrowError(ValidationError);
+    }
+  });
 });
