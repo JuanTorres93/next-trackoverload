@@ -1,37 +1,48 @@
-# IMPORTANT: Versión inicial de los requerimientos. Ver 03 - Categories para una mejor visión
+# Ingredientes
 
-# Nutrición
-
-- [ ] Loggear en batch para el conjunto de días que seleccione el usuario
-- [ ] ¿Repositorio común de recetas?
-- [ ] Repositorio privado de recetas
-- [ ] Guardar info recetas
-- [ ] Editar info recetas sin afectar a comidas pasadas
-- [ ] Ver info recetas
-- [ ] Borrar recetas sin afectar a comidas pasadas
-- [ ] Guardar info comidas
-- [ ] Editar info comidas
-- [ ] Ver info comidas
-- [ ] Borrar comidas
-- [ ] 2 (o X) versiones de cada receta: Weight gain y Weight loss
-- [ ] Sólo info necesaria de las recetas: calorías y proteínas
 - [ ] Repositorio común de ingredientes
 - [ ] Repositorio privado de ingredientes
 - [ ] Guardar info ingredientes
 - [ ] Editar info ingredientes sin afectar a comidas pasadas
 - [ ] Ver info ingredientes
 - [ ] Borrar ingredientes sin afectar a comidas pasadas
+- [ ] Sólo info necesaria: calorías y proteínas
 
-# Ejercicio
+# Recetas
+
+- [ ] ¿Repositorio común de recetas?
+- [ ] Repositorio privado de recetas
+- [ ] Guardar info recetas
+- [ ] Editar info recetas sin afectar a comidas pasadas
+- [ ] Ver info recetas
+- [ ] Borrar recetas sin afectar a comidas pasadas
+- [ ] 2 (o X) versiones de cada receta: Weight gain y Weight loss
+- [ ] Sólo info necesaria de las recetas: calorías y proteínas
+
+# Meals
+
+- [ ] Loggear en batch para el conjunto de días que seleccione el usuario
+- [ ] Guardar info comidas
+- [ ] Editar info comidas
+- [ ] Ver info comidas
+- [ ] Borrar comidas
+
+# Progreso con el tiempo
 
 - [ ] ¿Seguimiento gráfico del tiempo en volumen y en definición?
+
+# Plantillas entrenamiento
+
 - [ ] Crear plantillas de entrenamiento
 - [ ] ¿Repositorio de plantillas públicas de entrenamiento?
 - [ ] Poder editar una plantilla sin afectar a entrenamientos pasados, pero sí a futuros
-- [ ] Guardar info de entrenamientos
 - [ ] Ver plantillas creadas
 - [ ] Editar plantillas creadas
 - [ ] Borrar plantilla sin afectar a entrenamientos pasados
+
+# Entrenamientos
+
+- [ ] Guardar info de entrenamientos
 - [ ] Ver entrenamientos pasados
 - [ ] Editar entrenamientos pasados
 - [ ] Borrar entrenamientos pasados
@@ -39,6 +50,9 @@
 - [ ] Editar el entrenamiento actual (poner el progreso)
 - [ ] Editar el entrenamiento actual (cambiar ejercicios on-the-fly)
 - [ ] Borrar el entrenamiento actual
+
+# Ejercicios
+
 - [ ] Crear ejercicio
 - [ ] Editar ejercicio
 - [ ] Borrar ejercicio
@@ -47,12 +61,13 @@
 # Usuario
 
 - [ ] Editar usuario
+- [ ] Borrar usuario
 
 # Auth
 
 - [ ] Login
 - [ ] Registro (Crear usuario)
-- [ ] Autenticación
+- [ ] Cambiar contraseña
 
 # Pagos
 
