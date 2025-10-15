@@ -1,8 +1,8 @@
 # Ingredientes
 
-/ingredients
+/ingredients -> En el futuro
 /ingredients/new
-/ingredients/:ingredientId
+/ingredients/:ingredientId -> En el futuro
 
 # Recetas
 
