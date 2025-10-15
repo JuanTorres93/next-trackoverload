@@ -1,12 +1,15 @@
 function Form({
   children,
   submitText,
+  action,
+  ...props
 }: {
   children: React.ReactNode;
   submitText?: string;
+  action?: (formData: FormData) => Promise<void>;
 }) {
   return (
-    <form className="flex flex-col gap-4">
+    <form className="flex flex-col gap-4" action={action} {...props}>
       {children}
 
       <button

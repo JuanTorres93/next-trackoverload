@@ -1,5 +1,4 @@
-import Input from '@/app/_ui/Input';
-import Form from '@/app/_ui/NewResourceForm';
+import NewIngredientForm from '@/app/_features/ingredient/NewIngredientForm';
 
 export const metadata = {
   title: 'New Ingredient',
@@ -7,19 +6,5 @@ export const metadata = {
 };
 
 export default function NewIngredientPage() {
-  return (
-    <Form submitText="Crear ingrediente">
-      <Form.FormRow label="Nombre">
-        <Input id="nombre" placeholder="Nombre del ingrediente" required />
-      </Form.FormRow>
-
-      <Form.FormRow label="Calorías">
-        <Input id="calorias" placeholder="Calorías del ingrediente" />
-      </Form.FormRow>
-
-      <Form.FormRow label="Proteínas">
-        <Input id="proteinas" placeholder="Proteínas del ingrediente" />
-      </Form.FormRow>
-    </Form>
-  );
+  return <NewIngredientForm />;
 }

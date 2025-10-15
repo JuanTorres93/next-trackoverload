@@ -17,8 +17,8 @@ export class CreateIngredientUsecase {
       id: uuidv4(),
       name: request.name,
       nutritionalInfoPer100g: {
-        calories: request.calories,
-        protein: request.protein,
+        calories: Number(request.calories),
+        protein: Number(request.protein),
       },
       createdAt: new Date(),
       updatedAt: new Date(),
