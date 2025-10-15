@@ -1,7 +1,12 @@
-export default function Home() {
+export const metadata = {
+  title: 'Home',
+  description: 'Home page',
+};
+
+export default function LandingPage() {
   return (
     <div className="">
-      <main className="">Home page</main>
+      <main className="">Landing page</main>
     </div>
   );
 }

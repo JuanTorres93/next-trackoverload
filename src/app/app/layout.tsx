@@ -12,8 +12,8 @@ export default function RootLayout({
 }>) {
   return (
     <div className="flex gap-8">
-      Sidenav
-      {children}
+      <aside>Sidenav</aside>
+      <main>{children}</main>
     </div>
   );
 }
