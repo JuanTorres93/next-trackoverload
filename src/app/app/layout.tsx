@@ -11,9 +11,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="flex gap-8">
+    <div className="flex gap-8 max-h-dvh overflow-hidden">
       <aside>Sidenav</aside>
-      <main>{children}</main>
+      <main className="overflow-y-scroll">{children}</main>
     </div>
   );
 }

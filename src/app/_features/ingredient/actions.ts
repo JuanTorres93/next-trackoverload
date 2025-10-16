@@ -35,7 +35,7 @@ export async function createIngredient(
       calories,
       protein,
     });
-  } catch (error) {
+  } catch {
     finalFormState.message = 'Error al crear el ingrediente';
     return finalFormState;
   }
