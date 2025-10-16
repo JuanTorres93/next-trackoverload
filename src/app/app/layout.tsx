@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import SideNav from '../_ui/SideNav';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -11,8 +12,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="flex gap-8 max-h-dvh overflow-hidden">
-      <aside>Sidenav</aside>
+    <div className="flex gap-4 max-h-dvh overflow-hidden">
+      <aside className="w-[12rem]">
+        <SideNav />
+      </aside>
       <main className="overflow-y-scroll">{children}</main>
     </div>
   );
