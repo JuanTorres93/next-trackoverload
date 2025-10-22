@@ -19,3 +19,11 @@ export const fakeMealDTOProperties = [
   'createdAt',
   'updatedAt',
 ];
+
+export const ingredientDTOProperties = [
+  'id',
+  'name',
+  'nutritionalInfoPer100g',
+  'createdAt',
+  'updatedAt',
+];

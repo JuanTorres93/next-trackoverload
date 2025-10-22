@@ -3,6 +3,8 @@ import { GetIngredientByIdUsecase } from '../GetIngredientById.usecase';
 import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { ValidationError } from '@/domain/common/errors';
+import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('GetIngredientByIdUsecase', () => {
   let ingredientsRepo: MemoryIngredientsRepo;
@@ -15,21 +17,37 @@ describe('GetIngredientByIdUsecase', () => {
 
   it('should return ingredient when found', async () => {
     const ingredient = Ingredient.create({
+      ...vp.validIngredientProps,
       id: '1',
       name: 'Chicken Breast',
-      nutritionalInfoPer100g: {
-        calories: 165,
-        protein: 31,
-      },
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await ingredientsRepo.saveIngredient(ingredient);
 
     const result = await getIngredientByIdUsecase.execute({ id: '1' });
 
-    expect(result).toEqual(ingredient);
+    expect(result).not.toBeNull();
+    expect(result?.id).toBe(ingredient.id);
+    expect(result?.name).toBe(ingredient.name);
+  });
+
+  it('should return IngredientDTO when ingredient found', async () => {
+    const ingredient = Ingredient.create({
+      ...vp.validIngredientProps,
+      id: '1',
+      name: 'Chicken Breast',
+    });
+
+    await ingredientsRepo.saveIngredient(ingredient);
+
+    const result = await getIngredientByIdUsecase.execute({ id: '1' });
+
+    expect(result).not.toBeNull();
+    expect(result).not.toBeInstanceOf(Ingredient);
+
+    for (const prop of dto.ingredientDTOProperties) {
+      expect(result).toHaveProperty(prop);
+    }
   });
 
   it('should return null when ingredient not found', async () => {

@@ -3,6 +3,10 @@ import {
   Ingredient,
   IngredientUpdateProps,
 } from '@/domain/entities/ingredient/Ingredient';
+import {
+  IngredientDTO,
+  toIngredientDTO,
+} from '@/application-layer/dtos/IngredientDTO';
 import { NotFoundError } from '@/domain/common/errors';
 import { validateNonEmptyString } from '@/domain/common/validation';
 
@@ -16,7 +20,9 @@ export type UpdateIngredientUsecaseRequest = {
 export class UpdateIngredientUsecase {
   constructor(private ingredientsRepo: IngredientsRepo) {}
 
-  async execute(request: UpdateIngredientUsecaseRequest): Promise<Ingredient> {
+  async execute(
+    request: UpdateIngredientUsecaseRequest
+  ): Promise<IngredientDTO> {
     validateNonEmptyString(request.id, 'UpdateIngredientUsecase');
 
     const existingIngredient = await this.ingredientsRepo.getIngredientById(
@@ -52,9 +58,9 @@ export class UpdateIngredientUsecase {
 
       await this.ingredientsRepo.saveIngredient(updatedIngredient);
 
-      return updatedIngredient;
+      return toIngredientDTO(updatedIngredient);
     }
 
-    return existingIngredient; // No changes made, return the original
+    return toIngredientDTO(existingIngredient); // No changes made, return the original
   }
 }

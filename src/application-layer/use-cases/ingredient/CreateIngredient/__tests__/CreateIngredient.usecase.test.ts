@@ -1,8 +1,10 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { CreateIngredientUsecase } from '../CreateIngredient.usecase';
 import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('CreateIngredientUsecase', () => {
   let ingredientsRepo: MemoryIngredientsRepo;
@@ -32,7 +34,23 @@ describe('CreateIngredientUsecase', () => {
     const savedIngredient = await ingredientsRepo.getIngredientById(
       ingredient.id
     );
-    expect(savedIngredient).toEqual(ingredient);
+    expect(savedIngredient).toBeDefined();
+  });
+
+  it('should return IngredientDTO', async () => {
+    const request = {
+      name: vp.validIngredientProps.name,
+      calories: vp.validIngredientProps.nutritionalInfoPer100g.calories,
+      protein: vp.validIngredientProps.nutritionalInfoPer100g.protein,
+    };
+
+    const ingredient = await createIngredientUsecase.execute(request);
+
+    expect(ingredient).not.toBeInstanceOf(Ingredient);
+
+    for (const prop of dto.ingredientDTOProperties) {
+      expect(ingredient).toHaveProperty(prop);
+    }
   });
 
   it('should throw an error if name is empty', async () => {

@@ -1,12 +1,15 @@
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import {
+  IngredientDTO,
+  toIngredientDTO,
+} from '@/application-layer/dtos/IngredientDTO';
 
 export class GetAllIngredientsUsecase {
   constructor(private ingredientsRepo: IngredientsRepo) {}
 
-  async execute(): Promise<Ingredient[]> {
+  async execute(): Promise<IngredientDTO[]> {
     const ingredients = await this.ingredientsRepo.getAllIngredients();
 
-    return ingredients || [];
+    return ingredients.map(toIngredientDTO) || [];
   }
 }

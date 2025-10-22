@@ -1,5 +1,8 @@
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import {
+  IngredientDTO,
+  toIngredientDTO,
+} from '@/application-layer/dtos/IngredientDTO';
 import { validateNonEmptyString } from '@/domain/common/validation';
 
 export type GetIngredientByIdUsecaseRequest = {
@@ -11,10 +14,10 @@ export class GetIngredientByIdUsecase {
 
   async execute(
     request: GetIngredientByIdUsecaseRequest
-  ): Promise<Ingredient | null> {
+  ): Promise<IngredientDTO | null> {
     validateNonEmptyString(request.id, 'GetIngredientByIdUsecase');
 
     const ingredient = await this.ingredientsRepo.getIngredientById(request.id);
-    return ingredient || null;
+    return ingredient ? toIngredientDTO(ingredient) : null;
   }
 }

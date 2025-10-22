@@ -1,5 +1,8 @@
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import {
+  IngredientDTO,
+  toIngredientDTO,
+} from '@/application-layer/dtos/IngredientDTO';
 import { validateNonEmptyString } from '@/domain/common/validation';
 
 export type GetIngredientsByIdsUsecaseRequest = {
@@ -11,8 +14,8 @@ export class GetIngredientsByIdsUsecase {
 
   async execute(
     request: GetIngredientsByIdsUsecaseRequest
-  ): Promise<Ingredient[]> {
-    const ingredients: Ingredient[] = [];
+  ): Promise<IngredientDTO[]> {
+    const ingredientDTOs: IngredientDTO[] = [];
 
     // First, validate all IDs
     for (const id of request.ids) {
@@ -23,10 +26,10 @@ export class GetIngredientsByIdsUsecase {
     for (const id of request.ids) {
       const ingredient = await this.ingredientsRepo.getIngredientById(id);
       if (ingredient) {
-        ingredients.push(ingredient);
+        ingredientDTOs.push(toIngredientDTO(ingredient));
       }
     }
 
-    return ingredients || [];
+    return ingredientDTOs || [];
   }
 }
