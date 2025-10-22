@@ -42,7 +42,34 @@ describe('AddFakeMealToDayUsecase', () => {
     });
 
     expect(result.meals).toHaveLength(1);
-    expect(result.meals[0]).toEqual(fakeMeal);
+    expect(result.meals[0].id).toEqual(fakeMeal.id);
+  });
+
+  it('should return DayDTO', async () => {
+    const date = new Date('2023-10-01');
+    const userId = 'user-1';
+    const day = Day.create({
+      ...vp.validDayProps,
+    });
+    const fakeMeal = FakeMeal.create({
+      ...vp.validFakeMealProps,
+    });
+
+    await daysRepo.saveDay(day);
+    await fakeMealsRepo.saveFakeMeal(fakeMeal);
+
+    const result = await addFakeMealToDayUsecase.execute({
+      date,
+      userId,
+      fakeMealId: fakeMeal.id,
+    });
+
+    expect(result).not.toBeInstanceOf(Day);
+    expect(result).toHaveProperty('id');
+    expect(result).toHaveProperty('userId');
+    expect(result).toHaveProperty('meals');
+    expect(result).toHaveProperty('createdAt');
+    expect(result).toHaveProperty('updatedAt');
   });
 
   it('should add fake meal and create new day if it does not exist', async () => {
@@ -60,9 +87,9 @@ describe('AddFakeMealToDayUsecase', () => {
       fakeMealId: fakeMeal.id,
     });
 
-    expect(result.id).toEqual(date);
+    expect(result.id).toEqual(date.toISOString());
     expect(result.meals).toHaveLength(1);
-    expect(result.meals[0]).toEqual(fakeMeal);
+    expect(result.meals[0].id).toEqual(fakeMeal.id);
   });
 
   it('should throw error if fake meal does not exist', async () => {

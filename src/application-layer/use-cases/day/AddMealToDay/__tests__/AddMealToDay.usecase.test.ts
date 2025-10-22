@@ -50,7 +50,22 @@ describe('AddMealToDayUsecase', () => {
     });
 
     expect(result.meals).toHaveLength(1);
-    expect(result.meals[0]).toEqual(meal);
+    expect(result.meals[0].id).toEqual(meal.id);
+  });
+
+  it('should return DayDTO', async () => {
+    const result = await addMealToDayUsecase.execute({
+      date: vp.dateId,
+      userId: vp.userId,
+      mealId: 'meal-1',
+    });
+
+    expect(result).not.toBeInstanceOf(Day);
+    expect(result).toHaveProperty('id');
+    expect(result).toHaveProperty('userId');
+    expect(result).toHaveProperty('meals');
+    expect(result).toHaveProperty('createdAt');
+    expect(result).toHaveProperty('updatedAt');
   });
 
   it('should create new day and add meal if day does not exist', async () => {
@@ -68,9 +83,9 @@ describe('AddMealToDayUsecase', () => {
       mealId: vp.mealPropsNoIngredientLines.id,
     });
 
-    expect(result.id).toEqual(date);
+    expect(result.id).toEqual(date.toISOString());
     expect(result.meals).toHaveLength(1);
-    expect(result.meals[0]).toEqual(meal);
+    expect(result.meals[0].id).toEqual(meal.id);
   });
 
   it('should throw error if meal does not exist', async () => {

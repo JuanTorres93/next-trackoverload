@@ -40,9 +40,44 @@ describe('GetDaysByDateRangeUsecase', () => {
     });
 
     expect(result).toHaveLength(2);
-    expect(result).toContain(day1);
-    expect(result).toContain(day2);
+    expect(result[0].id).toEqual(day1.id.toISOString());
+    expect(result[1].id).toEqual(day2.id.toISOString());
     expect(result).not.toContain(day3);
+  });
+
+  it('should return an array of DayDTOs', async () => {
+    const day1 = Day.create({
+      ...vp.validDayProps,
+      id: new Date('2023-10-01'),
+    });
+    const day2 = Day.create({
+      ...vp.validDayProps,
+      id: new Date('2023-10-02'),
+    });
+
+    await daysRepo.saveDay(day1);
+    await daysRepo.saveDay(day2);
+
+    const result = await getDaysByDateRangeUsecase.execute({
+      startDate: vp.dateId,
+      endDate: new Date('2023-10-02'),
+      userId,
+    });
+
+    expect(result).toHaveLength(2);
+    expect(result[0]).not.toBeInstanceOf(Day);
+    expect(result[0]).toHaveProperty('id');
+    expect(result[0]).toHaveProperty('userId');
+    expect(result[0]).toHaveProperty('meals');
+    expect(result[0]).toHaveProperty('createdAt');
+    expect(result[0]).toHaveProperty('updatedAt');
+
+    expect(result[1]).not.toBeInstanceOf(Day);
+    expect(result[1]).toHaveProperty('id');
+    expect(result[1]).toHaveProperty('userId');
+    expect(result[1]).toHaveProperty('meals');
+    expect(result[1]).toHaveProperty('createdAt');
+    expect(result[1]).toHaveProperty('updatedAt');
   });
 
   it('should return empty array if no days in range', async () => {
@@ -85,8 +120,8 @@ describe('GetDaysByDateRangeUsecase', () => {
     });
 
     expect(result).toHaveLength(2);
-    expect(result).toContain(day1);
-    expect(result).toContain(day2);
+    expect(result[0].id).toEqual(day1.id.toISOString());
+    expect(result[1].id).toEqual(day2.id.toISOString());
   });
 
   it('should throw error if startDate is invalid', async () => {

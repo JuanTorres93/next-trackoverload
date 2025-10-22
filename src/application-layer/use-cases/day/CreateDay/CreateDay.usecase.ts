@@ -1,5 +1,6 @@
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { Day } from '@/domain/entities/day/Day';
+import { DayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 
@@ -12,7 +13,7 @@ export type CreateDayUsecaseRequest = {
 export class CreateDayUsecase {
   constructor(private daysRepo: DaysRepo) {}
 
-  async execute(request: CreateDayUsecaseRequest): Promise<Day> {
+  async execute(request: CreateDayUsecaseRequest): Promise<DayDTO> {
     // NOTE: id, userId and meals are validated in the entity
     const newDay = Day.create({
       id: request.date,
@@ -24,6 +25,6 @@ export class CreateDayUsecase {
 
     await this.daysRepo.saveDay(newDay);
 
-    return newDay;
+    return toDayDTO(newDay);
   }
 }

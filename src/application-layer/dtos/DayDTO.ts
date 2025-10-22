@@ -8,6 +8,8 @@ export type DayDTO = {
   id: string; // Date as ISO string
   userId: string;
   meals: (MealDTO | FakeMealDTO)[];
+  calories: number;
+  protein: number;
   createdAt: string;
   updatedAt: string;
 };
@@ -25,6 +27,8 @@ export function toDayDTO(day: Day): DayDTO {
         throw new Error('Unknown meal type in Day');
       }
     }),
+    calories: day.calories,
+    protein: day.protein,
     createdAt: day.createdAt.toISOString(),
     updatedAt: day.updatedAt.toISOString(),
   };

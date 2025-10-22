@@ -3,6 +3,8 @@ import { CreateDayUsecase } from '../CreateDay.usecase';
 import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import { Day } from '@/domain/entities/day/Day';
+import { toDayDTO } from '@/application-layer/dtos/DayDTO';
 
 describe('CreateDayUsecase', () => {
   let daysRepo: MemoryDaysRepo;
@@ -18,15 +20,30 @@ describe('CreateDayUsecase', () => {
 
     const day = await createDayUsecase.execute(request);
 
-    expect(day.id).toEqual(request.date);
+    expect(day.id).toEqual(request.date.toISOString());
     expect(day.meals).toEqual([]);
     expect(day.calories).toBe(0);
     expect(day.protein).toBe(0);
     expect(day).toHaveProperty('createdAt');
     expect(day).toHaveProperty('updatedAt');
 
-    const savedDay = await daysRepo.getDayById(day.id.toISOString());
-    expect(savedDay).toEqual(day);
+    const savedDay = await daysRepo.getDayById(day.id);
+
+    // @ts-expect-error savedDay won't be null
+    expect(toDayDTO(savedDay)).toEqual(day);
+  });
+
+  it('should return DayDTO', async () => {
+    const request = { date: vp.dateId, userId: vp.userId };
+
+    const day = await createDayUsecase.execute(request);
+
+    expect(day).not.toBeInstanceOf(Day);
+    expect(day).toHaveProperty('id');
+    expect(day).toHaveProperty('userId');
+    expect(day).toHaveProperty('meals');
+    expect(day).toHaveProperty('createdAt');
+    expect(day).toHaveProperty('updatedAt');
   });
 
   it('should create a day with initial meals', async () => {
@@ -38,7 +55,7 @@ describe('CreateDayUsecase', () => {
 
     const day = await createDayUsecase.execute(request);
 
-    expect(day.id).toEqual(request.date);
+    expect(day.id).toEqual(request.date.toISOString());
     expect(day.meals).toEqual([]);
   });
 

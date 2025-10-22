@@ -6,6 +6,7 @@ import {
   validateDate,
   validateNonEmptyString,
 } from '@/domain/common/validation';
+import { toDayDTO, DayDTO } from '@/application-layer/dtos/DayDTO';
 
 export type AddFakeMealToDayUsecaseRequest = {
   date: Date;
@@ -19,7 +20,7 @@ export class AddFakeMealToDayUsecase {
     private fakeMealsRepo: FakeMealsRepo
   ) {}
 
-  async execute(request: AddFakeMealToDayUsecaseRequest): Promise<Day> {
+  async execute(request: AddFakeMealToDayUsecaseRequest): Promise<DayDTO> {
     validateDate(request.date, 'AddFakeMealToDayUsecase: date');
     validateNonEmptyString(request.userId, 'AddFakeMealToDayUsecase: userId');
     validateNonEmptyString(
@@ -55,6 +56,6 @@ export class AddFakeMealToDayUsecase {
     day.addMeal(fakeMeal);
     await this.daysRepo.saveDay(day);
 
-    return day;
+    return toDayDTO(day);
   }
 }

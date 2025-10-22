@@ -2,6 +2,7 @@ import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 import { Day } from '@/domain/entities/day/Day';
 import { ValidationError } from '@/domain/common/errors';
+import { DayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
 
 export type AddMealToDayUsecaseRequest = {
   date: Date;
@@ -12,7 +13,7 @@ export type AddMealToDayUsecaseRequest = {
 export class AddMealToDayUsecase {
   constructor(private daysRepo: DaysRepo, private mealsRepo: MealsRepo) {}
 
-  async execute(request: AddMealToDayUsecaseRequest): Promise<Day> {
+  async execute(request: AddMealToDayUsecaseRequest): Promise<DayDTO> {
     const meal = await this.mealsRepo.getMealById(request.mealId);
     if (!meal) {
       throw new ValidationError(`Meal with id ${request.mealId} not found`);
@@ -36,6 +37,6 @@ export class AddMealToDayUsecase {
     day.addMeal(meal);
     await this.daysRepo.saveDay(day);
 
-    return day;
+    return toDayDTO(day);
   }
 }

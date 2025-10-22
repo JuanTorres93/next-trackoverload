@@ -54,12 +54,40 @@ describe('UpdateDayMealsUsecase', () => {
       meals: [newFakeMeal, newMeal],
     });
 
+    const mealsIds = result.meals.map((meal) => meal.id);
+
     expect(result.meals).toHaveLength(2);
-    expect(result.meals).toContain(newFakeMeal);
-    expect(result.meals).toContain(newMeal);
-    expect(result.meals).not.toContain(oldFakeMeal);
+    expect(mealsIds).toContain(newFakeMeal.id);
+    expect(mealsIds).toContain(newMeal.id);
+    expect(mealsIds).not.toContain(oldFakeMeal.id);
     expect(result.calories).toBe(500); // 200 from fakeMeal + 300 from meal (150*2)
     expect(result.protein).toBe(16); // 10 from fakeMeal + 6 from meal (3*2)
+  });
+
+  it('should return a DayDTO', async () => {
+    const date = new Date('2023-10-01');
+    const fakeMeal = FakeMeal.create({
+      ...vp.validFakeMealProps,
+    });
+    const day = Day.create({
+      ...vp.validDayProps,
+      meals: [fakeMeal],
+    });
+
+    await daysRepo.saveDay(day);
+
+    const result = await updateDayMealsUsecase.execute({
+      date,
+      userId: vp.userId,
+      meals: [fakeMeal],
+    });
+
+    expect(result).not.toBeInstanceOf(Day);
+    expect(result).toHaveProperty('id');
+    expect(result).toHaveProperty('userId');
+    expect(result).toHaveProperty('meals');
+    expect(result).toHaveProperty('createdAt');
+    expect(result).toHaveProperty('updatedAt');
   });
 
   it('should create new day if it does not exist', async () => {
@@ -74,9 +102,9 @@ describe('UpdateDayMealsUsecase', () => {
       meals: [fakeMeal],
     });
 
-    expect(result.id).toEqual(nonExistentDate);
+    expect(result.id).toEqual(nonExistentDate.toISOString());
     expect(result.meals).toHaveLength(1);
-    expect(result.meals[0]).toEqual(fakeMeal);
+    expect(result.meals[0].id).toEqual(fakeMeal.id);
   });
 
   it('should handle empty meals array', async () => {
@@ -118,8 +146,8 @@ describe('UpdateDayMealsUsecase', () => {
       meals: [],
     });
 
-    expect(result.createdAt).toEqual(originalCreatedAt);
-    expect(result.updatedAt.getTime()).toBeGreaterThan(
+    expect(result.createdAt).toEqual(originalCreatedAt.toISOString());
+    expect(new Date(result.updatedAt).getTime()).toBeGreaterThan(
       originalCreatedAt.getTime()
     );
   });

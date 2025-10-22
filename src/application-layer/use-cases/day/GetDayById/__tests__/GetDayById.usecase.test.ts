@@ -26,7 +26,22 @@ describe('GetDayByIdUsecase', () => {
       userId: vp.userId,
     });
 
-    expect(result).toEqual(day);
+    // @ts-expect-error result won't be null
+    expect(result.id).toEqual(day.id.toISOString());
+  });
+
+  it('should return DayDTO', async () => {
+    const result = await getDayByIdUsecase.execute({
+      date: vp.dateId,
+      userId: vp.userId,
+    });
+
+    expect(result).not.toBeInstanceOf(Day);
+    expect(result).toHaveProperty('id');
+    expect(result).toHaveProperty('userId');
+    expect(result).toHaveProperty('meals');
+    expect(result).toHaveProperty('createdAt');
+    expect(result).toHaveProperty('updatedAt');
   });
 
   it('should return null if day does not exist', async () => {

@@ -1,5 +1,5 @@
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
-import { Day } from '@/domain/entities/day/Day';
+import { DayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
 import { ValidationError } from '@/domain/common/errors';
 import {
   validateDate,
@@ -15,7 +15,7 @@ export type RemoveMealFromDayUsecaseRequest = {
 export class RemoveMealFromDayUsecase {
   constructor(private daysRepo: DaysRepo) {}
 
-  async execute(request: RemoveMealFromDayUsecaseRequest): Promise<Day> {
+  async execute(request: RemoveMealFromDayUsecaseRequest): Promise<DayDTO> {
     validateDate(request.date, 'RemoveMealFromDayUsecase: date');
     validateNonEmptyString(request.userId, 'RemoveMealFromDayUsecase: userId');
     validateNonEmptyString(request.mealId, 'RemoveMealFromDayUsecase: mealId');
@@ -36,6 +36,6 @@ export class RemoveMealFromDayUsecase {
     day.removeMealById(request.mealId);
     await this.daysRepo.saveDay(day);
 
-    return day;
+    return toDayDTO(day);
   }
 }

@@ -37,6 +37,32 @@ describe('RemoveMealFromDayUsecase', () => {
     expect(result.meals).toHaveLength(0);
   });
 
+  it('should return a DayDTO', async () => {
+    const date = new Date('2023-10-01');
+    const fakeMeal = FakeMeal.create({
+      ...vp.validFakeMealProps,
+    });
+    const day = Day.create({
+      ...vp.validDayProps,
+      meals: [fakeMeal],
+    });
+
+    await daysRepo.saveDay(day);
+
+    const result = await removeMealFromDayUsecase.execute({
+      date,
+      userId: vp.userId,
+      mealId: vp.validFakeMealProps.id,
+    });
+
+    expect(result).not.toBeInstanceOf(Day);
+    expect(result).toHaveProperty('id');
+    expect(result).toHaveProperty('userId');
+    expect(result).toHaveProperty('meals');
+    expect(result).toHaveProperty('createdAt');
+    expect(result).toHaveProperty('updatedAt');
+  });
+
   it('should throw error if day does not exist', async () => {
     const date = new Date('2023-10-01');
 
