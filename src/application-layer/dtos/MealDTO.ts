@@ -1,4 +1,5 @@
-import { IngredientLineDTO } from './IngredientLineDTO';
+import { Meal } from '@/domain/entities/meal/Meal';
+import { IngredientLineDTO, toIngredientLineDTO } from './IngredientLineDTO';
 
 export type MealDTO = {
   id: string;
@@ -8,3 +9,14 @@ export type MealDTO = {
   createdAt: string;
   updatedAt: string;
 };
+
+export function toMealDTO(meal: Meal): MealDTO {
+  return {
+    id: meal.id,
+    userId: meal.userId,
+    name: meal.name,
+    ingredientLines: meal.ingredientLines.map(toIngredientLineDTO),
+    createdAt: meal.createdAt.toISOString(),
+    updatedAt: meal.updatedAt.toISOString(),
+  };
+}

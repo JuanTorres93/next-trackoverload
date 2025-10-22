@@ -7,7 +7,7 @@ import {
   validateInteger,
 } from '../../common/validation';
 
-type ExerciseLine = {
+export type ExerciseLine = {
   exerciseId: string;
   setNumber: number;
   reps: number;

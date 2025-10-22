@@ -5,7 +5,7 @@ import {
   validateNonEmptyString,
 } from '../../common/validation';
 
-type TemplateLine = {
+export type TemplateLine = {
   exerciseId: string;
   sets: number;
 };
