@@ -1,12 +1,12 @@
-import { MealsRepo } from '@/domain/repos/MealsRepo.port';
-import { Meal } from '@/domain/entities/meal/Meal';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-import { validateNonEmptyString } from '@/domain/common/validation';
+import { MealDTO, toMealDTO } from '@/application-layer/dtos/MealDTO';
 import {
+  AuthError,
   NotFoundError,
   ValidationError,
-  AuthError,
 } from '@/domain/common/errors';
+import { validateNonEmptyString } from '@/domain/common/validation';
+import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 
 export type AddIngredientToMealUsecaseRequest = {
   userId: string;
@@ -17,7 +17,7 @@ export type AddIngredientToMealUsecaseRequest = {
 export class AddIngredientToMealUsecase {
   constructor(private mealsRepo: MealsRepo) {}
 
-  async execute(request: AddIngredientToMealUsecaseRequest): Promise<Meal> {
+  async execute(request: AddIngredientToMealUsecaseRequest): Promise<MealDTO> {
     validateNonEmptyString(request.mealId, 'AddIngredientToMealUsecase mealId');
     validateNonEmptyString(request.userId, 'AddIngredientToMealUsecase userId');
 
@@ -43,6 +43,6 @@ export class AddIngredientToMealUsecase {
     existingMeal.addIngredientLine(request.ingredientLine);
     await this.mealsRepo.saveMeal(existingMeal);
 
-    return existingMeal;
+    return toMealDTO(existingMeal);
   }
 }

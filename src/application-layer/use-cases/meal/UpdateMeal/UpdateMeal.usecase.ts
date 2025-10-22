@@ -1,5 +1,6 @@
 import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 import { Meal, MealUpdateProps } from '@/domain/entities/meal/Meal';
+import { MealDTO, toMealDTO } from '@/application-layer/dtos/MealDTO';
 import { NotFoundError } from '@/domain/common/errors';
 import { validateNonEmptyString } from '@/domain/common/validation';
 
@@ -12,7 +13,7 @@ export type UpdateMealUsecaseRequest = {
 export class UpdateMealUsecase {
   constructor(private mealsRepo: MealsRepo) {}
 
-  async execute(request: UpdateMealUsecaseRequest): Promise<Meal> {
+  async execute(request: UpdateMealUsecaseRequest): Promise<MealDTO> {
     validateNonEmptyString(request.id, 'UpdateMealUsecase id');
     validateNonEmptyString(request.userId, 'UpdateMealUsecase userId');
 
@@ -46,9 +47,9 @@ export class UpdateMealUsecase {
 
       await this.mealsRepo.saveMeal(updatedMeal);
 
-      return updatedMeal;
+      return toMealDTO(updatedMeal);
     }
 
-    return existingMeal; // No changes made, return the original
+    return toMealDTO(existingMeal); // No changes made, return the original
   }
 }

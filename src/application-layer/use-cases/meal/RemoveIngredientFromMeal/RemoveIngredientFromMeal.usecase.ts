@@ -1,5 +1,5 @@
 import { MealsRepo } from '@/domain/repos/MealsRepo.port';
-import { Meal } from '@/domain/entities/meal/Meal';
+import { MealDTO, toMealDTO } from '@/application-layer/dtos/MealDTO';
 import { validateNonEmptyString } from '@/domain/common/validation';
 import { AuthError, NotFoundError } from '@/domain/common/errors';
 
@@ -14,7 +14,7 @@ export class RemoveIngredientFromMealUsecase {
 
   async execute(
     request: RemoveIngredientFromMealUsecaseRequest
-  ): Promise<Meal> {
+  ): Promise<MealDTO> {
     validateNonEmptyString(
       request.userId,
       'RemoveIngredientFromMealUsecase userId'
@@ -46,6 +46,6 @@ export class RemoveIngredientFromMealUsecase {
 
     await this.mealsRepo.saveMeal(existingMeal);
 
-    return existingMeal;
+    return toMealDTO(existingMeal);
   }
 }

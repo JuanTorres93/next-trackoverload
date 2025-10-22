@@ -11,6 +11,7 @@ import {
 } from '@/domain/common/errors';
 import { v4 as uuidv4 } from 'uuid';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('RemoveIngredientFromMealUsecase', () => {
   let mealsRepo: MemoryMealsRepo;
@@ -73,6 +74,24 @@ describe('RemoveIngredientFromMealUsecase', () => {
         (line) => line.ingredient.id === secondIngredient.id
       )
     ).toBe(true);
+  });
+
+  it('should return MealDTO', async () => {
+    await mealsRepo.saveMeal(testMeal);
+
+    const request = {
+      userId: vp.userId,
+      mealId: testMeal.id,
+      ingredientId: testIngredient.id,
+    };
+
+    const result = await removeIngredientFromMealUsecase.execute(request);
+
+    expect(result).not.toBeInstanceOf(Meal);
+
+    for (const prop of dto.mealDTOProperties) {
+      expect(result).toHaveProperty(prop);
+    }
   });
 
   it('should throw NotFoundError when meal does not exist', async () => {
@@ -150,7 +169,7 @@ describe('RemoveIngredientFromMealUsecase', () => {
 
     const result = await removeIngredientFromMealUsecase.execute(request);
 
-    expect(result.updatedAt.getTime()).toBeGreaterThan(
+    expect(new Date(result.updatedAt).getTime()).toBeGreaterThan(
       originalUpdatedAt.getTime()
     );
   });

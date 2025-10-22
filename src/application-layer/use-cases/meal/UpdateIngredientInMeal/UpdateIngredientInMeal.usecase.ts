@@ -5,6 +5,7 @@ import {
 } from '@/domain/common/validation';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { Meal } from '@/domain/entities/meal/Meal';
+import { MealDTO, toMealDTO } from '@/application-layer/dtos/MealDTO';
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 
@@ -22,7 +23,9 @@ export class UpdateIngredientInMealUsecase {
     private ingredientsRepo: IngredientsRepo
   ) {}
 
-  async execute(request: UpdateIngredientInMealUsecaseRequest): Promise<Meal> {
+  async execute(
+    request: UpdateIngredientInMealUsecaseRequest
+  ): Promise<MealDTO> {
     validateNonEmptyString(
       request.userId,
       'UpdateIngredientInMealUsecase userId'
@@ -118,6 +121,6 @@ export class UpdateIngredientInMealUsecase {
     // Save the updated meal
     await this.mealsRepo.saveMeal(updatedMeal);
 
-    return updatedMeal;
+    return toMealDTO(updatedMeal);
   }
 }

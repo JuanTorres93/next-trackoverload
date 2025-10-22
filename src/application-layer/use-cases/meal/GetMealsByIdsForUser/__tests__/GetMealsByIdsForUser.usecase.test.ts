@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 import { ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
@@ -54,9 +55,11 @@ describe('GetMealsByIdsUsecase', () => {
       userId: vp.userId,
     });
 
+    const resultIds = result.map((m) => m.id);
+
     expect(result).toHaveLength(2);
-    expect(result).toContain(testMeals[0]);
-    expect(result).toContain(testMeals[1]);
+    expect(resultIds).toContain(testMeals[0].id);
+    expect(resultIds).toContain(testMeals[1].id);
   });
 
   it('should return only found meals when some ids do not exist', async () => {
@@ -70,7 +73,28 @@ describe('GetMealsByIdsUsecase', () => {
     });
 
     expect(result).toHaveLength(1);
-    expect(result[0]).toEqual(testMeals[0]);
+    expect(result[0].id).toBe(testMeals[0].id);
+  });
+
+  it('should return an array of MealDTO', async () => {
+    // Save meals to repo
+    await Promise.all(testMeals.map((meal) => mealsRepo.saveMeal(meal)));
+
+    const ids = [testMeals[0].id, testMeals[1].id];
+    const result = await getMealsByIdsUsecase.execute({
+      ids,
+      userId: vp.userId,
+    });
+
+    expect(result).toHaveLength(2);
+
+    for (const meal of result) {
+      expect(meal).not.toBeInstanceOf(Meal);
+
+      for (const prop of dto.mealDTOProperties) {
+        expect(meal).toHaveProperty(prop);
+      }
+    }
   });
 
   it('should return empty array when no meals are found', async () => {
@@ -94,7 +118,7 @@ describe('GetMealsByIdsUsecase', () => {
     });
 
     expect(result).toHaveLength(1);
-    expect(result[0]).toEqual(testMeals[0]);
+    expect(result[0].id).toBe(testMeals[0].id);
   });
 
   it('should throw error when ids is not an array', async () => {

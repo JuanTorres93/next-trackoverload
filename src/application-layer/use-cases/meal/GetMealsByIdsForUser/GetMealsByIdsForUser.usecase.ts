@@ -1,5 +1,5 @@
 import { MealsRepo } from '@/domain/repos/MealsRepo.port';
-import { Meal } from '@/domain/entities/meal/Meal';
+import { MealDTO, toMealDTO } from '@/application-layer/dtos/MealDTO';
 import { validateNonEmptyString } from '@/domain/common/validation';
 import { ValidationError } from '@/domain/common/errors';
 
@@ -11,7 +11,9 @@ export type GetMealsByIdsForUserUsecaseRequest = {
 export class GetMealsByIdsForUserUsecase {
   constructor(private mealsRepo: MealsRepo) {}
 
-  async execute(request: GetMealsByIdsForUserUsecaseRequest): Promise<Meal[]> {
+  async execute(
+    request: GetMealsByIdsForUserUsecaseRequest
+  ): Promise<MealDTO[]> {
     validateNonEmptyString(request.userId, 'GetMealsByIdsUsecase userId');
 
     if (!Array.isArray(request.ids) || request.ids.length === 0) {
@@ -32,7 +34,7 @@ export class GetMealsByIdsForUserUsecase {
       )
     );
 
-    // Filter out null values (meals that weren't found)
-    return meals.filter((meal): meal is Meal => meal !== null);
+    // Filter out null values (meals that weren't found) and convert to DTOs
+    return meals.filter((meal) => meal !== null).map(toMealDTO);
   }
 }

@@ -6,6 +6,7 @@ import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('UpdateMealUsecase', () => {
   let mealsRepo: MemoryMealsRepo;
@@ -42,8 +43,8 @@ describe('UpdateMealUsecase', () => {
     expect(updatedMeal.name).toBe('High Protein Meal');
     expect(updatedMeal.id).toBe(vp.mealPropsNoIngredientLines.id);
     expect(updatedMeal.ingredientLines).toHaveLength(1);
-    expect(updatedMeal.createdAt).toEqual(meal.createdAt);
-    expect(updatedMeal.updatedAt).not.toEqual(meal.updatedAt);
+    expect(updatedMeal.createdAt).toBe(meal.createdAt.toISOString());
+    expect(updatedMeal.updatedAt).not.toBe(meal.updatedAt.toISOString());
   });
 
   it('should return same meal when no changes are made', async () => {
@@ -68,7 +69,40 @@ describe('UpdateMealUsecase', () => {
       userId: vp.userId,
     });
 
-    expect(result).toEqual(meal);
+    expect(result.id).toBe(meal.id);
+    expect(result.name).toBe(meal.name);
+  });
+
+  it('should return MealDTO', async () => {
+    const ingredient = Ingredient.create({
+      ...vp.validIngredientProps,
+      id: 'ing1',
+    });
+
+    const ingredientLine = IngredientLine.create({
+      ...vp.ingredientLinePropsNoIngredient,
+      id: 'line1',
+      ingredient,
+    });
+
+    const meal = Meal.create({
+      ...vp.mealPropsNoIngredientLines,
+      ingredientLines: [ingredientLine],
+    });
+
+    await mealsRepo.saveMeal(meal);
+
+    const result = await updateMealUsecase.execute({
+      id: vp.mealPropsNoIngredientLines.id,
+      userId: vp.userId,
+      name: 'Updated Meal Name',
+    });
+
+    expect(result).not.toBeInstanceOf(Meal);
+
+    for (const prop of dto.mealDTOProperties) {
+      expect(result).toHaveProperty(prop);
+    }
   });
 
   it('should throw NotFoundError when meal does not exist', async () => {

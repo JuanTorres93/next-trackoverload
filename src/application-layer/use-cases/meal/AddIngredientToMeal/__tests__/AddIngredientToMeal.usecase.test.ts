@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 import {
   AuthError,
   NotFoundError,
@@ -70,7 +71,29 @@ describe('AddIngredientToMealUsecase', () => {
     const result = await addIngredientToMealUsecase.execute(request);
 
     expect(result.ingredientLines).toHaveLength(originalIngredientCount + 1);
-    expect(result.ingredientLines).toContain(newIngredientLine);
+
+    const ingredientIds = result.ingredientLines.map(
+      (line) => line.ingredient.id
+    );
+    expect(ingredientIds).toContain(newIngredientLine.ingredient.id);
+  });
+
+  it('should return MealDTO', async () => {
+    await mealsRepo.saveMeal(testMeal);
+
+    const request = {
+      mealId: testMeal.id,
+      ingredientLine: newIngredientLine,
+      userId: vp.userId,
+    };
+
+    const result = await addIngredientToMealUsecase.execute(request);
+
+    expect(result).not.toBeInstanceOf(Meal);
+
+    for (const prop of dto.mealDTOProperties) {
+      expect(result).toHaveProperty(prop);
+    }
   });
 
   it('should throw NotFoundError when meal does not exist', async () => {
@@ -136,7 +159,7 @@ describe('AddIngredientToMealUsecase', () => {
 
     const result = await addIngredientToMealUsecase.execute(request);
 
-    expect(result.updatedAt.getTime()).toBeGreaterThan(
+    expect(new Date(result.updatedAt).getTime()).toBeGreaterThan(
       originalUpdatedAt.getTime()
     );
   });
