@@ -2,9 +2,10 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { CreateDayUsecase } from '../CreateDay.usecase';
 import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
 import { ValidationError } from '@/domain/common/errors';
-import * as vp from '@/../tests/createProps';
 import { Day } from '@/domain/entities/day/Day';
 import { toDayDTO } from '@/application-layer/dtos/DayDTO';
+import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('CreateDayUsecase', () => {
   let daysRepo: MemoryDaysRepo;
@@ -39,11 +40,9 @@ describe('CreateDayUsecase', () => {
     const day = await createDayUsecase.execute(request);
 
     expect(day).not.toBeInstanceOf(Day);
-    expect(day).toHaveProperty('id');
-    expect(day).toHaveProperty('userId');
-    expect(day).toHaveProperty('meals');
-    expect(day).toHaveProperty('createdAt');
-    expect(day).toHaveProperty('updatedAt');
+    for (const prop of dto.dayDTOProperties) {
+      expect(day).toHaveProperty(prop);
+    }
   });
 
   it('should create a day with initial meals', async () => {

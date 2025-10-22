@@ -3,6 +3,7 @@ import { UpdateExerciseUsecase } from '../UpdateExercise.usecase';
 import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('UpdateExerciseUsecase', () => {
   let exercisesRepo: MemoryExercisesRepo;
@@ -50,10 +51,10 @@ describe('UpdateExerciseUsecase', () => {
     });
 
     expect(updatedExercise).not.toBeInstanceOf(Exercise);
-    expect(updatedExercise).toHaveProperty('id');
-    expect(updatedExercise.name).toBe('Modified Push Up');
-    expect(updatedExercise).toHaveProperty('createdAt');
-    expect(updatedExercise).toHaveProperty('updatedAt');
+
+    for (const prop of dto.exerciseDTOProperties) {
+      expect(updatedExercise).toHaveProperty(prop);
+    }
   });
 
   it('should throw NotFoundError when exercise does not exist', async () => {

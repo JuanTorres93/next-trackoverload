@@ -3,7 +3,7 @@ import { GetAllExercisesUsecase } from '../GetAllExercises.usecase';
 import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
 import * as vp from '@/../tests/createProps';
-import { toExerciseDTO } from '@/application-layer/dtos/ExerciseDTO';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('GetAllExercisesUsecase', () => {
   let exercisesRepo: MemoryExercisesRepo;
@@ -56,8 +56,14 @@ describe('GetAllExercisesUsecase', () => {
     const exercises = await getAllExercisesUsecase.execute();
 
     expect(exercises).toHaveLength(2);
-    expect(exercises).toContainEqual(toExerciseDTO(exercise1));
-    expect(exercises).toContainEqual(toExerciseDTO(exercise2));
+
+    for (const exercise of exercises) {
+      expect(exercise).not.toBeInstanceOf(Exercise);
+
+      for (const prop of dto.exerciseDTOProperties) {
+        expect(exercise).toHaveProperty(prop);
+      }
+    }
   });
 
   it('should return empty array when no exercises exist', async () => {

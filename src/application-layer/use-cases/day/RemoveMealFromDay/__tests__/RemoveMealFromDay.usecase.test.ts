@@ -6,6 +6,7 @@ import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { ValidationError } from '@/domain/common/errors';
 
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('RemoveMealFromDayUsecase', () => {
   let daysRepo: MemoryDaysRepo;
@@ -56,11 +57,9 @@ describe('RemoveMealFromDayUsecase', () => {
     });
 
     expect(result).not.toBeInstanceOf(Day);
-    expect(result).toHaveProperty('id');
-    expect(result).toHaveProperty('userId');
-    expect(result).toHaveProperty('meals');
-    expect(result).toHaveProperty('createdAt');
-    expect(result).toHaveProperty('updatedAt');
+    for (const prop of dto.dayDTOProperties) {
+      expect(result).toHaveProperty(prop);
+    }
   });
 
   it('should throw error if day does not exist', async () => {

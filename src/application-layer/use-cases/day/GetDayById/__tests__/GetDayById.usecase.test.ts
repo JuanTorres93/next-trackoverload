@@ -5,6 +5,7 @@ import { Day } from '@/domain/entities/day/Day';
 import { ValidationError } from '@/domain/common/errors';
 
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('GetDayByIdUsecase', () => {
   let daysRepo: MemoryDaysRepo;
@@ -37,11 +38,9 @@ describe('GetDayByIdUsecase', () => {
     });
 
     expect(result).not.toBeInstanceOf(Day);
-    expect(result).toHaveProperty('id');
-    expect(result).toHaveProperty('userId');
-    expect(result).toHaveProperty('meals');
-    expect(result).toHaveProperty('createdAt');
-    expect(result).toHaveProperty('updatedAt');
+    for (const prop of dto.dayDTOProperties) {
+      expect(result).toHaveProperty(prop);
+    }
   });
 
   it('should return null if day does not exist', async () => {

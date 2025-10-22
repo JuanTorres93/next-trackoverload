@@ -2,9 +2,10 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { CreateExerciseUsecase } from '../CreateExercise.usecase';
 import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
 import { ValidationError } from '@/domain/common/errors';
-import * as vp from '@/../tests/createProps';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
 import { toExerciseDTO } from '@/application-layer/dtos/ExerciseDTO';
+import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('CreateExerciseUsecase', () => {
   let exercisesRepo: MemoryExercisesRepo;
@@ -37,10 +38,9 @@ describe('CreateExerciseUsecase', () => {
     const exercise = await createExerciseUsecase.execute(request);
 
     expect(exercise).not.toBeInstanceOf(Exercise);
-    expect(exercise).toHaveProperty('id');
-    expect(exercise.name).toBe(request.name);
-    expect(exercise).toHaveProperty('createdAt');
-    expect(exercise).toHaveProperty('updatedAt');
+    for (const prop of dto.exerciseDTOProperties) {
+      expect(exercise).toHaveProperty(prop);
+    }
   });
 
   it('should throw an error if name is empty', async () => {

@@ -8,6 +8,7 @@ import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('AddMealToDayUsecase', () => {
   let daysRepo: MemoryDaysRepo;
@@ -61,11 +62,9 @@ describe('AddMealToDayUsecase', () => {
     });
 
     expect(result).not.toBeInstanceOf(Day);
-    expect(result).toHaveProperty('id');
-    expect(result).toHaveProperty('userId');
-    expect(result).toHaveProperty('meals');
-    expect(result).toHaveProperty('createdAt');
-    expect(result).toHaveProperty('updatedAt');
+    for (const prop of dto.dayDTOProperties) {
+      expect(result).toHaveProperty(prop);
+    }
   });
 
   it('should create new day and add meal if day does not exist', async () => {

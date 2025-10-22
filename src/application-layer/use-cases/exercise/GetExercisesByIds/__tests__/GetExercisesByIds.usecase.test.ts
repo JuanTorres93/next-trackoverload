@@ -3,6 +3,7 @@ import { GetExercisesByIdsUsecase } from '../GetExercisesByIds.usecase';
 import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
 import { ValidationError } from '@/domain/common/errors';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('GetExercisesByIdsUsecase', () => {
   let exercisesRepo: MemoryExercisesRepo;
@@ -64,17 +65,13 @@ describe('GetExercisesByIdsUsecase', () => {
 
     expect(exercises).toHaveLength(2);
 
-    expect(exercises[0]).not.toBeInstanceOf(Exercise);
-    expect(exercises[0]).toHaveProperty('id');
-    expect(exercises[0].name).toBe(exercise1.name);
-    expect(exercises[0]).toHaveProperty('createdAt');
-    expect(exercises[0]).toHaveProperty('updatedAt');
+    for (const exercise of exercises) {
+      expect(exercise).not.toBeInstanceOf(Exercise);
 
-    expect(exercises[1]).not.toBeInstanceOf(Exercise);
-    expect(exercises[1]).toHaveProperty('id');
-    expect(exercises[1].name).toBe(exercise2.name);
-    expect(exercises[1]).toHaveProperty('createdAt');
-    expect(exercises[1]).toHaveProperty('updatedAt');
+      for (const prop of dto.exerciseDTOProperties) {
+        expect(exercise).toHaveProperty(prop);
+      }
+    }
   });
 
   it('should return empty array when no exercises found', async () => {

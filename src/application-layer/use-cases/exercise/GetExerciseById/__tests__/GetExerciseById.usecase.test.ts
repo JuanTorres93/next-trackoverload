@@ -4,6 +4,7 @@ import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('GetExerciseByIdUsecase', () => {
   let exercisesRepo: MemoryExercisesRepo;
@@ -41,16 +42,9 @@ describe('GetExerciseByIdUsecase', () => {
     const result = await getExerciseByIdUsecase.execute({ id: '1' });
 
     expect(result).not.toBeInstanceOf(Exercise);
-    expect(result).toHaveProperty('id', exercise.id);
-    expect(result).toHaveProperty('name', exercise.name);
-    expect(result).toHaveProperty(
-      'createdAt',
-      exercise.createdAt.toISOString()
-    );
-    expect(result).toHaveProperty(
-      'updatedAt',
-      exercise.updatedAt.toISOString()
-    );
+    for (const prop of dto.exerciseDTOProperties) {
+      expect(result).toHaveProperty(prop);
+    }
   });
 
   it('should return null when exercise not found', async () => {

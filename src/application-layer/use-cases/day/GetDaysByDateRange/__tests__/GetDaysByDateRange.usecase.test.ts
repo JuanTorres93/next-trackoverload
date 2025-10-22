@@ -4,6 +4,7 @@ import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
 import { Day } from '@/domain/entities/day/Day';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('GetDaysByDateRangeUsecase', () => {
   let daysRepo: MemoryDaysRepo;
@@ -66,18 +67,14 @@ describe('GetDaysByDateRangeUsecase', () => {
 
     expect(result).toHaveLength(2);
     expect(result[0]).not.toBeInstanceOf(Day);
-    expect(result[0]).toHaveProperty('id');
-    expect(result[0]).toHaveProperty('userId');
-    expect(result[0]).toHaveProperty('meals');
-    expect(result[0]).toHaveProperty('createdAt');
-    expect(result[0]).toHaveProperty('updatedAt');
+    for (const prop of dto.dayDTOProperties) {
+      expect(result[0]).toHaveProperty(prop);
+    }
 
     expect(result[1]).not.toBeInstanceOf(Day);
-    expect(result[1]).toHaveProperty('id');
-    expect(result[1]).toHaveProperty('userId');
-    expect(result[1]).toHaveProperty('meals');
-    expect(result[1]).toHaveProperty('createdAt');
-    expect(result[1]).toHaveProperty('updatedAt');
+    for (const prop of dto.dayDTOProperties) {
+      expect(result[1]).toHaveProperty(prop);
+    }
   });
 
   it('should return empty array if no days in range', async () => {
