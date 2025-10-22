@@ -4,6 +4,7 @@ import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { ValidationError, NotFoundError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('UpdateFakeMealUsecase', () => {
   let usecase: UpdateFakeMealUsecase;
@@ -32,6 +33,32 @@ describe('UpdateFakeMealUsecase', () => {
     expect(result.name).toBe('Updated Name');
     expect(result.calories).toBe(200);
     expect(result.protein).toBe(30);
+  });
+
+  it('should return FakeMealDTO', async () => {
+    const fakeMeal = FakeMeal.create({
+      ...vp.validFakeMealProps,
+      id: 'test-id',
+      name: 'Original Name',
+    });
+
+    await fakeMealsRepo.saveFakeMeal(fakeMeal);
+
+    const result = await usecase.execute({
+      id: 'test-id',
+      userId: vp.userId,
+      patch: { name: 'Updated Name' },
+    });
+
+    expect(result).not.toBeInstanceOf(FakeMeal);
+    for (const prop of dto.fakeMealDTOProperties) {
+      expect(result).toHaveProperty(prop);
+    }
+    expect(result.id).toBe('test-id');
+    expect(result.userId).toBe(vp.userId);
+    expect(result.name).toBe('Updated Name');
+    expect(result.calories).toBe(vp.validFakeMealProps.calories);
+    expect(result.protein).toBe(vp.validFakeMealProps.protein);
   });
 
   it('should update fake meal calories successfully', async () => {

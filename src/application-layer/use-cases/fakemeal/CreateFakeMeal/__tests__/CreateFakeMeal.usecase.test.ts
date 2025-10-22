@@ -2,7 +2,9 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { CreateFakeMealUsecase } from '../CreateFakeMeal.usecase';
 import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
 import { ValidationError } from '@/domain/common/errors';
+import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('CreateFakeMealUsecase', () => {
   let usecase: CreateFakeMealUsecase;
@@ -28,14 +30,35 @@ describe('CreateFakeMealUsecase', () => {
     expect(result.calories).toBe(request.calories);
     expect(result.protein).toBe(request.protein);
     expect(result.id).toBeDefined();
-    expect(result.createdAt).toBeInstanceOf(Date);
-    expect(result.updatedAt).toBeInstanceOf(Date);
+    expect(result.createdAt).toBeTypeOf('string');
+    expect(result.updatedAt).toBeTypeOf('string');
 
     // Verify it was saved in the repository
     const savedFakeMeal = await fakeMealsRepo.getFakeMealById(result.id);
     expect(savedFakeMeal).toBeDefined();
     expect(savedFakeMeal?.name).toBe(request.name);
     expect(savedFakeMeal?.userId).toBe(request.userId);
+  });
+
+  it('should return FakeMealDTO', async () => {
+    const request = {
+      userId: vp.userId,
+      name: vp.validFakeMealProps.name,
+      calories: vp.validFakeMealProps.calories,
+      protein: vp.validFakeMealProps.protein,
+    };
+
+    const result = await usecase.execute(request);
+
+    expect(result).not.toBeInstanceOf(FakeMeal);
+    for (const prop of dto.fakeMealDTOProperties) {
+      expect(result).toHaveProperty(prop);
+    }
+    expect(result.id).toBeDefined();
+    expect(result.userId).toBe(request.userId);
+    expect(result.name).toBe(request.name);
+    expect(result.calories).toBe(request.calories);
+    expect(result.protein).toBe(request.protein);
   });
 
   it('should throw ValidationError for empty name', async () => {

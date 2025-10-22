@@ -1,5 +1,9 @@
 import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import {
+  FakeMealDTO,
+  toFakeMealDTO,
+} from '@/application-layer/dtos/FakeMealDTO';
 import { validateNonEmptyString } from '@/domain/common/validation';
 import { ValidationError } from '@/domain/common/errors';
 
@@ -13,7 +17,7 @@ export class GetFakeMealsByIdsForUserUsecase {
 
   async execute(
     request: GetFakeMealsByIdsForUserUsecaseRequest
-  ): Promise<FakeMeal[]> {
+  ): Promise<FakeMealDTO[]> {
     validateNonEmptyString(request.userId, 'GetFakeMealsByIdsUsecase: userId');
 
     if (!Array.isArray(request.ids) || request.ids.length === 0) {
@@ -35,8 +39,8 @@ export class GetFakeMealsByIdsForUserUsecase {
     );
 
     // Filter out null values (fake meals that weren't found)
-    return fakeMeals.filter(
-      (fakeMeal): fakeMeal is FakeMeal => fakeMeal !== null
-    );
+    return fakeMeals
+      .filter((fakeMeal): fakeMeal is FakeMeal => fakeMeal !== null)
+      .map(toFakeMealDTO);
   }
 }
