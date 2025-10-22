@@ -4,6 +4,6 @@ export type IngredientLineDTO = {
   id: string;
   ingredient: IngredientDTO;
   quantityInGrams: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: string; // ISO 8601
+  updatedAt: string; // ISO 8601
 };

@@ -1,8 +1,10 @@
 export type IngredientDTO = {
   id: string;
   name: string;
-  caloriesPer100g: number;
-  proteinPer100g: number;
-  createdAt: string;
-  updatedAt: string;
+  nutritionalInfoPer100g: {
+    calories: number;
+    protein: number;
+  };
+  createdAt: string; // ISO 8601
+  updatedAt: string; // ISO 8601
 };
