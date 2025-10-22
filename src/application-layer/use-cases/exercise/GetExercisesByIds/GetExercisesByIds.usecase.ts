@@ -1,6 +1,10 @@
 import { ExercisesRepo } from '@/domain/repos/ExercisesRepo.port';
-import { Exercise } from '@/domain/entities/exercise/Exercise';
+import {
+  ExerciseDTO,
+  toExerciseDTO,
+} from '@/application-layer/dtos/ExerciseDTO';
 import { validateNonEmptyString } from '@/domain/common/validation';
+import { Exercise } from '@/domain/entities/exercise/Exercise';
 
 export type GetExercisesByIdsUsecaseRequest = {
   ids: string[];
@@ -9,7 +13,9 @@ export type GetExercisesByIdsUsecaseRequest = {
 export class GetExercisesByIdsUsecase {
   constructor(private exercisesRepo: ExercisesRepo) {}
 
-  async execute(request: GetExercisesByIdsUsecaseRequest): Promise<Exercise[]> {
+  async execute(
+    request: GetExercisesByIdsUsecaseRequest
+  ): Promise<ExerciseDTO[]> {
     const exercises: Exercise[] = [];
 
     // First, validate all IDs
@@ -25,6 +31,6 @@ export class GetExercisesByIdsUsecase {
       }
     }
 
-    return exercises;
+    return exercises.map(toExerciseDTO);
   }
 }

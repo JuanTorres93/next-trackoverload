@@ -1,5 +1,8 @@
 import { ExercisesRepo } from '@/domain/repos/ExercisesRepo.port';
-import { Exercise } from '@/domain/entities/exercise/Exercise';
+import {
+  ExerciseDTO,
+  toExerciseDTO,
+} from '@/application-layer/dtos/ExerciseDTO';
 import { validateNonEmptyString } from '@/domain/common/validation';
 
 export type GetExerciseByIdUsecaseRequest = {
@@ -11,9 +14,10 @@ export class GetExerciseByIdUsecase {
 
   async execute(
     request: GetExerciseByIdUsecaseRequest
-  ): Promise<Exercise | null> {
+  ): Promise<ExerciseDTO | null> {
     validateNonEmptyString(request.id, 'GetExerciseByIdUsecase');
 
-    return await this.exercisesRepo.getExerciseById(request.id);
+    const exercise = await this.exercisesRepo.getExerciseById(request.id);
+    return exercise ? toExerciseDTO(exercise) : null;
   }
 }

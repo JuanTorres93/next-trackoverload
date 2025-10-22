@@ -34,9 +34,47 @@ describe('GetExercisesByIdsUsecase', () => {
       ids: ['1', '2', 'non-existent'],
     });
 
+    const exerciseIds = exercises.map((e) => e.id);
+
+    expect(exerciseIds).toHaveLength(2);
+    expect(exerciseIds).toContain(exercise1.id);
+    expect(exerciseIds).toContain(exercise2.id);
+  });
+
+  it('should return an array of ExerciseDTO', async () => {
+    const exercise1 = Exercise.create({
+      id: '1',
+      name: 'Push Up',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+    const exercise2 = Exercise.create({
+      id: '2',
+      name: 'Squat',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    await exercisesRepo.saveExercise(exercise1);
+    await exercisesRepo.saveExercise(exercise2);
+
+    const exercises = await getExercisesByIdsUsecase.execute({
+      ids: ['1', '2', 'non-existent'],
+    });
+
     expect(exercises).toHaveLength(2);
-    expect(exercises).toContain(exercise1);
-    expect(exercises).toContain(exercise2);
+
+    expect(exercises[0]).not.toBeInstanceOf(Exercise);
+    expect(exercises[0]).toHaveProperty('id');
+    expect(exercises[0].name).toBe(exercise1.name);
+    expect(exercises[0]).toHaveProperty('createdAt');
+    expect(exercises[0]).toHaveProperty('updatedAt');
+
+    expect(exercises[1]).not.toBeInstanceOf(Exercise);
+    expect(exercises[1]).toHaveProperty('id');
+    expect(exercises[1].name).toBe(exercise2.name);
+    expect(exercises[1]).toHaveProperty('createdAt');
+    expect(exercises[1]).toHaveProperty('updatedAt');
   });
 
   it('should return empty array when no exercises found', async () => {

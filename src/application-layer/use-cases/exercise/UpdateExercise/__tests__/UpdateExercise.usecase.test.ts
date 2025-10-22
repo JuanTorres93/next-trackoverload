@@ -30,8 +30,30 @@ describe('UpdateExerciseUsecase', () => {
 
     expect(updatedExercise.name).toBe('Modified Push Up');
     expect(updatedExercise.id).toBe('1');
-    expect(updatedExercise.createdAt).toEqual(exercise.createdAt);
+    expect(updatedExercise.createdAt).toEqual(exercise.createdAt.toISOString());
     expect(updatedExercise.updatedAt).not.toEqual(exercise.updatedAt);
+  });
+
+  it('should return an array of ExerciseDTO', async () => {
+    const exercise = Exercise.create({
+      id: '1',
+      name: 'Push Up',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    await exercisesRepo.saveExercise(exercise);
+
+    const updatedExercise = await updateExerciseUsecase.execute({
+      id: '1',
+      name: 'Modified Push Up',
+    });
+
+    expect(updatedExercise).not.toBeInstanceOf(Exercise);
+    expect(updatedExercise).toHaveProperty('id');
+    expect(updatedExercise.name).toBe('Modified Push Up');
+    expect(updatedExercise).toHaveProperty('createdAt');
+    expect(updatedExercise).toHaveProperty('updatedAt');
   });
 
   it('should throw NotFoundError when exercise does not exist', async () => {

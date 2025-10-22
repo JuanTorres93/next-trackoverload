@@ -1,10 +1,15 @@
 import { ExercisesRepo } from '@/domain/repos/ExercisesRepo.port';
-import { Exercise } from '@/domain/entities/exercise/Exercise';
+import {
+  ExerciseDTO,
+  toExerciseDTO,
+} from '@/application-layer/dtos/ExerciseDTO';
 
 export class GetAllExercisesUsecase {
   constructor(private exercisesRepo: ExercisesRepo) {}
 
-  async execute(): Promise<Exercise[]> {
-    return await this.exercisesRepo.getAllExercises();
+  async execute(): Promise<ExerciseDTO[]> {
+    const exercises = await this.exercisesRepo.getAllExercises();
+
+    return exercises.map(toExerciseDTO);
   }
 }

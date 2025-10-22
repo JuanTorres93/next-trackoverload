@@ -1,5 +1,9 @@
 import { ExercisesRepo } from '@/domain/repos/ExercisesRepo.port';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
+import {
+  ExerciseDTO,
+  toExerciseDTO,
+} from '@/application-layer/dtos/ExerciseDTO';
 import { v4 as uuidv4 } from 'uuid';
 
 export type CreateExerciseUsecaseRequest = {
@@ -9,7 +13,7 @@ export type CreateExerciseUsecaseRequest = {
 export class CreateExerciseUsecase {
   constructor(private exercisesRepo: ExercisesRepo) {}
 
-  async execute(request: CreateExerciseUsecaseRequest): Promise<Exercise> {
+  async execute(request: CreateExerciseUsecaseRequest): Promise<ExerciseDTO> {
     const newExercise = Exercise.create({
       id: uuidv4(),
       name: request.name,
@@ -19,6 +23,6 @@ export class CreateExerciseUsecase {
 
     await this.exercisesRepo.saveExercise(newExercise);
 
-    return newExercise;
+    return toExerciseDTO(newExercise);
   }
 }

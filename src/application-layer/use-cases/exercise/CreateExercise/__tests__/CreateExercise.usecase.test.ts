@@ -3,6 +3,8 @@ import { CreateExerciseUsecase } from '../CreateExercise.usecase';
 import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import { Exercise } from '@/domain/entities/exercise/Exercise';
+import { toExerciseDTO } from '@/application-layer/dtos/ExerciseDTO';
 
 describe('CreateExerciseUsecase', () => {
   let exercisesRepo: MemoryExercisesRepo;
@@ -24,7 +26,21 @@ describe('CreateExerciseUsecase', () => {
     expect(exercise).toHaveProperty('updatedAt');
 
     const savedExercise = await exercisesRepo.getExerciseById(exercise.id);
-    expect(savedExercise).toEqual(exercise);
+
+    // @ts-expect-error savedExercise is not null here
+    expect(toExerciseDTO(savedExercise)).toEqual(exercise);
+  });
+
+  it('should return ExerciseDTO', async () => {
+    const request = { name: vp.validExerciseProps.name };
+
+    const exercise = await createExerciseUsecase.execute(request);
+
+    expect(exercise).not.toBeInstanceOf(Exercise);
+    expect(exercise).toHaveProperty('id');
+    expect(exercise.name).toBe(request.name);
+    expect(exercise).toHaveProperty('createdAt');
+    expect(exercise).toHaveProperty('updatedAt');
   });
 
   it('should throw an error if name is empty', async () => {

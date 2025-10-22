@@ -1,5 +1,9 @@
 import { ExercisesRepo } from '@/domain/repos/ExercisesRepo.port';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
+import {
+  ExerciseDTO,
+  toExerciseDTO,
+} from '@/application-layer/dtos/ExerciseDTO';
 import { NotFoundError } from '@/domain/common/errors';
 import { validateNonEmptyString } from '@/domain/common/validation';
 
@@ -11,7 +15,7 @@ export type UpdateExerciseUsecaseRequest = {
 export class UpdateExerciseUsecase {
   constructor(private exercisesRepo: ExercisesRepo) {}
 
-  async execute(request: UpdateExerciseUsecaseRequest): Promise<Exercise> {
+  async execute(request: UpdateExerciseUsecaseRequest): Promise<ExerciseDTO> {
     validateNonEmptyString(request.id, 'UpdateExerciseUsecase');
     if (request.name !== undefined)
       validateNonEmptyString(request.name, 'UpdateExerciseUsecase');
@@ -33,6 +37,6 @@ export class UpdateExerciseUsecase {
 
     await this.exercisesRepo.saveExercise(updatedExercise);
 
-    return updatedExercise;
+    return toExerciseDTO(updatedExercise);
   }
 }

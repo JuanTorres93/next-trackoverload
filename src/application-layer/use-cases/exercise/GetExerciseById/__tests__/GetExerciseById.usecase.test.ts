@@ -25,7 +25,32 @@ describe('GetExerciseByIdUsecase', () => {
 
     const result = await getExerciseByIdUsecase.execute({ id: '1' });
 
-    expect(result).toEqual(exercise);
+    // @ts-expect-error result is not null here
+    expect(result.id).toEqual(exercise.id);
+  });
+
+  it('should return an array of ExerciseDTO', async () => {
+    const exercise = Exercise.create({
+      ...vp.validExerciseProps,
+      id: '1',
+      name: 'Push Up',
+    });
+
+    await exercisesRepo.saveExercise(exercise);
+
+    const result = await getExerciseByIdUsecase.execute({ id: '1' });
+
+    expect(result).not.toBeInstanceOf(Exercise);
+    expect(result).toHaveProperty('id', exercise.id);
+    expect(result).toHaveProperty('name', exercise.name);
+    expect(result).toHaveProperty(
+      'createdAt',
+      exercise.createdAt.toISOString()
+    );
+    expect(result).toHaveProperty(
+      'updatedAt',
+      exercise.updatedAt.toISOString()
+    );
   });
 
   it('should return null when exercise not found', async () => {
