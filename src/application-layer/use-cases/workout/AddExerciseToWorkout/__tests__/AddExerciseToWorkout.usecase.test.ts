@@ -6,6 +6,7 @@ import { Workout } from '@/domain/entities/workout/Workout';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('AddExerciseToWorkoutUsecase', () => {
   let workoutsRepo: MemoryWorkoutsRepo;
@@ -53,6 +54,38 @@ describe('AddExerciseToWorkoutUsecase', () => {
       reps: 10,
       weight: 0,
     });
+  });
+
+  it('should return WorkoutDTO', async () => {
+    const workout = Workout.create({
+      ...vp.validWorkoutProps,
+      id: '1',
+      exercises: [],
+    });
+
+    const exercise = Exercise.create({
+      ...vp.validExerciseProps,
+      id: 'exercise-1',
+      name: 'Push Up',
+    });
+
+    await exercisesRepo.saveExercise(exercise);
+
+    await workoutsRepo.saveWorkout(workout);
+
+    const updatedWorkout = await addExerciseToWorkoutUsecase.execute({
+      userId: vp.userId,
+      workoutId: '1',
+      exerciseId: 'exercise-1',
+      setNumber: 1,
+      reps: 10,
+      weight: 0,
+    });
+
+    for (const prop of dto.workoutDTOProperties) {
+      expect(updatedWorkout).not.toBeInstanceOf(Workout);
+      expect(updatedWorkout).toHaveProperty(prop);
+    }
   });
 
   it('should throw NotFoundError when workout does not exist', async () => {

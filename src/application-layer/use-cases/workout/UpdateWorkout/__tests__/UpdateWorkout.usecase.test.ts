@@ -4,6 +4,7 @@ import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('UpdateWorkoutUsecase', () => {
   let workoutsRepo: MemoryWorkoutsRepo;
@@ -33,6 +34,28 @@ describe('UpdateWorkoutUsecase', () => {
     expect(updatedWorkout.id).toBe('1');
     expect(updatedWorkout.workoutTemplateId).toBe('template-1');
     expect(updatedWorkout.exercises).toEqual([]);
+  });
+
+  it('should return WorkoutDTO', async () => {
+    const workout = Workout.create({
+      ...vp.validWorkoutProps,
+      id: '1',
+      name: 'Push Day',
+      exercises: [],
+    });
+
+    await workoutsRepo.saveWorkout(workout);
+
+    const updatedWorkout = await updateWorkoutUsecase.execute({
+      id: '1',
+      userId: vp.userId,
+      name: 'Updated Push Day',
+    });
+
+    expect(updatedWorkout).not.toBeInstanceOf(Workout);
+    for (const prop of dto.workoutDTOProperties) {
+      expect(updatedWorkout).toHaveProperty(prop);
+    }
   });
 
   it('should keep existing name when not provided', async () => {

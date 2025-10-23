@@ -1,5 +1,5 @@
 import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
-import { Workout } from '@/domain/entities/workout/Workout';
+import { WorkoutDTO, toWorkoutDTO } from '@/application-layer/dtos/WorkoutDTO';
 import { validateNonEmptyString } from '@/domain/common/validation';
 
 export type GetWorkoutsByTemplateForUserUsecaseRequest = {
@@ -12,7 +12,7 @@ export class GetWorkoutsByTemplateForUserUsecase {
 
   async execute(
     request: GetWorkoutsByTemplateForUserUsecaseRequest
-  ): Promise<Workout[]> {
+  ): Promise<WorkoutDTO[]> {
     validateNonEmptyString(
       request.templateId,
       'GetWorkoutsByTemplateForUser templateId'
@@ -26,6 +26,6 @@ export class GetWorkoutsByTemplateForUserUsecase {
       request.templateId,
       request.userId
     );
-    return workouts || [];
+    return workouts.map(toWorkoutDTO);
   }
 }

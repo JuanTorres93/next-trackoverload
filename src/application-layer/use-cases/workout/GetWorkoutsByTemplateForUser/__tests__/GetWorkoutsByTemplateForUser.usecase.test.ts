@@ -4,6 +4,7 @@ import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('GetWorkoutsByTemplateUsecase', () => {
   let workoutsRepo: MemoryWorkoutsRepo;
@@ -50,10 +51,46 @@ describe('GetWorkoutsByTemplateUsecase', () => {
       userId: vp.userId,
     });
 
+    const workoutIds = workouts.map((w) => w.id);
+
     expect(workouts).toHaveLength(2);
-    expect(workouts).toContain(workout1);
-    expect(workouts).toContain(workout3);
-    expect(workouts).not.toContain(workout2);
+    expect(workoutIds).toContain(workout1.id);
+    expect(workoutIds).toContain(workout3.id);
+    expect(workoutIds).not.toContain(workout2.id);
+  });
+
+  it('should return array of WorkoutDTO', async () => {
+    const workout1 = Workout.create({
+      ...vp.validWorkoutProps,
+      id: '1',
+      name: 'Push Day #1',
+      workoutTemplateId: 'template-1',
+      exercises: [],
+    });
+
+    const workout2 = Workout.create({
+      ...vp.validWorkoutProps,
+      id: '2',
+      name: 'Push Day #2',
+      workoutTemplateId: 'template-1',
+      exercises: [],
+    });
+
+    await workoutsRepo.saveWorkout(workout1);
+    await workoutsRepo.saveWorkout(workout2);
+
+    const workouts = await getWorkoutsByTemplateUsecase.execute({
+      templateId: 'template-1',
+      userId: vp.userId,
+    });
+
+    for (const workout of workouts) {
+      expect(workout).not.toBeInstanceOf(Workout);
+
+      for (const prop of dto.workoutDTOProperties) {
+        expect(workout).toHaveProperty(prop);
+      }
+    }
   });
 
   it('should return empty array when no workouts exist for template', async () => {

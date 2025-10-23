@@ -4,6 +4,7 @@ import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('RemoveSetFromWorkoutUsecase', () => {
   let workoutsRepo: MemoryWorkoutsRepo;
@@ -64,6 +65,39 @@ describe('RemoveSetFromWorkoutUsecase', () => {
     expect(
       updatedWorkout.exercises.find((e) => e.exerciseId === 'exercise-2')
     ).toBeDefined();
+  });
+
+  it('should return WorkoutDTO', async () => {
+    const workout = Workout.create({
+      ...vp.validWorkoutProps,
+      id: '1',
+      name: 'Push Day',
+      exercises: [
+        {
+          exerciseId: 'exercise-1',
+          setNumber: 1,
+          reps: 10,
+          weight: 50,
+        },
+      ],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    await workoutsRepo.saveWorkout(workout);
+
+    const updatedWorkout = await removeSetFromWorkoutUsecase.execute({
+      userId: vp.userId,
+      workoutId: '1',
+      exerciseId: 'exercise-1',
+      setNumber: 1,
+    });
+
+    expect(updatedWorkout).not.toBeInstanceOf(Workout);
+
+    for (const prop of dto.workoutDTOProperties) {
+      expect(updatedWorkout).toHaveProperty(prop);
+    }
   });
 
   it('should remove only the specified set number', async () => {

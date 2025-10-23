@@ -1,6 +1,6 @@
 import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
 import { ExercisesRepo } from '@/domain/repos/ExercisesRepo.port';
-import { Workout } from '@/domain/entities/workout/Workout';
+import { WorkoutDTO, toWorkoutDTO } from '@/application-layer/dtos/WorkoutDTO';
 import { NotFoundError } from '@/domain/common/errors';
 import {
   validateGreaterThanZero,
@@ -24,7 +24,9 @@ export class AddExerciseToWorkoutUsecase {
     private exercisesRepo: ExercisesRepo
   ) {}
 
-  async execute(request: AddExerciseToWorkoutUsecaseRequest): Promise<Workout> {
+  async execute(
+    request: AddExerciseToWorkoutUsecaseRequest
+  ): Promise<WorkoutDTO> {
     validateNonEmptyString(request.userId, 'AddExerciseToWorkout userId');
     validateNonEmptyString(request.workoutId, 'AddExerciseToWorkout workoutId');
     validateNonEmptyString(
@@ -68,6 +70,6 @@ export class AddExerciseToWorkoutUsecase {
 
     await this.workoutsRepo.saveWorkout(workout);
 
-    return workout;
+    return toWorkoutDTO(workout);
   }
 }

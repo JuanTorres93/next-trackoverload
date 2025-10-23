@@ -4,6 +4,8 @@ import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
+import { toWorkoutDTO } from '@/application-layer/dtos/WorkoutDTO';
 
 describe('GetWorkoutByIdUsecase', () => {
   let workoutsRepo: MemoryWorkoutsRepo;
@@ -28,7 +30,29 @@ describe('GetWorkoutByIdUsecase', () => {
       userId: vp.userId,
     });
 
-    expect(result).toBe(workout);
+    expect(result).toEqual(toWorkoutDTO(workout));
+  });
+
+  it('should return WorkoutDTO', async () => {
+    const workout = Workout.create({
+      ...vp.validWorkoutProps,
+      id: '1',
+      name: 'Push Day',
+      exercises: [],
+    });
+
+    await workoutsRepo.saveWorkout(workout);
+
+    const result = await getWorkoutByIdUsecase.execute({
+      id: '1',
+      userId: vp.userId,
+    });
+
+    expect(result).not.toBeInstanceOf(Workout);
+
+    for (const prop of dto.workoutDTOProperties) {
+      expect(result).toHaveProperty(prop);
+    }
   });
 
   it('should return null when workout does not exist', async () => {

@@ -1,5 +1,6 @@
 import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
 import { Workout } from '@/domain/entities/workout/Workout';
+import { WorkoutDTO, toWorkoutDTO } from '@/application-layer/dtos/WorkoutDTO';
 import { NotFoundError } from '@/domain/common/errors';
 import { validateNonEmptyString } from '@/domain/common/validation';
 
@@ -12,7 +13,7 @@ export type UpdateWorkoutUsecaseRequest = {
 export class UpdateWorkoutUsecase {
   constructor(private workoutsRepo: WorkoutsRepo) {}
 
-  async execute(request: UpdateWorkoutUsecaseRequest): Promise<Workout> {
+  async execute(request: UpdateWorkoutUsecaseRequest): Promise<WorkoutDTO> {
     validateNonEmptyString(request.id, 'UpdateWorkoutUsecase id');
     validateNonEmptyString(request.userId, 'UpdateWorkoutUsecase userId');
     if (request.name !== undefined)
@@ -39,6 +40,6 @@ export class UpdateWorkoutUsecase {
 
     await this.workoutsRepo.saveWorkout(updatedWorkout);
 
-    return updatedWorkout;
+    return toWorkoutDTO(updatedWorkout);
   }
 }

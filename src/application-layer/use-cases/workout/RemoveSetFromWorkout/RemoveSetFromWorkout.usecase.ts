@@ -1,11 +1,11 @@
-import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
-import { Workout } from '@/domain/entities/workout/Workout';
+import { WorkoutDTO, toWorkoutDTO } from '@/application-layer/dtos/WorkoutDTO';
 import { NotFoundError } from '@/domain/common/errors';
 import {
-  validateNonEmptyString,
   validateGreaterThanZero,
   validateInteger,
+  validateNonEmptyString,
 } from '@/domain/common/validation';
+import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
 
 export type RemoveSetFromWorkoutUsecaseRequest = {
   userId: string;
@@ -17,7 +17,9 @@ export type RemoveSetFromWorkoutUsecaseRequest = {
 export class RemoveSetFromWorkoutUsecase {
   constructor(private workoutsRepo: WorkoutsRepo) {}
 
-  async execute(request: RemoveSetFromWorkoutUsecaseRequest): Promise<Workout> {
+  async execute(
+    request: RemoveSetFromWorkoutUsecaseRequest
+  ): Promise<WorkoutDTO> {
     validateNonEmptyString(request.userId, 'RemoveSetFromWorkout userId');
     validateNonEmptyString(request.workoutId, 'RemoveSetFromWorkout workoutId');
     validateNonEmptyString(
@@ -43,6 +45,6 @@ export class RemoveSetFromWorkoutUsecase {
 
     await this.workoutsRepo.saveWorkout(workout);
 
-    return workout;
+    return toWorkoutDTO(workout);
   }
 }
