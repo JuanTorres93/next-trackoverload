@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
@@ -47,8 +48,29 @@ describe('GetAllRecipesForUserUsecase', () => {
 
     const result = await getAllRecipesUsecase.execute({ userId: userId1 });
 
+    const recipeIds = result.map((r) => r.id);
+
     expect(result).toHaveLength(2);
-    expect(result).toEqual(expect.arrayContaining(testRecipes));
+    expect(recipeIds).toContain(testRecipes[0].id);
+    expect(recipeIds).toContain(testRecipes[1].id);
+  });
+
+  it('should return an array of RecipeDTO', async () => {
+    for (const recipe of testRecipes) {
+      await recipesRepo.saveRecipe(recipe);
+    }
+
+    const result = await getAllRecipesUsecase.execute({ userId: userId1 });
+
+    expect(result).toHaveLength(2);
+
+    for (const recipe of result) {
+      expect(recipe).not.toBeInstanceOf(Recipe);
+
+      for (const prop of dto.recipeDTOProperties) {
+        expect(recipe).toHaveProperty(prop);
+      }
+    }
   });
 
   it('should return empty array when no recipes exist', async () => {

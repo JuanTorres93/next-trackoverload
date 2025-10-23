@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 import { ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
@@ -6,6 +7,7 @@ import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetRecipesByIdsForUserUsecase } from '../GetRecipesByIdsForUser.usecase';
+import { toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 
 describe('GetRecipesByIdsForUserUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
@@ -51,7 +53,30 @@ describe('GetRecipesByIdsForUserUsecase', () => {
     const result = await getRecipesByIdsUsecase.execute(request);
 
     expect(result).toHaveLength(2);
-    expect(result).toEqual(expect.arrayContaining(testRecipes));
+    expect(result).toEqual(
+      expect.arrayContaining(testRecipes.map(toRecipeDTO))
+    );
+  });
+
+  it('should return an array of RecipeDTOs', async () => {
+    for (const recipe of testRecipes) {
+      await recipesRepo.saveRecipe(recipe);
+    }
+
+    const request = {
+      ids: [testRecipes[0].id, testRecipes[1].id],
+      userId: vp.userId,
+    };
+
+    const result = await getRecipesByIdsUsecase.execute(request);
+
+    for (const recipe of result) {
+      expect(recipe).not.toBeInstanceOf(Recipe);
+
+      for (const prop of dto.recipeDTOProperties) {
+        expect(recipe).toHaveProperty(prop);
+      }
+    }
   });
 
   it('should filter out non-existent recipes', async () => {
@@ -65,7 +90,7 @@ describe('GetRecipesByIdsForUserUsecase', () => {
     const result = await getRecipesByIdsUsecase.execute(request);
 
     expect(result).toHaveLength(1);
-    expect(result[0]).toEqual(testRecipes[0]);
+    expect(result[0]).toEqual(toRecipeDTO(testRecipes[0]));
   });
 
   it('should return empty array for all non-existent ids', async () => {
@@ -107,6 +132,6 @@ describe('GetRecipesByIdsForUserUsecase', () => {
     const result = await getRecipesByIdsUsecase.execute(request);
 
     expect(result).toHaveLength(1);
-    expect(result[0]).toEqual(testRecipes[0]);
+    expect(result[0]).toEqual(toRecipeDTO(testRecipes[0]));
   });
 });

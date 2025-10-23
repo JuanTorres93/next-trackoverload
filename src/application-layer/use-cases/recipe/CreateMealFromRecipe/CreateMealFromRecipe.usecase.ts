@@ -1,6 +1,7 @@
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 import { Meal } from '@/domain/entities/meal/Meal';
+import { MealDTO, toMealDTO } from '@/application-layer/dtos/MealDTO';
 import { validateNonEmptyString } from '@/domain/common/validation';
 import { NotFoundError } from '@/domain/common/errors';
 import { v4 as uuidv4 } from 'uuid';
@@ -14,7 +15,7 @@ export type CreateMealFromRecipeUsecaseRequest = {
 export class CreateMealFromRecipeUsecase {
   constructor(private recipesRepo: RecipesRepo, private mealsRepo: MealsRepo) {}
 
-  async execute(request: CreateMealFromRecipeUsecaseRequest): Promise<Meal> {
+  async execute(request: CreateMealFromRecipeUsecaseRequest): Promise<MealDTO> {
     validateNonEmptyString(
       request.recipeId,
       'CreateMealFromRecipeUsecase recipeId'
@@ -53,6 +54,6 @@ export class CreateMealFromRecipeUsecase {
 
     await this.mealsRepo.saveMeal(newMeal);
 
-    return newMeal;
+    return toMealDTO(newMeal);
   }
 }

@@ -1,5 +1,6 @@
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -12,7 +13,7 @@ export type CreateRecipeUsecaseRequest = {
 export class CreateRecipeUsecase {
   constructor(private recipesRepo: RecipesRepo) {}
 
-  async execute(request: CreateRecipeUsecaseRequest): Promise<Recipe> {
+  async execute(request: CreateRecipeUsecaseRequest): Promise<RecipeDTO> {
     // NOTE: userId, name and ingredientLines validation is performed in the entity
 
     const newRecipe = Recipe.create({
@@ -26,6 +27,6 @@ export class CreateRecipeUsecase {
 
     await this.recipesRepo.saveRecipe(newRecipe);
 
-    return newRecipe;
+    return toRecipeDTO(newRecipe);
   }
 }

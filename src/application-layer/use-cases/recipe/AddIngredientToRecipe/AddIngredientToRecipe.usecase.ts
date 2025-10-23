@@ -1,5 +1,5 @@
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
-import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { validateNonEmptyString } from '@/domain/common/validation';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
@@ -13,7 +13,9 @@ export type AddIngredientToRecipeUsecaseRequest = {
 export class AddIngredientToRecipeUsecase {
   constructor(private recipesRepo: RecipesRepo) {}
 
-  async execute(request: AddIngredientToRecipeUsecaseRequest): Promise<Recipe> {
+  async execute(
+    request: AddIngredientToRecipeUsecaseRequest
+  ): Promise<RecipeDTO> {
     validateNonEmptyString(
       request.recipeId,
       'AddIngredientToRecipeUsecase recipeId'
@@ -40,6 +42,6 @@ export class AddIngredientToRecipeUsecase {
     existingRecipe.addIngredientLine(request.ingredientLine);
     await this.recipesRepo.saveRecipe(existingRecipe);
 
-    return existingRecipe;
+    return toRecipeDTO(existingRecipe);
   }
 }

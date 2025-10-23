@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
@@ -56,7 +57,26 @@ describe('AddIngredientToRecipeUsecase', () => {
     const result = await addIngredientToRecipeUsecase.execute(request);
 
     expect(result.ingredientLines).toHaveLength(originalIngredientCount + 1);
-    expect(result.ingredientLines).toContain(newIngredientLine);
+
+    const ingredientLineIds = result.ingredientLines.map((line) => line.id);
+
+    expect(ingredientLineIds).toContain(newIngredientLine.id);
+  });
+
+  it('should return RecipeDTO', async () => {
+    await recipesRepo.saveRecipe(testRecipe);
+    const request = {
+      recipeId: testRecipe.id,
+      userId: vp.userId,
+      ingredientLine: newIngredientLine,
+    };
+
+    const result = await addIngredientToRecipeUsecase.execute(request);
+
+    expect(result).not.toBeInstanceOf(Recipe);
+    for (const prop of dto.recipeDTOProperties) {
+      expect(result).toHaveProperty(prop);
+    }
   });
 
   it('should throw NotFoundError when recipe does not exist', async () => {
@@ -117,7 +137,7 @@ describe('AddIngredientToRecipeUsecase', () => {
 
     const result = await addIngredientToRecipeUsecase.execute(request);
 
-    expect(result.updatedAt.getTime()).toBeGreaterThan(
+    expect(new Date(result.updatedAt).getTime()).toBeGreaterThan(
       originalUpdatedAt.getTime()
     );
   });

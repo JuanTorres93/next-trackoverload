@@ -33,6 +33,19 @@ export const mealDTOProperties = [
   'userId',
   'name',
   'ingredientLines',
+  'calories',
+  'protein',
+  'createdAt',
+  'updatedAt',
+];
+
+export const recipeDTOProperties = [
+  'id',
+  'userId',
+  'name',
+  'ingredientLines',
+  'calories',
+  'protein',
   'createdAt',
   'updatedAt',
 ];

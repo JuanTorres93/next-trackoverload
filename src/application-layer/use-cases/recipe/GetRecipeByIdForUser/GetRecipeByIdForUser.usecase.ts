@@ -1,5 +1,5 @@
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
-import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { validateNonEmptyString } from '@/domain/common/validation';
 
 export type GetRecipeByIdForUserUsecaseRequest = {
@@ -12,7 +12,7 @@ export class GetRecipeByIdForUserUsecase {
 
   async execute(
     request: GetRecipeByIdForUserUsecaseRequest
-  ): Promise<Recipe | null> {
+  ): Promise<RecipeDTO | null> {
     validateNonEmptyString(request.id, 'GetRecipeByIdForUserUsecase id');
     validateNonEmptyString(
       request.userId,
@@ -23,6 +23,6 @@ export class GetRecipeByIdForUserUsecase {
       request.id,
       request.userId
     );
-    return recipe || null;
+    return recipe ? toRecipeDTO(recipe) : null;
   }
 }

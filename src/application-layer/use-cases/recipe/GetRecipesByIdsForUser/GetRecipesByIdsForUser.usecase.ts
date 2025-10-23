@@ -1,5 +1,5 @@
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
-import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { validateNonEmptyString } from '@/domain/common/validation';
 import { ValidationError } from '@/domain/common/errors';
 
@@ -13,7 +13,7 @@ export class GetRecipesByIdsForUserUsecase {
 
   async execute(
     request: GetRecipesByIdsForUserUsecaseRequest
-  ): Promise<Recipe[]> {
+  ): Promise<RecipeDTO[]> {
     if (!Array.isArray(request.ids) || request.ids.length === 0) {
       throw new ValidationError(
         'GetRecipesByIdsForUserUsecase: ids must be a non-empty array'
@@ -37,7 +37,7 @@ export class GetRecipesByIdsForUserUsecase {
       )
     );
 
-    // Filter out null values (recipes that weren't found)
-    return recipes.filter((recipe): recipe is Recipe => recipe !== null);
+    // Filter out null values (recipes that weren't found) and convert to DTOs
+    return recipes.filter((recipe) => recipe !== null).map(toRecipeDTO);
   }
 }

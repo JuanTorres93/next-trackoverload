@@ -6,6 +6,8 @@ export type MealDTO = {
   userId: string;
   name: string;
   ingredientLines: IngredientLineDTO[];
+  calories: number;
+  protein: number;
   createdAt: string;
   updatedAt: string;
 };
@@ -16,6 +18,8 @@ export function toMealDTO(meal: Meal): MealDTO {
     userId: meal.userId,
     name: meal.name,
     ingredientLines: meal.ingredientLines.map(toIngredientLineDTO),
+    calories: meal.calories,
+    protein: meal.protein,
     createdAt: meal.createdAt.toISOString(),
     updatedAt: meal.updatedAt.toISOString(),
   };

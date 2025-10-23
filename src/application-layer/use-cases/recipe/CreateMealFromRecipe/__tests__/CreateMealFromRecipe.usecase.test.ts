@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
@@ -7,6 +8,9 @@ import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { CreateMealFromRecipeUsecase } from '../CreateMealFromRecipe.usecase';
+import { Meal } from '@/domain/entities/meal/Meal';
+import { toIngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
+import { toMealDTO } from '@/application-layer/dtos/MealDTO';
 
 describe('CreateMealFromRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
@@ -49,12 +53,16 @@ describe('CreateMealFromRecipeUsecase', () => {
 
     expect(result).toHaveProperty('id');
     expect(result.name).toBe(testRecipe.name);
-    expect(result.ingredientLines).toEqual(testRecipe.ingredientLines);
+    expect(result.ingredientLines).toEqual(
+      testRecipe.ingredientLines.map(toIngredientLineDTO)
+    );
     expect(result.calories).toBe(testRecipe.calories);
     expect(result.protein).toBe(testRecipe.protein);
 
     const savedMeal = await mealsRepo.getMealById(result.id);
-    expect(savedMeal).toEqual(result);
+
+    // @ts-expect-error savedMeal won't be null here
+    expect(toMealDTO(savedMeal)).toEqual(result);
   });
 
   it('should create meal from recipe with custom name', async () => {
@@ -69,7 +77,9 @@ describe('CreateMealFromRecipeUsecase', () => {
     const result = await createMealFromRecipeUsecase.execute(request);
 
     expect(result.name).toBe('My Custom Meal');
-    expect(result.ingredientLines).toEqual(testRecipe.ingredientLines);
+    expect(result.ingredientLines).toEqual(
+      testRecipe.ingredientLines.map(toIngredientLineDTO)
+    );
   });
 
   it('should throw NotFoundError when recipe does not exist', async () => {
@@ -134,7 +144,9 @@ describe('CreateMealFromRecipeUsecase', () => {
     const result = await createMealFromRecipeUsecase.execute(request);
 
     expect(result.ingredientLines).toHaveLength(2);
-    expect(result.ingredientLines).toEqual(testRecipe.ingredientLines);
+    expect(result.ingredientLines).toEqual(
+      testRecipe.ingredientLines.map(toIngredientLineDTO)
+    );
   });
 
   it('should create new meal with different id than recipe', async () => {
@@ -165,6 +177,23 @@ describe('CreateMealFromRecipeUsecase', () => {
         // @ts-expect-error testing invalid types
         createMealFromRecipeUsecase.execute(request)
       ).rejects.toThrow(ValidationError);
+    }
+  });
+
+  it('should return MealDTO', async () => {
+    await recipesRepo.saveRecipe(testRecipe);
+
+    const request = {
+      recipeId: testRecipe.id,
+      userId: vp.userId,
+    };
+
+    const result = await createMealFromRecipeUsecase.execute(request);
+
+    expect(result).not.toBeInstanceOf(Meal);
+    expect(result).not.toBeInstanceOf(Recipe);
+    for (const prop of dto.mealDTOProperties) {
+      expect(result).toHaveProperty(prop);
     }
   });
 });

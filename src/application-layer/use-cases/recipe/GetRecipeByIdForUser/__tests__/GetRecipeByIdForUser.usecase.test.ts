@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 import { ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
@@ -6,6 +7,7 @@ import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetRecipeByIdForUserUsecase } from '../GetRecipeByIdForUser.usecase';
+import { toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 
 describe('GetRecipeByIdForUserUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
@@ -37,7 +39,19 @@ describe('GetRecipeByIdForUserUsecase', () => {
     const request = { id: testRecipe.id, userId: vp.userId };
     const result = await getRecipeByIdUsecase.execute(request);
 
-    expect(result).toEqual(testRecipe);
+    expect(result).toEqual(toRecipeDTO(testRecipe));
+  });
+
+  it('should return RecipeDTO', async () => {
+    await recipesRepo.saveRecipe(testRecipe);
+
+    const request = { id: testRecipe.id, userId: vp.userId };
+    const result = await getRecipeByIdUsecase.execute(request);
+
+    expect(result).not.toBeInstanceOf(Recipe);
+    for (const prop of dto.recipeDTOProperties) {
+      expect(result).toHaveProperty(prop);
+    }
   });
 
   it('should return null when recipe does not exist', async () => {

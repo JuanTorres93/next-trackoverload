@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
@@ -48,7 +49,7 @@ describe('UpdateRecipeUsecase', () => {
 
     expect(result.name).toBe('Updated Grilled Chicken');
     expect(result.id).toBe(testRecipe.id);
-    expect(result.updatedAt.getTime()).toBeGreaterThan(
+    expect(new Date(result.updatedAt).getTime()).toBeGreaterThan(
       originalUpdatedAt.getTime()
     );
   });
@@ -106,7 +107,24 @@ describe('UpdateRecipeUsecase', () => {
     const result = await updateRecipeUsecase.execute(request);
 
     expect(result.name).toBe(testRecipe.name);
-    expect(result.updatedAt).toEqual(originalUpdatedAt);
+    expect(result.updatedAt).toEqual(originalUpdatedAt.toISOString());
+  });
+
+  it('should return RecipeDTO', async () => {
+    await recipesRepo.saveRecipe(testRecipe);
+
+    const request = {
+      id: testRecipe.id,
+      name: 'Updated Name',
+      userId: vp.userId,
+    };
+
+    const result = await updateRecipeUsecase.execute(request);
+
+    expect(result).not.toBeInstanceOf(Recipe);
+    for (const prop of dto.recipeDTOProperties) {
+      expect(result).toHaveProperty(prop);
+    }
   });
 
   it('should throw ValidationError for invalid userId', async () => {

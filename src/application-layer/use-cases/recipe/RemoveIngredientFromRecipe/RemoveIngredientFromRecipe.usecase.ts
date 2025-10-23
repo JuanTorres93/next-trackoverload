@@ -1,5 +1,5 @@
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
-import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { validateNonEmptyString } from '@/domain/common/validation';
 import { NotFoundError } from '@/domain/common/errors';
 
@@ -14,7 +14,7 @@ export class RemoveIngredientFromRecipeUsecase {
 
   async execute(
     request: RemoveIngredientFromRecipeUsecaseRequest
-  ): Promise<Recipe> {
+  ): Promise<RecipeDTO> {
     validateNonEmptyString(
       request.recipeId,
       'RemoveIngredientFromRecipeUsecase recipeId'
@@ -43,6 +43,6 @@ export class RemoveIngredientFromRecipeUsecase {
 
     await this.recipesRepo.saveRecipe(existingRecipe);
 
-    return existingRecipe;
+    return toRecipeDTO(existingRecipe);
   }
 }

@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
@@ -6,6 +7,8 @@ import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { DuplicateRecipeUsecase } from '../DuplicateRecipe.usecase';
+import { toIngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
+import { toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 
 describe('DuplicateRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
@@ -44,12 +47,15 @@ describe('DuplicateRecipeUsecase', () => {
     expect(result).toHaveProperty('id');
     expect(result.id).not.toBe(testRecipe.id);
     expect(result.name).toBe(`${testRecipe.name} (Copy)`);
-    expect(result.ingredientLines).toEqual(testRecipe.ingredientLines);
+    expect(result.ingredientLines).toEqual(
+      testRecipe.ingredientLines.map(toIngredientLineDTO)
+    );
     expect(result.calories).toBe(testRecipe.calories);
     expect(result.protein).toBe(testRecipe.protein);
 
     const savedRecipe = await recipesRepo.getRecipeById(result.id);
-    expect(savedRecipe).toEqual(result);
+    // @ts-expect-error savedRecipe won't be null here
+    expect(toRecipeDTO(savedRecipe)).toEqual(result);
   });
 
   it('should duplicate recipe with custom name', async () => {
@@ -64,7 +70,9 @@ describe('DuplicateRecipeUsecase', () => {
     const result = await duplicateRecipeUsecase.execute(request);
 
     expect(result.name).toBe('My Custom Recipe Copy');
-    expect(result.ingredientLines).toEqual(testRecipe.ingredientLines);
+    expect(result.ingredientLines).toEqual(
+      testRecipe.ingredientLines.map(toIngredientLineDTO)
+    );
   });
 
   it('should throw NotFoundError when recipe does not exist', async () => {
@@ -112,10 +120,12 @@ describe('DuplicateRecipeUsecase', () => {
     const result = await duplicateRecipeUsecase.execute(request);
 
     expect(result.ingredientLines).toHaveLength(2);
-    expect(result.ingredientLines).toEqual(testRecipe.ingredientLines);
+    expect(result.ingredientLines).toEqual(
+      testRecipe.ingredientLines.map(toIngredientLineDTO)
+    );
   });
 
-  it('should create independent copy that can be modified', async () => {
+  it('should create independent copy with different id', async () => {
     await recipesRepo.saveRecipe(testRecipe);
 
     const request = {
@@ -125,13 +135,17 @@ describe('DuplicateRecipeUsecase', () => {
 
     const duplicatedRecipe = await duplicateRecipeUsecase.execute(request);
 
-    // Modify the duplicated recipe
-    duplicatedRecipe.rename('Modified Copy');
+    // Duplicated recipe should have different id but same content
+    expect(duplicatedRecipe.id).not.toBe(testRecipe.id);
+    expect(duplicatedRecipe.name).toBe(`${testRecipe.name} (Copy)`);
+    expect(duplicatedRecipe.ingredientLines).toEqual(
+      testRecipe.ingredientLines.map(toIngredientLineDTO)
+    );
 
-    // Original recipe should be unchanged
+    // Original recipe should be unchanged in the repo
     const originalRecipe = await recipesRepo.getRecipeById(testRecipe.id);
-    expect(originalRecipe?.name).toBe(testRecipe.name);
-    expect(duplicatedRecipe.name).toBe('Modified Copy');
+    expect(originalRecipe).toBeDefined();
+    expect(originalRecipe!.name).toBe(testRecipe.name);
   });
 
   it('should have different creation timestamps', async () => {
@@ -147,10 +161,10 @@ describe('DuplicateRecipeUsecase', () => {
 
     const result = await duplicateRecipeUsecase.execute(request);
 
-    expect(result.createdAt.getTime()).toBeGreaterThan(
+    expect(new Date(result.createdAt).getTime()).toBeGreaterThan(
       testRecipe.createdAt.getTime()
     );
-    expect(result.updatedAt.getTime()).toBeGreaterThan(
+    expect(new Date(result.updatedAt).getTime()).toBeGreaterThan(
       testRecipe.updatedAt.getTime()
     );
   });
@@ -168,6 +182,22 @@ describe('DuplicateRecipeUsecase', () => {
       await expect(duplicateRecipeUsecase.execute(request)).rejects.toThrow(
         ValidationError
       );
+    }
+  });
+
+  it('should return RecipeDTO', async () => {
+    await recipesRepo.saveRecipe(testRecipe);
+
+    const request = {
+      recipeId: testRecipe.id,
+      userId: vp.userId,
+    };
+
+    const result = await duplicateRecipeUsecase.execute(request);
+
+    expect(result).not.toBeInstanceOf(Recipe);
+    for (const prop of dto.recipeDTOProperties) {
+      expect(result).toHaveProperty(prop);
     }
   });
 });

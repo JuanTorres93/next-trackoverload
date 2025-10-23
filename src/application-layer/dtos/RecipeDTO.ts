@@ -6,6 +6,8 @@ export type RecipeDTO = {
   userId: string;
   name: string;
   ingredientLines: IngredientLineDTO[];
+  calories: number;
+  protein: number;
   createdAt: string;
   updatedAt: string;
 };
@@ -16,6 +18,8 @@ export function toRecipeDTO(recipe: Recipe): RecipeDTO {
     userId: recipe.userId,
     name: recipe.name,
     ingredientLines: recipe.ingredientLines.map(toIngredientLineDTO),
+    calories: recipe.calories,
+    protein: recipe.protein,
     createdAt: recipe.createdAt.toISOString(),
     updatedAt: recipe.updatedAt.toISOString(),
   };
