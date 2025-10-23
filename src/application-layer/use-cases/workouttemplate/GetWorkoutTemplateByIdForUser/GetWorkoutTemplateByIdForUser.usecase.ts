@@ -1,5 +1,8 @@
 import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
-import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
+import {
+  WorkoutTemplateDTO,
+  toWorkoutTemplateDTO,
+} from '@/application-layer/dtos/WorkoutTemplateDTO';
 import { validateNonEmptyString } from '@/domain/common/validation';
 
 export type GetWorkoutTemplateByIdForUserUsecaseRequest = {
@@ -12,7 +15,7 @@ export class GetWorkoutTemplateByIdForUserUsecase {
 
   async execute(
     request: GetWorkoutTemplateByIdForUserUsecaseRequest
-  ): Promise<WorkoutTemplate | null> {
+  ): Promise<WorkoutTemplateDTO | null> {
     validateNonEmptyString(
       request.id,
       'GetWorkoutTemplateByIdForUserUsecase id'
@@ -28,6 +31,6 @@ export class GetWorkoutTemplateByIdForUserUsecase {
         request.userId
       );
 
-    return workoutTemplate || null;
+    return workoutTemplate ? toWorkoutTemplateDTO(workoutTemplate) : null;
   }
 }

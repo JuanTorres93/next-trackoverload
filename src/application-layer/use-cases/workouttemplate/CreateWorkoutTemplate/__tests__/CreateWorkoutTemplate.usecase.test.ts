@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { CreateWorkoutTemplateUsecase } from '../CreateWorkoutTemplate.usecase';
 import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
+import * as dto from '@/../tests/dtoProperties';
+import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 
 describe('CreateWorkoutTemplateUsecase', () => {
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
@@ -23,8 +25,20 @@ describe('CreateWorkoutTemplateUsecase', () => {
     expect(result.name).toBe('Push Day');
     expect(result.exercises).toEqual([]);
     expect(result.id).toBeDefined();
-    expect(result.createdAt).toBeInstanceOf(Date);
-    expect(result.updatedAt).toBeInstanceOf(Date);
+  });
+
+  it('should return a WorkoutTemplateDTO', async () => {
+    const request = {
+      userId: 'user1',
+      name: 'Leg Day',
+    };
+
+    const result = await usecase.execute(request);
+
+    expect(result).not.toBeInstanceOf(WorkoutTemplate);
+    for (const prop of dto.workoutTemplateDTOProperties) {
+      expect(result).toHaveProperty(prop);
+    }
   });
 
   it('should save the workout template in the repository', async () => {

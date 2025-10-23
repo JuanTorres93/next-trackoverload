@@ -4,6 +4,7 @@ import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplate
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import { NotFoundError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
@@ -46,6 +47,33 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
     );
     expect(savedTemplate).not.toBeNull();
     expect(savedTemplate!.exercises[0].exerciseId).toBe('tricep-dips');
+  });
+
+  it('should return WorkoutTemplateDTO', async () => {
+    const existingTemplate = WorkoutTemplate.create({
+      ...vp.validWorkoutTemplateProps,
+      exercises: [
+        { exerciseId: 'bench-press', sets: 3 },
+        { exerciseId: 'shoulder-press', sets: 3 },
+        { exerciseId: 'tricep-dips', sets: 3 },
+      ],
+    });
+
+    await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
+
+    const request = {
+      workoutTemplateId: vp.validWorkoutTemplateProps.id,
+      exerciseId: 'tricep-dips',
+      newIndex: 0,
+      userId: vp.userId,
+    };
+
+    const result = await usecase.execute(request);
+
+    expect(result).not.toBeInstanceOf(WorkoutTemplate);
+    for (const prop of dto.workoutTemplateDTOProperties) {
+      expect(result).toHaveProperty(prop);
+    }
   });
 
   it('should reorder exercise to middle position', async () => {

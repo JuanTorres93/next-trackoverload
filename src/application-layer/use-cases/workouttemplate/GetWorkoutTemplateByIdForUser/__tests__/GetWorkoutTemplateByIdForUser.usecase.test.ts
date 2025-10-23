@@ -3,6 +3,7 @@ import { GetWorkoutTemplateByIdForUserUsecase } from '../GetWorkoutTemplateByIdF
 import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('GetWorkoutTemplateByIdForUserUsecase', () => {
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
@@ -29,6 +30,25 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
     expect(result!.id).toBe('1');
     expect(result!.userId).toBe(vp.userId);
     expect(result!.name).toBe('Push Day');
+  });
+
+  it('should return WorkoutTemplateDTO', async () => {
+    const template = WorkoutTemplate.create({
+      ...vp.validWorkoutTemplateProps,
+      id: '1',
+      userId: vp.userId,
+      name: 'Leg Day',
+      exercises: [{ exerciseId: 'ex2', sets: 4 }],
+    });
+
+    await workoutTemplatesRepo.saveWorkoutTemplate(template);
+
+    const result = await usecase.execute({ id: '1', userId: vp.userId });
+
+    expect(result).not.toBeInstanceOf(WorkoutTemplate);
+    for (const prop of dto.workoutTemplateDTOProperties) {
+      expect(result).toHaveProperty(prop);
+    }
   });
 
   it('should return null if template belongs to different user', async () => {

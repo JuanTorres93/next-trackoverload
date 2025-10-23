@@ -1,6 +1,7 @@
 import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
 import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
 import { Workout } from '@/domain/entities/workout/Workout';
+import { WorkoutDTO, toWorkoutDTO } from '@/application-layer/dtos/WorkoutDTO';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { v4 as uuidv4 } from 'uuid';
 import { validateNonEmptyString } from '@/domain/common/validation';
@@ -19,7 +20,7 @@ export class CreateWorkoutFromTemplateUsecase {
 
   async execute(
     request: CreateWorkoutFromTemplateUsecaseRequest
-  ): Promise<Workout> {
+  ): Promise<WorkoutDTO> {
     validateNonEmptyString(
       request.userId,
       'CreateWorkoutFromTemplateUsecase userId'
@@ -81,6 +82,6 @@ export class CreateWorkoutFromTemplateUsecase {
 
     await this.workoutsRepo.saveWorkout(newWorkout);
 
-    return newWorkout;
+    return toWorkoutDTO(newWorkout);
   }
 }

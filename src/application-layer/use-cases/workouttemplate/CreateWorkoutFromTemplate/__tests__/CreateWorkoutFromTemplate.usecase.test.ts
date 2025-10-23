@@ -5,6 +5,8 @@ import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
+import { Workout } from '@/domain/entities/workout/Workout';
 
 describe('CreateWorkoutFromTemplateUsecase', () => {
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
@@ -71,6 +73,28 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
     const savedWorkout = await workoutsRepo.getWorkoutById(result.id);
     expect(savedWorkout).not.toBeNull();
     expect(savedWorkout!.name).toContain('Push Day');
+  });
+
+  it('should return a WorkoutDTO', async () => {
+    const template = WorkoutTemplate.create({
+      ...vp.validWorkoutTemplateProps,
+      exercises: [{ exerciseId: 'bench-press', sets: 2 }],
+    });
+
+    await workoutTemplatesRepo.saveWorkoutTemplate(template);
+
+    const request = {
+      userId: vp.userId,
+      workoutTemplateId: vp.validWorkoutTemplateProps.id,
+    };
+
+    const result = await usecase.execute(request);
+
+    expect(result).not.toBeInstanceOf(WorkoutTemplate);
+    expect(result).not.toBeInstanceOf(Workout);
+    for (const prop of dto.workoutDTOProperties) {
+      expect(result).toHaveProperty(prop);
+    }
   });
 
   it('should create workout with custom name', async () => {

@@ -1,5 +1,9 @@
 import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
+import {
+  WorkoutTemplateDTO,
+  toWorkoutTemplateDTO,
+} from '@/application-layer/dtos/WorkoutTemplateDTO';
 import { NotFoundError } from '@/domain/common/errors';
 import { validateNonEmptyString } from '@/domain/common/validation';
 
@@ -14,7 +18,7 @@ export class UpdateWorkoutTemplateUsecase {
 
   async execute(
     request: UpdateWorkoutTemplateUsecaseRequest
-  ): Promise<WorkoutTemplate> {
+  ): Promise<WorkoutTemplateDTO> {
     validateNonEmptyString(request.id, 'UpdateWorkoutTemplateUsecase id');
 
     const workoutTemplate =
@@ -42,6 +46,6 @@ export class UpdateWorkoutTemplateUsecase {
 
     await this.workoutTemplatesRepo.saveWorkoutTemplate(updatedTemplate);
 
-    return updatedTemplate;
+    return toWorkoutTemplateDTO(updatedTemplate);
   }
 }

@@ -3,6 +3,7 @@ import { GetAllWorkoutTemplatesForUserUsecase } from '../GetAllWorkoutTemplatesF
 import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('GetAllWorkoutTemplatesForUserUsecase', () => {
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
@@ -42,6 +43,23 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
     expect(result).toHaveLength(2);
     expect(result.map((t) => t.id)).toEqual(['1', '2']);
     expect(result.every((t) => t.userId === vp.userId)).toBe(true);
+  });
+
+  it('should return array of WorkoutTemplateDTO', async () => {
+    const template = WorkoutTemplate.create({
+      ...vp.validWorkoutTemplateProps,
+    });
+
+    await workoutTemplatesRepo.saveWorkoutTemplate(template);
+
+    const result = await usecase.execute({ userId: vp.userId });
+
+    expect(result).toHaveLength(1);
+
+    expect(result[0]).not.toBeInstanceOf(WorkoutTemplate);
+    for (const prop of dto.workoutTemplateDTOProperties) {
+      expect(result[0]).toHaveProperty(prop);
+    }
   });
 
   it('should return empty array if user has no templates', async () => {

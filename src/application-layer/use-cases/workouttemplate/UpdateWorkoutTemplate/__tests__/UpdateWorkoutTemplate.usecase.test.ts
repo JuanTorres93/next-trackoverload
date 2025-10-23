@@ -4,6 +4,7 @@ import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplate
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('UpdateWorkoutTemplateUsecase', () => {
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
@@ -33,14 +34,36 @@ describe('UpdateWorkoutTemplateUsecase', () => {
     expect(result.name).toBe('New Name');
     expect(result.id).toBe(vp.validWorkoutTemplateProps.id);
     expect(result.exercises).toEqual([{ exerciseId: 'ex1', sets: 3 }]);
-    expect(result.createdAt).toEqual(existingTemplate.createdAt);
-    expect(result.updatedAt).not.toEqual(existingTemplate.updatedAt);
+    expect(new Date(result.createdAt)).toEqual(existingTemplate.createdAt);
+    expect(new Date(result.updatedAt)).not.toEqual(existingTemplate.updatedAt);
 
     // Verify it was saved in the repo
     const savedTemplate = await workoutTemplatesRepo.getWorkoutTemplateById(
       vp.validWorkoutTemplateProps.id
     );
     expect(savedTemplate!.name).toBe('New Name');
+  });
+
+  it('should return WorkoutTemplateDTO', async () => {
+    const existingTemplate = WorkoutTemplate.create({
+      ...vp.validWorkoutTemplateProps,
+      exercises: [{ exerciseId: 'ex1', sets: 3 }],
+    });
+
+    await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
+
+    const request = {
+      id: vp.validWorkoutTemplateProps.id,
+      userId: vp.userId,
+      name: 'Updated Name',
+    };
+
+    const result = await usecase.execute(request);
+
+    expect(result).not.toBeInstanceOf(WorkoutTemplate);
+    for (const prop of dto.workoutTemplateDTOProperties) {
+      expect(result).toHaveProperty(prop);
+    }
   });
 
   it('should throw NotFoundError when workout template does not exist', async () => {

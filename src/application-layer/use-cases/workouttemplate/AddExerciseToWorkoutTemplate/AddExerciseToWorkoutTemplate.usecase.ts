@@ -1,12 +1,15 @@
-import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
-import { ExercisesRepo } from '@/domain/repos/ExercisesRepo.port';
-import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
+import {
+  WorkoutTemplateDTO,
+  toWorkoutTemplateDTO,
+} from '@/application-layer/dtos/WorkoutTemplateDTO';
 import { NotFoundError } from '@/domain/common/errors';
 import {
   validateGreaterThanZero,
   validateInteger,
   validateNonEmptyString,
 } from '@/domain/common/validation';
+import { ExercisesRepo } from '@/domain/repos/ExercisesRepo.port';
+import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
 
 export type AddExerciseToWorkoutTemplateUsecaseRequest = {
   userId: string;
@@ -23,7 +26,7 @@ export class AddExerciseToWorkoutTemplateUsecase {
 
   async execute(
     request: AddExerciseToWorkoutTemplateUsecaseRequest
-  ): Promise<WorkoutTemplate> {
+  ): Promise<WorkoutTemplateDTO> {
     validateNonEmptyString(
       request.userId,
       'AddExerciseToWorkoutTemplate userId'
@@ -71,6 +74,6 @@ export class AddExerciseToWorkoutTemplateUsecase {
 
     await this.workoutTemplatesRepo.saveWorkoutTemplate(workoutTemplate);
 
-    return workoutTemplate;
+    return toWorkoutTemplateDTO(workoutTemplate);
   }
 }

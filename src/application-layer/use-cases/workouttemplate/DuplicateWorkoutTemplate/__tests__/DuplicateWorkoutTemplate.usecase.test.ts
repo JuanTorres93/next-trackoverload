@@ -4,6 +4,7 @@ import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplate
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import { NotFoundError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('DuplicateWorkoutTemplateUsecase', () => {
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
@@ -46,6 +47,28 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
     );
     expect(savedTemplate).not.toBeNull();
     expect(savedTemplate!.name).toBe('Push Day (Copy)');
+  });
+
+  it('should return WorkoutTemplateDTO', async () => {
+    const originalTemplate = WorkoutTemplate.create({
+      ...vp.validWorkoutTemplateProps,
+      name: 'Leg Day',
+      exercises: [{ exerciseId: 'squat', sets: 4 }],
+    });
+
+    await workoutTemplatesRepo.saveWorkoutTemplate(originalTemplate);
+
+    const request = {
+      userId: vp.userId,
+      originalTemplateId: '1',
+    };
+
+    const result = await usecase.execute(request);
+
+    expect(result).not.toBeInstanceOf(WorkoutTemplate);
+    for (const prop of dto.workoutTemplateDTOProperties) {
+      expect(result).toHaveProperty(prop);
+    }
   });
 
   it('should duplicate workout template with custom name', async () => {
@@ -114,30 +137,6 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
     );
     expect(savedTemplate).not.toBeNull();
     expect(savedTemplate!.name).toBe('Empty Template (Copy)');
-  });
-
-  it('should create independent copy of exercises array', async () => {
-    const originalTemplate = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps,
-      name: 'Push Day',
-      exercises: [{ exerciseId: 'bench-press', sets: 3 }],
-    });
-
-    await workoutTemplatesRepo.saveWorkoutTemplate(originalTemplate);
-
-    const request = {
-      userId: vp.userId,
-      originalTemplateId: vp.validWorkoutTemplateProps.id,
-    };
-
-    const result = await usecase.execute(request);
-
-    // Modify the duplicated template's exercises
-    result.addExercise({ exerciseId: 'shoulder-press', sets: 2 });
-
-    // Original template should be unchanged
-    expect(originalTemplate.exercises).toHaveLength(1);
-    expect(result.exercises).toHaveLength(2);
   });
 
   it('should throw error if userId is invalid', async () => {

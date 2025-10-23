@@ -7,6 +7,7 @@ import { Exercise } from '@/domain/entities/exercise/Exercise';
 import { NotFoundError } from '@/domain/common/errors';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('AddExerciseToWorkoutTemplateUsecase', () => {
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
@@ -70,6 +71,22 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
       '1'
     );
     expect(savedTemplate!.exercises).toHaveLength(2);
+  });
+
+  it('should return WorkoutTemplateDTO', async () => {
+    const request = {
+      userId: vp.userId,
+      workoutTemplateId: '1',
+      exerciseId: 'shoulder-press',
+      sets: 4,
+    };
+
+    const result = await usecase.execute(request);
+
+    expect(result).not.toBeInstanceOf(WorkoutTemplate);
+    for (const prop of dto.workoutTemplateDTOProperties) {
+      expect(result).toHaveProperty(prop);
+    }
   });
 
   it('should throw NotFoundError when workout template does not exist', async () => {

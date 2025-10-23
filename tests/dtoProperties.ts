@@ -77,3 +77,13 @@ export const workoutDTOProperties = [
   'createdAt',
   'updatedAt',
 ];
+
+export const workoutTemplateDTOProperties = [
+  'id',
+  'userId',
+  'name',
+  'exercises',
+  'createdAt',
+  'updatedAt',
+  'deletedAt',
+];
