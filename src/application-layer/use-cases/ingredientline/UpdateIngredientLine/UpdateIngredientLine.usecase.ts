@@ -1,7 +1,10 @@
 import { IngredientLinesRepo } from '@/domain/repos/IngredientLinesRepo.port';
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import {
+  IngredientLineDTO,
+  toIngredientLineDTO,
+} from '@/application-layer/dtos/IngredientLineDTO';
 import {
   validateNonEmptyString,
   validateGreaterThanZero,
@@ -22,7 +25,7 @@ export class UpdateIngredientLineUsecase {
 
   async execute(
     request: UpdateIngredientLineUsecaseRequest
-  ): Promise<IngredientLine> {
+  ): Promise<IngredientLineDTO> {
     validateNonEmptyString(
       request.ingredientLineId,
       'UpdateIngredientLineUsecase ingredientLineId'
@@ -87,6 +90,6 @@ export class UpdateIngredientLineUsecase {
     // Save the updated ingredient line
     await this.ingredientLinesRepo.saveIngredientLine(updatedIngredientLine);
 
-    return updatedIngredientLine;
+    return toIngredientLineDTO(updatedIngredientLine);
   }
 }

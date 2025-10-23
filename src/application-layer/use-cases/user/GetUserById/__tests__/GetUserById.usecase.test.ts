@@ -4,6 +4,8 @@ import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { User } from '@/domain/entities/user/User';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
+import { toUserDTO } from '@/application-layer/dtos/UserDTO';
 
 describe('GetUserByIdUsecase', () => {
   let usersRepo: MemoryUsersRepo;
@@ -25,7 +27,24 @@ describe('GetUserByIdUsecase', () => {
 
     const result = await getUserByIdUsecase.execute({ id: '1' });
 
-    expect(result).toEqual(user);
+    expect(result).toEqual(toUserDTO(user));
+  });
+
+  it('should return user DTO when found', async () => {
+    const user = User.create({
+      ...vp.validUserProps,
+      id: '1',
+      name: 'John Doe',
+    });
+
+    await usersRepo.saveUser(user);
+
+    const result = await getUserByIdUsecase.execute({ id: '1' });
+
+    for (const prop of dto.userDTOProperties) {
+      expect(result).not.toBeInstanceOf(User);
+      expect(result).toHaveProperty(prop);
+    }
   });
 
   it('should return null when user not found', async () => {

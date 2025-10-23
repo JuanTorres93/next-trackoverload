@@ -4,6 +4,7 @@ import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { User } from '@/domain/entities/user/User';
 import { ValidationError, NotFoundError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('UpdateUserUsecase', () => {
   let usersRepo: MemoryUsersRepo;
@@ -30,6 +31,25 @@ describe('UpdateUserUsecase', () => {
     expect(result.name).toBe('New Name');
     expect(result.id).toBe(vp.userId);
     expect(result.customerId).toBe(user.customerId);
+  });
+
+  it('should return UserDTO', async () => {
+    const user = User.create({
+      ...vp.validUserProps,
+      name: 'Old Name',
+    });
+
+    await usersRepo.saveUser(user);
+
+    const result = await updateUserUsecase.execute({
+      id: vp.userId,
+      patch: { name: 'New Name' },
+    });
+
+    for (const prop of dto.userDTOProperties) {
+      expect(result).not.toBeInstanceOf(User);
+      expect(result).toHaveProperty(prop);
+    }
   });
 
   it('should return existing user when no changes made', async () => {

@@ -1,5 +1,6 @@
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { User, UserUpdateProps } from '@/domain/entities/user/User';
+import { UserDTO, toUserDTO } from '@/application-layer/dtos/UserDTO';
 import { NotFoundError } from '@/domain/common/errors';
 import {
   validateNonEmptyString,
@@ -14,7 +15,7 @@ export type UpdateUserUsecaseRequest = {
 export class UpdateUserUsecase {
   constructor(private usersRepo: UsersRepo) {}
 
-  async execute(request: UpdateUserUsecaseRequest): Promise<User> {
+  async execute(request: UpdateUserUsecaseRequest): Promise<UserDTO> {
     validateNonEmptyString(request.id, 'UpdateUserUsecase id');
     if (request.patch !== undefined)
       validateObject(request.patch, 'UpdateUserUsecase patch');
@@ -42,9 +43,9 @@ export class UpdateUserUsecase {
 
       await this.usersRepo.saveUser(updatedUser);
 
-      return updatedUser;
+      return toUserDTO(updatedUser);
     }
 
-    return existingUser; // No changes made, return the original
+    return toUserDTO(existingUser); // No changes made, return the original
   }
 }

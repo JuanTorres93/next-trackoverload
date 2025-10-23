@@ -6,6 +6,7 @@ import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { ValidationError, NotFoundError } from '@/domain/common/errors';
 import { v4 as uuidv4 } from 'uuid';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('UpdateIngredientLineUsecase', () => {
   let ingredientLinesRepo: MemoryIngredientLinesRepo;
@@ -69,6 +70,24 @@ describe('UpdateIngredientLineUsecase', () => {
       expect(result.ingredient.id).toBe(testIngredient.id);
       expect(result.ingredient.name).toBe('Chicken Breast');
       expect(result.id).toBe(testIngredientLine.id);
+    });
+
+    it('should return IngredientLineDTO', async () => {
+      await ingredientLinesRepo.saveIngredientLine(testIngredientLine);
+
+      const request = {
+        ingredientLineId: testIngredientLine.id,
+        quantityInGrams: 300,
+      };
+
+      const result = await updateIngredientLineUsecase.execute(request);
+
+      // Verificación de que se retorna DTO
+      expect(result).not.toBeInstanceOf(IngredientLine);
+
+      for (const prop of dto.ingredientLineDTOProperties) {
+        expect(result).toHaveProperty(prop);
+      }
     });
 
     it('should update only the ingredient when ingredientId is provided', async () => {
@@ -137,7 +156,7 @@ describe('UpdateIngredientLineUsecase', () => {
 
       const result = await updateIngredientLineUsecase.execute(request);
 
-      expect(result.updatedAt.getTime()).toBeGreaterThan(
+      expect(new Date(result.updatedAt).getTime()).toBeGreaterThan(
         originalUpdatedAt.getTime()
       );
     });

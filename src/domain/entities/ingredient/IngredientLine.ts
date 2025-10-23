@@ -5,6 +5,8 @@ import {
   validateGreaterThanZero,
 } from '../../common/validation';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
+import { Calories } from '@/domain/interfaces/Calories';
+import { Protein } from '@/domain/interfaces/Protein';
 
 type IngredientLineUpdateProps = {
   ingredient?: Ingredient;
@@ -19,7 +21,7 @@ type IngredientLineProps = {
   updatedAt: Date;
 };
 
-export class IngredientLine {
+export class IngredientLine implements Calories, Protein {
   private constructor(private readonly props: IngredientLineProps) {}
 
   static create(props: IngredientLineProps) {

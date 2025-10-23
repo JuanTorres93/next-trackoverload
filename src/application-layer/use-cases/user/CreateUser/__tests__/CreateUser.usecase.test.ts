@@ -2,6 +2,9 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { CreateUserUsecase } from '../CreateUser.usecase';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { ValidationError } from '@/domain/common/errors';
+import * as dto from '@/../tests/dtoProperties';
+import { User } from '@/domain/entities/user/User';
+import { toUserDTO } from '@/application-layer/dtos/UserDTO';
 
 describe('CreateUserUsecase', () => {
   let usersRepo: MemoryUsersRepo;
@@ -25,7 +28,20 @@ describe('CreateUserUsecase', () => {
 
     // Verify user was saved in repository
     const savedUser = await usersRepo.getUserById(result.id);
-    expect(savedUser).toEqual(result);
+
+    // @ts-expect-error savedUser won't be null
+    expect(toUserDTO(savedUser)).toEqual(result);
+  });
+
+  it('should return UserDTO', async () => {
+    const result = await createUserUsecase.execute({
+      name: 'John Doe',
+    });
+
+    expect(result).not.toBeInstanceOf(User);
+    for (const prop of dto.userDTOProperties) {
+      expect(result).toHaveProperty(prop);
+    }
   });
 
   it('should create user with name and customerId', async () => {
@@ -42,7 +58,8 @@ describe('CreateUserUsecase', () => {
 
     // Verify user was saved in repository
     const savedUser = await usersRepo.getUserById(result.id);
-    expect(savedUser).toEqual(result);
+    // @ts-expect-error savedUser won't be null
+    expect(toUserDTO(savedUser)).toEqual(result);
   });
 
   it('should generate unique IDs for different users', async () => {
