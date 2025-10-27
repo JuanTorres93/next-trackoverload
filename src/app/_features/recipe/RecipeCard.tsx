@@ -1,5 +1,6 @@
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import Image from 'next/image';
+import Link from 'next/link';
 
 function NumberContainer({ number, label }: { number: number; label: string }) {
   return (
@@ -12,7 +13,10 @@ function NumberContainer({ number, label }: { number: number; label: string }) {
 
 function RecipeCard({ recipe }: { recipe: RecipeDTO }) {
   return (
-    <div className="p-3 min-w-52 rounded-lg grid grid-cols-2 grid-rows-[max-content_min-content_min-content] gap-4 bg-neutral-50 shadow-md hover:cursor-pointer hover:shadow-lg transition hover:bg-neutral-100">
+    <Link
+      href={`/app/recipes/${recipe.id}`}
+      className="p-3 min-w-52 rounded-lg grid grid-cols-2 grid-rows-[max-content_min-content_min-content] gap-4 bg-neutral-50 shadow-md hover:cursor-pointer hover:shadow-lg transition hover:bg-neutral-100"
+    >
       <div className="relative col-span-2 rounded-lg overflow-hidden h-32">
         <Image
           src={recipe.imageUrl ? recipe.imageUrl : '/recipe-no-picture.png'}
@@ -26,7 +30,7 @@ function RecipeCard({ recipe }: { recipe: RecipeDTO }) {
       <NumberContainer number={recipe.calories} label="Calorías" />
 
       <NumberContainer number={recipe.protein} label="Proteínas" />
-    </div>
+    </Link>
   );
 }
 
