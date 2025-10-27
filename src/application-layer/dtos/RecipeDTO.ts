@@ -5,6 +5,7 @@ export type RecipeDTO = {
   id: string;
   userId: string;
   name: string;
+  imageUrl?: string;
   ingredientLines: IngredientLineDTO[];
   calories: number;
   protein: number;
@@ -17,6 +18,7 @@ export function toRecipeDTO(recipe: Recipe): RecipeDTO {
     id: recipe.id,
     userId: recipe.userId,
     name: recipe.name,
+    imageUrl: recipe.imageUrl,
     ingredientLines: recipe.ingredientLines.map(toIngredientLineDTO),
     calories: recipe.calories,
     protein: recipe.protein,

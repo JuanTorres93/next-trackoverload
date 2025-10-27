@@ -9,6 +9,7 @@ export type RecipeProps = {
   id: string;
   userId: string;
   name: string;
+  imageUrl?: string;
   ingredientLines: IngredientLine[];
   createdAt: Date;
   updatedAt: Date;
@@ -73,6 +74,10 @@ export class Recipe implements Protein, Calories {
 
   get id() {
     return this.props.id;
+  }
+
+  get imageUrl() {
+    return this.props.imageUrl;
   }
 
   get userId() {
