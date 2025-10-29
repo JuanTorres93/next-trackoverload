@@ -8,12 +8,12 @@ import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 import { Calories } from '@/domain/interfaces/Calories';
 import { Protein } from '@/domain/interfaces/Protein';
 
-type IngredientLineUpdateProps = {
+export type IngredientLineUpdateProps = {
   ingredient?: Ingredient;
   quantityInGrams?: number;
 };
 
-type IngredientLineProps = {
+export type IngredientLineProps = {
   id: string;
   ingredient: Ingredient;
   quantityInGrams: number;
