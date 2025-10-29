@@ -1,3 +1,3 @@
-import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
+import { FileSystemUsersRepo } from '@/infra/filesystem';
 
-export const AppUsersRepo = new MemoryUsersRepo();
+export const AppUsersRepo = new FileSystemUsersRepo();

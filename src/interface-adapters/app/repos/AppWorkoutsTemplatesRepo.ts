@@ -1,3 +1,3 @@
-import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
+import { FileSystemWorkoutTemplatesRepo } from '@/infra/filesystem';
 
-export const AppWorkoutsTemplatesRepo = new MemoryWorkoutTemplatesRepo();
+export const AppWorkoutsTemplatesRepo = new FileSystemWorkoutTemplatesRepo();

@@ -1,3 +1,3 @@
-import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
+import { FileSystemRecipesRepo } from '@/infra/filesystem';
 
-export const AppRecipesRepo = new MemoryRecipesRepo();
+export const AppRecipesRepo = new FileSystemRecipesRepo();

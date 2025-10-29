@@ -1,3 +1,3 @@
-import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
+import { FileSystemDaysRepo } from '@/infra/filesystem';
 
-export const AppDaysRepo = new MemoryDaysRepo();
+export const AppDaysRepo = new FileSystemDaysRepo();

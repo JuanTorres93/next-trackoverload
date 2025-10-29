@@ -1,3 +1,3 @@
-import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
+import { FileSystemIngredientsRepo } from '@/infra/filesystem';
 
-export const AppIngredientsRepo = new MemoryIngredientsRepo();
+export const AppIngredientsRepo = new FileSystemIngredientsRepo();

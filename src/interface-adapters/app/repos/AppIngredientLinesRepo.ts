@@ -1,3 +1,3 @@
-import { MemoryIngredientLinesRepo } from '@/infra/memory/MemoryIngredientLinesRepo';
+import { FileSystemIngredientLinesRepo } from '@/infra/filesystem';
 
-export const AppIngredientLinesRepo = new MemoryIngredientLinesRepo();
+export const AppIngredientLinesRepo = new FileSystemIngredientLinesRepo();

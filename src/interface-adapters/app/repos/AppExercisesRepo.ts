@@ -1,3 +1,3 @@
-import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
+import { FileSystemExercisesRepo } from '@/infra/filesystem';
 
-export const AppExercisesRepo = new MemoryExercisesRepo();
+export const AppExercisesRepo = new FileSystemExercisesRepo();

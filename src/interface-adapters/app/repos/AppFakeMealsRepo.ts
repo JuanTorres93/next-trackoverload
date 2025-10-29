@@ -1,3 +1,3 @@
-import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
+import { FileSystemFakeMealsRepo } from '@/infra/filesystem';
 
-export const AppFakeMealsRepo = MemoryFakeMealsRepo;
+export const AppFakeMealsRepo = new FileSystemFakeMealsRepo();
