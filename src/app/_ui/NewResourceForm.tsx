@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import ButtonNew from './ButtonNew';
 
 type FormProps = React.FormHTMLAttributes<HTMLFormElement> & {
   children: React.ReactNode;
@@ -21,13 +22,9 @@ export function Form({
     <form className="flex flex-col gap-4" {...props}>
       {children}
 
-      <button
-        type="submit"
-        className="mt-4 font-medium bg-gradient-to-b from-green-400 to-green-500 text-white py-2 px-4 rounded-lg hover:cursor-pointer hover:from-green-500 transition"
-        disabled={isPending}
-      >
+      <ButtonNew type="submit" disabled={isPending}>
         {submitText || 'Enviar'}
-      </button>
+      </ButtonNew>
       {errorMessage && (
         <div className="text-sm text-red-400">{errorMessage}</div>
       )}

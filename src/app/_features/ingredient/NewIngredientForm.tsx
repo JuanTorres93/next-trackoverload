@@ -51,7 +51,7 @@ function NewIngredientForm() {
         />
       </Form.FormRow>
 
-      <Form.FormRow label="Calorías" error={formState.errors.calories}>
+      <Form.FormRow label="Calorías por 100g" error={formState.errors.calories}>
         <Input
           disabled={pending}
           name="calories"
@@ -59,7 +59,7 @@ function NewIngredientForm() {
         />
       </Form.FormRow>
 
-      <Form.FormRow label="Proteínas" error={formState.errors.protein}>
+      <Form.FormRow label="Proteínas por 100g" error={formState.errors.protein}>
         <Input
           disabled={pending}
           name="protein"
