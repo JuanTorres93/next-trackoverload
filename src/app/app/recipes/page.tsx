@@ -1,4 +1,5 @@
 import RecipeCard from '@/app/_features/recipe/RecipeCard';
+import ButtonNew from '@/app/_ui/ButtonNew';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { AppGetAllRecipesForUserUsecase } from '@/interface-adapters/app/use-cases/recipe/GetAllRecipesForUser/getAllRecipesForUser';
 
@@ -14,11 +15,11 @@ export default async function RecipesPage() {
 
   return (
     <div className="p-6">
+      <ButtonNew className="mb-4">Nueva Receta</ButtonNew>
       {recipes.length === 0 ? (
         <p className="text-center text-zinc-500">No hay recetas</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {/* <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"> */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {recipes.map((recipe) => (
             <RecipeCard key={recipe.id} recipe={recipe} />
           ))}
