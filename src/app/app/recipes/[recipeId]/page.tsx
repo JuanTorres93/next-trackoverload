@@ -1,5 +1,6 @@
 import { AppGetRecipeByIdForUserUsecase } from '@/interface-adapters/app/use-cases/recipe';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
+import PageWrapper from '@/app/_ui/PageWrapper';
 
 export default async function RecipePage({
   params,
@@ -14,10 +15,10 @@ export default async function RecipePage({
     }
   );
 
-  if (!recipe) return <div>No recipe found</div>;
+  if (!recipe) return <PageWrapper>No recipe found</PageWrapper>;
   return (
-    <div className="p-6">
+    <PageWrapper>
       <h2>{recipe.name}</h2>
-    </div>
+    </PageWrapper>
   );
 }

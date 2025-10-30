@@ -1,5 +1,6 @@
 import RecipeCard from '@/app/_features/recipe/RecipeCard';
 import ButtonNew from '@/app/_ui/ButtonNew';
+import PageWrapper from '@/app/_ui/PageWrapper';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { AppGetAllRecipesForUserUsecase } from '@/interface-adapters/app/use-cases/recipe/GetAllRecipesForUser/getAllRecipesForUser';
 
@@ -14,8 +15,10 @@ export default async function RecipesPage() {
   }); // TODO IMPORTANT get user id from session
 
   return (
-    <div className="p-6">
-      <ButtonNew className="mb-4">Nueva Receta</ButtonNew>
+    <PageWrapper>
+      <ButtonNew href="/app/recipes/new" className="mb-4">
+        Nueva Receta
+      </ButtonNew>
       {recipes.length === 0 ? (
         <p className="text-center text-zinc-500">No hay recetas</p>
       ) : (
@@ -25,6 +28,6 @@ export default async function RecipesPage() {
           ))}
         </div>
       )}
-    </div>
+    </PageWrapper>
   );
 }

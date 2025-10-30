@@ -1,4 +1,5 @@
 import NewIngredientForm from '@/app/_features/ingredient/NewIngredientForm';
+import PageWrapper from '@/app/_ui/PageWrapper';
 
 export const metadata = {
   title: 'New Ingredient',
@@ -6,5 +7,9 @@ export const metadata = {
 };
 
 export default function NewIngredientPage() {
-  return <NewIngredientForm />;
+  return (
+    <PageWrapper>
+      <NewIngredientForm />
+    </PageWrapper>
+  );
 }
