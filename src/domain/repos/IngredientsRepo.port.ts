@@ -5,4 +5,5 @@ export interface IngredientsRepo {
   getIngredientById(id: string): Promise<Ingredient | null>;
   saveIngredient(ingredient: Ingredient): Promise<void>;
   deleteIngredient(id: string): Promise<void>;
+  getByFuzzyName(name: string): Promise<Ingredient[]>;
 }

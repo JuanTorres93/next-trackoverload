@@ -49,4 +49,17 @@ export class FileSystemIngredientsRepo
   async deleteIngredient(id: string): Promise<void> {
     return this.deleteItemById(id);
   }
+
+  async getByFuzzyName(name: string): Promise<Ingredient[]> {
+    const allIngredients = await this.getAllItems();
+    const searchTerm = name.toLowerCase().trim();
+
+    if (!searchTerm) {
+      return [];
+    }
+
+    return allIngredients.filter((ingredient) =>
+      ingredient.name.toLowerCase().includes(searchTerm)
+    );
+  }
 }

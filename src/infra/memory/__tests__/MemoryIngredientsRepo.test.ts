@@ -62,4 +62,114 @@ describe('MemoryIngredientsRepo', () => {
     const allIngredientsAfterDeletion = await repo.getAllIngredients();
     expect(allIngredientsAfterDeletion.length).toBe(0);
   });
+
+  describe('getByFuzzyName', () => {
+    beforeEach(async () => {
+      // Clear repo and add multiple ingredients for search testing
+      repo = new MemoryIngredientsRepo();
+
+      const ingredients = [
+        Ingredient.create({
+          ...vp.validIngredientProps,
+          id: '1',
+          name: 'Chicken Breast',
+        }),
+        Ingredient.create({
+          ...vp.validIngredientProps,
+          id: '2',
+          name: 'Brown Rice',
+        }),
+        Ingredient.create({
+          ...vp.validIngredientProps,
+          id: '3',
+          name: 'Broccoli',
+        }),
+        Ingredient.create({
+          ...vp.validIngredientProps,
+          id: '4',
+          name: 'Salmon',
+        }),
+        Ingredient.create({
+          ...vp.validIngredientProps,
+          id: '5',
+          name: 'Chicken Thigh',
+        }),
+      ];
+
+      for (const ingredient of ingredients) {
+        await repo.saveIngredient(ingredient);
+      }
+    });
+
+    it('should find ingredients by exact name match', async () => {
+      const results = await repo.getByFuzzyName('Chicken Breast');
+
+      expect(results).toHaveLength(1);
+      expect(results[0].name).toBe('Chicken Breast');
+    });
+
+    it('should find ingredients by partial name match (case insensitive)', async () => {
+      const results = await repo.getByFuzzyName('chicken');
+
+      expect(results).toHaveLength(2);
+      expect(results.map((r) => r.name)).toContain('Chicken Breast');
+      expect(results.map((r) => r.name)).toContain('Chicken Thigh');
+    });
+
+    it('should find ingredients by partial name match (different case)', async () => {
+      const results = await repo.getByFuzzyName('BROWN');
+
+      expect(results).toHaveLength(1);
+      expect(results[0].name).toBe('Brown Rice');
+    });
+
+    it('should find ingredients by substring match', async () => {
+      const results = await repo.getByFuzzyName('rice');
+
+      expect(results).toHaveLength(1);
+      expect(results[0].name).toBe('Brown Rice');
+    });
+
+    it('should find ingredients with mixed case search term', async () => {
+      const results = await repo.getByFuzzyName('BrOcCoLi');
+
+      expect(results).toHaveLength(1);
+      expect(results[0].name).toBe('Broccoli');
+    });
+
+    it('should return empty array for non-matching search term', async () => {
+      const results = await repo.getByFuzzyName('pizza');
+
+      expect(results).toHaveLength(0);
+    });
+
+    it('should return empty array for empty search term', async () => {
+      const results = await repo.getByFuzzyName('');
+
+      expect(results).toHaveLength(0);
+    });
+
+    it('should return empty array for whitespace-only search term', async () => {
+      const results = await repo.getByFuzzyName('   ');
+
+      expect(results).toHaveLength(0);
+    });
+
+    it('should handle search term with leading/trailing whitespace', async () => {
+      const results = await repo.getByFuzzyName('  salmon  ');
+
+      expect(results).toHaveLength(1);
+      expect(results[0].name).toBe('Salmon');
+    });
+
+    it('should find multiple ingredients when search term matches multiple names', async () => {
+      const results = await repo.getByFuzzyName('o'); // should match Brown Rice, Broccoli, Salmon
+
+      expect(results.length).toBeGreaterThanOrEqual(3);
+      const names = results.map((r) => r.name);
+      expect(names).toContain('Brown Rice');
+      expect(names).toContain('Broccoli');
+      expect(names).toContain('Salmon');
+    });
+  });
 });

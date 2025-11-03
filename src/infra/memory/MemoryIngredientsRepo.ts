@@ -32,4 +32,16 @@ export class MemoryIngredientsRepo implements IngredientsRepo {
 
     this.ingredients.splice(index, 1);
   }
+
+  async getByFuzzyName(name: string): Promise<Ingredient[]> {
+    const searchTerm = name.toLowerCase().trim();
+
+    if (!searchTerm) {
+      return [];
+    }
+
+    return this.ingredients.filter((ingredient) =>
+      ingredient.name.toLowerCase().includes(searchTerm)
+    );
+  }
 }
