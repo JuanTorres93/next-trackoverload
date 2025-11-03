@@ -21,6 +21,7 @@ export type IngredientProps = {
   id: string;
   name: string;
   nutritionalInfoPer100g: NutritionalInfoPer100g;
+  imageUrl?: string;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -82,6 +83,10 @@ export class Ingredient {
 
   get nutritionalInfoPer100g() {
     return { ...this.props.nutritionalInfoPer100g };
+  }
+
+  get imageUrl() {
+    return this.props.imageUrl;
   }
 
   get createdAt() {

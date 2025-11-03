@@ -24,6 +24,7 @@ export const ingredientDTOProperties = [
   'id',
   'name',
   'nutritionalInfoPer100g',
+  'imageUrl',
   'createdAt',
   'updatedAt',
 ];
@@ -54,6 +55,7 @@ export const recipeDTOProperties = [
   'userId',
   'name',
   'ingredientLines',
+  'imageUrl',
   'calories',
   'protein',
   'createdAt',

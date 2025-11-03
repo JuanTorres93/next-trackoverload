@@ -11,7 +11,9 @@ function IngredientLineItem({
       <div className="relative overflow-hidden rounded-md h-14 aspect-square">
         <Image
           fill
-          src="/recipe-no-picture.png"
+          src={
+            ingredientLine.ingredient.imageUrl || '/ingredient-no-picture.png'
+          }
           alt="Ingredient Image"
           className="object-cover"
         />
