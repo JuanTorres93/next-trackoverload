@@ -9,6 +9,7 @@ export { AppCreateIngredientUsecase } from './CreateIngredient/createingredient'
 export { AppGetAllIngredientsUsecase } from './GetAllIngredients/getAllIngredients';
 export { AppGetIngredientByIdUsecase } from './GetIngredientById/getIngredientById';
 export { AppGetIngredientsByIdsUsecase } from './GetIngredientsByIds/getIngredientsByIds';
+export { AppGetIngredientsByFuzzyNameUsecase } from './GetIngredientsByFuzzyName/getIngredientsByFuzzyName';
 
 // UPDATE Operations
 export { AppUpdateIngredientUsecase } from './UpdateIngredient/updateIngredient';
