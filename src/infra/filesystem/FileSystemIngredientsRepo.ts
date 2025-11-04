@@ -28,6 +28,7 @@ export class FileSystemIngredientsRepo
         id: item.id,
         name: item.name,
         nutritionalInfoPer100g: item.nutritionalInfoPer100g,
+        imageUrl: item.imageUrl,
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),
       })
