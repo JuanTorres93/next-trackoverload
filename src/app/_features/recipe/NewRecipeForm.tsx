@@ -9,17 +9,12 @@ import Input from '@/app/_ui/Input';
 import { useDebounce } from '@/app/hooks/useDebounce';
 import IngredientItemMini from '../ingredient/IngredientItemMini';
 
-type IngredientAndQuantity = {
-  ingredient: IngredientDTO;
-  quantityInGrams: number;
-};
-
 function NewRecipeForm() {
   const [ingredientSearchTerm, setIngredientSearchTerm] = useState('');
   const [ingredients, setIngredients] = useState<IngredientDTO[]>([]);
-  const [ingredientsAndQuantities, setIngredientsAndQuantities] = useState<
-    IngredientAndQuantity[]
-  >([]);
+  const [ingredientLines, setIngredientLines] = useState<IngredientLineDTO[]>(
+    []
+  );
 
   const debouncedFetchIngredients = useDebounce(fetchIngredients, 300);
 
@@ -40,36 +35,44 @@ function NewRecipeForm() {
 
   async function selectIngredient(ingredient: IngredientDTO) {
     // Check if ingredient is already selected
-    const exists = ingredientsAndQuantities.find(
+    const exists = ingredientLines.find(
       (iq) => iq.ingredient.id === ingredient.id
     );
 
     if (exists)
-      setIngredientsAndQuantities((prev) =>
+      setIngredientLines((prev) =>
         prev.filter((iq) => iq.ingredient.id !== ingredient.id)
       );
-    else
-      setIngredientsAndQuantities((prev) => [
-        ...prev,
-        { ingredient, quantityInGrams: 100 },
-      ]);
+    else {
+      const ingredientLine: IngredientLineDTO = {
+        id: 'temp-id-' + ingredient.id,
+        ingredient: ingredient,
+        quantityInGrams: 100,
+        calories: Number(ingredient.nutritionalInfoPer100g.calories) || 1,
+        protein: Number(ingredient.nutritionalInfoPer100g.protein) || 1,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      setIngredientLines((prev) => [...prev, ingredientLine]);
+    }
   }
 
-  // const fakeIngredientLine: IngredientLineDTO = {
-  //   id: 'temp-id',
-  //   ingredient: ingredients[0],
-  //   quantityInGrams: 100,
-  //   calories: 200,
-  //   protein: 10,
-  //   createdAt: '2024-01-01T00:00:00Z',
-  //   updatedAt: '2024-01-01T00:00:00Z',
-  // };
+  function onIngredientLineQuantityChange(ingredientLineId: string) {
+    return (newQuantity: number) => {
+      setIngredientLines((prev) =>
+        prev.map((il) =>
+          il.id === ingredientLineId
+            ? { ...il, quantityInGrams: newQuantity }
+            : il
+        )
+      );
+    };
+  }
 
   return (
     <Form submitText="Crear receta">
       <Form.FormRow label="">
-        {ingredientsAndQuantities.length ? ingredientsAndQuantities.length : ''}{' '}
-        Ingredientes
         <Input
           value={ingredientSearchTerm}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -84,16 +87,22 @@ function NewRecipeForm() {
           key={ingredient.id}
           ingredient={ingredient}
           isSelected={
-            !!ingredientsAndQuantities.find(
-              (iq) => iq.ingredient.id === ingredient.id
-            )
+            !!ingredientLines.find((iq) => iq.ingredient.id === ingredient.id)
           }
           onClick={() => selectIngredient(ingredient)}
         />
       ))}
 
       <Form.FormRow label="">
-        {/* <IngredientLineItem ingredientLine={fakeIngredientLine} /> */}
+        {ingredientLines.length ? ingredientLines.length : ''} Ingrediente
+        {ingredientLines.length === 1 ? '' : 's'}
+        {ingredientLines.map((ingredientLine) => (
+          <IngredientLineItem
+            key={ingredientLine.id}
+            ingredientLine={ingredientLine}
+            onQuantityChange={onIngredientLineQuantityChange(ingredientLine.id)}
+          />
+        ))}
       </Form.FormRow>
     </Form>
   );
