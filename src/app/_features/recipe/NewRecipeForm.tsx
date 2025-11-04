@@ -8,6 +8,7 @@ import { IngredientDTO } from '@/application-layer/dtos/IngredientDTO';
 import Input from '@/app/_ui/Input';
 import { useDebounce } from '@/app/hooks/useDebounce';
 import IngredientItemMini from '../ingredient/IngredientItemMini';
+import VerticalList from '@/app/_ui/VerticalList';
 
 function NewRecipeForm() {
   const [ingredientSearchTerm, setIngredientSearchTerm] = useState('');
@@ -28,7 +29,7 @@ function NewRecipeForm() {
     try {
       const data = await fetchedIngredients.json();
       setIngredients(data);
-    } catch (error) {
+    } catch {
       setIngredients([]);
     }
   }
@@ -82,16 +83,22 @@ function NewRecipeForm() {
         />
       </Form.FormRow>
 
-      {ingredients.map((ingredient) => (
-        <IngredientItemMini
-          key={ingredient.id}
-          ingredient={ingredient}
-          isSelected={
-            !!ingredientLines.find((iq) => iq.ingredient.id === ingredient.id)
-          }
-          onClick={() => selectIngredient(ingredient)}
-        />
-      ))}
+      {ingredients.length > 0 && ingredientSearchTerm && (
+        <VerticalList className="mx-auto max-w-80">
+          {ingredients.map((ingredient) => (
+            <IngredientItemMini
+              key={ingredient.id}
+              ingredient={ingredient}
+              isSelected={
+                !!ingredientLines.find(
+                  (iq) => iq.ingredient.id === ingredient.id
+                )
+              }
+              onClick={() => selectIngredient(ingredient)}
+            />
+          ))}
+        </VerticalList>
+      )}
 
       <Form.FormRow label="">
         {ingredientLines.length ? ingredientLines.length : ''} Ingrediente
