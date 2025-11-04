@@ -8,12 +8,12 @@ erDiagram
       date updatedAt
     }
     EXERCISE {
-      id string
+      string id
       name string
       date createdAt
       date updatedAt
     }
-    EXERCISELINE {
+    EXERCISELINE["ExerciseLine (just a type)"] {
       string exerciseId
       number setNumber
       number reps
@@ -76,7 +76,7 @@ erDiagram
       date createdAt
       date updatedAt
     }
-    TEMPLATELINE {
+    TEMPLATELINE["TemplateLine (just a type)"] {
       string exerciseId
       number sets
     }
