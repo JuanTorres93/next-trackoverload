@@ -7,9 +7,11 @@ import Image from 'next/image';
 function IngredientLineItem({
   ingredientLine,
   onQuantityChange,
+  onRemove,
 }: {
   ingredientLine: IngredientLineDTO;
   onQuantityChange: (quantity: number) => void;
+  onRemove: () => void;
 }) {
   const totalCalories = Math.round(
     (ingredientLine.calories * ingredientLine.quantityInGrams) / 100
@@ -43,7 +45,7 @@ function IngredientLineItem({
           <span className="ml-[-.5rem]">g</span>
         </div>
 
-        <div>
+        <div onClick={onRemove}>
           <HiOutlineX className="text-xl cursor-pointer text-neutral-500 hover:text-red-500" />
         </div>
       </div>
