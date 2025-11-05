@@ -1,4 +1,5 @@
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
+import { IngredientLinesRepo } from '@/domain/repos/IngredientLinesRepo.port';
 import { validateNonEmptyString } from '@/domain/common/validation';
 import { NotFoundError } from '@/domain/common/errors';
 
@@ -8,7 +9,10 @@ export type DeleteRecipeUsecaseRequest = {
 };
 
 export class DeleteRecipeUsecase {
-  constructor(private recipesRepo: RecipesRepo) {}
+  constructor(
+    private recipesRepo: RecipesRepo,
+    private ingredientLinesRepo: IngredientLinesRepo
+  ) {}
 
   async execute(request: DeleteRecipeUsecaseRequest): Promise<void> {
     validateNonEmptyString(request.id, 'DeleteRecipeUsecase id');
@@ -23,6 +27,17 @@ export class DeleteRecipeUsecase {
       throw new NotFoundError(`Recipe with id ${request.id} not found`);
     }
 
+    // Remove its associated ingredient lines?
+    const promisesDeleteIngredientLines = [];
+
+    for (const line of existingRecipe.ingredientLines) {
+      // TODO find a more efficient way to do this
+      promisesDeleteIngredientLines.push(
+        this.ingredientLinesRepo.deleteIngredientLine(line.id)
+      );
+    }
+
+    await Promise.all(promisesDeleteIngredientLines);
     await this.recipesRepo.deleteRecipe(request.id);
   }
 }

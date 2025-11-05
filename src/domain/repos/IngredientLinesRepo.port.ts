@@ -6,5 +6,6 @@ export interface IngredientLinesRepo {
   getIngredientLinesByIds(ids: string[]): Promise<IngredientLine[]>;
   // TODO: add getIngredientLinesByRecipeId ?
   saveIngredientLine(ingredientLine: IngredientLine): Promise<void>;
+  saveMultipleIngredientLines(ingredientLines: IngredientLine[]): Promise<void>;
   deleteIngredientLine(id: string): Promise<void>;
 }

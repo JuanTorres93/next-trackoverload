@@ -63,6 +63,33 @@ export abstract class BaseFileSystemRepo<T> {
     await this.writeData(items);
   }
 
+  protected async saveMultipleItems(newItems: T[]): Promise<void> {
+    const existingItems = await this.readData();
+
+    // Create a map for faster lookups
+    const existingItemsMap = new Map<string, number>();
+    existingItems.forEach((item, index) => {
+      existingItemsMap.set(this.getItemId(item), index);
+    });
+
+    // Process each new item
+    newItems.forEach((newItem) => {
+      const itemId = this.getItemId(newItem);
+      const existingIndex = existingItemsMap.get(itemId);
+
+      if (existingIndex !== undefined) {
+        // Update existing item
+        existingItems[existingIndex] = newItem;
+      } else {
+        // Add new item
+        existingItems.push(newItem);
+        existingItemsMap.set(itemId, existingItems.length - 1);
+      }
+    });
+
+    await this.writeData(existingItems);
+  }
+
   protected async getAllItems(): Promise<T[]> {
     return this.readData();
   }

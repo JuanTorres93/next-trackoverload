@@ -47,6 +47,12 @@ export class FileSystemIngredientLinesRepo
     return this.saveItem(ingredientLine);
   }
 
+  async saveMultipleIngredientLines(
+    ingredientLines: IngredientLine[]
+  ): Promise<void> {
+    return this.saveMultipleItems(ingredientLines);
+  }
+
   async getAllIngredientLines(): Promise<IngredientLine[]> {
     return this.getAllItems();
   }

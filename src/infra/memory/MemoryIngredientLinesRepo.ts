@@ -16,6 +16,14 @@ export class MemoryIngredientLinesRepo implements IngredientLinesRepo {
     }
   }
 
+  async saveMultipleIngredientLines(
+    ingredientLines: IngredientLine[]
+  ): Promise<void> {
+    for (const ingredientLine of ingredientLines) {
+      await this.saveIngredientLine(ingredientLine);
+    }
+  }
+
   async getAllIngredientLines(): Promise<IngredientLine[]> {
     return [...this.ingredientLines];
   }

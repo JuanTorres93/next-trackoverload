@@ -19,6 +19,25 @@ export default async function RecipePage({
   return (
     <PageWrapper>
       <h2>{recipe.name}</h2>
+
+      <p>Recipe ID: {recipe.id}</p>
+      <p>Calories: {recipe.calories}</p>
+      <p>Protein: {recipe.protein}</p>
+      {recipe.ingredientLines.length > 0 ? (
+        <div>
+          <h3>Ingredient Lines:</h3>
+          <ul>
+            {recipe.ingredientLines.map((line) => (
+              <li key={line.id}>
+                IngredientLine ID: {line.id}, Ingredient ID:{' '}
+                {line.ingredient.id}, Quantity (grams): {line.quantityInGrams}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <p>No ingredient lines found.</p>
+      )}
     </PageWrapper>
   );
 }

@@ -6,6 +6,7 @@ import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
+import { MemoryIngredientLinesRepo } from '@/infra/memory/MemoryIngredientLinesRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
   CreateRecipeUsecase,
@@ -15,6 +16,7 @@ import {
 describe('CreateRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
   let ingredientsRepo: MemoryIngredientsRepo;
+  let ingredientLinesRepo: MemoryIngredientLinesRepo;
   let createRecipeUsecase: CreateRecipeUsecase;
   let testIngredient: Ingredient;
   let testIngredientLineInfo: IngredientLineInfo;
@@ -22,7 +24,12 @@ describe('CreateRecipeUsecase', () => {
   beforeEach(() => {
     recipesRepo = new MemoryRecipesRepo();
     ingredientsRepo = new MemoryIngredientsRepo();
-    createRecipeUsecase = new CreateRecipeUsecase(recipesRepo, ingredientsRepo);
+    ingredientLinesRepo = new MemoryIngredientLinesRepo();
+    createRecipeUsecase = new CreateRecipeUsecase(
+      recipesRepo,
+      ingredientsRepo,
+      ingredientLinesRepo
+    );
 
     testIngredient = Ingredient.create({
       ...vp.validIngredientProps,
@@ -63,6 +70,23 @@ describe('CreateRecipeUsecase', () => {
 
     // @ts-expect-error savedRecipe won't be null here
     expect(toRecipeDTO(savedRecipe)).toEqual(recipe);
+  });
+
+  it('should save recipe ingredient lines', async () => {
+    const request = {
+      userId: vp.userId,
+      name: 'Grilled Chicken',
+      ingredientLinesInfo: [testIngredientLineInfo],
+    };
+
+    const recipe = await createRecipeUsecase.execute(request);
+
+    for (const line of recipe.ingredientLines) {
+      const savedIngredientLine =
+        await ingredientLinesRepo.getIngredientLineById(line.id);
+      expect(savedIngredientLine).not.toBeNull();
+      expect(savedIngredientLine?.id).toBe(line.id);
+    }
   });
 
   it('should throw an error if name is invalid', async () => {
@@ -121,6 +145,44 @@ describe('CreateRecipeUsecase', () => {
     // Check that the result has all expected DTO properties
     for (const prop of dto.recipeDTOProperties) {
       expect(result).toHaveProperty(prop);
+    }
+  });
+
+  it('should create recipe with multiple ingredient lines', async () => {
+    // Create a second test ingredient
+    const testIngredient2 = Ingredient.create({
+      ...vp.validIngredientProps,
+      id: 'ingredient-2',
+      name: 'Rice',
+      nutritionalInfoPer100g: {
+        calories: 130,
+        protein: 2.7,
+      },
+    });
+
+    await ingredientsRepo.saveIngredient(testIngredient2);
+
+    const testIngredientLineInfo2 = {
+      ingredientId: testIngredient2.id,
+      quantityInGrams: 100,
+    };
+
+    const request = {
+      userId: vp.userId,
+      name: 'Chicken and Rice',
+      ingredientLinesInfo: [testIngredientLineInfo, testIngredientLineInfo2],
+    };
+
+    const recipe = await createRecipeUsecase.execute(request);
+
+    expect(recipe.ingredientLines).toHaveLength(2);
+
+    // Verify both ingredient lines were saved
+    for (const line of recipe.ingredientLines) {
+      const savedIngredientLine =
+        await ingredientLinesRepo.getIngredientLineById(line.id);
+      expect(savedIngredientLine).not.toBeNull();
+      expect(savedIngredientLine?.id).toBe(line.id);
     }
   });
 

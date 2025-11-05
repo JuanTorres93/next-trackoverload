@@ -4,17 +4,23 @@ import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
+import { MemoryIngredientLinesRepo } from '@/infra/memory/MemoryIngredientLinesRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { DeleteRecipeUsecase } from '../DeleteRecipe.usecase';
 
 describe('DeleteRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
+  let ingredientLinesRepo: MemoryIngredientLinesRepo;
   let deleteRecipeUsecase: DeleteRecipeUsecase;
   let testRecipe: Recipe;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     recipesRepo = new MemoryRecipesRepo();
-    deleteRecipeUsecase = new DeleteRecipeUsecase(recipesRepo);
+    ingredientLinesRepo = new MemoryIngredientLinesRepo();
+    deleteRecipeUsecase = new DeleteRecipeUsecase(
+      recipesRepo,
+      ingredientLinesRepo
+    );
 
     const testIngredient = Ingredient.create({
       ...vp.validIngredientProps,
@@ -25,6 +31,8 @@ describe('DeleteRecipeUsecase', () => {
       ingredient: testIngredient,
     });
 
+    await ingredientLinesRepo.saveIngredientLine(testIngredientLine);
+
     testRecipe = Recipe.create({
       ...vp.recipePropsNoIngredientLines,
       ingredientLines: [testIngredientLine],
@@ -32,13 +40,27 @@ describe('DeleteRecipeUsecase', () => {
   });
 
   it('should delete recipe successfully', async () => {
+    await ingredientLinesRepo.saveIngredientLine(testRecipe.ingredientLines[0]);
     await recipesRepo.saveRecipe(testRecipe);
-
     const request = { id: testRecipe.id, userId: vp.userId };
     await deleteRecipeUsecase.execute(request);
 
     const deletedRecipe = await recipesRepo.getRecipeById(testRecipe.id);
     expect(deletedRecipe).toBeNull();
+  });
+
+  it('should delete its IngredientLines', async () => {
+    await recipesRepo.saveRecipe(testRecipe);
+
+    const request = { id: testRecipe.id, userId: vp.userId };
+    await deleteRecipeUsecase.execute(request);
+
+    for (const line of testRecipe.ingredientLines) {
+      const deletedLine = await ingredientLinesRepo.getIngredientLineById(
+        line.id
+      );
+      expect(deletedLine).toBeNull();
+    }
   });
 
   it('should throw NotFoundError when recipe does not exist', async () => {

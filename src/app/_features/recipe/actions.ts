@@ -1,7 +1,10 @@
 'use server';
 import { AppCreateRecipeUsecase } from '@/interface-adapters/app/use-cases/recipe';
+import { AppDeleteRecipeUsecase } from '@/interface-adapters/app/use-cases/recipe';
 import { FormState } from '@/app/_types/FormState';
 import { initialFormState } from '@/app/_utils/form/forms';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
 export async function createRecipe(
   initialState: FormState, // Unsed, but needed for useActionState
@@ -49,5 +52,16 @@ export async function createRecipe(
 
   finalFormState.ok = true;
   finalFormState.message = 'Receta creada';
-  return finalFormState;
+  // return finalFormState;
+
+  redirect('/app/recipes');
+}
+
+export async function deleteRecipe(recipeId: string) {
+  await AppDeleteRecipeUsecase.execute({
+    userId: 'dev-user', // TODO get current user id
+    id: recipeId,
+  });
+
+  revalidatePath('/app/recipes');
 }

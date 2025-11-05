@@ -1,5 +1,6 @@
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
+import { IngredientLinesRepo } from '@/domain/repos/IngredientLinesRepo.port';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
@@ -20,7 +21,8 @@ export type CreateRecipeUsecaseRequest = {
 export class CreateRecipeUsecase {
   constructor(
     private recipesRepo: RecipesRepo,
-    private ingredientsRepo: IngredientsRepo
+    private ingredientsRepo: IngredientsRepo,
+    private ingredientLinesRepo: IngredientLinesRepo
   ) {}
 
   async execute(request: CreateRecipeUsecaseRequest): Promise<RecipeDTO> {
@@ -59,11 +61,7 @@ export class CreateRecipeUsecase {
       updatedAt: new Date(),
     });
 
-    const saveIngredientLinesPromises = ingredientLines.map((il) =>
-      this.ingredientsRepo.saveIngredient(il.ingredient)
-    );
-
-    await Promise.all(saveIngredientLinesPromises);
+    await this.ingredientLinesRepo.saveMultipleIngredientLines(ingredientLines);
     await this.recipesRepo.saveRecipe(newRecipe);
 
     return toRecipeDTO(newRecipe);
