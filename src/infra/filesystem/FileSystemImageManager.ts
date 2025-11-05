@@ -142,6 +142,31 @@ export class FileSystemImageManager extends BaseImageManager {
     }
   }
 
+  async getImageByUrl(imageUrl: string): Promise<Buffer | null> {
+    try {
+      const filename = this.extractFilenameFromUrl(imageUrl);
+      if (!filename) {
+        return null;
+      }
+
+      const filePath = path.join(this.uploadsDir, filename);
+
+      // Check if file exists
+      try {
+        await fs.access(filePath);
+      } catch {
+        return null;
+      }
+
+      // Read and return the file buffer
+      const fileBuffer = await fs.readFile(filePath);
+      return fileBuffer;
+    } catch (error) {
+      console.error('Error reading image:', error);
+      return null;
+    }
+  }
+
   private async ensureDirectoryExists(): Promise<void> {
     try {
       await fs.access(this.uploadsDir);

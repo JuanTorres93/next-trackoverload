@@ -24,6 +24,8 @@ export interface ImageManager {
 
   getImageInfo(imageUrl: string): Promise<ImageMetadata | null>;
 
+  getImageByUrl(imageUrl: string): Promise<Buffer | null>;
+
   validateImage(
     imageData: Buffer,
     options?: UploadImageOptions

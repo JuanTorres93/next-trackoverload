@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
-import path from 'path';
+import { AppGetImageByUrlUsecase } from '@/interface-adapters/app/use-cases/imagemanager/GetImageByUrl/getImageByUrl';
+import { NotFoundError } from '@/domain/common/errors';
 
 export async function GET(
   request: NextRequest,
@@ -14,51 +14,27 @@ export async function GET(
       return new NextResponse('Invalid filename', { status: 400 });
     }
 
-    const imagePath = path.join(process.cwd(), 'data', 'images', filename);
+    // Construct the full image URL that the ImageManager expects
+    const imageUrl = `/api/images/${filename}`;
 
-    // Check if file exists
-    try {
-      await fs.access(imagePath);
-    } catch {
-      return new NextResponse('Image not found', { status: 404 });
-    }
-
-    // Read the file
-    const imageBuffer = await fs.readFile(imagePath);
-
-    // Determine content type based on file extension
-    const ext = path.extname(filename).toLowerCase();
-    let contentType = 'application/octet-stream';
-
-    switch (ext) {
-      case '.png':
-        contentType = 'image/png';
-        break;
-      case '.jpg':
-      case '.jpeg':
-        contentType = 'image/jpeg';
-        break;
-      case '.gif':
-        contentType = 'image/gif';
-        break;
-      case '.webp':
-        contentType = 'image/webp';
-        break;
-      case '.svg':
-        contentType = 'image/svg+xml';
-        break;
-    }
+    // Use the GetImageByUrl use case
+    const result = await AppGetImageByUrlUsecase.execute({ imageUrl });
 
     // Return the image
-    return new NextResponse(new Uint8Array(imageBuffer), {
+    return new NextResponse(new Uint8Array(result.imageBuffer), {
       status: 200,
       headers: {
-        'Content-Type': contentType,
+        'Content-Type': result.mimeType,
         'Cache-Control': 'public, max-age=31536000, immutable',
       },
     });
   } catch (error) {
     console.error('Error serving image:', error);
+
+    if (error instanceof NotFoundError) {
+      return new NextResponse('Image not found', { status: 404 });
+    }
+
     return new NextResponse('Internal Server Error', { status: 500 });
   }
 }

@@ -112,6 +112,16 @@ export class MemoryImageManager extends BaseImageManager {
     return storedImage ? storedImage.metadata : null;
   }
 
+  async getImageByUrl(imageUrl: string): Promise<Buffer | null> {
+    const filename = this.extractFilenameFromUrl(imageUrl);
+    if (!filename) {
+      return null;
+    }
+
+    const storedImage = this.images.get(filename);
+    return storedImage ? storedImage.data : null;
+  }
+
   // Métodos adicionales útiles para testing
 
   /**

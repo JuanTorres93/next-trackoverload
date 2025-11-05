@@ -1,5 +1,7 @@
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { IngredientLinesRepo } from '@/domain/repos/IngredientLinesRepo.port';
+import { ImageManager } from '@/domain/services/ImageUploader.port';
+
 import { validateNonEmptyString } from '@/domain/common/validation';
 import { NotFoundError } from '@/domain/common/errors';
 
@@ -11,7 +13,8 @@ export type DeleteRecipeUsecaseRequest = {
 export class DeleteRecipeUsecase {
   constructor(
     private recipesRepo: RecipesRepo,
-    private ingredientLinesRepo: IngredientLinesRepo
+    private ingredientLinesRepo: IngredientLinesRepo,
+    private imageManager: ImageManager
   ) {}
 
   async execute(request: DeleteRecipeUsecaseRequest): Promise<void> {
@@ -37,6 +40,10 @@ export class DeleteRecipeUsecase {
       );
     }
 
+    // Delete associated image if exists
+    if (existingRecipe.imageUrl) {
+      await this.imageManager.deleteImage(existingRecipe.imageUrl);
+    }
     await Promise.all(promisesDeleteIngredientLines);
     await this.recipesRepo.deleteRecipe(request.id);
   }

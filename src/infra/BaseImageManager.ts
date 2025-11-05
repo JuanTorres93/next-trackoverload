@@ -18,6 +18,8 @@ export abstract class BaseImageManager implements ImageManager {
 
   abstract getImageInfo(imageUrl: string): Promise<ImageMetadata | null>;
 
+  abstract getImageByUrl(imageUrl: string): Promise<Buffer | null>;
+
   // Shared validation method
   async validateImage(
     imageData: Buffer,

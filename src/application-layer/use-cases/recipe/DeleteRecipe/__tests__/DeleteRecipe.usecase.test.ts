@@ -5,21 +5,26 @@ import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { MemoryIngredientLinesRepo } from '@/infra/memory/MemoryIngredientLinesRepo';
+import { MemoryImageManager } from '@/infra';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { DeleteRecipeUsecase } from '../DeleteRecipe.usecase';
+import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
 
 describe('DeleteRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
   let ingredientLinesRepo: MemoryIngredientLinesRepo;
+  let memoryImageManager: MemoryImageManager;
   let deleteRecipeUsecase: DeleteRecipeUsecase;
   let testRecipe: Recipe;
 
   beforeEach(async () => {
     recipesRepo = new MemoryRecipesRepo();
     ingredientLinesRepo = new MemoryIngredientLinesRepo();
+    memoryImageManager = new MemoryImageManager();
     deleteRecipeUsecase = new DeleteRecipeUsecase(
       recipesRepo,
-      ingredientLinesRepo
+      ingredientLinesRepo,
+      memoryImageManager
     );
 
     const testIngredient = Ingredient.create({
@@ -61,6 +66,39 @@ describe('DeleteRecipeUsecase', () => {
       );
       expect(deletedLine).toBeNull();
     }
+  });
+
+  it('should delete recipe image if exists', async () => {
+    const testImage = createTestImage();
+    const uploadedImage = await memoryImageManager.uploadImage(
+      testImage,
+      'test-recipe-image.png',
+      { allowedMimeTypes: ['image/png'], quality: 0.8 }
+    );
+
+    const recipe = Recipe.create({
+      ...vp.recipePropsNoIngredientLines,
+      ingredientLines: testRecipe.ingredientLines,
+      imageUrl: uploadedImage.url,
+    });
+
+    expect(recipe.imageUrl).toBeDefined();
+    const currentImages = memoryImageManager.getImageCount();
+    expect(currentImages).toBe(1);
+
+    await recipesRepo.saveRecipe(recipe);
+
+    const request = { id: recipe.id, userId: vp.userId };
+    await deleteRecipeUsecase.execute(request);
+    for (const line of recipe.ingredientLines) {
+      const deletedLine = await ingredientLinesRepo.getIngredientLineById(
+        line.id
+      );
+      expect(deletedLine).toBeNull();
+    }
+
+    const afterDeleteImages = memoryImageManager.getImageCount();
+    expect(afterDeleteImages).toBe(0);
   });
 
   it('should throw NotFoundError when recipe does not exist', async () => {
