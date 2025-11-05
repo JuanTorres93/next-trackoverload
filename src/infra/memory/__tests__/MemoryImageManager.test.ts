@@ -149,36 +149,6 @@ describe('MemoryImageManager', () => {
     });
   });
 
-  describe('getImageByUrl', () => {
-    it('should return image buffer for existing image', async () => {
-      const testBuffer = createTestPngBuffer();
-      const filename = 'url-test.png';
-
-      const uploaded = await imageManager.uploadImage(testBuffer, filename);
-      const retrievedBuffer = await imageManager.getImageByUrl(uploaded.url);
-
-      expect(retrievedBuffer).toBeDefined();
-      expect(Buffer.isBuffer(retrievedBuffer)).toBe(true);
-      expect(retrievedBuffer!.length).toBeGreaterThan(0);
-    });
-
-    it('should return null for non-existent image', async () => {
-      const fakeUrl = '/memory/images/non-existent.png';
-
-      const buffer = await imageManager.getImageByUrl(fakeUrl);
-
-      expect(buffer).toBeNull();
-    });
-
-    it('should return null for invalid URL format', async () => {
-      const invalidUrl = 'invalid-url-format';
-
-      const buffer = await imageManager.getImageByUrl(invalidUrl);
-
-      expect(buffer).toBeNull();
-    });
-  });
-
   describe('utility methods', () => {
     it('should track image count correctly', async () => {
       expect(imageManager.getImageCount()).toBe(0);

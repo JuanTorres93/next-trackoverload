@@ -11,15 +11,13 @@ import { v4 as uuidv4 } from 'uuid';
 
 export class FileSystemImageManager extends BaseImageManager {
   private readonly uploadsDir: string;
-  private readonly publicUrl: string;
+  private readonly baseUrl: string;
 
-  constructor(
-    uploadsDir: string = 'data/images',
-    publicUrl: string = '/api/images'
-  ) {
+  constructor(baseUrl: string = '/file_system_image_manager_images') {
     super();
-    this.uploadsDir = uploadsDir;
-    this.publicUrl = publicUrl;
+    this.baseUrl = baseUrl;
+    // Store images in public folder with specific subdirectory
+    this.uploadsDir = `public${baseUrl}`;
   }
 
   async uploadImage(
@@ -73,7 +71,7 @@ export class FileSystemImageManager extends BaseImageManager {
     const fileType = await fileTypeFromBuffer(new Uint8Array(fileBuffer));
 
     return {
-      url: `${this.publicUrl}/${uniqueFilename}`,
+      url: `${this.baseUrl}/${uniqueFilename}`,
       filename: uniqueFilename,
       mimeType: fileType?.mime || 'application/octet-stream',
       sizeBytes: fileStats.size,
@@ -142,31 +140,6 @@ export class FileSystemImageManager extends BaseImageManager {
     }
   }
 
-  async getImageByUrl(imageUrl: string): Promise<Buffer | null> {
-    try {
-      const filename = this.extractFilenameFromUrl(imageUrl);
-      if (!filename) {
-        return null;
-      }
-
-      const filePath = path.join(this.uploadsDir, filename);
-
-      // Check if file exists
-      try {
-        await fs.access(filePath);
-      } catch {
-        return null;
-      }
-
-      // Read and return the file buffer
-      const fileBuffer = await fs.readFile(filePath);
-      return fileBuffer;
-    } catch (error) {
-      console.error('Error reading image:', error);
-      return null;
-    }
-  }
-
   private async ensureDirectoryExists(): Promise<void> {
     try {
       await fs.access(this.uploadsDir);
@@ -177,9 +150,9 @@ export class FileSystemImageManager extends BaseImageManager {
 
   private extractFilenameFromUrl(imageUrl: string): string | null {
     try {
-      // Remove public URL prefix
-      if (imageUrl.startsWith(this.publicUrl)) {
-        return imageUrl.replace(`${this.publicUrl}/`, '');
+      // Remove base URL prefix
+      if (imageUrl.startsWith(this.baseUrl)) {
+        return imageUrl.replace(`${this.baseUrl}/`, '');
       }
 
       // If URL does not have expected prefix, try to extract filename

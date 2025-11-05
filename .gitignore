@@ -43,3 +43,6 @@ next-env.d.ts
 design/**/00*
 design/UI
 data
+
+# FileSystemImageManager images (for development purposes only)
+/public/file_system_image_manager_images/
