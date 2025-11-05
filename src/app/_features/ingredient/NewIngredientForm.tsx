@@ -1,31 +1,15 @@
 'use client';
 
-import { useActionState, useEffect, useRef, useTransition } from 'react';
 import Input from '@/app/_ui/Input';
 import Form from '@/app/_ui/NewResourceForm';
+import { useFormSetup, useResetOnSuccess } from '@/app/_utils/form/hooks';
 import { createIngredient } from './actions';
-import { FormState } from '@/app/_types/FormState';
 
 function NewIngredientForm() {
-  const initialFormState: FormState = {
-    ok: false,
-    errors: {},
-    message: '',
-  };
+  const { formRef, pending, startTransition, formState, formAction } =
+    useFormSetup(createIngredient);
 
-  const formRef = useRef<HTMLFormElement>(null);
-  const [pending, startTransition] = useTransition();
-  const [formState, formAction] = useActionState(
-    createIngredient,
-    initialFormState
-  );
-
-  useEffect(() => {
-    // Effect for resetting the form upon successful submission
-    if (!pending && formState.ok) {
-      formRef.current?.reset();
-    }
-  }, [pending, formState.ok]);
+  useResetOnSuccess(formRef, formState, pending);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

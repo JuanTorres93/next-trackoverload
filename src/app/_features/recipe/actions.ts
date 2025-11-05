@@ -1,0 +1,53 @@
+'use server';
+import { AppCreateRecipeUsecase } from '@/interface-adapters/app/use-cases/recipe';
+import { FormState } from '@/app/_types/FormState';
+import { initialFormState } from '@/app/_utils/form/forms';
+
+export async function createRecipe(
+  initialState: FormState, // Unsed, but needed for useActionState
+  formData: FormData
+) {
+  const finalFormState: FormState = initialFormState();
+
+  const userId = String(formData.get('userId') || '').trim();
+  const name = String(formData.get('name') || '').trim();
+  const ingredientLinesInfoStr = String(
+    formData.get('ingredientLinesInfo') || '[]'
+  );
+  let ingredientLinesInfo: { ingredientId: string; quantityInGrams: number }[] =
+    [];
+
+  try {
+    ingredientLinesInfo = JSON.parse(ingredientLinesInfoStr);
+  } catch {
+    // TODO mejor mensaje de error
+    finalFormState.message = 'Error al leer las líneas de ingredientes';
+    return finalFormState;
+  }
+
+  const errors: Record<string, string> = {};
+  if (ingredientLinesInfo.length === 0)
+    errors.ingredientLines = 'Se requiere al menos un ingrediente';
+
+  if (Object.keys(errors).length > 0) {
+    finalFormState.errors = errors;
+    finalFormState.message = 'Revisa los campos';
+    return finalFormState;
+  }
+
+  try {
+    const request = {
+      userId,
+      name,
+      ingredientLinesInfo,
+    };
+    await AppCreateRecipeUsecase.execute(request);
+  } catch {
+    finalFormState.message = 'Error al crear la receta';
+    return finalFormState;
+  }
+
+  finalFormState.ok = true;
+  finalFormState.message = 'Receta creada';
+  return finalFormState;
+}

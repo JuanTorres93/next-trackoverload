@@ -1,24 +1,29 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { CreateRecipeUsecase } from '../CreateRecipe.usecase';
-import { toIngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
-import { toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
-import { Recipe } from '@/domain/entities/recipe/Recipe';
+import {
+  CreateRecipeUsecase,
+  IngredientLineInfo,
+} from '../CreateRecipe.usecase';
 
 describe('CreateRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
+  let ingredientsRepo: MemoryIngredientsRepo;
   let createRecipeUsecase: CreateRecipeUsecase;
   let testIngredient: Ingredient;
-  let testIngredientLine: IngredientLine;
+  let testIngredientLineInfo: IngredientLineInfo;
 
   beforeEach(() => {
     recipesRepo = new MemoryRecipesRepo();
-    createRecipeUsecase = new CreateRecipeUsecase(recipesRepo);
+    ingredientsRepo = new MemoryIngredientsRepo();
+    createRecipeUsecase = new CreateRecipeUsecase(recipesRepo, ingredientsRepo);
 
     testIngredient = Ingredient.create({
       ...vp.validIngredientProps,
@@ -28,18 +33,19 @@ describe('CreateRecipeUsecase', () => {
       },
     });
 
-    testIngredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
-      ingredient: testIngredient,
+    ingredientsRepo.saveIngredient(testIngredient);
+
+    testIngredientLineInfo = {
+      ingredientId: testIngredient.id,
       quantityInGrams: 200,
-    });
+    };
   });
 
   it('should create and save a new recipe', async () => {
     const request = {
       userId: vp.userId,
       name: 'Grilled Chicken',
-      ingredientLines: [testIngredientLine],
+      ingredientLinesInfo: [testIngredientLineInfo],
     };
 
     const recipe = await createRecipeUsecase.execute(request);
@@ -48,8 +54,8 @@ describe('CreateRecipeUsecase', () => {
     expect(recipe.userId).toBe(vp.userId);
     expect(recipe.name).toBe(request.name);
     expect(recipe.ingredientLines).toHaveLength(1);
-    expect(recipe.ingredientLines[0]).toEqual(
-      toIngredientLineDTO(testIngredientLine)
+    expect(recipe.ingredientLines[0].ingredient.id).toEqual(
+      testIngredientLineInfo.ingredientId
     );
     expect(recipe).toHaveProperty('createdAt');
     expect(recipe).toHaveProperty('updatedAt');
@@ -67,7 +73,7 @@ describe('CreateRecipeUsecase', () => {
       const request = {
         userId: vp.userId,
         name: name,
-        ingredientLines: [testIngredientLine],
+        ingredientLinesInfo: [testIngredientLineInfo],
       };
 
       // @ts-expect-error testing invalid inputs
@@ -81,7 +87,7 @@ describe('CreateRecipeUsecase', () => {
     const request = {
       userId: vp.userId,
       name: 'Test Recipe',
-      ingredientLines: [],
+      ingredientLinesInfo: [],
     };
 
     await expect(createRecipeUsecase.execute(request)).rejects.toThrow(
@@ -93,7 +99,7 @@ describe('CreateRecipeUsecase', () => {
     const request = {
       userId: vp.userId,
       name: 'Test Recipe',
-      ingredientLines: [testIngredientLine],
+      ingredientLinesInfo: [testIngredientLineInfo],
     };
 
     const recipe = await createRecipeUsecase.execute(request);
@@ -107,7 +113,7 @@ describe('CreateRecipeUsecase', () => {
     const request = {
       userId: vp.userId,
       name: 'Test Recipe',
-      ingredientLines: [testIngredientLine],
+      ingredientLinesInfo: [testIngredientLineInfo],
     };
 
     const result = await createRecipeUsecase.execute(request);
@@ -126,7 +132,7 @@ describe('CreateRecipeUsecase', () => {
       const request = {
         userId,
         name: 'Test Recipe',
-        ingredientLines: [testIngredientLine],
+        ingredientLinesInfo: [testIngredientLineInfo],
       };
 
       // @ts-expect-error testing invalid inputs
