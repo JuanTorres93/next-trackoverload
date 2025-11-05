@@ -1,6 +1,7 @@
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { IngredientLinesRepo } from '@/domain/repos/IngredientLinesRepo.port';
+import { ImageManager } from '@/domain/services/ImageUploader.port';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
@@ -16,13 +17,15 @@ export type CreateRecipeUsecaseRequest = {
   userId: string;
   name: string;
   ingredientLinesInfo: IngredientLineInfo[];
+  imageBuffer?: Buffer;
 };
 
 export class CreateRecipeUsecase {
   constructor(
     private recipesRepo: RecipesRepo,
     private ingredientsRepo: IngredientsRepo,
-    private ingredientLinesRepo: IngredientLinesRepo
+    private ingredientLinesRepo: IngredientLinesRepo,
+    private imageManager: ImageManager
   ) {}
 
   async execute(request: CreateRecipeUsecaseRequest): Promise<RecipeDTO> {
@@ -50,6 +53,20 @@ export class CreateRecipeUsecase {
 
       ingredientLines.push(ingredientLine);
     }
+
+    // Upload image if provided
+    let imageMetadata;
+    if (request.imageBuffer) {
+      imageMetadata = await this.imageManager.uploadImage(
+        request.imageBuffer,
+        `recipe-${uuidv4()}.png`,
+        {
+          allowedMimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
+          quality: 0.8,
+        }
+      );
+    }
+
     // NOTE: userId, name and ingredientLines validation is performed in the entity
 
     const newRecipe = Recipe.create({
@@ -57,6 +74,7 @@ export class CreateRecipeUsecase {
       userId: request.userId,
       name: request.name,
       ingredientLines: ingredientLines,
+      imageUrl: imageMetadata ? imageMetadata.url : undefined,
       createdAt: new Date(),
       updatedAt: new Date(),
     });

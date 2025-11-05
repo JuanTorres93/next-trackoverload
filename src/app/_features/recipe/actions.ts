@@ -17,6 +17,21 @@ export async function createRecipe(
   const ingredientLinesInfoStr = String(
     formData.get('ingredientLinesInfo') || '[]'
   );
+
+  // extract image if exists
+  const imageFile = formData.get('image') as File | null;
+  let imageBuffer: Buffer | undefined;
+
+  if (imageFile && imageFile.size > 0) {
+    try {
+      const arrayBuffer = await imageFile.arrayBuffer();
+      imageBuffer = Buffer.from(arrayBuffer);
+    } catch {
+      finalFormState.message = 'Error al procesar la imagen';
+      return finalFormState;
+    }
+  }
+
   let ingredientLinesInfo: { ingredientId: string; quantityInGrams: number }[] =
     [];
 
@@ -43,6 +58,7 @@ export async function createRecipe(
       userId,
       name,
       ingredientLinesInfo,
+      imageBuffer,
     };
     await AppCreateRecipeUsecase.execute(request);
   } catch {

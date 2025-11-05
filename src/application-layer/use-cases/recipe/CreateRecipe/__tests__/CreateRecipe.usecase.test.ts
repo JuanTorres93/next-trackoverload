@@ -7,16 +7,19 @@ import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { MemoryIngredientLinesRepo } from '@/infra/memory/MemoryIngredientLinesRepo';
+import { MemoryImageManager } from '@/infra';
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
   CreateRecipeUsecase,
   IngredientLineInfo,
 } from '../CreateRecipe.usecase';
+import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
 
 describe('CreateRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
   let ingredientsRepo: MemoryIngredientsRepo;
   let ingredientLinesRepo: MemoryIngredientLinesRepo;
+  let imageManager: MemoryImageManager;
   let createRecipeUsecase: CreateRecipeUsecase;
   let testIngredient: Ingredient;
   let testIngredientLineInfo: IngredientLineInfo;
@@ -25,10 +28,13 @@ describe('CreateRecipeUsecase', () => {
     recipesRepo = new MemoryRecipesRepo();
     ingredientsRepo = new MemoryIngredientsRepo();
     ingredientLinesRepo = new MemoryIngredientLinesRepo();
+    imageManager = new MemoryImageManager();
+
     createRecipeUsecase = new CreateRecipeUsecase(
       recipesRepo,
       ingredientsRepo,
-      ingredientLinesRepo
+      ingredientLinesRepo,
+      imageManager
     );
 
     testIngredient = Ingredient.create({
@@ -47,7 +53,7 @@ describe('CreateRecipeUsecase', () => {
     };
   });
 
-  it('should create and save a new recipe', async () => {
+  it('should create and save a new recipe with no image', async () => {
     const request = {
       userId: vp.userId,
       name: 'Grilled Chicken',
@@ -59,6 +65,35 @@ describe('CreateRecipeUsecase', () => {
     expect(recipe).toHaveProperty('id');
     expect(recipe.userId).toBe(vp.userId);
     expect(recipe.name).toBe(request.name);
+    expect(recipe.imageUrl).not.toBeDefined();
+    expect(recipe.ingredientLines).toHaveLength(1);
+    expect(recipe.ingredientLines[0].ingredient.id).toEqual(
+      testIngredientLineInfo.ingredientId
+    );
+    expect(recipe).toHaveProperty('createdAt');
+    expect(recipe).toHaveProperty('updatedAt');
+
+    const savedRecipe = await recipesRepo.getRecipeById(recipe.id);
+
+    // @ts-expect-error savedRecipe won't be null here
+    expect(toRecipeDTO(savedRecipe)).toEqual(recipe);
+  });
+
+  it('should creat and save a new recipe WITH image', async () => {
+    const testImage = createTestImage('small');
+    const request = {
+      userId: vp.userId,
+      name: 'Grilled Chicken',
+      ingredientLinesInfo: [testIngredientLineInfo],
+      imageBuffer: testImage,
+    };
+
+    const recipe = await createRecipeUsecase.execute(request);
+
+    expect(recipe).toHaveProperty('id');
+    expect(recipe.userId).toBe(vp.userId);
+    expect(recipe.name).toBe(request.name);
+    expect(recipe.imageUrl).toBeDefined();
     expect(recipe.ingredientLines).toHaveLength(1);
     expect(recipe.ingredientLines[0].ingredient.id).toEqual(
       testIngredientLineInfo.ingredientId

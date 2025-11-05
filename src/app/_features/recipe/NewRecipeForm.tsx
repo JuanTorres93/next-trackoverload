@@ -39,6 +39,11 @@ function NewRecipeForm() {
     defaultIngredientLines
   );
 
+  const defaultSelectedImage: File | null = null;
+  const [selectedImage, setSelectedImage] = useState<File | null>(
+    defaultSelectedImage
+  );
+
   const totalCalories = Math.round(
     ingredientLines.reduce(
       (sum, il) => sum + (il.calories * il.quantityInGrams) / 100,
@@ -67,6 +72,7 @@ function NewRecipeForm() {
     },
     { setter: setIngredients, initialValue: defaultIngredients },
     { setter: setIngredientLines, initialValue: defaultIngredientLines },
+    { setter: setSelectedImage, initialValue: defaultSelectedImage },
   ]);
 
   async function fetchIngredients(term: string = ''): Promise<void> {
@@ -123,12 +129,23 @@ function NewRecipeForm() {
     );
   }
 
+  function handleImageSelection(files: File[]) {
+    if (files.length > 0) {
+      setSelectedImage(files[0]);
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData();
 
     formData.append('userId', 'dev-user'); // TODO IMPORTANT: Replace with actual user ID
     formData.append('name', recipeName);
+
+    // append image file if exists
+    if (selectedImage) {
+      formData.append('image', selectedImage);
+    }
 
     const ingredientLinesInfo: IngredientLineInfo[] = ingredientLines.map(
       (il) => ({
@@ -165,7 +182,11 @@ function NewRecipeForm() {
           required
         ></textarea>
         <Image
-          src="/recipe-no-picture.png"
+          src={
+            selectedImage
+              ? URL.createObjectURL(selectedImage)
+              : '/recipe-no-picture.png'
+          }
           alt="Imagen de la receta"
           fill
           className="object-contain"
@@ -174,7 +195,11 @@ function NewRecipeForm() {
         {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-green-500/60 via-green-300/30 to-transparent" />
 
-        <ImagePicker />
+        <ImagePicker
+          onFiles={handleImageSelection}
+          maxSizeMB={2}
+          accept="image/jpeg,image/png,image/webp"
+        />
       </div>
 
       <Form.FormRow label="">
