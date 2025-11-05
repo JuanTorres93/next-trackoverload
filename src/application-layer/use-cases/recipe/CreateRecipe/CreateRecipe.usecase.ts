@@ -59,7 +59,7 @@ export class CreateRecipeUsecase {
     if (request.imageBuffer) {
       imageMetadata = await this.imageManager.uploadImage(
         request.imageBuffer,
-        `recipe-${uuidv4()}.png`,
+        `recipe-${uuidv4()}-${Date.now()}.png`,
         {
           allowedMimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
           quality: 0.8,
