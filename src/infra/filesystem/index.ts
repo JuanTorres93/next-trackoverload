@@ -1,6 +1,9 @@
 // Base repository class
 export { BaseFileSystemRepo } from './BaseFileSystemRepo';
 
+// Services
+export { FileSystemImageManager } from './FileSystemImageManager';
+
 // Individual repositories
 export { FileSystemIngredientsRepo } from './FileSystemIngredientsRepo';
 export { FileSystemRecipesRepo } from './FileSystemRecipesRepo';
