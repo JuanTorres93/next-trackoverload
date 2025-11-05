@@ -14,6 +14,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import IngredientItemMini from '../ingredient/IngredientItemMini';
 import { createRecipe } from './actions';
+import ImagePicker from '@/app/_ui/ImagePicker';
 
 function NewRecipeForm() {
   // Form state and action
@@ -150,7 +151,7 @@ function NewRecipeForm() {
       onSubmit={handleSubmit}
       submitText="Crear receta"
     >
-      <div className="relative flex items-center justify-center w-64 mx-auto mb-2 overflow-hidden rounded-2xl aspect-square">
+      <div className="relative flex flex-col items-center justify-center w-64 mx-auto mb-2 overflow-hidden rounded-2xl aspect-square">
         <textarea
           className="z-10 resize-none text-center text-3xl text-zinc-700 font-extrabold w-[90%] outline-none overflow-x-hidden max-h-[90%]"
           spellCheck={false}
@@ -172,6 +173,8 @@ function NewRecipeForm() {
 
         {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-green-500/60 via-green-300/30 to-transparent" />
+
+        <ImagePicker />
       </div>
 
       <Form.FormRow label="">
