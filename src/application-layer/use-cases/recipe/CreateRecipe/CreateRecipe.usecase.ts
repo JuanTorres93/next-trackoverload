@@ -1,7 +1,7 @@
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { IngredientLinesRepo } from '@/domain/repos/IngredientLinesRepo.port';
-import { ImageManager } from '@/domain/services/ImageUploader.port';
+import { ImageManager } from '@/domain/services/ImageManager.port';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';

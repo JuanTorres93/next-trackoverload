@@ -1,6 +1,6 @@
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { IngredientLinesRepo } from '@/domain/repos/IngredientLinesRepo.port';
-import { ImageManager } from '@/domain/services/ImageUploader.port';
+import { ImageManager } from '@/domain/services/ImageManager.port';
 
 import { validateNonEmptyString } from '@/domain/common/validation';
 import { NotFoundError } from '@/domain/common/errors';

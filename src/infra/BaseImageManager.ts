@@ -2,7 +2,7 @@ import {
   ImageManager,
   ImageMetadata,
   UploadImageOptions,
-} from '@/domain/services/ImageUploader.port';
+} from '@/domain/services/ImageManager.port';
 import sharp from 'sharp';
 import { fileTypeFromBuffer } from 'file-type';
 
