@@ -1,23 +1,23 @@
 # Ingredientes
 
-- [ ] Repositorio común de ingredientes
+- [x] Repositorio común de ingredientes
 - [ ] Repositorio privado de ingredientes
 - [ ] Guardar info ingredientes
 - [ ] Editar info ingredientes sin afectar a comidas pasadas
 - [ ] Ver info ingredientes
 - [ ] Borrar ingredientes sin afectar a comidas pasadas
-- [ ] Sólo info necesaria: calorías y proteínas
+- [x] Sólo info necesaria: calorías y proteínas
 
 # Recetas
 
 - [ ] ¿Repositorio común de recetas?
-- [ ] Repositorio privado de recetas
-- [ ] Guardar info recetas
+- [x] Repositorio privado de recetas
+- [x] Guardar info recetas
 - [ ] Editar info recetas sin afectar a comidas pasadas
 - [ ] Ver info recetas
 - [ ] Borrar recetas sin afectar a comidas pasadas
 - [ ] 2 (o X) versiones de cada receta: Weight gain y Weight loss
-- [ ] Sólo info necesaria de las recetas: calorías y proteínas
+- [x] Sólo info necesaria de las recetas: calorías y proteínas
 
 # Meals
 

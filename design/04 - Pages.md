@@ -1,52 +1,51 @@
 # Ingredientes
 
-/ingredients -> En el futuro
-/ingredients/new
-/ingredients/:ingredientId -> En el futuro
+- [ ] /ingredients -> En el futuro
+- [x] /ingredients/new
+- [ ] /ingredients/:ingredientId -> En el futuro
 
 # Recetas
 
-/recipes
-/recipes/new
-/recipes/:recipeId
+- [x] /recipes
+- [x] /recipes/new
+- [ ] /recipes/:recipeId
 
 # Meals
 
-/meals?timeframe
-/meals/:mealId
+- [ ] /meals?timeframe
+- [ ] /meals/:mealId
 
 # Progreso con el tiempo
 
-Una redirige a la otra
-/
-/dashboard
+- [ ] /
+- [ ] /dashboard
 
 # Plantillas entrenamiento
 
-/templates
-/templates/new
-/templates/:templateId
+- [ ] /templates
+- [ ] /templates/new
+- [ ] /templates/:templateId
 
 # Entrenamientos
 
-/workouts
-/workouts/:workoutId
+- [ ] /workouts
+- [ ] /workouts/:workoutId
 
 # Ejercicios
 
-/exercises
-/exercises/new
-/exercises/:exerciseId
+- [ ] /exercises
+- [ ] /exercises/new
+- [ ] /exercises/:exerciseId
 
 # Usuario
 
-/account/profile
+- [ ] /account/profile
 
 # Auth
 
-/auth/login
-/auth/register
+- [ ] /auth/login
+- [ ] /auth/register
 
 # Pagos
 
-/plans
+- [ ] /plans
