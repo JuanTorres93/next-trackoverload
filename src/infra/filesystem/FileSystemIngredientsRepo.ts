@@ -25,10 +25,7 @@ export class FileSystemIngredientsRepo
   protected deserializeItems(data: unknown[]): Ingredient[] {
     return (data as IngredientDTO[]).map((item) =>
       Ingredient.create({
-        id: item.id,
-        name: item.name,
-        nutritionalInfoPer100g: item.nutritionalInfoPer100g,
-        imageUrl: item.imageUrl,
+        ...item,
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),
       })

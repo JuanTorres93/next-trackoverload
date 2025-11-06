@@ -25,11 +25,7 @@ export class FileSystemFakeMealsRepo
   protected deserializeItems(data: unknown[]): FakeMeal[] {
     return (data as FakeMealDTO[]).map((item) =>
       FakeMeal.create({
-        id: item.id,
-        userId: item.userId,
-        name: item.name,
-        calories: item.calories,
-        protein: item.protein,
+        ...item,
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),
       })

@@ -26,17 +26,14 @@ export class FileSystemIngredientLinesRepo
   protected deserializeItems(data: unknown[]): IngredientLine[] {
     return (data as IngredientLineDTO[]).map((item) => {
       const ingredient = Ingredient.create({
-        id: item.ingredient.id,
-        name: item.ingredient.name,
-        nutritionalInfoPer100g: item.ingredient.nutritionalInfoPer100g,
+        ...item.ingredient,
         createdAt: new Date(item.ingredient.createdAt),
         updatedAt: new Date(item.ingredient.updatedAt),
       });
 
       return IngredientLine.create({
-        id: item.id,
+        ...item,
         ingredient,
-        quantityInGrams: item.quantityInGrams,
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),
       });

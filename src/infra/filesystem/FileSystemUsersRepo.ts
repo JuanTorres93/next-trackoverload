@@ -22,9 +22,7 @@ export class FileSystemUsersRepo
   protected deserializeItems(data: unknown[]): User[] {
     return (data as UserDTO[]).map((item) =>
       User.create({
-        id: item.id,
-        name: item.name,
-        customerId: item.customerId,
+        ...item,
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),
       })

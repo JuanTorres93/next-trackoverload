@@ -22,11 +22,7 @@ export class FileSystemWorkoutsRepo
   protected deserializeItems(data: unknown[]): Workout[] {
     return (data as WorkoutDTO[]).map((item) =>
       Workout.create({
-        id: item.id,
-        userId: item.userId,
-        name: item.name,
-        workoutTemplateId: item.workoutTemplateId,
-        exercises: item.exercises,
+        ...item,
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),
       })

@@ -25,10 +25,7 @@ export class FileSystemWorkoutTemplatesRepo
   protected deserializeItems(data: unknown[]): WorkoutTemplate[] {
     return (data as WorkoutTemplateDTO[]).map((item) =>
       WorkoutTemplate.create({
-        id: item.id,
-        userId: item.userId,
-        name: item.name,
-        exercises: item.exercises,
+        ...item,
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),
         deletedAt: item.deletedAt ? new Date(item.deletedAt) : undefined,

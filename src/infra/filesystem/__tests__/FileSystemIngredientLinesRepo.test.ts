@@ -115,4 +115,40 @@ describe('FileSystemIngredientLinesRepo', () => {
       expect(savedLine?.quantityInGrams).toBe(200); // Should be updated value
     }
   });
+
+  it('should preserve ingredient imageUrl when deserializing', async () => {
+    // Create ingredient with imageUrl
+    const ingredientWithImage = Ingredient.create({
+      ...vp.validIngredientProps,
+      id: 'ingredient-with-image',
+      name: 'Test Ingredient with Image',
+      nutritionalInfoPer100g: {
+        calories: 100,
+        protein: 20,
+      },
+      imageUrl: 'https://example.com/test-image.jpg',
+    });
+
+    const ingredientLine = IngredientLine.create({
+      id: 'line-with-image',
+      ingredient: ingredientWithImage,
+      quantityInGrams: 150,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    // Save the ingredient line
+    await repo.saveIngredientLine(ingredientLine);
+
+    // Retrieve the ingredient line (this triggers deserialization)
+    const retrievedLine = await repo.getIngredientLineById('line-with-image');
+
+    // Verify the imageUrl is preserved
+    expect(retrievedLine).not.toBeNull();
+    expect(retrievedLine?.ingredient.imageUrl).toBe(
+      'https://example.com/test-image.jpg'
+    );
+    expect(retrievedLine?.ingredient.name).toBe('Test Ingredient with Image');
+    expect(retrievedLine?.quantityInGrams).toBe(150);
+  });
 });

@@ -32,18 +32,14 @@ export class FileSystemDaysRepo
           const ingredientLines = (mealData as MealDTO).ingredientLines.map(
             (lineData: IngredientLineDTO) => {
               const ingredient = Ingredient.create({
-                id: lineData.ingredient.id,
-                name: lineData.ingredient.name,
-                nutritionalInfoPer100g:
-                  lineData.ingredient.nutritionalInfoPer100g,
+                ...lineData.ingredient,
                 createdAt: new Date(lineData.ingredient.createdAt),
                 updatedAt: new Date(lineData.ingredient.updatedAt),
               });
 
               return IngredientLine.create({
-                id: lineData.id,
+                ...lineData,
                 ingredient,
-                quantityInGrams: lineData.quantityInGrams,
                 createdAt: new Date(lineData.createdAt),
                 updatedAt: new Date(lineData.updatedAt),
               });
@@ -51,9 +47,7 @@ export class FileSystemDaysRepo
           );
 
           return Meal.create({
-            id: (mealData as MealDTO).id,
-            userId: (mealData as MealDTO).userId,
-            name: (mealData as MealDTO).name,
+            ...mealData,
             ingredientLines,
             createdAt: new Date((mealData as MealDTO).createdAt),
             updatedAt: new Date((mealData as MealDTO).updatedAt),
@@ -61,11 +55,7 @@ export class FileSystemDaysRepo
         } else {
           const fakeMealData = mealData as FakeMealDTO;
           return FakeMeal.create({
-            id: fakeMealData.id,
-            userId: fakeMealData.userId,
-            name: fakeMealData.name,
-            calories: fakeMealData.calories,
-            protein: fakeMealData.protein,
+            ...fakeMealData,
             createdAt: new Date(fakeMealData.createdAt),
             updatedAt: new Date(fakeMealData.updatedAt),
           });
@@ -73,8 +63,8 @@ export class FileSystemDaysRepo
       });
 
       return Day.create({
+        ...item,
         id: new Date(item.id),
-        userId: item.userId,
         meals,
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),

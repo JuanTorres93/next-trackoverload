@@ -27,17 +27,14 @@ export class FileSystemRecipesRepo
       const ingredientLines = item.ingredientLines.map(
         (lineData: IngredientLineDTO) => {
           const ingredient = Ingredient.create({
-            id: lineData.ingredient.id,
-            name: lineData.ingredient.name,
-            nutritionalInfoPer100g: lineData.ingredient.nutritionalInfoPer100g,
+            ...lineData.ingredient,
             createdAt: new Date(lineData.ingredient.createdAt),
             updatedAt: new Date(lineData.ingredient.updatedAt),
           });
 
           return IngredientLine.create({
-            id: lineData.id,
+            ...lineData,
             ingredient,
-            quantityInGrams: lineData.quantityInGrams,
             createdAt: new Date(lineData.createdAt),
             updatedAt: new Date(lineData.updatedAt),
           });
@@ -45,10 +42,7 @@ export class FileSystemRecipesRepo
       );
 
       return Recipe.create({
-        id: item.id,
-        userId: item.userId,
-        name: item.name,
-        imageUrl: item.imageUrl,
+        ...item,
         ingredientLines,
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),

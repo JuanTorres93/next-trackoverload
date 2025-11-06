@@ -25,8 +25,7 @@ export class FileSystemExercisesRepo
   protected deserializeItems(data: unknown[]): Exercise[] {
     return (data as ExerciseDTO[]).map((item) =>
       Exercise.create({
-        id: item.id,
-        name: item.name,
+        ...item,
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),
       })
