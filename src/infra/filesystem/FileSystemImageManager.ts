@@ -41,7 +41,15 @@ export class FileSystemImageManager extends BaseImageManager {
 
     // 4. Process image with Sharp
     const outputPath = path.join(this.uploadsDir, uniqueFilename);
-    let processedImage = sharp(imageData);
+
+    let processedImage = sharp(imageData)
+      // Convert to square
+      .resize({
+        width: 1000,
+        height: 1000,
+        fit: 'cover',
+        position: 'center',
+      });
 
     // Apply quality options if specified
     if (options?.quality && options.quality < 1) {

@@ -11,6 +11,7 @@ type Props = {
   multiple?: boolean;
   maxSizeMB?: number; // p. ej. 5
   accept?: string; // p. ej. "image/png,image/jpeg"
+  borderTailwindColor?: string; // p. ej. "black, zinc, gray"
   onFiles?: (files: File[]) => void;
 };
 
@@ -52,6 +53,7 @@ export default function ImagePicker({
   multiple = false,
   maxSizeMB = 5,
   accept = 'image/*',
+  borderTailwindColor = 'black',
   onFiles,
 }: Props) {
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -101,19 +103,19 @@ export default function ImagePicker({
         className={`border-2 border-dashed rounded-2xl p-4 text-center cursor-pointer select-none
           ${
             isOver
-              ? 'border-black/60 bg-black/5'
-              : 'border-black/20 hover:bg-black/5'
+              ? `border-${borderTailwindColor}/60 bg-${borderTailwindColor}/5`
+              : `border-${borderTailwindColor} hover:bg-${borderTailwindColor}/5`
           }
         `}
         aria-label="Sube imágenes arrastrando o haz clic para seleccionar"
       >
         {images.length === 0 ? (
           <>
-            <p className="font-medium">
+            <p>
               Arrastra tu{multiple ? 's' : ''} im{multiple ? 'á' : 'a'}gen
               {multiple ? 'es' : ''} aquí
             </p>
-            <p className="text-sm opacity-70">
+            <p className="text-sm font-medium opacity-70">
               o haz clic para seleccionar — Máx: {maxSizeMB}MB
             </p>
           </>
@@ -121,7 +123,7 @@ export default function ImagePicker({
           <div className="space-y-2">
             <div className="space-y-1">
               {images.map((image, index) => (
-                <p key={index} className="text-sm opacity-70">
+                <p key={index} className="text-sm font-medium opacity-80">
                   {image.file.name}
                 </p>
               ))}

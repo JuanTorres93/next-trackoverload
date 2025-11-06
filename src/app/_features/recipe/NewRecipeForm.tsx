@@ -168,9 +168,9 @@ function NewRecipeForm() {
       onSubmit={handleSubmit}
       submitText="Crear receta"
     >
-      <div className="relative flex flex-col items-center justify-center w-64 mx-auto mb-2 overflow-hidden rounded-2xl aspect-square">
+      <div className="relative flex flex-col items-center justify-center w-64 mx-auto mb-2 overflow-hidden text-zinc-100 rounded-2xl aspect-square">
         <textarea
-          className="z-10 resize-none text-center text-3xl text-zinc-700 font-extrabold w-[90%] outline-none overflow-x-hidden max-h-[90%]"
+          className="z-10 resize-none text-center text-3xl  font-extrabold w-[90%] outline-none overflow-x-hidden max-h-[90%]"
           spellCheck={false}
           value={recipeName}
           onChange={(e) => setRecipeName(e.target.value)}
@@ -189,15 +189,17 @@ function NewRecipeForm() {
           }
           alt="Imagen de la receta"
           fill
-          className="object-contain"
+          // className="object-contain"
+          className="object-cover"
         />
 
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-green-500/60 via-green-300/30 to-transparent" />
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-gray-600/60" />
 
         <ImagePicker
           onFiles={handleImageSelection}
           maxSizeMB={2}
+          borderTailwindColor="gray"
           accept="image/jpeg,image/png,image/webp"
         />
       </div>
