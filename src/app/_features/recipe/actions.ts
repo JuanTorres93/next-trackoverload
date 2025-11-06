@@ -1,6 +1,8 @@
 'use server';
 import { AppCreateRecipeUsecase } from '@/interface-adapters/app/use-cases/recipe';
 import { AppDeleteRecipeUsecase } from '@/interface-adapters/app/use-cases/recipe';
+import { AppRemoveIngredientFromRecipeUsecase } from '@/interface-adapters/app/use-cases/recipe';
+
 import { FormState } from '@/app/_types/FormState';
 import { initialFormState } from '@/app/_utils/form/forms';
 import { revalidatePath } from 'next/cache';
@@ -80,4 +82,18 @@ export async function deleteRecipe(recipeId: string) {
   });
 
   revalidatePath('/app/recipes');
+}
+
+export async function removeIngredientFromRecipe(
+  recipeId: string,
+  ingredientId: string
+) {
+  await AppRemoveIngredientFromRecipeUsecase.execute({
+    recipeId,
+    userId: 'dev-user', // TODO get current user id
+    ingredientId,
+  });
+
+  revalidatePath(`/app/recipes`);
+  revalidatePath(`/app/recipes/${recipeId}`);
 }

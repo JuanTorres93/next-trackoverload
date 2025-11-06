@@ -2,15 +2,15 @@
 
 import IngredientLineItem from '@/app/_features/ingredient/IngredientLineItem';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
+import { removeIngredientFromRecipe } from '@/app/_features/recipe/actions';
 
 interface RecipeDisplayProps {
   recipe: RecipeDTO;
 }
 
 export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
-  const handleRemoveIngredient = (lineId: string) => {
-    // TODO: Implement ingredient removal logic
-    console.log('Remove ingredient line:', lineId);
+  const handleRemoveIngredient = (ingredientId: string) => {
+    removeIngredientFromRecipe(recipe.id, ingredientId);
   };
 
   const handleQuantityChange = (lineId: string, quantity: number) => {
@@ -20,18 +20,19 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
 
   return (
     <div>
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-4">
+      <ul>
         {recipe.ingredientLines.map((line) => (
-          <IngredientLineItem
-            key={line.id}
-            ingredientLine={line}
-            onRemove={() => handleRemoveIngredient(line.id)}
-            onQuantityChange={(quantity) =>
-              handleQuantityChange(line.id, quantity)
-            }
-          />
+          <li key={line.id}>
+            <IngredientLineItem
+              ingredientLine={line}
+              onRemove={() => handleRemoveIngredient(line.ingredient.id)}
+              onQuantityChange={(quantity) =>
+                handleQuantityChange(line.id, quantity)
+              }
+            />
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 }

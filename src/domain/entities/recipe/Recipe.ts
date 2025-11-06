@@ -55,20 +55,26 @@ export class Recipe implements Protein, Calories {
 
   removeIngredientLineByIngredientId(ingredientId: string): void {
     validateNonEmptyString(ingredientId, 'Ingredient id');
-    const initialLength = this.props.ingredientLines.length;
-    this.props.ingredientLines = this.props.ingredientLines.filter(
+
+    const filteredLines = this.props.ingredientLines.filter(
       (line) => line.ingredient.id !== ingredientId
     );
-    if (this.props.ingredientLines.length === initialLength) {
+
+    // Validate that the ingredient line existed
+    if (filteredLines.length === this.props.ingredientLines.length) {
       throw new ValidationError(
         `Recipe: No ingredient line found with ingredient id ${ingredientId}`
       );
     }
-    if (this.props.ingredientLines.length === 0) {
+
+    // Validate that we don't leave the recipe empty
+    if (filteredLines.length === 0) {
       throw new ValidationError(
         'Recipe: ingredientLines cannot be empty after removal'
       );
     }
+
+    this.props.ingredientLines = filteredLines;
     this.props.updatedAt = new Date();
   }
 
