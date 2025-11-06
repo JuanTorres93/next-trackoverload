@@ -110,4 +110,18 @@ export abstract class BaseFileSystemRepo<T> {
     items.splice(index, 1);
     await this.writeData(items);
   }
+
+  protected async deleteMultipleItems(ids: string[]): Promise<void> {
+    const items = await this.readData();
+
+    // Create a Set for faster lookups
+    const idsToDelete = new Set(ids);
+
+    // Filter out items that should be deleted
+    const remainingItems = items.filter(
+      (item) => !idsToDelete.has(this.getItemId(item))
+    );
+
+    await this.writeData(remainingItems);
+  }
 }

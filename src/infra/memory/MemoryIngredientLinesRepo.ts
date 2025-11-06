@@ -44,4 +44,14 @@ export class MemoryIngredientLinesRepo implements IngredientLinesRepo {
 
     this.ingredientLines.splice(index, 1);
   }
+
+  async deleteMultipleIngredientLines(ids: string[]): Promise<void> {
+    // Create a Set for faster lookups
+    const idsToDelete = new Set(ids);
+
+    // Filter out items that should be deleted
+    this.ingredientLines = this.ingredientLines.filter(
+      (line) => !idsToDelete.has(line.id)
+    );
+  }
 }

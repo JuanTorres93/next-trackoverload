@@ -30,21 +30,21 @@ export class DeleteRecipeUsecase {
       throw new NotFoundError(`Recipe with id ${request.id} not found`);
     }
 
-    // Remove its associated ingredient lines?
-    const promisesDeleteIngredientLines = [];
-
-    for (const line of existingRecipe.ingredientLines) {
-      // TODO find a more efficient way to do this
-      promisesDeleteIngredientLines.push(
-        this.ingredientLinesRepo.deleteIngredientLine(line.id)
-      );
-    }
-
-    // Delete associated image if exists
+    // Remove associated image if exists
     if (existingRecipe.imageUrl) {
       await this.imageManager.deleteImage(existingRecipe.imageUrl);
     }
-    await Promise.all(promisesDeleteIngredientLines);
+
+    // Remove its associated ingredient lines
+    const ingredientLineIds = existingRecipe.ingredientLines.map(
+      (line) => line.id
+    );
+
+    if (ingredientLineIds.length > 0) {
+      await this.ingredientLinesRepo.deleteMultipleIngredientLines(
+        ingredientLineIds
+      );
+    }
     await this.recipesRepo.deleteRecipe(request.id);
   }
 }

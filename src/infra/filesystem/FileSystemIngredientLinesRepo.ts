@@ -69,4 +69,8 @@ export class FileSystemIngredientLinesRepo
   async deleteIngredientLine(id: string): Promise<void> {
     return this.deleteItemById(id);
   }
+
+  async deleteMultipleIngredientLines(ids: string[]): Promise<void> {
+    return this.deleteMultipleItems(ids);
+  }
 }
