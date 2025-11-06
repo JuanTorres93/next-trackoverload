@@ -1,3 +1,4 @@
+'use client';
 import { HiOutlineX } from 'react-icons/hi';
 import Input from '@/app/_ui/Input';
 import NutritionalInfoValue from '@/app/_ui/NutritionalInfoValue';
@@ -21,8 +22,8 @@ function IngredientLineItem({
   );
 
   return (
-    <div className="grid grid-rows-[min-content_min-content] overflow-hidden rounded-xl bg-neutral-100 ">
-      <div className="grid grid-cols-[40px_1fr_5rem_min-content] p-2  gap-4 items-center">
+    <div className="grid grid-rows-[1fr_auto] overflow-hidden rounded-xl  ">
+      <div className="grid grid-cols-[40px_1fr_5rem_min-content] p-2  gap-4 items-center bg-neutral-100">
         <div className="relative h-12 overflow-hidden rounded-md aspect-square">
           <Image
             fill
