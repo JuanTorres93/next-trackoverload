@@ -1,5 +1,8 @@
 'use server';
 import { AppCreateIngredientUsecase } from '@/interface-adapters/app/use-cases/ingredient/CreateIngredient/createingredient';
+import { AppUpdateIngredientLineUsecase } from '@/interface-adapters/app/use-cases/ingredientline';
+import { revalidatePath } from 'next/cache';
+
 import { FormState } from '@/app/_types/FormState';
 import { initialFormState } from '@/app/_utils/form/forms';
 
@@ -40,4 +43,22 @@ export async function createIngredient(
   finalFormState.ok = true;
   finalFormState.message = 'Ingrediente creado';
   return finalFormState;
+}
+
+export async function updateIngredientLineQuantity(
+  parentEntityType: 'recipe' | 'meal',
+  parentEntityId: string,
+  ingredientLineId: string,
+  newQuantityInGrams: number
+) {
+  await AppUpdateIngredientLineUsecase.execute({
+    userId: 'dev-user', // TODO: get current user id from session
+    parentEntityType,
+    parentEntityId,
+    ingredientLineId,
+    quantityInGrams: newQuantityInGrams,
+  });
+
+  revalidatePath(`/app/${parentEntityType}s/${parentEntityId}`);
+  revalidatePath(`/app/${parentEntityType}s`);
 }

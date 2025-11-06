@@ -1,6 +1,9 @@
 import { IngredientLinesRepo } from '@/domain/repos/IngredientLinesRepo.port';
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
+import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
+import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import {
   IngredientLineDTO,
   toIngredientLineDTO,
@@ -9,9 +12,16 @@ import {
   validateNonEmptyString,
   validateGreaterThanZero,
 } from '@/domain/common/validation';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import {
+  NotFoundError,
+  ValidationError,
+  AuthError,
+} from '@/domain/common/errors';
 
 export type UpdateIngredientLineUsecaseRequest = {
+  userId: string;
+  parentEntityType: 'recipe' | 'meal';
+  parentEntityId: string;
   ingredientLineId: string;
   ingredientId?: string;
   quantityInGrams?: number;
@@ -20,16 +30,35 @@ export type UpdateIngredientLineUsecaseRequest = {
 export class UpdateIngredientLineUsecase {
   constructor(
     private ingredientLinesRepo: IngredientLinesRepo,
-    private ingredientsRepo: IngredientsRepo
+    private ingredientsRepo: IngredientsRepo,
+    private recipesRepo: RecipesRepo,
+    private mealsRepo: MealsRepo
   ) {}
 
   async execute(
     request: UpdateIngredientLineUsecaseRequest
   ): Promise<IngredientLineDTO> {
     validateNonEmptyString(
+      request.userId,
+      'UpdateIngredientLineUsecase userId'
+    );
+    validateNonEmptyString(
+      request.parentEntityId,
+      'UpdateIngredientLineUsecase parentEntityId'
+    );
+    validateNonEmptyString(
       request.ingredientLineId,
       'UpdateIngredientLineUsecase ingredientLineId'
     );
+
+    if (
+      request.parentEntityType !== 'recipe' &&
+      request.parentEntityType !== 'meal'
+    ) {
+      throw new ValidationError(
+        'UpdateIngredientLineUsecase: parentEntityType must be "recipe" or "meal"'
+      );
+    }
 
     // Ensure at least one field to update is provided
     if (
@@ -47,6 +76,63 @@ export class UpdateIngredientLineUsecase {
         request.quantityInGrams,
         'UpdateIngredientLineUsecase quantityInGrams'
       );
+
+    // Get the existing ingredient line first to check if it exists
+    const existingIngredientLine =
+      await this.ingredientLinesRepo.getIngredientLineById(
+        request.ingredientLineId
+      );
+
+    if (!existingIngredientLine) {
+      throw new NotFoundError(
+        `UpdateIngredientLineUsecase: IngredientLine with id ${request.ingredientLineId} not found`
+      );
+    }
+
+    // Validate user has access to the parent entity and that the ingredient line exists in it
+    let parentEntity: {
+      ingredientLines: IngredientLine[];
+      userId?: string;
+    } | null = null;
+
+    if (request.parentEntityType === 'recipe') {
+      parentEntity = await this.recipesRepo.getRecipeById(
+        request.parentEntityId
+      );
+      if (!parentEntity) {
+        throw new NotFoundError(
+          `UpdateIngredientLineUsecase: Recipe with id ${request.parentEntityId} not found`
+        );
+      }
+      if (parentEntity.userId !== request.userId) {
+        throw new AuthError(
+          `UpdateIngredientLineUsecase: Recipe with id ${request.parentEntityId} not found for user ${request.userId}`
+        );
+      }
+    } else if (request.parentEntityType === 'meal') {
+      parentEntity = await this.mealsRepo.getMealById(request.parentEntityId);
+      if (!parentEntity) {
+        throw new NotFoundError(
+          `UpdateIngredientLineUsecase: Meal with id ${request.parentEntityId} not found`
+        );
+      }
+      if (parentEntity.userId !== request.userId) {
+        throw new AuthError(
+          `UpdateIngredientLineUsecase: Meal with id ${request.parentEntityId} not found for user ${request.userId}`
+        );
+      }
+    }
+
+    // Verify the ingredient line exists in the parent entity
+    const ingredientLineExistsInParent = parentEntity!.ingredientLines.some(
+      (line) => line.id === request.ingredientLineId
+    );
+
+    if (!ingredientLineExistsInParent) {
+      throw new NotFoundError(
+        `UpdateIngredientLineUsecase: IngredientLine with id ${request.ingredientLineId} does not belong to the specified ${request.parentEntityType}`
+      );
+    }
 
     // Get the new ingredient if ingredientId is provided
     let newIngredient: Ingredient | undefined;
@@ -67,18 +153,6 @@ export class UpdateIngredientLineUsecase {
       }
 
       newIngredient = foundIngredient;
-    }
-
-    // Get the existing ingredient line
-    const existingIngredientLine =
-      await this.ingredientLinesRepo.getIngredientLineById(
-        request.ingredientLineId
-      );
-
-    if (!existingIngredientLine) {
-      throw new NotFoundError(
-        `UpdateIngredientLineUsecase: IngredientLine with id ${request.ingredientLineId} not found`
-      );
     }
 
     // Create the updated ingredient line

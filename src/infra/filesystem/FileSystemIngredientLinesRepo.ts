@@ -1,18 +1,27 @@
 import { IngredientLinesRepo } from '@/domain/repos/IngredientLinesRepo.port';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { Meal } from '@/domain/entities/meal/Meal';
 import {
   IngredientLineDTO,
   toIngredientLineDTO,
 } from '@/application-layer/dtos/IngredientLineDTO';
 import { BaseFileSystemRepo } from './BaseFileSystemRepo';
+import { FileSystemRecipesRepo } from './FileSystemRecipesRepo';
+import { FileSystemMealsRepo } from './FileSystemMealsRepo';
 
 export class FileSystemIngredientLinesRepo
   extends BaseFileSystemRepo<IngredientLine>
   implements IngredientLinesRepo
 {
+  private recipesRepo: FileSystemRecipesRepo;
+  private mealsRepo: FileSystemMealsRepo;
+
   constructor() {
     super('ingredient-lines.json');
+    this.recipesRepo = new FileSystemRecipesRepo();
+    this.mealsRepo = new FileSystemMealsRepo();
   }
 
   protected getItemId(item: IngredientLine): string {
@@ -41,13 +50,86 @@ export class FileSystemIngredientLinesRepo
   }
 
   async saveIngredientLine(ingredientLine: IngredientLine): Promise<void> {
-    return this.saveItem(ingredientLine);
+    // Save the ingredient line itself
+    await this.saveItem(ingredientLine);
+
+    // Update all recipes that contain this ingredient line
+    await this.updateRecipesWithIngredientLine(ingredientLine);
+
+    // Update all meals that contain this ingredient line
+    await this.updateMealsWithIngredientLine(ingredientLine);
+  }
+
+  private async updateRecipesWithIngredientLine(
+    ingredientLine: IngredientLine
+  ): Promise<void> {
+    const allRecipes = await this.recipesRepo.getAllRecipes();
+    const recipesToUpdate: Recipe[] = [];
+
+    for (const recipe of allRecipes) {
+      const hasIngredientLine = recipe.ingredientLines.some(
+        (line) => line.id === ingredientLine.id
+      );
+      if (hasIngredientLine) {
+        const updatedRecipe = Recipe.create({
+          id: recipe.id,
+          userId: recipe.userId,
+          name: recipe.name,
+          imageUrl: recipe.imageUrl,
+          ingredientLines: recipe.ingredientLines.map((line) =>
+            line.id === ingredientLine.id ? ingredientLine : line
+          ),
+          createdAt: recipe.createdAt,
+          updatedAt: new Date(),
+        });
+        recipesToUpdate.push(updatedRecipe);
+      }
+    }
+
+    // Save all updated recipes
+    for (const recipe of recipesToUpdate) {
+      await this.recipesRepo.saveRecipe(recipe);
+    }
+  }
+
+  private async updateMealsWithIngredientLine(
+    ingredientLine: IngredientLine
+  ): Promise<void> {
+    const allMeals = await this.mealsRepo.getAllMeals();
+    const mealsToUpdate: Meal[] = [];
+
+    for (const meal of allMeals) {
+      const hasIngredientLine = meal.ingredientLines.some(
+        (line) => line.id === ingredientLine.id
+      );
+      if (hasIngredientLine) {
+        const updatedMeal = Meal.create({
+          id: meal.id,
+          userId: meal.userId,
+          name: meal.name,
+          ingredientLines: meal.ingredientLines.map((line) =>
+            line.id === ingredientLine.id ? ingredientLine : line
+          ),
+          createdAt: meal.createdAt,
+          updatedAt: new Date(),
+        });
+        mealsToUpdate.push(updatedMeal);
+      }
+    }
+
+    // Save all updated meals
+    for (const meal of mealsToUpdate) {
+      await this.mealsRepo.saveMeal(meal);
+    }
   }
 
   async saveMultipleIngredientLines(
     ingredientLines: IngredientLine[]
   ): Promise<void> {
-    return this.saveMultipleItems(ingredientLines);
+    // Save all ingredient lines individually to trigger updates
+    for (const ingredientLine of ingredientLines) {
+      await this.saveIngredientLine(ingredientLine);
+    }
   }
 
   async getAllIngredientLines(): Promise<IngredientLine[]> {

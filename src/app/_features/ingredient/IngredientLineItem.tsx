@@ -22,7 +22,7 @@ function IngredientLineItem({
   );
 
   return (
-    <div className="grid grid-rows-[1fr_auto] overflow-hidden rounded-xl  ">
+    <div className="grid grid-rows-[1fr_auto] h-full overflow-hidden rounded-xl  ">
       <div className="grid grid-cols-[40px_1fr_5rem_min-content] p-2  gap-4 items-center bg-neutral-100">
         <div className="relative h-12 overflow-hidden rounded-md aspect-square">
           <Image
