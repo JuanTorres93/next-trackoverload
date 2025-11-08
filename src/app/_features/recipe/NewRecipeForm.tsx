@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react';
 import IngredientItemMini from '../ingredient/IngredientItemMini';
 import { createRecipe } from './actions';
 import ImagePicker from '@/app/_ui/ImagePicker';
+import { formatToInteger } from '@/app/_utils/format/formatToInteger';
 
 function NewRecipeForm() {
   // Form state and action
@@ -44,14 +45,14 @@ function NewRecipeForm() {
     defaultSelectedImage
   );
 
-  const totalCalories = Math.round(
+  const totalCalories = formatToInteger(
     ingredientLines.reduce(
       (sum, il) => sum + (il.calories * il.quantityInGrams) / 100,
       0
     )
   );
 
-  const totalProtein = Math.round(
+  const totalProtein = formatToInteger(
     ingredientLines.reduce(
       (sum, il) => sum + (il.protein * il.quantityInGrams) / 100,
       0

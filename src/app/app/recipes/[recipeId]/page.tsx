@@ -4,6 +4,7 @@ import PageWrapper from '@/app/_ui/PageWrapper';
 import RecipeDisplay from './RecipeLinesDisplay';
 import Image from 'next/image';
 import NutritionalInfoValue from '@/app/_ui/NutritionalInfoValue';
+import { formatToInteger } from '@/app/_utils/format/formatToInteger';
 
 export default async function RecipePage({
   params,
@@ -39,13 +40,13 @@ export default async function RecipePage({
             <NutritionalInfoValue
               styleNumber="text-3xl text-zinc-300"
               styleLabel="text-lg text-zinc-300!"
-              number={recipe.calories}
+              number={formatToInteger(recipe.calories)}
               label="Calorías"
             />
             <NutritionalInfoValue
               styleNumber="text-3xl text-zinc-300"
               styleLabel="text-lg text-zinc-300!"
-              number={recipe.protein}
+              number={formatToInteger(recipe.protein)}
               label="Proteínas"
             />
           </div>

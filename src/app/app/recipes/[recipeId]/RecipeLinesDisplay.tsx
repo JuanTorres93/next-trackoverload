@@ -4,19 +4,22 @@ import IngredientLineItem from '@/app/_features/ingredient/IngredientLineItem';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { removeIngredientFromRecipe } from '@/app/_features/recipe/actions';
 import { updateIngredientLineQuantity } from '@/app/_features/ingredient/actions';
+import { useDebounce } from '@/app/hooks/useDebounce';
 
 interface RecipeDisplayProps {
   recipe: RecipeDTO;
 }
 
 export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
-  const handleRemoveIngredient = (ingredientId: string) => {
-    removeIngredientFromRecipe(recipe.id, ingredientId);
-  };
+  const debouncedUpdateQuantity = useDebounce(handleQuantityChange, 250);
 
-  const handleQuantityChange = (lineId: string, quantity: number) => {
+  function handleRemoveIngredient(ingredientId: string) {
+    removeIngredientFromRecipe(recipe.id, ingredientId);
+  }
+
+  function handleQuantityChange(lineId: string, quantity: number) {
     updateIngredientLineQuantity('recipe', recipe.id, lineId, quantity);
-  };
+  }
 
   return (
     <div>
@@ -27,7 +30,7 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
               ingredientLine={line}
               onRemove={() => handleRemoveIngredient(line.ingredient.id)}
               onQuantityChange={(quantity) =>
-                handleQuantityChange(line.id, quantity)
+                debouncedUpdateQuantity(line.id, quantity)
               }
             />
           </div>

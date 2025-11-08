@@ -4,6 +4,7 @@ import Input from '@/app/_ui/Input';
 import NutritionalInfoValue from '@/app/_ui/NutritionalInfoValue';
 import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
 import Image from 'next/image';
+import { formatToInteger } from '@/app/_utils/format/formatToInteger';
 
 function IngredientLineItem({
   ingredientLine,
@@ -14,10 +15,10 @@ function IngredientLineItem({
   onQuantityChange: (quantity: number) => void;
   onRemove: () => void;
 }) {
-  const totalCalories = Math.round(
+  const totalCalories = formatToInteger(
     (ingredientLine.calories * ingredientLine.quantityInGrams) / 100
   );
-  const totalProtein = Math.round(
+  const totalProtein = formatToInteger(
     (ingredientLine.protein * ingredientLine.quantityInGrams) / 100
   );
 
