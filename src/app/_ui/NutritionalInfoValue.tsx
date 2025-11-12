@@ -1,3 +1,5 @@
+import { formatToInteger } from '../_utils/format/formatToInteger';
+
 function NutritionalInfoValue({
   number,
   label,
@@ -9,9 +11,10 @@ function NutritionalInfoValue({
   styleNumber?: string;
   styleLabel?: string;
 }) {
+  const formattedNumber = formatToInteger(number);
   return (
     <div className="flex flex-col items-center">
-      <span className={`font-medium ${styleNumber}`}>{number}</span>
+      <span className={`font-medium ${styleNumber}`}>{formattedNumber}</span>
       <span className={`text-sm text-zinc-600 mt-[-5px] ${styleLabel}`}>
         {label}
       </span>

@@ -2,20 +2,18 @@
 import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
 import IngredientLineItem from '../ingredient/IngredientLineItem';
 
-import Input from '@/app/_ui/Input';
+import ImagePicker from '@/app/_ui/ImagePicker';
 import Form from '@/app/_ui/NewResourceForm';
 import NutritionalInfoValue from '@/app/_ui/NutritionalInfoValue';
-import VerticalList from '@/app/_ui/VerticalList';
 import { useFormSetup, useResetOnSuccess } from '@/app/_utils/form/hooks';
-import { useDebounce } from '@/app/hooks/useDebounce';
-import { IngredientDTO } from '@/application-layer/dtos/IngredientDTO';
+import { formatToInteger } from '@/app/_utils/format/formatToInteger';
 import { IngredientLineInfo } from '@/application-layer/use-cases/recipe/CreateRecipe/CreateRecipe.usecase';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
-import IngredientItemMini from '../ingredient/IngredientItemMini';
+import { useState } from 'react';
 import { createRecipe } from './actions';
-import ImagePicker from '@/app/_ui/ImagePicker';
-import { formatToInteger } from '@/app/_utils/format/formatToInteger';
+import IngredientSearch from './IngredientSearch';
+import { IngredientDTO } from '@/application-layer/dtos/IngredientDTO';
+import { createInMemoryIngredientLine } from './utils';
 
 function NewRecipeForm() {
   // Form state and action
@@ -25,15 +23,6 @@ function NewRecipeForm() {
   // Business logic state
   const defaultRecipeName = 'Nueva receta';
   const [recipeName, setRecipeName] = useState(defaultRecipeName);
-
-  const defaultIngredientSearchTerm = '';
-  const [ingredientSearchTerm, setIngredientSearchTerm] = useState(
-    defaultIngredientSearchTerm
-  );
-
-  const defaultIngredients: IngredientDTO[] = [];
-  const [ingredients, setIngredients] =
-    useState<IngredientDTO[]>(defaultIngredients);
 
   const defaultIngredientLines: IngredientLineDTO[] = [];
   const [ingredientLines, setIngredientLines] = useState<IngredientLineDTO[]>(
@@ -59,56 +48,25 @@ function NewRecipeForm() {
     )
   );
 
-  const debouncedFetchIngredients = useDebounce(fetchIngredients, 200);
-
-  useEffect(() => {
-    debouncedFetchIngredients(ingredientSearchTerm);
-  }, [ingredientSearchTerm, debouncedFetchIngredients]);
-
   useResetOnSuccess(formRef, formState, pending, [
     { setter: setRecipeName, initialValue: defaultRecipeName },
-    {
-      setter: setIngredientSearchTerm,
-      initialValue: defaultIngredientSearchTerm,
-    },
-    { setter: setIngredients, initialValue: defaultIngredients },
     { setter: setIngredientLines, initialValue: defaultIngredientLines },
     { setter: setSelectedImage, initialValue: defaultSelectedImage },
   ]);
 
-  async function fetchIngredients(term: string = ''): Promise<void> {
-    const fetchedIngredients = await fetch(`/api/ingredient/fuzzy/${term}`);
+  function handleIngredientSelection(
+    ingredient: IngredientDTO,
+    isSelected: boolean
+  ) {
+    if (isSelected) {
+      const newIngredientLine: IngredientLineDTO =
+        createInMemoryIngredientLine(ingredient);
 
-    try {
-      const data = await fetchedIngredients.json();
-      setIngredients(data);
-    } catch {
-      setIngredients([]);
-    }
-  }
-
-  async function selectIngredient(ingredient: IngredientDTO) {
-    // Check if ingredient is already selected
-    const exists = ingredientLines.find(
-      (iq) => iq.ingredient.id === ingredient.id
-    );
-
-    if (exists)
+      setIngredientLines((prev) => [...prev, newIngredientLine]);
+    } else {
       setIngredientLines((prev) =>
-        prev.filter((iq) => iq.ingredient.id !== ingredient.id)
+        prev.filter((il) => il.ingredient.id !== ingredient.id)
       );
-    else {
-      const ingredientLine: IngredientLineDTO = {
-        id: 'temp-id-' + ingredient.id,
-        ingredient: ingredient,
-        quantityInGrams: 100,
-        calories: Number(ingredient.nutritionalInfoPer100g.calories) || 1,
-        protein: Number(ingredient.nutritionalInfoPer100g.protein) || 1,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-
-      setIngredientLines((prev) => [...prev, ingredientLine]);
     }
   }
 
@@ -206,30 +164,7 @@ function NewRecipeForm() {
       </div>
 
       <Form.FormRow label="">
-        <Input
-          value={ingredientSearchTerm}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setIngredientSearchTerm(e.target.value)
-          }
-          placeholder="Buscar ingredientes..."
-        />
-
-        {ingredients.length > 0 && ingredientSearchTerm && (
-          <VerticalList className="mx-auto max-w-80">
-            {ingredients.map((ingredient) => (
-              <IngredientItemMini
-                key={ingredient.id}
-                ingredient={ingredient}
-                isSelected={
-                  !!ingredientLines.find(
-                    (iq) => iq.ingredient.id === ingredient.id
-                  )
-                }
-                onClick={() => selectIngredient(ingredient)}
-              />
-            ))}
-          </VerticalList>
-        )}
+        <IngredientSearch onSelectFoundIngredient={handleIngredientSelection} />
       </Form.FormRow>
 
       <Form.FormRow label="" error={formState.errors.ingredientLines}>
