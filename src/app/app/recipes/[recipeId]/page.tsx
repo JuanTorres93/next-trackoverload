@@ -24,7 +24,7 @@ export default async function RecipePage({
   return (
     <PageWrapper>
       <div className="flex flex-col gap-20">
-        <header className="grid items-center w-full rounded-2xl  gap-8 p-2 pr-6 grid-cols-[max-content_minmax(min-content,60rem)] grid-rows-[max-content_min-content] bg-green-800 text-zinc-100">
+        <header className="grid items-center w-full rounded-2xl gap-8 p-2 pr-6 grid-cols-[max-content_minmax(1rem,1fr)] grid-rows-[max-content_min-content] bg-green-800 text-zinc-100">
           <Image
             src={recipe.imageUrl || '/recipe-no-picture.png'}
             alt={recipe.name}
@@ -32,9 +32,14 @@ export default async function RecipePage({
             height={200}
             className="row-span-2 rounded-2xl"
           />
-          <h1 className="self-center font-bold text-center text-7xl">
+          {/* <h1 className="self-center font-bold text-center text-7xl">
             {recipe.name}
-          </h1>
+          </h1> */}
+          <input
+            type="text"
+            className="self-center font-bold text-center text-7xl"
+            defaultValue={recipe.name}
+          />
 
           <div className="flex justify-center gap-28">
             <NutritionalInfoValue
