@@ -5,6 +5,8 @@ import VerticalList from '@/app/_ui/VerticalList';
 import IngredientItemMini from '../ingredient/IngredientItemMini';
 import { IngredientDTO } from '@/application-layer/dtos/IngredientDTO';
 import { useDebounce } from '@/app/hooks/useDebounce';
+import { createInMemoryIngredientLine } from './utils';
+import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
 
 function IngredientSearch({
   onSelectFoundIngredient,
@@ -22,6 +24,7 @@ function IngredientSearch({
 
   // IMPORTANT NOTE: Don't use this function directly to avoid excessive calls. Use debounced version below instead.
   async function fetchIngredients(term: string = ''): Promise<void> {
+    // Use case is used behind the scenes in the API route. It can't be called directly from the client.
     const fetchedIngredients = await fetch(`/api/ingredient/fuzzy/${term}`);
 
     try {
@@ -62,7 +65,7 @@ function IngredientSearch({
   }
 
   return (
-    <div>
+    <div className="flex flex-col items-center gap-4">
       <Input
         value={ingredientSearchTerm}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -88,3 +91,33 @@ function IngredientSearch({
 }
 
 export default IngredientSearch;
+
+// Export the most common handler to be used in NewRecipeForm
+// NOTE: it requires the setIngredientLines state setter to be passed from the parent component
+// Can be used like this, where ingredient and isSelected are provided by IngredientSearch component and setIngredientLines is from the parent component:
+
+//     <IngredientSearch
+//       onSelectFoundIngredient={(ingredient, isSelected) =>
+//         handleIngredientSelection(
+//           ingredient,
+//           isSelected,
+//           setIngredientLines
+//         )
+//       }
+//     />
+export function handleIngredientSelection(
+  ingredient: IngredientDTO,
+  isSelected: boolean,
+  setIngredientLines: React.Dispatch<React.SetStateAction<IngredientLineDTO[]>>
+) {
+  if (isSelected) {
+    const newIngredientLine: IngredientLineDTO =
+      createInMemoryIngredientLine(ingredient);
+
+    setIngredientLines((prev) => [...prev, newIngredientLine]);
+  } else {
+    setIngredientLines((prev) =>
+      prev.filter((il) => il.ingredient.id !== ingredient.id)
+    );
+  }
+}

@@ -11,9 +11,9 @@ import { IngredientLineInfo } from '@/application-layer/use-cases/recipe/CreateR
 import Image from 'next/image';
 import { useState } from 'react';
 import { createRecipe } from './actions';
-import IngredientSearch from './IngredientSearch';
-import { IngredientDTO } from '@/application-layer/dtos/IngredientDTO';
-import { createInMemoryIngredientLine } from './utils';
+import IngredientSearch, {
+  handleIngredientSelection,
+} from './IngredientSearch';
 
 function NewRecipeForm() {
   // Form state and action
@@ -53,22 +53,6 @@ function NewRecipeForm() {
     { setter: setIngredientLines, initialValue: defaultIngredientLines },
     { setter: setSelectedImage, initialValue: defaultSelectedImage },
   ]);
-
-  function handleIngredientSelection(
-    ingredient: IngredientDTO,
-    isSelected: boolean
-  ) {
-    if (isSelected) {
-      const newIngredientLine: IngredientLineDTO =
-        createInMemoryIngredientLine(ingredient);
-
-      setIngredientLines((prev) => [...prev, newIngredientLine]);
-    } else {
-      setIngredientLines((prev) =>
-        prev.filter((il) => il.ingredient.id !== ingredient.id)
-      );
-    }
-  }
 
   function handleIngredientLineQuantityChange(ingredientLineId: string) {
     return (newQuantity: number) => {
@@ -164,7 +148,15 @@ function NewRecipeForm() {
       </div>
 
       <Form.FormRow label="">
-        <IngredientSearch onSelectFoundIngredient={handleIngredientSelection} />
+        <IngredientSearch
+          onSelectFoundIngredient={(ingredient, isSelected) =>
+            handleIngredientSelection(
+              ingredient,
+              isSelected,
+              setIngredientLines
+            )
+          }
+        />
       </Form.FormRow>
 
       <Form.FormRow label="" error={formState.errors.ingredientLines}>

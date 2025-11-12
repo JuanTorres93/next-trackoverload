@@ -57,10 +57,10 @@ export default async function RecipePage({
           </div>
         </header>
 
-        {/* Needs to be a separate component for interactivity through event handlers */}
         <div>
           <h2 className="pb-3 mb-6 text-4xl font-bold">Ingredientes</h2>
 
+          {/* Needs to be a separate component for interactivity through event handlers */}
           <RecipeDisplay recipe={recipe} />
         </div>
       </div>
