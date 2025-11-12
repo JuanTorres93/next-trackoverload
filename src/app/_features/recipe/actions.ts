@@ -2,6 +2,8 @@
 import { AppCreateRecipeUsecase } from '@/interface-adapters/app/use-cases/recipe';
 import { AppDeleteRecipeUsecase } from '@/interface-adapters/app/use-cases/recipe';
 import { AppRemoveIngredientFromRecipeUsecase } from '@/interface-adapters/app/use-cases/recipe';
+import { AppDuplicateRecipeUsecase } from '@/interface-adapters/app/use-cases/recipe';
+import { AppUpdateRecipeUsecase } from '@/interface-adapters/app/use-cases/recipe';
 
 import { FormState } from '@/app/_types/FormState';
 import { initialFormState } from '@/app/_utils/form/forms';
@@ -82,6 +84,7 @@ export async function deleteRecipe(recipeId: string) {
   });
 
   revalidatePath('/app/recipes');
+  redirect('/app/recipes/');
 }
 
 export async function removeIngredientFromRecipe(
@@ -96,4 +99,26 @@ export async function removeIngredientFromRecipe(
 
   revalidatePath(`/app/recipes`);
   revalidatePath(`/app/recipes/${recipeId}`);
+}
+
+export async function duplicateRecipe(recipeId: string, newName?: string) {
+  const duplicatedRecipe = await AppDuplicateRecipeUsecase.execute({
+    userId: 'dev-user', // TODO get current user id
+    recipeId,
+    ...(newName && { newName }),
+  });
+
+  revalidatePath('/app/recipes');
+  redirect(`/app/recipes/${duplicatedRecipe.id}`);
+}
+
+export async function renameRecipe(recipeId: string, newName: string) {
+  const updatedRecipe = await AppUpdateRecipeUsecase.execute({
+    userId: 'dev-user', // TODO get current user id
+    id: recipeId,
+    name: newName,
+  });
+
+  revalidatePath('/app/recipes');
+  revalidatePath(`/app/recipes/${updatedRecipe.id}`);
 }

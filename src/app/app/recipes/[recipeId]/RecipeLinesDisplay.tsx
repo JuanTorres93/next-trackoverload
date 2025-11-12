@@ -5,6 +5,7 @@ import IngredientLineItem from '@/app/_features/ingredient/IngredientLineItem';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { removeIngredientFromRecipe } from '@/app/_features/recipe/actions';
 import { updateIngredientLineQuantity } from '@/app/_features/ingredient/actions';
+import { duplicateRecipe, deleteRecipe } from '@/app/_features/recipe/actions';
 import { useDebounce } from '@/app/hooks/useDebounce';
 import IngredientSearch from '@/app/_features/recipe/IngredientSearch';
 
@@ -39,8 +40,14 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
       </div>
 
       <div className="flex justify-end gap-4 text-4xl">
-        <HiOutlineDuplicate className="transition cursor-pointer hover:text-green-600" />
-        <HiX className="transition cursor-pointer hover:text-red-600" />
+        <HiOutlineDuplicate
+          className="transition cursor-pointer hover:text-green-600"
+          onClick={() => duplicateRecipe(recipe.id)}
+        />
+        <HiX
+          className="transition cursor-pointer hover:text-red-600"
+          onClick={() => deleteRecipe(recipe.id)}
+        />
       </div>
 
       <div>

@@ -5,6 +5,7 @@ import RecipeDisplay from './RecipeLinesDisplay';
 import Image from 'next/image';
 import NutritionalInfoValue from '@/app/_ui/NutritionalInfoValue';
 import { formatToInteger } from '@/app/_utils/format/formatToInteger';
+import UpdateRecipeTitle from './UpdateRecipeTitle';
 
 export default async function RecipePage({
   params,
@@ -32,14 +33,8 @@ export default async function RecipePage({
             height={200}
             className="row-span-2 rounded-2xl"
           />
-          {/* <h1 className="self-center font-bold text-center text-7xl">
-            {recipe.name}
-          </h1> */}
-          <input
-            type="text"
-            className="self-center font-bold text-center text-7xl"
-            defaultValue={recipe.name}
-          />
+
+          <UpdateRecipeTitle originalTitle={recipe.name} recipeId={recipe.id} />
 
           <div className="flex justify-center gap-28">
             <NutritionalInfoValue
