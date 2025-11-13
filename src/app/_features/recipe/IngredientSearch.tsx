@@ -8,6 +8,7 @@ import { useDebounce } from '@/app/hooks/useDebounce';
 import { createInMemoryIngredientLine } from './utils';
 import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
 import IngredientLineItem from '../ingredient/IngredientLineItem';
+import { useOutsideClick } from '@/app/hooks/useOutsideClick';
 
 function IngredientSearch({
   onSelectFoundIngredient,
@@ -17,11 +18,13 @@ function IngredientSearch({
     isSelected: boolean
   ) => void;
 }) {
+  const [showList, setShowList] = useState(false);
   const [ingredientSearchTerm, setIngredientSearchTerm] = useState('');
   const [foundIngredients, setFoundIngredients] = useState<IngredientDTO[]>([]);
   const [selectedIngredientIds, setSelectedIngredientIds] = useState<
     Set<string>
   >(new Set());
+  const listRef = useOutsideClick<HTMLDivElement>(handleHideList);
 
   // IMPORTANT NOTE: Don't use this function directly to avoid excessive calls. Use debounced version below instead.
   async function fetchIngredients(term: string = ''): Promise<void> {
@@ -65,18 +68,30 @@ function IngredientSearch({
     return selectedIngredientIds.has(ingredientId);
   }
 
+  function handleShowList() {
+    if (!showList) setShowList(true);
+  }
+
+  function handleHideList() {
+    if (showList) setShowList(false);
+  }
+
   return (
     <div className="flex flex-col items-center gap-4">
+      {/* Search bar */}
       <Input
         value={ingredientSearchTerm}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setIngredientSearchTerm(e.target.value)
-        }
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          setIngredientSearchTerm(e.target.value);
+          handleShowList();
+        }}
+        onClick={handleShowList}
         placeholder="Buscar ingredientes..."
       />
 
-      {foundIngredients.length > 0 && ingredientSearchTerm && (
-        <VerticalList className="mx-auto max-w-80">
+      {/* Found results */}
+      {showList && foundIngredients.length > 0 && ingredientSearchTerm && (
+        <VerticalList ref={listRef} className="mx-auto max-w-80">
           {foundIngredients.map((ingredient) => (
             <IngredientItemMini
               key={ingredient.id}
