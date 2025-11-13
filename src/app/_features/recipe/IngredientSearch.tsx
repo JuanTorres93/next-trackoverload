@@ -109,9 +109,11 @@ function IngredientSearch({
 function IngredientList({
   ingredientLines,
   setIngredientLines,
+  showIngredientLabel = true,
 }: {
   ingredientLines: IngredientLineDTO[];
   setIngredientLines: React.Dispatch<React.SetStateAction<IngredientLineDTO[]>>;
+  showIngredientLabel?: boolean;
 }) {
   function handleIngredientLineQuantityChange(ingredientLineId: string) {
     return (newQuantity: number) => {
@@ -133,8 +135,12 @@ function IngredientList({
 
   return (
     <div className="flex flex-col gap-4">
-      {ingredientLines.length ? ingredientLines.length : ''} Ingrediente
-      {ingredientLines.length === 1 ? '' : 's'}
+      {showIngredientLabel && (
+        <>
+          {ingredientLines.length ? ingredientLines.length : ''} Ingrediente
+          {ingredientLines.length === 1 ? '' : 's'}
+        </>
+      )}
       {ingredientLines.map((ingredientLine) => (
         <IngredientLineItem
           key={ingredientLine.id}

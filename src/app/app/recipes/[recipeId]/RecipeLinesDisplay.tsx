@@ -73,6 +73,7 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
         <IngredientSearch.IngredientList
           ingredientLines={newIngredientLines}
           setIngredientLines={setNewIngredientLines}
+          showIngredientLabel={newIngredientLines.length > 0}
         />
       </div>
     </div>
