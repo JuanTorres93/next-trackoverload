@@ -25,3 +25,17 @@ export function toIngredientDTO(ingredient: Ingredient): IngredientDTO {
     updatedAt: ingredient.updatedAt.toISOString(),
   };
 }
+
+export function fromIngredientDTO(dto: IngredientDTO): Ingredient {
+  return Ingredient.create({
+    id: dto.id,
+    name: dto.name,
+    nutritionalInfoPer100g: {
+      calories: dto.nutritionalInfoPer100g.calories,
+      protein: dto.nutritionalInfoPer100g.protein,
+    },
+    imageUrl: dto.imageUrl,
+    createdAt: new Date(dto.createdAt),
+    updatedAt: new Date(dto.updatedAt),
+  });
+}

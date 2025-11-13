@@ -1,5 +1,9 @@
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-import { IngredientDTO, toIngredientDTO } from './IngredientDTO';
+import {
+  IngredientDTO,
+  toIngredientDTO,
+  fromIngredientDTO,
+} from './IngredientDTO';
 
 export type IngredientLineDTO = {
   id: string;
@@ -23,4 +27,14 @@ export function toIngredientLineDTO(
     createdAt: ingredientLine.createdAt.toISOString(),
     updatedAt: ingredientLine.updatedAt.toISOString(),
   };
+}
+
+export function fromIngredientLineDTO(dto: IngredientLineDTO): IngredientLine {
+  return IngredientLine.create({
+    id: dto.id,
+    ingredient: fromIngredientDTO(dto.ingredient),
+    quantityInGrams: dto.quantityInGrams,
+    createdAt: new Date(dto.createdAt),
+    updatedAt: new Date(dto.updatedAt),
+  });
 }

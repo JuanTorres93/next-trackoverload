@@ -22,6 +22,7 @@ describe('AddIngredientToRecipeUsecase', () => {
 
     const testIngredient = Ingredient.create({
       ...vp.validIngredientProps,
+      id: 'existing-ingredient-id',
     });
 
     const testIngredientLine = IngredientLine.create({
@@ -36,6 +37,7 @@ describe('AddIngredientToRecipeUsecase', () => {
 
     const newIngredient = Ingredient.create({
       ...vp.validIngredientProps,
+      id: 'new-ingredient-id',
     });
 
     newIngredientLine = IngredientLine.create({
@@ -157,5 +159,31 @@ describe('AddIngredientToRecipeUsecase', () => {
         addIngredientToRecipeUsecase.execute(request)
       ).rejects.toThrow(ValidationError);
     }
+  });
+
+  it('should throw ValidationError when ingredient already exists in recipe', async () => {
+    await recipesRepo.saveRecipe(testRecipe);
+
+    // Get the ingredient from the existing ingredient line in the recipe
+    const existingIngredient = testRecipe.ingredientLines[0].ingredient;
+
+    // Create a new ingredient line with the same ingredient
+    const duplicateIngredientLine = IngredientLine.create({
+      ...vp.ingredientLinePropsNoIngredient,
+      ingredient: existingIngredient,
+    });
+
+    const request = {
+      recipeId: testRecipe.id,
+      userId: vp.userId,
+      ingredientLine: duplicateIngredientLine,
+    };
+
+    await expect(addIngredientToRecipeUsecase.execute(request)).rejects.toThrow(
+      ValidationError
+    );
+    await expect(addIngredientToRecipeUsecase.execute(request)).rejects.toThrow(
+      /already exists in recipe/
+    );
   });
 });

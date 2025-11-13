@@ -160,4 +160,25 @@ describe('Recipe', () => {
       });
     }).toThrowError(ValidationError);
   });
+
+  it('should throw an error when adding a duplicate ingredient', async () => {
+    // Try to add an ingredient line with the same ingredient ID
+    const duplicateIngredientLine = IngredientLine.create({
+      ...vp.ingredientLinePropsNoIngredient,
+      id: 'duplicate-line-id',
+      ingredient: Ingredient.create({
+        ...vp.validIngredientProps,
+        id: vp.validIngredientProps.id, // Same ingredient ID
+      }),
+      quantityInGrams: 150,
+    });
+
+    expect(() => {
+      recipe.addIngredientLine(duplicateIngredientLine);
+    }).toThrowError(ValidationError);
+
+    expect(() => {
+      recipe.addIngredientLine(duplicateIngredientLine);
+    }).toThrowError(/already exists in recipe/);
+  });
 });

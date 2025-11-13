@@ -49,6 +49,17 @@ export class Recipe implements Protein, Calories {
     if (!(ingredientLine instanceof IngredientLine)) {
       throw new ValidationError('Recipe: Invalid ingredient line');
     }
+
+    const ingredientAlreadyExists = this.props.ingredientLines.some(
+      (line) => line.ingredient.id === ingredientLine.ingredient.id
+    );
+
+    if (ingredientAlreadyExists) {
+      throw new ValidationError(
+        `Recipe: Ingredient with id ${ingredientLine.ingredient.id} already exists in recipe`
+      );
+    }
+
     this.props.ingredientLines.push(ingredientLine);
     this.props.updatedAt = new Date();
   }

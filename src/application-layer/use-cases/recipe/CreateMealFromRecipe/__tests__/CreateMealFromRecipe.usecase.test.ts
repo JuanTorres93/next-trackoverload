@@ -125,11 +125,13 @@ describe('CreateMealFromRecipeUsecase', () => {
   it('should preserve all ingredient lines from recipe', async () => {
     const secondIngredient = Ingredient.create({
       ...vp.validIngredientProps,
+      id: 'ing2',
       name: 'Rice',
     });
 
     const secondIngredientLine = IngredientLine.create({
       ...vp.ingredientLinePropsNoIngredient,
+      id: 'line2',
       ingredient: secondIngredient,
     });
 
