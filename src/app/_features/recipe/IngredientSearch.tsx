@@ -7,6 +7,7 @@ import { IngredientDTO } from '@/application-layer/dtos/IngredientDTO';
 import { useDebounce } from '@/app/hooks/useDebounce';
 import { createInMemoryIngredientLine } from './utils';
 import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
+import IngredientLineItem from '../ingredient/IngredientLineItem';
 
 function IngredientSearch({
   onSelectFoundIngredient,
@@ -89,6 +90,51 @@ function IngredientSearch({
     </div>
   );
 }
+
+function IngredientList({
+  ingredientLines,
+  setIngredientLines,
+}: {
+  ingredientLines: IngredientLineDTO[];
+  setIngredientLines: React.Dispatch<React.SetStateAction<IngredientLineDTO[]>>;
+}) {
+  function handleIngredientLineQuantityChange(ingredientLineId: string) {
+    return (newQuantity: number) => {
+      setIngredientLines((prev) =>
+        prev.map((il) =>
+          il.id === ingredientLineId
+            ? { ...il, quantityInGrams: newQuantity }
+            : il
+        )
+      );
+    };
+  }
+
+  function handleIngredientLineRemove(ingredientLineId: string) {
+    setIngredientLines((prev) =>
+      prev.filter((il) => il.id !== ingredientLineId)
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      {ingredientLines.length ? ingredientLines.length : ''} Ingrediente
+      {ingredientLines.length === 1 ? '' : 's'}
+      {ingredientLines.map((ingredientLine) => (
+        <IngredientLineItem
+          key={ingredientLine.id}
+          ingredientLine={ingredientLine}
+          onQuantityChange={handleIngredientLineQuantityChange(
+            ingredientLine.id
+          )}
+          onRemove={() => handleIngredientLineRemove(ingredientLine.id)}
+        />
+      ))}
+    </div>
+  );
+}
+
+IngredientSearch.IngredientList = IngredientList;
 
 export default IngredientSearch;
 

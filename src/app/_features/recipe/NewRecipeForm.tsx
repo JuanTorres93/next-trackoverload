@@ -1,6 +1,5 @@
 'use client';
 import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
-import IngredientLineItem from '../ingredient/IngredientLineItem';
 
 import ImagePicker from '@/app/_ui/ImagePicker';
 import Form from '@/app/_ui/NewResourceForm';
@@ -53,24 +52,6 @@ function NewRecipeForm() {
     { setter: setIngredientLines, initialValue: defaultIngredientLines },
     { setter: setSelectedImage, initialValue: defaultSelectedImage },
   ]);
-
-  function handleIngredientLineQuantityChange(ingredientLineId: string) {
-    return (newQuantity: number) => {
-      setIngredientLines((prev) =>
-        prev.map((il) =>
-          il.id === ingredientLineId
-            ? { ...il, quantityInGrams: newQuantity }
-            : il
-        )
-      );
-    };
-  }
-
-  function handleIngredientLineRemove(ingredientLineId: string) {
-    setIngredientLines((prev) =>
-      prev.filter((il) => il.id !== ingredientLineId)
-    );
-  }
 
   function handleImageSelection(files: File[]) {
     if (files.length > 0) {
@@ -160,18 +141,10 @@ function NewRecipeForm() {
       </Form.FormRow>
 
       <Form.FormRow label="" error={formState.errors.ingredientLines}>
-        {ingredientLines.length ? ingredientLines.length : ''} Ingrediente
-        {ingredientLines.length === 1 ? '' : 's'}
-        {ingredientLines.map((ingredientLine) => (
-          <IngredientLineItem
-            key={ingredientLine.id}
-            ingredientLine={ingredientLine}
-            onQuantityChange={handleIngredientLineQuantityChange(
-              ingredientLine.id
-            )}
-            onRemove={() => handleIngredientLineRemove(ingredientLine.id)}
-          />
-        ))}
+        <IngredientSearch.IngredientList
+          ingredientLines={ingredientLines}
+          setIngredientLines={setIngredientLines}
+        />
       </Form.FormRow>
 
       {/* Summary */}

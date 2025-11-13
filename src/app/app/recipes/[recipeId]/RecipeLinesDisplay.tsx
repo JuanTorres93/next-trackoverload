@@ -1,19 +1,27 @@
 'use client';
 
-import { HiOutlineDuplicate, HiX } from 'react-icons/hi';
+import { HiOutlineDuplicate, HiOutlineTrash } from 'react-icons/hi';
 import IngredientLineItem from '@/app/_features/ingredient/IngredientLineItem';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { removeIngredientFromRecipe } from '@/app/_features/recipe/actions';
 import { updateIngredientLineQuantity } from '@/app/_features/ingredient/actions';
 import { duplicateRecipe, deleteRecipe } from '@/app/_features/recipe/actions';
 import { useDebounce } from '@/app/hooks/useDebounce';
-import IngredientSearch from '@/app/_features/recipe/IngredientSearch';
+import IngredientSearch, {
+  handleIngredientSelection,
+} from '@/app/_features/recipe/IngredientSearch';
+import { useState } from 'react';
+import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
 
 interface RecipeDisplayProps {
   recipe: RecipeDTO;
 }
 
 export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
+  const [newIngredientLines, setNewIngredientLines] = useState<
+    IngredientLineDTO[]
+  >([]);
+
   const debouncedUpdateQuantity = useDebounce(handleQuantityChange, 250);
 
   function handleRemoveIngredient(ingredientId: string) {
@@ -44,7 +52,7 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
           className="transition cursor-pointer hover:text-green-600"
           onClick={() => duplicateRecipe(recipe.id)}
         />
-        <HiX
+        <HiOutlineTrash
           className="transition cursor-pointer hover:text-red-600"
           onClick={() => deleteRecipe(recipe.id)}
         />
@@ -52,7 +60,20 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
 
       <div>
         <h3>Añadir ingredientes</h3>
-        <IngredientSearch />
+        <IngredientSearch
+          onSelectFoundIngredient={(ingredient, isSelected) =>
+            handleIngredientSelection(
+              ingredient,
+              isSelected,
+              setNewIngredientLines
+            )
+          }
+        />
+
+        <IngredientSearch.IngredientList
+          ingredientLines={newIngredientLines}
+          setIngredientLines={setNewIngredientLines}
+        />
       </div>
     </div>
   );
