@@ -6,7 +6,7 @@ import { AppGetAllRecipesForUserUsecase } from '@/interface-adapters/app/use-cas
 
 export const metadata = {
   title: 'Recetas',
-  description: 'Crear una nueva receta',
+  description: 'Todas tus recetas',
 };
 
 export default async function RecipesPage() {

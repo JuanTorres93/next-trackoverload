@@ -7,6 +7,29 @@ import NutritionalInfoValue from '@/app/_ui/NutritionalInfoValue';
 import { formatToInteger } from '@/app/_utils/format/formatToInteger';
 import UpdateRecipeTitle from './UpdateRecipeTitle';
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ recipeId: string }>;
+}) {
+  const { recipeId } = await params;
+  const recipe = await AppGetRecipeByIdForUserUsecase.execute({
+    id: recipeId,
+    userId: 'dev-user', // TODO IMPORTANT: Replace with actual user ID from authenticated user
+  });
+
+  if (!recipe) {
+    return {
+      title: 'Receta no encontrada',
+    };
+  }
+
+  return {
+    title: recipe.name,
+    description: `Detalles de la receta: ${recipe.name}`,
+  };
+}
+
 export default async function RecipePage({
   params,
 }: {
@@ -20,7 +43,7 @@ export default async function RecipePage({
     }
   );
 
-  if (!recipe) return <PageWrapper>No recipe found</PageWrapper>;
+  if (!recipe) return <PageWrapper>No se encontró la receta</PageWrapper>;
 
   return (
     <PageWrapper>

@@ -14,7 +14,7 @@
 - [x] Repositorio privado de recetas
 - [x] Guardar info recetas
 - [ ] Editar info recetas sin afectar a comidas pasadas
-- [ ] Ver info recetas
+- [x] Ver info recetas
 - [ ] Borrar recetas sin afectar a comidas pasadas
 - [ ] 2 (o X) versiones de cada receta: Weight gain y Weight loss
 - [x] Sólo info necesaria de las recetas: calorías y proteínas
