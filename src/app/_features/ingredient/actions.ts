@@ -1,6 +1,7 @@
 'use server';
 import { AppCreateIngredientUsecase } from '@/interface-adapters/app/use-cases/ingredient/CreateIngredient/createingredient';
 import { AppUpdateIngredientLineUsecase } from '@/interface-adapters/app/use-cases/ingredientline';
+import { AppCreateIngredientLineUsecase } from '@/interface-adapters/app/use-cases/ingredientline/CreateIngredientLine/createIngredientLine';
 import { revalidatePath } from 'next/cache';
 
 import { FormState } from '@/app/_types/FormState';
@@ -62,3 +63,15 @@ export async function updateIngredientLineQuantity(
   revalidatePath(`/app/${parentEntityType}s/${parentEntityId}`);
   revalidatePath(`/app/${parentEntityType}s`);
 }
+
+export const createIngredientLine = async (
+  ingredientId: string,
+  quantityInGrams: number
+) => {
+  const ingredientLineDTO = await AppCreateIngredientLineUsecase.execute({
+    ingredientId,
+    quantityInGrams,
+  });
+
+  return ingredientLineDTO;
+};

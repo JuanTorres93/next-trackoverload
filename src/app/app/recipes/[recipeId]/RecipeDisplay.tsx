@@ -12,6 +12,8 @@ import {
   deleteRecipe,
   addIngredientToRecipe,
 } from '@/app/_features/recipe/actions';
+import { createIngredientLine } from '@/app/_features/ingredient/actions';
+
 import { useDebounce } from '@/app/hooks/useDebounce';
 import IngredientSearch, {
   handleIngredientSelection,
@@ -23,6 +25,8 @@ import ButtonNew from '@/app/_ui/ButtonNew';
 interface RecipeDisplayProps {
   recipe: RecipeDTO;
 }
+
+// TODO add functionality to change recipe image
 
 export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
   // TODO Filter ingredients that are already in the recipe
@@ -40,11 +44,16 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
     updateIngredientLineQuantity('recipe', recipe.id, lineId, quantity);
   }
 
-  function handleAddIngredients(e: React.FormEvent) {
+  async function handleAddIngredients(e: React.FormEvent) {
+    // TODO handle loading state
     e.preventDefault();
 
     for (const line of newIngredientLines) {
-      addIngredientToRecipe(recipe.id, line);
+      const createdLine = await createIngredientLine(
+        line.ingredient.id,
+        line.quantityInGrams
+      );
+      addIngredientToRecipe(recipe.id, createdLine);
     }
 
     setNewIngredientLines([]);
