@@ -5,19 +5,24 @@ import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
+import { MemoryIngredientLinesRepo } from '@/infra/memory/MemoryIngredientLinesRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { AddIngredientToRecipeUsecase } from '../AddIngredientToRecipe.usecase';
 
 describe('AddIngredientToRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
+  let ingredientLinesRepo: MemoryIngredientLinesRepo;
   let addIngredientToRecipeUsecase: AddIngredientToRecipeUsecase;
   let testRecipe: Recipe;
   let newIngredientLine: IngredientLine;
+  let newIngredient: Ingredient;
 
   beforeEach(() => {
     recipesRepo = new MemoryRecipesRepo();
+    ingredientLinesRepo = new MemoryIngredientLinesRepo();
     addIngredientToRecipeUsecase = new AddIngredientToRecipeUsecase(
-      recipesRepo
+      recipesRepo,
+      ingredientLinesRepo
     );
 
     const testIngredient = Ingredient.create({
@@ -35,7 +40,7 @@ describe('AddIngredientToRecipeUsecase', () => {
       ingredientLines: [testIngredientLine],
     });
 
-    const newIngredient = Ingredient.create({
+    newIngredient = Ingredient.create({
       ...vp.validIngredientProps,
       id: 'new-ingredient-id',
     });
@@ -44,6 +49,8 @@ describe('AddIngredientToRecipeUsecase', () => {
       ...vp.ingredientLinePropsNoIngredient,
       ingredient: newIngredient,
     });
+
+    ingredientLinesRepo.saveIngredientLine(newIngredientLine);
   });
 
   it('should add ingredient to recipe successfully', async () => {
@@ -90,6 +97,33 @@ describe('AddIngredientToRecipeUsecase', () => {
 
     await expect(addIngredientToRecipeUsecase.execute(request)).rejects.toThrow(
       NotFoundError
+    );
+
+    await expect(addIngredientToRecipeUsecase.execute(request)).rejects.toThrow(
+      /Recipe/
+    );
+  });
+
+  it('should throw NotFoundError when IngredientLine does not exist', async () => {
+    await recipesRepo.saveRecipe(testRecipe);
+    const notInRepoIngredientLine = IngredientLine.create({
+      ...vp.ingredientLinePropsNoIngredient,
+      id: 'non-existent-ingredient-line-id',
+      ingredient: newIngredient,
+    });
+
+    const request = {
+      recipeId: testRecipe.id,
+      userId: vp.userId,
+      ingredientLine: notInRepoIngredientLine,
+    };
+
+    await expect(addIngredientToRecipeUsecase.execute(request)).rejects.toThrow(
+      NotFoundError
+    );
+
+    await expect(addIngredientToRecipeUsecase.execute(request)).rejects.toThrow(
+      /IngredientLine/
     );
   });
 
