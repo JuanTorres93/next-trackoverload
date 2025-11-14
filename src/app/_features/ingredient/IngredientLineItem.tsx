@@ -1,10 +1,9 @@
 'use client';
-import { HiOutlineX } from 'react-icons/hi';
 import Input from '@/app/_ui/Input';
 import NutritionalInfoValue from '@/app/_ui/NutritionalInfoValue';
 import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
 import Image from 'next/image';
-import { formatToInteger } from '@/app/_utils/format/formatToInteger';
+import { HiOutlineX } from 'react-icons/hi';
 
 function IngredientLineItem({
   ingredientLine,
@@ -15,12 +14,10 @@ function IngredientLineItem({
   onQuantityChange: (quantity: number) => void;
   onRemove: () => void;
 }) {
-  const totalCalories = formatToInteger(
-    (ingredientLine.calories * ingredientLine.quantityInGrams) / 100
-  );
-  const totalProtein = formatToInteger(
-    (ingredientLine.protein * ingredientLine.quantityInGrams) / 100
-  );
+  const totalCalories =
+    (ingredientLine.calories * ingredientLine.quantityInGrams) / 100;
+  const totalProtein =
+    (ingredientLine.protein * ingredientLine.quantityInGrams) / 100;
 
   return (
     <div className="grid grid-rows-[1fr_auto] h-full max-h-32 max-w-96 overflow-hidden rounded-xl  ">
