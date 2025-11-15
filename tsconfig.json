@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
+    "types": ["vitest/globals"], // Allows using Vitest global types like describe, it, expect without errors for explicit imports
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
