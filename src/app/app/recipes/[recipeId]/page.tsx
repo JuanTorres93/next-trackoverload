@@ -1,7 +1,7 @@
 import { AppGetRecipeByIdForUserUsecase } from '@/interface-adapters/app/use-cases/recipe';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import PageWrapper from '@/app/_ui/PageWrapper';
-import RecipeDisplay from './RecipeLinesDisplay';
+import RecipeDisplay from './RecipeDisplay';
 import Image from 'next/image';
 import NutritionalInfoValue from '@/app/_ui/NutritionalInfoValue';
 import { formatToInteger } from '@/app/_utils/format/formatToInteger';

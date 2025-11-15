@@ -14,11 +14,6 @@ function IngredientLineItem({
   onQuantityChange: (quantity: number) => void;
   onRemove: () => void;
 }) {
-  const totalCalories =
-    (ingredientLine.calories * ingredientLine.quantityInGrams) / 100;
-  const totalProtein =
-    (ingredientLine.protein * ingredientLine.quantityInGrams) / 100;
-
   return (
     <div className="grid grid-rows-[1fr_auto] h-full max-h-32 max-w-96 overflow-hidden rounded-xl  ">
       <div className="grid grid-cols-[40px_1fr_5rem_min-content] p-2  gap-4 items-center bg-neutral-100">
@@ -50,8 +45,14 @@ function IngredientLineItem({
       </div>
 
       <div className="grid grid-cols-2 p-2 text-sm text-center bg-neutral-200 text-neutral-600">
-        <NutritionalInfoValue number={totalCalories} label="Calorías" />
-        <NutritionalInfoValue number={totalProtein} label="Proteínas" />
+        <NutritionalInfoValue
+          number={ingredientLine.calories}
+          label="Calorías"
+        />
+        <NutritionalInfoValue
+          number={ingredientLine.protein}
+          label="Proteínas"
+        />
       </div>
     </div>
   );

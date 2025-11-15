@@ -34,17 +34,11 @@ function NewRecipeForm() {
   );
 
   const totalCalories = formatToInteger(
-    ingredientLines.reduce(
-      (sum, il) => sum + (il.calories * il.quantityInGrams) / 100,
-      0
-    )
+    ingredientLines.reduce((sum, il) => sum + il.calories, 0)
   );
 
   const totalProtein = formatToInteger(
-    ingredientLines.reduce(
-      (sum, il) => sum + (il.protein * il.quantityInGrams) / 100,
-      0
-    )
+    ingredientLines.reduce((sum, il) => sum + il.protein, 0)
   );
 
   useResetOnSuccess(formRef, formState, pending, [

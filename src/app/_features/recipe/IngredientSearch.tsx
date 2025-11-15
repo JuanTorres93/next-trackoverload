@@ -9,6 +9,7 @@ import { createInMemoryIngredientLine } from './utils';
 import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
 import IngredientLineItem from '../ingredient/IngredientLineItem';
 import { useOutsideClick } from '@/app/hooks/useOutsideClick';
+import { formatToInteger } from '@/app/_utils/format/formatToInteger';
 
 function IngredientSearch({
   onSelectFoundIngredient,
@@ -117,10 +118,27 @@ function IngredientList({
 }) {
   function handleIngredientLineQuantityChange(ingredientLineId: string) {
     return (newQuantity: number) => {
+      const ingredientLine = ingredientLines.find(
+        (il) => il.id === ingredientLineId
+      );
+      if (!ingredientLine) return;
+
+      const quantityInGrams = newQuantity;
+      const calories = formatToInteger(
+        (ingredientLine.ingredient.nutritionalInfoPer100g.calories *
+          quantityInGrams) /
+          100
+      );
+      const protein = formatToInteger(
+        (ingredientLine.ingredient.nutritionalInfoPer100g.protein *
+          quantityInGrams) /
+          100
+      );
+
       setIngredientLines((prev) =>
         prev.map((il) =>
           il.id === ingredientLineId
-            ? { ...il, quantityInGrams: newQuantity }
+            ? { ...il, quantityInGrams, calories, protein }
             : il
         )
       );
