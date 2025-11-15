@@ -1,9 +1,6 @@
 'use client';
-import Input from '@/app/_ui/Input';
-import NutritionalInfoValue from '@/app/_ui/NutritionalInfoValue';
+import NutritionSummary from '@/app/_ui/NutritionSummary';
 import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
-import Image from 'next/image';
-import { HiOutlineX } from 'react-icons/hi';
 
 function IngredientLineItem({
   ingredientLine,
@@ -15,46 +12,11 @@ function IngredientLineItem({
   onRemove: () => void;
 }) {
   return (
-    <div className="grid grid-rows-[1fr_auto] h-full max-h-32 max-w-96 overflow-hidden rounded-xl  ">
-      <div className="grid grid-cols-[40px_1fr_5rem_min-content] p-2  gap-4 items-center bg-neutral-100">
-        <div className="relative h-12 overflow-hidden rounded-md aspect-square">
-          <Image
-            fill
-            src={
-              ingredientLine.ingredient.imageUrl || '/ingredient-no-picture.png'
-            }
-            alt="Ingredient Image"
-            className="object-cover"
-          />
-        </div>
-        <span className="font-semibold">{ingredientLine.ingredient.name}</span>
-        <div className="relative flex items-center text-neutral-500">
-          <Input
-            className="w-full text-right border-none outline-none"
-            type="number"
-            defaultValue={ingredientLine.quantityInGrams}
-            onChange={(e) => onQuantityChange(Number(e.target.value))}
-            placeholder="gramos"
-          />
-          <span className="ml-[-.5rem]">g</span>
-        </div>
-
-        <div onClick={onRemove}>
-          <HiOutlineX className="text-xl cursor-pointer text-neutral-500 hover:text-red-500" />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 p-2 text-sm text-center bg-neutral-200 text-neutral-600">
-        <NutritionalInfoValue
-          number={ingredientLine.calories}
-          label="Calorías"
-        />
-        <NutritionalInfoValue
-          number={ingredientLine.protein}
-          label="Proteínas"
-        />
-      </div>
-    </div>
+    <NutritionSummary
+      line={ingredientLine}
+      onQuantityChange={onQuantityChange}
+      onRemove={onRemove}
+    />
   );
 }
 
