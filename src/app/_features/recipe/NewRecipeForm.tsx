@@ -41,6 +41,11 @@ function NewRecipeForm() {
     ingredientLines.reduce((sum, il) => sum + il.protein, 0)
   );
 
+  const invalidForm =
+    ingredientLines.length === 0 ||
+    recipeName.trim() === '' ||
+    ingredientLines.some((il) => il.quantityInGrams <= 0);
+
   useResetOnSuccess(formRef, formState, pending, [
     { setter: setRecipeName, initialValue: defaultRecipeName },
     { setter: setIngredientLines, initialValue: defaultIngredientLines },
@@ -83,6 +88,7 @@ function NewRecipeForm() {
     <Form
       ref={formRef}
       isPending={pending}
+      disableSubmit={invalidForm}
       onSubmit={handleSubmit}
       submitText="Crear receta"
     >

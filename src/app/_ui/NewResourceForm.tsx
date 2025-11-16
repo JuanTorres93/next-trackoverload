@@ -7,6 +7,7 @@ type FormProps = React.FormHTMLAttributes<HTMLFormElement> & {
   children: React.ReactNode;
   submitText?: string;
   isPending?: boolean;
+  disableSubmit?: boolean;
   ref?: React.Ref<HTMLFormElement>;
   errorMessage?: string;
 };
@@ -15,6 +16,7 @@ export function Form({
   children,
   submitText,
   isPending,
+  disableSubmit,
   errorMessage,
   ...props
 }: FormProps) {
@@ -22,7 +24,7 @@ export function Form({
     <form className="flex flex-col gap-4" {...props}>
       {children}
 
-      <ButtonNew type="submit" disabled={isPending}>
+      <ButtonNew type="submit" disabled={isPending || disableSubmit}>
         {submitText || 'Enviar'}
       </ButtonNew>
       {errorMessage && (

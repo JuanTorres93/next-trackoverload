@@ -12,6 +12,7 @@
     "test:watch": "vitest watch"
   },
   "dependencies": {
+    "@testing-library/user-event": "^14.6.1",
     "@vitejs/plugin-react": "^5.1.1",
     "file-type": "^21.0.0",
     "next": "15.5.3",
@@ -34,6 +35,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.3",
     "jsdom": "^27.0.0",
+    "msw": "^2.12.2",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^3.2.4"

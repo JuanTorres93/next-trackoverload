@@ -92,7 +92,11 @@ function IngredientSearch({
 
       {/* Found results */}
       {showList && foundIngredients.length > 0 && ingredientSearchTerm && (
-        <VerticalList ref={listRef} className="mx-auto max-w-80">
+        <VerticalList
+          data-testid="ingredient-list"
+          ref={listRef}
+          className="mx-auto max-w-80"
+        >
           {foundIngredients.map((ingredient) => (
             <IngredientItemMini
               key={ingredient.id}
@@ -152,7 +156,7 @@ function IngredientList({
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div data-testid="ingredient-line-list" className="flex flex-col gap-4">
       {showIngredientLabel && (
         <>
           {ingredientLines.length ? ingredientLines.length : ''} Ingrediente
