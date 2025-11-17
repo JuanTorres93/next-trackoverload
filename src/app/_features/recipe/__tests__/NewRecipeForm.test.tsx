@@ -1,7 +1,45 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { createServer } from '../../../../../tests/mocks/server';
 
 import NewRecipeForm from '../NewRecipeForm';
+
+createServer([
+  {
+    path: '/api/ingredient/fuzzy/:term',
+    method: 'get',
+    response: (req, res, ctx) => {
+      const { term } = req.params as { term: string };
+      const ingredients = [
+        {
+          id: '1',
+          name: 'Carrot',
+          nutritionalInfoPer100g: { calories: 41, protein: 0.9 },
+          imageUrl: 'https://example.com/carrot.jpg',
+        },
+        {
+          id: '2',
+          name: 'Cabbage',
+          nutritionalInfoPer100g: { calories: 25, protein: 1.3 },
+          imageUrl: 'https://example.com/cabbage.jpg',
+        },
+        {
+          id: '3',
+          name: 'Celery',
+
+          nutritionalInfoPer100g: { calories: 16, protein: 0.7 },
+          imageUrl: 'https://example.com/celery.jpg',
+        },
+      ];
+
+      const filteredIngredients = ingredients.filter((ingredient) =>
+        ingredient.name.toLowerCase().includes(term.toLowerCase())
+      );
+
+      return filteredIngredients;
+    },
+  },
+]);
 
 async function setup() {
   render(<NewRecipeForm />);
