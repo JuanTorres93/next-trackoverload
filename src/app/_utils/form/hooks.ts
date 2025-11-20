@@ -22,7 +22,7 @@ export function useResetOnSuccess(
     const wasSubmitting = prevPendingRef.current && !pending;
     prevPendingRef.current = pending;
 
-    if (wasSubmitting && formState.ok && formRef) {
+    if (wasSubmitting && formState?.ok && formRef) {
       formRef.current?.reset();
 
       if (reactStatesToReset) {
@@ -31,7 +31,7 @@ export function useResetOnSuccess(
         });
       }
     }
-  }, [pending, formState.ok, formRef, reactStatesToReset]);
+  }, [pending, formState?.ok, formRef, reactStatesToReset]);
 }
 
 export function useFormSetup(

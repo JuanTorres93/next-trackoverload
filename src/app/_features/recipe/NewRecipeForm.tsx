@@ -140,7 +140,7 @@ function NewRecipeForm() {
         />
       </Form.FormRow>
 
-      <Form.FormRow label="" error={formState.errors.ingredientLines}>
+      <Form.FormRow label="" error={formState?.errors.ingredientLines}>
         <IngredientSearch.IngredientList
           ingredientLines={ingredientLines}
           setIngredientLines={setIngredientLines}

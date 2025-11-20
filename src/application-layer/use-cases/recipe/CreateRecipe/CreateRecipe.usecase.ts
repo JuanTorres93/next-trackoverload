@@ -79,6 +79,10 @@ export class CreateRecipeUsecase {
       updatedAt: new Date(),
     });
 
+    // TODO DELETE THESE DEBUG LOGS
+    console.log('newRecipe');
+    console.log(newRecipe);
+
     await this.ingredientLinesRepo.saveMultipleIngredientLines(ingredientLines);
     await this.recipesRepo.saveRecipe(newRecipe);
 

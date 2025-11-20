@@ -1,36 +1,28 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
+import { vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { createServer } from '../../../../../tests/mocks/server';
+import { createMockIngredients } from '../../../../../tests/mocks/ingredients';
+import { AppRecipesRepo } from '@/interface-adapters/app/repos/AppRecipesRepo';
+
+// Mock before importing the component that uses next/navigation
+vi.mock('next/navigation', () => {
+  return {
+    redirect: vi.fn(),
+  };
+});
 
 import NewRecipeForm from '../NewRecipeForm';
+
+const mockIngredients = await createMockIngredients();
 
 createServer([
   {
     path: '/api/ingredient/fuzzy/:term',
     method: 'get',
-    response: (req, res, ctx) => {
-      const { term } = req.params as { term: string };
-      const ingredients = [
-        {
-          id: '1',
-          name: 'Carrot',
-          nutritionalInfoPer100g: { calories: 41, protein: 0.9 },
-          imageUrl: 'https://example.com/carrot.jpg',
-        },
-        {
-          id: '2',
-          name: 'Cabbage',
-          nutritionalInfoPer100g: { calories: 25, protein: 1.3 },
-          imageUrl: 'https://example.com/cabbage.jpg',
-        },
-        {
-          id: '3',
-          name: 'Celery',
-
-          nutritionalInfoPer100g: { calories: 16, protein: 0.7 },
-          imageUrl: 'https://example.com/celery.jpg',
-        },
-      ];
+    response: ({ params }) => {
+      const term = params.term as string;
+      const ingredients = mockIngredients;
 
       const filteredIngredients = ingredients.filter((ingredient) =>
         ingredient.name.toLowerCase().includes(term.toLowerCase())
@@ -57,7 +49,7 @@ async function setup() {
   return { ingredientList, ingredientLineList, searchBar, createButton };
 }
 
-describe('IngredientSearch', () => {
+describe('NewRecipeForm', () => {
   it('fetches ingredients', async () => {
     const { ingredientList } = await setup();
 
@@ -133,6 +125,50 @@ describe('IngredientSearch', () => {
   });
 
   it("does not create recipe if at least one ingredient's quantity is zero", async () => {
-    // TODO implement
+    const { ingredientList, createButton, ingredientLineList } = await setup();
+
+    const firstIngredient = ingredientList.children[0];
+    await userEvent.click(firstIngredient);
+
+    const quantityInput = within(
+      ingredientLineList.children[0] as HTMLElement
+    ).getByRole('spinbutton');
+
+    await userEvent.clear(quantityInput);
+
+    expect(createButton).toBeDisabled();
+  });
+
+  it('ingredient has a default quantity of 100g', async () => {
+    const { ingredientList, ingredientLineList } = await setup();
+
+    const firstIngredient = ingredientList.children[0];
+    await userEvent.click(firstIngredient);
+
+    const quantityInput = within(
+      ingredientLineList.children[0] as HTMLElement
+    ).getByRole('spinbutton');
+
+    expect((quantityInput as HTMLInputElement).value).toBe('100');
+  });
+
+  it('creates recipe if all ingredients have valid quantities', async () => {
+    // TODO DELETE THESE DEBUG LOGS
+    console.log('FROM FORM');
+
+    const { ingredientList, createButton, ingredientLineList } = await setup();
+
+    const firstIngredient = ingredientList.children[0];
+    await userEvent.click(firstIngredient);
+
+    const quantityInput = within(
+      ingredientLineList.children[0] as HTMLElement
+    ).getByRole('spinbutton');
+
+    await userEvent.clear(quantityInput);
+    await userEvent.type(quantityInput, '150');
+
+    expect(createButton).toBeEnabled();
+    await userEvent.click(createButton);
   });
 });
