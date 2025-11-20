@@ -22,7 +22,10 @@ export default async function RecipesPage() {
       {recipes.length === 0 ? (
         <p className="text-center text-zinc-500">No hay recetas</p>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div
+          data-testid="recipes-container"
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+        >
           {recipes.map((recipe) => (
             <RecipeCard key={recipe.id} recipe={recipe} />
           ))}

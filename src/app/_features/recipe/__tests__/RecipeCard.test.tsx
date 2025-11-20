@@ -2,13 +2,13 @@ import { screen, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { AppRecipesRepo } from '@/interface-adapters/app/repos/AppRecipesRepo';
 import { createMockRecipes } from '../../../../../tests/mocks/recipes';
+import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 
 const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
 
 // Mock before importing the component that uses next/cache
 import '@/../tests/mocks/nextjs';
 import RecipeCard from '../RecipeCard';
-import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 
 const mockRecipes = await createMockRecipes();
 
