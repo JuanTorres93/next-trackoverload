@@ -71,4 +71,19 @@ export class MemoryDaysRepo implements DaysRepo {
     }
     // No error for non-existent days - consistent with other repos
   }
+
+  // IMPORTANT NOTE: Helper method for testing - not part of the interface
+  clearForTesting(): void {
+    this.days = [];
+  }
+
+  // IMPORTANT NOTE: Helper method for testing - not part of the interface
+  countForTesting(): number {
+    return this.days.length;
+  }
+
+  // IMPORTANT NOTE: Helper method for testing - not part of the interface
+  getAllForTesting(): Day[] {
+    return [...this.days];
+  }
 }

@@ -57,4 +57,19 @@ export class MemoryWorkoutsRepo implements WorkoutsRepo {
 
     this.workouts.splice(index, 1);
   }
+
+  // IMPORTANT NOTE: Helper method for testing - not part of the interface
+  clearForTesting(): void {
+    this.workouts = [];
+  }
+
+  // IMPORTANT NOTE: Helper method for testing - not part of the interface
+  countForTesting(): number {
+    return this.workouts.length;
+  }
+
+  // IMPORTANT NOTE: Helper method for testing - not part of the interface
+  getAllForTesting(): Workout[] {
+    return [...this.workouts];
+  }
 }

@@ -29,4 +29,19 @@ export class MemoryExercisesRepo implements ExercisesRepo {
 
     this.exercises.splice(index, 1);
   }
+
+  // IMPORTANT NOTE: Helper method for testing - not part of the interface
+  clearForTesting(): void {
+    this.exercises = [];
+  }
+
+  // IMPORTANT NOTE: Helper method for testing - not part of the interface
+  countForTesting(): number {
+    return this.exercises.length;
+  }
+
+  // IMPORTANT NOTE: Helper method for testing - not part of the interface
+  getAllForTesting(): Exercise[] {
+    return [...this.exercises];
+  }
 }

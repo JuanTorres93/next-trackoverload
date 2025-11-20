@@ -44,4 +44,19 @@ export class MemoryIngredientsRepo implements IngredientsRepo {
       ingredient.name.toLowerCase().includes(searchTerm)
     );
   }
+
+  // IMPORTANT NOTE: Helper method for testing - not part of the interface
+  clearForTesting(): void {
+    this.ingredients = [];
+  }
+
+  // IMPORTANT NOTE: Helper method for testing - not part of the interface
+  countForTesting(): number {
+    return this.ingredients.length;
+  }
+
+  // IMPORTANT NOTE: Helper method for testing - not part of the interface
+  getAllForTesting(): Ingredient[] {
+    return [...this.ingredients];
+  }
 }

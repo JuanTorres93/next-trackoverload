@@ -54,4 +54,19 @@ export class MemoryIngredientLinesRepo implements IngredientLinesRepo {
       (line) => !idsToDelete.has(line.id)
     );
   }
+
+  // IMPORTANT NOTE: Helper method for testing - not part of the interface
+  clearForTesting(): void {
+    this.ingredientLines = [];
+  }
+
+  // IMPORTANT NOTE: Helper method for testing - not part of the interface
+  countForTesting(): number {
+    return this.ingredientLines.length;
+  }
+
+  // IMPORTANT NOTE: Helper method for testing - not part of the interface
+  getAllForTesting(): IngredientLine[] {
+    return [...this.ingredientLines];
+  }
 }

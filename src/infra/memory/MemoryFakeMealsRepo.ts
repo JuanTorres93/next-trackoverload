@@ -56,4 +56,19 @@ export class MemoryFakeMealsRepo implements FakeMealsRepo {
 
     this.fakeMeals.splice(index, 1);
   }
+
+  // IMPORTANT NOTE: Helper method for testing - not part of the interface
+  clearForTesting(): void {
+    this.fakeMeals = [];
+  }
+
+  // IMPORTANT NOTE: Helper method for testing - not part of the interface
+  countForTesting(): number {
+    return this.fakeMeals.length;
+  }
+
+  // IMPORTANT NOTE: Helper method for testing - not part of the interface
+  getAllForTesting(): FakeMeal[] {
+    return [...this.fakeMeals];
+  }
 }

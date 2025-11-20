@@ -47,8 +47,24 @@ export class MemoryWorkoutTemplatesRepo implements WorkoutTemplatesRepo {
     return workoutTemplate || null;
   }
 
+  // IMPORTANT NOTE: Helper method for testing - not part of the interface
   // Used sparingly in tests to verify internal state (specifically for soft deletes)
   get workoutTemplatesForTesting(): WorkoutTemplate[] {
+    return [...this.workoutTemplates];
+  }
+
+  // IMPORTANT NOTE: Helper method for testing - not part of the interface
+  clearForTesting(): void {
+    this.workoutTemplates = [];
+  }
+
+  // IMPORTANT NOTE: Helper method for testing - not part of the interface
+  countForTesting(): number {
+    return this.workoutTemplates.length;
+  }
+
+  // IMPORTANT NOTE: Helper method for testing - not part of the interface
+  getAllForTesting(): WorkoutTemplate[] {
     return [...this.workoutTemplates];
   }
 }

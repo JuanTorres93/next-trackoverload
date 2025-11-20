@@ -44,4 +44,19 @@ export class MemoryRecipesRepo implements RecipesRepo {
 
     this.recipes.splice(index, 1);
   }
+
+  // IMPORTANT NOTE: Helper method for testing - not part of the interface
+  clearForTesting(): void {
+    this.recipes = [];
+  }
+
+  // IMPORTANT NOTE: Helper method for testing - not part of the interface
+  countForTesting(): number {
+    return this.recipes.length;
+  }
+
+  // IMPORTANT NOTE: Helper method for testing - not part of the interface
+  getAllForTesting(): Recipe[] {
+    return [...this.recipes];
+  }
 }

@@ -31,4 +31,19 @@ export class MemoryUsersRepo implements UsersRepo {
       this.users.push(user);
     }
   }
+
+  // IMPORTANT NOTE: Helper method for testing - not part of the interface
+  clearForTesting(): void {
+    this.users = [];
+  }
+
+  // IMPORTANT NOTE: Helper method for testing - not part of the interface
+  countForTesting(): number {
+    return this.users.length;
+  }
+
+  // IMPORTANT NOTE: Helper method for testing - not part of the interface
+  getAllForTesting(): User[] {
+    return [...this.users];
+  }
 }
