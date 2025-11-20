@@ -1,16 +1,14 @@
 import { render, screen, within } from '@testing-library/react';
-import { vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { createServer } from '../../../../../tests/mocks/server';
 import { createMockIngredients } from '../../../../../tests/mocks/ingredients';
 import { AppRecipesRepo } from '@/interface-adapters/app/repos/AppRecipesRepo';
+import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
+
+const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
 
 // Mock before importing the component that uses next/navigation
-vi.mock('next/navigation', () => {
-  return {
-    redirect: vi.fn(),
-  };
-});
+import '@/../tests/mocks/nextjs';
 
 import NewRecipeForm from '../NewRecipeForm';
 
@@ -34,13 +32,11 @@ createServer([
 ]);
 
 beforeAll(() => {
-  // @ts-expect-error AppRecipesRepo will always be MemoryRecipesRepo
-  AppRecipesRepo.clearForTesting();
+  recipesRepo.clearForTesting();
 });
 
 afterAll(() => {
-  // @ts-expect-error AppRecipesRepo will always be MemoryRecipesRepo
-  AppRecipesRepo.clearForTesting();
+  recipesRepo.clearForTesting();
 });
 
 async function setup() {
@@ -133,13 +129,11 @@ describe('NewRecipeForm', () => {
 
     expect(createButton).toBeDisabled();
 
-    // @ts-expect-error AppRecipesRepo will always be MemoryRecipesRepo
-    expect(AppRecipesRepo.countForTesting()).toBe(0);
+    expect(recipesRepo.countForTesting()).toBe(0);
 
     await userEvent.click(createButton);
 
-    // @ts-expect-error AppRecipesRepo will always be MemoryRecipesRepo
-    expect(AppRecipesRepo.countForTesting()).toBe(0);
+    expect(recipesRepo.countForTesting()).toBe(0);
   });
 
   it("does not create recipe if at least one ingredient's quantity is zero", async () => {
@@ -156,13 +150,11 @@ describe('NewRecipeForm', () => {
 
     expect(createButton).toBeDisabled();
 
-    // @ts-expect-error AppRecipesRepo will always be MemoryRecipesRepo
-    expect(AppRecipesRepo.countForTesting()).toBe(0);
+    expect(recipesRepo.countForTesting()).toBe(0);
 
     await userEvent.click(createButton);
 
-    // @ts-expect-error AppRecipesRepo will always be MemoryRecipesRepo
-    expect(AppRecipesRepo.countForTesting()).toBe(0);
+    expect(recipesRepo.countForTesting()).toBe(0);
   });
 
   it('ingredient has a default quantity of 100g', async () => {
@@ -193,12 +185,10 @@ describe('NewRecipeForm', () => {
 
     expect(createButton).toBeEnabled();
 
-    // @ts-expect-error AppRecipesRepo will always be MemoryRecipesRepo
-    expect(AppRecipesRepo.countForTesting()).toBe(0);
+    expect(recipesRepo.countForTesting()).toBe(0);
 
     await userEvent.click(createButton);
 
-    // @ts-expect-error AppRecipesRepo will always be MemoryRecipesRepo
-    expect(AppRecipesRepo.countForTesting()).toBe(1);
+    expect(recipesRepo.countForTesting()).toBe(1);
   });
 });
