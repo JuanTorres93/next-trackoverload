@@ -33,6 +33,16 @@ createServer([
   },
 ]);
 
+beforeAll(() => {
+  // @ts-expect-error AppRecipesRepo will always be MemoryRecipesRepo
+  AppRecipesRepo.clearForTesting();
+});
+
+afterAll(() => {
+  // @ts-expect-error AppRecipesRepo will always be MemoryRecipesRepo
+  AppRecipesRepo.clearForTesting();
+});
+
 async function setup() {
   render(<NewRecipeForm />);
 
@@ -122,6 +132,14 @@ describe('NewRecipeForm', () => {
     const { createButton } = await setup();
 
     expect(createButton).toBeDisabled();
+
+    // @ts-expect-error AppRecipesRepo will always be MemoryRecipesRepo
+    expect(AppRecipesRepo.countForTesting()).toBe(0);
+
+    await userEvent.click(createButton);
+
+    // @ts-expect-error AppRecipesRepo will always be MemoryRecipesRepo
+    expect(AppRecipesRepo.countForTesting()).toBe(0);
   });
 
   it("does not create recipe if at least one ingredient's quantity is zero", async () => {
@@ -137,6 +155,14 @@ describe('NewRecipeForm', () => {
     await userEvent.clear(quantityInput);
 
     expect(createButton).toBeDisabled();
+
+    // @ts-expect-error AppRecipesRepo will always be MemoryRecipesRepo
+    expect(AppRecipesRepo.countForTesting()).toBe(0);
+
+    await userEvent.click(createButton);
+
+    // @ts-expect-error AppRecipesRepo will always be MemoryRecipesRepo
+    expect(AppRecipesRepo.countForTesting()).toBe(0);
   });
 
   it('ingredient has a default quantity of 100g', async () => {
@@ -153,9 +179,6 @@ describe('NewRecipeForm', () => {
   });
 
   it('creates recipe if all ingredients have valid quantities', async () => {
-    // TODO DELETE THESE DEBUG LOGS
-    console.log('FROM FORM');
-
     const { ingredientList, createButton, ingredientLineList } = await setup();
 
     const firstIngredient = ingredientList.children[0];
@@ -169,6 +192,13 @@ describe('NewRecipeForm', () => {
     await userEvent.type(quantityInput, '150');
 
     expect(createButton).toBeEnabled();
+
+    // @ts-expect-error AppRecipesRepo will always be MemoryRecipesRepo
+    expect(AppRecipesRepo.countForTesting()).toBe(0);
+
     await userEvent.click(createButton);
+
+    // @ts-expect-error AppRecipesRepo will always be MemoryRecipesRepo
+    expect(AppRecipesRepo.countForTesting()).toBe(1);
   });
 });
