@@ -10,7 +10,7 @@ const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
 import '@/../tests/mocks/nextjs';
 import RecipeCard from '../RecipeCard';
 
-const mockRecipes = await createMockRecipes();
+const { mockRecipes } = await createMockRecipes();
 
 async function setup() {
   render(<RecipeCard recipe={mockRecipes[0]} />);

@@ -30,6 +30,10 @@ function IngredientSearch({
   // IMPORTANT NOTE: Don't use this function directly to avoid excessive calls. Use debounced version below instead.
   async function fetchIngredients(term: string = ''): Promise<void> {
     // Use case is used behind the scenes in the API route. It can't be called directly from the client.
+    if (!term.trim()) {
+      setFoundIngredients([]);
+      return;
+    }
     const fetchedIngredients = await fetch(`/api/ingredient/fuzzy/${term}`);
 
     try {

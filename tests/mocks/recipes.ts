@@ -30,16 +30,16 @@ export const createMockRecipes = async () => {
       name: 'Celery Stir-fry',
       ingredientLinesInfo: [
         { ingredientId: mockIngredients[2].id, quantityInGrams: 250 },
-        { ingredientId: mockIngredients[0].id, quantityInGrams: 100 },
+        { ingredientId: mockIngredients[0].id, quantityInGrams: 300 },
       ],
     },
   ];
 
-  const createdRecipes = [];
+  const mockRecipes = [];
 
   for (const props of recipesPropsForUseCase) {
     const recipeDTO = await AppCreateRecipeUsecase.execute(props);
-    createdRecipes.push(recipeDTO);
+    mockRecipes.push(recipeDTO);
   }
 
   afterAll(() => {
@@ -52,5 +52,5 @@ export const createMockRecipes = async () => {
     AppRecipesRepo.clearForTesting();
   });
 
-  return createdRecipes;
+  return { mockRecipes, mockIngredients };
 };

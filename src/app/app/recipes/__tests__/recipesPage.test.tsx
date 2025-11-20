@@ -1,8 +1,8 @@
-import { screen, render, waitFor, within } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { AppRecipesRepo } from '@/interface-adapters/app/repos/AppRecipesRepo';
-import { createMockRecipes } from '../../../../../tests/mocks/recipes';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
+import { AppRecipesRepo } from '@/interface-adapters/app/repos/AppRecipesRepo';
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { createMockRecipes } from '@/../tests/mocks/recipes';
 
 const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
 
@@ -26,7 +26,7 @@ describe('RecipesPage', () => {
   });
 
   describe('With recipes', async () => {
-    const mockRecipes = await createMockRecipes();
+    const { mockRecipes } = await createMockRecipes();
 
     it('Renders all recipes', async () => {
       await setup();
@@ -50,10 +50,8 @@ describe('RecipesPage', () => {
 
       await userEvent.click(deleteButtons[0]);
 
-      await waitFor(() => {
-        const recipesAfter = recipesRepo.countForTesting();
-        expect(recipesAfter).toBe(recipesBefore - 1);
-      });
+      const recipesAfter = recipesRepo.countForTesting();
+      expect(recipesAfter).toBe(recipesBefore - 1);
     });
   });
 

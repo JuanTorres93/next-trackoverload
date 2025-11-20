@@ -1,7 +1,5 @@
 'use client';
 
-// TODO Change file name
-
 import { HiOutlineDuplicate, HiOutlineTrash } from 'react-icons/hi';
 import IngredientLineItem from '@/app/_features/ingredient/IngredientLineItem';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
