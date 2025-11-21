@@ -35,6 +35,8 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
   const debouncedUpdateQuantity = useDebounce(handleQuantityChange, 250);
 
   function handleRemoveIngredient(ingredientId: string) {
+    if (recipe.ingredientLines.length <= 1) return;
+
     removeIngredientFromRecipe(recipe.id, ingredientId);
   }
 
@@ -59,7 +61,10 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
 
   return (
     <div className="grid grid-cols-[1fr_min-content] gap-10 grid-rows-[min-content_1fr]">
-      <div className="grid row-span-2 gap-4 grid-cols-[repeat(auto-fit,minmax(18rem,1fr))] auto-rows-min">
+      <div
+        data-testid="ingredient-lines-container"
+        className="grid row-span-2 gap-4 grid-cols-[repeat(auto-fit,minmax(18rem,1fr))] auto-rows-min"
+      >
         {recipe.ingredientLines.map((line) => (
           <IngredientLineItem
             key={line.id}
@@ -74,10 +79,12 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
 
       <div className="flex justify-end gap-4 text-4xl">
         <HiOutlineDuplicate
+          data-testid="duplicate-recipe-button"
           className="transition cursor-pointer hover:text-green-600"
           onClick={() => duplicateRecipe(recipe.id)}
         />
         <HiOutlineTrash
+          data-testid="delete-recipe-button"
           className="transition cursor-pointer hover:text-red-600"
           onClick={() => deleteRecipe(recipe.id)}
         />

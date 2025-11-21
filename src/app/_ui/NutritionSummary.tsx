@@ -60,7 +60,10 @@ function NutritionSummary({
         </div>
 
         {onRemove && (
-          <div onClick={onRemove}>
+          <div
+            data-testid="nutritional-summary-delete-button"
+            onClick={onRemove}
+          >
             <HiOutlineX className="text-xl cursor-pointer text-neutral-500 hover:text-red-500" />
           </div>
         )}
