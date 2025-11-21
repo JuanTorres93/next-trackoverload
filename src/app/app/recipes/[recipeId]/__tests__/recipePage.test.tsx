@@ -223,29 +223,32 @@ describe('RecipePage', () => {
     });
   });
 
-  //it('cannot leave a recipe with less than one ingredient', async () => {
-  //  await setup();
+  it('cannot leave a recipe with less than one ingredient', async () => {
+    await setup();
 
-  //  const recipe = mockRecipes[0];
+    const recipe = mockRecipes[0];
 
-  //  // Remove all ingredients except one
-  //  const deleteIngredientButtons = await screen.findAllByTestId(
-  //    'nutritional-summary-delete-button'
-  //  );
+    // Remove all ingredients except one
+    const deleteIngredientButtons = await screen.findAllByTestId(
+      'nutritional-summary-delete-button'
+    );
 
-  //  const [lastButton, ...restButtons] = deleteIngredientButtons;
+    const [lastButton, ...restButtons] = deleteIngredientButtons;
 
-  //  for (const button of restButtons) {
-  //    await userEvent.click(button);
-  //  }
+    for (const button of restButtons) {
+      await userEvent.click(button);
+    }
 
-  //  const updatedRecipe = await recipesRepo.getRecipeById(recipe.id);
+    const updatedRecipe = await recipesRepo.getRecipeById(recipe.id);
 
-  //  expect(updatedRecipe).not.toBeNull();
-  //  expect(updatedRecipe!.ingredientLines.length).toBe(1);
+    expect(updatedRecipe).not.toBeNull();
+    expect(updatedRecipe!.ingredientLines.length).toBe(1);
 
-  //  // Expect click to throw an error or be prevented
+    await userEvent.click(lastButton);
 
-  //  await userEvent.click(lastButton);
-  //});
+    const finalRecipe = await recipesRepo.getRecipeById(recipe.id);
+
+    expect(finalRecipe).not.toBeNull();
+    expect(finalRecipe!.ingredientLines.length).toBe(1);
+  });
 });

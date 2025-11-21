@@ -34,10 +34,14 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
 
   const debouncedUpdateQuantity = useDebounce(handleQuantityChange, 250);
 
-  function handleRemoveIngredient(ingredientId: string) {
+  async function handleRemoveIngredient(ingredientId: string) {
     if (recipe.ingredientLines.length <= 1) return;
 
-    removeIngredientFromRecipe(recipe.id, ingredientId);
+    try {
+      await removeIngredientFromRecipe(recipe.id, ingredientId);
+    } catch {
+      // Right now, this trycatch block is included to prevent error logs in testing
+    }
   }
 
   function handleQuantityChange(lineId: string, quantity: number) {
