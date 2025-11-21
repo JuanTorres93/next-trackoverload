@@ -94,33 +94,31 @@ export class UpdateIngredientLineUsecase {
       ingredientLines: IngredientLine[];
       userId?: string;
     } | null = null;
+    let parentEntityType = null;
 
     if (request.parentEntityType === 'recipe') {
       parentEntity = await this.recipesRepo.getRecipeById(
         request.parentEntityId
       );
-      if (!parentEntity) {
-        throw new NotFoundError(
-          `UpdateIngredientLineUsecase: Recipe with id ${request.parentEntityId} not found`
-        );
-      }
-      if (parentEntity.userId !== request.userId) {
-        throw new AuthError(
-          `UpdateIngredientLineUsecase: Recipe with id ${request.parentEntityId} not found for user ${request.userId}`
-        );
-      }
+      parentEntityType = 'Recipe';
     } else if (request.parentEntityType === 'meal') {
       parentEntity = await this.mealsRepo.getMealById(request.parentEntityId);
-      if (!parentEntity) {
-        throw new NotFoundError(
-          `UpdateIngredientLineUsecase: Meal with id ${request.parentEntityId} not found`
-        );
-      }
-      if (parentEntity.userId !== request.userId) {
-        throw new AuthError(
-          `UpdateIngredientLineUsecase: Meal with id ${request.parentEntityId} not found for user ${request.userId}`
-        );
-      }
+      parentEntityType = 'Meal';
+    } else {
+      throw new ValidationError(
+        'UpdateIngredientLineUsecase: parentEntityType must be "recipe" or "meal"'
+      );
+    }
+
+    if (!parentEntity) {
+      throw new NotFoundError(
+        `UpdateIngredientLineUsecase: ${parentEntityType} with id ${request.parentEntityId} not found`
+      );
+    }
+    if (parentEntity.userId !== request.userId) {
+      throw new AuthError(
+        `UpdateIngredientLineUsecase: ${parentEntityType} with id ${request.parentEntityId} not found for user ${request.userId}`
+      );
     }
 
     // Verify the ingredient line exists in the parent entity
