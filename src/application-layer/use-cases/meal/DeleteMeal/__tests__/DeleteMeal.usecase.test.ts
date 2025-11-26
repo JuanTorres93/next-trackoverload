@@ -35,7 +35,7 @@ describe('DeleteMealUsecase', () => {
 
     const meal = Meal.create({
       ...vp.mealPropsNoIngredientLines,
-      id: '1',
+      id: Id.create('1'),
       ingredientLines: [ingredientLine],
     });
 
@@ -89,7 +89,7 @@ describe('DeleteMealUsecase', () => {
 
     const meal = Meal.create({
       ...vp.mealPropsNoIngredientLines,
-      id: '1',
+      id: Id.create('1'),
       ingredientLines: [ingredientLine],
     });
 

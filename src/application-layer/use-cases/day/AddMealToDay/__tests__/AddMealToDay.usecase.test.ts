@@ -5,6 +5,7 @@ import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
 import { Day } from '@/domain/entities/day/Day';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { Id } from '@/domain/types/Id/Id';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
@@ -35,7 +36,7 @@ describe('AddMealToDayUsecase', () => {
     });
     meal = Meal.create({
       ...vp.mealPropsNoIngredientLines,
-      id: 'meal-1',
+      id: Id.create('meal-1'),
       ingredientLines: [ingredientLine],
     });
 
@@ -79,7 +80,7 @@ describe('AddMealToDayUsecase', () => {
     const result = await addMealToDayUsecase.execute({
       date,
       userId: vp.userId,
-      mealId: vp.mealPropsNoIngredientLines.id,
+      mealId: vp.mealPropsNoIngredientLines.id.value,
     });
 
     expect(result.id).toEqual(date.toISOString());

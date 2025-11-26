@@ -36,13 +36,13 @@ describe('UpdateMealUsecase', () => {
     await mealsRepo.saveMeal(meal);
 
     const updatedMeal = await updateMealUsecase.execute({
-      id: vp.mealPropsNoIngredientLines.id,
+      id: vp.mealPropsNoIngredientLines.id.value,
       userId: vp.userId,
       name: 'High Protein Meal',
     });
 
     expect(updatedMeal.name).toBe('High Protein Meal');
-    expect(updatedMeal.id).toBe(vp.mealPropsNoIngredientLines.id);
+    expect(updatedMeal.id).toBe(vp.mealPropsNoIngredientLines.id.value);
     expect(updatedMeal.ingredientLines).toHaveLength(1);
     expect(updatedMeal.createdAt).toBe(meal.createdAt.toISOString());
     expect(updatedMeal.updatedAt).not.toBe(meal.updatedAt.toISOString());
@@ -66,7 +66,7 @@ describe('UpdateMealUsecase', () => {
     await mealsRepo.saveMeal(meal);
 
     const result = await updateMealUsecase.execute({
-      id: vp.mealPropsNoIngredientLines.id,
+      id: vp.mealPropsNoIngredientLines.id.value,
       userId: vp.userId,
     });
 
@@ -94,7 +94,7 @@ describe('UpdateMealUsecase', () => {
     await mealsRepo.saveMeal(meal);
 
     const result = await updateMealUsecase.execute({
-      id: vp.mealPropsNoIngredientLines.id,
+      id: vp.mealPropsNoIngredientLines.id.value,
       userId: vp.userId,
       name: 'Updated Meal Name',
     });
@@ -149,7 +149,7 @@ describe('UpdateMealUsecase', () => {
     for (const invalidName of invalidNames) {
       await expect(
         updateMealUsecase.execute({
-          id: vp.mealPropsNoIngredientLines.id,
+          id: vp.mealPropsNoIngredientLines.id.value,
           // @ts-expect-error Testing invalid inputs
           name: invalidName,
         })

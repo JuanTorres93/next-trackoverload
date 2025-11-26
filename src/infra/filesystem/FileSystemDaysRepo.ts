@@ -51,9 +51,10 @@ export class FileSystemDaysRepo
 
           return Meal.create({
             ...mealData,
+            id: Id.create(mealData.id),
             ingredientLines,
-            createdAt: new Date((mealData as MealDTO).createdAt),
-            updatedAt: new Date((mealData as MealDTO).updatedAt),
+            createdAt: new Date(mealData.createdAt),
+            updatedAt: new Date(mealData.updatedAt),
           });
         } else {
           const fakeMealData = mealData as FakeMealDTO;

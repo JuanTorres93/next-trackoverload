@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryMealsRepo } from '../MemoryMealsRepo';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { Id } from '@/domain/types/Id/Id';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import * as vp from '@/../tests/createProps';
 
@@ -31,7 +32,7 @@ describe('MemoryMealsRepo', () => {
 
     meal = Meal.create({
       ...vp.mealPropsNoIngredientLines,
-      id: '1',
+      id: Id.create('1'),
       name: 'Grilled Chicken',
       ingredientLines: [ingredientLine],
     });
@@ -55,7 +56,7 @@ describe('MemoryMealsRepo', () => {
   it('should update an existing meal', async () => {
     const updatedMeal = Meal.create({
       ...vp.mealPropsNoIngredientLines,
-      id: '1',
+      id: Id.create('1'),
       name: 'Updated Grilled Chicken',
       ingredientLines: [ingredientLine],
     });

@@ -6,6 +6,7 @@ import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
+import { Id } from '@/domain/types/Id/Id';
 import { GetMealsByIdsForUserUsecase } from '../GetMealsByIdsForUser.usecase';
 
 describe('GetMealsByIdsUsecase', () => {
@@ -29,17 +30,17 @@ describe('GetMealsByIdsUsecase', () => {
     testMeals = [
       Meal.create({
         ...vp.mealPropsNoIngredientLines,
-        id: 'meal-1',
+        id: Id.create('meal-1'),
         ingredientLines: [testIngredientLine],
       }),
       Meal.create({
         ...vp.mealPropsNoIngredientLines,
-        id: 'meal-2',
+        id: Id.create('meal-2'),
         ingredientLines: [testIngredientLine],
       }),
       Meal.create({
         ...vp.mealPropsNoIngredientLines,
-        id: 'meal-3',
+        id: Id.create('meal-3'),
         ingredientLines: [testIngredientLine],
       }),
     ];

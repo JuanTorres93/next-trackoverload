@@ -5,6 +5,7 @@ import {
   toFakeMealDTO,
 } from '@/application-layer/dtos/FakeMealDTO';
 import { BaseFileSystemRepo } from './BaseFileSystemRepo';
+import { Id } from '@/domain/types/Id/Id';
 
 export class FileSystemFakeMealsRepo
   extends BaseFileSystemRepo<FakeMeal>
@@ -26,6 +27,7 @@ export class FileSystemFakeMealsRepo
     return (data as FakeMealDTO[]).map((item) =>
       FakeMeal.create({
         ...item,
+        id: Id.create(item.id),
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),
       })

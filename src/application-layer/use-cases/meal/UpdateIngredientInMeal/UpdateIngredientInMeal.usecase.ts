@@ -6,6 +6,7 @@ import {
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { MealDTO, toMealDTO } from '@/application-layer/dtos/MealDTO';
+import { Id } from '@/domain/types/Id/Id';
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 
@@ -102,7 +103,7 @@ export class UpdateIngredientInMealUsecase {
 
     // Create updated meal with updated ingredient line
     const updatedMeal = Meal.create({
-      id: existingMeal.id,
+      id: Id.create(existingMeal.id),
       userId: existingMeal.userId,
       name: existingMeal.name,
       ingredientLines: existingMeal.ingredientLines.map((line) => {

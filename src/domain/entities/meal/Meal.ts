@@ -4,13 +4,14 @@ import { validateNonEmptyString } from '../../common/validation';
 import { IngredientLine } from '../ingredient/IngredientLine';
 import { Protein } from '../../interfaces/Protein';
 import { Calories } from '../../interfaces/Calories';
+import { Id } from '@/domain/types/Id/Id';
 
 export type MealUpdateProps = {
   name?: string;
 };
 
 export type MealProps = {
-  id: string;
+  id: Id;
   userId: string;
   name: string;
   ingredientLines: IngredientLine[];
@@ -22,7 +23,9 @@ export class Meal implements Calories, Protein {
   private constructor(private readonly props: MealProps) {}
 
   static create(props: MealProps): Meal {
-    validateNonEmptyString(props.id, 'Meal id');
+    if (!(props.id instanceof Id))
+      throw new ValidationError('Meal: Invalid id, must be an instance of Id');
+
     validateNonEmptyString(props.userId, 'Meal userId');
     validateNonEmptyString(props.name, 'Meal name');
 
@@ -91,7 +94,7 @@ export class Meal implements Calories, Protein {
   }
 
   get id() {
-    return this.props.id;
+    return this.props.id.value;
   }
 
   get userId() {

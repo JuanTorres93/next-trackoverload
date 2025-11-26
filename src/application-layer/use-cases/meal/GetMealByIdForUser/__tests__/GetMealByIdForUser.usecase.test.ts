@@ -35,7 +35,7 @@ describe('GetMealByIdUsecase', () => {
     await mealsRepo.saveMeal(meal);
 
     const result = await getMealByIdUsecase.execute({
-      id: vp.mealPropsNoIngredientLines.id,
+      id: vp.mealPropsNoIngredientLines.id.value,
       userId: vp.userId,
     });
 
@@ -62,7 +62,7 @@ describe('GetMealByIdUsecase', () => {
     await mealsRepo.saveMeal(meal);
 
     const result = await getMealByIdUsecase.execute({
-      id: vp.mealPropsNoIngredientLines.id,
+      id: vp.mealPropsNoIngredientLines.id.value,
       userId: vp.userId,
     });
 
@@ -138,7 +138,7 @@ describe('GetMealByIdUsecase', () => {
 
     await expect(
       getMealByIdUsecase.execute({
-        id: vp.mealPropsNoIngredientLines.id,
+        id: vp.mealPropsNoIngredientLines.id.value,
         userId: 'another-user-id',
       })
     ).rejects.toThrow(AuthError);

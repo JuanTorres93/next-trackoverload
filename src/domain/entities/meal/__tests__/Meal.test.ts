@@ -139,4 +139,22 @@ describe('Meal', () => {
       ).toThrow(ValidationError);
     }
   });
+
+  it('should throw error if id is not instance of Id', async () => {
+    expect(() =>
+      Meal.create({
+        ...validMealProps,
+        // @ts-expect-error Testing invalid inputs
+        id: 'not-an-Id',
+      })
+    ).toThrow(ValidationError);
+
+    expect(() =>
+      Meal.create({
+        ...validMealProps,
+        // @ts-expect-error Testing invalid inputs
+        id: 'not-an-Id',
+      })
+    ).toThrow(/Id/);
+  });
 });

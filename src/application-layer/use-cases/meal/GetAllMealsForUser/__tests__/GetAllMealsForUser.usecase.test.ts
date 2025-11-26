@@ -4,6 +4,7 @@ import { ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
+import { Id } from '@/domain/types/Id/Id';
 import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetAllMealsForUserUsecase } from '../GetAllMealsForUser.usecase';
@@ -38,14 +39,14 @@ describe('GetAllMealsUsecase', () => {
 
     const meal1 = Meal.create({
       ...vp.mealPropsNoIngredientLines,
-      id: '1',
+      id: Id.create('1'),
       name: 'Protein Meal',
       ingredientLines: [ingredientLine1],
     });
 
     const meal2 = Meal.create({
       ...vp.mealPropsNoIngredientLines,
-      id: '2',
+      id: Id.create('2'),
       name: 'Carb Meal',
       ingredientLines: [ingredientLine2],
     });
@@ -76,7 +77,7 @@ describe('GetAllMealsUsecase', () => {
 
     const meal1 = Meal.create({
       ...vp.mealPropsNoIngredientLines,
-      id: '1',
+      id: Id.create('1'),
       name: 'Protein Meal',
       ingredientLines: [ingredientLine1],
     });

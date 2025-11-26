@@ -3,6 +3,7 @@ import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { MealDTO, toMealDTO } from '@/application-layer/dtos/MealDTO';
 import { validateNonEmptyString } from '@/domain/common/validation';
+import { Id } from '@/domain/types/Id/Id';
 import { NotFoundError } from '@/domain/common/errors';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -44,7 +45,7 @@ export class CreateMealFromRecipeUsecase {
     const mealName = request.mealName || recipe.name;
 
     const newMeal = Meal.create({
-      id: uuidv4(),
+      id: Id.create(uuidv4()),
       userId: request.userId,
       name: mealName,
       ingredientLines: recipe.ingredientLines,
