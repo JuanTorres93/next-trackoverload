@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { UpdateFakeMealUsecase } from '../UpdateFakeMeal.usecase';
 import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { Id } from '@/domain/types/Id/Id';
 import { ValidationError, NotFoundError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
@@ -18,7 +19,7 @@ describe('UpdateFakeMealUsecase', () => {
   it('should update fake meal name successfully', async () => {
     const fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: 'test-id',
+      id: Id.create('test-id'),
       name: 'Original Name',
     });
 
@@ -38,7 +39,7 @@ describe('UpdateFakeMealUsecase', () => {
   it('should return FakeMealDTO', async () => {
     const fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: 'test-id',
+      id: Id.create('test-id'),
       name: 'Original Name',
     });
 
@@ -64,7 +65,7 @@ describe('UpdateFakeMealUsecase', () => {
   it('should update fake meal calories successfully', async () => {
     const fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: 'test-id',
+      id: Id.create('test-id'),
       name: 'Test Meal',
     });
 
@@ -84,7 +85,7 @@ describe('UpdateFakeMealUsecase', () => {
   it('should update fake meal protein successfully', async () => {
     const fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: 'test-id',
+      id: Id.create('test-id'),
       name: 'Test Meal',
     });
 
@@ -104,7 +105,7 @@ describe('UpdateFakeMealUsecase', () => {
   it('should update multiple fields at once', async () => {
     const fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: 'test-id',
+      id: Id.create('test-id'),
       name: 'Original Name',
     });
 
@@ -148,7 +149,7 @@ describe('UpdateFakeMealUsecase', () => {
   it('should throw ValidationError for invalid name in patch', async () => {
     const fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: 'test-id',
+      id: Id.create('test-id'),
       name: 'Test Meal',
     });
 
@@ -166,7 +167,7 @@ describe('UpdateFakeMealUsecase', () => {
   it('should throw ValidationError for invalid calories in patch', async () => {
     const fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: 'test-id',
+      id: Id.create('test-id'),
       name: 'Test Meal',
     });
 

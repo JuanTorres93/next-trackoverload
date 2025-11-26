@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { GetFakeMealByIdForUserUsecase } from '../GetFakeMealByIdForUser.usecase';
 import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { Id } from '@/domain/types/Id/Id';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
@@ -18,7 +19,7 @@ describe('GetFakeMealByIdUsecase', () => {
   it('should return fake meal when found for correct user', async () => {
     const fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: 'test-id',
+      id: Id.create('test-id'),
     });
 
     await fakeMealsRepo.saveFakeMeal(fakeMeal);
@@ -36,7 +37,7 @@ describe('GetFakeMealByIdUsecase', () => {
   it('should return array of FakeMealDTO', async () => {
     const fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: 'test-id',
+      id: Id.create('test-id'),
     });
 
     await fakeMealsRepo.saveFakeMeal(fakeMeal);
@@ -72,7 +73,7 @@ describe('GetFakeMealByIdUsecase', () => {
   it('should return null when fake meal belongs to different user', async () => {
     const fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: 'test-id',
+      id: Id.create('test-id'),
       userId: 'user-2',
     });
 
@@ -96,7 +97,7 @@ describe('GetFakeMealByIdUsecase', () => {
     const invalidUserIds = ['', '   '];
     for (const userId of invalidUserIds) {
       await expect(
-        usecase.execute({ id: vp.validFakeMealProps.id, userId })
+        usecase.execute({ id: vp.validFakeMealProps.id.value, userId })
       ).rejects.toThrow(ValidationError);
     }
   });

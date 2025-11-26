@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { GetFakeMealsByIdsForUserUsecase } from '../GetFakeMealsByIdsForUser.usecase';
 import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { Id } from '@/domain/types/Id/Id';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
@@ -18,13 +19,13 @@ describe('GetFakeMealsByIdsUsecase', () => {
   it('should return fake meals for valid ids', async () => {
     const fakeMeal1 = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: 'test-id-1',
+      id: Id.create('test-id-1'),
       name: 'Test Fake Meal 1',
     });
 
     const fakeMeal2 = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: 'test-id-2',
+      id: Id.create('test-id-2'),
       name: 'Test Fake Meal 2',
     });
 
@@ -42,7 +43,7 @@ describe('GetFakeMealsByIdsUsecase', () => {
   it('should return array of FakeMealDTO', async () => {
     const fakeMeal1 = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: 'test-id-1',
+      id: Id.create('test-id-1'),
       name: 'Test Fake Meal 1',
     });
 
@@ -66,7 +67,7 @@ describe('GetFakeMealsByIdsUsecase', () => {
   it('should filter out non-existent fake meals', async () => {
     const fakeMeal1 = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: 'test-id-1',
+      id: Id.create('test-id-1'),
       name: 'Test Fake Meal 1',
     });
 
@@ -89,7 +90,7 @@ describe('GetFakeMealsByIdsUsecase', () => {
   it('should handle duplicate ids', async () => {
     const fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: 'test-id',
+      id: Id.create('test-id'),
       name: 'Test Fake Meal',
     });
 
@@ -120,7 +121,7 @@ describe('GetFakeMealsByIdsUsecase', () => {
   it('should throw ValidationError for invalid id', async () => {
     const fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: 'test-id',
+      id: Id.create('test-id'),
       name: 'Test Fake Meal',
     });
 

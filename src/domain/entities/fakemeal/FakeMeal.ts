@@ -5,6 +5,8 @@ import {
 } from '../../common/validation';
 import { Protein } from '../../interfaces/Protein';
 import { Calories } from '../../interfaces/Calories';
+import { Id } from '@/domain/types/Id/Id';
+import { ValidationError } from '@/domain/common/errors';
 
 export type FakeUpdateProps = {
   name?: string;
@@ -13,7 +15,7 @@ export type FakeUpdateProps = {
 };
 
 export type FakeMealProps = {
-  id: string;
+  id: Id;
   userId: string;
   name: string;
   calories: number;
@@ -26,7 +28,9 @@ export class FakeMeal implements Protein, Calories {
   private constructor(private readonly props: FakeMealProps) {}
 
   static create(props: FakeMealProps): FakeMeal {
-    validateNonEmptyString(props.id, 'FakeMeal id');
+    if (!(props.id instanceof Id))
+      throw new ValidationError('FakeMeal: id must be an instance of Id');
+
     validateNonEmptyString(props.userId, 'FakeMeal userId');
     validateNonEmptyString(props.name, 'FakeMeal name');
     validateGreaterThanZero(props.calories, 'FakeMeal calories');
@@ -56,7 +60,7 @@ export class FakeMeal implements Protein, Calories {
 
   // Getters
   get id() {
-    return this.props.id;
+    return this.props.id.value;
   }
 
   get userId() {

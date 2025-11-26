@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryFakeMealsRepo } from '../MemoryFakeMealsRepo';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { Id } from '@/domain/types/Id/Id';
 import * as vp from '@/../tests/createProps';
 
 describe('MemoryFakeMealsRepo', () => {
@@ -11,7 +12,7 @@ describe('MemoryFakeMealsRepo', () => {
     repo = new MemoryFakeMealsRepo();
     fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: '1',
+      id: Id.create('1'),
       name: 'Protein Shake',
       calories: 250,
       protein: 30,
@@ -22,7 +23,7 @@ describe('MemoryFakeMealsRepo', () => {
   it('should save a fake meal', async () => {
     const newFakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: '2',
+      id: Id.create('2'),
       name: 'Energy Bar',
     });
     await repo.saveFakeMeal(newFakeMeal);
@@ -35,7 +36,7 @@ describe('MemoryFakeMealsRepo', () => {
   it('should update an existing fake meal', async () => {
     const updatedFakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: '1',
+      id: Id.create('1'),
       name: 'Updated Protein Shake',
       updatedAt: new Date('2023-01-03'),
     });
@@ -49,7 +50,7 @@ describe('MemoryFakeMealsRepo', () => {
   it('should retrieve all fake meals by userId', async () => {
     const fakeMeal2 = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: '2',
+      id: Id.create('2'),
       userId: 'user-2',
       name: 'Another Shake',
     });
@@ -97,7 +98,7 @@ describe('MemoryFakeMealsRepo', () => {
   it('should delete a fake meal by ID and userId', async () => {
     const fakeMeal2 = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: '2',
+      id: Id.create('2'),
       userId: 'user-2',
       name: 'Another Shake',
     });

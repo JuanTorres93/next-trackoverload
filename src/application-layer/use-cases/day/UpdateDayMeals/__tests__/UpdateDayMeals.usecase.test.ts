@@ -6,6 +6,7 @@ import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { Id } from '@/domain/types/Id/Id';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
@@ -32,7 +33,7 @@ describe('UpdateDayMealsUsecase', () => {
 
     const newFakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: 'new-fake-meal',
+      id: Id.create('new-fake-meal'),
       calories: 200,
       protein: 10,
     });

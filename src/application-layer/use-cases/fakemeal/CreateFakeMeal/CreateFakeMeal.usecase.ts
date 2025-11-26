@@ -1,4 +1,5 @@
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { Id } from '@/domain/types/Id/Id';
 import {
   FakeMealDTO,
   toFakeMealDTO,
@@ -19,7 +20,7 @@ export class CreateFakeMealUsecase {
   async execute(request: CreateFakeMealUsecaseRequest): Promise<FakeMealDTO> {
     // NOTE: Validation is done in the entity
     const fakeMeal = FakeMeal.create({
-      id: uuidv4(),
+      id: Id.create(uuidv4()),
       userId: request.userId,
       name: request.name,
       calories: request.calories,

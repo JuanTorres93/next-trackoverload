@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { GetAllFakeMealsForUserUsecase } from '../GetAllFakeMealsForUser.usecase';
 import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { Id } from '@/domain/types/Id/Id';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
@@ -24,7 +25,7 @@ describe('GetAllFakeMealsUsecase', () => {
   it('should return all fake meals for a specific user', async () => {
     const fakeMeal1 = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: 'test-id-1',
+      id: Id.create('test-id-1'),
       name: 'Test Fake Meal 1',
       calories: 500,
       protein: 30,
@@ -32,7 +33,7 @@ describe('GetAllFakeMealsUsecase', () => {
 
     const fakeMeal2 = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: 'test-id-2',
+      id: Id.create('test-id-2'),
       name: 'Test Fake Meal 2',
       calories: 300,
       protein: 20,
@@ -40,7 +41,7 @@ describe('GetAllFakeMealsUsecase', () => {
 
     const fakeMeal3 = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: 'test-id-3',
+      id: Id.create('test-id-3'),
       userId: 'user-2',
       name: 'Test Fake Meal 3',
       calories: 400,
@@ -62,7 +63,7 @@ describe('GetAllFakeMealsUsecase', () => {
   it('should return array of FakeMealDTO', async () => {
     const fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: 'test-id-1',
+      id: Id.create('test-id-1'),
       name: 'Test Fake Meal 1',
       calories: 500,
       protein: 30,

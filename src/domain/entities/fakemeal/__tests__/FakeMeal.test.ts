@@ -102,4 +102,22 @@ describe('FakeMeal', () => {
       })
     ).toThrow(ValidationError);
   });
+
+  it('should throw ValidationError if id is not Instance of Id', async () => {
+    expect(() =>
+      FakeMeal.create({
+        ...validFakeMealProps,
+        // @ts-expect-error testing invalid type
+        id: 'not-an-id-instance',
+      })
+    ).toThrowError(ValidationError);
+
+    expect(() =>
+      FakeMeal.create({
+        ...validFakeMealProps,
+        // @ts-expect-error testing invalid type
+        id: 'not-an-id-instance',
+      })
+    ).toThrowError(/Id/);
+  });
 });

@@ -57,9 +57,11 @@ export class Day implements Protein, Calories {
   }
 
   removeMealById(mealId: string): void {
+    // TODO remove when Meal also has Id type for id
     validateNonEmptyString(mealId, 'Day removeMealById mealId');
 
     const initialLength = this.props.meals.length;
+
     this.props.meals = this.props.meals.filter((meal) => meal.id !== mealId);
 
     if (this.props.meals.length === initialLength) {

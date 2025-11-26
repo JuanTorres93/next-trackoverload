@@ -111,7 +111,7 @@ describe('Day', () => {
   it('should remove meal', async () => {
     const initialLength = day.meals.length;
 
-    day.removeMealById('fakemeal1');
+    day.removeMealById('fakeMeal1');
 
     expect(day.meals).toHaveLength(initialLength - 1);
     expect(day.meals).not.toContain(fakeMeal);

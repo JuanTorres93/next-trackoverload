@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { DeleteFakeMealUsecase } from '../DeleteFakeMeal.usecase';
 import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { Id } from '@/domain/types/Id/Id';
 import { ValidationError, NotFoundError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 
@@ -17,7 +18,7 @@ describe('DeleteFakeMealUsecase', () => {
   it('should delete fake meal successfully', async () => {
     const fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: 'test-id',
+      id: Id.create('test-id'),
     });
 
     await fakeMealsRepo.saveFakeMeal(fakeMeal);
@@ -57,13 +58,13 @@ describe('DeleteFakeMealUsecase', () => {
   it('should not affect other fake meals when deleting one', async () => {
     const fakeMeal1 = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: 'test-id-1',
+      id: Id.create('test-id-1'),
       name: 'Test Fake Meal 1',
     });
 
     const fakeMeal2 = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: 'test-id-2',
+      id: Id.create('test-id-2'),
       name: 'Test Fake Meal 2',
     });
 
