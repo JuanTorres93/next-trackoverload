@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryExercisesRepo } from '../MemoryExercisesRepo';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
+import { Id } from '@/domain/types/Id/Id';
 import * as vp from '@/../tests/createProps';
 
 describe('MemoryExercisesRepo', () => {
@@ -16,7 +17,7 @@ describe('MemoryExercisesRepo', () => {
 
   it('should save an exercise', async () => {
     const newExercise = Exercise.create({
-      id: '2',
+      id: Id.create('2'),
       name: 'Squat',
       createdAt: new Date('2023-01-02'),
       updatedAt: new Date('2023-01-02'),
@@ -30,7 +31,7 @@ describe('MemoryExercisesRepo', () => {
 
   it('should retrieve an exercise by ID', async () => {
     const fetchedExercise = await repo.getExerciseById(
-      vp.validExerciseProps.id
+      vp.validExerciseProps.id.value
     );
     expect(fetchedExercise).not.toBeNull();
     expect(fetchedExercise?.name).toBe(vp.validExerciseProps.name);
@@ -45,7 +46,7 @@ describe('MemoryExercisesRepo', () => {
     await repo.saveExercise(updatedExercise);
 
     const fetchedExercise = await repo.getExerciseById(
-      vp.validExerciseProps.id
+      vp.validExerciseProps.id.value
     );
     expect(fetchedExercise).not.toBeNull();
     expect(fetchedExercise?.name).toBe('Updated Push Up');
@@ -60,7 +61,7 @@ describe('MemoryExercisesRepo', () => {
     const allExercises = await repo.getAllExercises();
     expect(allExercises.length).toBe(1);
 
-    await repo.deleteExercise(vp.validExerciseProps.id);
+    await repo.deleteExercise(vp.validExerciseProps.id.value);
 
     const allExercisesAfterDeletion = await repo.getAllExercises();
     expect(allExercisesAfterDeletion.length).toBe(0);

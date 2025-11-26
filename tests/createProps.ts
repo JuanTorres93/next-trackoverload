@@ -1,3 +1,5 @@
+import { Id } from '@/domain/types/Id/Id';
+
 export const userId = 'user-1';
 export const dateId = new Date('2023-10-01');
 
@@ -45,7 +47,7 @@ export const validWorkoutProps = {
   updatedAt: new Date(),
 };
 export const validExerciseProps = {
-  id: 'ex1',
+  id: Id.create('ex1'),
   name: 'Test Exercise',
   createdAt: new Date(),
   updatedAt: new Date(),

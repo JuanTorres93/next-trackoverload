@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { GetAllExercisesUsecase } from '../GetAllExercises.usecase';
 import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
+import { Id } from '@/domain/types/Id/Id';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 
@@ -17,12 +18,12 @@ describe('GetAllExercisesUsecase', () => {
   it('should return all exercises', async () => {
     const exercise1 = Exercise.create({
       ...vp.validExerciseProps,
-      id: '1',
+      id: Id.create('1'),
       name: 'Push Up',
     });
     const exercise2 = Exercise.create({
       ...vp.validExerciseProps,
-      id: '2',
+      id: Id.create('2'),
       name: 'Squat',
     });
 
@@ -41,12 +42,12 @@ describe('GetAllExercisesUsecase', () => {
   it('should return an array of ExerciseDTO', async () => {
     const exercise1 = Exercise.create({
       ...vp.validExerciseProps,
-      id: '1',
+      id: Id.create('1'),
       name: 'Push Up',
     });
     const exercise2 = Exercise.create({
       ...vp.validExerciseProps,
-      id: '2',
+      id: Id.create('2'),
       name: 'Squat',
     });
 

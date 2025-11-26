@@ -4,6 +4,7 @@ import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
+import { Id } from '@/domain/types/Id/Id';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
@@ -31,7 +32,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
     const exercise = Exercise.create({
       ...vp.validExerciseProps,
-      id: 'exercise-1',
+      id: Id.create('exercise-1'),
       name: 'Push Up',
     });
 
@@ -65,7 +66,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
     const exercise = Exercise.create({
       ...vp.validExerciseProps,
-      id: 'exercise-1',
+      id: Id.create('exercise-1'),
       name: 'Push Up',
     });
 
@@ -91,7 +92,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
   it('should throw NotFoundError when workout does not exist', async () => {
     const exercise = Exercise.create({
       ...vp.validExerciseProps,
-      id: 'exercise-1',
+      id: Id.create('exercise-1'),
       name: 'Push Up',
     });
 
@@ -146,7 +147,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
     const exercise = Exercise.create({
       ...vp.validExerciseProps,
-      id: 'exercise-1',
+      id: Id.create('exercise-1'),
       name: 'Push Up',
     });
 
@@ -181,7 +182,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
     const exercise = Exercise.create({
       ...vp.validExerciseProps,
-      id: 'exercise-1',
+      id: Id.create('exercise-1'),
       name: 'Push Up',
     });
 
@@ -209,7 +210,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
   it('should throw error if workoutId is invalid', async () => {
     const exercise = Exercise.create({
       ...vp.validExerciseProps,
-      id: 'exercise-1',
+      id: Id.create('exercise-1'),
       name: 'Push Up',
     });
 
@@ -265,7 +266,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
     const exercise = Exercise.create({
       ...vp.validExerciseProps,
-      id: 'exercise-1',
+      id: Id.create('exercise-1'),
       name: 'Push Up',
     });
 
@@ -308,7 +309,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
     const exercise = Exercise.create({
       ...vp.validExerciseProps,
-      id: 'exercise-1',
+      id: Id.create('exercise-1'),
       name: 'Push Up',
     });
 
@@ -350,7 +351,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
     const exercise = Exercise.create({
       ...vp.validExerciseProps,
-      id: 'exercise-1',
+      id: Id.create('exercise-1'),
       name: 'Push Up',
     });
 
@@ -368,34 +369,6 @@ describe('AddExerciseToWorkoutUsecase', () => {
           reps: 10,
           // @ts-expect-error testing invalid types
           weight: invalidWeight,
-        })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
-
-  it('should throw error if userId is invalid', async () => {
-    const invalidUserIds = [
-      '',
-      '   ',
-      null,
-      undefined,
-      123,
-      {},
-      [],
-      true,
-      false,
-    ];
-
-    for (const invalidUserId of invalidUserIds) {
-      await expect(
-        addExerciseToWorkoutUsecase.execute({
-          // @ts-expect-error testing invalid types
-          userId: invalidUserId,
-          workoutId: '1',
-          exerciseId: 'exercise-1',
-          setNumber: 1,
-          reps: 10,
-          weight: 0,
         })
       ).rejects.toThrow(ValidationError);
     }

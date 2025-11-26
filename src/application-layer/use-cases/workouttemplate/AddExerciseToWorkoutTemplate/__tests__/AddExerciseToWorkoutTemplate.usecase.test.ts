@@ -4,6 +4,7 @@ import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplate
 import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
+import { Id } from '@/domain/types/Id/Id';
 import { NotFoundError } from '@/domain/common/errors';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
@@ -26,12 +27,12 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
     // Create the exercises that will be used in tests
     const benchPressExercise = Exercise.create({
       ...vp.validExerciseProps,
-      id: 'bench-press',
+      id: Id.create('bench-press'),
     });
 
     const shoulderPressExercise = Exercise.create({
       ...vp.validExerciseProps,
-      id: 'shoulder-press',
+      id: Id.create('shoulder-press'),
     });
 
     await exercisesRepo.saveExercise(benchPressExercise);

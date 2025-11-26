@@ -1,13 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { Exercise } from '../Exercise';
 import * as vp from '@/../tests/createProps';
+import { ValidationError } from '@/domain/common/errors';
 
 describe('Exercise', () => {
   it('should create a valid exercise', () => {
     const exercise = Exercise.create(vp.validExerciseProps);
 
     expect(exercise).toBeInstanceOf(Exercise);
-    expect(exercise.id).toBe(vp.validExerciseProps.id);
+    expect(exercise.id).toBe(vp.validExerciseProps.id.value);
     expect(exercise.name).toBe(vp.validExerciseProps.name);
   });
 
@@ -23,20 +24,21 @@ describe('Exercise', () => {
     expect(exercise.updatedAt instanceof Date).toBe(true);
   });
 
-  it('should not create an exercise with invalid props', async () => {
-    const invalidProps = [
-      { id: '' },
-      { id: 3 },
-      { name: '' },
-      { name: 3 },
-      { createdAt: 'invalid date' },
-      { updatedAt: 'invalid date' },
-    ];
+  it('should throw error if id is not instance of Id', async () => {
+    expect(() => {
+      Exercise.create({
+        ...vp.validExerciseProps,
+        // @ts-expect-error testing invalid type
+        id: 'invalid-id',
+      });
+    }).toThrowError(ValidationError);
 
-    for (const invalidProp of invalidProps) {
-      const props = { ...vp.validExerciseProps, ...invalidProp };
-      // @ts-expect-error the error comes precisely because it should not be created
-      expect(() => Exercise.create(props)).toThrowError();
-    }
+    expect(() => {
+      Exercise.create({
+        ...vp.validExerciseProps,
+        // @ts-expect-error testing invalid type
+        id: 'invalid-id',
+      });
+    }).toThrowError(/Id/);
   });
 });

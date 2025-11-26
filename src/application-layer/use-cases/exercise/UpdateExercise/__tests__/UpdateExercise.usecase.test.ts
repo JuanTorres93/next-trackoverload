@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { UpdateExerciseUsecase } from '../UpdateExercise.usecase';
 import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
+import { Id } from '@/domain/types/Id/Id';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import * as dto from '@/../tests/dtoProperties';
 
@@ -16,7 +17,7 @@ describe('UpdateExerciseUsecase', () => {
 
   it('should update exercise name', async () => {
     const exercise = Exercise.create({
-      id: '1',
+      id: Id.create('1'),
       name: 'Push Up',
       createdAt: new Date('2023-01-01'),
       updatedAt: new Date('2023-01-01'),
@@ -37,7 +38,7 @@ describe('UpdateExerciseUsecase', () => {
 
   it('should return an array of ExerciseDTO', async () => {
     const exercise = Exercise.create({
-      id: '1',
+      id: Id.create('1'),
       name: 'Push Up',
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -68,7 +69,7 @@ describe('UpdateExerciseUsecase', () => {
 
   it('should not update exercise if no changes provided', async () => {
     const exercise = Exercise.create({
-      id: '1',
+      id: Id.create('1'),
       name: 'Push Up',
       createdAt: new Date('2023-01-01'),
       updatedAt: new Date('2023-01-01'),
