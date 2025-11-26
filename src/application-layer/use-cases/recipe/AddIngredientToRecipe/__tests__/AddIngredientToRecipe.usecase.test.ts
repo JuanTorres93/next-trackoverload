@@ -109,7 +109,7 @@ describe('AddIngredientToRecipeUsecase', () => {
     await recipesRepo.saveRecipe(testRecipe);
     const notInRepoIngredientLine = IngredientLine.create({
       ...vp.ingredientLinePropsNoIngredient,
-      id: 'non-existent-ingredient-line-id',
+      id: Id.create('non-existent-ingredient-line-id'),
       ingredient: newIngredient,
     });
 

@@ -36,6 +36,7 @@ export class FileSystemRecipesRepo
 
           return IngredientLine.create({
             ...lineData,
+            id: Id.create(lineData.id),
             ingredient,
             createdAt: new Date(lineData.createdAt),
             updatedAt: new Date(lineData.updatedAt),

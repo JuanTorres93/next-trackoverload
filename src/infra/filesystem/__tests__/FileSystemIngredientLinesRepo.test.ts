@@ -56,7 +56,7 @@ describe('FileSystemIngredientLinesRepo', () => {
   it('should save multiple ingredient lines without race conditions', async () => {
     const ingredientLines = Array.from({ length: 5 }, (_, i) =>
       IngredientLine.create({
-        id: `line-${i}`,
+        id: Id.create(`line-${i}`),
         ingredient: testIngredient,
         quantityInGrams: 100 + i * 10,
         createdAt: new Date(),
@@ -83,7 +83,7 @@ describe('FileSystemIngredientLinesRepo', () => {
     // First, save some initial lines
     const initialLines = Array.from({ length: 3 }, (_, i) =>
       IngredientLine.create({
-        id: `line-${i}`,
+        id: Id.create(`line-${i}`),
         ingredient: testIngredient,
         quantityInGrams: 100,
         createdAt: new Date(),
@@ -96,7 +96,7 @@ describe('FileSystemIngredientLinesRepo', () => {
     // Then update them with new quantities
     const updatedLines = Array.from({ length: 3 }, (_, i) =>
       IngredientLine.create({
-        id: `line-${i}`,
+        id: Id.create(`line-${i}`),
         ingredient: testIngredient,
         quantityInGrams: 200, // Updated quantity
         createdAt: new Date(),
@@ -131,7 +131,7 @@ describe('FileSystemIngredientLinesRepo', () => {
     });
 
     const ingredientLine = IngredientLine.create({
-      id: 'line-with-image',
+      id: Id.create('line-with-image'),
       ingredient: ingredientWithImage,
       quantityInGrams: 150,
       createdAt: new Date(),

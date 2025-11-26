@@ -38,7 +38,7 @@ describe('Recipe', () => {
 
     const anotherIngredientLine = IngredientLine.create({
       ...vp.ingredientLinePropsNoIngredient,
-      id: '2',
+      id: Id.create('2'),
       quantityInGrams: 50,
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,
@@ -65,7 +65,7 @@ describe('Recipe', () => {
 
     const anotherIngredientLine = IngredientLine.create({
       ...vp.ingredientLinePropsNoIngredient,
-      id: '2',
+      id: Id.create('2'),
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,
         id: Id.create('2'),
@@ -105,7 +105,7 @@ describe('Recipe', () => {
           protein: 20,
         },
       }),
-      id: '2',
+      id: Id.create('2'),
       quantityInGrams: 50,
     });
     recipe.addIngredientLine(anotherIngredientLine);
@@ -117,7 +117,7 @@ describe('Recipe', () => {
     recipe.addIngredientLine(
       IngredientLine.create({
         ...vp.ingredientLinePropsNoIngredient,
-        id: '2',
+        id: Id.create('2'),
         ingredient: Ingredient.create({
           ...vp.validIngredientProps,
           id: Id.create('2'),
@@ -166,7 +166,7 @@ describe('Recipe', () => {
     // Try to add an ingredient line with the same ingredient ID
     const duplicateIngredientLine = IngredientLine.create({
       ...vp.ingredientLinePropsNoIngredient,
-      id: 'duplicate-line-id',
+      id: Id.create('duplicate-line-id'),
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,
         id: vp.validIngredientProps.id, // Same ingredient ID

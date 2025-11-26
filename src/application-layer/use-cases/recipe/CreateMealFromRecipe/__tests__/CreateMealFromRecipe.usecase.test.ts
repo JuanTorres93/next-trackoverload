@@ -132,7 +132,7 @@ describe('CreateMealFromRecipeUsecase', () => {
 
     const secondIngredientLine = IngredientLine.create({
       ...vp.ingredientLinePropsNoIngredient,
-      id: 'line2',
+      id: Id.create('line2'),
       ingredient: secondIngredient,
     });
 

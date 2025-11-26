@@ -82,7 +82,7 @@ describe('UpdateMealUsecase', () => {
 
     const ingredientLine = IngredientLine.create({
       ...vp.ingredientLinePropsNoIngredient,
-      id: 'line1',
+      id: Id.create('line1'),
       ingredient,
     });
 

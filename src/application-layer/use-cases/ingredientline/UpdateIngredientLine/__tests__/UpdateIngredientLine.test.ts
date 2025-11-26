@@ -57,7 +57,7 @@ describe('UpdateIngredientLineUsecase', () => {
 
     testIngredientLine = IngredientLine.create({
       ...vp.ingredientLinePropsNoIngredient,
-      id: 'test-ingredient-line-id',
+      id: Id.create('test-ingredient-line-id'),
       ingredient: testIngredient,
       quantityInGrams: 200,
     });
@@ -363,7 +363,7 @@ describe('UpdateIngredientLineUsecase', () => {
       // Create a different ingredient line not in the recipe
       const differentIngredientLine = IngredientLine.create({
         ...vp.ingredientLinePropsNoIngredient,
-        id: 'different-ingredient-line-id',
+        id: Id.create('different-ingredient-line-id'),
         ingredient: testIngredient,
         quantityInGrams: 100,
       });
@@ -387,7 +387,7 @@ describe('UpdateIngredientLineUsecase', () => {
       // Create a different ingredient line not in the meal
       const differentIngredientLine = IngredientLine.create({
         ...vp.ingredientLinePropsNoIngredient,
-        id: 'different-ingredient-line-id-2',
+        id: Id.create('different-ingredient-line-id-2'),
         ingredient: testIngredient,
         quantityInGrams: 100,
       });

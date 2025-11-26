@@ -106,7 +106,7 @@ describe('DuplicateRecipeUsecase', () => {
 
     const secondIngredientLine = IngredientLine.create({
       ...vp.ingredientLinePropsNoIngredient,
-      id: 'second-ingredient-line-id',
+      id: Id.create('second-ingredient-line-id'),
       ingredient: secondIngredient,
     });
 

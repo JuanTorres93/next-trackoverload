@@ -63,4 +63,22 @@ describe('IngredientLine', () => {
       });
     }).toThrowError(ValidationError);
   });
+
+  it('should throw error if id is not instance of Id', async () => {
+    expect(() => {
+      IngredientLine.create({
+        ...validIngredientLineProps,
+        // @ts-expect-error testing invalid type
+        id: 'invalid-id',
+      });
+    }).toThrowError(ValidationError);
+
+    expect(() => {
+      IngredientLine.create({
+        ...validIngredientLineProps,
+        // @ts-expect-error testing invalid type
+        id: 'invalid-id',
+      });
+    }).toThrowError(/Id/);
+  });
 });

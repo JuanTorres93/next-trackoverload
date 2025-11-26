@@ -1,6 +1,7 @@
 import { IngredientLinesRepo } from '@/domain/repos/IngredientLinesRepo.port';
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { Id } from '@/domain/types/Id/Id';
 import {
   IngredientLineDTO,
   toIngredientLineDTO,
@@ -35,7 +36,7 @@ export class CreateIngredientLineUsecase {
 
     // Validation is done in the entity constructor
     const newIngredientLine = IngredientLine.create({
-      id: uuidv4(),
+      id: Id.create(uuidv4()),
       ingredient,
       quantityInGrams: request.quantityInGrams,
       createdAt: new Date(),

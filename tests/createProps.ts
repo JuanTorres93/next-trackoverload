@@ -75,7 +75,7 @@ export const validIngredientProps = {
 };
 
 export const ingredientLinePropsNoIngredient = {
-  id: 'line1',
+  id: Id.create('line1'),
   quantityInGrams: 200,
   createdAt: new Date(),
   updatedAt: new Date(),

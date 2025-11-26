@@ -66,7 +66,7 @@ describe('Meal', () => {
     // More than one ingredient line
     const anotherIngredientLine = IngredientLine.create({
       ...vp.ingredientLinePropsNoIngredient,
-      id: '2',
+      id: Id.create('2'),
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,
         id: Id.create('2'),
@@ -88,7 +88,7 @@ describe('Meal', () => {
   it('should add a new ingredient line', async () => {
     const newIngredientLine = IngredientLine.create({
       ...vp.ingredientLinePropsNoIngredient,
-      id: '2',
+      id: Id.create('2'),
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,
         id: Id.create('2'),

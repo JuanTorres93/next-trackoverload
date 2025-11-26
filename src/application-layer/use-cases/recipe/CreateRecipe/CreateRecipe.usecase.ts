@@ -5,6 +5,7 @@ import { ImageManager } from '@/domain/services/ImageManager.port';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { Id } from '@/domain/types/Id/Id';
 import { v4 as uuidv4 } from 'uuid';
 import { ValidationError } from '@/domain/common/errors';
 
@@ -44,7 +45,7 @@ export class CreateRecipeUsecase {
       }
 
       const ingredientLine = IngredientLine.create({
-        id: uuidv4(),
+        id: Id.create(uuidv4()),
         ingredient: ingredient,
         quantityInGrams: info.quantityInGrams,
         createdAt: new Date(),

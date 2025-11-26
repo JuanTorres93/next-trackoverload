@@ -1,10 +1,8 @@
 import { Ingredient } from './Ingredient';
 import { ValidationError } from '../../common/errors';
-import {
-  validateNonEmptyString,
-  validateGreaterThanZero,
-} from '../../common/validation';
+import { validateGreaterThanZero } from '../../common/validation';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
+import { Id } from '@/domain/types/Id/Id';
 import { Calories } from '@/domain/interfaces/Calories';
 import { Protein } from '@/domain/interfaces/Protein';
 
@@ -14,7 +12,7 @@ export type IngredientLineUpdateProps = {
 };
 
 export type IngredientLineProps = {
-  id: string;
+  id: Id;
   ingredient: Ingredient;
   quantityInGrams: number;
   createdAt: Date;
@@ -25,7 +23,11 @@ export class IngredientLine implements Calories, Protein {
   private constructor(private readonly props: IngredientLineProps) {}
 
   static create(props: IngredientLineProps) {
-    validateNonEmptyString(props.id, 'IngredientLine id');
+    if (!(props.id instanceof Id))
+      throw new ValidationError(
+        'IngredientLine: Invalid id, must be an Id instance'
+      );
+
     if (!(props.ingredient instanceof Ingredient)) {
       throw new ValidationError('IngredientLine: Invalid ingredient');
     }
@@ -69,7 +71,7 @@ export class IngredientLine implements Calories, Protein {
   }
 
   get id() {
-    return this.props.id;
+    return this.props.id.value;
   }
 
   get ingredient() {
