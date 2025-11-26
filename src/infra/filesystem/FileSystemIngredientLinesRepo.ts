@@ -3,6 +3,7 @@ import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { Meal } from '@/domain/entities/meal/Meal';
+import { Id } from '@/domain/types/Id/Id';
 import {
   IngredientLineDTO,
   toIngredientLineDTO,
@@ -36,6 +37,7 @@ export class FileSystemIngredientLinesRepo
     return (data as IngredientLineDTO[]).map((item) => {
       const ingredient = Ingredient.create({
         ...item.ingredient,
+        id: Id.create(item.ingredient.id),
         createdAt: new Date(item.ingredient.createdAt),
         updatedAt: new Date(item.ingredient.updatedAt),
       });
@@ -55,7 +57,6 @@ export class FileSystemIngredientLinesRepo
 
     // Update all recipes that contain this ingredient line
     await this.updateRecipesWithIngredientLine(ingredientLine);
-
     // Update all meals that contain this ingredient line
     await this.updateMealsWithIngredientLine(ingredientLine);
   }
@@ -70,6 +71,7 @@ export class FileSystemIngredientLinesRepo
       const hasIngredientLine = recipe.ingredientLines.some(
         (line) => line.id === ingredientLine.id
       );
+
       if (hasIngredientLine) {
         const updatedRecipe = Recipe.create({
           id: recipe.id,

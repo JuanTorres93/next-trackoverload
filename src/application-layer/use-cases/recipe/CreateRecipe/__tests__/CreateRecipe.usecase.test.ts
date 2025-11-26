@@ -8,6 +8,7 @@ import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { MemoryIngredientLinesRepo } from '@/infra/memory/MemoryIngredientLinesRepo';
 import { MemoryImageManager } from '@/infra';
+import { Id } from '@/domain/types/Id/Id';
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
   CreateRecipeUsecase,
@@ -187,7 +188,7 @@ describe('CreateRecipeUsecase', () => {
     // Create a second test ingredient
     const testIngredient2 = Ingredient.create({
       ...vp.validIngredientProps,
-      id: 'ingredient-2',
+      id: Id.create('ingredient-2'),
       name: 'Rice',
       nutritionalInfoPer100g: {
         calories: 130,

@@ -4,6 +4,7 @@ import { Meal, MealProps } from '../Meal';
 import { ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { Id } from '@/domain/types/Id/Id';
 import * as vp from '@/../tests/createProps';
 
 describe('Meal', () => {
@@ -41,7 +42,7 @@ describe('Meal', () => {
       ...vp.ingredientLinePropsNoIngredient,
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,
-        id: '2',
+        id: Id.create('2'),
         nutritionalInfoPer100g: {
           calories: 200,
           protein: 20,
@@ -68,7 +69,7 @@ describe('Meal', () => {
       id: '2',
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,
-        id: '2',
+        id: Id.create('2'),
         nutritionalInfoPer100g: {
           calories: 200,
           protein: 20,
@@ -90,7 +91,7 @@ describe('Meal', () => {
       id: '2',
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,
-        id: '2',
+        id: Id.create('2'),
       }),
     });
 

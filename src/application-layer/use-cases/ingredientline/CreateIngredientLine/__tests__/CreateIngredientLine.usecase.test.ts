@@ -4,6 +4,7 @@ import { MemoryIngredientLinesRepo } from '@/infra/memory/MemoryIngredientLinesR
 import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { Id } from '@/domain/types/Id/Id';
 import * as vp from '@/../tests/createProps';
 
 describe('CreateIngredientLineUsecase', () => {
@@ -142,13 +143,13 @@ describe('CreateIngredientLineUsecase', () => {
   it('should create ingredient line with different ingredients', async () => {
     const ingredient1 = Ingredient.create({
       ...vp.validIngredientProps,
-      id: 'ing1',
+      id: Id.create('ing1'),
       name: 'Chicken',
     });
 
     const ingredient2 = Ingredient.create({
       ...vp.validIngredientProps,
-      id: 'ing2',
+      id: Id.create('ing2'),
       name: 'Rice',
       nutritionalInfoPer100g: {
         calories: 130,

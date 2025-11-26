@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { UpdateIngredientUsecase } from '../UpdateIngredient.usecase';
 import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { Id } from '@/domain/types/Id/Id';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
@@ -17,7 +18,7 @@ describe('UpdateIngredientUsecase', () => {
 
   it('should update ingredient name', async () => {
     const ingredient = Ingredient.create({
-      id: '1',
+      id: Id.create('1'),
       name: 'Chicken Breast',
       nutritionalInfoPer100g: {
         calories: 165,
@@ -48,7 +49,7 @@ describe('UpdateIngredientUsecase', () => {
 
   it('should update ingredient calories', async () => {
     const ingredient = Ingredient.create({
-      id: '1',
+      id: Id.create('1'),
       name: 'Chicken Breast',
       nutritionalInfoPer100g: {
         calories: 165,
@@ -75,7 +76,7 @@ describe('UpdateIngredientUsecase', () => {
 
   it('should update ingredient protein', async () => {
     const ingredient = Ingredient.create({
-      id: '1',
+      id: Id.create('1'),
       name: 'Chicken Breast',
       nutritionalInfoPer100g: {
         calories: 165,
@@ -102,7 +103,7 @@ describe('UpdateIngredientUsecase', () => {
 
   it('should update multiple properties at once', async () => {
     const ingredient = Ingredient.create({
-      id: '1',
+      id: Id.create('1'),
       name: 'Chicken Breast',
       nutritionalInfoPer100g: {
         calories: 165,
@@ -140,7 +141,7 @@ describe('UpdateIngredientUsecase', () => {
 
   it('should not update ingredient if no changes provided', async () => {
     const ingredient = Ingredient.create({
-      id: '1',
+      id: Id.create('1'),
       name: 'Chicken Breast',
       nutritionalInfoPer100g: {
         calories: 165,
@@ -178,7 +179,7 @@ describe('UpdateIngredientUsecase', () => {
 
   it('should throw error when name is invalid', async () => {
     const ingredient = Ingredient.create({
-      id: '1',
+      id: Id.create('1'),
       name: 'Chicken Breast',
       nutritionalInfoPer100g: {
         calories: 165,
@@ -202,7 +203,7 @@ describe('UpdateIngredientUsecase', () => {
 
   it('should throw error when calories is  negative', async () => {
     const ingredient = Ingredient.create({
-      id: '1',
+      id: Id.create('1'),
       name: 'Chicken Breast',
       nutritionalInfoPer100g: {
         calories: 165,
@@ -221,7 +222,7 @@ describe('UpdateIngredientUsecase', () => {
 
   it('should throw error when protein is negative', async () => {
     const ingredient = Ingredient.create({
-      id: '1',
+      id: Id.create('1'),
       name: 'Chicken Breast',
       nutritionalInfoPer100g: {
         calories: 165,
@@ -241,7 +242,7 @@ describe('UpdateIngredientUsecase', () => {
   it('should return IngredientDTO', async () => {
     const ingredient = Ingredient.create({
       ...vp.validIngredientProps,
-      id: '1',
+      id: Id.create('1'),
     });
 
     await ingredientsRepo.saveIngredient(ingredient);

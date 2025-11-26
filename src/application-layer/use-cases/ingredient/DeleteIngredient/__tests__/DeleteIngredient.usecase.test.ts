@@ -3,6 +3,7 @@ import { DeleteIngredientUsecase } from '../DeleteIngredient.usecase';
 import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import * as vp from '@/../tests/createProps';
 
 describe('DeleteIngredientUsecase', () => {
   let ingredientsRepo: MemoryIngredientsRepo;
@@ -15,21 +16,18 @@ describe('DeleteIngredientUsecase', () => {
 
   it('should delete existing ingredient', async () => {
     const ingredient = Ingredient.create({
-      id: '1',
-      name: 'Chicken Breast',
-      nutritionalInfoPer100g: {
-        calories: 165,
-        protein: 31,
-      },
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      ...vp.validIngredientProps,
     });
 
     await ingredientsRepo.saveIngredient(ingredient);
 
-    await deleteIngredientUsecase.execute({ id: '1' });
+    await deleteIngredientUsecase.execute({
+      id: vp.validIngredientProps.id.value,
+    });
 
-    const deletedIngredient = await ingredientsRepo.getIngredientById('1');
+    const deletedIngredient = await ingredientsRepo.getIngredientById(
+      vp.validIngredientProps.id.value
+    );
     expect(deletedIngredient).toBeNull();
   });
 

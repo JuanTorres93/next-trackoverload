@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { GetIngredientsByIdsUsecase } from '../GetIngredientsByIds.usecase';
 import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { Id } from '@/domain/types/Id/Id';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
@@ -20,12 +21,12 @@ describe('GetIngredientsByIdsUsecase', () => {
   it('should return ingredients that exist', async () => {
     const ingredient1 = Ingredient.create({
       ...vp.validIngredientProps,
-      id: '1',
+      id: Id.create('1'),
       name: 'Chicken Breast',
     });
     const ingredient2 = Ingredient.create({
       ...vp.validIngredientProps,
-      id: '2',
+      id: Id.create('2'),
       name: 'Rice',
     });
 
@@ -47,12 +48,12 @@ describe('GetIngredientsByIdsUsecase', () => {
   it('should return an array of IngredientDTO', async () => {
     const ingredient1 = Ingredient.create({
       ...vp.validIngredientProps,
-      id: '1',
+      id: Id.create('1'),
       name: 'Chicken Breast',
     });
     const ingredient2 = Ingredient.create({
       ...vp.validIngredientProps,
-      id: '2',
+      id: Id.create('2'),
       name: 'Rice',
     });
 

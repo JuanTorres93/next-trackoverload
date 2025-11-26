@@ -3,6 +3,7 @@ import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
+import { Id } from '@/domain/types/Id/Id';
 import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
 import { BaseFileSystemRepo } from './BaseFileSystemRepo';
 
@@ -28,6 +29,7 @@ export class FileSystemRecipesRepo
         (lineData: IngredientLineDTO) => {
           const ingredient = Ingredient.create({
             ...lineData.ingredient,
+            id: Id.create(lineData.ingredient.id),
             createdAt: new Date(lineData.ingredient.createdAt),
             updatedAt: new Date(lineData.ingredient.updatedAt),
           });

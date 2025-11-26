@@ -5,6 +5,7 @@ import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { Id } from '@/domain/types/Id/Id';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { Meal } from '@/domain/entities/meal/Meal';
@@ -13,7 +14,6 @@ import {
   NotFoundError,
   AuthError,
 } from '@/domain/common/errors';
-import { v4 as uuidv4 } from 'uuid';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 
@@ -45,33 +45,33 @@ describe('UpdateIngredientLineUsecase', () => {
 
     testIngredient = Ingredient.create({
       ...vp.validIngredientProps,
-      id: uuidv4(),
+      id: Id.create('test-ingredient-id'),
       name: 'Chicken Breast',
     });
 
     alternativeIngredient = Ingredient.create({
       ...vp.validIngredientProps,
-      id: uuidv4(),
+      id: Id.create('alternative-ingredient-id'),
       name: 'Turkey Breast',
     });
 
     testIngredientLine = IngredientLine.create({
       ...vp.ingredientLinePropsNoIngredient,
-      id: uuidv4(),
+      id: 'test-ingredient-line-id',
       ingredient: testIngredient,
       quantityInGrams: 200,
     });
 
     testRecipe = Recipe.create({
       ...vp.recipePropsNoIngredientLines,
-      id: uuidv4(),
+      id: 'test-recipe-id',
       userId: userId,
       ingredientLines: [testIngredientLine],
     });
 
     testMeal = Meal.create({
       ...vp.mealPropsNoIngredientLines,
-      id: uuidv4(),
+      id: 'test-meal-id',
       userId: userId,
       ingredientLines: [testIngredientLine],
     });
@@ -363,7 +363,7 @@ describe('UpdateIngredientLineUsecase', () => {
       // Create a different ingredient line not in the recipe
       const differentIngredientLine = IngredientLine.create({
         ...vp.ingredientLinePropsNoIngredient,
-        id: uuidv4(),
+        id: 'different-ingredient-line-id',
         ingredient: testIngredient,
         quantityInGrams: 100,
       });
@@ -387,7 +387,7 @@ describe('UpdateIngredientLineUsecase', () => {
       // Create a different ingredient line not in the meal
       const differentIngredientLine = IngredientLine.create({
         ...vp.ingredientLinePropsNoIngredient,
-        id: uuidv4(),
+        id: 'different-ingredient-line-id-2',
         ingredient: testIngredient,
         quantityInGrams: 100,
       });

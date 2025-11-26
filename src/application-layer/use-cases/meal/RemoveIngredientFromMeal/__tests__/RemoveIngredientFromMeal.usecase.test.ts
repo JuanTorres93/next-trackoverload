@@ -3,13 +3,13 @@ import { RemoveIngredientFromMealUsecase } from '../RemoveIngredientFromMeal.use
 import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { Id } from '@/domain/types/Id/Id';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import {
   ValidationError,
   NotFoundError,
   AuthError,
 } from '@/domain/common/errors';
-import { v4 as uuidv4 } from 'uuid';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 
@@ -32,7 +32,7 @@ describe('RemoveIngredientFromMealUsecase', () => {
 
     secondIngredient = Ingredient.create({
       ...vp.validIngredientProps,
-      id: uuidv4(),
+      id: Id.create('ing2'),
     });
 
     const firstIngredientLine = IngredientLine.create({
@@ -111,7 +111,7 @@ describe('RemoveIngredientFromMealUsecase', () => {
 
     const nonExistentIngredient = Ingredient.create({
       ...vp.validIngredientProps,
-      id: uuidv4(),
+      id: Id.create('not-in-meal'),
       name: 'Non-existent',
     });
 

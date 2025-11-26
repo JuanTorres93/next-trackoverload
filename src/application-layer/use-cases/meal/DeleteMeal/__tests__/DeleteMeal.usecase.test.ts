@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { DeleteMealUsecase } from '../DeleteMeal.usecase';
 import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
 import { Meal } from '@/domain/entities/meal/Meal';
+import { Id } from '@/domain/types/Id/Id';
 import {
   AuthError,
   NotFoundError,
@@ -23,7 +24,7 @@ describe('DeleteMealUsecase', () => {
   it('should delete existing meal', async () => {
     const ingredient = Ingredient.create({
       ...vp.validIngredientProps,
-      id: '1',
+      id: Id.create('1'),
     });
 
     const ingredientLine = IngredientLine.create({
@@ -77,7 +78,7 @@ describe('DeleteMealUsecase', () => {
   it('should throw error when trying to delete a meal that does not belong to the user', async () => {
     const ingredient = Ingredient.create({
       ...vp.validIngredientProps,
-      id: '1',
+      id: Id.create('1'),
     });
 
     const ingredientLine = IngredientLine.create({

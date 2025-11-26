@@ -1,5 +1,6 @@
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { Id } from '@/domain/types/Id/Id';
 import {
   IngredientDTO,
   toIngredientDTO,
@@ -20,7 +21,7 @@ export class CreateIngredientUsecase {
   ): Promise<IngredientDTO> {
     // Validation is done in the entity constructor
     const newIngredient = Ingredient.create({
-      id: uuidv4(),
+      id: Id.create(uuidv4()),
       name: request.name,
       nutritionalInfoPer100g: {
         calories: Number(request.calories),

@@ -7,6 +7,7 @@ import {
   IngredientDTO,
   toIngredientDTO,
 } from '@/application-layer/dtos/IngredientDTO';
+import { Id } from '@/domain/types/Id/Id';
 import { NotFoundError } from '@/domain/common/errors';
 import { validateNonEmptyString } from '@/domain/common/validation';
 
@@ -43,7 +44,7 @@ export class UpdateIngredientUsecase {
     if (Object.keys(patch).length > 0) {
       // Create a new ingredient with the same properties
       const updatedIngredient = Ingredient.create({
-        id: existingIngredient.id,
+        id: Id.create(existingIngredient.id),
         name: existingIngredient.name,
         nutritionalInfoPer100g: {
           calories: existingIngredient.nutritionalInfoPer100g.calories,

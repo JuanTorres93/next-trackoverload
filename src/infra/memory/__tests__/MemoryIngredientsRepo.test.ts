@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryIngredientsRepo } from '../MemoryIngredientsRepo';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { Id } from '@/domain/types/Id/Id';
 import * as vp from '@/../tests/createProps';
 
 describe('MemoryIngredientsRepo', () => {
@@ -16,7 +17,7 @@ describe('MemoryIngredientsRepo', () => {
   it('should save an ingredient', async () => {
     const newIngredient = Ingredient.create({
       ...vp.validIngredientProps,
-      id: '2',
+      id: Id.create('ing2'),
       name: 'Rice',
       updatedAt: new Date('2023-01-02'),
     });
@@ -42,7 +43,7 @@ describe('MemoryIngredientsRepo', () => {
 
   it('should retrieve an ingredient by ID', async () => {
     const fetchedIngredient = await repo.getIngredientById(
-      vp.validIngredientProps.id
+      vp.validIngredientProps.id.value
     );
     expect(fetchedIngredient).not.toBeNull();
     expect(fetchedIngredient?.name).toBe(vp.validIngredientProps.name);
@@ -57,7 +58,7 @@ describe('MemoryIngredientsRepo', () => {
     const allIngredients = await repo.getAllIngredients();
     expect(allIngredients.length).toBe(1);
 
-    await repo.deleteIngredient(vp.validIngredientProps.id);
+    await repo.deleteIngredient(vp.validIngredientProps.id.value);
 
     const allIngredientsAfterDeletion = await repo.getAllIngredients();
     expect(allIngredientsAfterDeletion.length).toBe(0);
@@ -71,27 +72,27 @@ describe('MemoryIngredientsRepo', () => {
       const ingredients = [
         Ingredient.create({
           ...vp.validIngredientProps,
-          id: '1',
+          id: Id.create('1'),
           name: 'Chicken Breast',
         }),
         Ingredient.create({
           ...vp.validIngredientProps,
-          id: '2',
+          id: Id.create('2'),
           name: 'Brown Rice',
         }),
         Ingredient.create({
           ...vp.validIngredientProps,
-          id: '3',
+          id: Id.create('3'),
           name: 'Broccoli',
         }),
         Ingredient.create({
           ...vp.validIngredientProps,
-          id: '4',
+          id: Id.create('4'),
           name: 'Salmon',
         }),
         Ingredient.create({
           ...vp.validIngredientProps,
-          id: '5',
+          id: Id.create('5'),
           name: 'Chicken Thigh',
         }),
       ];

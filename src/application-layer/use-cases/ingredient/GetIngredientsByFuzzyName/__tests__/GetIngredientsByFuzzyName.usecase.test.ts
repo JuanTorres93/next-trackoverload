@@ -5,6 +5,7 @@ import {
 } from '../GetIngredientsByFuzzyName.usecase';
 import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { Id } from '@/domain/types/Id/Id';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
@@ -23,27 +24,27 @@ describe('GetIngredientsByFuzzyNameUsecase', () => {
     const ingredients = [
       Ingredient.create({
         ...vp.validIngredientProps,
-        id: '1',
+        id: Id.create('1'),
         name: 'Chicken Breast',
       }),
       Ingredient.create({
         ...vp.validIngredientProps,
-        id: '2',
+        id: Id.create('2'),
         name: 'Brown Rice',
       }),
       Ingredient.create({
         ...vp.validIngredientProps,
-        id: '3',
+        id: Id.create('3'),
         name: 'Broccoli',
       }),
       Ingredient.create({
         ...vp.validIngredientProps,
-        id: '4',
+        id: Id.create('4'),
         name: 'Salmon',
       }),
       Ingredient.create({
         ...vp.validIngredientProps,
-        id: '5',
+        id: Id.create('5'),
         name: 'Chicken Thigh',
       }),
     ];

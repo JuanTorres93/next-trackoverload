@@ -4,7 +4,9 @@ import {
   validatePositiveNumber,
   validateObject,
 } from '../../common/validation';
+import { Id } from '@/domain/types/Id/Id';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
+import { ValidationError } from '@/domain/common/errors';
 
 type NutritionalInfoPer100g = {
   calories: number;
@@ -18,7 +20,7 @@ export type IngredientUpdateProps = {
 };
 
 export type IngredientProps = {
-  id: string;
+  id: Id;
   name: string;
   nutritionalInfoPer100g: NutritionalInfoPer100g;
   imageUrl?: string;
@@ -30,7 +32,9 @@ export class Ingredient {
   private constructor(private readonly props: IngredientProps) {}
 
   static create(props: IngredientProps): Ingredient {
-    validateNonEmptyString(props.id, 'Ingredient id');
+    if (!(props.id instanceof Id))
+      throw new ValidationError('Ingredient: id must be of type Id');
+
     validateNonEmptyString(props.name, 'Ingredient name');
     validateObject(
       props.nutritionalInfoPer100g,
@@ -74,7 +78,7 @@ export class Ingredient {
   }
 
   get id() {
-    return this.props.id;
+    return this.props.id.value;
   }
 
   get name() {

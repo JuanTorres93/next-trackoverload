@@ -3,6 +3,7 @@ import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { Id } from '@/domain/types/Id/Id';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { MemoryIngredientLinesRepo } from '@/infra/memory/MemoryIngredientLinesRepo';
@@ -27,7 +28,7 @@ describe('AddIngredientToRecipeUsecase', () => {
 
     const testIngredient = Ingredient.create({
       ...vp.validIngredientProps,
-      id: 'existing-ingredient-id',
+      id: Id.create('existing-ingredient-id'),
     });
 
     const testIngredientLine = IngredientLine.create({
@@ -42,7 +43,7 @@ describe('AddIngredientToRecipeUsecase', () => {
 
     newIngredient = Ingredient.create({
       ...vp.validIngredientProps,
-      id: 'new-ingredient-id',
+      id: Id.create('new-ingredient-id'),
     });
 
     newIngredientLine = IngredientLine.create({

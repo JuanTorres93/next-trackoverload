@@ -4,6 +4,7 @@ import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { Id } from '@/domain/types/Id/Id';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { DuplicateRecipeUsecase } from '../DuplicateRecipe.usecase';
@@ -100,7 +101,7 @@ describe('DuplicateRecipeUsecase', () => {
   it('should preserve all ingredient lines from original recipe', async () => {
     const secondIngredient = Ingredient.create({
       ...vp.validIngredientProps,
-      id: 'second-ingredient-id',
+      id: Id.create('second-ingredient-id'),
     });
 
     const secondIngredientLine = IngredientLine.create({

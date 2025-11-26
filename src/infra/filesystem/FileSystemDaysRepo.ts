@@ -3,6 +3,7 @@ import { Day } from '@/domain/entities/day/Day';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { Id } from '@/domain/types/Id/Id';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { DayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
 import { MealDTO } from '@/application-layer/dtos/MealDTO';
@@ -33,6 +34,7 @@ export class FileSystemDaysRepo
             (lineData: IngredientLineDTO) => {
               const ingredient = Ingredient.create({
                 ...lineData.ingredient,
+                id: Id.create(lineData.ingredient.id),
                 createdAt: new Date(lineData.ingredient.createdAt),
                 updatedAt: new Date(lineData.ingredient.updatedAt),
               });
@@ -56,6 +58,7 @@ export class FileSystemDaysRepo
           const fakeMealData = mealData as FakeMealDTO;
           return FakeMeal.create({
             ...fakeMealData,
+            id: Id.create(fakeMealData.id),
             createdAt: new Date(fakeMealData.createdAt),
             updatedAt: new Date(fakeMealData.updatedAt),
           });

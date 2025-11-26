@@ -1,4 +1,5 @@
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { Id } from '@/domain/types/Id/Id';
 
 export type IngredientDTO = {
   id: string;
@@ -28,7 +29,7 @@ export function toIngredientDTO(ingredient: Ingredient): IngredientDTO {
 
 export function fromIngredientDTO(dto: IngredientDTO): Ingredient {
   return Ingredient.create({
-    id: dto.id,
+    id: Id.create(dto.id),
     name: dto.name,
     nutritionalInfoPer100g: {
       calories: dto.nutritionalInfoPer100g.calories,

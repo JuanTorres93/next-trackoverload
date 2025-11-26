@@ -73,4 +73,22 @@ describe('Ingredient', () => {
       expect(() => Ingredient.create(props)).toThrow();
     }
   });
+
+  it('should throw error if id is not Id type', async () => {
+    expect(() => {
+      Ingredient.create({
+        ...vp.validIngredientProps,
+        // @ts-expect-error testing invalid type
+        id: 'no-Id-type',
+      });
+    }).toThrowError(ValidationError);
+
+    expect(() => {
+      Ingredient.create({
+        ...vp.validIngredientProps,
+        // @ts-expect-error testing invalid type
+        id: 'no-Id-type',
+      });
+    }).toThrowError(/Id/);
+  });
 });

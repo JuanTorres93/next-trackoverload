@@ -64,7 +64,7 @@ export const validFakeMealProps = {
 };
 
 export const validIngredientProps = {
-  id: 'ing1',
+  id: Id.create('ing1'),
   name: 'Chicken Breast',
   nutritionalInfoPer100g: {
     calories: 100,

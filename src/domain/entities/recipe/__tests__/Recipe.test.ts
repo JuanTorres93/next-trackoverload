@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import { Recipe, RecipeProps } from '../Recipe';
 import { Ingredient } from '../../ingredient/Ingredient';
+import { Id } from '@/domain/types/Id/Id';
 import { IngredientLine } from '../../ingredient/IngredientLine';
 import { ValidationError } from '@/domain/common/errors';
 
@@ -41,7 +42,7 @@ describe('Recipe', () => {
       quantityInGrams: 50,
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,
-        id: '2',
+        id: Id.create('2'),
         nutritionalInfoPer100g: {
           calories: 200,
           protein: 20,
@@ -67,7 +68,7 @@ describe('Recipe', () => {
       id: '2',
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,
-        id: '2',
+        id: Id.create('2'),
         nutritionalInfoPer100g: {
           calories: 200,
           protein: 10,
@@ -98,7 +99,7 @@ describe('Recipe', () => {
       ...vp.ingredientLinePropsNoIngredient,
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,
-        id: '2',
+        id: Id.create('2'),
         nutritionalInfoPer100g: {
           calories: 200,
           protein: 20,
@@ -119,7 +120,7 @@ describe('Recipe', () => {
         id: '2',
         ingredient: Ingredient.create({
           ...vp.validIngredientProps,
-          id: '2',
+          id: Id.create('2'),
           nutritionalInfoPer100g: {
             calories: 200,
             protein: 20,
@@ -130,7 +131,7 @@ describe('Recipe', () => {
     );
     expect(recipe.ingredientLines.length).toBe(2);
 
-    recipe.removeIngredientLineByIngredientId(vp.validIngredientProps.id);
+    recipe.removeIngredientLineByIngredientId(vp.validIngredientProps.id.value);
     expect(recipe.ingredientLines.length).toBe(1);
   });
 

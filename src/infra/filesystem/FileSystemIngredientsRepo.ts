@@ -1,5 +1,6 @@
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { Id } from '@/domain/types/Id/Id';
 import {
   IngredientDTO,
   toIngredientDTO,
@@ -26,6 +27,7 @@ export class FileSystemIngredientsRepo
     return (data as IngredientDTO[]).map((item) =>
       Ingredient.create({
         ...item,
+        id: Id.create(item.id),
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),
       })

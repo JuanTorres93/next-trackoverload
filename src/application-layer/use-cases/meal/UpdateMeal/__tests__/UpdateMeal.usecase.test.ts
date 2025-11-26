@@ -3,6 +3,7 @@ import { UpdateMealUsecase } from '../UpdateMeal.usecase';
 import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { Id } from '@/domain/types/Id/Id';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import * as vp from '@/../tests/createProps';
@@ -76,7 +77,7 @@ describe('UpdateMealUsecase', () => {
   it('should return MealDTO', async () => {
     const ingredient = Ingredient.create({
       ...vp.validIngredientProps,
-      id: 'ing1',
+      id: Id.create('ing1'),
     });
 
     const ingredientLine = IngredientLine.create({

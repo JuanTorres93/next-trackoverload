@@ -2,6 +2,7 @@ import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { Id } from '@/domain/types/Id/Id';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
@@ -125,7 +126,7 @@ describe('CreateMealFromRecipeUsecase', () => {
   it('should preserve all ingredient lines from recipe', async () => {
     const secondIngredient = Ingredient.create({
       ...vp.validIngredientProps,
-      id: 'ing2',
+      id: Id.create('ing2'),
       name: 'Rice',
     });
 
