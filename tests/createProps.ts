@@ -12,7 +12,7 @@ export const validDayProps = {
 };
 
 export const recipePropsNoIngredientLines = {
-  id: 'recipe1',
+  id: Id.create('recipe1'),
   userId,
   name: 'Test Recipe',
   createdAt: new Date(),

@@ -4,6 +4,7 @@ import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
+import { Id } from '@/domain/types/Id/Id';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetAllRecipesForUserUsecase } from '../GetAllRecipesForUser.usecase';
 
@@ -30,12 +31,12 @@ describe('GetAllRecipesForUserUsecase', () => {
     testRecipes = [
       Recipe.create({
         ...vp.recipePropsNoIngredientLines,
-        id: 'recipe-1',
+        id: Id.create('recipe-1'),
         ingredientLines: [testIngredientLine],
       }),
       Recipe.create({
         ...vp.recipePropsNoIngredientLines,
-        id: 'recipe-2',
+        id: Id.create('recipe-2'),
         ingredientLines: [testIngredientLine],
       }),
     ];
@@ -97,7 +98,7 @@ describe('GetAllRecipesForUserUsecase', () => {
 
     const user2Recipe = Recipe.create({
       ...vp.recipePropsNoIngredientLines,
-      id: 'user-2-recipe',
+      id: Id.create('user-2-recipe'),
       userId: userId2,
       ingredientLines: [testIngredientLine],
     });

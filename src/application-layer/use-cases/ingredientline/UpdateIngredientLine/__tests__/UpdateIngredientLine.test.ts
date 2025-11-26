@@ -64,7 +64,7 @@ describe('UpdateIngredientLineUsecase', () => {
 
     testRecipe = Recipe.create({
       ...vp.recipePropsNoIngredientLines,
-      id: 'test-recipe-id',
+      id: Id.create('test-recipe-id'),
       userId: userId,
       ingredientLines: [testIngredientLine],
     });

@@ -71,7 +71,7 @@ export class CreateRecipeUsecase {
     // NOTE: userId, name and ingredientLines validation is performed in the entity
 
     const newRecipe = Recipe.create({
-      id: uuidv4(),
+      id: Id.create(uuidv4()),
       userId: request.userId,
       name: request.name,
       ingredientLines: ingredientLines,

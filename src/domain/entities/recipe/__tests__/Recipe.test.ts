@@ -182,4 +182,22 @@ describe('Recipe', () => {
       recipe.addIngredientLine(duplicateIngredientLine);
     }).toThrowError(/already exists in recipe/);
   });
+
+  it('should throw error if id is no instance of Id', async () => {
+    expect(() => {
+      Recipe.create({
+        ...vp.recipePropsNoIngredientLines,
+        // @ts-expect-error Testing invalid id type
+        id: 'invalid-id',
+      });
+    }).toThrowError(ValidationError);
+
+    expect(() => {
+      Recipe.create({
+        ...vp.recipePropsNoIngredientLines,
+        // @ts-expect-error Testing invalid id type
+        id: 'invalid-id',
+      });
+    }).toThrowError(/Id/);
+  });
 });

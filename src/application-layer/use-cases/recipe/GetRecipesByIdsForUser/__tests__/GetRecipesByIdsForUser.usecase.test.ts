@@ -7,6 +7,7 @@ import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetRecipesByIdsForUserUsecase } from '../GetRecipesByIdsForUser.usecase';
+import { Id } from '@/domain/types/Id/Id';
 import { toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 
 describe('GetRecipesByIdsForUserUsecase', () => {
@@ -34,7 +35,7 @@ describe('GetRecipesByIdsForUserUsecase', () => {
       }),
       Recipe.create({
         ...vp.recipePropsNoIngredientLines,
-        id: 'recipe2',
+        id: Id.create('recipe2'),
         ingredientLines: [testIngredientLine],
       }),
     ];

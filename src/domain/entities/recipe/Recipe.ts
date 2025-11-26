@@ -4,9 +4,10 @@ import { ValidationError } from '../../common/errors';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 import { Protein } from '../../interfaces/Protein';
 import { Calories } from '../../interfaces/Calories';
+import { Id } from '@/domain/types/Id/Id';
 
 export type RecipeProps = {
-  id: string;
+  id: Id;
   userId: string;
   name: string;
   imageUrl?: string;
@@ -19,7 +20,11 @@ export class Recipe implements Protein, Calories {
   private constructor(private readonly props: RecipeProps) {}
 
   static create(props: RecipeProps): Recipe {
-    validateNonEmptyString(props.id, 'Recipe id');
+    if (!(props.id instanceof Id))
+      throw new ValidationError(
+        'Recipe: Invalid id, must be an instance of Id'
+      );
+
     validateNonEmptyString(props.userId, 'Recipe userId');
     validateNonEmptyString(props.name, 'Recipe name');
 
@@ -90,7 +95,7 @@ export class Recipe implements Protein, Calories {
   }
 
   get id() {
-    return this.props.id;
+    return this.props.id.value;
   }
 
   get imageUrl() {
