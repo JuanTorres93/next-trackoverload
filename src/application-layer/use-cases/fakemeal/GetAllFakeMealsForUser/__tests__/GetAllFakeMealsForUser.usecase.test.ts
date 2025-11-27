@@ -42,7 +42,7 @@ describe('GetAllFakeMealsUsecase', () => {
     const fakeMeal3 = FakeMeal.create({
       ...vp.validFakeMealProps,
       id: Id.create('test-id-3'),
-      userId: 'user-2',
+      userId: Id.create('user-2'),
       name: 'Test Fake Meal 3',
       calories: 400,
       protein: 25,

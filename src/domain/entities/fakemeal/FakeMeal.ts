@@ -16,7 +16,7 @@ export type FakeUpdateProps = {
 
 export type FakeMealProps = {
   id: Id;
-  userId: string;
+  userId: Id;
   name: string;
   calories: number;
   protein: number;
@@ -31,7 +31,9 @@ export class FakeMeal implements Protein, Calories {
     if (!(props.id instanceof Id))
       throw new ValidationError('FakeMeal: id must be an instance of Id');
 
-    validateNonEmptyString(props.userId, 'FakeMeal userId');
+    if (!(props.userId instanceof Id))
+      throw new ValidationError('FakeMeal: userId must be an instance of Id');
+
     validateNonEmptyString(props.name, 'FakeMeal name');
     validateGreaterThanZero(props.calories, 'FakeMeal calories');
     validateGreaterThanZero(props.protein, 'FakeMeal protein');
@@ -64,7 +66,7 @@ export class FakeMeal implements Protein, Calories {
   }
 
   get userId() {
-    return this.props.userId;
+    return this.props.userId.value;
   }
 
   get name() {

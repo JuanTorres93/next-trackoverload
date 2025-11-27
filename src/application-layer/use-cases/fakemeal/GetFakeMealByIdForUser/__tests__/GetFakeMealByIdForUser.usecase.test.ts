@@ -74,7 +74,7 @@ describe('GetFakeMealByIdUsecase', () => {
     const fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
       id: Id.create('test-id'),
-      userId: 'user-2',
+      userId: Id.create('user-2'),
     });
 
     await fakeMealsRepo.saveFakeMeal(fakeMeal);

@@ -21,7 +21,7 @@ export class CreateFakeMealUsecase {
     // NOTE: Validation is done in the entity
     const fakeMeal = FakeMeal.create({
       id: Id.create(uuidv4()),
-      userId: request.userId,
+      userId: Id.create(request.userId),
       name: request.name,
       calories: request.calories,
       protein: request.protein,

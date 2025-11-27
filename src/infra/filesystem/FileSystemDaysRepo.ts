@@ -61,6 +61,7 @@ export class FileSystemDaysRepo
           return FakeMeal.create({
             ...fakeMealData,
             id: Id.create(fakeMealData.id),
+            userId: Id.create(fakeMealData.userId),
             createdAt: new Date(fakeMealData.createdAt),
             updatedAt: new Date(fakeMealData.updatedAt),
           });

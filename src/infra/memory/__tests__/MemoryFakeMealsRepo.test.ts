@@ -51,7 +51,7 @@ describe('MemoryFakeMealsRepo', () => {
     const fakeMeal2 = FakeMeal.create({
       ...vp.validFakeMealProps,
       id: Id.create('2'),
-      userId: 'user-2',
+      userId: Id.create('user-2'),
       name: 'Another Shake',
     });
     await repo.saveFakeMeal(fakeMeal2);
@@ -99,7 +99,7 @@ describe('MemoryFakeMealsRepo', () => {
     const fakeMeal2 = FakeMeal.create({
       ...vp.validFakeMealProps,
       id: Id.create('2'),
-      userId: 'user-2',
+      userId: Id.create('user-2'),
       name: 'Another Shake',
     });
     await repo.saveFakeMeal(fakeMeal2);

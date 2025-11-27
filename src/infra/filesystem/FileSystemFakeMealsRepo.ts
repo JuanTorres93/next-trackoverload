@@ -28,6 +28,7 @@ export class FileSystemFakeMealsRepo
       FakeMeal.create({
         ...item,
         id: Id.create(item.id),
+        userId: Id.create(item.userId),
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),
       })

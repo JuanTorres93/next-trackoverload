@@ -39,15 +39,6 @@ describe('FakeMeal', () => {
     expect(fakeMeal.name).toBe('New Name');
   });
 
-  it('should throw validation error for empty userId', async () => {
-    expect(() =>
-      FakeMeal.create({
-        ...validFakeMealProps,
-        userId: '',
-      })
-    ).toThrow(ValidationError);
-  });
-
   it('should throw validation error for empty name', async () => {
     expect(() =>
       FakeMeal.create({
@@ -119,5 +110,23 @@ describe('FakeMeal', () => {
         id: 'not-an-id-instance',
       })
     ).toThrowError(/Id/);
+  });
+
+  it('should throw ValidationError if userId is not instance of Id', async () => {
+    expect(() =>
+      FakeMeal.create({
+        ...validFakeMealProps,
+        // @ts-expect-error testing invalid type
+        userId: 'not-an-id-instance',
+      })
+    ).toThrowError(ValidationError);
+
+    expect(() =>
+      FakeMeal.create({
+        ...validFakeMealProps,
+        // @ts-expect-error testing invalid type
+        userId: 'not-an-id-instance',
+      })
+    ).toThrowError(/of Id/);
   });
 });

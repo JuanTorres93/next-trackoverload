@@ -55,7 +55,7 @@ export const validExerciseProps = {
 
 export const validFakeMealProps = {
   id: Id.create('fakeMeal1'),
-  userId,
+  userId: Id.create(userId),
   name: 'Fake Chicken Breast',
   protein: 30,
   calories: 200,
