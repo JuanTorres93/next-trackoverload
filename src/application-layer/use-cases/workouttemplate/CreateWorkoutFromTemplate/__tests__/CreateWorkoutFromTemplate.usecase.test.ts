@@ -38,13 +38,15 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
 
     const request = {
       userId: vp.userId,
-      workoutTemplateId: vp.validWorkoutTemplateProps.id,
+      workoutTemplateId: vp.validWorkoutTemplateProps.id.value,
     };
 
     const result = await usecase.execute(request);
 
     expect(result.name).toContain('Push Day');
-    expect(result.workoutTemplateId).toBe(vp.validWorkoutTemplateProps.id);
+    expect(result.workoutTemplateId).toBe(
+      vp.validWorkoutTemplateProps.id.value
+    );
     expect(result.exercises).toHaveLength(5); // 3 sets + 2 sets
 
     // Check bench press sets
@@ -85,7 +87,7 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
 
     const request = {
       userId: vp.userId,
-      workoutTemplateId: vp.validWorkoutTemplateProps.id,
+      workoutTemplateId: vp.validWorkoutTemplateProps.id.value,
     };
 
     const result = await usecase.execute(request);
@@ -106,7 +108,7 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
     await workoutTemplatesRepo.saveWorkoutTemplate(template);
 
     const request = {
-      workoutTemplateId: vp.validWorkoutTemplateProps.id,
+      workoutTemplateId: vp.validWorkoutTemplateProps.id.value,
       userId: vp.userId,
       workoutName: 'My Custom Workout',
     };
@@ -114,7 +116,9 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
     const result = await usecase.execute(request);
 
     expect(result.name).toBe('My Custom Workout');
-    expect(result.workoutTemplateId).toBe(vp.validWorkoutTemplateProps.id);
+    expect(result.workoutTemplateId).toBe(
+      vp.validWorkoutTemplateProps.id.value
+    );
     expect(result.exercises).toHaveLength(2);
     expect(result.exercises[0]).toEqual({
       exerciseId: 'bench-press',
@@ -149,7 +153,7 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
 
     const request = {
       userId: vp.userId,
-      workoutTemplateId: vp.validWorkoutTemplateProps.id,
+      workoutTemplateId: vp.validWorkoutTemplateProps.id.value,
     };
 
     await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
@@ -179,7 +183,7 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
 
     const request = {
       userId: vp.userId,
-      workoutTemplateId: vp.validWorkoutTemplateProps.id,
+      workoutTemplateId: vp.validWorkoutTemplateProps.id.value,
     };
 
     await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);

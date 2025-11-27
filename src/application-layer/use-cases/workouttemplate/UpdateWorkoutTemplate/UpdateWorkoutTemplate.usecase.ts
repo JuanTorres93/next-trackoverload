@@ -1,5 +1,6 @@
 import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
+import { Id } from '@/domain/types/Id/Id';
 import {
   WorkoutTemplateDTO,
   toWorkoutTemplateDTO,
@@ -36,7 +37,7 @@ export class UpdateWorkoutTemplateUsecase {
     // Create updated template with new name
     // NOTE: userId and name validation are done in the entity
     const updatedTemplate = WorkoutTemplate.create({
-      id: workoutTemplate.id,
+      id: Id.create(workoutTemplate.id),
       userId: workoutTemplate.userId,
       name: request.name,
       exercises: workoutTemplate.exercises,

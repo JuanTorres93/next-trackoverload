@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { GetWorkoutTemplateByIdForUserUsecase } from '../GetWorkoutTemplateByIdForUser.usecase';
 import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
+import { Id } from '@/domain/types/Id/Id';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 
@@ -35,7 +36,7 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
   it('should return WorkoutTemplateDTO', async () => {
     const template = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps,
-      id: '1',
+      id: Id.create('1'),
       userId: vp.userId,
       name: 'Leg Day',
       exercises: [{ exerciseId: 'ex2', sets: 4 }],
@@ -54,7 +55,7 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
   it('should return null if template belongs to different user', async () => {
     const template = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps,
-      id: '1',
+      id: Id.create('1'),
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(template);
@@ -73,7 +74,7 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
   it('should return null if template is deleted', async () => {
     const template = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps,
-      id: '1',
+      id: Id.create('1'),
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(template);

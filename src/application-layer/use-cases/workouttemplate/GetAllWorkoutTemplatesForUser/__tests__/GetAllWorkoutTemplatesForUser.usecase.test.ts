@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { GetAllWorkoutTemplatesForUserUsecase } from '../GetAllWorkoutTemplatesForUser.usecase';
 import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
+import { Id } from '@/domain/types/Id/Id';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 
@@ -22,13 +23,13 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
 
     const user1Template2 = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps,
-      id: '2',
+      id: Id.create('2'),
       exercises: [],
     });
 
     const user2Template = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps,
-      id: '3',
+      id: Id.create('3'),
       userId: 'user2',
       name: 'Leg Day',
       exercises: [],
@@ -75,7 +76,7 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
 
     const template2 = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps,
-      id: '2',
+      id: Id.create('2'),
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(template1);

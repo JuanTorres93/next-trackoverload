@@ -1,4 +1,5 @@
 import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
+import { Id } from '@/domain/types/Id/Id';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import {
   WorkoutTemplateDTO,
@@ -26,6 +27,7 @@ export class FileSystemWorkoutTemplatesRepo
     return (data as WorkoutTemplateDTO[]).map((item) =>
       WorkoutTemplate.create({
         ...item,
+        id: Id.create(item.id),
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),
         deletedAt: item.deletedAt ? new Date(item.deletedAt) : undefined,

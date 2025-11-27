@@ -1,4 +1,5 @@
 import { ValidationError } from '../../common/errors';
+import { Id } from '@/domain/types/Id/Id';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 import {
   validateGreaterThanZero,
@@ -15,7 +16,7 @@ type TemplateLineUpdateProps = {
 };
 
 export type WorkoutTemplateProps = {
-  id: string;
+  id: Id;
   userId: string;
   name: string;
   exercises: TemplateLine[];
@@ -34,7 +35,9 @@ export class WorkoutTemplate {
   }
 
   static create(props: WorkoutTemplateProps): WorkoutTemplate {
-    validateNonEmptyString(props.id, 'WorkoutTemplate id');
+    if (!(props.id instanceof Id))
+      throw new ValidationError('WorkoutTemplate id must be an instance of Id');
+
     validateNonEmptyString(props.userId, 'WorkoutTemplate userId');
     validateNonEmptyString(props.name, 'WorkoutTemplate name');
 
@@ -107,7 +110,7 @@ export class WorkoutTemplate {
 
   // Getters
   get id() {
-    return this.props.id;
+    return this.props.id.value;
   }
 
   get userId() {

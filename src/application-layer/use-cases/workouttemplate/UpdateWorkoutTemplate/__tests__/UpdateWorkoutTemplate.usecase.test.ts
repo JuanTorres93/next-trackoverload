@@ -24,7 +24,7 @@ describe('UpdateWorkoutTemplateUsecase', () => {
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
     const request = {
-      id: vp.validWorkoutTemplateProps.id,
+      id: vp.validWorkoutTemplateProps.id.value,
       userId: vp.userId,
       name: 'New Name',
     };
@@ -32,14 +32,14 @@ describe('UpdateWorkoutTemplateUsecase', () => {
     const result = await usecase.execute(request);
 
     expect(result.name).toBe('New Name');
-    expect(result.id).toBe(vp.validWorkoutTemplateProps.id);
+    expect(result.id).toBe(vp.validWorkoutTemplateProps.id.value);
     expect(result.exercises).toEqual([{ exerciseId: 'ex1', sets: 3 }]);
     expect(new Date(result.createdAt)).toEqual(existingTemplate.createdAt);
     expect(new Date(result.updatedAt)).not.toEqual(existingTemplate.updatedAt);
 
     // Verify it was saved in the repo
     const savedTemplate = await workoutTemplatesRepo.getWorkoutTemplateById(
-      vp.validWorkoutTemplateProps.id
+      vp.validWorkoutTemplateProps.id.value
     );
     expect(savedTemplate!.name).toBe('New Name');
   });
@@ -53,7 +53,7 @@ describe('UpdateWorkoutTemplateUsecase', () => {
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
     const request = {
-      id: vp.validWorkoutTemplateProps.id,
+      id: vp.validWorkoutTemplateProps.id.value,
       userId: vp.userId,
       name: 'Updated Name',
     };
@@ -122,7 +122,7 @@ describe('UpdateWorkoutTemplateUsecase', () => {
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
     const request = {
-      id: vp.validWorkoutTemplateProps.id,
+      id: vp.validWorkoutTemplateProps.id.value,
       name: 'Updated Name',
       userId: vp.userId,
     };
@@ -140,7 +140,7 @@ describe('UpdateWorkoutTemplateUsecase', () => {
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
     const request = {
-      id: vp.validWorkoutTemplateProps.id,
+      id: vp.validWorkoutTemplateProps.id.value,
       name: 'Updated Name',
       userId: vp.userId,
     };

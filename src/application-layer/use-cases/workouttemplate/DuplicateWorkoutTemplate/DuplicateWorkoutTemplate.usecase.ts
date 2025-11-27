@@ -6,6 +6,7 @@ import {
 } from '@/application-layer/dtos/WorkoutTemplateDTO';
 import { NotFoundError } from '@/domain/common/errors';
 import { v4 as uuidv4 } from 'uuid';
+import { Id } from '@/domain/types/Id/Id';
 import { validateNonEmptyString } from '@/domain/common/validation';
 
 export type DuplicateWorkoutTemplateUsecaseRequest = {
@@ -48,7 +49,7 @@ export class DuplicateWorkoutTemplateUsecase {
       request.newTemplateName ?? `${originalTemplate.name} (Copy)`;
 
     const duplicatedTemplate = WorkoutTemplate.create({
-      id: uuidv4(),
+      id: Id.create(uuidv4()),
       userId: request.userId,
       name: newTemplateName,
       exercises: [...originalTemplate.exercises],

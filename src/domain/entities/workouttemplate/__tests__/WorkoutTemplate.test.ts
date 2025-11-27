@@ -106,14 +106,6 @@ describe('WorkoutTemplate', () => {
     ]);
   });
 
-  it('should throw ValidationError if id is empty', () => {
-    const templateProps = { ...validWorkoutTemplateProps };
-    templateProps.id = '';
-    expect(() => WorkoutTemplate.create(templateProps)).toThrow(
-      ValidationError
-    );
-  });
-
   it('should throw ValidationError if userId is invalid', () => {
     const invalidUserIds = [null, undefined, '', '   ', 3, {}, [], true, false];
 
@@ -213,5 +205,23 @@ describe('WorkoutTemplate', () => {
         originalUpdatedAt.getTime()
       );
     }, 2);
+  });
+
+  it('should throw error if id is not instance of Id', async () => {
+    expect(() => {
+      WorkoutTemplate.create({
+        ...validWorkoutTemplateProps,
+        // @ts-expect-error id is not Id
+        id: 'invalid-id',
+      });
+    }).toThrow(ValidationError);
+
+    expect(() => {
+      WorkoutTemplate.create({
+        ...validWorkoutTemplateProps,
+        // @ts-expect-error id is not Id
+        id: 'invalid-id',
+      });
+    }).toThrow(/Id/);
   });
 });

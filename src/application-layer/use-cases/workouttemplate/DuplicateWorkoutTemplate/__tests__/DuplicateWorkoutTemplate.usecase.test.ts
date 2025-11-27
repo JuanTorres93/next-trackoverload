@@ -123,7 +123,7 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
 
     const request = {
       userId: vp.userId,
-      originalTemplateId: vp.validWorkoutTemplateProps.id,
+      originalTemplateId: vp.validWorkoutTemplateProps.id.value,
     };
 
     const result = await usecase.execute(request);
@@ -191,7 +191,7 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
 
     const request = {
       userId: vp.userId,
-      originalTemplateId: vp.validWorkoutTemplateProps.id,
+      originalTemplateId: vp.validWorkoutTemplateProps.id.value,
     };
 
     await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
@@ -207,7 +207,7 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
 
     const request = {
       userId: 'other-user',
-      originalTemplateId: vp.validWorkoutTemplateProps.id,
+      originalTemplateId: vp.validWorkoutTemplateProps.id.value,
     };
 
     await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);

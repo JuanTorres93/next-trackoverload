@@ -19,7 +19,7 @@ export const recipePropsNoIngredientLines = {
   updatedAt: new Date(),
 };
 export const validWorkoutTemplateProps = {
-  id: '1',
+  id: Id.create('1'),
   userId,
   name: 'Push',
   exercises: [

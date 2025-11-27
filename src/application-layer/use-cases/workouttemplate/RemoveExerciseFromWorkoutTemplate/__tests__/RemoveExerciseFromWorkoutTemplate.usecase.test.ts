@@ -29,7 +29,7 @@ describe('RemoveExerciseFromWorkoutTemplateUsecase', () => {
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
     const request = {
-      workoutTemplateId: vp.validWorkoutTemplateProps.id,
+      workoutTemplateId: vp.validWorkoutTemplateProps.id.value,
       userId: vp.userId,
       exerciseId: 'bench-press',
     };
@@ -62,7 +62,7 @@ describe('RemoveExerciseFromWorkoutTemplateUsecase', () => {
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
     const request = {
-      workoutTemplateId: vp.validWorkoutTemplateProps.id,
+      workoutTemplateId: vp.validWorkoutTemplateProps.id.value,
       userId: vp.userId,
       exerciseId: 'bench-press',
     };
@@ -98,7 +98,7 @@ describe('RemoveExerciseFromWorkoutTemplateUsecase', () => {
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
     const request = {
-      workoutTemplateId: vp.validWorkoutTemplateProps.id,
+      workoutTemplateId: vp.validWorkoutTemplateProps.id.value,
       userId: vp.userId,
       exerciseId: 'non-existent-exercise',
     };
@@ -170,7 +170,7 @@ describe('RemoveExerciseFromWorkoutTemplateUsecase', () => {
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
     const request = {
-      workoutTemplateId: vp.validWorkoutTemplateProps.id,
+      workoutTemplateId: vp.validWorkoutTemplateProps.id.value,
       exerciseId: 'bench-press',
       userId: vp.userId,
     };
