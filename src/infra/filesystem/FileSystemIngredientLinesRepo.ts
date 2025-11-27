@@ -108,7 +108,7 @@ export class FileSystemIngredientLinesRepo
       if (hasIngredientLine) {
         const updatedMeal = Meal.create({
           id: Id.create(meal.id),
-          userId: meal.userId,
+          userId: Id.create(meal.userId),
           name: meal.name,
           ingredientLines: meal.ingredientLines.map((line) =>
             line.id === ingredientLine.id ? ingredientLine : line

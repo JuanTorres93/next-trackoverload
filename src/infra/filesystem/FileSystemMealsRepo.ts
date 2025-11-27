@@ -47,6 +47,7 @@ export class FileSystemMealsRepo
       return Meal.create({
         ...item,
         id: Id.create(item.id),
+        userId: Id.create(item.userId),
         ingredientLines,
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),

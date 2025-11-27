@@ -36,7 +36,7 @@ export class UpdateMealUsecase {
       // Create a new meal with the same properties
       const updatedMeal = Meal.create({
         id: Id.create(existingMeal.id),
-        userId: existingMeal.userId,
+        userId: Id.create(existingMeal.userId),
         name: existingMeal.name,
         ingredientLines: existingMeal.ingredientLines,
         createdAt: existingMeal.createdAt,

@@ -52,6 +52,7 @@ export class FileSystemDaysRepo
           return Meal.create({
             ...mealData,
             id: Id.create(mealData.id),
+            userId: Id.create(mealData.userId),
             ingredientLines,
             createdAt: new Date(mealData.createdAt),
             updatedAt: new Date(mealData.updatedAt),

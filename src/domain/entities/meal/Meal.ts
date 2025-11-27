@@ -12,7 +12,7 @@ export type MealUpdateProps = {
 
 export type MealProps = {
   id: Id;
-  userId: string;
+  userId: Id;
   name: string;
   ingredientLines: IngredientLine[];
   createdAt: Date;
@@ -26,7 +26,11 @@ export class Meal implements Calories, Protein {
     if (!(props.id instanceof Id))
       throw new ValidationError('Meal: Invalid id, must be an instance of Id');
 
-    validateNonEmptyString(props.userId, 'Meal userId');
+    if (!(props.userId instanceof Id))
+      throw new ValidationError(
+        'Meal: Invalid userId, must be an instance of Id'
+      );
+
     validateNonEmptyString(props.name, 'Meal name');
 
     if (
@@ -98,7 +102,7 @@ export class Meal implements Calories, Protein {
   }
 
   get userId() {
-    return this.props.userId;
+    return this.props.userId.value;
   }
 
   get name() {

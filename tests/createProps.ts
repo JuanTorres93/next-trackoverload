@@ -83,7 +83,7 @@ export const ingredientLinePropsNoIngredient = {
 
 export const mealPropsNoIngredientLines = {
   id: Id.create('meal1'),
-  userId,
+  userId: Id.create(userId),
   name: 'Chicken Meal',
   createdAt: new Date(),
   updatedAt: new Date(),

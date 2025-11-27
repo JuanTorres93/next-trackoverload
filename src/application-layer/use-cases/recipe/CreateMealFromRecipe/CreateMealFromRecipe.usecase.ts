@@ -46,7 +46,7 @@ export class CreateMealFromRecipeUsecase {
 
     const newMeal = Meal.create({
       id: Id.create(uuidv4()),
-      userId: request.userId,
+      userId: Id.create(request.userId),
       name: mealName,
       ingredientLines: recipe.ingredientLines,
       createdAt: new Date(),

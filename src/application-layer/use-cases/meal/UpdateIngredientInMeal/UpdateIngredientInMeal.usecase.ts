@@ -104,7 +104,7 @@ export class UpdateIngredientInMealUsecase {
     // Create updated meal with updated ingredient line
     const updatedMeal = Meal.create({
       id: Id.create(existingMeal.id),
-      userId: existingMeal.userId,
+      userId: Id.create(existingMeal.userId),
       name: existingMeal.name,
       ingredientLines: existingMeal.ingredientLines.map((line) => {
         if (line.id === request.ingredientLineId) {
