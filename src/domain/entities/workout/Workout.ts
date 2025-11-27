@@ -1,4 +1,5 @@
 import { ValidationError } from '../../common/errors';
+import { Id } from '@/domain/types/Id/Id';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 import {
   validateNonEmptyString,
@@ -29,7 +30,7 @@ type ExerciseLineUpdateProps = {
 };
 
 export type WorkoutProps = {
-  id: string;
+  id: Id;
   userId: string;
   name: string;
   workoutTemplateId: string;
@@ -42,7 +43,9 @@ export class Workout {
   private constructor(private readonly props: WorkoutProps) {}
 
   static create(props: WorkoutProps): Workout {
-    validateNonEmptyString(props.id, 'Workout id');
+    if (!(props.id instanceof Id))
+      throw new ValidationError('Workout: id must be an instance of Id');
+
     validateNonEmptyString(props.userId, 'Workout userId');
     validateNonEmptyString(props.name, 'Workout name');
     validateNonEmptyString(
@@ -144,7 +147,7 @@ export class Workout {
 
   // Getters
   get id() {
-    return this.props.id;
+    return this.props.id.value;
   }
 
   get userId() {

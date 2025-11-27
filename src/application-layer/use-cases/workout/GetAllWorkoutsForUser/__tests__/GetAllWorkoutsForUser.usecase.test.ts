@@ -3,6 +3,7 @@ import * as dto from '@/../tests/dtoProperties';
 import { ValidationError } from '@/domain/common/errors';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
+import { Id } from '@/domain/types/Id/Id';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetAllWorkoutsForUserUsecase } from '../GetAllWorkoutsForUser.usecase';
 
@@ -18,13 +19,13 @@ describe('GetAllWorkoutsUsecase', () => {
   it('should return all workouts', async () => {
     const workout1 = Workout.create({
       ...vp.validWorkoutProps,
-      id: '1',
+      id: Id.create('1'),
       name: 'Push Day',
       exercises: [],
     });
     const workout2 = Workout.create({
       ...vp.validWorkoutProps,
-      id: '2',
+      id: Id.create('2'),
       name: 'Pull Day',
       workoutTemplateId: 'template-2',
       exercises: [],
@@ -45,13 +46,13 @@ describe('GetAllWorkoutsUsecase', () => {
   it('should return an array of WorkoutDTO', async () => {
     const workout1 = Workout.create({
       ...vp.validWorkoutProps,
-      id: '1',
+      id: Id.create('1'),
       name: 'Push Day',
       exercises: [],
     });
     const workout2 = Workout.create({
       ...vp.validWorkoutProps,
-      id: '2',
+      id: Id.create('2'),
       name: 'Pull Day',
       workoutTemplateId: 'template-2',
       exercises: [],

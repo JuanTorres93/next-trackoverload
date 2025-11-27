@@ -26,7 +26,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
   it('should add exercise to workout', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: '1',
+      id: Id.create('1'),
       exercises: [],
     });
 
@@ -60,7 +60,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
   it('should return WorkoutDTO', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: '1',
+      id: Id.create('1'),
       exercises: [],
     });
 
@@ -113,7 +113,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
   it('should throw NotFoundError when exercise does not exist', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: '1',
+      id: Id.create('1'),
       exercises: [],
     });
 
@@ -134,7 +134,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
   it('should throw ValidationError when trying to add duplicate exercise with same set number', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: '1',
+      id: Id.create('1'),
       exercises: [
         {
           exerciseId: 'exercise-1',
@@ -169,7 +169,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
   it('should add exercise with different set number', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: '1',
+      id: Id.create('1'),
       exercises: [
         {
           exerciseId: 'exercise-1',
@@ -235,7 +235,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
   it('should throw error if exerciseId is invalid', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: '1',
+      id: Id.create('1'),
       exercises: [],
     });
 
@@ -260,7 +260,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
   it('should throw error if setNumber is invalid', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: '1',
+      id: Id.create('1'),
       exercises: [],
     });
 
@@ -303,7 +303,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
   it('should throw error if reps is invalid', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: '1',
+      id: Id.create('1'),
       exercises: [],
     });
 
@@ -345,7 +345,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
   it('should throw error if weight is invalid', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: '1',
+      id: Id.create('1'),
       exercises: [],
     });
 

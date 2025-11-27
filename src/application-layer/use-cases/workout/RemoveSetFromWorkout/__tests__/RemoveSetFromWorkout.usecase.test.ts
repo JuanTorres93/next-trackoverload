@@ -3,6 +3,7 @@ import { RemoveSetFromWorkoutUsecase } from '../RemoveSetFromWorkout.usecase';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { Id } from '@/domain/types/Id/Id';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 
@@ -18,7 +19,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
   it('should remove specific set from workout', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: '1',
+      id: Id.create('1'),
       name: 'Push Day',
       exercises: [
         {
@@ -70,7 +71,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
   it('should return WorkoutDTO', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: '1',
+      id: Id.create('1'),
       name: 'Push Day',
       exercises: [
         {
@@ -103,7 +104,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
   it('should remove only the specified set number', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: '1',
+      id: Id.create('1'),
       name: 'Push Day',
       exercises: [
         {
@@ -152,7 +153,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
   it('should not modify workout when set does not exist', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: '1',
+      id: Id.create('1'),
       name: 'Push Day',
       exercises: [
         {
@@ -181,7 +182,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
   it('should not modify workout when exercise does not exist', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: '1',
+      id: Id.create('1'),
       name: 'Push Day',
       exercises: [
         {
@@ -278,7 +279,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
   it('should reorder sets correctly after removal', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: '1',
+      id: Id.create('1'),
       name: 'Push Day',
       exercises: [
         {

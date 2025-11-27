@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryWorkoutsRepo } from '../MemoryWorkoutsRepo';
 import { Workout } from '@/domain/entities/workout/Workout';
+import { Id } from '@/domain/types/Id/Id';
 import * as vp from '@/../tests/createProps';
 
 describe('MemoryWorkoutsRepo', () => {
@@ -11,7 +12,7 @@ describe('MemoryWorkoutsRepo', () => {
     repo = new MemoryWorkoutsRepo();
     workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: '1',
+      id: Id.create('1'),
       name: 'Push Day',
     });
     await repo.saveWorkout(workout);
@@ -20,7 +21,7 @@ describe('MemoryWorkoutsRepo', () => {
   it('should save a workout', async () => {
     const newWorkout = Workout.create({
       ...vp.validWorkoutProps,
-      id: '2',
+      id: Id.create('2'),
       name: 'Pull Day',
       workoutTemplateId: 'template-2',
     });
@@ -34,7 +35,7 @@ describe('MemoryWorkoutsRepo', () => {
   it('should update an existing workout', async () => {
     const updatedWorkout = Workout.create({
       ...vp.validWorkoutProps,
-      id: '1',
+      id: Id.create('1'),
       name: 'Updated Push Day',
       updatedAt: new Date('2023-01-03'),
     });

@@ -90,4 +90,22 @@ describe('Workout', () => {
       expect(() => Workout.create(props)).toThrow(ValidationError);
     }
   });
+
+  it('should throw error if id is not instance of Id', async () => {
+    expect(() => {
+      Workout.create({
+        ...validWorkoutProps,
+        // @ts-expect-error testing invalid inputs
+        id: 'not-Id',
+      });
+    }).toThrow(ValidationError);
+
+    expect(() => {
+      Workout.create({
+        ...validWorkoutProps,
+        // @ts-expect-error testing invalid inputs
+        id: 'not-Id',
+      });
+    }).toThrow(/Id/);
+  });
 });

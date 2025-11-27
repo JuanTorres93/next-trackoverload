@@ -3,6 +3,7 @@ import { Workout } from '@/domain/entities/workout/Workout';
 import { WorkoutDTO, toWorkoutDTO } from '@/application-layer/dtos/WorkoutDTO';
 import { NotFoundError } from '@/domain/common/errors';
 import { validateNonEmptyString } from '@/domain/common/validation';
+import { Id } from '@/domain/types/Id/Id';
 
 export type UpdateWorkoutUsecaseRequest = {
   id: string;
@@ -29,7 +30,7 @@ export class UpdateWorkoutUsecase {
     }
 
     const updatedWorkout = Workout.create({
-      id: existingWorkout.id,
+      id: Id.create(existingWorkout.id),
       userId: existingWorkout.userId,
       name: request.name ?? existingWorkout.name,
       workoutTemplateId: existingWorkout.workoutTemplateId,

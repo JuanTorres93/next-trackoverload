@@ -31,7 +31,7 @@ export const validWorkoutTemplateProps = {
 };
 
 export const validWorkoutProps = {
-  id: 'workout-1',
+  id: Id.create('workout-1'),
   userId,
   name: 'Push',
   workoutTemplateId: 'template-1',

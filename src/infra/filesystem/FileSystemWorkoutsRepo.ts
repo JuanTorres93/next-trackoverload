@@ -1,6 +1,7 @@
 import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { WorkoutDTO, toWorkoutDTO } from '@/application-layer/dtos/WorkoutDTO';
+import { Id } from '@/domain/types/Id/Id';
 import { BaseFileSystemRepo } from './BaseFileSystemRepo';
 
 export class FileSystemWorkoutsRepo
@@ -23,6 +24,7 @@ export class FileSystemWorkoutsRepo
     return (data as WorkoutDTO[]).map((item) =>
       Workout.create({
         ...item,
+        id: Id.create(item.id),
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),
       })

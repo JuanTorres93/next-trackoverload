@@ -3,6 +3,8 @@ import { GetWorkoutsByTemplateForUserUsecase } from '../GetWorkoutsByTemplateFor
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { ValidationError } from '@/domain/common/errors';
+import { Id } from '@/domain/types/Id/Id';
+
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 
@@ -20,7 +22,7 @@ describe('GetWorkoutsByTemplateUsecase', () => {
   it('should return workouts filtered by template id', async () => {
     const workout1 = Workout.create({
       ...vp.validWorkoutProps,
-      id: '1',
+      id: Id.create('1'),
       name: 'Push Day #1',
       workoutTemplateId: 'template-1',
       exercises: [],
@@ -28,7 +30,7 @@ describe('GetWorkoutsByTemplateUsecase', () => {
 
     const workout2 = Workout.create({
       ...vp.validWorkoutProps,
-      id: '2',
+      id: Id.create('2'),
       name: 'Pull Day #1',
       workoutTemplateId: 'template-2',
       exercises: [],
@@ -36,7 +38,7 @@ describe('GetWorkoutsByTemplateUsecase', () => {
 
     const workout3 = Workout.create({
       ...vp.validWorkoutProps,
-      id: '3',
+      id: Id.create('3'),
       name: 'Push Day #2',
       workoutTemplateId: 'template-1',
       exercises: [],
@@ -62,7 +64,7 @@ describe('GetWorkoutsByTemplateUsecase', () => {
   it('should return array of WorkoutDTO', async () => {
     const workout1 = Workout.create({
       ...vp.validWorkoutProps,
-      id: '1',
+      id: Id.create('1'),
       name: 'Push Day #1',
       workoutTemplateId: 'template-1',
       exercises: [],
@@ -70,7 +72,7 @@ describe('GetWorkoutsByTemplateUsecase', () => {
 
     const workout2 = Workout.create({
       ...vp.validWorkoutProps,
-      id: '2',
+      id: Id.create('2'),
       name: 'Push Day #2',
       workoutTemplateId: 'template-1',
       exercises: [],
@@ -96,7 +98,7 @@ describe('GetWorkoutsByTemplateUsecase', () => {
   it('should return empty array when no workouts exist for template', async () => {
     const workout1 = Workout.create({
       ...vp.validWorkoutProps,
-      id: '1',
+      id: Id.create('1'),
       name: 'Push Day #1',
       workoutTemplateId: 'template-1',
       exercises: [],

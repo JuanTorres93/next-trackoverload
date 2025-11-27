@@ -6,6 +6,7 @@ import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toWorkoutDTO } from '@/application-layer/dtos/WorkoutDTO';
+import { Id } from '@/domain/types/Id/Id';
 
 describe('GetWorkoutByIdUsecase', () => {
   let workoutsRepo: MemoryWorkoutsRepo;
@@ -19,7 +20,7 @@ describe('GetWorkoutByIdUsecase', () => {
   it('should return workout when it exists', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: '1',
+      id: Id.create('1'),
       exercises: [],
     });
 
@@ -36,7 +37,7 @@ describe('GetWorkoutByIdUsecase', () => {
   it('should return WorkoutDTO', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: '1',
+      id: Id.create('1'),
       name: 'Push Day',
       exercises: [],
     });
