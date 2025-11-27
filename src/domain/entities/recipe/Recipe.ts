@@ -8,7 +8,7 @@ import { Id } from '@/domain/types/Id/Id';
 
 export type RecipeProps = {
   id: Id;
-  userId: string;
+  userId: Id;
   name: string;
   imageUrl?: string;
   ingredientLines: IngredientLine[];
@@ -25,7 +25,11 @@ export class Recipe implements Protein, Calories {
         'Recipe: Invalid id, must be an instance of Id'
       );
 
-    validateNonEmptyString(props.userId, 'Recipe userId');
+    if (!(props.userId instanceof Id))
+      throw new ValidationError(
+        'Recipe: Invalid userId, must be an instance of Id'
+      );
+
     validateNonEmptyString(props.name, 'Recipe name');
 
     if (
@@ -103,7 +107,7 @@ export class Recipe implements Protein, Calories {
   }
 
   get userId() {
-    return this.props.userId;
+    return this.props.userId.value;
   }
 
   get name() {

@@ -34,7 +34,7 @@ export class DuplicateRecipeUsecase {
 
     const duplicatedRecipe = Recipe.create({
       id: Id.create(uuidv4()),
-      userId: request.userId,
+      userId: Id.create(request.userId),
       name: newName,
       ingredientLines: originalRecipe.ingredientLines,
       createdAt: new Date(),

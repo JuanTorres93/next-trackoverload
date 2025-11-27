@@ -47,6 +47,7 @@ export class FileSystemRecipesRepo
       return Recipe.create({
         ...item,
         id: Id.create(item.id),
+        userId: Id.create(item.userId),
         ingredientLines,
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),

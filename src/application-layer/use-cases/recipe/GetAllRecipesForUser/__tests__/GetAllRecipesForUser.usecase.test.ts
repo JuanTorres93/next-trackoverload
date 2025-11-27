@@ -99,7 +99,7 @@ describe('GetAllRecipesForUserUsecase', () => {
     const user2Recipe = Recipe.create({
       ...vp.recipePropsNoIngredientLines,
       id: Id.create('user-2-recipe'),
-      userId: userId2,
+      userId: Id.create(userId2),
       ingredientLines: [testIngredientLine],
     });
 

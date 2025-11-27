@@ -72,7 +72,7 @@ export class CreateRecipeUsecase {
 
     const newRecipe = Recipe.create({
       id: Id.create(uuidv4()),
-      userId: request.userId,
+      userId: Id.create(request.userId),
       name: request.name,
       ingredientLines: ingredientLines,
       imageUrl: imageMetadata ? imageMetadata.url : undefined,

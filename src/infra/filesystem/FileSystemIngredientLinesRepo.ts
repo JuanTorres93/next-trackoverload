@@ -76,7 +76,7 @@ export class FileSystemIngredientLinesRepo
       if (hasIngredientLine) {
         const updatedRecipe = Recipe.create({
           id: Id.create(recipe.id),
-          userId: recipe.userId,
+          userId: Id.create(recipe.userId),
           name: recipe.name,
           imageUrl: recipe.imageUrl,
           ingredientLines: recipe.ingredientLines.map((line) =>
