@@ -5,7 +5,7 @@ export const dateId = new Date('2023-10-01');
 
 export const validDayProps = {
   id: dateId,
-  userId,
+  userId: Id.create(userId),
   meals: [], // TODO make deep copy in constructor if testing issues arise
   createdAt: new Date(),
   updatedAt: new Date(),

@@ -1,6 +1,7 @@
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 import { Day } from '@/domain/entities/day/Day';
+import { Id } from '@/domain/types/Id/Id';
 import { ValidationError } from '@/domain/common/errors';
 import { DayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
 
@@ -27,7 +28,7 @@ export class AddMealToDayUsecase {
       // NOTE: date and userId are validated in the entity
       day = Day.create({
         id: request.date,
-        userId: request.userId,
+        userId: Id.create(request.userId),
         meals: [],
         createdAt: new Date(),
         updatedAt: new Date(),

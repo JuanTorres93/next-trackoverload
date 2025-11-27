@@ -70,6 +70,7 @@ export class FileSystemDaysRepo
       return Day.create({
         ...item,
         id: new Date(item.id),
+        userId: Id.create(item.userId),
         meals,
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),

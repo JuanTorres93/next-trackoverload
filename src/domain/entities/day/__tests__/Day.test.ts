@@ -122,4 +122,22 @@ describe('Day', () => {
     expect(day).toHaveProperty('meals');
     expect(Array.isArray(day.meals)).toBe(true);
   });
+
+  it('should throw error if userId is not instance of Id', async () => {
+    expect(() =>
+      Day.create({
+        ...vp.validDayProps,
+        // @ts-expect-error Testing invalid input
+        userId: 'invalid-user-id',
+      })
+    ).toThrow(ValidationError);
+
+    expect(() =>
+      Day.create({
+        ...vp.validDayProps,
+        // @ts-expect-error Testing invalid input
+        userId: 'invalid-user-id',
+      })
+    ).toThrow(/of Id/);
+  });
 });

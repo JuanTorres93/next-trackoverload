@@ -6,13 +6,14 @@ import {
   validateNonEmptyString,
 } from '../../common/validation';
 import { Meal } from '../meal/Meal';
+import { Id } from '@/domain/types/Id/Id';
 import { FakeMeal } from '../fakemeal/FakeMeal';
 import { Protein } from '../../interfaces/Protein';
 import { Calories } from '../../interfaces/Calories';
 
 export type DayProps = {
   id: Date;
-  userId: string;
+  userId: Id;
   meals: (Meal | FakeMeal)[];
   createdAt: Date;
   updatedAt: Date;
@@ -33,7 +34,9 @@ export class Day implements Protein, Calories {
 
   static create(props: DayProps): Day {
     validateDate(props.id, 'Day id');
-    validateNonEmptyString(props.userId, 'Day userId');
+
+    if (!(props.userId instanceof Id))
+      throw new ValidationError('Day userId must be an instance of Id');
 
     // Validate meals is instance of Meal or FakeMeal
     if (!Array.isArray(props.meals)) {
@@ -76,7 +79,7 @@ export class Day implements Protein, Calories {
   }
 
   get userId() {
-    return this.props.userId;
+    return this.props.userId.value;
   }
 
   get meals() {
