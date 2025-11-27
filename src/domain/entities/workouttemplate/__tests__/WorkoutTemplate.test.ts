@@ -224,4 +224,22 @@ describe('WorkoutTemplate', () => {
       });
     }).toThrow(/Id/);
   });
+
+  it('should throw error if userId is not instance of Id', async () => {
+    expect(() => {
+      WorkoutTemplate.create({
+        ...validWorkoutTemplateProps,
+        // @ts-expect-error userId is not Id
+        userId: 'invalid-userId',
+      });
+    }).toThrow(ValidationError);
+
+    expect(() => {
+      WorkoutTemplate.create({
+        ...validWorkoutTemplateProps,
+        // @ts-expect-error userId is not Id
+        userId: 'invalid-userId',
+      });
+    }).toThrow(/\sId/);
+  });
 });

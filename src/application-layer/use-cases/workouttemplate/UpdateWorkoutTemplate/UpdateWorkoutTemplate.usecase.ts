@@ -38,7 +38,7 @@ export class UpdateWorkoutTemplateUsecase {
     // NOTE: userId and name validation are done in the entity
     const updatedTemplate = WorkoutTemplate.create({
       id: Id.create(workoutTemplate.id),
-      userId: workoutTemplate.userId,
+      userId: Id.create(workoutTemplate.userId),
       name: request.name,
       exercises: workoutTemplate.exercises,
       createdAt: workoutTemplate.createdAt,

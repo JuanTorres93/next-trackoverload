@@ -50,7 +50,7 @@ export class DuplicateWorkoutTemplateUsecase {
 
     const duplicatedTemplate = WorkoutTemplate.create({
       id: Id.create(uuidv4()),
-      userId: request.userId,
+      userId: Id.create(request.userId),
       name: newTemplateName,
       exercises: [...originalTemplate.exercises],
       createdAt: new Date(),

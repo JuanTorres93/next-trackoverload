@@ -18,7 +18,7 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
   it('should return workout template by id for the correct user', async () => {
     const template = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps,
-      userId: vp.userId,
+      userId: Id.create(vp.userId),
       name: 'Push Day',
       exercises: [{ exerciseId: 'ex1', sets: 3 }],
     });
@@ -37,7 +37,7 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
     const template = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps,
       id: Id.create('1'),
-      userId: vp.userId,
+      userId: Id.create(vp.userId),
       name: 'Leg Day',
       exercises: [{ exerciseId: 'ex2', sets: 4 }],
     });

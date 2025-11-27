@@ -28,6 +28,7 @@ export class FileSystemWorkoutTemplatesRepo
       WorkoutTemplate.create({
         ...item,
         id: Id.create(item.id),
+        userId: Id.create(item.userId),
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),
         deletedAt: item.deletedAt ? new Date(item.deletedAt) : undefined,

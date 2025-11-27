@@ -21,7 +21,7 @@ export class CreateWorkoutTemplateUsecase {
     // NOTE: validation is done at the entity level
     const newWorkoutTemplate = WorkoutTemplate.create({
       id: Id.create(uuidv4()),
-      userId: request.userId,
+      userId: Id.create(request.userId),
       name: request.name,
       exercises: [],
       createdAt: new Date(),

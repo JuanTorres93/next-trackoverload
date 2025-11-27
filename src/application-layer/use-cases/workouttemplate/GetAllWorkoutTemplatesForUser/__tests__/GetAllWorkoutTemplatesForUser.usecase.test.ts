@@ -30,7 +30,7 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
     const user2Template = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps,
       id: Id.create('3'),
-      userId: 'user2',
+      userId: Id.create('user2'),
       name: 'Leg Day',
       exercises: [],
     });

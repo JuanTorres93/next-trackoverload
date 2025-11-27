@@ -17,7 +17,7 @@ type TemplateLineUpdateProps = {
 
 export type WorkoutTemplateProps = {
   id: Id;
-  userId: string;
+  userId: Id;
   name: string;
   exercises: TemplateLine[];
   createdAt: Date;
@@ -38,7 +38,11 @@ export class WorkoutTemplate {
     if (!(props.id instanceof Id))
       throw new ValidationError('WorkoutTemplate id must be an instance of Id');
 
-    validateNonEmptyString(props.userId, 'WorkoutTemplate userId');
+    if (!(props.userId instanceof Id))
+      throw new ValidationError(
+        'WorkoutTemplate userId must be an instance of Id'
+      );
+
     validateNonEmptyString(props.name, 'WorkoutTemplate name');
 
     if (!Array.isArray(props.exercises)) {
@@ -114,7 +118,7 @@ export class WorkoutTemplate {
   }
 
   get userId() {
-    return this.props.userId;
+    return this.props.userId.value;
   }
 
   get name() {
