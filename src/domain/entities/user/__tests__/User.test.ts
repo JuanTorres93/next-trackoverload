@@ -26,6 +26,26 @@ describe('User', () => {
     expect(user.name).toBe('Updated User');
   });
 
+  it('should change its customerId', async () => {
+    const newCustomerId = Id.create('new-customer-id');
+    const patch = { customerId: newCustomerId };
+
+    user.update(patch);
+    expect(user.customerId).toBe(newCustomerId.value);
+  });
+
+  it('should throw error is updating customer id with an id that is not an instance of Id', async () => {
+    expect(() =>
+      // @ts-expect-error Testing invalid inputs
+      user.update({ customerId: 'not-Id' })
+    ).toThrowError(ValidationError);
+
+    expect(() =>
+      // @ts-expect-error Testing invalid inputs
+      user.update({ customerId: 'not-Id' })
+    ).toThrowError(/customerId.*\sId/);
+  });
+
   it('should throw ValidationError for empty name', () => {
     expect(() => User.create({ ...validUserProps, name: '' })).toThrowError(
       ValidationError
@@ -36,7 +56,7 @@ describe('User', () => {
     const userWithoutDates = User.create({
       id: Id.create('2'),
       name: 'Another User',
-      customerId: 'customer-2',
+      customerId: Id.create('customer-2'),
       createdAt: undefined as unknown as Date,
       updatedAt: undefined as unknown as Date,
     });
@@ -71,5 +91,23 @@ describe('User', () => {
         id: 'not-Id',
       })
     ).toThrowError(/Id/);
+  });
+
+  it('should throw error if customerId exists and is not instance of Id', async () => {
+    expect(() =>
+      User.create({
+        ...validUserProps,
+        // @ts-expect-error Testing invalid inputs
+        customerId: 'not-Id',
+      })
+    ).toThrowError(ValidationError);
+
+    expect(() =>
+      User.create({
+        ...validUserProps,
+        // @ts-expect-error Testing invalid inputs
+        customerId: 'not-Id',
+      })
+    ).toThrowError(/\sId/);
   });
 });

@@ -8,7 +8,6 @@ const validUserProps = {
   ...vp.validUserProps,
   id: Id.create('1'),
   name: 'John Doe',
-  customerId: 'customer-1',
 };
 
 describe('MemoryUsersRepo', () => {
@@ -26,7 +25,7 @@ describe('MemoryUsersRepo', () => {
       ...vp.validUserProps,
       id: Id.create('2'),
       name: 'Jane Doe',
-      customerId: 'customer-2',
+      customerId: Id.create('customer-2'),
     });
     await repo.saveUser(newUser);
 

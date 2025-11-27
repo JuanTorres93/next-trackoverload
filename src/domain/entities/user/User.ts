@@ -5,13 +5,13 @@ import { ValidationError } from '@/domain/common/errors';
 
 export type UserUpdateProps = {
   name?: string;
-  customerId?: string;
+  customerId?: Id;
 };
 
 export type UserProps = {
   id: Id;
   name: string;
-  customerId?: string;
+  customerId?: Id;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -20,8 +20,8 @@ function validateUpdateProps(patch: UserUpdateProps) {
   if (patch.name !== undefined) {
     validateNonEmptyString(patch.name, 'User name');
   }
-  if (patch.customerId !== undefined) {
-    validateNonEmptyString(patch.customerId, 'User customerId');
+  if (patch.customerId !== undefined && !(patch.customerId instanceof Id)) {
+    throw new ValidationError('User customerId must be an instance of Id');
   }
 }
 
@@ -33,8 +33,9 @@ export class User {
       throw new ValidationError('User id must be an instance of Id');
 
     validateNonEmptyString(props.name, 'User name');
-    if (props.customerId !== undefined)
-      validateNonEmptyString(props.customerId, 'User customerId');
+
+    if (props.customerId !== undefined && !(props.customerId instanceof Id))
+      throw new ValidationError('User customerId must be an instance of Id');
 
     props.createdAt = handleCreatedAt(props.createdAt);
     props.updatedAt = handleUpdatedAt(props.updatedAt);
@@ -66,7 +67,7 @@ export class User {
   }
 
   get customerId() {
-    return this.props.customerId;
+    return this.props.customerId?.value;
   }
 
   get createdAt() {

@@ -34,7 +34,9 @@ export class UpdateUserUsecase {
       const updatedUser = User.create({
         id: Id.create(existingUser.id),
         name: existingUser.name,
-        customerId: existingUser.customerId,
+        customerId: existingUser.customerId
+          ? Id.create(existingUser.customerId)
+          : undefined,
         createdAt: existingUser.createdAt,
         updatedAt: existingUser.updatedAt,
       });

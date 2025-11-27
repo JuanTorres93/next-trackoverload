@@ -17,7 +17,9 @@ export class CreateUserUsecase {
     const newUser = User.create({
       id: Id.create(uuidv4()),
       name: request.name,
-      customerId: request.customerId,
+      customerId: request.customerId
+        ? Id.create(request.customerId)
+        : undefined,
       createdAt: new Date(),
       updatedAt: new Date(),
     });

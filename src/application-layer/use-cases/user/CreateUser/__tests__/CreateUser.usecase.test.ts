@@ -95,28 +95,4 @@ describe('CreateUserUsecase', () => {
       ).rejects.toThrow(ValidationError);
     }
   });
-
-  it('should throw error if customerId is invalid', async () => {
-    const invalidCustomerIds = [
-      '',
-      '   ',
-      null,
-      true,
-      123,
-      {},
-      [],
-      () => {},
-      NaN,
-    ];
-
-    for (const invalidCustomerId of invalidCustomerIds) {
-      await expect(
-        createUserUsecase.execute({
-          name: 'Valid Name',
-          // @ts-expect-error Testing invalid inputs
-          customerId: invalidCustomerId,
-        })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
 });

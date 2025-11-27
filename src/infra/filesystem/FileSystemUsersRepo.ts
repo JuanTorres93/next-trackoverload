@@ -25,6 +25,7 @@ export class FileSystemUsersRepo
       User.create({
         ...item,
         id: Id.create(item.id),
+        customerId: item.customerId ? Id.create(item.customerId) : undefined,
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),
       })
