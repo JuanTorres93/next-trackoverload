@@ -34,7 +34,7 @@ export const validWorkoutProps = {
   id: Id.create('workout-1'),
   userId: Id.create(userId),
   name: 'Push',
-  workoutTemplateId: 'template-1',
+  workoutTemplateId: Id.create('template-1'),
   exercises: [
     {
       exerciseId: 'ex1',

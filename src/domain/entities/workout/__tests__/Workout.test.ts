@@ -126,4 +126,22 @@ describe('Workout', () => {
       });
     }).toThrow(/\sId/);
   });
+
+  it('should throw error if workoutTemplateId is not instance of Id', async () => {
+    expect(() => {
+      Workout.create({
+        ...validWorkoutProps,
+        // @ts-expect-error testing invalid inputs
+        workoutTemplateId: 'not-Id',
+      });
+    }).toThrow(ValidationError);
+
+    expect(() => {
+      Workout.create({
+        ...validWorkoutProps,
+        // @ts-expect-error testing invalid inputs
+        workoutTemplateId: 'not-Id',
+      });
+    }).toThrow(/\sId/);
+  });
 });

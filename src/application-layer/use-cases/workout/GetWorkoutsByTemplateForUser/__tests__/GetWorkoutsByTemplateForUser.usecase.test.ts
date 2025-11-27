@@ -24,7 +24,6 @@ describe('GetWorkoutsByTemplateUsecase', () => {
       ...vp.validWorkoutProps,
       id: Id.create('1'),
       name: 'Push Day #1',
-      workoutTemplateId: 'template-1',
       exercises: [],
     });
 
@@ -32,7 +31,7 @@ describe('GetWorkoutsByTemplateUsecase', () => {
       ...vp.validWorkoutProps,
       id: Id.create('2'),
       name: 'Pull Day #1',
-      workoutTemplateId: 'template-2',
+      workoutTemplateId: Id.create('template-2'),
       exercises: [],
     });
 
@@ -40,7 +39,6 @@ describe('GetWorkoutsByTemplateUsecase', () => {
       ...vp.validWorkoutProps,
       id: Id.create('3'),
       name: 'Push Day #2',
-      workoutTemplateId: 'template-1',
       exercises: [],
     });
 
@@ -66,7 +64,6 @@ describe('GetWorkoutsByTemplateUsecase', () => {
       ...vp.validWorkoutProps,
       id: Id.create('1'),
       name: 'Push Day #1',
-      workoutTemplateId: 'template-1',
       exercises: [],
     });
 
@@ -74,7 +71,6 @@ describe('GetWorkoutsByTemplateUsecase', () => {
       ...vp.validWorkoutProps,
       id: Id.create('2'),
       name: 'Push Day #2',
-      workoutTemplateId: 'template-1',
       exercises: [],
     });
 
@@ -100,7 +96,6 @@ describe('GetWorkoutsByTemplateUsecase', () => {
       ...vp.validWorkoutProps,
       id: Id.create('1'),
       name: 'Push Day #1',
-      workoutTemplateId: 'template-1',
       exercises: [],
     });
 

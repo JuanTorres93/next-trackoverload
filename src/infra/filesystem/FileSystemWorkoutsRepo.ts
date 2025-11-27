@@ -26,6 +26,7 @@ export class FileSystemWorkoutsRepo
         ...item,
         id: Id.create(item.id),
         userId: Id.create(item.userId),
+        workoutTemplateId: Id.create(item.workoutTemplateId),
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),
       })

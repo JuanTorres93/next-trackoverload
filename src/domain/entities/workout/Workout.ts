@@ -9,6 +9,7 @@ import {
 } from '../../common/validation';
 
 export type ExerciseLine = {
+  // TODO change exerciseId to Id type
   exerciseId: string;
   setNumber: number;
   reps: number;
@@ -33,7 +34,7 @@ export type WorkoutProps = {
   id: Id;
   userId: Id;
   name: string;
-  workoutTemplateId: string;
+  workoutTemplateId: Id;
   exercises: ExerciseLine[];
   createdAt: Date;
   updatedAt: Date;
@@ -50,11 +51,11 @@ export class Workout {
       throw new ValidationError('Workout: userId must be an instance of Id');
 
     validateNonEmptyString(props.name, 'Workout name');
-    validateNonEmptyString(
-      props.workoutTemplateId,
-      'Workout workoutTemplateId'
-    );
-
+    if (!(props.workoutTemplateId instanceof Id)) {
+      throw new ValidationError(
+        'Workout: workoutTemplateId must be an instance of Id'
+      );
+    }
     if (!Array.isArray(props.exercises)) {
       throw new ValidationError('Workout: exercises must be an array');
     }
@@ -161,7 +162,7 @@ export class Workout {
   }
 
   get workoutTemplateId() {
-    return this.props.workoutTemplateId;
+    return this.props.workoutTemplateId.value;
   }
 
   get exercises() {

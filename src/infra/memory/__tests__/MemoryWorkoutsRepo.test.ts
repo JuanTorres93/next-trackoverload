@@ -23,7 +23,6 @@ describe('MemoryWorkoutsRepo', () => {
       ...vp.validWorkoutProps,
       id: Id.create('2'),
       name: 'Pull Day',
-      workoutTemplateId: 'template-2',
     });
     await repo.saveWorkout(newWorkout);
 

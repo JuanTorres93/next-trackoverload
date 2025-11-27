@@ -27,7 +27,6 @@ describe('GetAllWorkoutsUsecase', () => {
       ...vp.validWorkoutProps,
       id: Id.create('2'),
       name: 'Pull Day',
-      workoutTemplateId: 'template-2',
       exercises: [],
     });
 
@@ -54,7 +53,6 @@ describe('GetAllWorkoutsUsecase', () => {
       ...vp.validWorkoutProps,
       id: Id.create('2'),
       name: 'Pull Day',
-      workoutTemplateId: 'template-2',
       exercises: [],
     });
 

@@ -75,7 +75,7 @@ export class CreateWorkoutFromTemplateUsecase {
       name:
         request.workoutName ??
         `${workoutTemplate.name} - ${new Date().toLocaleDateString()}`,
-      workoutTemplateId: request.workoutTemplateId,
+      workoutTemplateId: Id.create(request.workoutTemplateId),
       exercises: workoutExercises,
       createdAt: new Date(),
       updatedAt: new Date(),

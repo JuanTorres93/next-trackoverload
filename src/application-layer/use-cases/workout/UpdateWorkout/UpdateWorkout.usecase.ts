@@ -33,7 +33,7 @@ export class UpdateWorkoutUsecase {
       id: Id.create(existingWorkout.id),
       userId: Id.create(existingWorkout.userId),
       name: request.name ?? existingWorkout.name,
-      workoutTemplateId: existingWorkout.workoutTemplateId,
+      workoutTemplateId: Id.create(existingWorkout.workoutTemplateId),
       exercises: existingWorkout.exercises,
       createdAt: existingWorkout.createdAt,
       updatedAt: new Date(),
