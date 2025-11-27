@@ -31,7 +31,7 @@ export class UpdateWorkoutUsecase {
 
     const updatedWorkout = Workout.create({
       id: Id.create(existingWorkout.id),
-      userId: existingWorkout.userId,
+      userId: Id.create(existingWorkout.userId),
       name: request.name ?? existingWorkout.name,
       workoutTemplateId: existingWorkout.workoutTemplateId,
       exercises: existingWorkout.exercises,

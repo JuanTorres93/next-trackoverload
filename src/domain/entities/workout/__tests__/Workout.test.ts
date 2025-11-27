@@ -108,4 +108,22 @@ describe('Workout', () => {
       });
     }).toThrow(/Id/);
   });
+
+  it('should throw error if userId is not instance of Id', async () => {
+    expect(() => {
+      Workout.create({
+        ...validWorkoutProps,
+        // @ts-expect-error testing invalid inputs
+        userId: 'not-Id',
+      });
+    }).toThrow(ValidationError);
+
+    expect(() => {
+      Workout.create({
+        ...validWorkoutProps,
+        // @ts-expect-error testing invalid inputs
+        userId: 'not-Id',
+      });
+    }).toThrow(/\sId/);
+  });
 });

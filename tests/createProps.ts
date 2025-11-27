@@ -32,7 +32,7 @@ export const validWorkoutTemplateProps = {
 
 export const validWorkoutProps = {
   id: Id.create('workout-1'),
-  userId,
+  userId: Id.create(userId),
   name: 'Push',
   workoutTemplateId: 'template-1',
   exercises: [

@@ -30,7 +30,7 @@ describe('DeleteWorkoutUsecase', () => {
 
     await deleteWorkoutUsecase.execute({
       id: vp.validWorkoutProps.id.value,
-      userId: vp.validWorkoutProps.userId,
+      userId: vp.validWorkoutProps.userId.value,
     });
 
     // Verify workout is deleted
@@ -44,7 +44,7 @@ describe('DeleteWorkoutUsecase', () => {
     await expect(
       deleteWorkoutUsecase.execute({
         id: 'non-existent',
-        userId: vp.validWorkoutProps.userId,
+        userId: vp.validWorkoutProps.userId.value,
       })
     ).rejects.toThrow(NotFoundError);
   });

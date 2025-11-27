@@ -31,7 +31,7 @@ type ExerciseLineUpdateProps = {
 
 export type WorkoutProps = {
   id: Id;
-  userId: string;
+  userId: Id;
   name: string;
   workoutTemplateId: string;
   exercises: ExerciseLine[];
@@ -46,7 +46,9 @@ export class Workout {
     if (!(props.id instanceof Id))
       throw new ValidationError('Workout: id must be an instance of Id');
 
-    validateNonEmptyString(props.userId, 'Workout userId');
+    if (!(props.userId instanceof Id))
+      throw new ValidationError('Workout: userId must be an instance of Id');
+
     validateNonEmptyString(props.name, 'Workout name');
     validateNonEmptyString(
       props.workoutTemplateId,
@@ -151,7 +153,7 @@ export class Workout {
   }
 
   get userId() {
-    return this.props.userId;
+    return this.props.userId.value;
   }
 
   get name() {
