@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetAllUsersUsecase } from '../GetAllUsers.usecase';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
+import { Id } from '@/domain/types/Id/Id';
 import { User } from '@/domain/entities/user/User';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
@@ -18,13 +19,13 @@ describe('GetAllUsersUsecase', () => {
   it('should return all users', async () => {
     const user1 = User.create({
       ...vp.validUserProps,
-      id: '1',
+      id: Id.create('1'),
       name: 'User One',
     });
 
     const user2 = User.create({
       ...vp.validUserProps,
-      id: '2',
+      id: Id.create('2'),
       name: 'User Two',
     });
 
@@ -41,13 +42,13 @@ describe('GetAllUsersUsecase', () => {
   it('should return array of UserDTO', async () => {
     const user1 = User.create({
       ...vp.validUserProps,
-      id: '1',
+      id: Id.create('1'),
       name: 'User One',
     });
 
     const user2 = User.create({
       ...vp.validUserProps,
-      id: '2',
+      id: Id.create('2'),
       name: 'User Two',
     });
 

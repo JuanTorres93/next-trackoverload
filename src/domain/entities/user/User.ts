@@ -1,5 +1,7 @@
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
+import { Id } from '@/domain/types/Id/Id';
 import { validateNonEmptyString } from '../../common/validation';
+import { ValidationError } from '@/domain/common/errors';
 
 export type UserUpdateProps = {
   name?: string;
@@ -7,7 +9,7 @@ export type UserUpdateProps = {
 };
 
 export type UserProps = {
-  id: string;
+  id: Id;
   name: string;
   customerId?: string;
   createdAt: Date;
@@ -27,7 +29,9 @@ export class User {
   private constructor(private readonly props: UserProps) {}
 
   static create(props: UserProps): User {
-    validateNonEmptyString(props.id, 'User id');
+    if (!(props.id instanceof Id))
+      throw new ValidationError('User id must be an instance of Id');
+
     validateNonEmptyString(props.name, 'User name');
     if (props.customerId !== undefined)
       validateNonEmptyString(props.customerId, 'User customerId');
@@ -54,7 +58,7 @@ export class User {
 
   // Getters
   get id() {
-    return this.props.id;
+    return this.props.id.value;
   }
 
   get name() {

@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { GetUserByIdUsecase } from '../GetUserById.usecase';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { User } from '@/domain/entities/user/User';
+import { Id } from '@/domain/types/Id/Id';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
@@ -19,7 +20,7 @@ describe('GetUserByIdUsecase', () => {
   it('should return user when found', async () => {
     const user = User.create({
       ...vp.validUserProps,
-      id: '1',
+      id: Id.create('1'),
       name: 'John Doe',
     });
 
@@ -33,7 +34,7 @@ describe('GetUserByIdUsecase', () => {
   it('should return user DTO when found', async () => {
     const user = User.create({
       ...vp.validUserProps,
-      id: '1',
+      id: Id.create('1'),
       name: 'John Doe',
     });
 

@@ -1,4 +1,5 @@
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
+import { Id } from '@/domain/types/Id/Id';
 import { User } from '@/domain/entities/user/User';
 import { UserDTO, toUserDTO } from '@/application-layer/dtos/UserDTO';
 import { BaseFileSystemRepo } from './BaseFileSystemRepo';
@@ -23,6 +24,7 @@ export class FileSystemUsersRepo
     return (data as UserDTO[]).map((item) =>
       User.create({
         ...item,
+        id: Id.create(item.id),
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),
       })

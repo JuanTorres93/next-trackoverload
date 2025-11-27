@@ -1,6 +1,7 @@
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { User } from '@/domain/entities/user/User';
 import { UserDTO, toUserDTO } from '@/application-layer/dtos/UserDTO';
+import { Id } from '@/domain/types/Id/Id';
 import { v4 as uuidv4 } from 'uuid';
 
 export type CreateUserUsecaseRequest = {
@@ -14,7 +15,7 @@ export class CreateUserUsecase {
   async execute(request: CreateUserUsecaseRequest): Promise<UserDTO> {
     // NOTE: name and customerId are validated in User.create()
     const newUser = User.create({
-      id: uuidv4(),
+      id: Id.create(uuidv4()),
       name: request.name,
       customerId: request.customerId,
       createdAt: new Date(),

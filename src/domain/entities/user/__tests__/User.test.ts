@@ -2,6 +2,8 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import { User, UserProps } from '../User';
 import { ValidationError } from '@/domain/common/errors';
+import * as vp from '@/../tests/createProps';
+import { Id } from '@/domain/types/Id/Id';
 
 describe('User', () => {
   let user: User;
@@ -9,11 +11,7 @@ describe('User', () => {
 
   beforeEach(() => {
     validUserProps = {
-      id: '1',
-      name: 'Test User',
-      customerId: 'customer-1',
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      ...vp.validUserProps,
     };
     user = User.create(validUserProps);
   });
@@ -28,12 +26,6 @@ describe('User', () => {
     expect(user.name).toBe('Updated User');
   });
 
-  it('should throw ValidationError for empty id', () => {
-    expect(() => User.create({ ...validUserProps, id: '' })).toThrowError(
-      ValidationError
-    );
-  });
-
   it('should throw ValidationError for empty name', () => {
     expect(() => User.create({ ...validUserProps, name: '' })).toThrowError(
       ValidationError
@@ -42,7 +34,7 @@ describe('User', () => {
 
   it('should set createdAt and updatedAt if not provided', () => {
     const userWithoutDates = User.create({
-      id: '2',
+      id: Id.create('2'),
       name: 'Another User',
       customerId: 'customer-2',
       createdAt: undefined as unknown as Date,
@@ -61,5 +53,23 @@ describe('User', () => {
         User.create({ ...validUserProps, customerId: invalidCustomerId })
       ).toThrowError(ValidationError);
     }
+  });
+
+  it('should throw error if id is not instance of Id', async () => {
+    expect(() =>
+      User.create({
+        ...validUserProps,
+        // @ts-expect-error Testing invalid inputs
+        id: 'not-Id',
+      })
+    ).toThrowError(ValidationError);
+
+    expect(() =>
+      User.create({
+        ...validUserProps,
+        // @ts-expect-error Testing invalid inputs
+        id: 'not-Id',
+      })
+    ).toThrowError(/Id/);
   });
 });

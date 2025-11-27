@@ -90,7 +90,7 @@ export const mealPropsNoIngredientLines = {
 };
 
 export const validUserProps = {
-  id: userId,
+  id: Id.create(userId),
   name: 'Test User',
   customerId: 'customer-123',
   createdAt: new Date(),

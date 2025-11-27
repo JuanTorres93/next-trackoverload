@@ -1,13 +1,14 @@
 import { beforeEach, describe, expect, it } from 'vitest';
+import { Id } from '@/domain/types/Id/Id';
 import { MemoryUsersRepo } from '../MemoryUsersRepo';
 import { User } from '@/domain/entities/user/User';
+import * as vp from '@/../tests/createProps';
 
 const validUserProps = {
-  id: '1',
+  ...vp.validUserProps,
+  id: Id.create('1'),
   name: 'John Doe',
   customerId: 'customer-1',
-  createdAt: new Date('2023-01-01'),
-  updatedAt: new Date('2023-01-01'),
 };
 
 describe('MemoryUsersRepo', () => {
@@ -22,11 +23,10 @@ describe('MemoryUsersRepo', () => {
 
   it('should retrieve all users', async () => {
     const newUser = User.create({
-      id: '2',
+      ...vp.validUserProps,
+      id: Id.create('2'),
       name: 'Jane Doe',
       customerId: 'customer-2',
-      createdAt: new Date('2023-01-02'),
-      updatedAt: new Date('2023-01-02'),
     });
     await repo.saveUser(newUser);
 
