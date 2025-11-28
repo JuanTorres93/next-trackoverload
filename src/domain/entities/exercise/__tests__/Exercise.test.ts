@@ -41,4 +41,38 @@ describe('Exercise', () => {
       });
     }).toThrowError(/Id/);
   });
+
+  it('should throw error if name is empty', async () => {
+    expect(() => {
+      Exercise.create({
+        ...vp.validExerciseProps,
+        name: '',
+      });
+    }).toThrowError(ValidationError);
+
+    expect(() => {
+      Exercise.create({
+        ...vp.validExerciseProps,
+        name: '',
+      });
+    }).toThrowError(/Text.*empty/);
+  });
+
+  it('should throw error if name is greater that 100 characters', async () => {
+    const longName = 'a'.repeat(101);
+
+    expect(() => {
+      Exercise.create({
+        ...vp.validExerciseProps,
+        name: longName,
+      });
+    }).toThrowError(ValidationError);
+
+    expect(() => {
+      Exercise.create({
+        ...vp.validExerciseProps,
+        name: longName,
+      });
+    }).toThrowError(/Text.*not exceed/);
+  });
 });

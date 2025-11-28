@@ -1,6 +1,7 @@
 import { Id } from '@/domain/value-objects/Id/Id';
+import { Text } from '@/domain/value-objects/Text/Text';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
-import { validateNonEmptyString } from '../../common/validation';
+import { Integer } from '@/domain/value-objects/Integer/Integer';
 
 export type ExerciseCreateProps = {
   id: string;
@@ -15,7 +16,7 @@ export type ExerciseUpdateProps = {
 
 export type ExerciseProps = {
   id: Id;
-  name: string;
+  name: Text;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -24,14 +25,15 @@ export class Exercise {
   private constructor(private readonly props: ExerciseProps) {}
 
   static create(props: ExerciseCreateProps): Exercise {
-    validateNonEmptyString(props.name, 'Exercise name');
-
     props.createdAt = handleCreatedAt(props.createdAt);
     props.updatedAt = handleUpdatedAt(props.updatedAt);
 
     const exerciseProps: ExerciseProps = {
       id: Id.create(props.id),
-      name: props.name,
+      name: Text.create(props.name, {
+        maxLength: Integer.create(100),
+        canBeEmpty: false,
+      }),
       createdAt: props.createdAt,
       updatedAt: props.updatedAt,
     };
@@ -44,7 +46,7 @@ export class Exercise {
   }
 
   get name() {
-    return this.props.name;
+    return this.props.name.value;
   }
 
   get createdAt() {
