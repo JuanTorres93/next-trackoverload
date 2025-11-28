@@ -1,9 +1,9 @@
 import { ValueObject } from '../ValueObject';
 import { ValidationError } from '@/domain/common/errors';
 
-export interface IdProps {
+type IdProps = {
   value: string;
-}
+};
 
 export class Id extends ValueObject<IdProps> {
   private readonly _value: string;
