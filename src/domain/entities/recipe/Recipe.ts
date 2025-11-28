@@ -42,17 +42,14 @@ export class Recipe implements Protein, Calories {
       );
     }
 
-    props.createdAt = handleCreatedAt(props.createdAt);
-    props.updatedAt = handleUpdatedAt(props.updatedAt);
-
     const recipeProps: RecipeProps = {
       id: Id.create(props.id),
       userId: Id.create(props.userId),
       name: props.name,
       imageUrl: props.imageUrl,
       ingredientLines: props.ingredientLines,
-      createdAt: props.createdAt,
-      updatedAt: props.updatedAt,
+      createdAt: handleCreatedAt(props.createdAt),
+      updatedAt: handleUpdatedAt(props.updatedAt),
     };
 
     return new Recipe(recipeProps);

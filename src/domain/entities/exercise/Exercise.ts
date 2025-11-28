@@ -30,14 +30,11 @@ export class Exercise {
   private constructor(private readonly props: ExerciseProps) {}
 
   static create(props: ExerciseCreateProps): Exercise {
-    props.createdAt = handleCreatedAt(props.createdAt);
-    props.updatedAt = handleUpdatedAt(props.updatedAt);
-
     const exerciseProps: ExerciseProps = {
       id: Id.create(props.id),
       name: Text.create(props.name, nameTextOptions),
-      createdAt: props.createdAt,
-      updatedAt: props.updatedAt,
+      createdAt: handleCreatedAt(props.createdAt),
+      updatedAt: handleUpdatedAt(props.updatedAt),
     };
 
     return new Exercise(exerciseProps);

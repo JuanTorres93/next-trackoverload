@@ -44,16 +44,13 @@ export class Meal implements Calories, Protein {
       );
     }
 
-    props.createdAt = handleCreatedAt(props.createdAt);
-    props.updatedAt = handleUpdatedAt(props.updatedAt);
-
     const mealProps: MealProps = {
       id: Id.create(props.id),
       userId: Id.create(props.userId),
       name: props.name,
       ingredientLines: props.ingredientLines,
-      createdAt: props.createdAt,
-      updatedAt: props.updatedAt,
+      createdAt: handleCreatedAt(props.createdAt),
+      updatedAt: handleUpdatedAt(props.updatedAt),
     };
 
     return new Meal(mealProps);

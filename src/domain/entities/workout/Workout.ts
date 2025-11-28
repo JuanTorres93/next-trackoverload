@@ -63,17 +63,14 @@ export class Workout {
       validateExerciseLine(line);
     }
 
-    props.createdAt = handleCreatedAt(props.createdAt);
-    props.updatedAt = handleUpdatedAt(props.updatedAt);
-
     const workoutProps: WorkoutProps = {
       id: Id.create(props.id),
       userId: Id.create(props.userId),
       name: props.name,
       workoutTemplateId: Id.create(props.workoutTemplateId),
       exercises: props.exercises,
-      createdAt: props.createdAt,
-      updatedAt: props.updatedAt,
+      createdAt: handleCreatedAt(props.createdAt),
+      updatedAt: handleUpdatedAt(props.updatedAt),
     };
 
     return new Workout(workoutProps);

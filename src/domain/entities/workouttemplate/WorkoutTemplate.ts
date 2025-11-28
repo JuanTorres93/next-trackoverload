@@ -64,16 +64,13 @@ export class WorkoutTemplate {
       }
     }
 
-    props.createdAt = handleCreatedAt(props.createdAt);
-    props.updatedAt = handleUpdatedAt(props.updatedAt);
-
     const workoutTemplateProps: WorkoutTemplateProps = {
       id: Id.create(props.id),
       userId: Id.create(props.userId),
       name: props.name,
       exercises: props.exercises.map((exercise) => ({ ...exercise })),
-      createdAt: props.createdAt,
-      updatedAt: props.updatedAt,
+      createdAt: handleCreatedAt(props.createdAt),
+      updatedAt: handleUpdatedAt(props.updatedAt),
       deletedAt: props.deletedAt,
     };
 

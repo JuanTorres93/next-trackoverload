@@ -44,15 +44,12 @@ export class IngredientLine implements Calories, Protein {
       );
     }
 
-    props.createdAt = handleCreatedAt(props.createdAt);
-    props.updatedAt = handleUpdatedAt(props.updatedAt);
-
     const ingredientLineProps: IngredientLineProps = {
       id: Id.create(props.id),
       ingredient: props.ingredient,
       quantityInGrams: props.quantityInGrams,
-      createdAt: props.createdAt,
-      updatedAt: props.updatedAt,
+      createdAt: handleCreatedAt(props.createdAt),
+      updatedAt: handleUpdatedAt(props.updatedAt),
     };
 
     return new IngredientLine(ingredientLineProps);

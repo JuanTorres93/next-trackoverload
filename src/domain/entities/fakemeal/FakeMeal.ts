@@ -40,17 +40,14 @@ export class FakeMeal implements Protein, Calories {
   private constructor(private readonly props: FakeMealProps) {}
 
   static create(props: FakeMealCreateProps): FakeMeal {
-    props.createdAt = handleCreatedAt(props.createdAt);
-    props.updatedAt = handleUpdatedAt(props.updatedAt);
-
     const fakeMealProps: FakeMealProps = {
       id: Id.create(props.id),
       userId: Id.create(props.userId),
       name: Text.create(props.name, nameTextOptions),
       calories: Float.create(props.calories, caloriesFloatOptions),
       protein: Float.create(props.protein, proteinFloatOptions),
-      createdAt: props.createdAt,
-      updatedAt: props.updatedAt,
+      createdAt: handleCreatedAt(props.createdAt),
+      updatedAt: handleUpdatedAt(props.updatedAt),
     };
 
     return new FakeMeal(fakeMealProps);

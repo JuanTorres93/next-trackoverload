@@ -51,15 +51,12 @@ export class Day implements Protein, Calories {
       validateMeal(meal);
     }
 
-    props.createdAt = handleCreatedAt(props.createdAt);
-    props.updatedAt = handleUpdatedAt(props.updatedAt);
-
     const dayProps: DayProps = {
       id: props.id,
       userId: Id.create(props.userId),
       meals: props.meals,
-      createdAt: props.createdAt,
-      updatedAt: props.updatedAt,
+      createdAt: handleCreatedAt(props.createdAt),
+      updatedAt: handleUpdatedAt(props.updatedAt),
     };
 
     return new Day(dayProps);

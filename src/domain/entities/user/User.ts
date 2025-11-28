@@ -39,15 +39,12 @@ export class User {
   static create(props: UserCreateProps): User {
     validateNonEmptyString(props.name, 'User name');
 
-    props.createdAt = handleCreatedAt(props.createdAt);
-    props.updatedAt = handleUpdatedAt(props.updatedAt);
-
     const userProps: UserProps = {
       id: Id.create(props.id),
       name: props.name,
       customerId: props.customerId ? Id.create(props.customerId) : undefined,
-      createdAt: props.createdAt,
-      updatedAt: props.updatedAt,
+      createdAt: handleCreatedAt(props.createdAt),
+      updatedAt: handleUpdatedAt(props.updatedAt),
     };
 
     return new User(userProps);
