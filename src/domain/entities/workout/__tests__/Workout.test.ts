@@ -161,4 +161,20 @@ describe('Workout', () => {
       });
     }).toThrow(/Text.*not exceed/);
   });
+
+  it('should throw error if name is empty', async () => {
+    expect(() => {
+      Workout.create({
+        ...validWorkoutProps,
+        name: '',
+      });
+    }).toThrow(ValidationError);
+
+    expect(() => {
+      Workout.create({
+        ...validWorkoutProps,
+        name: '',
+      });
+    }).toThrow(/Text.*empty/);
+  });
 });

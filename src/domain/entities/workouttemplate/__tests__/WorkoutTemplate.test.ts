@@ -245,4 +245,37 @@ describe('WorkoutTemplate', () => {
       });
     }).toThrow(/Id.*string/);
   });
+
+  it('should throw error if name is greater than 100 chars', async () => {
+    const longName = 'a'.repeat(101);
+    expect(() => {
+      WorkoutTemplate.create({
+        ...validWorkoutTemplateProps,
+        name: longName,
+      });
+    }).toThrow(ValidationError);
+
+    expect(() => {
+      WorkoutTemplate.create({
+        ...validWorkoutTemplateProps,
+        name: longName,
+      });
+    }).toThrow(/Text.*not exceed/);
+  });
+
+  it('should throw error if name is empty', async () => {
+    expect(() => {
+      WorkoutTemplate.create({
+        ...validWorkoutTemplateProps,
+        name: '',
+      });
+    }).toThrow(ValidationError);
+
+    expect(() => {
+      WorkoutTemplate.create({
+        ...validWorkoutTemplateProps,
+        name: '',
+      });
+    }).toThrow(/Text.*empty/);
+  });
 });

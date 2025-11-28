@@ -1,10 +1,9 @@
-import { ValidationError } from '../../common/errors';
 import { Id } from '@/domain/value-objects/Id/Id';
+import { Integer } from '@/domain/value-objects/Integer/Integer';
+import { Text } from '@/domain/value-objects/Text/Text';
+import { ValidationError } from '../../common/errors';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
-import {
-  validateGreaterThanZero,
-  validateNonEmptyString,
-} from '../../common/validation';
+import { validateGreaterThanZero } from '../../common/validation';
 
 export type TemplateLine = {
   exerciseId: string;
@@ -28,12 +27,14 @@ export type WorkoutTemplateCreateProps = {
 export type WorkoutTemplateProps = {
   id: Id;
   userId: Id;
-  name: string;
+  name: Text;
   exercises: TemplateLine[];
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
 };
+
+const nameTextOptions = { canBeEmpty: false, maxLength: Integer.create(100) };
 
 export class WorkoutTemplate {
   private constructor(private readonly props: WorkoutTemplateProps) {
@@ -45,8 +46,6 @@ export class WorkoutTemplate {
   }
 
   static create(props: WorkoutTemplateCreateProps): WorkoutTemplate {
-    validateNonEmptyString(props.name, 'WorkoutTemplate name');
-
     if (!Array.isArray(props.exercises)) {
       throw new ValidationError('WorkoutTemplate exercises must be an array');
     }
@@ -67,7 +66,7 @@ export class WorkoutTemplate {
     const workoutTemplateProps: WorkoutTemplateProps = {
       id: Id.create(props.id),
       userId: Id.create(props.userId),
-      name: props.name,
+      name: Text.create(props.name, nameTextOptions),
       exercises: props.exercises.map((exercise) => ({ ...exercise })),
       createdAt: handleCreatedAt(props.createdAt),
       updatedAt: handleUpdatedAt(props.updatedAt),
@@ -131,7 +130,7 @@ export class WorkoutTemplate {
   }
 
   get name() {
-    return this.props.name;
+    return this.props.name.value;
   }
 
   get exercises() {
