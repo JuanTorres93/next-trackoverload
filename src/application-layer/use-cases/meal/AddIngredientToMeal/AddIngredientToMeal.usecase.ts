@@ -5,7 +5,7 @@ import {
   ValidationError,
 } from '@/domain/common/errors';
 import { validateNonEmptyString } from '@/domain/common/validation';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 
 export type AddIngredientToMealUsecaseRequest = {

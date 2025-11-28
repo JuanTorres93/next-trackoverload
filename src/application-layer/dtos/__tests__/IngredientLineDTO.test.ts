@@ -5,7 +5,7 @@ import {
   IngredientLineDTO,
 } from '../IngredientLineDTO';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import * as vp from '@/../tests/createProps';
 
 describe('IngredientLineDTO', () => {

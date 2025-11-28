@@ -6,7 +6,7 @@ import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 import { validateNonEmptyString } from '../../common/validation';
 import { Calories } from '../../interfaces/Calories';
 import { Protein } from '../../interfaces/Protein';
-import { IngredientLine } from '../ingredient/IngredientLine';
+import { IngredientLine } from '../ingredientline/IngredientLine';
 
 export type MealCreateProps = {
   id: string;

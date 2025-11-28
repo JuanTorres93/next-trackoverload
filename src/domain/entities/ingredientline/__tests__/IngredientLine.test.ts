@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { Ingredient } from '../Ingredient';
+import { Ingredient } from '../../ingredient/Ingredient';
 import { IngredientLine } from '../IngredientLine';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';

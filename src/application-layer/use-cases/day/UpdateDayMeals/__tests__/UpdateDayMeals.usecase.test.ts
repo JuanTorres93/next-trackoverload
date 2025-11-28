@@ -4,7 +4,7 @@ import { ValidationError } from '@/domain/common/errors';
 import { Day } from '@/domain/entities/day/Day';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
 import { beforeEach, describe, expect, it } from 'vitest';

@@ -1,4 +1,4 @@
-import { IngredientLine } from '../ingredient/IngredientLine';
+import { IngredientLine } from '../ingredientline/IngredientLine';
 import { ValidationError } from '../../common/errors';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 import { Protein } from '../../interfaces/Protein';

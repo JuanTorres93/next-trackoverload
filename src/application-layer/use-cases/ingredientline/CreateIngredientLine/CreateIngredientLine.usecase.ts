@@ -3,7 +3,7 @@ import {
   toIngredientLineDTO,
 } from '@/application-layer/dtos/IngredientLineDTO';
 import { NotFoundError } from '@/domain/common/errors';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { IngredientLinesRepo } from '@/domain/repos/IngredientLinesRepo.port';
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { v4 as uuidv4 } from 'uuid';

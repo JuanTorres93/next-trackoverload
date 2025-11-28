@@ -1,5 +1,5 @@
 import { IngredientLinesRepo } from '@/domain/repos/IngredientLinesRepo.port';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 
 export class MemoryIngredientLinesRepo implements IngredientLinesRepo {
   private ingredientLines: IngredientLine[] = [];

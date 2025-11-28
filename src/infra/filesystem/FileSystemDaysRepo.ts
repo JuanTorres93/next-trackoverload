@@ -5,7 +5,7 @@ import { MealDTO } from '@/application-layer/dtos/MealDTO';
 import { Day } from '@/domain/entities/day/Day';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { BaseFileSystemRepo } from './BaseFileSystemRepo';

@@ -1,7 +1,7 @@
 import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
 import { MealDTO, toMealDTO } from '@/application-layer/dtos/MealDTO';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 import { BaseFileSystemRepo } from './BaseFileSystemRepo';

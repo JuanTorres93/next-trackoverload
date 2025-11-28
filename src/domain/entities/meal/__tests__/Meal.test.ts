@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import * as vp from '@/../tests/createProps';
 import { ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal, MealCreateProps } from '../Meal';
 
 describe('Meal', () => {

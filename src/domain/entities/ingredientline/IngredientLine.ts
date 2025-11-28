@@ -1,4 +1,4 @@
-import { Ingredient } from './Ingredient';
+import { Ingredient } from '../ingredient/Ingredient';
 import { ValidationError } from '../../common/errors';
 import { validateGreaterThanZero } from '../../common/validation';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';

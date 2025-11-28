@@ -1,4 +1,4 @@
-import { IngredientLine } from '../entities/ingredient/IngredientLine';
+import { IngredientLine } from '../entities/ingredientline/IngredientLine';
 
 export interface IngredientLinesRepo {
   getAllIngredientLines(): Promise<IngredientLine[]>;

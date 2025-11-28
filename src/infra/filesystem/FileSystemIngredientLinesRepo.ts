@@ -3,7 +3,7 @@ import {
   toIngredientLineDTO,
 } from '@/application-layer/dtos/IngredientLineDTO';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { IngredientLinesRepo } from '@/domain/repos/IngredientLinesRepo.port';

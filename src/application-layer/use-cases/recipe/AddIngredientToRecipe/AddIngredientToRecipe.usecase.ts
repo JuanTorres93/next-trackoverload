@@ -1,7 +1,7 @@
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { IngredientLinesRepo } from '@/domain/repos/IngredientLinesRepo.port';
 import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { validateNonEmptyString } from '@/domain/common/validation';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 

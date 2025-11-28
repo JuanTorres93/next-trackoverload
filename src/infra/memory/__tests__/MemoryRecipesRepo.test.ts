@@ -1,5 +1,5 @@
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryRecipesRepo } from '../MemoryRecipesRepo';

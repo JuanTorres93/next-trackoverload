@@ -14,7 +14,7 @@ import {
   fromIngredientLineDTO,
   IngredientLineDTO,
 } from '@/application-layer/dtos/IngredientLineDTO';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 
 export async function createRecipe(
   initialState: FormState, // Unsed, but needed for useActionState

@@ -1,4 +1,4 @@
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import {
   fromIngredientDTO,
   IngredientDTO,
