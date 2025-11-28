@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { User, UserProps } from '../User';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 
 describe('User', () => {
   let user: User;

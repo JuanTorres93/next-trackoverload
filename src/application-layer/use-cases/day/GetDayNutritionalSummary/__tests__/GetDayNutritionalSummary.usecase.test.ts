@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { GetDayNutritionalSummaryUsecase } from '../GetDayNutritionalSummary.usecase';
 import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
 import { Day } from '@/domain/entities/day/Day';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';

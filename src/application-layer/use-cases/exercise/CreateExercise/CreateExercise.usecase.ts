@@ -1,6 +1,6 @@
 import { ExercisesRepo } from '@/domain/repos/ExercisesRepo.port';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import {
   ExerciseDTO,
   toExerciseDTO,

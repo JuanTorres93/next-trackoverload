@@ -1,7 +1,7 @@
 import { IngredientLinesRepo } from '@/domain/repos/IngredientLinesRepo.port';
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import {
   IngredientLineDTO,
   toIngredientLineDTO,

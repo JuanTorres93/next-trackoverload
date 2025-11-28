@@ -1,4 +1,4 @@
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 import { validateNonEmptyString } from '../../common/validation';
 import { ValidationError } from '@/domain/common/errors';

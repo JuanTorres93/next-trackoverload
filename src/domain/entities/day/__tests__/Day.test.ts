@@ -8,7 +8,7 @@ import { Day } from '../Day';
 import { ValidationError } from '@/domain/common/errors';
 
 import * as vp from '@/../tests/createProps';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 
 describe('Day', () => {
   let day: Day;

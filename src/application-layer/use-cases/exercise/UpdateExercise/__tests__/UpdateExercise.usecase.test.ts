@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { UpdateExerciseUsecase } from '../UpdateExercise.usecase';
 import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import * as dto from '@/../tests/dtoProperties';
 

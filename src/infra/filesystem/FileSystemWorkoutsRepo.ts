@@ -1,7 +1,7 @@
 import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { WorkoutDTO, toWorkoutDTO } from '@/application-layer/dtos/WorkoutDTO';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { BaseFileSystemRepo } from './BaseFileSystemRepo';
 
 export class FileSystemWorkoutsRepo

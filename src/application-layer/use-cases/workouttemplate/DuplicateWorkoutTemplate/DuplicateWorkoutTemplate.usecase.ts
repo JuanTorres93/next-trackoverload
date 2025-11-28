@@ -6,7 +6,7 @@ import {
 } from '@/application-layer/dtos/WorkoutTemplateDTO';
 import { NotFoundError } from '@/domain/common/errors';
 import { v4 as uuidv4 } from 'uuid';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { validateNonEmptyString } from '@/domain/common/validation';
 
 export type DuplicateWorkoutTemplateUsecaseRequest = {

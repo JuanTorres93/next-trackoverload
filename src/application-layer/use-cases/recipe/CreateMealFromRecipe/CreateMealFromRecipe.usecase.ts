@@ -3,7 +3,7 @@ import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { MealDTO, toMealDTO } from '@/application-layer/dtos/MealDTO';
 import { validateNonEmptyString } from '@/domain/common/validation';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { NotFoundError } from '@/domain/common/errors';
 import { v4 as uuidv4 } from 'uuid';
 

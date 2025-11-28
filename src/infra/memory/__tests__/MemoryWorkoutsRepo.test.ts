@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryWorkoutsRepo } from '../MemoryWorkoutsRepo';
 import { Workout } from '@/domain/entities/workout/Workout';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import * as vp from '@/../tests/createProps';
 
 describe('MemoryWorkoutsRepo', () => {

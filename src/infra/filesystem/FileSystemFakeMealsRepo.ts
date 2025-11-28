@@ -5,7 +5,7 @@ import {
   toFakeMealDTO,
 } from '@/application-layer/dtos/FakeMealDTO';
 import { BaseFileSystemRepo } from './BaseFileSystemRepo';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 
 export class FileSystemFakeMealsRepo
   extends BaseFileSystemRepo<FakeMeal>

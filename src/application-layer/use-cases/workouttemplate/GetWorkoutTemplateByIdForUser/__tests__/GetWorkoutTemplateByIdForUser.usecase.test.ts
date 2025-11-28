@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { GetWorkoutTemplateByIdForUserUsecase } from '../GetWorkoutTemplateByIdForUser.usecase';
 import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 

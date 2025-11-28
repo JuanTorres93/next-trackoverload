@@ -1,5 +1,5 @@
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { User } from '@/domain/entities/user/User';
 import { UserDTO, toUserDTO } from '@/application-layer/dtos/UserDTO';
 import { BaseFileSystemRepo } from './BaseFileSystemRepo';

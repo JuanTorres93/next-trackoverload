@@ -1,4 +1,4 @@
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 
 export const userId = 'user-1';
 export const dateId = new Date('2023-10-01');

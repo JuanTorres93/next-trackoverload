@@ -2,7 +2,7 @@ import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { Day } from '@/domain/entities/day/Day';
 import { DayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
 import { Meal } from '@/domain/entities/meal/Meal';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 
 export type CreateDayUsecaseRequest = {

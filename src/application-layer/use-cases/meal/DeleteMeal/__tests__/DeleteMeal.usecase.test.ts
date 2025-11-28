@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { DeleteMealUsecase } from '../DeleteMeal.usecase';
 import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
 import { Meal } from '@/domain/entities/meal/Meal';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import {
   AuthError,
   NotFoundError,

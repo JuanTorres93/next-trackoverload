@@ -1,5 +1,5 @@
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import {
   FakeMealDTO,
   toFakeMealDTO,

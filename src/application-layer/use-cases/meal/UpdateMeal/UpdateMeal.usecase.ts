@@ -2,7 +2,7 @@ import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 import { Meal, MealUpdateProps } from '@/domain/entities/meal/Meal';
 import { MealDTO, toMealDTO } from '@/application-layer/dtos/MealDTO';
 import { NotFoundError } from '@/domain/common/errors';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { validateNonEmptyString } from '@/domain/common/validation';
 
 export type UpdateMealUsecaseRequest = {

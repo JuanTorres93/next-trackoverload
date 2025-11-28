@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryMealsRepo } from '../MemoryMealsRepo';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import * as vp from '@/../tests/createProps';
 

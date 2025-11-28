@@ -6,7 +6,7 @@ import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toWorkoutDTO } from '@/application-layer/dtos/WorkoutDTO';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 
 describe('GetWorkoutByIdUsecase', () => {
   let workoutsRepo: MemoryWorkoutsRepo;

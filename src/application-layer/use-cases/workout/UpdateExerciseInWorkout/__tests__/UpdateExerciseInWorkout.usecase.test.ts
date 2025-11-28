@@ -3,7 +3,7 @@ import { UpdateExerciseInWorkoutUsecase } from '../UpdateExerciseInWorkout.useca
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 

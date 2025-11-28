@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { MemoryUsersRepo } from '../MemoryUsersRepo';
 import { User } from '@/domain/entities/user/User';
 import * as vp from '@/../tests/createProps';

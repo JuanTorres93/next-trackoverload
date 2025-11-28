@@ -6,7 +6,7 @@ import {
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { MealDTO, toMealDTO } from '@/application-layer/dtos/MealDTO';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 

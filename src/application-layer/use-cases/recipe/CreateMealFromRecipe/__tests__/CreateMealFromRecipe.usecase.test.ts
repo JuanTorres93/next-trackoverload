@@ -2,7 +2,7 @@ import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';

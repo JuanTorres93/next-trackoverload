@@ -5,7 +5,7 @@ import {
 } from '../../common/validation';
 import { Protein } from '../../interfaces/Protein';
 import { Calories } from '../../interfaces/Calories';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { ValidationError } from '@/domain/common/errors';
 
 export type FakeUpdateProps = {

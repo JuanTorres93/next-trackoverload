@@ -3,7 +3,7 @@ import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { WorkoutDTO, toWorkoutDTO } from '@/application-layer/dtos/WorkoutDTO';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { v4 as uuidv4 } from 'uuid';
 import { validateNonEmptyString } from '@/domain/common/validation';
 

@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { GetAllFakeMealsForUserUsecase } from '../GetAllFakeMealsForUser.usecase';
 import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';

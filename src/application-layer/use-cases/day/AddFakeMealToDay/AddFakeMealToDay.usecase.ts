@@ -2,7 +2,7 @@ import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
 import { Day } from '@/domain/entities/day/Day';
 import { ValidationError } from '@/domain/common/errors';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import {
   validateDate,
   validateNonEmptyString,

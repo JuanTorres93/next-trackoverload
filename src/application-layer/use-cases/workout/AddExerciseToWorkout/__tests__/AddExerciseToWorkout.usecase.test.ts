@@ -4,7 +4,7 @@ import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';

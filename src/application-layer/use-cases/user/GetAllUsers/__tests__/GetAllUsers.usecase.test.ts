@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetAllUsersUsecase } from '../GetAllUsers.usecase';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { User } from '@/domain/entities/user/User';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';

@@ -5,7 +5,7 @@ import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { MemoryIngredientLinesRepo } from '@/infra/memory/MemoryIngredientLinesRepo';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { MemoryImageManager } from '@/infra';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { DeleteRecipeUsecase } from '../DeleteRecipe.usecase';

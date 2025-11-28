@@ -5,7 +5,7 @@ import { ImageManager } from '@/domain/services/ImageManager.port';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { v4 as uuidv4 } from 'uuid';
 import { ValidationError } from '@/domain/common/errors';
 

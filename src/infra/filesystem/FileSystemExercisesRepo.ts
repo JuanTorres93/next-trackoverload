@@ -5,7 +5,7 @@ import {
   toExerciseDTO,
 } from '@/application-layer/dtos/ExerciseDTO';
 import { BaseFileSystemRepo } from './BaseFileSystemRepo';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 
 export class FileSystemExercisesRepo
   extends BaseFileSystemRepo<Exercise>

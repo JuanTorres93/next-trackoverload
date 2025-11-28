@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryFakeMealsRepo } from '../MemoryFakeMealsRepo';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import * as vp from '@/../tests/createProps';
 
 describe('MemoryFakeMealsRepo', () => {

@@ -5,7 +5,7 @@ import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { Meal } from '@/domain/entities/meal/Meal';

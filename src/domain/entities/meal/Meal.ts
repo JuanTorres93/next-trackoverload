@@ -4,7 +4,7 @@ import { validateNonEmptyString } from '../../common/validation';
 import { IngredientLine } from '../ingredient/IngredientLine';
 import { Protein } from '../../interfaces/Protein';
 import { Calories } from '../../interfaces/Calories';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 
 export type MealUpdateProps = {
   name?: string;

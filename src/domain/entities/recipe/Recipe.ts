@@ -4,7 +4,7 @@ import { ValidationError } from '../../common/errors';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 import { Protein } from '../../interfaces/Protein';
 import { Calories } from '../../interfaces/Calories';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 
 export type RecipeProps = {
   id: Id;

@@ -4,7 +4,7 @@ import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { RemoveIngredientFromRecipeUsecase } from '../RemoveIngredientFromRecipe.usecase';
 
 import * as vp from '@/../tests/createProps';

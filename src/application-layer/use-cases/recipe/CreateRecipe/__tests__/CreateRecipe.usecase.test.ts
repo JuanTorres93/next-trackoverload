@@ -8,7 +8,7 @@ import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { MemoryIngredientLinesRepo } from '@/infra/memory/MemoryIngredientLinesRepo';
 import { MemoryImageManager } from '@/infra';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
   CreateRecipeUsecase,

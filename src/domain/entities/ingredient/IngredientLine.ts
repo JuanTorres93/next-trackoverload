@@ -2,7 +2,7 @@ import { Ingredient } from './Ingredient';
 import { ValidationError } from '../../common/errors';
 import { validateGreaterThanZero } from '../../common/validation';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { Calories } from '@/domain/interfaces/Calories';
 import { Protein } from '@/domain/interfaces/Protein';
 

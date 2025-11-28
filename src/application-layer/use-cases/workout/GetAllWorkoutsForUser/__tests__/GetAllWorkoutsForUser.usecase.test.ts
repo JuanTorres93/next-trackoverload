@@ -3,7 +3,7 @@ import * as dto from '@/../tests/dtoProperties';
 import { ValidationError } from '@/domain/common/errors';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetAllWorkoutsForUserUsecase } from '../GetAllWorkoutsForUser.usecase';
 

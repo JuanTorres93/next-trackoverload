@@ -1,5 +1,5 @@
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 
 export type IngredientDTO = {
   id: string;

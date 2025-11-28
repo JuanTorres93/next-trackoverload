@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import { Recipe, RecipeProps } from '../Recipe';
 import { Ingredient } from '../../ingredient/Ingredient';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { IngredientLine } from '../../ingredient/IngredientLine';
 import { ValidationError } from '@/domain/common/errors';
 

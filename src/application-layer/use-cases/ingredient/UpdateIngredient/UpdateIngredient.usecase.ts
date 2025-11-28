@@ -7,7 +7,7 @@ import {
   IngredientDTO,
   toIngredientDTO,
 } from '@/application-layer/dtos/IngredientDTO';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { NotFoundError } from '@/domain/common/errors';
 import { validateNonEmptyString } from '@/domain/common/validation';
 

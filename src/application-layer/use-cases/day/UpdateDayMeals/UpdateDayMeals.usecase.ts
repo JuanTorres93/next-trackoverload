@@ -4,7 +4,7 @@ import { Meal } from '@/domain/entities/meal/Meal';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { validateDate } from '@/domain/common/validation';
 import { Day } from '@/domain/entities/day/Day';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 
 export type UpdateDayMealsUsecaseRequest = {
   date: Date;

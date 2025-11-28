@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { GetUserByIdUsecase } from '../GetUserById.usecase';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { User } from '@/domain/entities/user/User';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';

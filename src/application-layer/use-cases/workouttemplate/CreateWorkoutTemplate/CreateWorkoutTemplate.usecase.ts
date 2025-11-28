@@ -1,6 +1,6 @@
 import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
-import { Id } from '@/domain/types/Id/Id';
+import { Id } from '@/domain/value-objects/Id/Id';
 import {
   WorkoutTemplateDTO,
   toWorkoutTemplateDTO,
