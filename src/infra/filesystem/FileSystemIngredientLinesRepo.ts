@@ -1,16 +1,15 @@
-import { IngredientLinesRepo } from '@/domain/repos/IngredientLinesRepo.port';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { Recipe } from '@/domain/entities/recipe/Recipe';
-import { Meal } from '@/domain/entities/meal/Meal';
-import { Id } from '@/domain/value-objects/Id/Id';
 import {
   IngredientLineDTO,
   toIngredientLineDTO,
 } from '@/application-layer/dtos/IngredientLineDTO';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { Meal } from '@/domain/entities/meal/Meal';
+import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { IngredientLinesRepo } from '@/domain/repos/IngredientLinesRepo.port';
 import { BaseFileSystemRepo } from './BaseFileSystemRepo';
-import { FileSystemRecipesRepo } from './FileSystemRecipesRepo';
 import { FileSystemMealsRepo } from './FileSystemMealsRepo';
+import { FileSystemRecipesRepo } from './FileSystemRecipesRepo';
 
 export class FileSystemIngredientLinesRepo
   extends BaseFileSystemRepo<IngredientLine>
@@ -37,14 +36,12 @@ export class FileSystemIngredientLinesRepo
     return (data as IngredientLineDTO[]).map((item) => {
       const ingredient = Ingredient.create({
         ...item.ingredient,
-        id: Id.create(item.ingredient.id),
         createdAt: new Date(item.ingredient.createdAt),
         updatedAt: new Date(item.ingredient.updatedAt),
       });
 
       return IngredientLine.create({
         ...item,
-        id: Id.create(item.id),
         ingredient,
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),
@@ -75,8 +72,8 @@ export class FileSystemIngredientLinesRepo
 
       if (hasIngredientLine) {
         const updatedRecipe = Recipe.create({
-          id: Id.create(recipe.id),
-          userId: Id.create(recipe.userId),
+          id: recipe.id,
+          userId: recipe.userId,
           name: recipe.name,
           imageUrl: recipe.imageUrl,
           ingredientLines: recipe.ingredientLines.map((line) =>
@@ -107,8 +104,8 @@ export class FileSystemIngredientLinesRepo
       );
       if (hasIngredientLine) {
         const updatedMeal = Meal.create({
-          id: Id.create(meal.id),
-          userId: Id.create(meal.userId),
+          id: meal.id,
+          userId: meal.userId,
           name: meal.name,
           ingredientLines: meal.ingredientLines.map((line) =>
             line.id === ingredientLine.id ? ingredientLine : line

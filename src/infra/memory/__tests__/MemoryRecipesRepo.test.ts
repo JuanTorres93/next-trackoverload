@@ -1,9 +1,8 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { MemoryRecipesRepo } from '../MemoryRecipesRepo';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { MemoryRecipesRepo } from '../MemoryRecipesRepo';
 
 import * as vp from '@/../tests/createProps';
 
@@ -34,7 +33,7 @@ describe('MemoryRecipesRepo', () => {
   it('should save a recipe', async () => {
     const newRecipe = Recipe.create({
       ...vp.recipePropsNoIngredientLines,
-      id: Id.create('2'),
+      id: 'another-recipe-id',
       name: 'Cake',
       ingredientLines: [ingredientLine],
     });
@@ -60,7 +59,7 @@ describe('MemoryRecipesRepo', () => {
 
   it('should retrieve a recipe by ID', async () => {
     const fetchedRecipe = await repo.getRecipeById(
-      vp.recipePropsNoIngredientLines.id.value
+      vp.recipePropsNoIngredientLines.id
     );
     expect(fetchedRecipe).not.toBeNull();
     expect(fetchedRecipe?.name).toBe(vp.recipePropsNoIngredientLines.name);
@@ -75,7 +74,7 @@ describe('MemoryRecipesRepo', () => {
     const allRecipes = await repo.getAllRecipes();
     expect(allRecipes.length).toBe(1);
 
-    await repo.deleteRecipe(vp.recipePropsNoIngredientLines.id.value);
+    await repo.deleteRecipe(vp.recipePropsNoIngredientLines.id);
 
     const allRecipesAfterDeletion = await repo.getAllRecipes();
     expect(allRecipesAfterDeletion.length).toBe(0);

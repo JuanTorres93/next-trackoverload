@@ -1,12 +1,11 @@
-import { UsersRepo } from '@/domain/repos/UsersRepo.port';
-import { User, UserUpdateProps } from '@/domain/entities/user/User';
 import { UserDTO, toUserDTO } from '@/application-layer/dtos/UserDTO';
-import { Id } from '@/domain/value-objects/Id/Id';
 import { NotFoundError } from '@/domain/common/errors';
 import {
   validateNonEmptyString,
   validateObject,
 } from '@/domain/common/validation';
+import { User, UserUpdateProps } from '@/domain/entities/user/User';
+import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 
 export type UpdateUserUsecaseRequest = {
   id: string;
@@ -32,10 +31,10 @@ export class UpdateUserUsecase {
     if (Object.keys(patch).length > 0) {
       // Create a new user with the same properties
       const updatedUser = User.create({
-        id: Id.create(existingUser.id),
+        id: existingUser.id,
         name: existingUser.name,
         customerId: existingUser.customerId
-          ? Id.create(existingUser.customerId)
+          ? existingUser.customerId
           : undefined,
         createdAt: existingUser.createdAt,
         updatedAt: existingUser.updatedAt,

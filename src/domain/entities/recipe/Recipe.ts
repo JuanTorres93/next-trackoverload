@@ -6,6 +6,16 @@ import { Protein } from '../../interfaces/Protein';
 import { Calories } from '../../interfaces/Calories';
 import { Id } from '@/domain/value-objects/Id/Id';
 
+export type RecipeCreateProps = {
+  id: string;
+  userId: string;
+  name: string;
+  imageUrl?: string;
+  ingredientLines: IngredientLine[];
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 export type RecipeProps = {
   id: Id;
   userId: Id;
@@ -19,17 +29,7 @@ export type RecipeProps = {
 export class Recipe implements Protein, Calories {
   private constructor(private readonly props: RecipeProps) {}
 
-  static create(props: RecipeProps): Recipe {
-    if (!(props.id instanceof Id))
-      throw new ValidationError(
-        'Recipe: Invalid id, must be an instance of Id'
-      );
-
-    if (!(props.userId instanceof Id))
-      throw new ValidationError(
-        'Recipe: Invalid userId, must be an instance of Id'
-      );
-
+  static create(props: RecipeCreateProps): Recipe {
     validateNonEmptyString(props.name, 'Recipe name');
 
     if (
@@ -45,7 +45,17 @@ export class Recipe implements Protein, Calories {
     props.createdAt = handleCreatedAt(props.createdAt);
     props.updatedAt = handleUpdatedAt(props.updatedAt);
 
-    return new Recipe(props);
+    const recipeProps: RecipeProps = {
+      id: Id.create(props.id),
+      userId: Id.create(props.userId),
+      name: props.name,
+      imageUrl: props.imageUrl,
+      ingredientLines: props.ingredientLines,
+      createdAt: props.createdAt,
+      updatedAt: props.updatedAt,
+    };
+
+    return new Recipe(recipeProps);
   }
 
   rename(name: string): void {

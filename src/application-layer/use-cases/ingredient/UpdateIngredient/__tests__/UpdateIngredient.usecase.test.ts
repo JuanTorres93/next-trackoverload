@@ -1,11 +1,10 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { UpdateIngredientUsecase } from '../UpdateIngredient.usecase';
-import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { UpdateIngredientUsecase } from '../UpdateIngredient.usecase';
 
 describe('UpdateIngredientUsecase', () => {
   let ingredientsRepo: MemoryIngredientsRepo;
@@ -18,27 +17,24 @@ describe('UpdateIngredientUsecase', () => {
 
   it('should update ingredient name', async () => {
     const ingredient = Ingredient.create({
-      id: Id.create('1'),
-      name: 'Chicken Breast',
-      nutritionalInfoPer100g: {
-        calories: 165,
-        protein: 31,
-      },
-      createdAt: new Date('2023-01-01'),
-      updatedAt: new Date('2023-01-01'),
+      ...vp.validIngredientProps,
     });
 
     await ingredientsRepo.saveIngredient(ingredient);
 
     const updatedIngredient = await updateIngredientUsecase.execute({
-      id: '1',
-      name: 'Grilled Chicken Breast',
+      id: ingredient.id,
+      name: 'UPDATED INGREDIENT',
     });
 
-    expect(updatedIngredient.name).toBe('Grilled Chicken Breast');
-    expect(updatedIngredient.id).toBe('1');
-    expect(updatedIngredient.nutritionalInfoPer100g.calories).toBe(165);
-    expect(updatedIngredient.nutritionalInfoPer100g.protein).toBe(31);
+    expect(updatedIngredient.name).toBe('UPDATED INGREDIENT');
+    expect(updatedIngredient.id).toBe(ingredient.id);
+    expect(updatedIngredient.nutritionalInfoPer100g.calories).toBe(
+      ingredient.nutritionalInfoPer100g.calories
+    );
+    expect(updatedIngredient.nutritionalInfoPer100g.protein).toBe(
+      ingredient.nutritionalInfoPer100g.protein
+    );
     expect(updatedIngredient.createdAt).toBe(
       ingredient.createdAt.toISOString()
     );
@@ -49,26 +45,21 @@ describe('UpdateIngredientUsecase', () => {
 
   it('should update ingredient calories', async () => {
     const ingredient = Ingredient.create({
-      id: Id.create('1'),
-      name: 'Chicken Breast',
-      nutritionalInfoPer100g: {
-        calories: 165,
-        protein: 31,
-      },
-      createdAt: new Date('2023-01-01'),
-      updatedAt: new Date('2023-01-01'),
+      ...vp.validIngredientProps,
     });
 
     await ingredientsRepo.saveIngredient(ingredient);
 
     const updatedIngredient = await updateIngredientUsecase.execute({
-      id: '1',
-      calories: 170,
+      id: ingredient.id,
+      calories: 3333,
     });
 
-    expect(updatedIngredient.name).toBe('Chicken Breast');
-    expect(updatedIngredient.nutritionalInfoPer100g.calories).toBe(170);
-    expect(updatedIngredient.nutritionalInfoPer100g.protein).toBe(31);
+    expect(updatedIngredient.name).toBe(vp.validIngredientProps.name);
+    expect(updatedIngredient.nutritionalInfoPer100g.calories).toBe(3333);
+    expect(updatedIngredient.nutritionalInfoPer100g.protein).toBe(
+      vp.validIngredientProps.nutritionalInfoPer100g.protein
+    );
     expect(updatedIngredient.updatedAt).not.toBe(
       ingredient.updatedAt.toISOString()
     );
@@ -76,26 +67,21 @@ describe('UpdateIngredientUsecase', () => {
 
   it('should update ingredient protein', async () => {
     const ingredient = Ingredient.create({
-      id: Id.create('1'),
-      name: 'Chicken Breast',
-      nutritionalInfoPer100g: {
-        calories: 165,
-        protein: 31,
-      },
-      createdAt: new Date('2023-01-01'),
-      updatedAt: new Date('2023-01-01'),
+      ...vp.validIngredientProps,
     });
 
     await ingredientsRepo.saveIngredient(ingredient);
 
     const updatedIngredient = await updateIngredientUsecase.execute({
-      id: '1',
-      protein: 32,
+      id: ingredient.id,
+      protein: 666,
     });
 
-    expect(updatedIngredient.name).toBe('Chicken Breast');
-    expect(updatedIngredient.nutritionalInfoPer100g.calories).toBe(165);
-    expect(updatedIngredient.nutritionalInfoPer100g.protein).toBe(32);
+    expect(updatedIngredient.name).toBe(vp.validIngredientProps.name);
+    expect(updatedIngredient.nutritionalInfoPer100g.calories).toBe(
+      vp.validIngredientProps.nutritionalInfoPer100g.calories
+    );
+    expect(updatedIngredient.nutritionalInfoPer100g.protein).toBe(666);
     expect(updatedIngredient.updatedAt).not.toBe(
       ingredient.updatedAt.toISOString()
     );
@@ -103,28 +89,21 @@ describe('UpdateIngredientUsecase', () => {
 
   it('should update multiple properties at once', async () => {
     const ingredient = Ingredient.create({
-      id: Id.create('1'),
-      name: 'Chicken Breast',
-      nutritionalInfoPer100g: {
-        calories: 165,
-        protein: 31,
-      },
-      createdAt: new Date('2023-01-01'),
-      updatedAt: new Date('2023-01-01'),
+      ...vp.validIngredientProps,
     });
 
     await ingredientsRepo.saveIngredient(ingredient);
 
     const updatedIngredient = await updateIngredientUsecase.execute({
-      id: '1',
-      name: 'Grilled Chicken Breast',
-      calories: 170,
-      protein: 32,
+      id: ingredient.id,
+      name: 'UPDATED NAME',
+      calories: 222,
+      protein: 888,
     });
 
-    expect(updatedIngredient.name).toBe('Grilled Chicken Breast');
-    expect(updatedIngredient.nutritionalInfoPer100g.calories).toBe(170);
-    expect(updatedIngredient.nutritionalInfoPer100g.protein).toBe(32);
+    expect(updatedIngredient.name).toBe('UPDATED NAME');
+    expect(updatedIngredient.nutritionalInfoPer100g.calories).toBe(222);
+    expect(updatedIngredient.nutritionalInfoPer100g.protein).toBe(888);
     expect(updatedIngredient.updatedAt).not.toBe(
       ingredient.updatedAt.toISOString()
     );
@@ -141,7 +120,7 @@ describe('UpdateIngredientUsecase', () => {
 
   it('should not update ingredient if no changes provided', async () => {
     const ingredient = Ingredient.create({
-      id: Id.create('1'),
+      id: '1',
       name: 'Chicken Breast',
       nutritionalInfoPer100g: {
         calories: 165,
@@ -179,7 +158,7 @@ describe('UpdateIngredientUsecase', () => {
 
   it('should throw error when name is invalid', async () => {
     const ingredient = Ingredient.create({
-      id: Id.create('1'),
+      id: '1',
       name: 'Chicken Breast',
       nutritionalInfoPer100g: {
         calories: 165,
@@ -203,7 +182,7 @@ describe('UpdateIngredientUsecase', () => {
 
   it('should throw error when calories is  negative', async () => {
     const ingredient = Ingredient.create({
-      id: Id.create('1'),
+      id: '1',
       name: 'Chicken Breast',
       nutritionalInfoPer100g: {
         calories: 165,
@@ -222,7 +201,7 @@ describe('UpdateIngredientUsecase', () => {
 
   it('should throw error when protein is negative', async () => {
     const ingredient = Ingredient.create({
-      id: Id.create('1'),
+      id: '1',
       name: 'Chicken Breast',
       nutritionalInfoPer100g: {
         calories: 165,
@@ -242,7 +221,7 @@ describe('UpdateIngredientUsecase', () => {
   it('should return IngredientDTO', async () => {
     const ingredient = Ingredient.create({
       ...vp.validIngredientProps,
-      id: Id.create('1'),
+      id: '1',
     });
 
     await ingredientsRepo.saveIngredient(ingredient);

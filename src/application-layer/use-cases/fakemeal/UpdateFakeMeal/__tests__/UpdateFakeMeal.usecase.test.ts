@@ -1,11 +1,10 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { UpdateFakeMealUsecase } from '../UpdateFakeMeal.usecase';
-import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
-import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { ValidationError, NotFoundError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { UpdateFakeMealUsecase } from '../UpdateFakeMeal.usecase';
 
 describe('UpdateFakeMealUsecase', () => {
   let usecase: UpdateFakeMealUsecase;
@@ -19,14 +18,13 @@ describe('UpdateFakeMealUsecase', () => {
   it('should update fake meal name successfully', async () => {
     const fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: Id.create('test-id'),
       name: 'Original Name',
     });
 
     await fakeMealsRepo.saveFakeMeal(fakeMeal);
 
     const result = await usecase.execute({
-      id: 'test-id',
+      id: vp.validFakeMealProps.id,
       userId: vp.userId,
       patch: { name: 'Updated Name' },
     });
@@ -39,14 +37,13 @@ describe('UpdateFakeMealUsecase', () => {
   it('should return FakeMealDTO', async () => {
     const fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: Id.create('test-id'),
       name: 'Original Name',
     });
 
     await fakeMealsRepo.saveFakeMeal(fakeMeal);
 
     const result = await usecase.execute({
-      id: 'test-id',
+      id: vp.validFakeMealProps.id,
       userId: vp.userId,
       patch: { name: 'Updated Name' },
     });
@@ -55,7 +52,7 @@ describe('UpdateFakeMealUsecase', () => {
     for (const prop of dto.fakeMealDTOProperties) {
       expect(result).toHaveProperty(prop);
     }
-    expect(result.id).toBe('test-id');
+    expect(result.id).toBe(vp.validFakeMealProps.id);
     expect(result.userId).toBe(vp.userId);
     expect(result.name).toBe('Updated Name');
     expect(result.calories).toBe(vp.validFakeMealProps.calories);
@@ -65,14 +62,13 @@ describe('UpdateFakeMealUsecase', () => {
   it('should update fake meal calories successfully', async () => {
     const fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: Id.create('test-id'),
       name: 'Test Meal',
     });
 
     await fakeMealsRepo.saveFakeMeal(fakeMeal);
 
     const result = await usecase.execute({
-      id: 'test-id',
+      id: vp.validFakeMealProps.id,
       userId: vp.userId,
       patch: { calories: 600 },
     });
@@ -85,14 +81,13 @@ describe('UpdateFakeMealUsecase', () => {
   it('should update fake meal protein successfully', async () => {
     const fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: Id.create('test-id'),
       name: 'Test Meal',
     });
 
     await fakeMealsRepo.saveFakeMeal(fakeMeal);
 
     const result = await usecase.execute({
-      id: 'test-id',
+      id: vp.validFakeMealProps.id,
       userId: vp.userId,
       patch: { protein: 40 },
     });
@@ -105,14 +100,13 @@ describe('UpdateFakeMealUsecase', () => {
   it('should update multiple fields at once', async () => {
     const fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: Id.create('test-id'),
       name: 'Original Name',
     });
 
     await fakeMealsRepo.saveFakeMeal(fakeMeal);
 
     const result = await usecase.execute({
-      id: 'test-id',
+      id: vp.validFakeMealProps.id,
       userId: vp.userId,
       patch: {
         name: 'Updated Name',
@@ -149,7 +143,6 @@ describe('UpdateFakeMealUsecase', () => {
   it('should throw ValidationError for invalid name in patch', async () => {
     const fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: Id.create('test-id'),
       name: 'Test Meal',
     });
 
@@ -157,7 +150,7 @@ describe('UpdateFakeMealUsecase', () => {
 
     await expect(
       usecase.execute({
-        id: 'test-id',
+        id: vp.validFakeMealProps.id,
         userId: vp.userId,
         patch: { name: '' },
       })
@@ -167,7 +160,6 @@ describe('UpdateFakeMealUsecase', () => {
   it('should throw ValidationError for invalid calories in patch', async () => {
     const fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: Id.create('test-id'),
       name: 'Test Meal',
     });
 
@@ -175,7 +167,7 @@ describe('UpdateFakeMealUsecase', () => {
 
     await expect(
       usecase.execute({
-        id: 'test-id',
+        id: vp.validFakeMealProps.id,
         userId: vp.userId,
         patch: { calories: 0 },
       })

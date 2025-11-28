@@ -1,10 +1,9 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { GetAllIngredientsUsecase } from '../GetAllIngredients.usecase';
-import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { Id } from '@/domain/value-objects/Id/Id';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { GetAllIngredientsUsecase } from '../GetAllIngredients.usecase';
 
 describe('GetAllIngredientsUsecase', () => {
   let ingredientsRepo: MemoryIngredientsRepo;
@@ -18,12 +17,11 @@ describe('GetAllIngredientsUsecase', () => {
   it('should return all ingredients', async () => {
     const ingredient1 = Ingredient.create({
       ...vp.validIngredientProps,
-      id: Id.create('1'),
       name: 'Chicken Breast',
     });
     const ingredient2 = Ingredient.create({
       ...vp.validIngredientProps,
-      id: Id.create('2'),
+      id: 'ing-2',
       name: 'Rice',
     });
 
@@ -42,12 +40,11 @@ describe('GetAllIngredientsUsecase', () => {
   it('should return an array of IngredientDTO', async () => {
     const ingredient1 = Ingredient.create({
       ...vp.validIngredientProps,
-      id: Id.create('1'),
       name: 'Chicken Breast',
     });
     const ingredient2 = Ingredient.create({
       ...vp.validIngredientProps,
-      id: Id.create('2'),
+      id: 'ing-2',
       name: 'Rice',
     });
 

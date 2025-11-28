@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { GetExercisesByIdsUsecase } from '../GetExercisesByIds.usecase';
 import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
-import { Id } from '@/domain/value-objects/Id/Id';
 import { ValidationError } from '@/domain/common/errors';
 import * as dto from '@/../tests/dtoProperties';
 
@@ -17,13 +16,13 @@ describe('GetExercisesByIdsUsecase', () => {
 
   it('should return exercises that exist', async () => {
     const exercise1 = Exercise.create({
-      id: Id.create('1'),
+      id: '1',
       name: 'Push Up',
       createdAt: new Date(),
       updatedAt: new Date(),
     });
     const exercise2 = Exercise.create({
-      id: Id.create('2'),
+      id: '2',
       name: 'Squat',
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -45,13 +44,13 @@ describe('GetExercisesByIdsUsecase', () => {
 
   it('should return an array of ExerciseDTO', async () => {
     const exercise1 = Exercise.create({
-      id: Id.create('1'),
+      id: '1',
       name: 'Push Up',
       createdAt: new Date(),
       updatedAt: new Date(),
     });
     const exercise2 = Exercise.create({
-      id: Id.create('2'),
+      id: '2',
       name: 'Squat',
       createdAt: new Date(),
       updatedAt: new Date(),

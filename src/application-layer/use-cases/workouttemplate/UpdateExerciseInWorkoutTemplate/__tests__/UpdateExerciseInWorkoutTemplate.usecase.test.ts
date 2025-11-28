@@ -28,7 +28,7 @@ describe('UpdateExerciseInWorkoutTemplateUsecase', () => {
 
     const request = {
       userId: vp.userId,
-      workoutTemplateId: vp.validWorkoutTemplateProps.id.value,
+      workoutTemplateId: vp.validWorkoutTemplateProps.id,
       exerciseId: 'bench-press',
       sets: 5,
     };
@@ -66,7 +66,7 @@ describe('UpdateExerciseInWorkoutTemplateUsecase', () => {
 
     const request = {
       userId: vp.userId,
-      workoutTemplateId: vp.validWorkoutTemplateProps.id.value,
+      workoutTemplateId: vp.validWorkoutTemplateProps.id,
       exerciseId: 'bench-press',
       sets: 5,
     };
@@ -103,7 +103,7 @@ describe('UpdateExerciseInWorkoutTemplateUsecase', () => {
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
     const request = {
-      workoutTemplateId: vp.validWorkoutTemplateProps.id.value,
+      workoutTemplateId: vp.validWorkoutTemplateProps.id,
       exerciseId: 'non-existent-exercise',
       sets: 5,
       userId: vp.userId,
@@ -198,7 +198,7 @@ describe('UpdateExerciseInWorkoutTemplateUsecase', () => {
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
     const request = {
-      workoutTemplateId: vp.validWorkoutTemplateProps.id.value,
+      workoutTemplateId: vp.validWorkoutTemplateProps.id,
       userId: vp.userId,
       exerciseId: 'bench-press',
       sets: 5,

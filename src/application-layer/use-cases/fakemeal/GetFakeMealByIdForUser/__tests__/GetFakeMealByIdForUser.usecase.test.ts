@@ -1,11 +1,10 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { GetFakeMealByIdForUserUsecase } from '../GetFakeMealByIdForUser.usecase';
-import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
-import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { ValidationError } from '@/domain/common/errors';
+import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { GetFakeMealByIdForUserUsecase } from '../GetFakeMealByIdForUser.usecase';
 
 describe('GetFakeMealByIdUsecase', () => {
   let usecase: GetFakeMealByIdForUserUsecase;
@@ -19,15 +18,17 @@ describe('GetFakeMealByIdUsecase', () => {
   it('should return fake meal when found for correct user', async () => {
     const fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: Id.create('test-id'),
     });
 
     await fakeMealsRepo.saveFakeMeal(fakeMeal);
 
-    const result = await usecase.execute({ id: 'test-id', userId: vp.userId });
+    const result = await usecase.execute({
+      id: vp.validFakeMealProps.id,
+      userId: vp.userId,
+    });
 
     expect(result).toBeDefined();
-    expect(result?.id).toBe('test-id');
+    expect(result?.id).toBe(vp.validFakeMealProps.id);
     expect(result?.userId).toBe(vp.userId);
     expect(result?.name).toBe(vp.validFakeMealProps.name);
     expect(result?.calories).toBe(vp.validFakeMealProps.calories);
@@ -37,28 +38,25 @@ describe('GetFakeMealByIdUsecase', () => {
   it('should return array of FakeMealDTO', async () => {
     const fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: Id.create('test-id'),
     });
 
     await fakeMealsRepo.saveFakeMeal(fakeMeal);
 
-    const result = await usecase.execute({ id: 'test-id', userId: vp.userId });
+    const result = await usecase.execute({
+      id: vp.validFakeMealProps.id,
+      userId: vp.userId,
+    });
 
     expect(result).not.toBeInstanceOf(FakeMeal);
     for (const prop of dto.fakeMealDTOProperties) {
       expect(result).toHaveProperty(prop);
     }
 
-    // @ts-expect-error result is not null here
-    expect(result.id).toBe('test-id');
-    // @ts-expect-error result is not null here
-    expect(result.userId).toBe(vp.userId);
-    // @ts-expect-error result is not null here
-    expect(result.name).toBe(vp.validFakeMealProps.name);
-    // @ts-expect-error result is not null here
-    expect(result.calories).toBe(vp.validFakeMealProps.calories);
-    // @ts-expect-error result is not null here
-    expect(result.protein).toBe(vp.validFakeMealProps.protein);
+    expect(result!.id).toBe(vp.validFakeMealProps.id);
+    expect(result!.userId).toBe(vp.userId);
+    expect(result!.name).toBe(vp.validFakeMealProps.name);
+    expect(result!.calories).toBe(vp.validFakeMealProps.calories);
+    expect(result!.protein).toBe(vp.validFakeMealProps.protein);
   });
 
   it('should return null when fake meal not found', async () => {
@@ -73,13 +71,15 @@ describe('GetFakeMealByIdUsecase', () => {
   it('should return null when fake meal belongs to different user', async () => {
     const fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: Id.create('test-id'),
-      userId: Id.create('user-2'),
+      userId: 'user-2',
     });
 
     await fakeMealsRepo.saveFakeMeal(fakeMeal);
 
-    const result = await usecase.execute({ id: 'test-id', userId: vp.userId });
+    const result = await usecase.execute({
+      id: vp.validFakeMealProps.id,
+      userId: vp.userId,
+    });
 
     expect(result).toBeNull();
   });
@@ -97,7 +97,7 @@ describe('GetFakeMealByIdUsecase', () => {
     const invalidUserIds = ['', '   '];
     for (const userId of invalidUserIds) {
       await expect(
-        usecase.execute({ id: vp.validFakeMealProps.id.value, userId })
+        usecase.execute({ id: vp.validFakeMealProps.id, userId })
       ).rejects.toThrow(ValidationError);
     }
   });

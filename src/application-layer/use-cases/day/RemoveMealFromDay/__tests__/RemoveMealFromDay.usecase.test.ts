@@ -32,7 +32,7 @@ describe('RemoveMealFromDayUsecase', () => {
     const result = await removeMealFromDayUsecase.execute({
       date,
       userId: vp.userId,
-      mealId: vp.validFakeMealProps.id.value,
+      mealId: vp.validFakeMealProps.id,
     });
 
     expect(result.meals).toHaveLength(0);
@@ -53,7 +53,7 @@ describe('RemoveMealFromDayUsecase', () => {
     const result = await removeMealFromDayUsecase.execute({
       date,
       userId: vp.userId,
-      mealId: vp.validFakeMealProps.id.value,
+      mealId: vp.validFakeMealProps.id,
     });
 
     expect(result).not.toBeInstanceOf(Day);
@@ -69,7 +69,7 @@ describe('RemoveMealFromDayUsecase', () => {
       removeMealFromDayUsecase.execute({
         date,
         userId: vp.userId,
-        mealId: vp.validFakeMealProps.id.value,
+        mealId: vp.validFakeMealProps.id,
       })
     ).rejects.toThrow(ValidationError);
   });

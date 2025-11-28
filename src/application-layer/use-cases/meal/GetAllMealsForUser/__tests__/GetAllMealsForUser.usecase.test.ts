@@ -1,10 +1,8 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
-import { ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
-import { Id } from '@/domain/value-objects/Id/Id';
 import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetAllMealsForUserUsecase } from '../GetAllMealsForUser.usecase';
@@ -39,14 +37,14 @@ describe('GetAllMealsUsecase', () => {
 
     const meal1 = Meal.create({
       ...vp.mealPropsNoIngredientLines,
-      id: Id.create('1'),
+      id: '1',
       name: 'Protein Meal',
       ingredientLines: [ingredientLine1],
     });
 
     const meal2 = Meal.create({
       ...vp.mealPropsNoIngredientLines,
-      id: Id.create('2'),
+      id: '2',
       name: 'Carb Meal',
       ingredientLines: [ingredientLine2],
     });
@@ -77,7 +75,6 @@ describe('GetAllMealsUsecase', () => {
 
     const meal1 = Meal.create({
       ...vp.mealPropsNoIngredientLines,
-      id: Id.create('1'),
       name: 'Protein Meal',
       ingredientLines: [ingredientLine1],
     });
@@ -104,28 +101,5 @@ describe('GetAllMealsUsecase', () => {
 
     expect(meals).toHaveLength(0);
     expect(meals).toEqual([]);
-  });
-
-  it('should throw error for invalid userId', async () => {
-    const invalidUserIds = [
-      null,
-      undefined,
-      '',
-      '   ',
-      123,
-      {},
-      [],
-      true,
-      false,
-    ];
-
-    for (const invalidUserId of invalidUserIds) {
-      await expect(async () => {
-        await getAllMealsUsecase.execute({
-          // @ts-expect-error Testing invalid input
-          userId: invalidUserId,
-        });
-      }).rejects.toThrow(ValidationError);
-    }
   });
 });

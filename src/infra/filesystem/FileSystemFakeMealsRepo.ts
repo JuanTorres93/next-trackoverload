@@ -1,11 +1,10 @@
-import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
-import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import {
   FakeMealDTO,
   toFakeMealDTO,
 } from '@/application-layer/dtos/FakeMealDTO';
+import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
 import { BaseFileSystemRepo } from './BaseFileSystemRepo';
-import { Id } from '@/domain/value-objects/Id/Id';
 
 export class FileSystemFakeMealsRepo
   extends BaseFileSystemRepo<FakeMeal>
@@ -27,8 +26,6 @@ export class FileSystemFakeMealsRepo
     return (data as FakeMealDTO[]).map((item) =>
       FakeMeal.create({
         ...item,
-        id: Id.create(item.id),
-        userId: Id.create(item.userId),
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),
       })

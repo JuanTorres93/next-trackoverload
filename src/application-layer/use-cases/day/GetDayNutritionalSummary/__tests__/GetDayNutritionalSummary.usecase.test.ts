@@ -1,11 +1,10 @@
+import * as vp from '@/../tests/createProps';
+import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { Day } from '@/domain/entities/day/Day';
+import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetDayNutritionalSummaryUsecase } from '../GetDayNutritionalSummary.usecase';
-import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
-import { Day } from '@/domain/entities/day/Day';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
-import * as vp from '@/../tests/createProps';
 
 describe('GetDayNutritionalSummaryUsecase', () => {
   let daysRepo: MemoryDaysRepo;
@@ -27,7 +26,7 @@ describe('GetDayNutritionalSummaryUsecase', () => {
       ...vp.validFakeMealProps,
       calories: 500,
       protein: 30,
-      id: Id.create('fakeMeal2'),
+      id: 'fakeMeal2',
     });
     const day = Day.create({
       ...vp.validDayProps,

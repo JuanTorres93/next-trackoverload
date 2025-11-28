@@ -1,15 +1,14 @@
-import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
-import {
-  Ingredient,
-  IngredientUpdateProps,
-} from '@/domain/entities/ingredient/Ingredient';
 import {
   IngredientDTO,
   toIngredientDTO,
 } from '@/application-layer/dtos/IngredientDTO';
-import { Id } from '@/domain/value-objects/Id/Id';
 import { NotFoundError } from '@/domain/common/errors';
 import { validateNonEmptyString } from '@/domain/common/validation';
+import {
+  Ingredient,
+  IngredientUpdateProps,
+} from '@/domain/entities/ingredient/Ingredient';
+import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 
 export type UpdateIngredientUsecaseRequest = {
   id: string;
@@ -44,7 +43,7 @@ export class UpdateIngredientUsecase {
     if (Object.keys(patch).length > 0) {
       // Create a new ingredient with the same properties
       const updatedIngredient = Ingredient.create({
-        id: Id.create(existingIngredient.id),
+        id: existingIngredient.id,
         name: existingIngredient.name,
         nutritionalInfoPer100g: {
           calories: existingIngredient.nutritionalInfoPer100g.calories,

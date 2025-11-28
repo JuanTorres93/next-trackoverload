@@ -1,10 +1,9 @@
-import { MealsRepo } from '@/domain/repos/MealsRepo.port';
-import { Meal } from '@/domain/entities/meal/Meal';
+import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
+import { MealDTO, toMealDTO } from '@/application-layer/dtos/MealDTO';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-import { MealDTO, toMealDTO } from '@/application-layer/dtos/MealDTO';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
+import { Meal } from '@/domain/entities/meal/Meal';
+import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 import { BaseFileSystemRepo } from './BaseFileSystemRepo';
 
 export class FileSystemMealsRepo
@@ -29,14 +28,12 @@ export class FileSystemMealsRepo
         (lineData: IngredientLineDTO) => {
           const ingredient = Ingredient.create({
             ...lineData.ingredient,
-            id: Id.create(lineData.ingredient.id),
             createdAt: new Date(lineData.ingredient.createdAt),
             updatedAt: new Date(lineData.ingredient.updatedAt),
           });
 
           return IngredientLine.create({
             ...lineData,
-            id: Id.create(lineData.id),
             ingredient,
             createdAt: new Date(lineData.createdAt),
             updatedAt: new Date(lineData.updatedAt),
@@ -46,8 +43,6 @@ export class FileSystemMealsRepo
 
       return Meal.create({
         ...item,
-        id: Id.create(item.id),
-        userId: Id.create(item.userId),
         ingredientLines,
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),

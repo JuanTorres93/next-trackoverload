@@ -3,13 +3,12 @@ import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
-import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
-import { MemoryIngredientLinesRepo } from '@/infra/memory/MemoryIngredientLinesRepo';
-import { Id } from '@/domain/value-objects/Id/Id';
 import { MemoryImageManager } from '@/infra';
+import { MemoryIngredientLinesRepo } from '@/infra/memory/MemoryIngredientLinesRepo';
+import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { DeleteRecipeUsecase } from '../DeleteRecipe.usecase';
 import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
+import { DeleteRecipeUsecase } from '../DeleteRecipe.usecase';
 
 describe('DeleteRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
@@ -126,7 +125,7 @@ describe('DeleteRecipeUsecase', () => {
   it('should not affect other recipes when deleting one', async () => {
     const secondRecipe = Recipe.create({
       ...vp.recipePropsNoIngredientLines,
-      id: Id.create('second-recipe-id'),
+      id: 'second-recipe-id',
       ingredientLines: testRecipe.ingredientLines,
     });
 

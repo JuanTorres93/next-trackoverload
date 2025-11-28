@@ -3,7 +3,6 @@ import * as dto from '@/../tests/dtoProperties';
 import { ValidationError } from '@/domain/common/errors';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
-import { Id } from '@/domain/value-objects/Id/Id';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetAllWorkoutsForUserUsecase } from '../GetAllWorkoutsForUser.usecase';
 
@@ -19,13 +18,12 @@ describe('GetAllWorkoutsUsecase', () => {
   it('should return all workouts', async () => {
     const workout1 = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       name: 'Push Day',
       exercises: [],
     });
     const workout2 = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('2'),
+      id: 'another-workout-id',
       name: 'Pull Day',
       exercises: [],
     });
@@ -45,13 +43,12 @@ describe('GetAllWorkoutsUsecase', () => {
   it('should return an array of WorkoutDTO', async () => {
     const workout1 = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       name: 'Push Day',
       exercises: [],
     });
     const workout2 = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('2'),
+      id: 'another-workout-id',
       name: 'Pull Day',
       exercises: [],
     });

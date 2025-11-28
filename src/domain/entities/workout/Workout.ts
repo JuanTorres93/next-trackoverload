@@ -30,6 +30,16 @@ type ExerciseLineUpdateProps = {
   weight?: number;
 };
 
+export type WorkoutCreateProps = {
+  id: string;
+  userId: string;
+  name: string;
+  workoutTemplateId: string;
+  exercises: ExerciseLine[];
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 export type WorkoutProps = {
   id: Id;
   userId: Id;
@@ -43,19 +53,8 @@ export type WorkoutProps = {
 export class Workout {
   private constructor(private readonly props: WorkoutProps) {}
 
-  static create(props: WorkoutProps): Workout {
-    if (!(props.id instanceof Id))
-      throw new ValidationError('Workout: id must be an instance of Id');
-
-    if (!(props.userId instanceof Id))
-      throw new ValidationError('Workout: userId must be an instance of Id');
-
+  static create(props: WorkoutCreateProps): Workout {
     validateNonEmptyString(props.name, 'Workout name');
-    if (!(props.workoutTemplateId instanceof Id)) {
-      throw new ValidationError(
-        'Workout: workoutTemplateId must be an instance of Id'
-      );
-    }
     if (!Array.isArray(props.exercises)) {
       throw new ValidationError('Workout: exercises must be an array');
     }
@@ -67,7 +66,17 @@ export class Workout {
     props.createdAt = handleCreatedAt(props.createdAt);
     props.updatedAt = handleUpdatedAt(props.updatedAt);
 
-    return new Workout(props);
+    const workoutProps: WorkoutProps = {
+      id: Id.create(props.id),
+      userId: Id.create(props.userId),
+      name: props.name,
+      workoutTemplateId: Id.create(props.workoutTemplateId),
+      exercises: props.exercises,
+      createdAt: props.createdAt,
+      updatedAt: props.updatedAt,
+    };
+
+    return new Workout(workoutProps);
   }
 
   addExercise(line: ExerciseLine) {

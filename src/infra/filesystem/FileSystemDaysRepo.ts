@@ -1,14 +1,13 @@
-import { DaysRepo } from '@/domain/repos/DaysRepo.port';
-import { Day } from '@/domain/entities/day/Day';
-import { Meal } from '@/domain/entities/meal/Meal';
-import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { DayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
-import { MealDTO } from '@/application-layer/dtos/MealDTO';
 import { FakeMealDTO } from '@/application-layer/dtos/FakeMealDTO';
 import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
+import { MealDTO } from '@/application-layer/dtos/MealDTO';
+import { Day } from '@/domain/entities/day/Day';
+import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { Meal } from '@/domain/entities/meal/Meal';
+import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { BaseFileSystemRepo } from './BaseFileSystemRepo';
 export class FileSystemDaysRepo
   extends BaseFileSystemRepo<Day>
@@ -34,14 +33,12 @@ export class FileSystemDaysRepo
             (lineData: IngredientLineDTO) => {
               const ingredient = Ingredient.create({
                 ...lineData.ingredient,
-                id: Id.create(lineData.ingredient.id),
                 createdAt: new Date(lineData.ingredient.createdAt),
                 updatedAt: new Date(lineData.ingredient.updatedAt),
               });
 
               return IngredientLine.create({
                 ...lineData,
-                id: Id.create(lineData.id),
                 ingredient,
                 createdAt: new Date(lineData.createdAt),
                 updatedAt: new Date(lineData.updatedAt),
@@ -51,8 +48,6 @@ export class FileSystemDaysRepo
 
           return Meal.create({
             ...mealData,
-            id: Id.create(mealData.id),
-            userId: Id.create(mealData.userId),
             ingredientLines,
             createdAt: new Date(mealData.createdAt),
             updatedAt: new Date(mealData.updatedAt),
@@ -61,8 +56,6 @@ export class FileSystemDaysRepo
           const fakeMealData = mealData as FakeMealDTO;
           return FakeMeal.create({
             ...fakeMealData,
-            id: Id.create(fakeMealData.id),
-            userId: Id.create(fakeMealData.userId),
             createdAt: new Date(fakeMealData.createdAt),
             updatedAt: new Date(fakeMealData.updatedAt),
           });
@@ -72,7 +65,6 @@ export class FileSystemDaysRepo
       return Day.create({
         ...item,
         id: new Date(item.id),
-        userId: Id.create(item.userId),
         meals,
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),

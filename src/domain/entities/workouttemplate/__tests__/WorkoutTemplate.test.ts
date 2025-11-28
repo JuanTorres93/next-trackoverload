@@ -1,12 +1,15 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { WorkoutTemplate, WorkoutTemplateProps } from '../WorkoutTemplate';
-import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import { ValidationError } from '@/domain/common/errors';
+import {
+  WorkoutTemplate,
+  WorkoutTemplateCreateProps,
+} from '../WorkoutTemplate';
 
 describe('WorkoutTemplate', () => {
   let workoutTemplate: WorkoutTemplate;
-  let validWorkoutTemplateProps: WorkoutTemplateProps;
+  let validWorkoutTemplateProps: WorkoutTemplateCreateProps;
 
   beforeEach(() => {
     validWorkoutTemplateProps = {
@@ -212,7 +215,7 @@ describe('WorkoutTemplate', () => {
       WorkoutTemplate.create({
         ...validWorkoutTemplateProps,
         // @ts-expect-error id is not Id
-        id: 'invalid-id',
+        id: 123,
       });
     }).toThrow(ValidationError);
 
@@ -220,9 +223,9 @@ describe('WorkoutTemplate', () => {
       WorkoutTemplate.create({
         ...validWorkoutTemplateProps,
         // @ts-expect-error id is not Id
-        id: 'invalid-id',
+        id: 123,
       });
-    }).toThrow(/Id/);
+    }).toThrow(/Id.*string/);
   });
 
   it('should throw error if userId is not instance of Id', async () => {
@@ -230,7 +233,7 @@ describe('WorkoutTemplate', () => {
       WorkoutTemplate.create({
         ...validWorkoutTemplateProps,
         // @ts-expect-error userId is not Id
-        userId: 'invalid-userId',
+        userId: 123,
       });
     }).toThrow(ValidationError);
 
@@ -238,8 +241,8 @@ describe('WorkoutTemplate', () => {
       WorkoutTemplate.create({
         ...validWorkoutTemplateProps,
         // @ts-expect-error userId is not Id
-        userId: 'invalid-userId',
+        userId: 123,
       });
-    }).toThrow(/\sId/);
+    }).toThrow(/Id.*string/);
   });
 });

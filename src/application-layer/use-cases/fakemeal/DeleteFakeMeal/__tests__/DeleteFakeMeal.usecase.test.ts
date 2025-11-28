@@ -1,10 +1,9 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { DeleteFakeMealUsecase } from '../DeleteFakeMeal.usecase';
-import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
-import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { ValidationError, NotFoundError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { DeleteFakeMealUsecase } from '../DeleteFakeMeal.usecase';
 
 describe('DeleteFakeMealUsecase', () => {
   let usecase: DeleteFakeMealUsecase;
@@ -18,23 +17,22 @@ describe('DeleteFakeMealUsecase', () => {
   it('should delete fake meal successfully', async () => {
     const fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: Id.create('test-id'),
     });
 
     await fakeMealsRepo.saveFakeMeal(fakeMeal);
 
     // Verify fake meal exists before deletion
     const beforeDeletion = await fakeMealsRepo.getFakeMealByIdAndUserId(
-      'test-id',
+      vp.validFakeMealProps.id,
       vp.userId
     );
     expect(beforeDeletion).toBeDefined();
 
-    await usecase.execute({ id: 'test-id', userId: vp.userId });
+    await usecase.execute({ id: vp.validFakeMealProps.id, userId: vp.userId });
 
     // Verify fake meal is deleted
     const afterDeletion = await fakeMealsRepo.getFakeMealByIdAndUserId(
-      'test-id',
+      vp.validFakeMealProps.id,
       vp.userId
     );
     expect(afterDeletion).toBeNull();
@@ -58,13 +56,13 @@ describe('DeleteFakeMealUsecase', () => {
   it('should not affect other fake meals when deleting one', async () => {
     const fakeMeal1 = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: Id.create('test-id-1'),
+      id: 'test-id-1',
       name: 'Test Fake Meal 1',
     });
 
     const fakeMeal2 = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: Id.create('test-id-2'),
+      id: 'test-id-2',
       name: 'Test Fake Meal 2',
     });
 

@@ -22,11 +22,11 @@ describe('DeleteIngredientUsecase', () => {
     await ingredientsRepo.saveIngredient(ingredient);
 
     await deleteIngredientUsecase.execute({
-      id: vp.validIngredientProps.id.value,
+      id: vp.validIngredientProps.id,
     });
 
     const deletedIngredient = await ingredientsRepo.getIngredientById(
-      vp.validIngredientProps.id.value
+      vp.validIngredientProps.id
     );
     expect(deletedIngredient).toBeNull();
   });

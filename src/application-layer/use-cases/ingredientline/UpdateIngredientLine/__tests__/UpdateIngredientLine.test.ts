@@ -1,21 +1,20 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { UpdateIngredientLineUsecase } from '../UpdateIngredientLine.usecase';
-import { MemoryIngredientLinesRepo } from '@/infra/memory/MemoryIngredientLinesRepo';
-import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
-import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
-import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { Recipe } from '@/domain/entities/recipe/Recipe';
-import { Meal } from '@/domain/entities/meal/Meal';
-import {
-  ValidationError,
-  NotFoundError,
-  AuthError,
-} from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import {
+  AuthError,
+  NotFoundError,
+  ValidationError,
+} from '@/domain/common/errors';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { Meal } from '@/domain/entities/meal/Meal';
+import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { MemoryIngredientLinesRepo } from '@/infra/memory/MemoryIngredientLinesRepo';
+import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
+import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
+import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { UpdateIngredientLineUsecase } from '../UpdateIngredientLine.usecase';
 
 describe('UpdateIngredientLineUsecase', () => {
   let ingredientLinesRepo: MemoryIngredientLinesRepo;
@@ -45,34 +44,31 @@ describe('UpdateIngredientLineUsecase', () => {
 
     testIngredient = Ingredient.create({
       ...vp.validIngredientProps,
-      id: Id.create('test-ingredient-id'),
       name: 'Chicken Breast',
     });
 
     alternativeIngredient = Ingredient.create({
       ...vp.validIngredientProps,
-      id: Id.create('alternative-ingredient-id'),
+      id: 'alternative-ingredient-id',
       name: 'Turkey Breast',
     });
 
     testIngredientLine = IngredientLine.create({
       ...vp.ingredientLinePropsNoIngredient,
-      id: Id.create('test-ingredient-line-id'),
       ingredient: testIngredient,
       quantityInGrams: 200,
     });
 
     testRecipe = Recipe.create({
       ...vp.recipePropsNoIngredientLines,
-      id: Id.create('test-recipe-id'),
-      userId: Id.create(userId),
+      userId: userId,
       ingredientLines: [testIngredientLine],
     });
 
     testMeal = Meal.create({
       ...vp.mealPropsNoIngredientLines,
-      id: Id.create('test-meal-id'),
-      userId: Id.create(userId),
+      id: 'test-meal-id',
+      userId: userId,
       ingredientLines: [testIngredientLine],
     });
 
@@ -363,7 +359,7 @@ describe('UpdateIngredientLineUsecase', () => {
       // Create a different ingredient line not in the recipe
       const differentIngredientLine = IngredientLine.create({
         ...vp.ingredientLinePropsNoIngredient,
-        id: Id.create('different-ingredient-line-id'),
+        id: 'different-ingredient-line-id',
         ingredient: testIngredient,
         quantityInGrams: 100,
       });
@@ -387,7 +383,7 @@ describe('UpdateIngredientLineUsecase', () => {
       // Create a different ingredient line not in the meal
       const differentIngredientLine = IngredientLine.create({
         ...vp.ingredientLinePropsNoIngredient,
-        id: Id.create('different-ingredient-line-id-2'),
+        id: 'different-ingredient-line-id-2',
         ingredient: testIngredient,
         quantityInGrams: 100,
       });

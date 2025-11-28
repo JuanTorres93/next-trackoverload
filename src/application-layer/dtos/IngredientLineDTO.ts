@@ -1,9 +1,8 @@
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-import { Id } from '@/domain/value-objects/Id/Id';
 import {
+  fromIngredientDTO,
   IngredientDTO,
   toIngredientDTO,
-  fromIngredientDTO,
 } from './IngredientDTO';
 
 export type IngredientLineDTO = {
@@ -32,7 +31,7 @@ export function toIngredientLineDTO(
 
 export function fromIngredientLineDTO(dto: IngredientLineDTO): IngredientLine {
   return IngredientLine.create({
-    id: Id.create(dto.id),
+    id: dto.id,
     ingredient: fromIngredientDTO(dto.ingredient),
     quantityInGrams: dto.quantityInGrams,
     createdAt: new Date(dto.createdAt),

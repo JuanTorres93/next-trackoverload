@@ -1,15 +1,14 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { UpdateDayMealsUsecase } from '../UpdateDayMeals.usecase';
-import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
-import { Day } from '@/domain/entities/day/Day';
-import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { Meal } from '@/domain/entities/meal/Meal';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { ValidationError } from '@/domain/common/errors';
+import { Day } from '@/domain/entities/day/Day';
+import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { Meal } from '@/domain/entities/meal/Meal';
+import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { UpdateDayMealsUsecase } from '../UpdateDayMeals.usecase';
 
 describe('UpdateDayMealsUsecase', () => {
   let daysRepo: MemoryDaysRepo;
@@ -33,7 +32,7 @@ describe('UpdateDayMealsUsecase', () => {
 
     const newFakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: Id.create('new-fake-meal'),
+      id: 'new-fake-meal',
       calories: 200,
       protein: 10,
     });

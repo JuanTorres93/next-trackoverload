@@ -69,7 +69,7 @@ describe('IngredientLine', () => {
       IngredientLine.create({
         ...validIngredientLineProps,
         // @ts-expect-error testing invalid type
-        id: 'invalid-id',
+        id: 123,
       });
     }).toThrowError(ValidationError);
 
@@ -77,7 +77,7 @@ describe('IngredientLine', () => {
       IngredientLine.create({
         ...validIngredientLineProps,
         // @ts-expect-error testing invalid type
-        id: 'invalid-id',
+        id: 123,
       });
     }).toThrowError(/Id/);
   });

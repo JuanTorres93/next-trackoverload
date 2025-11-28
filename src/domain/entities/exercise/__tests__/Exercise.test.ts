@@ -8,7 +8,7 @@ describe('Exercise', () => {
     const exercise = Exercise.create(vp.validExerciseProps);
 
     expect(exercise).toBeInstanceOf(Exercise);
-    expect(exercise.id).toBe(vp.validExerciseProps.id.value);
+    expect(exercise.id).toBe(vp.validExerciseProps.id);
     expect(exercise.name).toBe(vp.validExerciseProps.name);
   });
 
@@ -29,7 +29,7 @@ describe('Exercise', () => {
       Exercise.create({
         ...vp.validExerciseProps,
         // @ts-expect-error testing invalid type
-        id: 'invalid-id',
+        id: 123,
       });
     }).toThrowError(ValidationError);
 
@@ -37,7 +37,7 @@ describe('Exercise', () => {
       Exercise.create({
         ...vp.validExerciseProps,
         // @ts-expect-error testing invalid type
-        id: 'invalid-id',
+        id: 123,
       });
     }).toThrowError(/Id/);
   });

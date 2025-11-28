@@ -6,6 +6,14 @@ import { Id } from '@/domain/value-objects/Id/Id';
 import { Calories } from '@/domain/interfaces/Calories';
 import { Protein } from '@/domain/interfaces/Protein';
 
+export type IngredientLineCreateProps = {
+  id: string;
+  ingredient: Ingredient;
+  quantityInGrams: number;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 export type IngredientLineUpdateProps = {
   ingredient?: Ingredient;
   quantityInGrams?: number;
@@ -22,12 +30,7 @@ export type IngredientLineProps = {
 export class IngredientLine implements Calories, Protein {
   private constructor(private readonly props: IngredientLineProps) {}
 
-  static create(props: IngredientLineProps) {
-    if (!(props.id instanceof Id))
-      throw new ValidationError(
-        'IngredientLine: Invalid id, must be an Id instance'
-      );
-
+  static create(props: IngredientLineCreateProps) {
     if (!(props.ingredient instanceof Ingredient)) {
       throw new ValidationError('IngredientLine: Invalid ingredient');
     }
@@ -44,7 +47,15 @@ export class IngredientLine implements Calories, Protein {
     props.createdAt = handleCreatedAt(props.createdAt);
     props.updatedAt = handleUpdatedAt(props.updatedAt);
 
-    return new IngredientLine(props);
+    const ingredientLineProps: IngredientLineProps = {
+      id: Id.create(props.id),
+      ingredient: props.ingredient,
+      quantityInGrams: props.quantityInGrams,
+      createdAt: props.createdAt,
+      updatedAt: props.updatedAt,
+    };
+
+    return new IngredientLine(ingredientLineProps);
   }
 
   update(patch: IngredientLineUpdateProps): IngredientLine {
@@ -62,7 +73,7 @@ export class IngredientLine implements Calories, Protein {
       );
 
     return IngredientLine.create({
-      id: this.props.id,
+      id: this.id,
       ingredient: newIngredient,
       quantityInGrams: newQuantity,
       createdAt: this.props.createdAt,

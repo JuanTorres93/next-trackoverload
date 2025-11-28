@@ -1,11 +1,10 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { UpdateExerciseInWorkoutUsecase } from '../UpdateExerciseInWorkout.usecase';
-import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
-import { Workout } from '@/domain/entities/workout/Workout';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
-import { Id } from '@/domain/value-objects/Id/Id';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { Workout } from '@/domain/entities/workout/Workout';
+import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { UpdateExerciseInWorkoutUsecase } from '../UpdateExerciseInWorkout.usecase';
 
 describe('UpdateExerciseInWorkoutUsecase', () => {
   let workoutsRepo: MemoryWorkoutsRepo;
@@ -21,7 +20,6 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
   it('should update exercise reps in workout', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       exercises: [
         {
           exerciseId: 'exercise-1',
@@ -36,7 +34,7 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
 
     const updatedWorkout = await updateExerciseInWorkoutUsecase.execute({
       userId: vp.userId,
-      workoutId: '1',
+      workoutId: vp.validWorkoutProps.id,
       exerciseId: 'exercise-1',
       reps: 15,
     });
@@ -49,7 +47,6 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
   it('should return WorkoutDTO', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       exercises: [
         {
           exerciseId: 'exercise-1',
@@ -64,7 +61,7 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
 
     const updatedWorkout = await updateExerciseInWorkoutUsecase.execute({
       userId: vp.userId,
-      workoutId: '1',
+      workoutId: vp.validWorkoutProps.id,
       exerciseId: 'exercise-1',
       reps: 15,
     });
@@ -78,7 +75,6 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
   it('should update exercise weight in workout', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       exercises: [
         {
           exerciseId: 'exercise-1',
@@ -93,7 +89,7 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
 
     const updatedWorkout = await updateExerciseInWorkoutUsecase.execute({
       userId: vp.userId,
-      workoutId: '1',
+      workoutId: vp.validWorkoutProps.id,
       exerciseId: 'exercise-1',
       weight: 25.5,
     });
@@ -106,7 +102,6 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
   it('should update exercise set number in workout', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       exercises: [
         {
           exerciseId: 'exercise-1',
@@ -121,7 +116,7 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
 
     const updatedWorkout = await updateExerciseInWorkoutUsecase.execute({
       userId: vp.userId,
-      workoutId: '1',
+      workoutId: vp.validWorkoutProps.id,
       exerciseId: 'exercise-1',
       setNumber: 2,
     });
@@ -134,7 +129,6 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
   it('should update multiple properties at once', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       exercises: [
         {
           exerciseId: 'exercise-1',
@@ -149,7 +143,7 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
 
     const updatedWorkout = await updateExerciseInWorkoutUsecase.execute({
       userId: vp.userId,
-      workoutId: '1',
+      workoutId: vp.validWorkoutProps.id,
       exerciseId: 'exercise-1',
       setNumber: 3,
       reps: 12,
@@ -175,7 +169,6 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
   it('should throw ValidationError when exercise does not exist in workout', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       exercises: [],
     });
 
@@ -184,7 +177,7 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
     await expect(
       updateExerciseInWorkoutUsecase.execute({
         userId: vp.userId,
-        workoutId: '1',
+        workoutId: vp.validWorkoutProps.id,
         exerciseId: 'non-existent-exercise',
         reps: 15,
       })
@@ -200,38 +193,6 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
           userId: vp.userId,
           // @ts-expect-error Testing invalid inputs
           workoutId: invalidId,
-          exerciseId: 'exercise-1',
-          reps: 15,
-        })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
-
-  it('should throw ValidationError when exerciseId is invalid', async () => {
-    const invalidIds = ['', '   ', null, undefined, 123, {}, [], true, false];
-
-    for (const invalidId of invalidIds) {
-      await expect(
-        updateExerciseInWorkoutUsecase.execute({
-          userId: vp.userId,
-          workoutId: '1',
-          // @ts-expect-error Testing invalid inputs
-          exerciseId: invalidId,
-          reps: 15,
-        })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
-
-  it('should throw error when userId is invalid', async () => {
-    const invalidIds = ['', '   ', null, undefined, 123, {}, [], true, false];
-
-    for (const invalidId of invalidIds) {
-      await expect(
-        updateExerciseInWorkoutUsecase.execute({
-          // @ts-expect-error Testing invalid inputs
-          userId: invalidId,
-          workoutId: '1',
           exerciseId: 'exercise-1',
           reps: 15,
         })

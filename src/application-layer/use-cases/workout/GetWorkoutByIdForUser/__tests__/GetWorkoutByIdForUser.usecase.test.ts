@@ -1,12 +1,11 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { GetWorkoutByIdForUserUsecase } from '../GetWorkoutByIdForUser.usecase';
-import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
-import { Workout } from '@/domain/entities/workout/Workout';
-import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toWorkoutDTO } from '@/application-layer/dtos/WorkoutDTO';
-import { Id } from '@/domain/value-objects/Id/Id';
+import { ValidationError } from '@/domain/common/errors';
+import { Workout } from '@/domain/entities/workout/Workout';
+import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { GetWorkoutByIdForUserUsecase } from '../GetWorkoutByIdForUser.usecase';
 
 describe('GetWorkoutByIdUsecase', () => {
   let workoutsRepo: MemoryWorkoutsRepo;
@@ -20,14 +19,13 @@ describe('GetWorkoutByIdUsecase', () => {
   it('should return workout when it exists', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       exercises: [],
     });
 
     await workoutsRepo.saveWorkout(workout);
 
     const result = await getWorkoutByIdUsecase.execute({
-      id: '1',
+      id: vp.validWorkoutProps.id,
       userId: vp.userId,
     });
 
@@ -37,7 +35,6 @@ describe('GetWorkoutByIdUsecase', () => {
   it('should return WorkoutDTO', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       name: 'Push Day',
       exercises: [],
     });
@@ -45,7 +42,7 @@ describe('GetWorkoutByIdUsecase', () => {
     await workoutsRepo.saveWorkout(workout);
 
     const result = await getWorkoutByIdUsecase.execute({
-      id: '1',
+      id: vp.validWorkoutProps.id,
       userId: vp.userId,
     });
 

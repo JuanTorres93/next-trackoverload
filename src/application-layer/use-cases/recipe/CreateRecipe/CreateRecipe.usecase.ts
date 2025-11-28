@@ -1,13 +1,12 @@
-import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
-import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
-import { IngredientLinesRepo } from '@/domain/repos/IngredientLinesRepo.port';
-import { ImageManager } from '@/domain/services/ImageManager.port';
-import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { v4 as uuidv4 } from 'uuid';
 import { ValidationError } from '@/domain/common/errors';
+import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { IngredientLinesRepo } from '@/domain/repos/IngredientLinesRepo.port';
+import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
+import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
+import { ImageManager } from '@/domain/services/ImageManager.port';
+import { v4 as uuidv4 } from 'uuid';
 
 export type IngredientLineInfo = {
   ingredientId: string;
@@ -45,7 +44,7 @@ export class CreateRecipeUsecase {
       }
 
       const ingredientLine = IngredientLine.create({
-        id: Id.create(uuidv4()),
+        id: uuidv4(),
         ingredient: ingredient,
         quantityInGrams: info.quantityInGrams,
         createdAt: new Date(),
@@ -71,8 +70,8 @@ export class CreateRecipeUsecase {
     // NOTE: userId, name and ingredientLines validation is performed in the entity
 
     const newRecipe = Recipe.create({
-      id: Id.create(uuidv4()),
-      userId: Id.create(request.userId),
+      id: uuidv4(),
+      userId: request.userId,
       name: request.name,
       ingredientLines: ingredientLines,
       imageUrl: imageMetadata ? imageMetadata.url : undefined,

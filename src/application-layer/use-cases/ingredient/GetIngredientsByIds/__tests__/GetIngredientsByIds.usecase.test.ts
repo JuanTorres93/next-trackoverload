@@ -1,11 +1,10 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { GetIngredientsByIdsUsecase } from '../GetIngredientsByIds.usecase';
-import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { ValidationError } from '@/domain/common/errors';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { GetIngredientsByIdsUsecase } from '../GetIngredientsByIds.usecase';
 
 describe('GetIngredientsByIdsUsecase', () => {
   let ingredientsRepo: MemoryIngredientsRepo;
@@ -21,12 +20,11 @@ describe('GetIngredientsByIdsUsecase', () => {
   it('should return ingredients that exist', async () => {
     const ingredient1 = Ingredient.create({
       ...vp.validIngredientProps,
-      id: Id.create('1'),
       name: 'Chicken Breast',
     });
     const ingredient2 = Ingredient.create({
       ...vp.validIngredientProps,
-      id: Id.create('2'),
+      id: '2',
       name: 'Rice',
     });
 
@@ -35,7 +33,7 @@ describe('GetIngredientsByIdsUsecase', () => {
 
     const ingredients = await getIngredientsByIdsUsecase.execute({
       // NOTE: in the future this will fail, because I'll add UUID validation
-      ids: ['1', '2', 'non-existent'],
+      ids: [vp.validIngredientProps.id, '2', 'non-existent'],
     });
 
     const ingredientIds = ingredients.map((i) => i.id);
@@ -48,12 +46,11 @@ describe('GetIngredientsByIdsUsecase', () => {
   it('should return an array of IngredientDTO', async () => {
     const ingredient1 = Ingredient.create({
       ...vp.validIngredientProps,
-      id: Id.create('1'),
       name: 'Chicken Breast',
     });
     const ingredient2 = Ingredient.create({
       ...vp.validIngredientProps,
-      id: Id.create('2'),
+      id: '2',
       name: 'Rice',
     });
 
@@ -61,7 +58,7 @@ describe('GetIngredientsByIdsUsecase', () => {
     await ingredientsRepo.saveIngredient(ingredient2);
 
     const ingredients = await getIngredientsByIdsUsecase.execute({
-      ids: ['1', '2'],
+      ids: [vp.validIngredientProps.id, '2'],
     });
 
     expect(ingredients).toHaveLength(2);

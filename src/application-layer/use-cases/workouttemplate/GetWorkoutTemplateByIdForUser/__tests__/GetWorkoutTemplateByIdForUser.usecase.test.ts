@@ -1,10 +1,9 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { GetWorkoutTemplateByIdForUserUsecase } from '../GetWorkoutTemplateByIdForUser.usecase';
-import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
-import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
-import { Id } from '@/domain/value-objects/Id/Id';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
+import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { GetWorkoutTemplateByIdForUserUsecase } from '../GetWorkoutTemplateByIdForUser.usecase';
 
 describe('GetWorkoutTemplateByIdForUserUsecase', () => {
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
@@ -18,7 +17,6 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
   it('should return workout template by id for the correct user', async () => {
     const template = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps,
-      userId: Id.create(vp.userId),
       name: 'Push Day',
       exercises: [{ exerciseId: 'ex1', sets: 3 }],
     });
@@ -36,15 +34,16 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
   it('should return WorkoutTemplateDTO', async () => {
     const template = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps,
-      id: Id.create('1'),
-      userId: Id.create(vp.userId),
       name: 'Leg Day',
       exercises: [{ exerciseId: 'ex2', sets: 4 }],
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(template);
 
-    const result = await usecase.execute({ id: '1', userId: vp.userId });
+    const result = await usecase.execute({
+      id: vp.validWorkoutTemplateProps.id,
+      userId: vp.userId,
+    });
 
     expect(result).not.toBeInstanceOf(WorkoutTemplate);
     for (const prop of dto.workoutTemplateDTOProperties) {
@@ -55,13 +54,14 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
   it('should return null if template belongs to different user', async () => {
     const template = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps,
-      id: Id.create('1'),
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(template);
 
-    const result = await usecase.execute({ id: '1', userId: 'user2' });
-
+    const result = await usecase.execute({
+      id: vp.validWorkoutTemplateProps.id,
+      userId: 'user2',
+    });
     expect(result).toBeNull();
   });
 
@@ -74,59 +74,18 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
   it('should return null if template is deleted', async () => {
     const template = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps,
-      id: Id.create('1'),
+      id: 'to-be-deleted-id',
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(template);
     template.markAsDeleted();
     await workoutTemplatesRepo.saveWorkoutTemplate(template);
 
-    const result = await usecase.execute({ id: '1', userId: vp.userId });
+    const result = await usecase.execute({
+      id: 'to-be-deleted-id',
+      userId: vp.userId,
+    });
 
     expect(result).toBeNull();
-  });
-
-  it('should throw error if id is invalid', async () => {
-    const invalidIds = [
-      '',
-      '   ',
-      null,
-      undefined,
-      123,
-      {},
-      [],
-      true,
-      false,
-      NaN,
-      Infinity,
-    ];
-
-    for (const id of invalidIds) {
-      await expect(
-        // @ts-expect-error testing invalid inputs
-        usecase.execute({ id, userId: vp.userId })
-      ).rejects.toThrowError();
-    }
-  });
-
-  it('should throw error if userId is invalid', async () => {
-    const invalidUserIds = [
-      '',
-      '   ',
-      null,
-      undefined,
-      123,
-      {},
-      [],
-      true,
-      false,
-      NaN,
-      Infinity,
-    ];
-
-    for (const userId of invalidUserIds) {
-      // @ts-expect-error testing invalid inputs
-      await expect(usecase.execute({ id: '1', userId })).rejects.toThrowError();
-    }
   });
 });

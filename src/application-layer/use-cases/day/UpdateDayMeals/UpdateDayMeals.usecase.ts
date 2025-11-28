@@ -4,7 +4,6 @@ import { Meal } from '@/domain/entities/meal/Meal';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { validateDate } from '@/domain/common/validation';
 import { Day } from '@/domain/entities/day/Day';
-import { Id } from '@/domain/value-objects/Id/Id';
 
 export type UpdateDayMealsUsecaseRequest = {
   date: Date;
@@ -26,7 +25,7 @@ export class UpdateDayMealsUsecase {
     if (!day) {
       day = Day.create({
         id: request.date,
-        userId: Id.create(request.userId),
+        userId: request.userId,
         meals: [],
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -37,7 +36,7 @@ export class UpdateDayMealsUsecase {
     // Create a new day with updated meals
     const updatedDay = Day.create({
       id: day.id,
-      userId: Id.create(day.userId),
+      userId: day.userId,
       meals: [...request.meals], // Replace all meals
       createdAt: day.createdAt,
       updatedAt: new Date(),

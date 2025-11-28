@@ -1,14 +1,13 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import {
-  GetIngredientsByFuzzyNameUsecase,
-  GetIngredientsByFuzzyNameInput,
-} from '../GetIngredientsByFuzzyName.usecase';
-import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { ValidationError } from '@/domain/common/errors';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import {
+  GetIngredientsByFuzzyNameInput,
+  GetIngredientsByFuzzyNameUsecase,
+} from '../GetIngredientsByFuzzyName.usecase';
 
 describe('GetIngredientsByFuzzyNameUsecase', () => {
   let ingredientsRepo: MemoryIngredientsRepo;
@@ -24,27 +23,27 @@ describe('GetIngredientsByFuzzyNameUsecase', () => {
     const ingredients = [
       Ingredient.create({
         ...vp.validIngredientProps,
-        id: Id.create('1'),
+        id: '1',
         name: 'Chicken Breast',
       }),
       Ingredient.create({
         ...vp.validIngredientProps,
-        id: Id.create('2'),
+        id: '2',
         name: 'Brown Rice',
       }),
       Ingredient.create({
         ...vp.validIngredientProps,
-        id: Id.create('3'),
+        id: '3',
         name: 'Broccoli',
       }),
       Ingredient.create({
         ...vp.validIngredientProps,
-        id: Id.create('4'),
+        id: '4',
         name: 'Salmon',
       }),
       Ingredient.create({
         ...vp.validIngredientProps,
-        id: Id.create('5'),
+        id: '5',
         name: 'Chicken Thigh',
       }),
     ];

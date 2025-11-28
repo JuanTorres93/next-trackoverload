@@ -1,9 +1,8 @@
-import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { Id } from '@/domain/value-objects/Id/Id';
 import {
   FakeMealDTO,
   toFakeMealDTO,
 } from '@/application-layer/dtos/FakeMealDTO';
+import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -20,8 +19,8 @@ export class CreateFakeMealUsecase {
   async execute(request: CreateFakeMealUsecaseRequest): Promise<FakeMealDTO> {
     // NOTE: Validation is done in the entity
     const fakeMeal = FakeMeal.create({
-      id: Id.create(uuidv4()),
-      userId: Id.create(request.userId),
+      id: uuidv4(),
+      userId: request.userId,
       name: request.name,
       calories: request.calories,
       protein: request.protein,

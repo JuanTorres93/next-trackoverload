@@ -1,11 +1,10 @@
-import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
-import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
-import { Workout } from '@/domain/entities/workout/Workout';
 import { WorkoutDTO, toWorkoutDTO } from '@/application-layer/dtos/WorkoutDTO';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { v4 as uuidv4 } from 'uuid';
 import { validateNonEmptyString } from '@/domain/common/validation';
+import { Workout } from '@/domain/entities/workout/Workout';
+import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
+import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
+import { v4 as uuidv4 } from 'uuid';
 
 export type CreateWorkoutFromTemplateUsecaseRequest = {
   userId: string;
@@ -70,12 +69,12 @@ export class CreateWorkoutFromTemplateUsecase {
     }
 
     const newWorkout = Workout.create({
-      id: Id.create(uuidv4()),
-      userId: Id.create(request.userId),
+      id: uuidv4(),
+      userId: request.userId,
       name:
         request.workoutName ??
         `${workoutTemplate.name} - ${new Date().toLocaleDateString()}`,
-      workoutTemplateId: Id.create(request.workoutTemplateId),
+      workoutTemplateId: request.workoutTemplateId,
       exercises: workoutExercises,
       createdAt: new Date(),
       updatedAt: new Date(),

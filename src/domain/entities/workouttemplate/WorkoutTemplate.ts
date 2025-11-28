@@ -15,6 +15,16 @@ type TemplateLineUpdateProps = {
   sets?: number;
 };
 
+export type WorkoutTemplateCreateProps = {
+  id: string;
+  userId: string;
+  name: string;
+  exercises: TemplateLine[];
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt?: Date;
+};
+
 export type WorkoutTemplateProps = {
   id: Id;
   userId: Id;
@@ -34,15 +44,7 @@ export class WorkoutTemplate {
     };
   }
 
-  static create(props: WorkoutTemplateProps): WorkoutTemplate {
-    if (!(props.id instanceof Id))
-      throw new ValidationError('WorkoutTemplate id must be an instance of Id');
-
-    if (!(props.userId instanceof Id))
-      throw new ValidationError(
-        'WorkoutTemplate userId must be an instance of Id'
-      );
-
+  static create(props: WorkoutTemplateCreateProps): WorkoutTemplate {
     validateNonEmptyString(props.name, 'WorkoutTemplate name');
 
     if (!Array.isArray(props.exercises)) {
@@ -65,7 +67,17 @@ export class WorkoutTemplate {
     props.createdAt = handleCreatedAt(props.createdAt);
     props.updatedAt = handleUpdatedAt(props.updatedAt);
 
-    return new WorkoutTemplate(props);
+    const workoutTemplateProps: WorkoutTemplateProps = {
+      id: Id.create(props.id),
+      userId: Id.create(props.userId),
+      name: props.name,
+      exercises: props.exercises.map((exercise) => ({ ...exercise })),
+      createdAt: props.createdAt,
+      updatedAt: props.updatedAt,
+      deletedAt: props.deletedAt,
+    };
+
+    return new WorkoutTemplate(workoutTemplateProps);
   }
 
   addExercise({ exerciseId, sets }: TemplateLine) {

@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { DeleteExerciseUsecase } from '../DeleteExercise.usecase';
 import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
-import { Id } from '@/domain/value-objects/Id/Id';
 import { NotFoundError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 
@@ -18,7 +17,7 @@ describe('DeleteExerciseUsecase', () => {
   it('should delete existing exercise', async () => {
     const exercise = Exercise.create({
       ...vp.validExerciseProps,
-      id: Id.create('1'),
+      id: '1',
       name: 'Push Up',
     });
 

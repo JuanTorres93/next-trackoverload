@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { FakeMeal, FakeMealProps } from '../FakeMeal';
-import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import { ValidationError } from '@/domain/common/errors';
+import { FakeMeal, FakeMealCreateProps } from '../FakeMeal';
 
 describe('FakeMeal', () => {
   let fakeMeal: FakeMeal;
-  let validFakeMealProps: FakeMealProps;
+  let validFakeMealProps: FakeMealCreateProps;
 
   beforeEach(() => {
     validFakeMealProps = {
@@ -99,7 +99,7 @@ describe('FakeMeal', () => {
       FakeMeal.create({
         ...validFakeMealProps,
         // @ts-expect-error testing invalid type
-        id: 'not-an-id-instance',
+        id: 123,
       })
     ).toThrowError(ValidationError);
 
@@ -107,9 +107,9 @@ describe('FakeMeal', () => {
       FakeMeal.create({
         ...validFakeMealProps,
         // @ts-expect-error testing invalid type
-        id: 'not-an-id-instance',
+        id: 123,
       })
-    ).toThrowError(/Id/);
+    ).toThrowError(/Id.*string/);
   });
 
   it('should throw ValidationError if userId is not instance of Id', async () => {
@@ -117,7 +117,7 @@ describe('FakeMeal', () => {
       FakeMeal.create({
         ...validFakeMealProps,
         // @ts-expect-error testing invalid type
-        userId: 'not-an-id-instance',
+        userId: 123,
       })
     ).toThrowError(ValidationError);
 
@@ -125,8 +125,8 @@ describe('FakeMeal', () => {
       FakeMeal.create({
         ...validFakeMealProps,
         // @ts-expect-error testing invalid type
-        userId: 'not-an-id-instance',
+        userId: 123,
       })
-    ).toThrowError(/of Id/);
+    ).toThrowError(/Id.*string/);
   });
 });

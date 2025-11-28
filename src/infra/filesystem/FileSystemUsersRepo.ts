@@ -1,7 +1,6 @@
-import { UsersRepo } from '@/domain/repos/UsersRepo.port';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { User } from '@/domain/entities/user/User';
 import { UserDTO, toUserDTO } from '@/application-layer/dtos/UserDTO';
+import { User } from '@/domain/entities/user/User';
+import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { BaseFileSystemRepo } from './BaseFileSystemRepo';
 
 export class FileSystemUsersRepo
@@ -24,8 +23,6 @@ export class FileSystemUsersRepo
     return (data as UserDTO[]).map((item) =>
       User.create({
         ...item,
-        id: Id.create(item.id),
-        customerId: item.customerId ? Id.create(item.customerId) : undefined,
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),
       })

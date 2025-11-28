@@ -1,12 +1,11 @@
-import { IngredientLinesRepo } from '@/domain/repos/IngredientLinesRepo.port';
-import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-import { Id } from '@/domain/value-objects/Id/Id';
 import {
   IngredientLineDTO,
   toIngredientLineDTO,
 } from '@/application-layer/dtos/IngredientLineDTO';
 import { NotFoundError } from '@/domain/common/errors';
+import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { IngredientLinesRepo } from '@/domain/repos/IngredientLinesRepo.port';
+import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { v4 as uuidv4 } from 'uuid';
 
 export type CreateIngredientLineUsecaseRequest = {
@@ -36,7 +35,7 @@ export class CreateIngredientLineUsecase {
 
     // Validation is done in the entity constructor
     const newIngredientLine = IngredientLine.create({
-      id: Id.create(uuidv4()),
+      id: uuidv4(),
       ingredient,
       quantityInGrams: request.quantityInGrams,
       createdAt: new Date(),

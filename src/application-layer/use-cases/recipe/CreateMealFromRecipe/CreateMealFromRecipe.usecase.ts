@@ -1,10 +1,9 @@
-import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
-import { MealsRepo } from '@/domain/repos/MealsRepo.port';
-import { Meal } from '@/domain/entities/meal/Meal';
 import { MealDTO, toMealDTO } from '@/application-layer/dtos/MealDTO';
-import { validateNonEmptyString } from '@/domain/common/validation';
-import { Id } from '@/domain/value-objects/Id/Id';
 import { NotFoundError } from '@/domain/common/errors';
+import { validateNonEmptyString } from '@/domain/common/validation';
+import { Meal } from '@/domain/entities/meal/Meal';
+import { MealsRepo } from '@/domain/repos/MealsRepo.port';
+import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { v4 as uuidv4 } from 'uuid';
 
 export type CreateMealFromRecipeUsecaseRequest = {
@@ -45,8 +44,8 @@ export class CreateMealFromRecipeUsecase {
     const mealName = request.mealName || recipe.name;
 
     const newMeal = Meal.create({
-      id: Id.create(uuidv4()),
-      userId: Id.create(request.userId),
+      id: uuidv4(),
+      userId: request.userId,
       name: mealName,
       ingredientLines: recipe.ingredientLines,
       createdAt: new Date(),

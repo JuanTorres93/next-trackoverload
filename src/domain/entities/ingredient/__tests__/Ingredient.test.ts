@@ -79,7 +79,7 @@ describe('Ingredient', () => {
       Ingredient.create({
         ...vp.validIngredientProps,
         // @ts-expect-error testing invalid type
-        id: 'no-Id-type',
+        id: 123,
       });
     }).toThrowError(ValidationError);
 
@@ -87,8 +87,8 @@ describe('Ingredient', () => {
       Ingredient.create({
         ...vp.validIngredientProps,
         // @ts-expect-error testing invalid type
-        id: 'no-Id-type',
+        id: 123,
       });
-    }).toThrowError(/Id/);
+    }).toThrowError(/Id.*string/);
   });
 });

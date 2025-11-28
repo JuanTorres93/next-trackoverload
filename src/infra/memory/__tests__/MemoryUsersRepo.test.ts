@@ -1,13 +1,10 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { MemoryUsersRepo } from '../MemoryUsersRepo';
-import { User } from '@/domain/entities/user/User';
 import * as vp from '@/../tests/createProps';
+import { User } from '@/domain/entities/user/User';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { MemoryUsersRepo } from '../MemoryUsersRepo';
 
 const validUserProps = {
   ...vp.validUserProps,
-  id: Id.create('1'),
-  name: 'John Doe',
 };
 
 describe('MemoryUsersRepo', () => {
@@ -23,22 +20,22 @@ describe('MemoryUsersRepo', () => {
   it('should retrieve all users', async () => {
     const newUser = User.create({
       ...vp.validUserProps,
-      id: Id.create('2'),
+      id: 'another-user-id',
       name: 'Jane Doe',
-      customerId: Id.create('customer-2'),
+      customerId: 'another-customer-id',
     });
     await repo.saveUser(newUser);
 
     const allUsers = await repo.getAllUsers();
     expect(allUsers.length).toBe(2);
-    expect(allUsers[0].name).toBe('John Doe');
+    expect(allUsers[0].name).toBe(vp.validUserProps.name);
     expect(allUsers[1].name).toBe('Jane Doe');
   });
 
   it('should retrieve a user by ID', async () => {
-    const fetchedUser = await repo.getUserById('1');
+    const fetchedUser = await repo.getUserById(vp.validUserProps.id);
     expect(fetchedUser).not.toBeNull();
-    expect(fetchedUser?.name).toBe('John Doe');
+    expect(fetchedUser?.name).toBe(vp.validUserProps.name);
   });
 
   it('should return null for non-existent user ID', async () => {
@@ -50,8 +47,7 @@ describe('MemoryUsersRepo', () => {
     const allUsers = await repo.getAllUsers();
     expect(allUsers.length).toBe(1);
 
-    await repo.deleteUser('1');
-
+    await repo.deleteUser(vp.validUserProps.id);
     const allUsersAfterDeletion = await repo.getAllUsers();
     expect(allUsersAfterDeletion.length).toBe(0);
   });

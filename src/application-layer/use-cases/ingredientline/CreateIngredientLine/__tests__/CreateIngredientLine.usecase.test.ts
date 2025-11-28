@@ -1,11 +1,10 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { CreateIngredientLineUsecase } from '../CreateIngredientLine.usecase';
+import * as vp from '@/../tests/createProps';
+import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { MemoryIngredientLinesRepo } from '@/infra/memory/MemoryIngredientLinesRepo';
 import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
-import { Id } from '@/domain/value-objects/Id/Id';
-import * as vp from '@/../tests/createProps';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { CreateIngredientLineUsecase } from '../CreateIngredientLine.usecase';
 
 describe('CreateIngredientLineUsecase', () => {
   let ingredientLinesRepo: MemoryIngredientLinesRepo;
@@ -143,13 +142,12 @@ describe('CreateIngredientLineUsecase', () => {
   it('should create ingredient line with different ingredients', async () => {
     const ingredient1 = Ingredient.create({
       ...vp.validIngredientProps,
-      id: Id.create('ing1'),
       name: 'Chicken',
     });
 
     const ingredient2 = Ingredient.create({
       ...vp.validIngredientProps,
-      id: Id.create('ing2'),
+      id: 'ing2',
       name: 'Rice',
       nutritionalInfoPer100g: {
         calories: 130,

@@ -5,7 +5,6 @@ import {
   toExerciseDTO,
 } from '@/application-layer/dtos/ExerciseDTO';
 import { BaseFileSystemRepo } from './BaseFileSystemRepo';
-import { Id } from '@/domain/value-objects/Id/Id';
 
 export class FileSystemExercisesRepo
   extends BaseFileSystemRepo<Exercise>
@@ -27,7 +26,6 @@ export class FileSystemExercisesRepo
     return (data as ExerciseDTO[]).map((item) =>
       Exercise.create({
         ...item,
-        id: Id.create(item.id),
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),
       })

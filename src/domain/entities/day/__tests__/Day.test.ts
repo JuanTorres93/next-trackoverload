@@ -1,14 +1,13 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
+import { ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { FakeMeal } from '../../fakemeal/FakeMeal';
 import { Meal } from '../../meal/Meal';
 import { Day } from '../Day';
-import { ValidationError } from '@/domain/common/errors';
 
 import * as vp from '@/../tests/createProps';
-import { Id } from '@/domain/value-objects/Id/Id';
 
 describe('Day', () => {
   let day: Day;
@@ -79,7 +78,7 @@ describe('Day', () => {
 
     const newMeal = Meal.create({
       ...vp.mealPropsNoIngredientLines,
-      id: Id.create('meal2'),
+      id: 'meal2',
       name: 'Another Meal',
       ingredientLines: [ingredientLine],
     });
@@ -128,7 +127,7 @@ describe('Day', () => {
       Day.create({
         ...vp.validDayProps,
         // @ts-expect-error Testing invalid input
-        userId: 'invalid-user-id',
+        userId: 123,
       })
     ).toThrow(ValidationError);
 
@@ -136,8 +135,8 @@ describe('Day', () => {
       Day.create({
         ...vp.validDayProps,
         // @ts-expect-error Testing invalid input
-        userId: 'invalid-user-id',
+        userId: 123,
       })
-    ).toThrow(/of Id/);
+    ).toThrow(/Id.*string/);
   });
 });

@@ -6,7 +6,16 @@ import {
 import { Protein } from '../../interfaces/Protein';
 import { Calories } from '../../interfaces/Calories';
 import { Id } from '@/domain/value-objects/Id/Id';
-import { ValidationError } from '@/domain/common/errors';
+
+export type FakeMealCreateProps = {
+  id: string;
+  userId: string;
+  name: string;
+  calories: number;
+  protein: number;
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 export type FakeUpdateProps = {
   name?: string;
@@ -27,13 +36,7 @@ export type FakeMealProps = {
 export class FakeMeal implements Protein, Calories {
   private constructor(private readonly props: FakeMealProps) {}
 
-  static create(props: FakeMealProps): FakeMeal {
-    if (!(props.id instanceof Id))
-      throw new ValidationError('FakeMeal: id must be an instance of Id');
-
-    if (!(props.userId instanceof Id))
-      throw new ValidationError('FakeMeal: userId must be an instance of Id');
-
+  static create(props: FakeMealCreateProps): FakeMeal {
     validateNonEmptyString(props.name, 'FakeMeal name');
     validateGreaterThanZero(props.calories, 'FakeMeal calories');
     validateGreaterThanZero(props.protein, 'FakeMeal protein');
@@ -41,7 +44,17 @@ export class FakeMeal implements Protein, Calories {
     props.createdAt = handleCreatedAt(props.createdAt);
     props.updatedAt = handleUpdatedAt(props.updatedAt);
 
-    return new FakeMeal(props);
+    const fakeMealProps: FakeMealProps = {
+      id: Id.create(props.id),
+      userId: Id.create(props.userId),
+      name: props.name,
+      calories: props.calories,
+      protein: props.protein,
+      createdAt: props.createdAt,
+      updatedAt: props.updatedAt,
+    };
+
+    return new FakeMeal(fakeMealProps);
   }
 
   update(patch: FakeUpdateProps) {

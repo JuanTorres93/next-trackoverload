@@ -21,7 +21,7 @@ export class CreateIngredientUsecase {
   ): Promise<IngredientDTO> {
     // Validation is done in the entity constructor
     const newIngredient = Ingredient.create({
-      id: Id.create(uuidv4()),
+      id: uuidv4(),
       name: request.name,
       nutritionalInfoPer100g: {
         calories: Number(request.calories),

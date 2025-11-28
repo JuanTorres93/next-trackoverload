@@ -1,11 +1,10 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { GetIngredientByIdUsecase } from '../GetIngredientById.usecase';
-import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { ValidationError } from '@/domain/common/errors';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { GetIngredientByIdUsecase } from '../GetIngredientById.usecase';
 
 describe('GetIngredientByIdUsecase', () => {
   let ingredientsRepo: MemoryIngredientsRepo;
@@ -19,13 +18,14 @@ describe('GetIngredientByIdUsecase', () => {
   it('should return ingredient when found', async () => {
     const ingredient = Ingredient.create({
       ...vp.validIngredientProps,
-      id: Id.create('1'),
       name: 'Chicken Breast',
     });
 
     await ingredientsRepo.saveIngredient(ingredient);
 
-    const result = await getIngredientByIdUsecase.execute({ id: '1' });
+    const result = await getIngredientByIdUsecase.execute({
+      id: vp.validIngredientProps.id,
+    });
 
     expect(result).not.toBeNull();
     expect(result?.id).toBe(ingredient.id);
@@ -35,13 +35,14 @@ describe('GetIngredientByIdUsecase', () => {
   it('should return IngredientDTO when ingredient found', async () => {
     const ingredient = Ingredient.create({
       ...vp.validIngredientProps,
-      id: Id.create('1'),
       name: 'Chicken Breast',
     });
 
     await ingredientsRepo.saveIngredient(ingredient);
 
-    const result = await getIngredientByIdUsecase.execute({ id: '1' });
+    const result = await getIngredientByIdUsecase.execute({
+      id: vp.validIngredientProps.id,
+    });
 
     expect(result).not.toBeNull();
     expect(result).not.toBeInstanceOf(Ingredient);

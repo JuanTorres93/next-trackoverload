@@ -1,9 +1,8 @@
-import { MealsRepo } from '@/domain/repos/MealsRepo.port';
-import { Meal, MealUpdateProps } from '@/domain/entities/meal/Meal';
 import { MealDTO, toMealDTO } from '@/application-layer/dtos/MealDTO';
 import { NotFoundError } from '@/domain/common/errors';
-import { Id } from '@/domain/value-objects/Id/Id';
 import { validateNonEmptyString } from '@/domain/common/validation';
+import { Meal, MealUpdateProps } from '@/domain/entities/meal/Meal';
+import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 
 export type UpdateMealUsecaseRequest = {
   id: string;
@@ -35,8 +34,8 @@ export class UpdateMealUsecase {
     if (Object.keys(patch).length > 0) {
       // Create a new meal with the same properties
       const updatedMeal = Meal.create({
-        id: Id.create(existingMeal.id),
-        userId: Id.create(existingMeal.userId),
+        id: existingMeal.id,
+        userId: existingMeal.userId,
         name: existingMeal.name,
         ingredientLines: existingMeal.ingredientLines,
         createdAt: existingMeal.createdAt,

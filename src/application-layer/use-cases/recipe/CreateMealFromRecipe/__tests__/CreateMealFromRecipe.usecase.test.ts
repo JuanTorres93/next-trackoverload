@@ -1,17 +1,16 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { toIngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
+import { toMealDTO } from '@/application-layer/dtos/MealDTO';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { Id } from '@/domain/value-objects/Id/Id';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { Meal } from '@/domain/entities/meal/Meal';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { CreateMealFromRecipeUsecase } from '../CreateMealFromRecipe.usecase';
-import { Meal } from '@/domain/entities/meal/Meal';
-import { toIngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
-import { toMealDTO } from '@/application-layer/dtos/MealDTO';
 
 describe('CreateMealFromRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
@@ -126,13 +125,12 @@ describe('CreateMealFromRecipeUsecase', () => {
   it('should preserve all ingredient lines from recipe', async () => {
     const secondIngredient = Ingredient.create({
       ...vp.validIngredientProps,
-      id: Id.create('ing2'),
+      id: 'ing2',
       name: 'Rice',
     });
 
     const secondIngredientLine = IngredientLine.create({
       ...vp.ingredientLinePropsNoIngredient,
-      id: Id.create('line2'),
       ingredient: secondIngredient,
     });
 

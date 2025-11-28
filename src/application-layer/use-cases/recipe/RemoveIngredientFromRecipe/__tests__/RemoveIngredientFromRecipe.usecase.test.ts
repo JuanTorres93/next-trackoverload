@@ -4,7 +4,6 @@ import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { Id } from '@/domain/value-objects/Id/Id';
 import { RemoveIngredientFromRecipeUsecase } from '../RemoveIngredientFromRecipe.usecase';
 
 import * as vp from '@/../tests/createProps';
@@ -34,7 +33,7 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
 
     secondIngredient = Ingredient.create({
       ...vp.validIngredientProps,
-      id: Id.create('ingredient-2'),
+      id: 'ingredient-2',
     });
 
     const firstIngredientLine = IngredientLine.create({
@@ -44,7 +43,7 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
 
     const secondIngredientLine = IngredientLine.create({
       ...vp.ingredientLinePropsNoIngredient,
-      id: Id.create('ingredient-line-2'),
+      id: 'ingredient-line-2',
       ingredient: secondIngredient,
     });
 

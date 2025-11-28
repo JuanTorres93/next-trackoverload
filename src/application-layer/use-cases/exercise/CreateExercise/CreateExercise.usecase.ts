@@ -1,6 +1,5 @@
 import { ExercisesRepo } from '@/domain/repos/ExercisesRepo.port';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
-import { Id } from '@/domain/value-objects/Id/Id';
 import {
   ExerciseDTO,
   toExerciseDTO,
@@ -16,7 +15,7 @@ export class CreateExerciseUsecase {
 
   async execute(request: CreateExerciseUsecaseRequest): Promise<ExerciseDTO> {
     const newExercise = Exercise.create({
-      id: Id.create(uuidv4()),
+      id: uuidv4(),
       name: request.name,
       createdAt: new Date(),
       updatedAt: new Date(),

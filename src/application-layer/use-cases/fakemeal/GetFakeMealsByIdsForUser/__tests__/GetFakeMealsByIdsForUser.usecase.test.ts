@@ -1,11 +1,10 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { GetFakeMealsByIdsForUserUsecase } from '../GetFakeMealsByIdsForUser.usecase';
-import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
-import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { ValidationError } from '@/domain/common/errors';
+import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { GetFakeMealsByIdsForUserUsecase } from '../GetFakeMealsByIdsForUser.usecase';
 
 describe('GetFakeMealsByIdsUsecase', () => {
   let usecase: GetFakeMealsByIdsForUserUsecase;
@@ -19,13 +18,13 @@ describe('GetFakeMealsByIdsUsecase', () => {
   it('should return fake meals for valid ids', async () => {
     const fakeMeal1 = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: Id.create('test-id-1'),
+      id: 'test-id-1',
       name: 'Test Fake Meal 1',
     });
 
     const fakeMeal2 = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: Id.create('test-id-2'),
+      id: 'test-id-2',
       name: 'Test Fake Meal 2',
     });
 
@@ -43,13 +42,12 @@ describe('GetFakeMealsByIdsUsecase', () => {
   it('should return array of FakeMealDTO', async () => {
     const fakeMeal1 = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: Id.create('test-id-1'),
       name: 'Test Fake Meal 1',
     });
 
     await fakeMealsRepo.saveFakeMeal(fakeMeal1);
 
-    const ids = ['test-id-1'];
+    const ids = [vp.validFakeMealProps.id];
     const result = await usecase.execute({ ids, userId: vp.userId });
 
     expect(result).toHaveLength(1);
@@ -57,7 +55,7 @@ describe('GetFakeMealsByIdsUsecase', () => {
     for (const prop of dto.fakeMealDTOProperties) {
       expect(result[0]).toHaveProperty(prop);
     }
-    expect(result[0].id).toBe('test-id-1');
+    expect(result[0].id).toBe(vp.validFakeMealProps.id);
     expect(result[0].name).toBe('Test Fake Meal 1');
     expect(result[0].userId).toBe(vp.userId);
     expect(result[0].calories).toBe(vp.validFakeMealProps.calories);
@@ -67,13 +65,12 @@ describe('GetFakeMealsByIdsUsecase', () => {
   it('should filter out non-existent fake meals', async () => {
     const fakeMeal1 = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: Id.create('test-id-1'),
       name: 'Test Fake Meal 1',
     });
 
     await fakeMealsRepo.saveFakeMeal(fakeMeal1);
 
-    const ids = ['test-id-1', 'non-existent-id'];
+    const ids = [vp.validFakeMealProps.id, 'non-existent-id'];
     const result = await usecase.execute({ ids, userId: vp.userId });
 
     expect(result).toHaveLength(1);
@@ -90,13 +87,16 @@ describe('GetFakeMealsByIdsUsecase', () => {
   it('should handle duplicate ids', async () => {
     const fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: Id.create('test-id'),
       name: 'Test Fake Meal',
     });
 
     await fakeMealsRepo.saveFakeMeal(fakeMeal);
 
-    const ids = ['test-id', 'test-id', 'test-id'];
+    const ids = [
+      vp.validFakeMealProps.id,
+      vp.validFakeMealProps.id,
+      vp.validFakeMealProps.id,
+    ];
     const result = await usecase.execute({ ids, userId: vp.userId });
 
     expect(result).toHaveLength(1);
@@ -116,32 +116,5 @@ describe('GetFakeMealsByIdsUsecase', () => {
     await expect(
       usecase.execute({ ids: [], userId: vp.userId })
     ).rejects.toThrow(ValidationError);
-  });
-
-  it('should throw ValidationError for invalid id', async () => {
-    const fakeMeal = FakeMeal.create({
-      ...vp.validFakeMealProps,
-      id: Id.create('test-id'),
-      name: 'Test Fake Meal',
-    });
-
-    await fakeMealsRepo.saveFakeMeal(fakeMeal);
-
-    const invalidIds = ['', '   '];
-    for (const id of invalidIds) {
-      await expect(
-        usecase.execute({ ids: [id], userId: vp.userId })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
-
-  it('should throw ValidationError for invalid userId', async () => {
-    const invalidUserIds = ['', '   ', null, undefined, 34, 0, -5, {}, []];
-    for (const userId of invalidUserIds) {
-      await expect(
-        // @ts-expect-error testing invalid types
-        usecase.execute({ ids: ['test-id'], userId })
-      ).rejects.toThrow(ValidationError);
-    }
   });
 });

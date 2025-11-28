@@ -4,17 +4,16 @@ import { toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { MemoryImageManager } from '@/infra';
+import { MemoryIngredientLinesRepo } from '@/infra/memory/MemoryIngredientLinesRepo';
 import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
-import { MemoryIngredientLinesRepo } from '@/infra/memory/MemoryIngredientLinesRepo';
-import { MemoryImageManager } from '@/infra';
-import { Id } from '@/domain/value-objects/Id/Id';
 import { beforeEach, describe, expect, it } from 'vitest';
+import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
 import {
   CreateRecipeUsecase,
   IngredientLineInfo,
 } from '../CreateRecipe.usecase';
-import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
 
 describe('CreateRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
@@ -188,7 +187,7 @@ describe('CreateRecipeUsecase', () => {
     // Create a second test ingredient
     const testIngredient2 = Ingredient.create({
       ...vp.validIngredientProps,
-      id: Id.create('ingredient-2'),
+      id: 'ingredient-2',
       name: 'Rice',
       nutritionalInfoPer100g: {
         calories: 130,

@@ -1,3 +1,4 @@
+import { MealDTO, toMealDTO } from '@/application-layer/dtos/MealDTO';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import {
   validateGreaterThanZero,
@@ -5,8 +6,6 @@ import {
 } from '@/domain/common/validation';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { Meal } from '@/domain/entities/meal/Meal';
-import { MealDTO, toMealDTO } from '@/application-layer/dtos/MealDTO';
-import { Id } from '@/domain/value-objects/Id/Id';
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 
@@ -103,8 +102,8 @@ export class UpdateIngredientInMealUsecase {
 
     // Create updated meal with updated ingredient line
     const updatedMeal = Meal.create({
-      id: Id.create(existingMeal.id),
-      userId: Id.create(existingMeal.userId),
+      id: existingMeal.id,
+      userId: existingMeal.userId,
       name: existingMeal.name,
       ingredientLines: existingMeal.ingredientLines.map((line) => {
         if (line.id === request.ingredientLineId) {

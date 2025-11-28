@@ -1,13 +1,12 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { UpdateMealUsecase } from '../UpdateMeal.usecase';
-import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
-import { Meal } from '@/domain/entities/meal/Meal';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { Meal } from '@/domain/entities/meal/Meal';
+import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { UpdateMealUsecase } from '../UpdateMeal.usecase';
 
 describe('UpdateMealUsecase', () => {
   let mealsRepo: MemoryMealsRepo;
@@ -36,13 +35,13 @@ describe('UpdateMealUsecase', () => {
     await mealsRepo.saveMeal(meal);
 
     const updatedMeal = await updateMealUsecase.execute({
-      id: vp.mealPropsNoIngredientLines.id.value,
+      id: vp.mealPropsNoIngredientLines.id,
       userId: vp.userId,
       name: 'High Protein Meal',
     });
 
     expect(updatedMeal.name).toBe('High Protein Meal');
-    expect(updatedMeal.id).toBe(vp.mealPropsNoIngredientLines.id.value);
+    expect(updatedMeal.id).toBe(vp.mealPropsNoIngredientLines.id);
     expect(updatedMeal.ingredientLines).toHaveLength(1);
     expect(updatedMeal.createdAt).toBe(meal.createdAt.toISOString());
     expect(updatedMeal.updatedAt).not.toBe(meal.updatedAt.toISOString());
@@ -66,7 +65,7 @@ describe('UpdateMealUsecase', () => {
     await mealsRepo.saveMeal(meal);
 
     const result = await updateMealUsecase.execute({
-      id: vp.mealPropsNoIngredientLines.id.value,
+      id: vp.mealPropsNoIngredientLines.id,
       userId: vp.userId,
     });
 
@@ -77,12 +76,10 @@ describe('UpdateMealUsecase', () => {
   it('should return MealDTO', async () => {
     const ingredient = Ingredient.create({
       ...vp.validIngredientProps,
-      id: Id.create('ing1'),
     });
 
     const ingredientLine = IngredientLine.create({
       ...vp.ingredientLinePropsNoIngredient,
-      id: Id.create('line1'),
       ingredient,
     });
 
@@ -94,7 +91,7 @@ describe('UpdateMealUsecase', () => {
     await mealsRepo.saveMeal(meal);
 
     const result = await updateMealUsecase.execute({
-      id: vp.mealPropsNoIngredientLines.id.value,
+      id: vp.mealPropsNoIngredientLines.id,
       userId: vp.userId,
       name: 'Updated Meal Name',
     });
@@ -149,7 +146,7 @@ describe('UpdateMealUsecase', () => {
     for (const invalidName of invalidNames) {
       await expect(
         updateMealUsecase.execute({
-          id: vp.mealPropsNoIngredientLines.id.value,
+          id: vp.mealPropsNoIngredientLines.id,
           // @ts-expect-error Testing invalid inputs
           name: invalidName,
         })

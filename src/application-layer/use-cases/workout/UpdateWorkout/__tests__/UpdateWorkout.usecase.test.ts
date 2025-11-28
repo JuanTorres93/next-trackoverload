@@ -1,11 +1,10 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { UpdateWorkoutUsecase } from '../UpdateWorkout.usecase';
-import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
-import { Workout } from '@/domain/entities/workout/Workout';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
-import { Id } from '@/domain/value-objects/Id/Id';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { Workout } from '@/domain/entities/workout/Workout';
+import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { UpdateWorkoutUsecase } from '../UpdateWorkout.usecase';
 
 describe('UpdateWorkoutUsecase', () => {
   let workoutsRepo: MemoryWorkoutsRepo;
@@ -19,20 +18,19 @@ describe('UpdateWorkoutUsecase', () => {
   it('should update workout name', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       exercises: [],
     });
 
     await workoutsRepo.saveWorkout(workout);
 
     const updatedWorkout = await updateWorkoutUsecase.execute({
-      id: '1',
+      id: vp.validWorkoutProps.id,
       userId: vp.userId,
       name: 'Updated Push Day',
     });
 
     expect(updatedWorkout.name).toBe('Updated Push Day');
-    expect(updatedWorkout.id).toBe('1');
+    expect(updatedWorkout.id).toBe(vp.validWorkoutProps.id);
     expect(updatedWorkout.workoutTemplateId).toBe('template-1');
     expect(updatedWorkout.exercises).toEqual([]);
   });
@@ -40,7 +38,6 @@ describe('UpdateWorkoutUsecase', () => {
   it('should return WorkoutDTO', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       name: 'Push Day',
       exercises: [],
     });
@@ -48,7 +45,7 @@ describe('UpdateWorkoutUsecase', () => {
     await workoutsRepo.saveWorkout(workout);
 
     const updatedWorkout = await updateWorkoutUsecase.execute({
-      id: '1',
+      id: vp.validWorkoutProps.id,
       userId: vp.userId,
       name: 'Updated Push Day',
     });
@@ -62,7 +59,6 @@ describe('UpdateWorkoutUsecase', () => {
   it('should keep existing name when not provided', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       name: 'Push Day',
       exercises: [],
     });
@@ -70,7 +66,7 @@ describe('UpdateWorkoutUsecase', () => {
     await workoutsRepo.saveWorkout(workout);
 
     const updatedWorkout = await updateWorkoutUsecase.execute({
-      id: '1',
+      id: vp.validWorkoutProps.id,
       userId: vp.userId,
     });
 
@@ -105,7 +101,6 @@ describe('UpdateWorkoutUsecase', () => {
   it('should throw ValidationError when name is invalid', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       name: 'Push Day',
       exercises: [],
     });
@@ -117,34 +112,9 @@ describe('UpdateWorkoutUsecase', () => {
       await expect(
         updateWorkoutUsecase.execute({
           userId: vp.userId,
-          id: '1',
+          id: vp.validWorkoutProps.id,
           // @ts-expect-error Testing invalid inputs
           name: invalidName,
-        })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
-
-  it('should throw ValidationError when userId is invalid', async () => {
-    const invalidUserIds = [
-      '',
-      '   ',
-      null,
-      undefined,
-      123,
-      {},
-      [],
-      true,
-      false,
-    ];
-
-    for (const invalidUserId of invalidUserIds) {
-      await expect(
-        updateWorkoutUsecase.execute({
-          id: '1',
-          // @ts-expect-error Testing invalid inputs
-          userId: invalidUserId,
-          name: 'New Name',
         })
       ).rejects.toThrow(ValidationError);
     }

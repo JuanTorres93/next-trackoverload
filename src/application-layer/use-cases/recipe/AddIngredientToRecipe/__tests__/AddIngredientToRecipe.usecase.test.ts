@@ -3,10 +3,9 @@ import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-import { Id } from '@/domain/value-objects/Id/Id';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
-import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { MemoryIngredientLinesRepo } from '@/infra/memory/MemoryIngredientLinesRepo';
+import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { AddIngredientToRecipeUsecase } from '../AddIngredientToRecipe.usecase';
 
@@ -28,7 +27,6 @@ describe('AddIngredientToRecipeUsecase', () => {
 
     const testIngredient = Ingredient.create({
       ...vp.validIngredientProps,
-      id: Id.create('existing-ingredient-id'),
     });
 
     const testIngredientLine = IngredientLine.create({
@@ -43,7 +41,7 @@ describe('AddIngredientToRecipeUsecase', () => {
 
     newIngredient = Ingredient.create({
       ...vp.validIngredientProps,
-      id: Id.create('new-ingredient-id'),
+      id: 'new-ingredient-id',
     });
 
     newIngredientLine = IngredientLine.create({
@@ -109,7 +107,7 @@ describe('AddIngredientToRecipeUsecase', () => {
     await recipesRepo.saveRecipe(testRecipe);
     const notInRepoIngredientLine = IngredientLine.create({
       ...vp.ingredientLinePropsNoIngredient,
-      id: Id.create('non-existent-ingredient-line-id'),
+      id: 'non-existent-ingredient-line-id',
       ingredient: newIngredient,
     });
 

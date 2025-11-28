@@ -1,16 +1,15 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { Meal, MealProps } from '../Meal';
+import * as vp from '@/../tests/createProps';
 import { ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-import { Id } from '@/domain/value-objects/Id/Id';
-import * as vp from '@/../tests/createProps';
+import { Meal, MealCreateProps } from '../Meal';
 
 describe('Meal', () => {
   let meal: Meal;
   let validIngredient: Ingredient;
-  let validMealProps: MealProps;
+  let validMealProps: MealCreateProps;
   let validIngredientLine: IngredientLine;
 
   beforeEach(() => {
@@ -42,7 +41,7 @@ describe('Meal', () => {
       ...vp.ingredientLinePropsNoIngredient,
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,
-        id: Id.create('2'),
+        id: 'other-ing',
         nutritionalInfoPer100g: {
           calories: 200,
           protein: 20,
@@ -66,10 +65,10 @@ describe('Meal', () => {
     // More than one ingredient line
     const anotherIngredientLine = IngredientLine.create({
       ...vp.ingredientLinePropsNoIngredient,
-      id: Id.create('2'),
+      id: 'another-line-id',
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,
-        id: Id.create('2'),
+        id: 'other-ing',
         nutritionalInfoPer100g: {
           calories: 200,
           protein: 20,
@@ -88,10 +87,10 @@ describe('Meal', () => {
   it('should add a new ingredient line', async () => {
     const newIngredientLine = IngredientLine.create({
       ...vp.ingredientLinePropsNoIngredient,
-      id: Id.create('2'),
+      id: 'new-line',
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,
-        id: Id.create('2'),
+        id: 'other-ing',
       }),
     });
 
@@ -145,7 +144,7 @@ describe('Meal', () => {
       Meal.create({
         ...validMealProps,
         // @ts-expect-error Testing invalid inputs
-        id: 'not-an-Id',
+        id: 123,
       })
     ).toThrow(ValidationError);
 
@@ -153,9 +152,9 @@ describe('Meal', () => {
       Meal.create({
         ...validMealProps,
         // @ts-expect-error Testing invalid inputs
-        id: 'not-an-Id',
+        id: 123,
       })
-    ).toThrow(/Id/);
+    ).toThrow(/Id.*string/);
   });
 
   it('should throw error if userId is not instance of Id', async () => {
@@ -163,7 +162,7 @@ describe('Meal', () => {
       Meal.create({
         ...validMealProps,
         // @ts-expect-error Testing invalid inputs
-        userId: 'not-an-Id',
+        userId: 123,
       })
     ).toThrow(ValidationError);
 
@@ -171,8 +170,8 @@ describe('Meal', () => {
       Meal.create({
         ...validMealProps,
         // @ts-expect-error Testing invalid inputs
-        userId: 'not-an-Id',
+        userId: 123,
       })
-    ).toThrow(/\sId/);
+    ).toThrow(/Id.*string/);
   });
 });

@@ -3,6 +3,14 @@ import { Id } from '@/domain/value-objects/Id/Id';
 import { validateNonEmptyString } from '../../common/validation';
 import { ValidationError } from '@/domain/common/errors';
 
+export type UserCreateProps = {
+  id: string;
+  name: string;
+  customerId?: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 export type UserUpdateProps = {
   name?: string;
   customerId?: Id;
@@ -28,19 +36,21 @@ function validateUpdateProps(patch: UserUpdateProps) {
 export class User {
   private constructor(private readonly props: UserProps) {}
 
-  static create(props: UserProps): User {
-    if (!(props.id instanceof Id))
-      throw new ValidationError('User id must be an instance of Id');
-
+  static create(props: UserCreateProps): User {
     validateNonEmptyString(props.name, 'User name');
-
-    if (props.customerId !== undefined && !(props.customerId instanceof Id))
-      throw new ValidationError('User customerId must be an instance of Id');
 
     props.createdAt = handleCreatedAt(props.createdAt);
     props.updatedAt = handleUpdatedAt(props.updatedAt);
 
-    return new User(props);
+    const userProps: UserProps = {
+      id: Id.create(props.id),
+      name: props.name,
+      customerId: props.customerId ? Id.create(props.customerId) : undefined,
+      createdAt: props.createdAt,
+      updatedAt: props.updatedAt,
+    };
+
+    return new User(userProps);
   }
 
   update(patch: UserUpdateProps): void {

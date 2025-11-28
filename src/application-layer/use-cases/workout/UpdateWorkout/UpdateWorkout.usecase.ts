@@ -1,9 +1,8 @@
-import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
-import { Workout } from '@/domain/entities/workout/Workout';
 import { WorkoutDTO, toWorkoutDTO } from '@/application-layer/dtos/WorkoutDTO';
 import { NotFoundError } from '@/domain/common/errors';
 import { validateNonEmptyString } from '@/domain/common/validation';
-import { Id } from '@/domain/value-objects/Id/Id';
+import { Workout } from '@/domain/entities/workout/Workout';
+import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
 
 export type UpdateWorkoutUsecaseRequest = {
   id: string;
@@ -30,10 +29,10 @@ export class UpdateWorkoutUsecase {
     }
 
     const updatedWorkout = Workout.create({
-      id: Id.create(existingWorkout.id),
-      userId: Id.create(existingWorkout.userId),
+      id: existingWorkout.id,
+      userId: existingWorkout.userId,
       name: request.name ?? existingWorkout.name,
-      workoutTemplateId: Id.create(existingWorkout.workoutTemplateId),
+      workoutTemplateId: existingWorkout.workoutTemplateId,
       exercises: existingWorkout.exercises,
       createdAt: existingWorkout.createdAt,
       updatedAt: new Date(),

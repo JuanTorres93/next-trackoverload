@@ -2,7 +2,6 @@ import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
 import { Day } from '@/domain/entities/day/Day';
 import { ValidationError } from '@/domain/common/errors';
-import { Id } from '@/domain/value-objects/Id/Id';
 import {
   validateDate,
   validateNonEmptyString,
@@ -47,7 +46,7 @@ export class AddFakeMealToDayUsecase {
       // NOTE: date and userId are validated in the entity
       day = Day.create({
         id: request.date,
-        userId: Id.create(request.userId),
+        userId: request.userId,
         meals: [],
         createdAt: new Date(),
         updatedAt: new Date(),

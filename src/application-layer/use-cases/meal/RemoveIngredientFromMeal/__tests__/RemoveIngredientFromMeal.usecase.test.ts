@@ -1,17 +1,16 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { RemoveIngredientFromMealUsecase } from '../RemoveIngredientFromMeal.usecase';
-import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
-import { Meal } from '@/domain/entities/meal/Meal';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import {
-  ValidationError,
-  NotFoundError,
-  AuthError,
-} from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import {
+  AuthError,
+  NotFoundError,
+  ValidationError,
+} from '@/domain/common/errors';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { Meal } from '@/domain/entities/meal/Meal';
+import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { RemoveIngredientFromMealUsecase } from '../RemoveIngredientFromMeal.usecase';
 
 describe('RemoveIngredientFromMealUsecase', () => {
   let mealsRepo: MemoryMealsRepo;
@@ -32,7 +31,7 @@ describe('RemoveIngredientFromMealUsecase', () => {
 
     secondIngredient = Ingredient.create({
       ...vp.validIngredientProps,
-      id: Id.create('ing2'),
+      id: 'ing2',
     });
 
     const firstIngredientLine = IngredientLine.create({
@@ -111,7 +110,7 @@ describe('RemoveIngredientFromMealUsecase', () => {
 
     const nonExistentIngredient = Ingredient.create({
       ...vp.validIngredientProps,
-      id: Id.create('not-in-meal'),
+      id: 'not-in-meal',
       name: 'Non-existent',
     });
 

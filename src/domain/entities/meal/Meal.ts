@@ -6,6 +6,15 @@ import { Protein } from '../../interfaces/Protein';
 import { Calories } from '../../interfaces/Calories';
 import { Id } from '@/domain/value-objects/Id/Id';
 
+export type MealCreateProps = {
+  id: string;
+  userId: string;
+  name: string;
+  ingredientLines: IngredientLine[];
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 export type MealUpdateProps = {
   name?: string;
 };
@@ -22,15 +31,7 @@ export type MealProps = {
 export class Meal implements Calories, Protein {
   private constructor(private readonly props: MealProps) {}
 
-  static create(props: MealProps): Meal {
-    if (!(props.id instanceof Id))
-      throw new ValidationError('Meal: Invalid id, must be an instance of Id');
-
-    if (!(props.userId instanceof Id))
-      throw new ValidationError(
-        'Meal: Invalid userId, must be an instance of Id'
-      );
-
+  static create(props: MealCreateProps): Meal {
     validateNonEmptyString(props.name, 'Meal name');
 
     if (
@@ -46,7 +47,16 @@ export class Meal implements Calories, Protein {
     props.createdAt = handleCreatedAt(props.createdAt);
     props.updatedAt = handleUpdatedAt(props.updatedAt);
 
-    return new Meal(props);
+    const mealProps: MealProps = {
+      id: Id.create(props.id),
+      userId: Id.create(props.userId),
+      name: props.name,
+      ingredientLines: props.ingredientLines,
+      createdAt: props.createdAt,
+      updatedAt: props.updatedAt,
+    };
+
+    return new Meal(mealProps);
   }
 
   addIngredientLine(ingredientLine: IngredientLine): void {

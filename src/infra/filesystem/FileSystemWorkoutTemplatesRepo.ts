@@ -1,10 +1,9 @@
-import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import {
   WorkoutTemplateDTO,
   toWorkoutTemplateDTO,
 } from '@/application-layer/dtos/WorkoutTemplateDTO';
+import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
+import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
 import { BaseFileSystemRepo } from './BaseFileSystemRepo';
 
 export class FileSystemWorkoutTemplatesRepo
@@ -27,8 +26,8 @@ export class FileSystemWorkoutTemplatesRepo
     return (data as WorkoutTemplateDTO[]).map((item) =>
       WorkoutTemplate.create({
         ...item,
-        id: Id.create(item.id),
-        userId: Id.create(item.userId),
+        id: item.id,
+        userId: item.userId,
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),
         deletedAt: item.deletedAt ? new Date(item.deletedAt) : undefined,

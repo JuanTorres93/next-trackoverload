@@ -24,18 +24,18 @@ describe('DeleteWorkoutUsecase', () => {
 
     // Verify workout exists
     const existingWorkout = await workoutsRepo.getWorkoutById(
-      vp.validWorkoutProps.id.value
+      vp.validWorkoutProps.id
     );
     expect(existingWorkout).toBe(workout);
 
     await deleteWorkoutUsecase.execute({
-      id: vp.validWorkoutProps.id.value,
-      userId: vp.validWorkoutProps.userId.value,
+      id: vp.validWorkoutProps.id,
+      userId: vp.validWorkoutProps.userId,
     });
 
     // Verify workout is deleted
     const deletedWorkout = await workoutsRepo.getWorkoutById(
-      vp.validWorkoutProps.id.value
+      vp.validWorkoutProps.id
     );
     expect(deletedWorkout).toBeNull();
   });
@@ -44,7 +44,7 @@ describe('DeleteWorkoutUsecase', () => {
     await expect(
       deleteWorkoutUsecase.execute({
         id: 'non-existent',
-        userId: vp.validWorkoutProps.userId.value,
+        userId: vp.validWorkoutProps.userId,
       })
     ).rejects.toThrow(NotFoundError);
   });
@@ -85,7 +85,7 @@ describe('DeleteWorkoutUsecase', () => {
     for (const invalidUserId of invalidUserIds) {
       await expect(
         deleteWorkoutUsecase.execute({
-          id: vp.validWorkoutProps.id.value,
+          id: vp.validWorkoutProps.id,
           // @ts-expect-error testing invalid types
           userId: invalidUserId,
         })

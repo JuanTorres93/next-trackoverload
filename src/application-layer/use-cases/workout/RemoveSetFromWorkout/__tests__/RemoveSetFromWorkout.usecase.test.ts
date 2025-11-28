@@ -1,11 +1,10 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { RemoveSetFromWorkoutUsecase } from '../RemoveSetFromWorkout.usecase';
-import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
-import { Workout } from '@/domain/entities/workout/Workout';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
-import { Id } from '@/domain/value-objects/Id/Id';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { Workout } from '@/domain/entities/workout/Workout';
+import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { RemoveSetFromWorkoutUsecase } from '../RemoveSetFromWorkout.usecase';
 
 describe('RemoveSetFromWorkoutUsecase', () => {
   let workoutsRepo: MemoryWorkoutsRepo;
@@ -19,7 +18,6 @@ describe('RemoveSetFromWorkoutUsecase', () => {
   it('should remove specific set from workout', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       name: 'Push Day',
       exercises: [
         {
@@ -49,7 +47,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
 
     const updatedWorkout = await removeSetFromWorkoutUsecase.execute({
       userId: vp.userId,
-      workoutId: '1',
+      workoutId: vp.validWorkoutProps.id,
       exerciseId: 'exercise-1',
       setNumber: 1,
     });
@@ -71,7 +69,6 @@ describe('RemoveSetFromWorkoutUsecase', () => {
   it('should return WorkoutDTO', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       name: 'Push Day',
       exercises: [
         {
@@ -89,7 +86,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
 
     const updatedWorkout = await removeSetFromWorkoutUsecase.execute({
       userId: vp.userId,
-      workoutId: '1',
+      workoutId: vp.validWorkoutProps.id,
       exerciseId: 'exercise-1',
       setNumber: 1,
     });
@@ -104,7 +101,6 @@ describe('RemoveSetFromWorkoutUsecase', () => {
   it('should remove only the specified set number', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       name: 'Push Day',
       exercises: [
         {
@@ -132,7 +128,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
 
     const updatedWorkout = await removeSetFromWorkoutUsecase.execute({
       userId: vp.userId,
-      workoutId: '1',
+      workoutId: vp.validWorkoutProps.id,
       exerciseId: 'exercise-1',
       setNumber: 2,
     });
@@ -153,7 +149,6 @@ describe('RemoveSetFromWorkoutUsecase', () => {
   it('should not modify workout when set does not exist', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       name: 'Push Day',
       exercises: [
         {
@@ -169,7 +164,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
 
     const updatedWorkout = await removeSetFromWorkoutUsecase.execute({
       userId: vp.userId,
-      workoutId: '1',
+      workoutId: vp.validWorkoutProps.id,
       exerciseId: 'exercise-1',
       setNumber: 99, // Non-existent set number
     });
@@ -182,7 +177,6 @@ describe('RemoveSetFromWorkoutUsecase', () => {
   it('should not modify workout when exercise does not exist', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       name: 'Push Day',
       exercises: [
         {
@@ -198,7 +192,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
 
     const updatedWorkout = await removeSetFromWorkoutUsecase.execute({
       userId: vp.userId,
-      workoutId: '1',
+      workoutId: vp.validWorkoutProps.id,
       exerciseId: 'non-existent-exercise',
       setNumber: 1,
     });
@@ -240,7 +234,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
       await expect(
         removeSetFromWorkoutUsecase.execute({
           userId: vp.userId,
-          workoutId: '1',
+          workoutId: vp.validWorkoutProps.id,
           // @ts-expect-error Testing invalid types
           exerciseId: id,
           setNumber: 1,
@@ -267,7 +261,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
       await expect(
         removeSetFromWorkoutUsecase.execute({
           userId: vp.userId,
-          workoutId: '1',
+          workoutId: vp.validWorkoutProps.id,
           exerciseId: 'exercise-1',
           // @ts-expect-error Testing invalid types
           setNumber,
@@ -279,7 +273,6 @@ describe('RemoveSetFromWorkoutUsecase', () => {
   it('should reorder sets correctly after removal', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       name: 'Push Day',
       exercises: [
         {
@@ -307,7 +300,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
 
     const updatedWorkout = await removeSetFromWorkoutUsecase.execute({
       userId: vp.userId,
-      workoutId: '1',
+      workoutId: vp.validWorkoutProps.id,
       exerciseId: 'exercise-1',
       setNumber: 2,
     });
@@ -325,7 +318,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
         removeSetFromWorkoutUsecase.execute({
           // @ts-expect-error Testing invalid types
           userId,
-          workoutId: '1',
+          workoutId: vp.validWorkoutProps.id,
           exerciseId: 'exercise-1',
           setNumber: 1,
         })

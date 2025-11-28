@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { Workout, WorkoutProps } from '../Workout';
-import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import { ValidationError } from '@/domain/common/errors';
+import { Workout, WorkoutCreateProps } from '../Workout';
 
 describe('Workout', () => {
   let workout: Workout;
-  let validWorkoutProps: WorkoutProps;
+  let validWorkoutProps: WorkoutCreateProps;
 
   beforeEach(() => {
     validWorkoutProps = {
@@ -96,7 +96,7 @@ describe('Workout', () => {
       Workout.create({
         ...validWorkoutProps,
         // @ts-expect-error testing invalid inputs
-        id: 'not-Id',
+        id: 123,
       });
     }).toThrow(ValidationError);
 
@@ -104,9 +104,9 @@ describe('Workout', () => {
       Workout.create({
         ...validWorkoutProps,
         // @ts-expect-error testing invalid inputs
-        id: 'not-Id',
+        id: 123,
       });
-    }).toThrow(/Id/);
+    }).toThrow(/Id.*string/);
   });
 
   it('should throw error if userId is not instance of Id', async () => {
@@ -114,7 +114,7 @@ describe('Workout', () => {
       Workout.create({
         ...validWorkoutProps,
         // @ts-expect-error testing invalid inputs
-        userId: 'not-Id',
+        userId: 123,
       });
     }).toThrow(ValidationError);
 
@@ -122,9 +122,9 @@ describe('Workout', () => {
       Workout.create({
         ...validWorkoutProps,
         // @ts-expect-error testing invalid inputs
-        userId: 'not-Id',
+        userId: 123,
       });
-    }).toThrow(/\sId/);
+    }).toThrow(/Id.*string/);
   });
 
   it('should throw error if workoutTemplateId is not instance of Id', async () => {
@@ -132,7 +132,7 @@ describe('Workout', () => {
       Workout.create({
         ...validWorkoutProps,
         // @ts-expect-error testing invalid inputs
-        workoutTemplateId: 'not-Id',
+        workoutTemplateId: 123,
       });
     }).toThrow(ValidationError);
 
@@ -140,8 +140,8 @@ describe('Workout', () => {
       Workout.create({
         ...validWorkoutProps,
         // @ts-expect-error testing invalid inputs
-        workoutTemplateId: 'not-Id',
+        workoutTemplateId: 123,
       });
-    }).toThrow(/\sId/);
+    }).toThrow(/Id.*string/);
   });
 });

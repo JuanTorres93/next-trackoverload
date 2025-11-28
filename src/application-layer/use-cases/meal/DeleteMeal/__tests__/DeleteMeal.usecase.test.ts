@@ -1,8 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { DeleteMealUsecase } from '../DeleteMeal.usecase';
-import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
-import { Meal } from '@/domain/entities/meal/Meal';
-import { Id } from '@/domain/value-objects/Id/Id';
+import * as vp from '@/../tests/createProps';
 import {
   AuthError,
   NotFoundError,
@@ -10,7 +6,10 @@ import {
 } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-import * as vp from '@/../tests/createProps';
+import { Meal } from '@/domain/entities/meal/Meal';
+import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { DeleteMealUsecase } from '../DeleteMeal.usecase';
 
 describe('DeleteMealUsecase', () => {
   let mealsRepo: MemoryMealsRepo;
@@ -24,26 +23,28 @@ describe('DeleteMealUsecase', () => {
   it('should delete existing meal', async () => {
     const ingredient = Ingredient.create({
       ...vp.validIngredientProps,
-      id: Id.create('1'),
     });
 
     const ingredientLine = IngredientLine.create({
       ...vp.ingredientLinePropsNoIngredient,
-      id: Id.create('1'),
       ingredient,
     });
 
     const meal = Meal.create({
       ...vp.mealPropsNoIngredientLines,
-      id: Id.create('1'),
       ingredientLines: [ingredientLine],
     });
 
     await mealsRepo.saveMeal(meal);
 
-    await deleteMealUsecase.execute({ id: '1', userId: vp.userId });
+    await deleteMealUsecase.execute({
+      id: vp.mealPropsNoIngredientLines.id,
+      userId: vp.userId,
+    });
 
-    const deletedMeal = await mealsRepo.getMealById('1');
+    const deletedMeal = await mealsRepo.getMealById(
+      vp.mealPropsNoIngredientLines.id
+    );
     expect(deletedMeal).toBeNull();
   });
 
@@ -78,25 +79,25 @@ describe('DeleteMealUsecase', () => {
   it('should throw error when trying to delete a meal that does not belong to the user', async () => {
     const ingredient = Ingredient.create({
       ...vp.validIngredientProps,
-      id: Id.create('1'),
     });
 
     const ingredientLine = IngredientLine.create({
       ...vp.ingredientLinePropsNoIngredient,
-      id: Id.create('1'),
       ingredient,
     });
 
     const meal = Meal.create({
       ...vp.mealPropsNoIngredientLines,
-      id: Id.create('1'),
       ingredientLines: [ingredientLine],
     });
 
     await mealsRepo.saveMeal(meal);
 
     await expect(
-      deleteMealUsecase.execute({ id: '1', userId: 'another-user-id' })
+      deleteMealUsecase.execute({
+        id: vp.mealPropsNoIngredientLines.id,
+        userId: 'another-user-id',
+      })
     ).rejects.toThrow(AuthError);
   });
 });

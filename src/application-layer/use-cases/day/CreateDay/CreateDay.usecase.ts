@@ -2,7 +2,6 @@ import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { Day } from '@/domain/entities/day/Day';
 import { DayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
 import { Meal } from '@/domain/entities/meal/Meal';
-import { Id } from '@/domain/value-objects/Id/Id';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 
 export type CreateDayUsecaseRequest = {
@@ -18,7 +17,7 @@ export class CreateDayUsecase {
     // NOTE: id, userId and meals are validated in the entity
     const newDay = Day.create({
       id: request.date,
-      userId: Id.create(request.userId),
+      userId: request.userId,
       meals: request.meals || [],
       createdAt: new Date(),
       updatedAt: new Date(),

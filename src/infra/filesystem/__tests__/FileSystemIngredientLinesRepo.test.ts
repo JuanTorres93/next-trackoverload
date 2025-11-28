@@ -1,11 +1,10 @@
-import { beforeEach, describe, expect, it, afterEach } from 'vitest';
-import { FileSystemIngredientLinesRepo } from '../FileSystemIngredientLinesRepo';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { Id } from '@/domain/value-objects/Id/Id';
 import * as vp from '@/../tests/createProps';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
 import { promises as fs } from 'fs';
 import { join } from 'path';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { FileSystemIngredientLinesRepo } from '../FileSystemIngredientLinesRepo';
 
 describe('FileSystemIngredientLinesRepo', () => {
   let repo: FileSystemIngredientLinesRepo;
@@ -56,7 +55,7 @@ describe('FileSystemIngredientLinesRepo', () => {
   it('should save multiple ingredient lines without race conditions', async () => {
     const ingredientLines = Array.from({ length: 5 }, (_, i) =>
       IngredientLine.create({
-        id: Id.create(`line-${i}`),
+        id: `line-${i}`,
         ingredient: testIngredient,
         quantityInGrams: 100 + i * 10,
         createdAt: new Date(),
@@ -83,7 +82,7 @@ describe('FileSystemIngredientLinesRepo', () => {
     // First, save some initial lines
     const initialLines = Array.from({ length: 3 }, (_, i) =>
       IngredientLine.create({
-        id: Id.create(`line-${i}`),
+        id: `line-${i}`,
         ingredient: testIngredient,
         quantityInGrams: 100,
         createdAt: new Date(),
@@ -96,7 +95,7 @@ describe('FileSystemIngredientLinesRepo', () => {
     // Then update them with new quantities
     const updatedLines = Array.from({ length: 3 }, (_, i) =>
       IngredientLine.create({
-        id: Id.create(`line-${i}`),
+        id: `line-${i}`,
         ingredient: testIngredient,
         quantityInGrams: 200, // Updated quantity
         createdAt: new Date(),
@@ -121,7 +120,7 @@ describe('FileSystemIngredientLinesRepo', () => {
     // Create ingredient with imageUrl
     const ingredientWithImage = Ingredient.create({
       ...vp.validIngredientProps,
-      id: Id.create('ingredient-with-image'),
+      id: 'ingredient-with-image',
       name: 'Test Ingredient with Image',
       nutritionalInfoPer100g: {
         calories: 100,
@@ -131,7 +130,7 @@ describe('FileSystemIngredientLinesRepo', () => {
     });
 
     const ingredientLine = IngredientLine.create({
-      id: Id.create('line-with-image'),
+      id: 'line-with-image',
       ingredient: ingredientWithImage,
       quantityInGrams: 150,
       createdAt: new Date(),

@@ -1,13 +1,12 @@
-import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
-import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import {
   WorkoutTemplateDTO,
   toWorkoutTemplateDTO,
 } from '@/application-layer/dtos/WorkoutTemplateDTO';
 import { NotFoundError } from '@/domain/common/errors';
-import { v4 as uuidv4 } from 'uuid';
-import { Id } from '@/domain/value-objects/Id/Id';
 import { validateNonEmptyString } from '@/domain/common/validation';
+import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
+import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
+import { v4 as uuidv4 } from 'uuid';
 
 export type DuplicateWorkoutTemplateUsecaseRequest = {
   userId: string;
@@ -49,8 +48,8 @@ export class DuplicateWorkoutTemplateUsecase {
       request.newTemplateName ?? `${originalTemplate.name} (Copy)`;
 
     const duplicatedTemplate = WorkoutTemplate.create({
-      id: Id.create(uuidv4()),
-      userId: Id.create(request.userId),
+      id: uuidv4(),
+      userId: request.userId,
       name: newTemplateName,
       exercises: [...originalTemplate.exercises],
       createdAt: new Date(),

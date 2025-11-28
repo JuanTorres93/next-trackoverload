@@ -1,16 +1,15 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { Recipe, RecipeProps } from '../Recipe';
-import { Ingredient } from '../../ingredient/Ingredient';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { IngredientLine } from '../../ingredient/IngredientLine';
 import { ValidationError } from '@/domain/common/errors';
+import { Ingredient } from '../../ingredient/Ingredient';
+import { IngredientLine } from '../../ingredient/IngredientLine';
+import { Recipe, RecipeCreateProps } from '../Recipe';
 
 import * as vp from '@/../tests/createProps';
 
 describe('Recipe', () => {
   let recipe: Recipe;
-  let validRecipeProps: RecipeProps;
+  let validRecipeProps: RecipeCreateProps;
   let validIngredientLine: IngredientLine;
 
   beforeEach(() => {
@@ -38,11 +37,10 @@ describe('Recipe', () => {
 
     const anotherIngredientLine = IngredientLine.create({
       ...vp.ingredientLinePropsNoIngredient,
-      id: Id.create('2'),
+      id: 'another-line-id',
       quantityInGrams: 50,
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,
-        id: Id.create('2'),
         nutritionalInfoPer100g: {
           calories: 200,
           protein: 20,
@@ -65,10 +63,9 @@ describe('Recipe', () => {
 
     const anotherIngredientLine = IngredientLine.create({
       ...vp.ingredientLinePropsNoIngredient,
-      id: Id.create('2'),
+      id: 'another-line-id',
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,
-        id: Id.create('2'),
         nutritionalInfoPer100g: {
           calories: 200,
           protein: 10,
@@ -99,13 +96,13 @@ describe('Recipe', () => {
       ...vp.ingredientLinePropsNoIngredient,
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,
-        id: Id.create('2'),
+        id: 'other-ing-id',
         nutritionalInfoPer100g: {
           calories: 200,
           protein: 20,
         },
       }),
-      id: Id.create('2'),
+      id: 'another-line-id',
       quantityInGrams: 50,
     });
     recipe.addIngredientLine(anotherIngredientLine);
@@ -117,10 +114,10 @@ describe('Recipe', () => {
     recipe.addIngredientLine(
       IngredientLine.create({
         ...vp.ingredientLinePropsNoIngredient,
-        id: Id.create('2'),
+        id: 'another-line-id',
         ingredient: Ingredient.create({
           ...vp.validIngredientProps,
-          id: Id.create('2'),
+          id: 'other-ing-id',
           nutritionalInfoPer100g: {
             calories: 200,
             protein: 20,
@@ -131,7 +128,7 @@ describe('Recipe', () => {
     );
     expect(recipe.ingredientLines.length).toBe(2);
 
-    recipe.removeIngredientLineByIngredientId(vp.validIngredientProps.id.value);
+    recipe.removeIngredientLineByIngredientId(vp.validIngredientProps.id);
     expect(recipe.ingredientLines.length).toBe(1);
   });
 
@@ -166,7 +163,7 @@ describe('Recipe', () => {
     // Try to add an ingredient line with the same ingredient ID
     const duplicateIngredientLine = IngredientLine.create({
       ...vp.ingredientLinePropsNoIngredient,
-      id: Id.create('duplicate-line-id'),
+      id: 'duplicate-line-id',
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,
         id: vp.validIngredientProps.id, // Same ingredient ID
@@ -186,36 +183,36 @@ describe('Recipe', () => {
   it('should throw error if id is no instance of Id', async () => {
     expect(() => {
       Recipe.create({
-        ...vp.recipePropsNoIngredientLines,
+        ...validRecipeProps,
         // @ts-expect-error Testing invalid id type
-        id: 'invalid-id',
+        id: 123,
       });
     }).toThrowError(ValidationError);
 
     expect(() => {
       Recipe.create({
-        ...vp.recipePropsNoIngredientLines,
+        ...validRecipeProps,
         // @ts-expect-error Testing invalid id type
-        id: 'invalid-id',
+        id: 123,
       });
-    }).toThrowError(/Id/);
+    }).toThrowError(/Id.*string/);
   });
 
   it('should throw error if userId is no instance of Id', async () => {
     expect(() => {
       Recipe.create({
-        ...vp.recipePropsNoIngredientLines,
+        ...validRecipeProps,
         // @ts-expect-error Testing invalid id type
-        userId: 'invalid-id',
+        userId: 123,
       });
     }).toThrowError(ValidationError);
 
     expect(() => {
       Recipe.create({
-        ...vp.recipePropsNoIngredientLines,
+        ...validRecipeProps,
         // @ts-expect-error Testing invalid id type
-        userId: 'invalid-id',
+        userId: 123,
       });
-    }).toThrowError(/\sId/);
+    }).toThrowError(/Id.*string/);
   });
 });

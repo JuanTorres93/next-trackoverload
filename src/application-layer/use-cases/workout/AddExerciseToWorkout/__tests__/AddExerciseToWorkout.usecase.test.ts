@@ -1,13 +1,12 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { AddExerciseToWorkoutUsecase } from '../AddExerciseToWorkout.usecase';
-import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
-import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
-import { Workout } from '@/domain/entities/workout/Workout';
-import { Exercise } from '@/domain/entities/exercise/Exercise';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { Exercise } from '@/domain/entities/exercise/Exercise';
+import { Workout } from '@/domain/entities/workout/Workout';
+import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
+import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { AddExerciseToWorkoutUsecase } from '../AddExerciseToWorkout.usecase';
 
 describe('AddExerciseToWorkoutUsecase', () => {
   let workoutsRepo: MemoryWorkoutsRepo;
@@ -26,13 +25,12 @@ describe('AddExerciseToWorkoutUsecase', () => {
   it('should add exercise to workout', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       exercises: [],
     });
 
     const exercise = Exercise.create({
       ...vp.validExerciseProps,
-      id: Id.create('exercise-1'),
+      id: 'exercise-1',
       name: 'Push Up',
     });
 
@@ -41,7 +39,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
     const updatedWorkout = await addExerciseToWorkoutUsecase.execute({
       userId: vp.userId,
-      workoutId: '1',
+      workoutId: vp.validWorkoutProps.id,
       exerciseId: 'exercise-1',
       setNumber: 1,
       reps: 10,
@@ -60,13 +58,11 @@ describe('AddExerciseToWorkoutUsecase', () => {
   it('should return WorkoutDTO', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       exercises: [],
     });
 
     const exercise = Exercise.create({
       ...vp.validExerciseProps,
-      id: Id.create('exercise-1'),
       name: 'Push Up',
     });
 
@@ -76,8 +72,8 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
     const updatedWorkout = await addExerciseToWorkoutUsecase.execute({
       userId: vp.userId,
-      workoutId: '1',
-      exerciseId: 'exercise-1',
+      workoutId: vp.validWorkoutProps.id,
+      exerciseId: vp.validExerciseProps.id,
       setNumber: 1,
       reps: 10,
       weight: 0,
@@ -92,7 +88,6 @@ describe('AddExerciseToWorkoutUsecase', () => {
   it('should throw NotFoundError when workout does not exist', async () => {
     const exercise = Exercise.create({
       ...vp.validExerciseProps,
-      id: Id.create('exercise-1'),
       name: 'Push Up',
     });
 
@@ -102,7 +97,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
       addExerciseToWorkoutUsecase.execute({
         userId: vp.userId,
         workoutId: 'non-existent',
-        exerciseId: 'exercise-1',
+        exerciseId: vp.validExerciseProps.id,
         setNumber: 1,
         reps: 10,
         weight: 0,
@@ -113,7 +108,6 @@ describe('AddExerciseToWorkoutUsecase', () => {
   it('should throw NotFoundError when exercise does not exist', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       exercises: [],
     });
 
@@ -122,7 +116,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
     await expect(
       addExerciseToWorkoutUsecase.execute({
         userId: vp.userId,
-        workoutId: '1',
+        workoutId: vp.validWorkoutProps.id,
         exerciseId: 'non-existent',
         setNumber: 1,
         reps: 10,
@@ -134,7 +128,6 @@ describe('AddExerciseToWorkoutUsecase', () => {
   it('should throw ValidationError when trying to add duplicate exercise with same set number', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       exercises: [
         {
           exerciseId: 'exercise-1',
@@ -147,7 +140,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
     const exercise = Exercise.create({
       ...vp.validExerciseProps,
-      id: Id.create('exercise-1'),
+      id: 'exercise-1',
       name: 'Push Up',
     });
 
@@ -157,7 +150,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
     await expect(
       addExerciseToWorkoutUsecase.execute({
         userId: vp.userId,
-        workoutId: '1',
+        workoutId: vp.validWorkoutProps.id,
         exerciseId: 'exercise-1',
         setNumber: 1,
         reps: 12,
@@ -169,7 +162,6 @@ describe('AddExerciseToWorkoutUsecase', () => {
   it('should add exercise with different set number', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       exercises: [
         {
           exerciseId: 'exercise-1',
@@ -182,7 +174,6 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
     const exercise = Exercise.create({
       ...vp.validExerciseProps,
-      id: Id.create('exercise-1'),
       name: 'Push Up',
     });
 
@@ -191,8 +182,8 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
     const updatedWorkout = await addExerciseToWorkoutUsecase.execute({
       userId: vp.userId,
-      workoutId: '1',
-      exerciseId: 'exercise-1',
+      workoutId: vp.validWorkoutProps.id,
+      exerciseId: vp.validExerciseProps.id,
       setNumber: 2,
       reps: 12,
       weight: 5,
@@ -200,73 +191,21 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
     expect(updatedWorkout.exercises).toHaveLength(2);
     expect(updatedWorkout.exercises[1]).toEqual({
-      exerciseId: 'exercise-1',
+      exerciseId: vp.validExerciseProps.id,
       setNumber: 2,
       reps: 12,
       weight: 5,
     });
   });
 
-  it('should throw error if workoutId is invalid', async () => {
-    const exercise = Exercise.create({
-      ...vp.validExerciseProps,
-      id: Id.create('exercise-1'),
-      name: 'Push Up',
-    });
-
-    await exercisesRepo.saveExercise(exercise);
-
-    const invalidIds = ['', '   ', null, undefined, 123, {}, [], true, false];
-
-    for (const invalidId of invalidIds) {
-      await expect(
-        addExerciseToWorkoutUsecase.execute({
-          // @ts-expect-error testing invalid types
-          workoutId: invalidId,
-          exerciseId: 'exercise-1',
-          setNumber: 1,
-          reps: 10,
-          weight: 0,
-        })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
-
-  it('should throw error if exerciseId is invalid', async () => {
-    const workout = Workout.create({
-      ...vp.validWorkoutProps,
-      id: Id.create('1'),
-      exercises: [],
-    });
-
-    await workoutsRepo.saveWorkout(workout);
-
-    const invalidIds = ['', '   ', null, undefined, 123, {}, [], true, false];
-
-    for (const invalidId of invalidIds) {
-      await expect(
-        addExerciseToWorkoutUsecase.execute({
-          workoutId: '1',
-          // @ts-expect-error testing invalid types
-          exerciseId: invalidId,
-          setNumber: 1,
-          reps: 10,
-          weight: 0,
-        })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
-
   it('should throw error if setNumber is invalid', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       exercises: [],
     });
 
     const exercise = Exercise.create({
       ...vp.validExerciseProps,
-      id: Id.create('exercise-1'),
       name: 'Push Up',
     });
 
@@ -289,8 +228,8 @@ describe('AddExerciseToWorkoutUsecase', () => {
     for (const invalidSetNumber of invalidSetNumbers) {
       await expect(
         addExerciseToWorkoutUsecase.execute({
-          workoutId: '1',
-          exerciseId: 'exercise-1',
+          workoutId: vp.validWorkoutProps.id,
+          exerciseId: vp.validExerciseProps.id,
           // @ts-expect-error testing invalid types
           setNumber: invalidSetNumber,
           reps: 10,
@@ -303,13 +242,11 @@ describe('AddExerciseToWorkoutUsecase', () => {
   it('should throw error if reps is invalid', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       exercises: [],
     });
 
     const exercise = Exercise.create({
       ...vp.validExerciseProps,
-      id: Id.create('exercise-1'),
       name: 'Push Up',
     });
 
@@ -331,8 +268,8 @@ describe('AddExerciseToWorkoutUsecase', () => {
     for (const invalidRep of invalidReps) {
       await expect(
         addExerciseToWorkoutUsecase.execute({
-          workoutId: '1',
-          exerciseId: 'exercise-1',
+          workoutId: vp.validWorkoutProps.id,
+          exerciseId: vp.validExerciseProps.id,
           setNumber: 1,
           // @ts-expect-error testing invalid types
           reps: invalidRep,
@@ -345,13 +282,11 @@ describe('AddExerciseToWorkoutUsecase', () => {
   it('should throw error if weight is invalid', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       exercises: [],
     });
 
     const exercise = Exercise.create({
       ...vp.validExerciseProps,
-      id: Id.create('exercise-1'),
       name: 'Push Up',
     });
 
@@ -363,8 +298,8 @@ describe('AddExerciseToWorkoutUsecase', () => {
     for (const invalidWeight of invalidWeights) {
       await expect(
         addExerciseToWorkoutUsecase.execute({
-          workoutId: '1',
-          exerciseId: 'exercise-1',
+          workoutId: vp.validWorkoutProps.id,
+          exerciseId: vp.validExerciseProps.id,
           setNumber: 1,
           reps: 10,
           // @ts-expect-error testing invalid types

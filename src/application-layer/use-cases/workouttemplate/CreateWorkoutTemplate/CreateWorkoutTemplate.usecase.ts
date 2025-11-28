@@ -1,10 +1,9 @@
-import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
-import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
-import { Id } from '@/domain/value-objects/Id/Id';
 import {
   WorkoutTemplateDTO,
   toWorkoutTemplateDTO,
 } from '@/application-layer/dtos/WorkoutTemplateDTO';
+import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
+import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
 import { v4 as uuidv4 } from 'uuid';
 
 export type CreateWorkoutTemplateUsecaseRequest = {
@@ -20,8 +19,8 @@ export class CreateWorkoutTemplateUsecase {
   ): Promise<WorkoutTemplateDTO> {
     // NOTE: validation is done at the entity level
     const newWorkoutTemplate = WorkoutTemplate.create({
-      id: Id.create(uuidv4()),
-      userId: Id.create(request.userId),
+      id: uuidv4(),
+      userId: request.userId,
       name: request.name,
       exercises: [],
       createdAt: new Date(),

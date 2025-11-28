@@ -1,16 +1,24 @@
-import {
-  validateNonEmptyString,
-  validateGreaterThanZero,
-  validatePositiveNumber,
-  validateObject,
-} from '../../common/validation';
 import { Id } from '@/domain/value-objects/Id/Id';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
-import { ValidationError } from '@/domain/common/errors';
+import {
+  validateGreaterThanZero,
+  validateNonEmptyString,
+  validateObject,
+  validatePositiveNumber,
+} from '../../common/validation';
 
 type NutritionalInfoPer100g = {
   calories: number;
   protein: number;
+};
+
+export type IngredientCreateProps = {
+  id: string;
+  name: string;
+  nutritionalInfoPer100g: NutritionalInfoPer100g;
+  imageUrl?: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export type IngredientUpdateProps = {
@@ -31,10 +39,7 @@ export type IngredientProps = {
 export class Ingredient {
   private constructor(private readonly props: IngredientProps) {}
 
-  static create(props: IngredientProps): Ingredient {
-    if (!(props.id instanceof Id))
-      throw new ValidationError('Ingredient: id must be of type Id');
-
+  static create(props: IngredientCreateProps): Ingredient {
     validateNonEmptyString(props.name, 'Ingredient name');
     validateObject(
       props.nutritionalInfoPer100g,
@@ -51,7 +56,12 @@ export class Ingredient {
     props.createdAt = handleCreatedAt(props.createdAt);
     props.updatedAt = handleUpdatedAt(props.updatedAt);
 
-    return new Ingredient(props);
+    const ingredientProps: IngredientProps = {
+      ...props,
+      id: Id.create(props.id),
+    };
+
+    return new Ingredient(ingredientProps);
   }
 
   update(patch: IngredientUpdateProps): void {

@@ -1,12 +1,11 @@
-import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
-import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
-import { Id } from '@/domain/value-objects/Id/Id';
 import {
   WorkoutTemplateDTO,
   toWorkoutTemplateDTO,
 } from '@/application-layer/dtos/WorkoutTemplateDTO';
 import { NotFoundError } from '@/domain/common/errors';
 import { validateNonEmptyString } from '@/domain/common/validation';
+import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
+import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
 
 export type UpdateWorkoutTemplateUsecaseRequest = {
   id: string;
@@ -37,8 +36,8 @@ export class UpdateWorkoutTemplateUsecase {
     // Create updated template with new name
     // NOTE: userId and name validation are done in the entity
     const updatedTemplate = WorkoutTemplate.create({
-      id: Id.create(workoutTemplate.id),
-      userId: Id.create(workoutTemplate.userId),
+      id: workoutTemplate.id,
+      userId: workoutTemplate.userId,
       name: request.name,
       exercises: workoutTemplate.exercises,
       createdAt: workoutTemplate.createdAt,

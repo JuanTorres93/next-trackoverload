@@ -1,12 +1,11 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { GetUserByIdUsecase } from '../GetUserById.usecase';
-import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
-import { User } from '@/domain/entities/user/User';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toUserDTO } from '@/application-layer/dtos/UserDTO';
+import { ValidationError } from '@/domain/common/errors';
+import { User } from '@/domain/entities/user/User';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { GetUserByIdUsecase } from '../GetUserById.usecase';
 
 describe('GetUserByIdUsecase', () => {
   let usersRepo: MemoryUsersRepo;
@@ -20,13 +19,13 @@ describe('GetUserByIdUsecase', () => {
   it('should return user when found', async () => {
     const user = User.create({
       ...vp.validUserProps,
-      id: Id.create('1'),
-      name: 'John Doe',
     });
 
     await usersRepo.saveUser(user);
 
-    const result = await getUserByIdUsecase.execute({ id: '1' });
+    const result = await getUserByIdUsecase.execute({
+      id: vp.validUserProps.id,
+    });
 
     expect(result).toEqual(toUserDTO(user));
   });
@@ -34,13 +33,13 @@ describe('GetUserByIdUsecase', () => {
   it('should return user DTO when found', async () => {
     const user = User.create({
       ...vp.validUserProps,
-      id: Id.create('1'),
-      name: 'John Doe',
     });
 
     await usersRepo.saveUser(user);
 
-    const result = await getUserByIdUsecase.execute({ id: '1' });
+    const result = await getUserByIdUsecase.execute({
+      id: vp.validUserProps.id,
+    });
 
     for (const prop of dto.userDTOProperties) {
       expect(result).not.toBeInstanceOf(User);

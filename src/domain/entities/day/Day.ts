@@ -11,6 +11,14 @@ import { FakeMeal } from '../fakemeal/FakeMeal';
 import { Protein } from '../../interfaces/Protein';
 import { Calories } from '../../interfaces/Calories';
 
+export type DayCreateProps = {
+  id: Date;
+  userId: string;
+  meals: (Meal | FakeMeal)[];
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 export type DayProps = {
   id: Date;
   userId: Id;
@@ -32,11 +40,8 @@ function validateMeal(meal: Meal | FakeMeal) {
 export class Day implements Protein, Calories {
   private constructor(private readonly props: DayProps) {}
 
-  static create(props: DayProps): Day {
+  static create(props: DayCreateProps): Day {
     validateDate(props.id, 'Day id');
-
-    if (!(props.userId instanceof Id))
-      throw new ValidationError('Day userId must be an instance of Id');
 
     // Validate meals is instance of Meal or FakeMeal
     if (!Array.isArray(props.meals)) {
@@ -49,7 +54,15 @@ export class Day implements Protein, Calories {
     props.createdAt = handleCreatedAt(props.createdAt);
     props.updatedAt = handleUpdatedAt(props.updatedAt);
 
-    return new Day(props);
+    const dayProps: DayProps = {
+      id: props.id,
+      userId: Id.create(props.userId),
+      meals: props.meals,
+      createdAt: props.createdAt,
+      updatedAt: props.updatedAt,
+    };
+
+    return new Day(dayProps);
   }
 
   addMeal(meal: Meal | FakeMeal): void {

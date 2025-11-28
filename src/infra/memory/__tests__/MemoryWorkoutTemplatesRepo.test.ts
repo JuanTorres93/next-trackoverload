@@ -1,8 +1,7 @@
+import * as vp from '@/../tests/createProps';
+import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryWorkoutTemplatesRepo } from '../MemoryWorkoutTemplatesRepo';
-import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
-import { Id } from '@/domain/value-objects/Id/Id';
-import * as vp from '@/../tests/createProps';
 
 describe('MemoryWorkoutTemplatesRepo', () => {
   let repo: MemoryWorkoutTemplatesRepo;
@@ -17,7 +16,7 @@ describe('MemoryWorkoutTemplatesRepo', () => {
   it('should save a workout template', async () => {
     const newWorkoutTemplate = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps,
-      id: Id.create('2'),
+      id: 'another-template-id',
       name: 'Pull Template',
       exercises: [
         { exerciseId: 'ex3', sets: 3 },
@@ -45,7 +44,7 @@ describe('MemoryWorkoutTemplatesRepo', () => {
 
   it('should retrieve a workout template by ID', async () => {
     const fetchedWorkoutTemplate = await repo.getWorkoutTemplateById(
-      vp.validWorkoutTemplateProps.id.value
+      vp.validWorkoutTemplateProps.id
     );
     expect(fetchedWorkoutTemplate).not.toBeNull();
     expect(fetchedWorkoutTemplate?.name).toBe(

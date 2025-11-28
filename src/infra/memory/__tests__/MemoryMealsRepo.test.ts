@@ -1,10 +1,9 @@
+import * as vp from '@/../tests/createProps';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { Meal } from '@/domain/entities/meal/Meal';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryMealsRepo } from '../MemoryMealsRepo';
-import { Meal } from '@/domain/entities/meal/Meal';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-import * as vp from '@/../tests/createProps';
 
 const validIngredientProps = {
   ...vp.validIngredientProps,
@@ -32,7 +31,6 @@ describe('MemoryMealsRepo', () => {
 
     meal = Meal.create({
       ...vp.mealPropsNoIngredientLines,
-      id: Id.create('1'),
       name: 'Grilled Chicken',
       ingredientLines: [ingredientLine],
     });
@@ -43,6 +41,7 @@ describe('MemoryMealsRepo', () => {
   it('should save a meal', async () => {
     const newMeal = Meal.create({
       ...vp.mealPropsNoIngredientLines,
+      id: 'new-meal',
       name: 'Chicken Salad',
       ingredientLines: [ingredientLine],
     });
@@ -56,7 +55,6 @@ describe('MemoryMealsRepo', () => {
   it('should update an existing meal', async () => {
     const updatedMeal = Meal.create({
       ...vp.mealPropsNoIngredientLines,
-      id: Id.create('1'),
       name: 'Updated Grilled Chicken',
       ingredientLines: [ingredientLine],
     });
@@ -68,7 +66,9 @@ describe('MemoryMealsRepo', () => {
   });
 
   it('should retrieve a meal by ID', async () => {
-    const fetchedMeal = await repo.getMealById('1');
+    const fetchedMeal = await repo.getMealById(
+      vp.mealPropsNoIngredientLines.id
+    );
     expect(fetchedMeal).not.toBeNull();
     expect(fetchedMeal?.name).toBe('Grilled Chicken');
   });
@@ -76,12 +76,15 @@ describe('MemoryMealsRepo', () => {
   it('should retrieve all meals by a user', async () => {
     const userMeals = await repo.getAllMealsForUser(vp.userId);
     expect(userMeals.length).toBe(1);
-    expect(userMeals[0].id).toBe('1');
+    expect(userMeals[0].id).toBe(vp.mealPropsNoIngredientLines.id);
     expect(userMeals[0].name).toBe('Grilled Chicken');
   });
 
   it('should retrieve a meal by ID for a user', async () => {
-    const fetchedMeal = await repo.getMealByIdForUser('1', vp.userId);
+    const fetchedMeal = await repo.getMealByIdForUser(
+      vp.mealPropsNoIngredientLines.id,
+      vp.userId
+    );
     expect(fetchedMeal).not.toBeNull();
     expect(fetchedMeal?.name).toBe('Grilled Chicken');
   });
@@ -95,7 +98,7 @@ describe('MemoryMealsRepo', () => {
     const allMeals = await repo.getAllMeals();
     expect(allMeals.length).toBe(1);
 
-    await repo.deleteMeal('1');
+    await repo.deleteMeal(vp.mealPropsNoIngredientLines.id);
 
     const allMealsAfterDeletion = await repo.getAllMeals();
     expect(allMealsAfterDeletion.length).toBe(0);

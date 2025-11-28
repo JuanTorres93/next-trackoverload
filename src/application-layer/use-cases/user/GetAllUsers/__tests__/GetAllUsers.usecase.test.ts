@@ -1,11 +1,10 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { GetAllUsersUsecase } from '../GetAllUsers.usecase';
-import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { User } from '@/domain/entities/user/User';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toUserDTO } from '@/application-layer/dtos/UserDTO';
+import { User } from '@/domain/entities/user/User';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { GetAllUsersUsecase } from '../GetAllUsers.usecase';
 
 describe('GetAllUsersUsecase', () => {
   let usersRepo: MemoryUsersRepo;
@@ -19,13 +18,12 @@ describe('GetAllUsersUsecase', () => {
   it('should return all users', async () => {
     const user1 = User.create({
       ...vp.validUserProps,
-      id: Id.create('1'),
       name: 'User One',
     });
 
     const user2 = User.create({
       ...vp.validUserProps,
-      id: Id.create('2'),
+      id: 'another-user-id',
       name: 'User Two',
     });
 
@@ -42,13 +40,12 @@ describe('GetAllUsersUsecase', () => {
   it('should return array of UserDTO', async () => {
     const user1 = User.create({
       ...vp.validUserProps,
-      id: Id.create('1'),
       name: 'User One',
     });
 
     const user2 = User.create({
       ...vp.validUserProps,
-      id: Id.create('2'),
+      id: 'another-user-id',
       name: 'User Two',
     });
 

@@ -1,5 +1,6 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
@@ -7,8 +8,6 @@ import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetRecipesByIdsForUserUsecase } from '../GetRecipesByIdsForUser.usecase';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 
 describe('GetRecipesByIdsForUserUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
@@ -35,7 +34,7 @@ describe('GetRecipesByIdsForUserUsecase', () => {
       }),
       Recipe.create({
         ...vp.recipePropsNoIngredientLines,
-        id: Id.create('recipe2'),
+        id: 'recipe2',
         ingredientLines: [testIngredientLine],
       }),
     ];

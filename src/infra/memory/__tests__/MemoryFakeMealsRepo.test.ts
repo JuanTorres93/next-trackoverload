@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryFakeMealsRepo } from '../MemoryFakeMealsRepo';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { Id } from '@/domain/value-objects/Id/Id';
 import * as vp from '@/../tests/createProps';
 
 describe('MemoryFakeMealsRepo', () => {
@@ -12,7 +11,6 @@ describe('MemoryFakeMealsRepo', () => {
     repo = new MemoryFakeMealsRepo();
     fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: Id.create('1'),
       name: 'Protein Shake',
       calories: 250,
       protein: 30,
@@ -23,7 +21,7 @@ describe('MemoryFakeMealsRepo', () => {
   it('should save a fake meal', async () => {
     const newFakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: Id.create('2'),
+      id: 'another-id',
       name: 'Energy Bar',
     });
     await repo.saveFakeMeal(newFakeMeal);
@@ -36,7 +34,7 @@ describe('MemoryFakeMealsRepo', () => {
   it('should update an existing fake meal', async () => {
     const updatedFakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: Id.create('1'),
+      id: vp.validFakeMealProps.id,
       name: 'Updated Protein Shake',
       updatedAt: new Date('2023-01-03'),
     });
@@ -50,8 +48,8 @@ describe('MemoryFakeMealsRepo', () => {
   it('should retrieve all fake meals by userId', async () => {
     const fakeMeal2 = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: Id.create('2'),
-      userId: Id.create('user-2'),
+      id: '2',
+      userId: 'user-2',
       name: 'Another Shake',
     });
     await repo.saveFakeMeal(fakeMeal2);
@@ -66,17 +64,25 @@ describe('MemoryFakeMealsRepo', () => {
   });
 
   it('should retrieve a fake meal by ID', async () => {
-    const fetchedFakeMeal = await repo.getFakeMealById('1');
+    const fetchedFakeMeal = await repo.getFakeMealById(
+      vp.validFakeMealProps.id
+    );
     expect(fetchedFakeMeal).not.toBeNull();
     expect(fetchedFakeMeal?.name).toBe('Protein Shake');
   });
 
   it('should retrieve a fake meal by ID and userId', async () => {
-    const fetchedFakeMeal = await repo.getFakeMealByIdAndUserId('1', 'user-1');
+    const fetchedFakeMeal = await repo.getFakeMealByIdAndUserId(
+      vp.validFakeMealProps.id,
+      'user-1'
+    );
     expect(fetchedFakeMeal).not.toBeNull();
     expect(fetchedFakeMeal?.name).toBe('Protein Shake');
 
-    const notFoundFakeMeal = await repo.getFakeMealByIdAndUserId('1', 'user-2');
+    const notFoundFakeMeal = await repo.getFakeMealByIdAndUserId(
+      vp.validFakeMealProps.id,
+      'user-2'
+    );
     expect(notFoundFakeMeal).toBeNull();
   });
 
@@ -89,7 +95,7 @@ describe('MemoryFakeMealsRepo', () => {
     const allFakeMeals = await repo.getAllFakeMeals();
     expect(allFakeMeals.length).toBe(1);
 
-    await repo.deleteFakeMeal('1');
+    await repo.deleteFakeMeal(vp.validFakeMealProps.id);
 
     const allFakeMealsAfterDeletion = await repo.getAllFakeMeals();
     expect(allFakeMealsAfterDeletion.length).toBe(0);
@@ -98,8 +104,8 @@ describe('MemoryFakeMealsRepo', () => {
   it('should delete a fake meal by ID and userId', async () => {
     const fakeMeal2 = FakeMeal.create({
       ...vp.validFakeMealProps,
-      id: Id.create('2'),
-      userId: Id.create('user-2'),
+      id: '2',
+      userId: 'user-2',
       name: 'Another Shake',
     });
     await repo.saveFakeMeal(fakeMeal2);
@@ -107,7 +113,7 @@ describe('MemoryFakeMealsRepo', () => {
     const allFakeMeals = await repo.getAllFakeMeals();
     expect(allFakeMeals.length).toBe(2);
 
-    await repo.deleteFakeMealByIdAndUserId('1', 'user-1');
+    await repo.deleteFakeMealByIdAndUserId(vp.validFakeMealProps.id, 'user-1');
 
     const allFakeMealsAfterDeletion = await repo.getAllFakeMeals();
     expect(allFakeMealsAfterDeletion.length).toBe(1);

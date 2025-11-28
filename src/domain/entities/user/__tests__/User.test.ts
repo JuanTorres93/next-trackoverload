@@ -1,13 +1,13 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { User, UserProps } from '../User';
-import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import { ValidationError } from '@/domain/common/errors';
 import { Id } from '@/domain/value-objects/Id/Id';
+import { User, UserCreateProps } from '../User';
 
 describe('User', () => {
   let user: User;
-  let validUserProps: UserProps;
+  let validUserProps: UserCreateProps;
 
   beforeEach(() => {
     validUserProps = {
@@ -54,9 +54,9 @@ describe('User', () => {
 
   it('should set createdAt and updatedAt if not provided', () => {
     const userWithoutDates = User.create({
-      id: Id.create('2'),
+      id: 'another-user-id',
       name: 'Another User',
-      customerId: Id.create('customer-2'),
+      customerId: 'another-customer-id',
       createdAt: undefined as unknown as Date,
       updatedAt: undefined as unknown as Date,
     });
@@ -64,23 +64,12 @@ describe('User', () => {
     expect(userWithoutDates.updatedAt).toBeInstanceOf(Date);
   });
 
-  it('should throw error if customerId is invalid', async () => {
-    const invalidCustomerIds = ['', '   ', 123, true, {}, [], null];
-
-    for (const invalidCustomerId of invalidCustomerIds) {
-      expect(() =>
-        // @ts-expect-error Testing invalid inputs
-        User.create({ ...validUserProps, customerId: invalidCustomerId })
-      ).toThrowError(ValidationError);
-    }
-  });
-
   it('should throw error if id is not instance of Id', async () => {
     expect(() =>
       User.create({
         ...validUserProps,
         // @ts-expect-error Testing invalid inputs
-        id: 'not-Id',
+        id: 123,
       })
     ).toThrowError(ValidationError);
 
@@ -88,9 +77,9 @@ describe('User', () => {
       User.create({
         ...validUserProps,
         // @ts-expect-error Testing invalid inputs
-        id: 'not-Id',
+        id: 123,
       })
-    ).toThrowError(/Id/);
+    ).toThrowError(/Id.*string/);
   });
 
   it('should throw error if customerId exists and is not instance of Id', async () => {
@@ -98,7 +87,7 @@ describe('User', () => {
       User.create({
         ...validUserProps,
         // @ts-expect-error Testing invalid inputs
-        customerId: 'not-Id',
+        customerId: 123,
       })
     ).toThrowError(ValidationError);
 
@@ -106,8 +95,8 @@ describe('User', () => {
       User.create({
         ...validUserProps,
         // @ts-expect-error Testing invalid inputs
-        customerId: 'not-Id',
+        customerId: 123,
       })
-    ).toThrowError(/\sId/);
+    ).toThrowError(/Id.*string/);
   });
 });

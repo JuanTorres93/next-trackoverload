@@ -1,8 +1,7 @@
+import * as vp from '@/../tests/createProps';
+import { Workout } from '@/domain/entities/workout/Workout';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryWorkoutsRepo } from '../MemoryWorkoutsRepo';
-import { Workout } from '@/domain/entities/workout/Workout';
-import { Id } from '@/domain/value-objects/Id/Id';
-import * as vp from '@/../tests/createProps';
 
 describe('MemoryWorkoutsRepo', () => {
   let repo: MemoryWorkoutsRepo;
@@ -12,7 +11,6 @@ describe('MemoryWorkoutsRepo', () => {
     repo = new MemoryWorkoutsRepo();
     workout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       name: 'Push Day',
     });
     await repo.saveWorkout(workout);
@@ -21,7 +19,7 @@ describe('MemoryWorkoutsRepo', () => {
   it('should save a workout', async () => {
     const newWorkout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('2'),
+      id: 'another-workout-id',
       name: 'Pull Day',
     });
     await repo.saveWorkout(newWorkout);
@@ -34,7 +32,6 @@ describe('MemoryWorkoutsRepo', () => {
   it('should update an existing workout', async () => {
     const updatedWorkout = Workout.create({
       ...vp.validWorkoutProps,
-      id: Id.create('1'),
       name: 'Updated Push Day',
       updatedAt: new Date('2023-01-03'),
     });
@@ -46,7 +43,7 @@ describe('MemoryWorkoutsRepo', () => {
   });
 
   it('should retrieve a workout by ID', async () => {
-    const fetchedWorkout = await repo.getWorkoutById('1');
+    const fetchedWorkout = await repo.getWorkoutById(vp.validWorkoutProps.id);
     expect(fetchedWorkout).not.toBeNull();
     expect(fetchedWorkout?.name).toBe('Push Day');
   });
@@ -60,7 +57,7 @@ describe('MemoryWorkoutsRepo', () => {
     const allWorkouts = await repo.getAllWorkouts();
     expect(allWorkouts.length).toBe(1);
 
-    await repo.deleteWorkout('1');
+    await repo.deleteWorkout(vp.validWorkoutProps.id);
 
     const allWorkoutsAfterDeletion = await repo.getAllWorkouts();
     expect(allWorkoutsAfterDeletion.length).toBe(0);

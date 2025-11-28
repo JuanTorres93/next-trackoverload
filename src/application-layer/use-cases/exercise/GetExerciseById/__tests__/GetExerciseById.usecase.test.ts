@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { GetExerciseByIdUsecase } from '../GetExerciseById.usecase';
 import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
-import { Id } from '@/domain/value-objects/Id/Id';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
@@ -19,7 +18,7 @@ describe('GetExerciseByIdUsecase', () => {
   it('should return exercise when found', async () => {
     const exercise = Exercise.create({
       ...vp.validExerciseProps,
-      id: Id.create('1'),
+      id: '1',
       name: 'Push Up',
     });
 
@@ -34,7 +33,7 @@ describe('GetExerciseByIdUsecase', () => {
   it('should return an array of ExerciseDTO', async () => {
     const exercise = Exercise.create({
       ...vp.validExerciseProps,
-      id: Id.create('1'),
+      id: '1',
       name: 'Push Up',
     });
 

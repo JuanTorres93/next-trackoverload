@@ -1,15 +1,14 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { AddMealToDayUsecase } from '../AddMealToDay.usecase';
-import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
-import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
-import { Day } from '@/domain/entities/day/Day';
-import { Meal } from '@/domain/entities/meal/Meal';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
-import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { ValidationError } from '@/domain/common/errors';
+import { Day } from '@/domain/entities/day/Day';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { IngredientLine } from '@/domain/entities/ingredient/IngredientLine';
+import { Meal } from '@/domain/entities/meal/Meal';
+import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
+import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { AddMealToDayUsecase } from '../AddMealToDay.usecase';
 
 describe('AddMealToDayUsecase', () => {
   let daysRepo: MemoryDaysRepo;
@@ -36,7 +35,6 @@ describe('AddMealToDayUsecase', () => {
     });
     meal = Meal.create({
       ...vp.mealPropsNoIngredientLines,
-      id: Id.create('meal-1'),
       ingredientLines: [ingredientLine],
     });
 
@@ -48,7 +46,7 @@ describe('AddMealToDayUsecase', () => {
     const result = await addMealToDayUsecase.execute({
       date: vp.dateId,
       userId: vp.userId,
-      mealId: 'meal-1',
+      mealId: vp.mealPropsNoIngredientLines.id,
     });
 
     expect(result.meals).toHaveLength(1);
@@ -59,7 +57,7 @@ describe('AddMealToDayUsecase', () => {
     const result = await addMealToDayUsecase.execute({
       date: vp.dateId,
       userId: vp.userId,
-      mealId: 'meal-1',
+      mealId: vp.mealPropsNoIngredientLines.id,
     });
 
     expect(result).not.toBeInstanceOf(Day);
@@ -80,7 +78,7 @@ describe('AddMealToDayUsecase', () => {
     const result = await addMealToDayUsecase.execute({
       date,
       userId: vp.userId,
-      mealId: vp.mealPropsNoIngredientLines.id.value,
+      mealId: vp.mealPropsNoIngredientLines.id,
     });
 
     expect(result.id).toEqual(date.toISOString());

@@ -1,7 +1,13 @@
 import { Id } from '@/domain/value-objects/Id/Id';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 import { validateNonEmptyString } from '../../common/validation';
-import { ValidationError } from '@/domain/common/errors';
+
+export type ExerciseCreateProps = {
+  id: string;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 export type ExerciseUpdateProps = {
   name?: string;
@@ -17,15 +23,20 @@ export type ExerciseProps = {
 export class Exercise {
   private constructor(private readonly props: ExerciseProps) {}
 
-  static create(props: ExerciseProps): Exercise {
-    if (!(props.id instanceof Id))
-      throw new ValidationError('Exercise: id must be an instance of Id');
+  static create(props: ExerciseCreateProps): Exercise {
     validateNonEmptyString(props.name, 'Exercise name');
 
     props.createdAt = handleCreatedAt(props.createdAt);
     props.updatedAt = handleUpdatedAt(props.updatedAt);
 
-    return new Exercise(props);
+    const exerciseProps: ExerciseProps = {
+      id: Id.create(props.id),
+      name: props.name,
+      createdAt: props.createdAt,
+      updatedAt: props.updatedAt,
+    };
+
+    return new Exercise(exerciseProps);
   }
 
   get id() {

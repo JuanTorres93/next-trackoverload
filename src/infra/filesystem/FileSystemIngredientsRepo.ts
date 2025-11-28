@@ -27,7 +27,6 @@ export class FileSystemIngredientsRepo
     return (data as IngredientDTO[]).map((item) =>
       Ingredient.create({
         ...item,
-        id: Id.create(item.id),
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),
       })

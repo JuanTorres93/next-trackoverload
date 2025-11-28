@@ -1,6 +1,5 @@
 import { ExercisesRepo } from '@/domain/repos/ExercisesRepo.port';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
-import { Id } from '@/domain/value-objects/Id/Id';
 import {
   ExerciseDTO,
   toExerciseDTO,
@@ -30,7 +29,7 @@ export class UpdateExerciseUsecase {
     }
 
     const updatedExercise = Exercise.create({
-      id: Id.create(existingExercise.id),
+      id: existingExercise.id,
       name: request.name ?? existingExercise.name,
       createdAt: existingExercise.createdAt,
       updatedAt: new Date(),
