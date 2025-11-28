@@ -144,4 +144,21 @@ describe('Workout', () => {
       });
     }).toThrow(/Id.*string/);
   });
+
+  it('should throw error if name is larger that 100 chars', async () => {
+    const longName = 'a'.repeat(101);
+    expect(() => {
+      Workout.create({
+        ...validWorkoutProps,
+        name: longName,
+      });
+    }).toThrow(ValidationError);
+
+    expect(() => {
+      Workout.create({
+        ...validWorkoutProps,
+        name: longName,
+      });
+    }).toThrow(/Text.*not exceed/);
+  });
 });

@@ -7,6 +7,8 @@ import {
   validatePositiveNumber,
   validateInteger,
 } from '../../common/validation';
+import { Text } from '@/domain/value-objects/Text/Text';
+import { Integer } from '@/domain/value-objects/Integer/Integer';
 
 export type ExerciseLine = {
   // TODO change exerciseId to Id type
@@ -43,18 +45,22 @@ export type WorkoutCreateProps = {
 export type WorkoutProps = {
   id: Id;
   userId: Id;
-  name: string;
+  name: Text;
   workoutTemplateId: Id;
   exercises: ExerciseLine[];
   createdAt: Date;
   updatedAt: Date;
 };
 
+const nameTextOptions = {
+  canBeEmpty: false,
+  maxLength: Integer.create(100),
+};
+
 export class Workout {
   private constructor(private readonly props: WorkoutProps) {}
 
   static create(props: WorkoutCreateProps): Workout {
-    validateNonEmptyString(props.name, 'Workout name');
     if (!Array.isArray(props.exercises)) {
       throw new ValidationError('Workout: exercises must be an array');
     }
@@ -66,7 +72,7 @@ export class Workout {
     const workoutProps: WorkoutProps = {
       id: Id.create(props.id),
       userId: Id.create(props.userId),
-      name: props.name,
+      name: Text.create(props.name, nameTextOptions),
       workoutTemplateId: Id.create(props.workoutTemplateId),
       exercises: props.exercises,
       createdAt: handleCreatedAt(props.createdAt),
@@ -164,7 +170,7 @@ export class Workout {
   }
 
   get name() {
-    return this.props.name;
+    return this.props.name.value;
   }
 
   get workoutTemplateId() {
