@@ -1,11 +1,10 @@
-import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
-import {
-  validateNonEmptyString,
-  validateGreaterThanZero,
-} from '../../common/validation';
-import { Protein } from '../../interfaces/Protein';
-import { Calories } from '../../interfaces/Calories';
+import { Float } from '@/domain/value-objects/Float/Float';
 import { Id } from '@/domain/value-objects/Id/Id';
+import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
+import { Calories } from '../../interfaces/Calories';
+import { Protein } from '../../interfaces/Protein';
+import { Text } from '@/domain/value-objects/Text/Text';
+import { Integer } from '@/domain/value-objects/Integer/Integer';
 
 export type FakeMealCreateProps = {
   id: string;
@@ -26,30 +25,30 @@ export type FakeUpdateProps = {
 export type FakeMealProps = {
   id: Id;
   userId: Id;
-  name: string;
-  calories: number;
-  protein: number;
+  name: Text;
+  calories: Float;
+  protein: Float;
   createdAt: Date;
   updatedAt: Date;
 };
+
+const nameTextOptions = { canBeEmpty: false, maxLength: Integer.create(100) };
+const caloriesFloatOptions = { onlyPositive: true };
+const proteinFloatOptions = { onlyPositive: true };
 
 export class FakeMeal implements Protein, Calories {
   private constructor(private readonly props: FakeMealProps) {}
 
   static create(props: FakeMealCreateProps): FakeMeal {
-    validateNonEmptyString(props.name, 'FakeMeal name');
-    validateGreaterThanZero(props.calories, 'FakeMeal calories');
-    validateGreaterThanZero(props.protein, 'FakeMeal protein');
-
     props.createdAt = handleCreatedAt(props.createdAt);
     props.updatedAt = handleUpdatedAt(props.updatedAt);
 
     const fakeMealProps: FakeMealProps = {
       id: Id.create(props.id),
       userId: Id.create(props.userId),
-      name: props.name,
-      calories: props.calories,
-      protein: props.protein,
+      name: Text.create(props.name, nameTextOptions),
+      calories: Float.create(props.calories, caloriesFloatOptions),
+      protein: Float.create(props.protein, proteinFloatOptions),
       createdAt: props.createdAt,
       updatedAt: props.updatedAt,
     };
@@ -59,16 +58,13 @@ export class FakeMeal implements Protein, Calories {
 
   update(patch: FakeUpdateProps) {
     if (patch.name !== undefined) {
-      validateNonEmptyString(patch.name, 'FakeMeal name');
-      this.props.name = patch.name;
+      this.props.name = Text.create(patch.name, nameTextOptions);
     }
     if (patch.calories !== undefined) {
-      validateGreaterThanZero(patch.calories, 'FakeMeal calories');
-      this.props.calories = patch.calories;
+      this.props.calories = Float.create(patch.calories, caloriesFloatOptions);
     }
     if (patch.protein !== undefined) {
-      validateGreaterThanZero(patch.protein, 'FakeMeal protein');
-      this.props.protein = patch.protein;
+      this.props.protein = Float.create(patch.protein, proteinFloatOptions);
     }
     this.props.updatedAt = handleUpdatedAt(this.props.updatedAt);
   }
@@ -83,15 +79,15 @@ export class FakeMeal implements Protein, Calories {
   }
 
   get name() {
-    return this.props.name;
+    return this.props.name.value;
   }
 
   get calories() {
-    return this.props.calories;
+    return this.props.calories.value;
   }
 
   get protein() {
-    return this.props.protein;
+    return this.props.protein.value;
   }
 
   get createdAt() {

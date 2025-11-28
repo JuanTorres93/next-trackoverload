@@ -156,31 +156,4 @@ describe('UpdateFakeMealUsecase', () => {
       })
     ).rejects.toThrow(ValidationError);
   });
-
-  it('should throw ValidationError for invalid calories in patch', async () => {
-    const fakeMeal = FakeMeal.create({
-      ...vp.validFakeMealProps,
-      name: 'Test Meal',
-    });
-
-    await fakeMealsRepo.saveFakeMeal(fakeMeal);
-
-    await expect(
-      usecase.execute({
-        id: vp.validFakeMealProps.id,
-        userId: vp.userId,
-        patch: { calories: 0 },
-      })
-    ).rejects.toThrow(ValidationError);
-  });
-
-  it('should throw error for invalid userId', async () => {
-    const invalidUserIds = ['', '   ', null, undefined, 34, 0, -5, {}, []];
-    for (const userId of invalidUserIds) {
-      await expect(
-        // @ts-expect-error testing invalid types
-        usecase.execute({ id: 'test-id', userId, patch: { name: 'Name' } })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
 });

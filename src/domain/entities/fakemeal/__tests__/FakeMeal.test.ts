@@ -39,6 +39,23 @@ describe('FakeMeal', () => {
     expect(fakeMeal.name).toBe('New Name');
   });
 
+  it('name should not be greater than 100 chars', async () => {
+    const longName = 'a'.repeat(101);
+    expect(() =>
+      FakeMeal.create({
+        ...validFakeMealProps,
+        name: longName,
+      })
+    ).toThrow(ValidationError);
+
+    expect(() =>
+      FakeMeal.create({
+        ...validFakeMealProps,
+        name: longName,
+      })
+    ).toThrow(/Text.*exceed/);
+  });
+
   it('should throw validation error for empty name', async () => {
     expect(() =>
       FakeMeal.create({
@@ -48,8 +65,8 @@ describe('FakeMeal', () => {
     ).toThrow(ValidationError);
   });
 
-  it('should throw validation error for no calories', async () => {
-    const props = { ...validFakeMealProps, calories: 0 };
+  it('should throw validation error for negative calories', async () => {
+    const props = { ...validFakeMealProps, calories: -10 };
     expect(() =>
       FakeMeal.create({
         ...props,
@@ -59,20 +76,12 @@ describe('FakeMeal', () => {
     expect(() =>
       FakeMeal.create({
         ...props,
-        calories: -10,
       })
-    ).toThrow(ValidationError);
-
-    expect(() =>
-      FakeMeal.create({
-        ...props,
-        calories: 0,
-      })
-    ).toThrow(ValidationError);
+    ).toThrow(/Float.*positive/);
   });
 
-  it('should throw validation error for no proteins', async () => {
-    const props = { ...validFakeMealProps, protein: 0 };
+  it('should throw validation error for negative proteins', async () => {
+    const props = { ...validFakeMealProps, protein: 0 - 1 };
     expect(() =>
       FakeMeal.create({
         ...props,
@@ -82,16 +91,8 @@ describe('FakeMeal', () => {
     expect(() =>
       FakeMeal.create({
         ...props,
-        protein: -10,
       })
-    ).toThrow(ValidationError);
-
-    expect(() =>
-      FakeMeal.create({
-        ...props,
-        protein: 0,
-      })
-    ).toThrow(ValidationError);
+    ).toThrow(/Float.*positive/);
   });
 
   it('should throw ValidationError if id is not Instance of Id', async () => {

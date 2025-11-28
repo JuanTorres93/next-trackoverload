@@ -72,17 +72,6 @@ describe('CreateFakeMealUsecase', () => {
     await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
   });
 
-  it('should throw ValidationError for zero calories', async () => {
-    const request = {
-      userId: vp.userId,
-      name: vp.validFakeMealProps.name,
-      calories: 0,
-      protein: vp.validFakeMealProps.protein,
-    };
-
-    await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
-  });
-
   it('should throw ValidationError for negative protein', async () => {
     const request = {
       userId: vp.userId,
