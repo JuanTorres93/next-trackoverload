@@ -100,20 +100,17 @@ export class UpdateIngredientInMealUsecase {
       );
     }
 
+    existingIngredientLine.update({
+      ingredient: newIngredient,
+      quantityInGrams: request.quantityInGrams,
+    });
+
     // Create updated meal with updated ingredient line
     const updatedMeal = Meal.create({
       id: existingMeal.id,
       userId: existingMeal.userId,
       name: existingMeal.name,
-      ingredientLines: existingMeal.ingredientLines.map((line) => {
-        if (line.id === request.ingredientLineId) {
-          return line.update({
-            ingredient: newIngredient,
-            quantityInGrams: request.quantityInGrams,
-          });
-        }
-        return line;
-      }),
+      ingredientLines: existingMeal.ingredientLines,
       createdAt: existingMeal.createdAt,
       updatedAt: existingMeal.updatedAt,
     });

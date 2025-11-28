@@ -154,14 +154,14 @@ export class UpdateIngredientLineUsecase {
     }
 
     // Create the updated ingredient line
-    const updatedIngredientLine = existingIngredientLine.update({
+    existingIngredientLine.update({
       ingredient: newIngredient,
       quantityInGrams: request.quantityInGrams,
     });
 
     // Save the updated ingredient line
-    await this.ingredientLinesRepo.saveIngredientLine(updatedIngredientLine);
+    await this.ingredientLinesRepo.saveIngredientLine(existingIngredientLine);
 
-    return toIngredientLineDTO(updatedIngredientLine);
+    return toIngredientLineDTO(existingIngredientLine);
   }
 }

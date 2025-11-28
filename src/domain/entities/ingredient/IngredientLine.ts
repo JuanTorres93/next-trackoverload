@@ -5,6 +5,7 @@ import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 import { Id } from '@/domain/value-objects/Id/Id';
 import { Calories } from '@/domain/interfaces/Calories';
 import { Protein } from '@/domain/interfaces/Protein';
+import { Float } from '@/domain/value-objects/Float/Float';
 
 export type IngredientLineCreateProps = {
   id: string;
@@ -22,10 +23,12 @@ export type IngredientLineUpdateProps = {
 export type IngredientLineProps = {
   id: Id;
   ingredient: Ingredient;
-  quantityInGrams: number;
+  quantityInGrams: Float;
   createdAt: Date;
   updatedAt: Date;
 };
+
+const quantityFloatOptions = { onlyPositive: true, canBeZero: false };
 
 export class IngredientLine implements Calories, Protein {
   private constructor(private readonly props: IngredientLineProps) {}
@@ -35,19 +38,13 @@ export class IngredientLine implements Calories, Protein {
       throw new ValidationError('IngredientLine: Invalid ingredient');
     }
 
-    if (
-      typeof props.quantityInGrams !== 'number' ||
-      props.quantityInGrams <= 0
-    ) {
-      throw new ValidationError(
-        'IngredientLine: quantityInGrams must be a number greater than zero'
-      );
-    }
-
     const ingredientLineProps: IngredientLineProps = {
       id: Id.create(props.id),
       ingredient: props.ingredient,
-      quantityInGrams: props.quantityInGrams,
+      quantityInGrams: Float.create(
+        props.quantityInGrams,
+        quantityFloatOptions
+      ),
       createdAt: handleCreatedAt(props.createdAt),
       updatedAt: handleUpdatedAt(props.updatedAt),
     };
@@ -55,27 +52,26 @@ export class IngredientLine implements Calories, Protein {
     return new IngredientLine(ingredientLineProps);
   }
 
-  update(patch: IngredientLineUpdateProps): IngredientLine {
-    const newIngredient = patch.ingredient ?? this.props.ingredient;
-    const newQuantity = patch.quantityInGrams ?? this.props.quantityInGrams;
-
+  update(patch: IngredientLineUpdateProps): void {
     if (patch.ingredient && !(patch.ingredient instanceof Ingredient)) {
       throw new ValidationError('IngredientLine update ingredient');
     }
 
-    if (patch.quantityInGrams !== undefined)
+    if (patch.ingredient) this.props.ingredient = patch.ingredient;
+
+    if (patch.quantityInGrams !== undefined) {
       validateGreaterThanZero(
         patch.quantityInGrams,
         'IngredientLine update quantityInGrams'
       );
 
-    return IngredientLine.create({
-      id: this.id,
-      ingredient: newIngredient,
-      quantityInGrams: newQuantity,
-      createdAt: this.props.createdAt,
-      updatedAt: new Date(),
-    });
+      this.props.quantityInGrams = Float.create(
+        patch.quantityInGrams,
+        quantityFloatOptions
+      );
+    }
+
+    this.props.updatedAt = handleUpdatedAt(this.props.updatedAt);
   }
 
   get id() {
@@ -87,13 +83,13 @@ export class IngredientLine implements Calories, Protein {
   }
 
   get quantityInGrams() {
-    return this.props.quantityInGrams;
+    return this.props.quantityInGrams.value;
   }
 
   get calories() {
     return (
       (this.props.ingredient.nutritionalInfoPer100g.calories *
-        this.props.quantityInGrams) /
+        this.props.quantityInGrams.value) /
       100
     );
   }
@@ -101,7 +97,7 @@ export class IngredientLine implements Calories, Protein {
   get protein() {
     return (
       (this.props.ingredient.nutritionalInfoPer100g.protein *
-        this.props.quantityInGrams) /
+        this.props.quantityInGrams.value) /
       100
     );
   }
