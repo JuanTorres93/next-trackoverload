@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import * as vp from '@/../tests/createProps';
 import { ValidationError } from '@/domain/common/errors';
-import { Id } from '@/domain/value-objects/Id/Id';
 import { User, UserCreateProps } from '../User';
 
 describe('User', () => {
@@ -27,23 +26,11 @@ describe('User', () => {
   });
 
   it('should change its customerId', async () => {
-    const newCustomerId = Id.create('new-customer-id');
+    const newCustomerId = 'new-customer-id';
     const patch = { customerId: newCustomerId };
 
     user.update(patch);
-    expect(user.customerId).toBe(newCustomerId.value);
-  });
-
-  it('should throw error is updating customer id with an id that is not an instance of Id', async () => {
-    expect(() =>
-      // @ts-expect-error Testing invalid inputs
-      user.update({ customerId: 'not-Id' })
-    ).toThrowError(ValidationError);
-
-    expect(() =>
-      // @ts-expect-error Testing invalid inputs
-      user.update({ customerId: 'not-Id' })
-    ).toThrowError(/customerId.*\sId/);
+    expect(user.customerId).toBe(newCustomerId);
   });
 
   it('should throw ValidationError for empty name', () => {
@@ -98,5 +85,22 @@ describe('User', () => {
         customerId: 123,
       })
     ).toThrowError(/Id.*string/);
+  });
+
+  it('should throw error if name is larger than 100 characters', async () => {
+    const longName = 'a'.repeat(101);
+    expect(() =>
+      User.create({
+        ...validUserProps,
+        name: longName,
+      })
+    ).toThrowError(ValidationError);
+
+    expect(() =>
+      User.create({
+        ...validUserProps,
+        name: longName,
+      })
+    ).toThrowError(/Text.*not exceed/);
   });
 });

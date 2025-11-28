@@ -1,7 +1,7 @@
-import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 import { Id } from '@/domain/value-objects/Id/Id';
-import { validateNonEmptyString } from '../../common/validation';
-import { ValidationError } from '@/domain/common/errors';
+import { Integer } from '@/domain/value-objects/Integer/Integer';
+import { Text } from '@/domain/value-objects/Text/Text';
+import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 
 export type UserCreateProps = {
   id: string;
@@ -13,35 +13,29 @@ export type UserCreateProps = {
 
 export type UserUpdateProps = {
   name?: string;
-  customerId?: Id;
+  customerId?: string;
 };
 
 export type UserProps = {
   id: Id;
-  name: string;
+  name: Text;
   customerId?: Id;
   createdAt: Date;
   updatedAt: Date;
 };
 
-function validateUpdateProps(patch: UserUpdateProps) {
-  if (patch.name !== undefined) {
-    validateNonEmptyString(patch.name, 'User name');
-  }
-  if (patch.customerId !== undefined && !(patch.customerId instanceof Id)) {
-    throw new ValidationError('User customerId must be an instance of Id');
-  }
-}
+const nameTextOptions = {
+  canBeEmpty: false,
+  maxLength: Integer.create(100),
+};
 
 export class User {
   private constructor(private readonly props: UserProps) {}
 
   static create(props: UserCreateProps): User {
-    validateNonEmptyString(props.name, 'User name');
-
     const userProps: UserProps = {
       id: Id.create(props.id),
-      name: props.name,
+      name: Text.create(props.name, nameTextOptions),
       customerId: props.customerId ? Id.create(props.customerId) : undefined,
       createdAt: handleCreatedAt(props.createdAt),
       updatedAt: handleUpdatedAt(props.updatedAt),
@@ -51,14 +45,12 @@ export class User {
   }
 
   update(patch: UserUpdateProps): void {
-    validateUpdateProps(patch);
-
     if (patch.name) {
-      this.props.name = patch.name;
+      this.props.name = Text.create(patch.name, nameTextOptions);
     }
 
     if (patch.customerId) {
-      this.props.customerId = patch.customerId;
+      this.props.customerId = Id.create(patch.customerId);
     }
 
     this.props.updatedAt = new Date();
@@ -70,7 +62,7 @@ export class User {
   }
 
   get name() {
-    return this.props.name;
+    return this.props.name.value;
   }
 
   get customerId() {
