@@ -1,6 +1,5 @@
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { Id } from '@/domain/value-objects/Id/Id';
 import {
   IngredientDTO,
   toIngredientDTO,
@@ -23,10 +22,8 @@ export class CreateIngredientUsecase {
     const newIngredient = Ingredient.create({
       id: uuidv4(),
       name: request.name,
-      nutritionalInfoPer100g: {
-        calories: Number(request.calories),
-        protein: Number(request.protein),
-      },
+      calories: Number(request.calories),
+      protein: Number(request.protein),
       createdAt: new Date(),
       updatedAt: new Date(),
     });

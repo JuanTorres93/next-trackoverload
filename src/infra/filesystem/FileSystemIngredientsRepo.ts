@@ -1,10 +1,9 @@
-import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { Id } from '@/domain/value-objects/Id/Id';
 import {
   IngredientDTO,
   toIngredientDTO,
 } from '@/application-layer/dtos/IngredientDTO';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { BaseFileSystemRepo } from './BaseFileSystemRepo';
 
 export class FileSystemIngredientsRepo
@@ -27,6 +26,8 @@ export class FileSystemIngredientsRepo
     return (data as IngredientDTO[]).map((item) =>
       Ingredient.create({
         ...item,
+        calories: item.nutritionalInfoPer100g.calories,
+        protein: item.nutritionalInfoPer100g.protein,
         createdAt: new Date(item.createdAt),
         updatedAt: new Date(item.updatedAt),
       })

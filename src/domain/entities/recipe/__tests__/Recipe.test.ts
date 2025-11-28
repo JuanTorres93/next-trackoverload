@@ -41,10 +41,8 @@ describe('Recipe', () => {
       quantityInGrams: 50,
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,
-        nutritionalInfoPer100g: {
-          calories: 200,
-          protein: 20,
-        },
+        calories: 200,
+        protein: 20,
       }),
     });
 
@@ -57,19 +55,15 @@ describe('Recipe', () => {
   });
 
   it('should compute total protein', async () => {
-    expect(recipe.protein).toBe(
-      vp.validIngredientProps.nutritionalInfoPer100g.protein
-    );
+    expect(recipe.protein).toBe(vp.validIngredientProps.protein);
 
     const anotherIngredientLine = IngredientLine.create({
       ...vp.ingredientLinePropsNoIngredient,
       id: 'another-line-id',
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,
-        nutritionalInfoPer100g: {
-          calories: 200,
-          protein: 10,
-        },
+        calories: 200,
+        protein: 10,
       }),
       quantityInGrams: 100,
     });
@@ -80,7 +74,7 @@ describe('Recipe', () => {
     });
 
     expect(recipeWithTwoLines.protein).toBe(
-      vp.validIngredientProps.nutritionalInfoPer100g.protein + 10
+      vp.validIngredientProps.protein + 10
     );
   });
 
@@ -97,10 +91,8 @@ describe('Recipe', () => {
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,
         id: 'other-ing-id',
-        nutritionalInfoPer100g: {
-          calories: 200,
-          protein: 20,
-        },
+        calories: 200,
+        protein: 20,
       }),
       id: 'another-line-id',
       quantityInGrams: 50,
@@ -118,10 +110,8 @@ describe('Recipe', () => {
         ingredient: Ingredient.create({
           ...vp.validIngredientProps,
           id: 'other-ing-id',
-          nutritionalInfoPer100g: {
-            calories: 200,
-            protein: 20,
-          },
+          calories: 200,
+          protein: 20,
         }),
         quantityInGrams: 50,
       })

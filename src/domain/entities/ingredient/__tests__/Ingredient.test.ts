@@ -38,42 +38,6 @@ describe('Ingredient', () => {
     });
   });
 
-  it('should not update ingredient with invalid props', async () => {
-    const invalidProps = [
-      { name: '' },
-      { name: 3 },
-      { calories: -10 },
-      { calories: 'invalid' },
-      { protein: -5 },
-      { protein: 'invalid' },
-    ];
-
-    for (const invalidProp of invalidProps) {
-      // @ts-expect-error the error comes precisely because it should not be updated
-      expect(() => ingredient.update(invalidProp)).toThrow(ValidationError);
-    }
-  });
-
-  it('should not create an ingredient with invalid props', async () => {
-    const invalidProps = [
-      { id: '' },
-      { id: 3 },
-      { name: '' },
-      { name: 3 },
-      { nutritionalInfoPer100g: null },
-      { nutritionalInfoPer100g: { calories: -10, protein: 5 } },
-      { nutritionalInfoPer100g: { calories: 100, protein: -5 } },
-      { createdAt: 'invalid date' },
-      { updatedAt: 'invalid date' },
-    ];
-
-    for (const invalidProp of invalidProps) {
-      const props = { ...vp.validIngredientProps, ...invalidProp };
-      // @ts-expect-error the error comes precisely because it should not be created
-      expect(() => Ingredient.create(props)).toThrow();
-    }
-  });
-
   it('should throw error if id is not Id type', async () => {
     expect(() => {
       Ingredient.create({

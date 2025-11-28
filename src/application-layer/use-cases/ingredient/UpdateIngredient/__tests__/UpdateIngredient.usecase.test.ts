@@ -58,7 +58,7 @@ describe('UpdateIngredientUsecase', () => {
     expect(updatedIngredient.name).toBe(vp.validIngredientProps.name);
     expect(updatedIngredient.nutritionalInfoPer100g.calories).toBe(3333);
     expect(updatedIngredient.nutritionalInfoPer100g.protein).toBe(
-      vp.validIngredientProps.nutritionalInfoPer100g.protein
+      vp.validIngredientProps.protein
     );
     expect(updatedIngredient.updatedAt).not.toBe(
       ingredient.updatedAt.toISOString()
@@ -79,7 +79,7 @@ describe('UpdateIngredientUsecase', () => {
 
     expect(updatedIngredient.name).toBe(vp.validIngredientProps.name);
     expect(updatedIngredient.nutritionalInfoPer100g.calories).toBe(
-      vp.validIngredientProps.nutritionalInfoPer100g.calories
+      vp.validIngredientProps.calories
     );
     expect(updatedIngredient.nutritionalInfoPer100g.protein).toBe(666);
     expect(updatedIngredient.updatedAt).not.toBe(
@@ -122,10 +122,8 @@ describe('UpdateIngredientUsecase', () => {
     const ingredient = Ingredient.create({
       id: '1',
       name: 'Chicken Breast',
-      nutritionalInfoPer100g: {
-        calories: 165,
-        protein: 31,
-      },
+      calories: 165,
+      protein: 31,
       createdAt: new Date('2023-01-01'),
       updatedAt: new Date('2023-01-01'),
     });
@@ -160,10 +158,8 @@ describe('UpdateIngredientUsecase', () => {
     const ingredient = Ingredient.create({
       id: '1',
       name: 'Chicken Breast',
-      nutritionalInfoPer100g: {
-        calories: 165,
-        protein: 31,
-      },
+      calories: 165,
+      protein: 31,
       createdAt: new Date('2023-01-01'),
       updatedAt: new Date('2023-01-01'),
     });
@@ -184,10 +180,8 @@ describe('UpdateIngredientUsecase', () => {
     const ingredient = Ingredient.create({
       id: '1',
       name: 'Chicken Breast',
-      nutritionalInfoPer100g: {
-        calories: 165,
-        protein: 31,
-      },
+      calories: 165,
+      protein: 31,
       createdAt: new Date('2023-01-01'),
       updatedAt: new Date('2023-01-01'),
     });
@@ -203,10 +197,8 @@ describe('UpdateIngredientUsecase', () => {
     const ingredient = Ingredient.create({
       id: '1',
       name: 'Chicken Breast',
-      nutritionalInfoPer100g: {
-        calories: 165,
-        protein: 31,
-      },
+      calories: 165,
+      protein: 31,
       createdAt: new Date('2023-01-01'),
       updatedAt: new Date('2023-01-01'),
     });

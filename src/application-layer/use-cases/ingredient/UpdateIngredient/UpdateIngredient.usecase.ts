@@ -45,10 +45,8 @@ export class UpdateIngredientUsecase {
       const updatedIngredient = Ingredient.create({
         id: existingIngredient.id,
         name: existingIngredient.name,
-        nutritionalInfoPer100g: {
-          calories: existingIngredient.nutritionalInfoPer100g.calories,
-          protein: existingIngredient.nutritionalInfoPer100g.protein,
-        },
+        calories: existingIngredient.nutritionalInfoPer100g.calories,
+        protein: existingIngredient.nutritionalInfoPer100g.protein,
         createdAt: existingIngredient.createdAt,
         updatedAt: existingIngredient.updatedAt,
       });

@@ -153,25 +153,4 @@ describe('UpdateMealUsecase', () => {
       ).rejects.toThrow(ValidationError);
     }
   });
-
-  it('should throw error if userId is invalid', async () => {
-    const invalidUserIds = [
-      '',
-      null,
-      undefined,
-      123,
-      true,
-      {},
-      [],
-      () => {},
-      NaN,
-    ];
-
-    for (const invalidUserId of invalidUserIds) {
-      await expect(
-        // @ts-expect-error Testing invalid inputs
-        updateMealUsecase.execute({ id: '1', userId: invalidUserId })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
 });

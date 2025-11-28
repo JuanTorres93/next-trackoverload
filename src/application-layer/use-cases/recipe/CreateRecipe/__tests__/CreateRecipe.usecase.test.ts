@@ -39,10 +39,8 @@ describe('CreateRecipeUsecase', () => {
 
     testIngredient = Ingredient.create({
       ...vp.validIngredientProps,
-      nutritionalInfoPer100g: {
-        calories: 165,
-        protein: 31,
-      },
+      calories: 165,
+      protein: 31,
     });
 
     ingredientsRepo.saveIngredient(testIngredient);
@@ -189,10 +187,8 @@ describe('CreateRecipeUsecase', () => {
       ...vp.validIngredientProps,
       id: 'ingredient-2',
       name: 'Rice',
-      nutritionalInfoPer100g: {
-        calories: 130,
-        protein: 2.7,
-      },
+      calories: 130,
+      protein: 2.7,
     });
 
     await ingredientsRepo.saveIngredient(testIngredient2);

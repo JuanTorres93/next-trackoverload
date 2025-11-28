@@ -42,10 +42,8 @@ describe('Meal', () => {
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,
         id: 'other-ing',
-        nutritionalInfoPer100g: {
-          calories: 200,
-          protein: 20,
-        },
+        calories: 200,
+        protein: 20,
       }),
       quantityInGrams: 50,
     });
@@ -58,9 +56,7 @@ describe('Meal', () => {
 
   it('should compute the correct total protein', async () => {
     const totalProtein = meal.protein;
-    expect(totalProtein).toBe(
-      vp.validIngredientProps.nutritionalInfoPer100g.protein
-    );
+    expect(totalProtein).toBe(vp.validIngredientProps.protein);
 
     // More than one ingredient line
     const anotherIngredientLine = IngredientLine.create({
@@ -69,19 +65,15 @@ describe('Meal', () => {
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,
         id: 'other-ing',
-        nutritionalInfoPer100g: {
-          calories: 200,
-          protein: 20,
-        },
+        calories: 200,
+        protein: 20,
       }),
       quantityInGrams: 50,
     });
     meal.addIngredientLine(anotherIngredientLine);
 
     const newTotalProtein = meal.protein;
-    expect(newTotalProtein).toBe(
-      vp.validIngredientProps.nutritionalInfoPer100g.protein + 10
-    );
+    expect(newTotalProtein).toBe(vp.validIngredientProps.protein + 10);
   });
 
   it('should add a new ingredient line', async () => {

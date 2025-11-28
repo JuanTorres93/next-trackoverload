@@ -18,10 +18,8 @@ describe('FileSystemIngredientLinesRepo', () => {
     testIngredient = Ingredient.create({
       ...vp.validIngredientProps,
       name: 'Test Ingredient',
-      nutritionalInfoPer100g: {
-        calories: 100,
-        protein: 20,
-      },
+      calories: 100,
+      protein: 20,
     });
 
     // Create a backup of the original file if it exists
@@ -117,15 +115,12 @@ describe('FileSystemIngredientLinesRepo', () => {
   });
 
   it('should preserve ingredient imageUrl when deserializing', async () => {
-    // Create ingredient with imageUrl
     const ingredientWithImage = Ingredient.create({
       ...vp.validIngredientProps,
       id: 'ingredient-with-image',
       name: 'Test Ingredient with Image',
-      nutritionalInfoPer100g: {
-        calories: 100,
-        protein: 20,
-      },
+      calories: 100,
+      protein: 20,
       imageUrl: 'https://example.com/test-image.jpg',
     });
 

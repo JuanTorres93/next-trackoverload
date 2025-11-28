@@ -38,7 +38,8 @@ describe('UpdateDayMealsUsecase', () => {
     });
     const ingredient = Ingredient.create({
       ...vp.validIngredientProps,
-      nutritionalInfoPer100g: { calories: 150, protein: 3 },
+      calories: 150,
+      protein: 3,
     });
     const ingredientLine = IngredientLine.create({
       ...vp.ingredientLinePropsNoIngredient,

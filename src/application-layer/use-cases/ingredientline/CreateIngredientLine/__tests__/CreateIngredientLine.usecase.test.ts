@@ -149,10 +149,8 @@ describe('CreateIngredientLineUsecase', () => {
       ...vp.validIngredientProps,
       id: 'ing2',
       name: 'Rice',
-      nutritionalInfoPer100g: {
-        calories: 130,
-        protein: 2.7,
-      },
+      calories: 130,
+      protein: 2.7,
     });
 
     await ingredientsRepo.saveIngredient(ingredient1);

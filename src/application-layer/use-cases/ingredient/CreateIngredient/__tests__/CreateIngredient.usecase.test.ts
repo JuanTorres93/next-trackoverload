@@ -18,8 +18,8 @@ describe('CreateIngredientUsecase', () => {
   it('should create and save a new ingredient', async () => {
     const request = {
       name: vp.validIngredientProps.name,
-      calories: vp.validIngredientProps.nutritionalInfoPer100g.calories,
-      protein: vp.validIngredientProps.nutritionalInfoPer100g.protein,
+      calories: vp.validIngredientProps.calories,
+      protein: vp.validIngredientProps.protein,
     };
 
     const ingredient = await createIngredientUsecase.execute(request);
@@ -40,8 +40,8 @@ describe('CreateIngredientUsecase', () => {
   it('should return IngredientDTO', async () => {
     const request = {
       name: vp.validIngredientProps.name,
-      calories: vp.validIngredientProps.nutritionalInfoPer100g.calories,
-      protein: vp.validIngredientProps.nutritionalInfoPer100g.protein,
+      calories: vp.validIngredientProps.calories,
+      protein: vp.validIngredientProps.protein,
     };
 
     const ingredient = await createIngredientUsecase.execute(request);
@@ -65,17 +65,7 @@ describe('CreateIngredientUsecase', () => {
     );
   });
 
-  it('should throw an error if calories is zero or negative', async () => {
-    const request = {
-      name: 'Chicken Breast',
-      calories: 0,
-      protein: 31,
-    };
-
-    await expect(createIngredientUsecase.execute(request)).rejects.toThrow(
-      ValidationError
-    );
-
+  it('should throw an error if calories is negative', async () => {
     const requestNegative = {
       name: 'Chicken Breast',
       calories: -10,
@@ -85,19 +75,13 @@ describe('CreateIngredientUsecase', () => {
     await expect(
       createIngredientUsecase.execute(requestNegative)
     ).rejects.toThrow(ValidationError);
+
+    await expect(
+      createIngredientUsecase.execute(requestNegative)
+    ).rejects.toThrow(/Float.*positive/);
   });
 
-  it('should throw an error if protein is zero or negative', async () => {
-    const request = {
-      name: 'Chicken Breast',
-      calories: 165,
-      protein: 0,
-    };
-
-    await expect(createIngredientUsecase.execute(request)).rejects.toThrow(
-      ValidationError
-    );
-
+  it('should throw an error if protein is negative', async () => {
     const requestNegative = {
       name: 'Chicken Breast',
       calories: 165,
@@ -107,6 +91,10 @@ describe('CreateIngredientUsecase', () => {
     await expect(
       createIngredientUsecase.execute(requestNegative)
     ).rejects.toThrow(ValidationError);
+
+    await expect(
+      createIngredientUsecase.execute(requestNegative)
+    ).rejects.toThrow(/Float.*positive/);
   });
 
   it('should throw an error if name is not a string', async () => {

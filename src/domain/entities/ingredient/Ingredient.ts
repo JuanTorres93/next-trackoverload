@@ -1,21 +1,18 @@
+import { Float } from '@/domain/value-objects/Float/Float';
 import { Id } from '@/domain/value-objects/Id/Id';
+import { Text } from '@/domain/value-objects/Text/Text';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
-import {
-  validateGreaterThanZero,
-  validateNonEmptyString,
-  validateObject,
-  validatePositiveNumber,
-} from '../../common/validation';
 
 type NutritionalInfoPer100g = {
-  calories: number;
-  protein: number;
+  calories: Float;
+  protein: Float;
 };
 
 export type IngredientCreateProps = {
   id: string;
   name: string;
-  nutritionalInfoPer100g: NutritionalInfoPer100g;
+  calories: number;
+  protein: number;
   imageUrl?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -29,36 +26,32 @@ export type IngredientUpdateProps = {
 
 export type IngredientProps = {
   id: Id;
-  name: string;
+  name: Text;
   nutritionalInfoPer100g: NutritionalInfoPer100g;
-  imageUrl?: string;
+  imageUrl?: Text;
   createdAt: Date;
   updatedAt: Date;
 };
+
+const nameTextOptions = { canBeEmpty: false };
+const caloriesFloatOptions = { onlyPositive: true };
+const proteinFloatOptions = { onlyPositive: true };
 
 export class Ingredient {
   private constructor(private readonly props: IngredientProps) {}
 
   static create(props: IngredientCreateProps): Ingredient {
-    validateNonEmptyString(props.name, 'Ingredient name');
-    validateObject(
-      props.nutritionalInfoPer100g,
-      'Ingredient nutritionalInfoPer100g'
-    );
-    validateGreaterThanZero(
-      props.nutritionalInfoPer100g.calories,
-      'Ingredient nutritionalInfoPer100g calories'
-    );
-    validateGreaterThanZero(
-      props.nutritionalInfoPer100g.protein,
-      'Ingredient nutritionalInfoPer100g protein'
-    );
-    props.createdAt = handleCreatedAt(props.createdAt);
-    props.updatedAt = handleUpdatedAt(props.updatedAt);
-
     const ingredientProps: IngredientProps = {
       ...props,
       id: Id.create(props.id),
+      name: Text.create(props.name, nameTextOptions),
+      nutritionalInfoPer100g: {
+        calories: Float.create(props.calories, caloriesFloatOptions),
+        protein: Float.create(props.protein, proteinFloatOptions),
+      },
+      imageUrl: props.imageUrl ? Text.create(props.imageUrl) : undefined,
+      createdAt: handleCreatedAt(props.createdAt),
+      updatedAt: handleUpdatedAt(props.updatedAt),
     };
 
     return new Ingredient(ingredientProps);
@@ -66,22 +59,19 @@ export class Ingredient {
 
   update(patch: IngredientUpdateProps): void {
     if (patch.name !== undefined) {
-      validateNonEmptyString(patch.name, 'Ingredient name');
-      this.props.name = patch.name;
+      this.props.name = Text.create(patch.name, nameTextOptions);
     }
     if (patch.calories !== undefined) {
-      validatePositiveNumber(
+      this.props.nutritionalInfoPer100g.calories = Float.create(
         patch.calories,
-        'Ingredient nutritionalInfoPer100g calories'
+        caloriesFloatOptions
       );
-      this.props.nutritionalInfoPer100g.calories = patch.calories;
     }
     if (patch.protein !== undefined) {
-      validatePositiveNumber(
+      this.props.nutritionalInfoPer100g.protein = Float.create(
         patch.protein,
-        'Ingredient nutritionalInfoPer100g protein'
+        proteinFloatOptions
       );
-      this.props.nutritionalInfoPer100g.protein = patch.protein;
     }
 
     this.props.updatedAt = new Date();
@@ -92,15 +82,18 @@ export class Ingredient {
   }
 
   get name() {
-    return this.props.name;
+    return this.props.name.value;
   }
 
   get nutritionalInfoPer100g() {
-    return { ...this.props.nutritionalInfoPer100g };
+    return {
+      calories: this.props.nutritionalInfoPer100g.calories.value,
+      protein: this.props.nutritionalInfoPer100g.protein.value,
+    };
   }
 
   get imageUrl() {
-    return this.props.imageUrl;
+    return this.props.imageUrl?.value;
   }
 
   get createdAt() {

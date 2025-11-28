@@ -36,6 +36,8 @@ export class FileSystemIngredientLinesRepo
     return (data as IngredientLineDTO[]).map((item) => {
       const ingredient = Ingredient.create({
         ...item.ingredient,
+        calories: item.ingredient.nutritionalInfoPer100g.calories,
+        protein: item.ingredient.nutritionalInfoPer100g.protein,
         createdAt: new Date(item.ingredient.createdAt),
         updatedAt: new Date(item.ingredient.updatedAt),
       });

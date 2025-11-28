@@ -33,6 +33,8 @@ export class FileSystemDaysRepo
             (lineData: IngredientLineDTO) => {
               const ingredient = Ingredient.create({
                 ...lineData.ingredient,
+                calories: lineData.ingredient.nutritionalInfoPer100g.calories,
+                protein: lineData.ingredient.nutritionalInfoPer100g.protein,
                 createdAt: new Date(lineData.ingredient.createdAt),
                 updatedAt: new Date(lineData.ingredient.updatedAt),
               });

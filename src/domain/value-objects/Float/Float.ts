@@ -20,7 +20,7 @@ export class Float extends ValueObject<FloatProps> {
   }
 
   public static create(value: number, options?: FloatOptions) {
-    if (typeof value !== 'number')
+    if (typeof value !== 'number' || isNaN(value))
       throw new ValidationError('Float: value must be a number');
 
     if (options?.onlyPositive && value < 0) {
