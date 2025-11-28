@@ -2,6 +2,7 @@ import { Float } from '@/domain/value-objects/Float/Float';
 import { Id } from '@/domain/value-objects/Id/Id';
 import { Text } from '@/domain/value-objects/Text/Text';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
+import { Integer } from '@/domain/value-objects/Integer/Integer';
 
 type NutritionalInfoPer100g = {
   calories: Float;
@@ -33,7 +34,7 @@ export type IngredientProps = {
   updatedAt: Date;
 };
 
-const nameTextOptions = { canBeEmpty: false };
+const nameTextOptions = { canBeEmpty: false, maxLength: Integer.create(100) };
 const caloriesFloatOptions = { onlyPositive: true };
 const proteinFloatOptions = { onlyPositive: true };
 

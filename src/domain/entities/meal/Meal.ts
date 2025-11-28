@@ -1,10 +1,12 @@
+import { Id } from '@/domain/value-objects/Id/Id';
+import { Integer } from '@/domain/value-objects/Integer/Integer';
+import { Text } from '@/domain/value-objects/Text/Text';
 import { ValidationError } from '../../common/errors';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 import { validateNonEmptyString } from '../../common/validation';
-import { IngredientLine } from '../ingredient/IngredientLine';
-import { Protein } from '../../interfaces/Protein';
 import { Calories } from '../../interfaces/Calories';
-import { Id } from '@/domain/value-objects/Id/Id';
+import { Protein } from '../../interfaces/Protein';
+import { IngredientLine } from '../ingredient/IngredientLine';
 
 export type MealCreateProps = {
   id: string;
@@ -22,18 +24,18 @@ export type MealUpdateProps = {
 export type MealProps = {
   id: Id;
   userId: Id;
-  name: string;
+  name: Text;
   ingredientLines: IngredientLine[];
   createdAt: Date;
   updatedAt: Date;
 };
 
+const nameTextOptions = { canBeEmpty: false, maxLength: Integer.create(100) };
+
 export class Meal implements Calories, Protein {
   private constructor(private readonly props: MealProps) {}
 
   static create(props: MealCreateProps): Meal {
-    validateNonEmptyString(props.name, 'Meal name');
-
     if (
       !Array.isArray(props.ingredientLines) ||
       props.ingredientLines.length === 0 ||
@@ -47,7 +49,7 @@ export class Meal implements Calories, Protein {
     const mealProps: MealProps = {
       id: Id.create(props.id),
       userId: Id.create(props.userId),
-      name: props.name,
+      name: Text.create(props.name, nameTextOptions),
       ingredientLines: props.ingredientLines,
       createdAt: handleCreatedAt(props.createdAt),
       updatedAt: handleUpdatedAt(props.updatedAt),
@@ -81,8 +83,7 @@ export class Meal implements Calories, Protein {
 
   update(patch: MealUpdateProps): void {
     if (patch.name !== undefined) {
-      validateNonEmptyString(patch.name, 'Meal name');
-      this.props.name = patch.name;
+      this.props.name = Text.create(patch.name, nameTextOptions);
     }
 
     this.props.updatedAt = new Date();
@@ -113,7 +114,7 @@ export class Meal implements Calories, Protein {
   }
 
   get name() {
-    return this.props.name;
+    return this.props.name.value;
   }
 
   get ingredientLines() {

@@ -205,4 +205,21 @@ describe('Recipe', () => {
       });
     }).toThrowError(/Id.*string/);
   });
+
+  it('should throw error if name is greater than 100 characters', async () => {
+    const longName = 'a'.repeat(101);
+    expect(() => {
+      Recipe.create({
+        ...validRecipeProps,
+        name: longName,
+      });
+    }).toThrowError(ValidationError);
+
+    expect(() => {
+      Recipe.create({
+        ...validRecipeProps,
+        name: longName,
+      });
+    }).toThrowError(/Text.*not exceed/);
+  });
 });

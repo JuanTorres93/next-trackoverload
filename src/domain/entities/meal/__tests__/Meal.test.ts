@@ -166,4 +166,20 @@ describe('Meal', () => {
       })
     ).toThrow(/Id.*string/);
   });
+
+  it('should throw error if name is greater than 100 chars', async () => {
+    expect(() => {
+      Meal.create({
+        ...validMealProps,
+        name: 'a'.repeat(101),
+      });
+    }).toThrow(ValidationError);
+
+    expect(() => {
+      Meal.create({
+        ...validMealProps,
+        name: 'a'.repeat(101),
+      });
+    }).toThrow(/Text.*not exceed/);
+  });
 });

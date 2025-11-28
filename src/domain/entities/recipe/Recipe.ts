@@ -1,10 +1,11 @@
 import { IngredientLine } from '../ingredient/IngredientLine';
-import { validateNonEmptyString } from '../../common/validation';
 import { ValidationError } from '../../common/errors';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 import { Protein } from '../../interfaces/Protein';
 import { Calories } from '../../interfaces/Calories';
 import { Id } from '@/domain/value-objects/Id/Id';
+import { Text } from '@/domain/value-objects/Text/Text';
+import { Integer } from '@/domain/value-objects/Integer/Integer';
 
 export type RecipeCreateProps = {
   id: string;
@@ -19,19 +20,22 @@ export type RecipeCreateProps = {
 export type RecipeProps = {
   id: Id;
   userId: Id;
-  name: string;
-  imageUrl?: string;
+  name: Text;
+  imageUrl?: Text;
   ingredientLines: IngredientLine[];
   createdAt: Date;
   updatedAt: Date;
+};
+
+const nameTextOptions = {
+  canBeEmpty: false,
+  maxLength: Integer.create(100),
 };
 
 export class Recipe implements Protein, Calories {
   private constructor(private readonly props: RecipeProps) {}
 
   static create(props: RecipeCreateProps): Recipe {
-    validateNonEmptyString(props.name, 'Recipe name');
-
     if (
       !Array.isArray(props.ingredientLines) ||
       props.ingredientLines.length === 0 ||
@@ -45,8 +49,8 @@ export class Recipe implements Protein, Calories {
     const recipeProps: RecipeProps = {
       id: Id.create(props.id),
       userId: Id.create(props.userId),
-      name: props.name,
-      imageUrl: props.imageUrl,
+      name: Text.create(props.name, nameTextOptions),
+      imageUrl: props.imageUrl ? Text.create(props.imageUrl) : undefined,
       ingredientLines: props.ingredientLines,
       createdAt: handleCreatedAt(props.createdAt),
       updatedAt: handleUpdatedAt(props.updatedAt),
@@ -56,8 +60,7 @@ export class Recipe implements Protein, Calories {
   }
 
   rename(name: string): void {
-    validateNonEmptyString(name, 'Recipe name');
-    this.props.name = name;
+    this.props.name = Text.create(name, nameTextOptions);
     this.props.updatedAt = new Date();
   }
 
@@ -81,16 +84,16 @@ export class Recipe implements Protein, Calories {
   }
 
   removeIngredientLineByIngredientId(ingredientId: string): void {
-    validateNonEmptyString(ingredientId, 'Ingredient id');
+    const idToRemove = Id.create(ingredientId).value;
 
     const filteredLines = this.props.ingredientLines.filter(
-      (line) => line.ingredient.id !== ingredientId
+      (line) => line.ingredient.id !== idToRemove
     );
 
-    // Validate that the ingredient line existed
+    // Validate that the ingredient line exists
     if (filteredLines.length === this.props.ingredientLines.length) {
       throw new ValidationError(
-        `Recipe: No ingredient line found with ingredient id ${ingredientId}`
+        `Recipe: No ingredient line found with ingredient id ${idToRemove}`
       );
     }
 
@@ -110,7 +113,7 @@ export class Recipe implements Protein, Calories {
   }
 
   get imageUrl() {
-    return this.props.imageUrl;
+    return this.props.imageUrl?.value;
   }
 
   get userId() {
@@ -118,7 +121,7 @@ export class Recipe implements Protein, Calories {
   }
 
   get name() {
-    return this.props.name;
+    return this.props.name.value;
   }
 
   get ingredientLines() {

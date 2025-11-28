@@ -81,4 +81,36 @@ describe('IngredientLine', () => {
       });
     }).toThrowError(/Id/);
   });
+
+  it('should throw error if quantityInGrams is zero', async () => {
+    expect(() => {
+      IngredientLine.create({
+        ...validIngredientLineProps,
+        quantityInGrams: 0,
+      });
+    }).toThrowError(ValidationError);
+
+    expect(() => {
+      IngredientLine.create({
+        ...validIngredientLineProps,
+        quantityInGrams: 0,
+      });
+    }).toThrowError(/Float.*be zero/);
+  });
+
+  it('should throw error if quantityInGrams is negative', async () => {
+    expect(() => {
+      IngredientLine.create({
+        ...validIngredientLineProps,
+        quantityInGrams: -50,
+      });
+    }).toThrowError(ValidationError);
+
+    expect(() => {
+      IngredientLine.create({
+        ...validIngredientLineProps,
+        quantityInGrams: -50,
+      });
+    }).toThrowError(/Float.*positive/);
+  });
 });

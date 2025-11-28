@@ -55,4 +55,53 @@ describe('Ingredient', () => {
       });
     }).toThrowError(/Id.*string/);
   });
+
+  it('should throw error if name is larger than 100 chars', async () => {
+    const longName = 'a'.repeat(101);
+    expect(() =>
+      Ingredient.create({
+        ...vp.validIngredientProps,
+        name: longName,
+      })
+    ).toThrow(ValidationError);
+
+    expect(() =>
+      Ingredient.create({
+        ...vp.validIngredientProps,
+        name: longName,
+      })
+    ).toThrow(/Text.*exceed/);
+  });
+
+  it('should throw error if calores are below zero', async () => {
+    expect(() => {
+      Ingredient.create({
+        ...vp.validIngredientProps,
+        calories: -10,
+      });
+    }).toThrowError(ValidationError);
+
+    expect(() => {
+      Ingredient.create({
+        ...vp.validIngredientProps,
+        calories: -10,
+      });
+    }).toThrowError(/Float.*positive/);
+  });
+
+  it('should throw error if protein is below zero', async () => {
+    expect(() => {
+      Ingredient.create({
+        ...vp.validIngredientProps,
+        protein: -5,
+      });
+    }).toThrowError(ValidationError);
+
+    expect(() => {
+      Ingredient.create({
+        ...vp.validIngredientProps,
+        protein: -5,
+      });
+    }).toThrowError(/Float.*positive/);
+  });
 });
