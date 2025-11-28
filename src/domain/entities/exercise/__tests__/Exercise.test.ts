@@ -12,6 +12,15 @@ describe('Exercise', () => {
     expect(exercise.name).toBe(vp.validExerciseProps.name);
   });
 
+  it('should update name', async () => {
+    const exercise = Exercise.create(vp.validExerciseProps);
+    const newName = 'Updated Exercise Name';
+
+    exercise.update({ name: newName });
+
+    expect(exercise.name).toBe(newName);
+  });
+
   it('should create an exercise if no createdAt or updatedAt is provided', async () => {
     // eslint-disable-next-line
     const { createdAt, updatedAt, ...propsWithoutDates } =
