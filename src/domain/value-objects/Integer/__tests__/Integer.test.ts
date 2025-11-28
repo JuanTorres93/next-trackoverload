@@ -30,12 +30,12 @@ describe('Integer', () => {
     // @ts-expect-error testing invalid input
     expect(() => Integer.create('123')).toThrow(ValidationError);
     // @ts-expect-error testing invalid input
-    expect(() => Integer.create('123')).toThrow(/number/);
+    expect(() => Integer.create('123')).toThrow(/Integer.*number/);
   });
 
   it('should throw error if integer has decimals', async () => {
     expect(() => Integer.create(123.45)).toThrow(ValidationError);
-    expect(() => Integer.create(123.45)).toThrow(/integer/);
+    expect(() => Integer.create(123.45)).toThrow(/Integer.*integer/);
   });
 
   it('it should throw error if trying to create a negative Integer when not allowed', async () => {
@@ -46,7 +46,7 @@ describe('Integer', () => {
     }).toThrow(ValidationError);
     expect(() => {
       Integer.create(-10, options);
-    }).toThrow(/positive/);
+    }).toThrow(/Integer.*positive/);
   });
 
   it('should allow zero when onlyPositive is true', async () => {
@@ -92,6 +92,6 @@ describe('Integer', () => {
     }).toThrow(ValidationError);
     expect(() => {
       Integer.create(0, options);
-    }).toThrow(/zero/);
+    }).toThrow(/Integer.*zero/);
   });
 });
