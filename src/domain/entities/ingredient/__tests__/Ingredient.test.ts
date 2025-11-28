@@ -73,6 +73,22 @@ describe('Ingredient', () => {
     ).toThrow(/Text.*exceed/);
   });
 
+  it('should throw error if name is empty', async () => {
+    expect(() =>
+      Ingredient.create({
+        ...vp.validIngredientProps,
+        name: '',
+      })
+    ).toThrow(ValidationError);
+
+    expect(() =>
+      Ingredient.create({
+        ...vp.validIngredientProps,
+        name: '',
+      })
+    ).toThrow(/Text.*empty/);
+  });
+
   it('should throw error if calores are below zero', async () => {
     expect(() => {
       Ingredient.create({

@@ -222,4 +222,20 @@ describe('Recipe', () => {
       });
     }).toThrowError(/Text.*not exceed/);
   });
+
+  it('should throw error if name is empty', async () => {
+    expect(() => {
+      Recipe.create({
+        ...validRecipeProps,
+        name: '',
+      });
+    }).toThrowError(ValidationError);
+
+    expect(() => {
+      Recipe.create({
+        ...validRecipeProps,
+        name: '',
+      });
+    }).toThrowError(/Text.*cannot be empty/);
+  });
 });
