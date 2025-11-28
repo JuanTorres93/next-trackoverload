@@ -1,4 +1,4 @@
-import { ExerciseLine } from '@/domain/entities/workout/Workout';
+import { WorkoutLine } from '@/domain/entities/workout/Workout';
 
 export type ExerciseLineDTO = {
   exerciseId: string;
@@ -7,7 +7,7 @@ export type ExerciseLineDTO = {
   weight: number; // in kg
 };
 
-export function toExerciseLineDTO(exerciseLine: ExerciseLine): ExerciseLineDTO {
+export function toExerciseLineDTO(exerciseLine: WorkoutLine): ExerciseLineDTO {
   return {
     exerciseId: exerciseLine.exerciseId,
     setNumber: exerciseLine.setNumber,

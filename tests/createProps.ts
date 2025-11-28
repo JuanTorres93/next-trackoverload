@@ -92,3 +92,13 @@ export const validUserProps = {
   createdAt: new Date(),
   updatedAt: new Date(),
 };
+
+export const validWorkoutLineProps = {
+  id: 'workoutline-1',
+  exerciseId: 'exercise-1',
+  setNumber: 1,
+  reps: 10,
+  weight: 53.5,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};

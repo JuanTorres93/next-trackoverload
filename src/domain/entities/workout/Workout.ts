@@ -10,7 +10,7 @@ import {
 import { Text } from '@/domain/value-objects/Text/Text';
 import { Integer } from '@/domain/value-objects/Integer/Integer';
 
-export type ExerciseLine = {
+export type WorkoutLine = {
   // TODO change exerciseId to Id type
   exerciseId: string;
   setNumber: number;
@@ -18,15 +18,15 @@ export type ExerciseLine = {
   weight: number; // in kg
 };
 
-const validateExerciseLine = (line: ExerciseLine) => {
-  validateNonEmptyString(line.exerciseId, 'ExerciseLine exerciseId');
-  validateGreaterThanZero(line.setNumber, 'ExerciseLine setNumber');
-  validatePositiveNumber(line.reps, 'ExerciseLine reps');
-  validateInteger(line.reps, 'ExerciseLine reps');
-  validatePositiveNumber(line.weight, 'ExerciseLine weight');
+const validateExerciseLine = (line: WorkoutLine) => {
+  validateNonEmptyString(line.exerciseId, 'WorkoutLine exerciseId');
+  validateGreaterThanZero(line.setNumber, 'WorkoutLine setNumber');
+  validatePositiveNumber(line.reps, 'WorkoutLine reps');
+  validateInteger(line.reps, 'WorkoutLine reps');
+  validatePositiveNumber(line.weight, 'WorkoutLine weight');
 };
 
-type ExerciseLineUpdateProps = {
+type WorkoutLineUpdateProps = {
   setNumber?: number;
   reps?: number;
   weight?: number;
@@ -37,7 +37,7 @@ export type WorkoutCreateProps = {
   userId: string;
   name: string;
   workoutTemplateId: string;
-  exercises: ExerciseLine[];
+  exercises: WorkoutLine[];
   createdAt: Date;
   updatedAt: Date;
 };
@@ -47,7 +47,7 @@ export type WorkoutProps = {
   userId: Id;
   name: Text;
   workoutTemplateId: Id;
-  exercises: ExerciseLine[];
+  exercises: WorkoutLine[];
   createdAt: Date;
   updatedAt: Date;
 };
@@ -82,7 +82,7 @@ export class Workout {
     return new Workout(workoutProps);
   }
 
-  addExercise(line: ExerciseLine) {
+  addExercise(line: WorkoutLine) {
     // NOTE: maybe allow duplicates in the future?
     const existingLine = this.props.exercises.find(
       (l) => l.exerciseId === line.exerciseId && l.setNumber === line.setNumber
@@ -132,7 +132,7 @@ export class Workout {
     }
   }
 
-  updateExercise(exerciseId: string, updateProps: ExerciseLineUpdateProps) {
+  updateExercise(exerciseId: string, updateProps: WorkoutLineUpdateProps) {
     const line = this.props.exercises.find(
       (line) => line.exerciseId === exerciseId
     );
