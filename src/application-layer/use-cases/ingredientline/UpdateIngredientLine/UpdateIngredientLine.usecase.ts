@@ -1,4 +1,3 @@
-import { IngredientLinesRepo } from '@/domain/repos/IngredientLinesRepo.port';
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { MealsRepo } from '@/domain/repos/MealsRepo.port';
@@ -17,6 +16,8 @@ import {
   ValidationError,
   AuthError,
 } from '@/domain/common/errors';
+import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { Meal } from '@/domain/entities/meal/Meal';
 
 export type UpdateIngredientLineUsecaseRequest = {
   userId: string;
@@ -29,7 +30,6 @@ export type UpdateIngredientLineUsecaseRequest = {
 
 export class UpdateIngredientLineUsecase {
   constructor(
-    private ingredientLinesRepo: IngredientLinesRepo,
     private ingredientsRepo: IngredientsRepo,
     private recipesRepo: RecipesRepo,
     private mealsRepo: MealsRepo
@@ -77,18 +77,6 @@ export class UpdateIngredientLineUsecase {
         'UpdateIngredientLineUsecase quantityInGrams'
       );
 
-    // Get the existing ingredient line first to check if it exists
-    const existingIngredientLine =
-      await this.ingredientLinesRepo.getIngredientLineById(
-        request.ingredientLineId
-      );
-
-    if (!existingIngredientLine) {
-      throw new NotFoundError(
-        `UpdateIngredientLineUsecase: IngredientLine with id ${request.ingredientLineId} not found`
-      );
-    }
-
     // Validate user has access to the parent entity and that the ingredient line exists in it
     let parentEntity: {
       ingredientLines: IngredientLine[];
@@ -122,11 +110,11 @@ export class UpdateIngredientLineUsecase {
     }
 
     // Verify the ingredient line exists in the parent entity
-    const ingredientLineExistsInParent = parentEntity!.ingredientLines.some(
+    const existingIngredientLine = parentEntity!.ingredientLines.find(
       (line) => line.id === request.ingredientLineId
     );
 
-    if (!ingredientLineExistsInParent) {
+    if (!existingIngredientLine) {
       throw new NotFoundError(
         `UpdateIngredientLineUsecase: IngredientLine with id ${request.ingredientLineId} does not belong to the specified ${request.parentEntityType}`
       );
@@ -159,8 +147,12 @@ export class UpdateIngredientLineUsecase {
       quantityInGrams: request.quantityInGrams,
     });
 
-    // Save the updated ingredient line
-    await this.ingredientLinesRepo.saveIngredientLine(existingIngredientLine);
+    // Save the updated parent entity
+    if (request.parentEntityType === 'recipe') {
+      await this.recipesRepo.saveRecipe(parentEntity as Recipe);
+    } else if (request.parentEntityType === 'meal') {
+      await this.mealsRepo.saveMeal(parentEntity as Meal);
+    }
 
     return toIngredientLineDTO(existingIngredientLine);
   }

@@ -9,6 +9,7 @@ import { Float } from '@/domain/value-objects/Float/Float';
 
 export type IngredientLineCreateProps = {
   id: string;
+  recipeId: string;
   ingredient: Ingredient;
   quantityInGrams: number;
   createdAt: Date;
@@ -22,6 +23,7 @@ export type IngredientLineUpdateProps = {
 
 export type IngredientLineProps = {
   id: Id;
+  recipeId: Id;
   ingredient: Ingredient;
   quantityInGrams: Float;
   createdAt: Date;
@@ -40,6 +42,7 @@ export class IngredientLine implements Calories, Protein {
 
     const ingredientLineProps: IngredientLineProps = {
       id: Id.create(props.id),
+      recipeId: Id.create(props.recipeId),
       ingredient: props.ingredient,
       quantityInGrams: Float.create(
         props.quantityInGrams,
@@ -76,6 +79,10 @@ export class IngredientLine implements Calories, Protein {
 
   get id() {
     return this.props.id.value;
+  }
+
+  get recipeId() {
+    return this.props.recipeId.value;
   }
 
   get ingredient() {

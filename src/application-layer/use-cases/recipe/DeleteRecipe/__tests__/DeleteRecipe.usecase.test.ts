@@ -4,7 +4,6 @@ import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { MemoryImageManager } from '@/infra';
-import { MemoryIngredientLinesRepo } from '@/infra/memory/MemoryIngredientLinesRepo';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
@@ -12,18 +11,15 @@ import { DeleteRecipeUsecase } from '../DeleteRecipe.usecase';
 
 describe('DeleteRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
-  let ingredientLinesRepo: MemoryIngredientLinesRepo;
   let memoryImageManager: MemoryImageManager;
   let deleteRecipeUsecase: DeleteRecipeUsecase;
   let testRecipe: Recipe;
 
   beforeEach(async () => {
     recipesRepo = new MemoryRecipesRepo();
-    ingredientLinesRepo = new MemoryIngredientLinesRepo();
     memoryImageManager = new MemoryImageManager();
     deleteRecipeUsecase = new DeleteRecipeUsecase(
       recipesRepo,
-      ingredientLinesRepo,
       memoryImageManager
     );
 
@@ -36,8 +32,6 @@ describe('DeleteRecipeUsecase', () => {
       ingredient: testIngredient,
     });
 
-    await ingredientLinesRepo.saveIngredientLine(testIngredientLine);
-
     testRecipe = Recipe.create({
       ...vp.recipePropsNoIngredientLines,
       ingredientLines: [testIngredientLine],
@@ -45,27 +39,12 @@ describe('DeleteRecipeUsecase', () => {
   });
 
   it('should delete recipe successfully', async () => {
-    await ingredientLinesRepo.saveIngredientLine(testRecipe.ingredientLines[0]);
     await recipesRepo.saveRecipe(testRecipe);
     const request = { id: testRecipe.id, userId: vp.userId };
     await deleteRecipeUsecase.execute(request);
 
     const deletedRecipe = await recipesRepo.getRecipeById(testRecipe.id);
     expect(deletedRecipe).toBeNull();
-  });
-
-  it('should delete its IngredientLines', async () => {
-    await recipesRepo.saveRecipe(testRecipe);
-
-    const request = { id: testRecipe.id, userId: vp.userId };
-    await deleteRecipeUsecase.execute(request);
-
-    for (const line of testRecipe.ingredientLines) {
-      const deletedLine = await ingredientLinesRepo.getIngredientLineById(
-        line.id
-      );
-      expect(deletedLine).toBeNull();
-    }
   });
 
   it('should delete recipe image if exists', async () => {
@@ -90,12 +69,6 @@ describe('DeleteRecipeUsecase', () => {
 
     const request = { id: recipe.id, userId: vp.userId };
     await deleteRecipeUsecase.execute(request);
-    for (const line of recipe.ingredientLines) {
-      const deletedLine = await ingredientLinesRepo.getIngredientLineById(
-        line.id
-      );
-      expect(deletedLine).toBeNull();
-    }
 
     const afterDeleteImages = memoryImageManager.getImageCount();
     expect(afterDeleteImages).toBe(0);

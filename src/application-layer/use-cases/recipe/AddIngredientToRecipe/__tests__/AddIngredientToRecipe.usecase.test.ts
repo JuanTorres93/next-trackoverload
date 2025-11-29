@@ -4,25 +4,21 @@ import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
-import { MemoryIngredientLinesRepo } from '@/infra/memory/MemoryIngredientLinesRepo';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { AddIngredientToRecipeUsecase } from '../AddIngredientToRecipe.usecase';
 
 describe('AddIngredientToRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
-  let ingredientLinesRepo: MemoryIngredientLinesRepo;
   let addIngredientToRecipeUsecase: AddIngredientToRecipeUsecase;
   let testRecipe: Recipe;
   let newIngredientLine: IngredientLine;
   let newIngredient: Ingredient;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     recipesRepo = new MemoryRecipesRepo();
-    ingredientLinesRepo = new MemoryIngredientLinesRepo();
     addIngredientToRecipeUsecase = new AddIngredientToRecipeUsecase(
-      recipesRepo,
-      ingredientLinesRepo
+      recipesRepo
     );
 
     const testIngredient = Ingredient.create({
@@ -48,8 +44,6 @@ describe('AddIngredientToRecipeUsecase', () => {
       ...vp.ingredientLinePropsNoIngredient,
       ingredient: newIngredient,
     });
-
-    ingredientLinesRepo.saveIngredientLine(newIngredientLine);
   });
 
   it('should add ingredient to recipe successfully', async () => {

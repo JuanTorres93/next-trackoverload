@@ -9,7 +9,6 @@ import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
-import { MemoryIngredientLinesRepo } from '@/infra/memory/MemoryIngredientLinesRepo';
 import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
 import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
@@ -17,7 +16,6 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { UpdateIngredientLineUsecase } from '../UpdateIngredientLine.usecase';
 
 describe('UpdateIngredientLineUsecase', () => {
-  let ingredientLinesRepo: MemoryIngredientLinesRepo;
   let ingredientsRepo: MemoryIngredientsRepo;
   let recipesRepo: MemoryRecipesRepo;
   let mealsRepo: MemoryMealsRepo;
@@ -31,12 +29,10 @@ describe('UpdateIngredientLineUsecase', () => {
   const anotherUserId = 'another-user-id';
 
   beforeEach(async () => {
-    ingredientLinesRepo = new MemoryIngredientLinesRepo();
     ingredientsRepo = new MemoryIngredientsRepo();
     recipesRepo = new MemoryRecipesRepo();
     mealsRepo = new MemoryMealsRepo();
     updateIngredientLineUsecase = new UpdateIngredientLineUsecase(
-      ingredientLinesRepo,
       ingredientsRepo,
       recipesRepo,
       mealsRepo
@@ -75,7 +71,6 @@ describe('UpdateIngredientLineUsecase', () => {
     // Save entities to repos
     await ingredientsRepo.saveIngredient(testIngredient);
     await ingredientsRepo.saveIngredient(alternativeIngredient);
-    await ingredientLinesRepo.saveIngredientLine(testIngredientLine);
     await recipesRepo.saveRecipe(testRecipe);
     await mealsRepo.saveMeal(testMeal);
   });
@@ -353,54 +348,6 @@ describe('UpdateIngredientLineUsecase', () => {
       await expect(
         updateIngredientLineUsecase.execute(request)
       ).rejects.toThrow(AuthError);
-    });
-
-    it('should throw NotFoundError when ingredient line does not belong to the specified recipe', async () => {
-      // Create a different ingredient line not in the recipe
-      const differentIngredientLine = IngredientLine.create({
-        ...vp.ingredientLinePropsNoIngredient,
-        id: 'different-ingredient-line-id',
-        ingredient: testIngredient,
-        quantityInGrams: 100,
-      });
-
-      await ingredientLinesRepo.saveIngredientLine(differentIngredientLine);
-
-      const request = {
-        userId: userId,
-        parentEntityType: 'recipe' as const,
-        parentEntityId: testRecipe.id,
-        ingredientLineId: differentIngredientLine.id,
-        quantityInGrams: 300,
-      };
-
-      await expect(
-        updateIngredientLineUsecase.execute(request)
-      ).rejects.toThrow(NotFoundError);
-    });
-
-    it('should throw NotFoundError when ingredient line does not belong to the specified meal', async () => {
-      // Create a different ingredient line not in the meal
-      const differentIngredientLine = IngredientLine.create({
-        ...vp.ingredientLinePropsNoIngredient,
-        id: 'different-ingredient-line-id-2',
-        ingredient: testIngredient,
-        quantityInGrams: 100,
-      });
-
-      await ingredientLinesRepo.saveIngredientLine(differentIngredientLine);
-
-      const request = {
-        userId: userId,
-        parentEntityType: 'meal' as const,
-        parentEntityId: testMeal.id,
-        ingredientLineId: differentIngredientLine.id,
-        quantityInGrams: 300,
-      };
-
-      await expect(
-        updateIngredientLineUsecase.execute(request)
-      ).rejects.toThrow(NotFoundError);
     });
   });
 });

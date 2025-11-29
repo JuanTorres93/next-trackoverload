@@ -29,6 +29,7 @@ describe('IngredientLineDTO', () => {
     it('should convert IngredientLine to IngredientLineDTO', () => {
       expect(ingredientLineDTO).toEqual({
         id: ingredientLine.id,
+        recipeId: ingredientLine.recipeId,
         ingredient: {
           id: ingredient.id,
           name: ingredient.name,

@@ -45,6 +45,30 @@ export class MemoryRecipesRepo implements RecipesRepo {
     this.recipes.splice(index, 1);
   }
 
+  async deleteIngredientLineInRecipe(
+    id: string,
+    ingredientLineId: string
+  ): Promise<void> {
+    const recipe = this.recipes.find((rec) => rec.id === id);
+    if (!recipe) return Promise.reject(null);
+
+    recipe.removeIngredientLineByIngredientId(ingredientLineId);
+  }
+
+  async deleteMultipleIngredientLinesInRecipe(
+    ids: string[],
+    ingredientLineIds: string[]
+  ): Promise<void> {
+    for (const id of ids) {
+      const recipe = this.recipes.find((rec) => rec.id === id);
+      if (!recipe) continue;
+
+      for (const ingredientLineId of ingredientLineIds) {
+        recipe.removeIngredientLineByIngredientId(ingredientLineId);
+      }
+    }
+  }
+
   // IMPORTANT NOTE: Helper method for testing - not part of the interface
   clearForTesting(): void {
     this.recipes = [];

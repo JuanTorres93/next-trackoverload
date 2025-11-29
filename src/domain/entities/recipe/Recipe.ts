@@ -1,11 +1,11 @@
-import { IngredientLine } from '../ingredientline/IngredientLine';
+import { Id } from '@/domain/value-objects/Id/Id';
+import { Integer } from '@/domain/value-objects/Integer/Integer';
+import { Text } from '@/domain/value-objects/Text/Text';
 import { ValidationError } from '../../common/errors';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
-import { Protein } from '../../interfaces/Protein';
 import { Calories } from '../../interfaces/Calories';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { Text } from '@/domain/value-objects/Text/Text';
-import { Integer } from '@/domain/value-objects/Integer/Integer';
+import { Protein } from '../../interfaces/Protein';
+import { IngredientLine } from '../ingredientline/IngredientLine';
 
 export type RecipeCreateProps = {
   id: string;

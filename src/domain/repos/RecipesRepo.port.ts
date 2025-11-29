@@ -7,4 +7,12 @@ export interface RecipesRepo {
   getRecipeByIdAndUserId(id: string, userId: string): Promise<Recipe | null>;
   saveRecipe(recipe: Recipe): Promise<void>;
   deleteRecipe(id: string): Promise<void>;
+  deleteIngredientLineInRecipe(
+    id: string,
+    ingredientLineId: string
+  ): Promise<void>;
+  deleteMultipleIngredientLinesInRecipe(
+    ids: string[],
+    ingredientLineIds: string[]
+  ): Promise<void>;
 }

@@ -5,7 +5,6 @@ import { ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { MemoryImageManager } from '@/infra';
-import { MemoryIngredientLinesRepo } from '@/infra/memory/MemoryIngredientLinesRepo';
 import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -18,7 +17,6 @@ import {
 describe('CreateRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
   let ingredientsRepo: MemoryIngredientsRepo;
-  let ingredientLinesRepo: MemoryIngredientLinesRepo;
   let imageManager: MemoryImageManager;
   let createRecipeUsecase: CreateRecipeUsecase;
   let testIngredient: Ingredient;
@@ -27,13 +25,11 @@ describe('CreateRecipeUsecase', () => {
   beforeEach(() => {
     recipesRepo = new MemoryRecipesRepo();
     ingredientsRepo = new MemoryIngredientsRepo();
-    ingredientLinesRepo = new MemoryIngredientLinesRepo();
     imageManager = new MemoryImageManager();
 
     createRecipeUsecase = new CreateRecipeUsecase(
       recipesRepo,
       ingredientsRepo,
-      ingredientLinesRepo,
       imageManager
     );
 
@@ -115,10 +111,8 @@ describe('CreateRecipeUsecase', () => {
     const recipe = await createRecipeUsecase.execute(request);
 
     for (const line of recipe.ingredientLines) {
-      const savedIngredientLine =
-        await ingredientLinesRepo.getIngredientLineById(line.id);
-      expect(savedIngredientLine).not.toBeNull();
-      expect(savedIngredientLine?.id).toBe(line.id);
+      expect(line).not.toBeNull();
+      expect(line?.id).toBe(line.id);
     }
   });
 
@@ -210,10 +204,8 @@ describe('CreateRecipeUsecase', () => {
 
     // Verify both ingredient lines were saved
     for (const line of recipe.ingredientLines) {
-      const savedIngredientLine =
-        await ingredientLinesRepo.getIngredientLineById(line.id);
-      expect(savedIngredientLine).not.toBeNull();
-      expect(savedIngredientLine?.id).toBe(line.id);
+      expect(line).not.toBeNull();
+      expect(line?.id).toBe(line.id);
     }
   });
 

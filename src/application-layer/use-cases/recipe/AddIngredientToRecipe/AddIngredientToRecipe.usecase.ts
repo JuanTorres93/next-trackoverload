@@ -1,5 +1,4 @@
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
-import { IngredientLinesRepo } from '@/domain/repos/IngredientLinesRepo.port';
 import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { validateNonEmptyString } from '@/domain/common/validation';
@@ -12,10 +11,7 @@ export type AddIngredientToRecipeUsecaseRequest = {
 };
 
 export class AddIngredientToRecipeUsecase {
-  constructor(
-    private recipesRepo: RecipesRepo,
-    private ingredientLinesRepo: IngredientLinesRepo
-  ) {}
+  constructor(private recipesRepo: RecipesRepo) {}
 
   async execute(
     request: AddIngredientToRecipeUsecaseRequest
@@ -45,10 +41,10 @@ export class AddIngredientToRecipeUsecase {
       );
     }
 
-    const existingIngredientLine =
-      await this.ingredientLinesRepo.getIngredientLineById(
-        request.ingredientLine.id
-      );
+    const existingIngredientLine = existingRecipe.ingredientLines.find(
+      (line) => line.id === request.ingredientLine.id
+    );
+
     if (!existingIngredientLine) {
       throw new NotFoundError(
         `AddIngredientToRecipeUsecase: IngredientLine with id ${request.ingredientLine.id} not found`

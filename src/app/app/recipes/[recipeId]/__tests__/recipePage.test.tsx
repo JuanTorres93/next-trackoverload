@@ -3,9 +3,7 @@ import { createMockRecipes } from '@/../tests/mocks/recipes';
 import { createServer } from '@/../tests/mocks/server';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
-import { MemoryIngredientLinesRepo } from '@/infra/memory/MemoryIngredientLinesRepo';
 import { AppRecipesRepo } from '@/interface-adapters/app/repos/AppRecipesRepo';
-import { AppIngredientLinesRepo } from '@/interface-adapters/app/repos/AppIngredientLinesRepo';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -14,7 +12,6 @@ import '@/../tests/mocks/nextjs';
 import RecipePage from '../page';
 
 const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
-const ingredientLinesRepo = AppIngredientLinesRepo as MemoryIngredientLinesRepo;
 let mockRecipes: RecipeDTO[] = [];
 const mockIngredients = await createMockIngredients();
 
@@ -49,7 +46,6 @@ async function setup() {
 
 afterEach(() => {
   recipesRepo.clearForTesting();
-  ingredientLinesRepo.clearForTesting();
 });
 
 describe('RecipePage', () => {
@@ -156,8 +152,13 @@ describe('RecipePage', () => {
     expect(quantityInput).toHaveValue(500);
 
     await waitFor(async () => {
-      const updatedIngredientLine =
-        await ingredientLinesRepo.getIngredientLineById(lineToUpdate.id);
+      const updatedIngredientLine = await recipesRepo
+        .getRecipeById(recipe.id)
+        .then((r) =>
+          r?.ingredientLines.find(
+            (line) => line.ingredient.id === lineToUpdate.ingredient.id
+          )
+        );
 
       expect(updatedIngredientLine?.quantityInGrams).toBe(
         parseInt(newQuantity)

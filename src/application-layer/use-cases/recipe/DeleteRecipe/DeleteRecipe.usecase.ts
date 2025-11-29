@@ -1,5 +1,4 @@
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
-import { IngredientLinesRepo } from '@/domain/repos/IngredientLinesRepo.port';
 import { ImageManager } from '@/domain/services/ImageManager.port';
 
 import { validateNonEmptyString } from '@/domain/common/validation';
@@ -13,7 +12,6 @@ export type DeleteRecipeUsecaseRequest = {
 export class DeleteRecipeUsecase {
   constructor(
     private recipesRepo: RecipesRepo,
-    private ingredientLinesRepo: IngredientLinesRepo,
     private imageManager: ImageManager
   ) {}
 
@@ -35,16 +33,6 @@ export class DeleteRecipeUsecase {
       await this.imageManager.deleteImage(existingRecipe.imageUrl);
     }
 
-    // Remove its associated ingredient lines
-    const ingredientLineIds = existingRecipe.ingredientLines.map(
-      (line) => line.id
-    );
-
-    if (ingredientLineIds.length > 0) {
-      await this.ingredientLinesRepo.deleteMultipleIngredientLines(
-        ingredientLineIds
-      );
-    }
     await this.recipesRepo.deleteRecipe(request.id);
   }
 }
