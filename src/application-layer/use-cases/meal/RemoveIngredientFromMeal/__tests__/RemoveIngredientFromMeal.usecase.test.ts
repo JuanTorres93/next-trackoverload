@@ -35,12 +35,12 @@ describe('RemoveIngredientFromMealUsecase', () => {
     });
 
     const firstIngredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient: testIngredient,
     });
 
     const secondIngredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient: secondIngredient,
     });
 

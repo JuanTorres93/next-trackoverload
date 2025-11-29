@@ -24,7 +24,7 @@ describe('DuplicateRecipeUsecase', () => {
     });
 
     const testIngredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient: testIngredient,
     });
 
@@ -104,7 +104,7 @@ describe('DuplicateRecipeUsecase', () => {
     });
 
     const secondIngredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       id: 'second-ingredient-line-id',
       ingredient: secondIngredient,
     });

@@ -22,7 +22,7 @@ describe('UpdateRecipeUsecase', () => {
     });
 
     const testIngredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient: testIngredient,
     });
 

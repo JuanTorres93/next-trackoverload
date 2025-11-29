@@ -16,7 +16,7 @@ describe('Recipe', () => {
     const validIngredient = Ingredient.create(vp.validIngredientProps);
 
     validIngredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient: validIngredient,
       quantityInGrams: 100,
     });
@@ -36,7 +36,7 @@ describe('Recipe', () => {
     expect(recipe.calories).toBe(100);
 
     const anotherIngredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       id: 'another-line-id',
       quantityInGrams: 50,
       ingredient: Ingredient.create({
@@ -58,7 +58,7 @@ describe('Recipe', () => {
     expect(recipe.protein).toBe(vp.validIngredientProps.protein);
 
     const anotherIngredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       id: 'another-line-id',
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,
@@ -87,7 +87,7 @@ describe('Recipe', () => {
   it('should add a new ingredient line', async () => {
     expect(recipe.ingredientLines.length).toBe(1);
     const anotherIngredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,
         id: 'other-ing-id',
@@ -105,7 +105,7 @@ describe('Recipe', () => {
     expect(recipe.ingredientLines.length).toBe(1);
     recipe.addIngredientLine(
       IngredientLine.create({
-        ...vp.ingredientLinePropsNoIngredient,
+        ...vp.ingredientLineRecipePropsNoIngredient,
         id: 'another-line-id',
         ingredient: Ingredient.create({
           ...vp.validIngredientProps,
@@ -152,7 +152,7 @@ describe('Recipe', () => {
   it('should throw an error when adding a duplicate ingredient', async () => {
     // Try to add an ingredient line with the same ingredient ID
     const duplicateIngredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       id: 'duplicate-line-id',
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,

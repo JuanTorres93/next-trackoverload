@@ -34,7 +34,7 @@ describe('UpdateIngredientInMealUsecase', () => {
     });
 
     testIngredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient: testIngredient,
     });
 

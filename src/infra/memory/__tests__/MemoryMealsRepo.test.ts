@@ -24,7 +24,7 @@ describe('MemoryMealsRepo', () => {
     ingredient = Ingredient.create(validIngredientProps);
 
     ingredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient,
       quantityInGrams: 150,
     });

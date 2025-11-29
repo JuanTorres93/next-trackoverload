@@ -9,7 +9,8 @@ import { Float } from '@/domain/value-objects/Float/Float';
 
 export type IngredientLineCreateProps = {
   id: string;
-  recipeId: string;
+  parentId: string;
+  parentType: 'meal' | 'recipe';
   ingredient: Ingredient;
   quantityInGrams: number;
   createdAt: Date;
@@ -23,7 +24,8 @@ export type IngredientLineUpdateProps = {
 
 export type IngredientLineProps = {
   id: Id;
-  recipeId: Id;
+  parentId: Id;
+  parentType: 'meal' | 'recipe';
   ingredient: Ingredient;
   quantityInGrams: Float;
   createdAt: Date;
@@ -40,9 +42,16 @@ export class IngredientLine implements Calories, Protein {
       throw new ValidationError('IngredientLine: Invalid ingredient');
     }
 
+    if (props.parentType !== 'meal' && props.parentType !== 'recipe') {
+      throw new ValidationError(
+        'IngredientLine: parentType must be either meal or recipe'
+      );
+    }
+
     const ingredientLineProps: IngredientLineProps = {
       id: Id.create(props.id),
-      recipeId: Id.create(props.recipeId),
+      parentId: Id.create(props.parentId),
+      parentType: props.parentType,
       ingredient: props.ingredient,
       quantityInGrams: Float.create(
         props.quantityInGrams,
@@ -81,8 +90,12 @@ export class IngredientLine implements Calories, Protein {
     return this.props.id.value;
   }
 
-  get recipeId() {
-    return this.props.recipeId.value;
+  get parentId() {
+    return this.props.parentId.value;
+  }
+
+  get parentType() {
+    return this.props.parentType;
   }
 
   get ingredient() {

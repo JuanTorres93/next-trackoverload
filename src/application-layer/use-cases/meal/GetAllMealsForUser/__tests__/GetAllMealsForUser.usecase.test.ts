@@ -26,12 +26,12 @@ describe('GetAllMealsUsecase', () => {
     });
 
     const ingredientLine1 = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient: ingredient1,
     });
 
     const ingredientLine2 = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient: ingredient2,
     });
 
@@ -69,7 +69,7 @@ describe('GetAllMealsUsecase', () => {
     });
 
     const ingredientLine1 = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient: ingredient1,
     });
 

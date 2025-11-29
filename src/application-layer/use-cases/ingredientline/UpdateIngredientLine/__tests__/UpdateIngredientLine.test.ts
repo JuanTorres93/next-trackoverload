@@ -50,7 +50,7 @@ describe('UpdateIngredientLineUsecase', () => {
     });
 
     testIngredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient: testIngredient,
       quantityInGrams: 200,
     });

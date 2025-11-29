@@ -23,7 +23,7 @@ describe('GetMealByIdUsecase', () => {
     });
 
     const ingredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient,
     });
 
@@ -50,7 +50,7 @@ describe('GetMealByIdUsecase', () => {
     });
 
     const ingredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient,
     });
 
@@ -89,7 +89,7 @@ describe('GetMealByIdUsecase', () => {
     });
 
     const ingredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient,
     });
 

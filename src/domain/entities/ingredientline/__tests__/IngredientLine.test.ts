@@ -8,7 +8,7 @@ import * as vp from '@/../tests/createProps';
 const validIngredient = Ingredient.create(vp.validIngredientProps);
 
 const validIngredientLineProps = {
-  ...vp.ingredientLinePropsNoIngredient,
+  ...vp.ingredientLineRecipePropsNoIngredient,
   ingredient: validIngredient,
 };
 
@@ -112,5 +112,23 @@ describe('IngredientLine', () => {
         quantityInGrams: -50,
       });
     }).toThrowError(/Float.*positive/);
+  });
+
+  it('should throw error if parent type is different from meal or recipe', async () => {
+    expect(() => {
+      IngredientLine.create({
+        ...validIngredientLineProps,
+        // @ts-expect-error testing invalid type
+        parentType: 'invalidType',
+      });
+    }).toThrowError(ValidationError);
+
+    expect(() => {
+      IngredientLine.create({
+        ...validIngredientLineProps,
+        // @ts-expect-error testing invalid type
+        parentType: 'invalidType',
+      });
+    }).toThrowError(/IngredientLine.*parentType.*meal.*recipe/);
   });
 });

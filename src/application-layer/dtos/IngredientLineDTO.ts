@@ -7,7 +7,8 @@ import {
 
 export type IngredientLineDTO = {
   id: string;
-  recipeId: string;
+  parentId: string;
+  parentType: 'meal' | 'recipe';
   ingredient: IngredientDTO;
   quantityInGrams: number;
   calories: number;
@@ -21,7 +22,8 @@ export function toIngredientLineDTO(
 ): IngredientLineDTO {
   return {
     id: ingredientLine.id,
-    recipeId: ingredientLine.recipeId,
+    parentId: ingredientLine.parentId,
+    parentType: ingredientLine.parentType,
     ingredient: toIngredientDTO(ingredientLine.ingredient),
     quantityInGrams: ingredientLine.quantityInGrams,
     calories: ingredientLine.calories,
@@ -34,7 +36,8 @@ export function toIngredientLineDTO(
 export function fromIngredientLineDTO(dto: IngredientLineDTO): IngredientLine {
   return IngredientLine.create({
     id: dto.id,
-    recipeId: dto.recipeId,
+    parentId: dto.parentId,
+    parentType: dto.parentType,
     ingredient: fromIngredientDTO(dto.ingredient),
     quantityInGrams: dto.quantityInGrams,
     createdAt: new Date(dto.createdAt),

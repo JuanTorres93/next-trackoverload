@@ -42,7 +42,7 @@ describe('UpdateDayMealsUsecase', () => {
       protein: 3,
     });
     const ingredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient,
     });
     const newMeal = Meal.create({

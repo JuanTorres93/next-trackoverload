@@ -32,7 +32,7 @@ describe('AddIngredientToMealUsecase', () => {
     });
 
     const testIngredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient: testIngredient,
       quantityInGrams: 200,
     });
@@ -52,7 +52,7 @@ describe('AddIngredientToMealUsecase', () => {
     });
 
     newIngredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient: newIngredient,
       quantityInGrams: 150,
     });

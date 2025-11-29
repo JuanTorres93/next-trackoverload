@@ -37,12 +37,12 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
     });
 
     const firstIngredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient: testIngredient,
     });
 
     const secondIngredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       id: 'ingredient-line-2',
       ingredient: secondIngredient,
     });

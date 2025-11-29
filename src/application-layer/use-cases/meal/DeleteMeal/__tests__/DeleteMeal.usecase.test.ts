@@ -26,7 +26,7 @@ describe('DeleteMealUsecase', () => {
     });
 
     const ingredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient,
     });
 
@@ -82,7 +82,7 @@ describe('DeleteMealUsecase', () => {
     });
 
     const ingredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient,
     });
 

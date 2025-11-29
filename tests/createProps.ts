@@ -99,9 +99,10 @@ export const validIngredientProps = {
   updatedAt: new Date(),
 };
 
-export const ingredientLinePropsNoIngredient = {
+export const ingredientLineRecipePropsNoIngredient = {
   id: 'line1',
-  recipeId: 'recipe1',
+  parentId: 'recipe1',
+  parentType: 'recipe' as const,
   quantityInGrams: 200,
   createdAt: new Date(),
   updatedAt: new Date(),

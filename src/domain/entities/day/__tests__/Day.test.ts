@@ -21,7 +21,7 @@ describe('Day', () => {
     ingredient = Ingredient.create(vp.validIngredientProps);
 
     ingredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient,
     });
 

@@ -31,7 +31,7 @@ describe('CreateMealFromRecipeUsecase', () => {
     });
 
     const testIngredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient: testIngredient,
     });
 
@@ -130,7 +130,7 @@ describe('CreateMealFromRecipeUsecase', () => {
     });
 
     const secondIngredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient: secondIngredient,
     });
 

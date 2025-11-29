@@ -44,7 +44,8 @@ export class CreateRecipeUsecase {
 
       const ingredientLine = IngredientLine.create({
         id: uuidv4(),
-        recipeId: newRecipeId,
+        parentId: newRecipeId,
+        parentType: 'recipe',
         ingredient: ingredient,
         quantityInGrams: info.quantityInGrams,
         createdAt: new Date(),

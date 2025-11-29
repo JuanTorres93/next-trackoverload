@@ -30,7 +30,7 @@ describe('AddMealToDayUsecase', () => {
       ...vp.validIngredientProps,
     });
     ingredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient,
     });
     meal = Meal.create({

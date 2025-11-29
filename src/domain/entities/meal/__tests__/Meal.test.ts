@@ -16,7 +16,7 @@ describe('Meal', () => {
     validIngredient = Ingredient.create(vp.validIngredientProps);
 
     validIngredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient: validIngredient,
       quantityInGrams: 100,
     });
@@ -38,7 +38,7 @@ describe('Meal', () => {
 
     // More than one ingredient line
     const anotherIngredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,
         id: 'other-ing',
@@ -60,7 +60,7 @@ describe('Meal', () => {
 
     // More than one ingredient line
     const anotherIngredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       id: 'another-line-id',
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,
@@ -78,7 +78,7 @@ describe('Meal', () => {
 
   it('should add a new ingredient line', async () => {
     const newIngredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       id: 'new-line',
       ingredient: Ingredient.create({
         ...vp.validIngredientProps,

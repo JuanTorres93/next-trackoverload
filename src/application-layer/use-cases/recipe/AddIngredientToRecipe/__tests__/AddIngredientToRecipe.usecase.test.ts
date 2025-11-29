@@ -26,7 +26,7 @@ describe('AddIngredientToRecipeUsecase', () => {
     });
 
     const testIngredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient: testIngredient,
     });
 
@@ -41,7 +41,7 @@ describe('AddIngredientToRecipeUsecase', () => {
     });
 
     newIngredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient: newIngredient,
     });
   });
@@ -100,7 +100,7 @@ describe('AddIngredientToRecipeUsecase', () => {
   it('should throw NotFoundError when IngredientLine does not exist', async () => {
     await recipesRepo.saveRecipe(testRecipe);
     const notInRepoIngredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       id: 'non-existent-ingredient-line-id',
       ingredient: newIngredient,
     });
@@ -196,7 +196,7 @@ describe('AddIngredientToRecipeUsecase', () => {
 
     // Create a new ingredient line with the same ingredient
     const duplicateIngredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient: existingIngredient,
     });
 

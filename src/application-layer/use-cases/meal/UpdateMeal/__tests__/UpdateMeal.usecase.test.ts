@@ -23,7 +23,7 @@ describe('UpdateMealUsecase', () => {
     });
 
     const ingredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient,
     });
 
@@ -53,7 +53,7 @@ describe('UpdateMealUsecase', () => {
     });
 
     const ingredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient,
     });
 
@@ -79,7 +79,7 @@ describe('UpdateMealUsecase', () => {
     });
 
     const ingredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient,
     });
 
@@ -130,7 +130,7 @@ describe('UpdateMealUsecase', () => {
     });
 
     const ingredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient,
     });
 

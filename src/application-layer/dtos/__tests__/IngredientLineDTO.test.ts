@@ -16,7 +16,7 @@ describe('IngredientLineDTO', () => {
   beforeEach(() => {
     ingredient = Ingredient.create(vp.validIngredientProps);
     ingredientLine = IngredientLine.create({
-      ...vp.ingredientLinePropsNoIngredient,
+      ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient,
     });
   });
@@ -29,7 +29,8 @@ describe('IngredientLineDTO', () => {
     it('should convert IngredientLine to IngredientLineDTO', () => {
       expect(ingredientLineDTO).toEqual({
         id: ingredientLine.id,
-        recipeId: ingredientLine.recipeId,
+        parentId: ingredientLine.parentId,
+        parentType: ingredientLine.parentType,
         ingredient: {
           id: ingredient.id,
           name: ingredient.name,
@@ -161,7 +162,7 @@ describe('IngredientLineDTO', () => {
       });
 
       const ingredientLineWithImage = IngredientLine.create({
-        ...vp.ingredientLinePropsNoIngredient,
+        ...vp.ingredientLineRecipePropsNoIngredient,
         ingredient: ingredientWithImage,
       });
 
