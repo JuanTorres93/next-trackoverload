@@ -1,0 +1,103 @@
+import { UsersRepo } from '@/domain/repos/UsersRepo.port';
+import { User } from '@/domain/entities/user/User';
+import fs from 'fs/promises';
+import path from 'path';
+
+type UserData = {
+  id: string;
+  name: string;
+  customerId?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export class FileSystemUsersRepo implements UsersRepo {
+  private readonly dataDir: string;
+
+  constructor(baseDir: string = './data/users') {
+    this.dataDir = baseDir;
+  }
+
+  private async ensureDataDir(): Promise<void> {
+    try {
+      await fs.mkdir(this.dataDir, { recursive: true });
+    } catch {
+      // Directory might already exist
+    }
+  }
+
+  private getFilePath(id: string): string {
+    return path.join(this.dataDir, `${id}.json`);
+  }
+
+  private serializeUser(user: User): UserData {
+    return {
+      id: user.id,
+      name: user.name,
+      customerId: user.customerId,
+      createdAt: user.createdAt.toISOString(),
+      updatedAt: user.updatedAt.toISOString(),
+    };
+  }
+
+  private deserializeUser(data: UserData): User {
+    return User.create({
+      id: data.id,
+      name: data.name,
+      customerId: data.customerId,
+      createdAt: new Date(data.createdAt),
+      updatedAt: new Date(data.updatedAt),
+    });
+  }
+
+  async saveUser(user: User): Promise<void> {
+    await this.ensureDataDir();
+    const data = this.serializeUser(user);
+    const filePath = this.getFilePath(user.id);
+    await fs.writeFile(filePath, JSON.stringify(data, null, 2));
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    await this.ensureDataDir();
+
+    try {
+      const files = await fs.readdir(this.dataDir);
+      const jsonFiles = files.filter((f) => f.endsWith('.json'));
+
+      const users = await Promise.all(
+        jsonFiles.map(async (file) => {
+          const filePath = path.join(this.dataDir, file);
+          const content = await fs.readFile(filePath, 'utf-8');
+          const data = JSON.parse(content) as UserData;
+          return this.deserializeUser(data);
+        })
+      );
+
+      return users;
+    } catch {
+      return [];
+    }
+  }
+
+  async getUserById(id: string): Promise<User | null> {
+    const filePath = this.getFilePath(id);
+
+    try {
+      const content = await fs.readFile(filePath, 'utf-8');
+      const data = JSON.parse(content) as UserData;
+      return this.deserializeUser(data);
+    } catch {
+      return null;
+    }
+  }
+
+  async deleteUser(id: string): Promise<void> {
+    const filePath = this.getFilePath(id);
+
+    try {
+      await fs.unlink(filePath);
+    } catch {
+      // File might not exist, consistent with memory repo
+    }
+  }
+}

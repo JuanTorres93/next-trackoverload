@@ -5,7 +5,7 @@ import VerticalList from '@/app/_ui/VerticalList';
 import IngredientItemMini from '../ingredient/IngredientItemMini';
 import { IngredientDTO } from '@/application-layer/dtos/IngredientDTO';
 import { useDebounce } from '@/app/hooks/useDebounce';
-import { createInMemoryIngredientLine } from './utils';
+import { createInMemoryRecipeIngredientLine } from './utils';
 import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
 import IngredientLineItem from '../ingredient/IngredientLineItem';
 import { useOutsideClick } from '@/app/hooks/useOutsideClick';
@@ -205,7 +205,7 @@ export function handleIngredientSelection(
 ) {
   if (isSelected) {
     const newIngredientLine: IngredientLineDTO =
-      createInMemoryIngredientLine(ingredient);
+      createInMemoryRecipeIngredientLine(ingredient);
 
     setIngredientLines((prev) => [...prev, newIngredientLine]);
   } else {
