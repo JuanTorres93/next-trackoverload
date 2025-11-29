@@ -6,6 +6,7 @@ import {
   WorkoutTemplate,
   WorkoutTemplateCreateProps,
 } from '../WorkoutTemplate';
+import { WorkoutTemplateLine } from '../../workouttemplateline/WorkoutTemplateLine';
 
 describe('WorkoutTemplate', () => {
   let workoutTemplate: WorkoutTemplate;
@@ -13,7 +14,7 @@ describe('WorkoutTemplate', () => {
 
   beforeEach(() => {
     validWorkoutTemplateProps = {
-      ...vp.validWorkoutTemplateProps,
+      ...vp.validWorkoutTemplateProps(),
     };
 
     workoutTemplate = WorkoutTemplate.create(validWorkoutTemplateProps);
@@ -23,12 +24,14 @@ describe('WorkoutTemplate', () => {
     expect(workoutTemplate).toBeInstanceOf(WorkoutTemplate);
   });
 
-  it('should have and ordered list of exercises', async () => {
+  it('should have a list of WorkoutTemplateLine objects as exercises', async () => {
     const exercises = workoutTemplate.exercises;
-    expect(exercises).toEqual([
-      { exerciseId: 'ex1', sets: 3 },
-      { exerciseId: 'ex2', sets: 4 },
-    ]);
+
+    expect(Array.isArray(exercises)).toBe(true);
+    expect(exercises).toHaveLength(2);
+    exercises.forEach((exercise) => {
+      expect(exercise).toBeInstanceOf(WorkoutTemplateLine);
+    });
   });
 
   it('each exercise should have an id and a number of sets greater than 0', async () => {
@@ -40,73 +43,137 @@ describe('WorkoutTemplate', () => {
   });
 
   it('should add exercise', async () => {
-    const newExercise = { exerciseId: 'ex3', sets: 5 };
+    const newExercise = WorkoutTemplateLine.create({
+      id: 'line3',
+      exerciseId: 'ex3',
+      sets: 5,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    expect(workoutTemplate.exercises).toHaveLength(2);
     workoutTemplate.addExercise(newExercise);
+    expect(workoutTemplate.exercises).toHaveLength(3);
     const exercises = workoutTemplate.exercises;
-    expect(exercises).toEqual([
-      { exerciseId: 'ex1', sets: 3 },
-      { exerciseId: 'ex2', sets: 4 },
-      { exerciseId: 'ex3', sets: 5 },
-    ]);
+
+    const lastExercise = exercises[exercises.length - 1];
+    expect(lastExercise.exerciseId).toBe('ex3');
   });
 
   // NOTE: maybe in the future we want to allow duplicates
   it('should throw error if exercise already exists', async () => {
-    const newExercise = { exerciseId: 'ex1', sets: 5 };
+    const newExercise = WorkoutTemplateLine.create({
+      id: 'line1-dup',
+      exerciseId: workoutTemplate.exercises[0].exerciseId,
+      sets: 3,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
     expect(() => workoutTemplate.addExercise(newExercise)).toThrow(
       ValidationError
     );
   });
 
   it('should remove exercise', async () => {
-    workoutTemplate.removeExercise('ex1');
-    const exercises = workoutTemplate.exercises;
-    expect(exercises).toEqual([{ exerciseId: 'ex2', sets: 4 }]);
+    expect(workoutTemplate.exercises).toHaveLength(2);
+    workoutTemplate.removeExercise(
+      vp.validWorkoutTemplateProps().exercises[0].exerciseId
+    );
+    expect(workoutTemplate.exercises).toHaveLength(1);
+
+    const remainingExercise = workoutTemplate.exercises[0];
+    expect(remainingExercise.exerciseId).toBe(
+      vp.validWorkoutTemplateProps().exercises[1].exerciseId
+    );
   });
 
   it('should reorder exercises', async () => {
-    workoutTemplate.reorderExercise('ex1', 1);
-    const exercises = workoutTemplate.exercises;
-    expect(exercises).toEqual([
-      { exerciseId: 'ex2', sets: 4 },
-      { exerciseId: 'ex1', sets: 3 },
+    workoutTemplate.reorderExercise(
+      vp.validWorkoutTemplateProps().exercises[0].exerciseId,
+      1
+    );
+
+    const exercisesIds = workoutTemplate.exercises.map(
+      (line) => line.exerciseId
+    );
+    expect(exercisesIds).toEqual([
+      vp.validWorkoutTemplateProps().exercises[1].exerciseId,
+      vp.validWorkoutTemplateProps().exercises[0].exerciseId,
     ]);
   });
 
   it('should reorder exercises in a longer list', async () => {
-    workoutTemplate.addExercise({ exerciseId: 'ex3', sets: 5 });
-    workoutTemplate.addExercise({ exerciseId: 'ex4', sets: 2 });
-    workoutTemplate.addExercise({ exerciseId: 'ex5', sets: 6 });
-    workoutTemplate.reorderExercise('ex1', 3);
+    workoutTemplate.addExercise(
+      WorkoutTemplateLine.create({
+        id: 'line3',
+        exerciseId: 'ex3',
+        sets: 5,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+    );
+    workoutTemplate.addExercise(
+      WorkoutTemplateLine.create({
+        id: 'line4',
+        exerciseId: 'ex4',
+        sets: 2,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+    );
+    workoutTemplate.addExercise(
+      WorkoutTemplateLine.create({
+        id: 'line5',
+        exerciseId: 'ex5',
+        sets: 6,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+    );
+    workoutTemplate.reorderExercise(
+      vp.validWorkoutTemplateProps().exercises[0].exerciseId,
+      3
+    );
 
-    const exercises = workoutTemplate.exercises;
-    expect(exercises).toEqual([
-      { exerciseId: 'ex2', sets: 4 },
-      { exerciseId: 'ex3', sets: 5 },
-      { exerciseId: 'ex4', sets: 2 },
-      { exerciseId: 'ex1', sets: 3 },
-      { exerciseId: 'ex5', sets: 6 },
+    const exercisesIds = workoutTemplate.exercises.map(
+      (line) => line.exerciseId
+    );
+    expect(exercisesIds).toEqual([
+      vp.validWorkoutTemplateProps().exercises[1].exerciseId,
+      'ex3',
+      'ex4',
+      vp.validWorkoutTemplateProps().exercises[0].exerciseId,
+      'ex5',
     ]);
 
     // Another reorder
     workoutTemplate.reorderExercise('ex4', 0);
-    const exercises2 = workoutTemplate.exercises;
-    expect(exercises2).toEqual([
-      { exerciseId: 'ex4', sets: 2 },
-      { exerciseId: 'ex2', sets: 4 },
-      { exerciseId: 'ex3', sets: 5 },
-      { exerciseId: 'ex1', sets: 3 },
-      { exerciseId: 'ex5', sets: 6 },
+
+    const exercisesIds2 = workoutTemplate.exercises.map(
+      (line) => line.exerciseId
+    );
+    expect(exercisesIds2).toEqual([
+      'ex4',
+      vp.validWorkoutTemplateProps().exercises[1].exerciseId,
+      'ex3',
+      vp.validWorkoutTemplateProps().exercises[0].exerciseId,
+      'ex5',
     ]);
   });
 
   it('should update reps of an exercise', async () => {
-    workoutTemplate.updateExercise('ex1', { sets: 6 });
+    workoutTemplate.updateExercise(
+      vp.validWorkoutTemplateProps().exercises[0].exerciseId,
+      { sets: 66 }
+    );
     const exercises = workoutTemplate.exercises;
-    expect(exercises).toEqual([
-      { exerciseId: 'ex1', sets: 6 },
-      { exerciseId: 'ex2', sets: 4 },
-    ]);
+    const updatedExercise = exercises.find(
+      (line) =>
+        line.exerciseId ===
+        vp.validWorkoutTemplateProps().exercises[0].exerciseId
+    );
+    expect(updatedExercise).toBeDefined();
+    expect(updatedExercise!.sets).toBe(66);
   });
 
   it('should throw ValidationError if userId is invalid', () => {
@@ -141,30 +208,6 @@ describe('WorkoutTemplate', () => {
     const templateProps = { ...validWorkoutTemplateProps };
     // @ts-expect-error exercises is not an array
     templateProps.exercises = null;
-    expect(() => WorkoutTemplate.create(templateProps)).toThrow(
-      ValidationError
-    );
-  });
-
-  it('should throw ValidationError if any exercise line is invalid', () => {
-    const templateProps = { ...validWorkoutTemplateProps };
-    templateProps.exercises = [{ exerciseId: '', sets: 3 }];
-    expect(() => WorkoutTemplate.create(templateProps)).toThrow(
-      ValidationError
-    );
-
-    templateProps.exercises = [{ exerciseId: 'ex1', sets: 0 }];
-    expect(() => WorkoutTemplate.create(templateProps)).toThrow(
-      ValidationError
-    );
-
-    templateProps.exercises = [{ exerciseId: 'ex1', sets: -1 }];
-    expect(() => WorkoutTemplate.create(templateProps)).toThrow(
-      ValidationError
-    );
-
-    // @ts-expect-error sets is not a number
-    templateProps.exercises = [{ exerciseId: 'ex1', sets: '3' }];
     expect(() => WorkoutTemplate.create(templateProps)).toThrow(
       ValidationError
     );

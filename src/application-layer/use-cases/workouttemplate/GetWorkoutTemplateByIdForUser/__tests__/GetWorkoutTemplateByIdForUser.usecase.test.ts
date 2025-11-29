@@ -16,7 +16,7 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
 
   it('should return workout template by id for the correct user', async () => {
     const template = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps,
+      ...vp.validWorkoutTemplateProps(),
       name: 'Push Day',
       exercises: [{ exerciseId: 'ex1', sets: 3 }],
     });
@@ -33,7 +33,7 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
 
   it('should return WorkoutTemplateDTO', async () => {
     const template = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps,
+      ...vp.validWorkoutTemplateProps(),
       name: 'Leg Day',
       exercises: [{ exerciseId: 'ex2', sets: 4 }],
     });
@@ -41,7 +41,7 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
     await workoutTemplatesRepo.saveWorkoutTemplate(template);
 
     const result = await usecase.execute({
-      id: vp.validWorkoutTemplateProps.id,
+      id: vp.validWorkoutTemplateProps().id,
       userId: vp.userId,
     });
 
@@ -53,13 +53,13 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
 
   it('should return null if template belongs to different user', async () => {
     const template = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps,
+      ...vp.validWorkoutTemplateProps(),
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(template);
 
     const result = await usecase.execute({
-      id: vp.validWorkoutTemplateProps.id,
+      id: vp.validWorkoutTemplateProps().id,
       userId: 'user2',
     });
     expect(result).toBeNull();
@@ -73,7 +73,7 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
 
   it('should return null if template is deleted', async () => {
     const template = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps,
+      ...vp.validWorkoutTemplateProps(),
       id: 'to-be-deleted-id',
     });
 

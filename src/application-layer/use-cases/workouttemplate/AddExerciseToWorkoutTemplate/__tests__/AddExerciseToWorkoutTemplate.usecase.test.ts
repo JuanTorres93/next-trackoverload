@@ -39,7 +39,7 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
 
     // Create a template with one existing exercise
     existingTemplate = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps,
+      ...vp.validWorkoutTemplateProps(),
       exercises: [{ exerciseId: 'bench-press', sets: 3 }],
     });
 

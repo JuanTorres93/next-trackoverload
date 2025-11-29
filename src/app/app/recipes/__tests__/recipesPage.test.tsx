@@ -56,6 +56,10 @@ describe('RecipesPage', () => {
   });
 
   describe('Without recipes', () => {
+    beforeAll(() => {
+      recipesRepo.clearForTesting();
+    });
+
     it('Renders no recipe text', async () => {
       await setup();
 

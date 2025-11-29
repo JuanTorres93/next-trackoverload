@@ -17,43 +17,45 @@ describe('UpdateWorkoutTemplateUsecase', () => {
 
   it('should update the workout template name', async () => {
     const existingTemplate = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps,
+      ...vp.validWorkoutTemplateProps(),
       exercises: [{ exerciseId: 'ex1', sets: 3 }],
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
     const request = {
-      id: vp.validWorkoutTemplateProps.id,
+      id: vp.validWorkoutTemplateProps().id,
       userId: vp.userId,
       name: 'New Name',
     };
 
+    // Wait just a bit to ensure updatedAt will be different
+    await new Promise((resolve) => setTimeout(resolve, 10));
     const result = await usecase.execute(request);
 
     expect(result.name).toBe('New Name');
-    expect(result.id).toBe(vp.validWorkoutTemplateProps.id);
+    expect(result.id).toBe(vp.validWorkoutTemplateProps().id);
     expect(result.exercises).toEqual([{ exerciseId: 'ex1', sets: 3 }]);
     expect(new Date(result.createdAt)).toEqual(existingTemplate.createdAt);
     expect(new Date(result.updatedAt)).not.toEqual(existingTemplate.updatedAt);
 
     // Verify it was saved in the repo
     const savedTemplate = await workoutTemplatesRepo.getWorkoutTemplateById(
-      vp.validWorkoutTemplateProps.id
+      vp.validWorkoutTemplateProps().id
     );
     expect(savedTemplate!.name).toBe('New Name');
   });
 
   it('should return WorkoutTemplateDTO', async () => {
     const existingTemplate = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps,
+      ...vp.validWorkoutTemplateProps(),
       exercises: [{ exerciseId: 'ex1', sets: 3 }],
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
     const request = {
-      id: vp.validWorkoutTemplateProps.id,
+      id: vp.validWorkoutTemplateProps().id,
       userId: vp.userId,
       name: 'Updated Name',
     };
@@ -78,7 +80,7 @@ describe('UpdateWorkoutTemplateUsecase', () => {
 
   it('should throw error if name is invalid', async () => {
     const existingTemplate = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps,
+      ...vp.validWorkoutTemplateProps(),
       exercises: [{ exerciseId: 'ex1', sets: 3 }],
     });
 
@@ -88,7 +90,7 @@ describe('UpdateWorkoutTemplateUsecase', () => {
 
     for (const invalidName of invalidNames) {
       const request = {
-        id: vp.validWorkoutTemplateProps.id,
+        id: vp.validWorkoutTemplateProps().id,
         name: invalidName,
         userId: vp.userId,
       };
@@ -114,7 +116,7 @@ describe('UpdateWorkoutTemplateUsecase', () => {
 
   it('should throw NotFoundError when trying to update deleted template', async () => {
     const existingTemplate = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps,
+      ...vp.validWorkoutTemplateProps(),
       exercises: [{ exerciseId: 'ex1', sets: 3 }],
     });
 
@@ -122,7 +124,7 @@ describe('UpdateWorkoutTemplateUsecase', () => {
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
     const request = {
-      id: vp.validWorkoutTemplateProps.id,
+      id: vp.validWorkoutTemplateProps().id,
       name: 'Updated Name',
       userId: vp.userId,
     };
@@ -132,7 +134,7 @@ describe('UpdateWorkoutTemplateUsecase', () => {
 
   it('should throw NotFoundError when trying to update deleted template', async () => {
     const existingTemplate = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps,
+      ...vp.validWorkoutTemplateProps(),
       exercises: [{ exerciseId: 'ex1', sets: 3 }],
     });
 
@@ -140,7 +142,7 @@ describe('UpdateWorkoutTemplateUsecase', () => {
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
     const request = {
-      id: vp.validWorkoutTemplateProps.id,
+      id: vp.validWorkoutTemplateProps().id,
       name: 'Updated Name',
       userId: vp.userId,
     };

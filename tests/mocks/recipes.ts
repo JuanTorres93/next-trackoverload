@@ -1,5 +1,4 @@
 import { AppIngredientsRepo } from '@/interface-adapters/app/repos/AppIngredientsRepo';
-import { AppIngredientLinesRepo } from '@/interface-adapters/app/repos/AppIngredientLinesRepo';
 import { AppRecipesRepo } from '@/interface-adapters/app/repos/AppRecipesRepo';
 import { AppCreateRecipeUsecase } from '@/interface-adapters/app/use-cases/recipe';
 import { testUserId } from './user';
@@ -46,8 +45,6 @@ export const createMockRecipes = async () => {
     // Clean up after tests
     // @ts-expect-error AppIngredientsRepo will always be MemoryIngredientsRepo
     AppIngredientsRepo.clearForTesting();
-    // @ts-expect-error AppIngredientLinesRepo will always be MemoryIngredientLinesRepo
-    AppIngredientLinesRepo.clearForTesting();
     // @ts-expect-error AppRecipesRepo will always be MemoryRecipesRepo
     AppRecipesRepo.clearForTesting();
   });

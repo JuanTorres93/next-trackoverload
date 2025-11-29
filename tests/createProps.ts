@@ -1,3 +1,5 @@
+import { WorkoutTemplateLine } from '@/domain/entities/workouttemplateline/WorkoutTemplateLine';
+
 export const userId = 'user-1';
 export const dateId = new Date('2023-10-01');
 
@@ -16,17 +18,32 @@ export const recipePropsNoIngredientLines = {
   createdAt: new Date(),
   updatedAt: new Date(),
 };
-export const validWorkoutTemplateProps = {
-  id: '1',
-  userId: userId,
-  name: 'Push',
-  exercises: [
-    { exerciseId: 'ex1', sets: 3 },
-    { exerciseId: 'ex2', sets: 4 },
-  ],
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
+export function validWorkoutTemplateProps() {
+  const templateLine1 = WorkoutTemplateLine.create({
+    id: 'line1',
+    exerciseId: 'ex1',
+    sets: 3,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  });
+
+  const templateLine2 = WorkoutTemplateLine.create({
+    id: 'line2',
+    exerciseId: 'ex2',
+    sets: 4,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  });
+
+  return {
+    id: '1',
+    userId: userId,
+    name: 'Push',
+    exercises: [templateLine1, templateLine2],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+}
 
 export function validWorkoutPropsNoExercises() {
   return {
@@ -113,6 +130,14 @@ export const validWorkoutLineProps = {
   setNumber: 1,
   reps: 10,
   weight: 53.5,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
+export const validWorkoutTemplateLineProps = {
+  id: 'workouttemplateline-1',
+  exerciseId: 'exercise-1',
+  sets: 3,
   createdAt: new Date(),
   updatedAt: new Date(),
 };

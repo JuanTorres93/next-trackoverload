@@ -16,7 +16,7 @@ describe('DeleteWorkoutTemplateUsecase', () => {
 
   it('should soft delete the workout template when it exists', async () => {
     const existingTemplate = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps,
+      ...vp.validWorkoutTemplateProps(),
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
@@ -57,7 +57,7 @@ describe('DeleteWorkoutTemplateUsecase', () => {
 
   it('should throw error if workout template is deleted', async () => {
     const existingTemplate = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps,
+      ...vp.validWorkoutTemplateProps(),
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);

@@ -9,13 +9,13 @@ describe('MemoryWorkoutTemplatesRepo', () => {
 
   beforeEach(async () => {
     repo = new MemoryWorkoutTemplatesRepo();
-    workoutTemplate = WorkoutTemplate.create(vp.validWorkoutTemplateProps);
+    workoutTemplate = WorkoutTemplate.create(vp.validWorkoutTemplateProps());
     await repo.saveWorkoutTemplate(workoutTemplate);
   });
 
   it('should save a workout template', async () => {
     const newWorkoutTemplate = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps,
+      ...vp.validWorkoutTemplateProps(),
       id: 'another-template-id',
       name: 'Pull Template',
       exercises: [
@@ -32,7 +32,7 @@ describe('MemoryWorkoutTemplatesRepo', () => {
 
   it('should update an existing workout template', async () => {
     const updatedWorkoutTemplate = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps,
+      ...vp.validWorkoutTemplateProps(),
       name: 'Updated Push Template',
     });
     await repo.saveWorkoutTemplate(updatedWorkoutTemplate);
@@ -44,11 +44,11 @@ describe('MemoryWorkoutTemplatesRepo', () => {
 
   it('should retrieve a workout template by ID', async () => {
     const fetchedWorkoutTemplate = await repo.getWorkoutTemplateById(
-      vp.validWorkoutTemplateProps.id
+      vp.validWorkoutTemplateProps().id
     );
     expect(fetchedWorkoutTemplate).not.toBeNull();
     expect(fetchedWorkoutTemplate?.name).toBe(
-      vp.validWorkoutTemplateProps.name
+      vp.validWorkoutTemplateProps().name
     );
   });
 

@@ -16,19 +16,19 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
 
   it('should return all workout templates for a specific user', async () => {
     const user1Template1 = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps,
+      ...vp.validWorkoutTemplateProps(),
       id: 'user1-template1-id',
       exercises: [],
     });
 
     const user1Template2 = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps,
+      ...vp.validWorkoutTemplateProps(),
       id: 'user1-template2-id',
       exercises: [],
     });
 
     const user2Template = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps,
+      ...vp.validWorkoutTemplateProps(),
       id: 'user2-template-id',
       userId: 'user2-id',
       name: 'Leg Day',
@@ -51,7 +51,7 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
 
   it('should return array of WorkoutTemplateDTO', async () => {
     const template = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps,
+      ...vp.validWorkoutTemplateProps(),
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(template);
@@ -74,11 +74,11 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
 
   it('should not return deleted templates', async () => {
     const template1 = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps,
+      ...vp.validWorkoutTemplateProps(),
     });
 
     const template2 = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps,
+      ...vp.validWorkoutTemplateProps(),
       id: 'another-template-id',
     });
 

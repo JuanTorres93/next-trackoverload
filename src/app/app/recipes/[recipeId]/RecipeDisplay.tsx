@@ -10,7 +10,6 @@ import {
   deleteRecipe,
   addIngredientToRecipe,
 } from '@/app/_features/recipe/actions';
-import { createIngredientLine } from '@/app/_features/ingredient/actions';
 
 import { useDebounce } from '@/app/hooks/useDebounce';
 import IngredientSearch, {
@@ -53,10 +52,10 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
     e.preventDefault();
 
     for (const line of newIngredientLines) {
-      const createdLine = await createIngredientLine(
-        line.ingredient.id,
-        line.quantityInGrams
-      );
+      // TODO IMPORTANT: FIX, NOT TESTED YET
+      // TODO DELETE THESE DEBUG LOGS
+      console.log('line');
+      console.log(line);
       addIngredientToRecipe(recipe.id, createdLine);
     }
 

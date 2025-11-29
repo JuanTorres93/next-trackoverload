@@ -1,24 +1,18 @@
 import { Id } from '@/domain/value-objects/Id/Id';
 import { Integer } from '@/domain/value-objects/Integer/Integer';
 import { Text } from '@/domain/value-objects/Text/Text';
-import { ValidationError } from '../../common/errors';
+import { NotFoundError, ValidationError } from '../../common/errors';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
-import { validateGreaterThanZero } from '../../common/validation';
-
-export type TemplateLine = {
-  exerciseId: string;
-  sets: number;
-};
-
-type TemplateLineUpdateProps = {
-  sets?: number;
-};
+import {
+  WorkoutTemplateLine,
+  WorkoutTemplateLineUpdateProps,
+} from '../workouttemplateline/WorkoutTemplateLine';
 
 export type WorkoutTemplateCreateProps = {
   id: string;
   userId: string;
   name: string;
-  exercises: TemplateLine[];
+  exercises: WorkoutTemplateLine[];
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
@@ -28,7 +22,7 @@ export type WorkoutTemplateProps = {
   id: Id;
   userId: Id;
   name: Text;
-  exercises: TemplateLine[];
+  exercises: WorkoutTemplateLine[];
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
@@ -37,13 +31,7 @@ export type WorkoutTemplateProps = {
 const nameTextOptions = { canBeEmpty: false, maxLength: Integer.create(100) };
 
 export class WorkoutTemplate {
-  private constructor(private readonly props: WorkoutTemplateProps) {
-    // Deep copy to prevent external mutations in tests
-    this.props = {
-      ...props,
-      exercises: props.exercises.map((exercise) => ({ ...exercise })),
-    };
-  }
+  private constructor(private readonly props: WorkoutTemplateProps) {}
 
   static create(props: WorkoutTemplateCreateProps): WorkoutTemplate {
     if (!Array.isArray(props.exercises)) {
@@ -58,7 +46,7 @@ export class WorkoutTemplate {
         line.sets <= 0
       ) {
         throw new ValidationError(
-          'WorkoutTemplate exercises must be instances of TemplateLine'
+          'WorkoutTemplate exercises must be instances of WorkoutTemplateLine'
         );
       }
     }
@@ -67,7 +55,7 @@ export class WorkoutTemplate {
       id: Id.create(props.id),
       userId: Id.create(props.userId),
       name: Text.create(props.name, nameTextOptions),
-      exercises: props.exercises.map((exercise) => ({ ...exercise })),
+      exercises: props.exercises,
       createdAt: handleCreatedAt(props.createdAt),
       updatedAt: handleUpdatedAt(props.updatedAt),
       deletedAt: props.deletedAt,
@@ -76,15 +64,15 @@ export class WorkoutTemplate {
     return new WorkoutTemplate(workoutTemplateProps);
   }
 
-  addExercise({ exerciseId, sets }: TemplateLine) {
+  addExercise(newWorkoutTemplateLine: WorkoutTemplateLine) {
     // NOTE: maybe allow duplicates in the future?
     const existingLine = this.props.exercises.find(
-      (line) => line.exerciseId === exerciseId
+      (line) => line.exerciseId === newWorkoutTemplateLine.exerciseId
     );
     if (existingLine) {
       throw new ValidationError('WorkoutTemplate: Exercise already exists');
     }
-    this.props.exercises.push({ exerciseId, sets });
+    this.props.exercises.push(newWorkoutTemplateLine);
   }
 
   removeExercise(exerciseId: string) {
@@ -105,19 +93,18 @@ export class WorkoutTemplate {
     this.props.exercises.splice(newIndex, 0, exercise);
   }
 
-  updateExercise(exerciseId: string, updateProps: TemplateLineUpdateProps) {
-    const exercise = this.props.exercises.find(
-      (line) => line.exerciseId === exerciseId
-    );
-    if (!exercise) return;
+  updateExercise(
+    exerciseId: string,
+    updateProps: WorkoutTemplateLineUpdateProps
+  ) {
+    const lineToUpdate: WorkoutTemplateLine | undefined =
+      this.props.exercises.find((line) => line.exerciseId === exerciseId);
 
-    if (updateProps.sets !== undefined) {
-      validateGreaterThanZero(
-        updateProps.sets,
-        'WorkoutTemplate updateExercise sets'
-      );
-      exercise.sets = updateProps.sets;
+    if (!lineToUpdate) {
+      throw new NotFoundError('WorkoutTemplate: Exercise to update not found');
     }
+
+    lineToUpdate.update(updateProps);
   }
 
   // Getters
