@@ -2,24 +2,19 @@ import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { Workout } from '@/domain/entities/workout/Workout';
+import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { UpdateExerciseInWorkoutUsecase } from '../UpdateExerciseInWorkout.usecase';
-import {
-  WorkoutLine,
-  WorkoutLineCreateProps,
-} from '@/domain/entities/workoutline/WorkoutLine';
 
 describe('UpdateExerciseInWorkoutUsecase', () => {
-  let workoutLineValidProps: WorkoutLineCreateProps;
   let workoutLine: WorkoutLine;
   let workoutsRepo: MemoryWorkoutsRepo;
   let updateExerciseInWorkoutUsecase: UpdateExerciseInWorkoutUsecase;
 
   beforeEach(() => {
-    workoutLineValidProps = {
+    workoutLine = WorkoutLine.create({
       ...vp.validWorkoutLineProps,
-    };
-    workoutLine = WorkoutLine.create(workoutLineValidProps);
+    });
 
     workoutsRepo = new MemoryWorkoutsRepo();
     updateExerciseInWorkoutUsecase = new UpdateExerciseInWorkoutUsecase(
@@ -29,15 +24,12 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
 
   it('should update exercise reps in workout', async () => {
     const workout = Workout.create({
-      ...vp.validWorkoutPropsNoExercises,
+      ...vp.validWorkoutPropsNoExercises(),
       exercises: [workoutLine],
     });
 
     await workoutsRepo.saveWorkout(workout);
 
-    // TODO DELETE THESE DEBUG LOGS
-    console.log('ANTES workout.exercises[0]');
-    console.log(workout.exercises[0]);
     const updatedWorkout = await updateExerciseInWorkoutUsecase.execute({
       userId: vp.userId,
       workoutId: vp.validWorkoutProps.id,
@@ -46,13 +38,20 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
     });
 
     expect(updatedWorkout.exercises[0].reps).toBe(15);
-    expect(updatedWorkout.exercises[0].setNumber).toBe(1);
-    expect(updatedWorkout.exercises[0].weight).toBe(0);
+    expect(updatedWorkout.exercises[0].reps).not.toBe(
+      vp.validWorkoutLineProps.reps
+    );
+    expect(updatedWorkout.exercises[0].setNumber).toBe(
+      vp.validWorkoutLineProps.setNumber
+    );
+    expect(updatedWorkout.exercises[0].weight).toBe(
+      vp.validWorkoutLineProps.weight
+    );
   });
 
   it('should return WorkoutDTO', async () => {
     const workout = Workout.create({
-      ...vp.validWorkoutPropsNoExercises,
+      ...vp.validWorkoutPropsNoExercises(),
       exercises: [workoutLine],
     });
 
@@ -73,7 +72,7 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
 
   it('should update exercise weight in workout', async () => {
     const workout = Workout.create({
-      ...vp.validWorkoutPropsNoExercises,
+      ...vp.validWorkoutPropsNoExercises(),
       exercises: [workoutLine],
     });
 
@@ -87,13 +86,20 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
     });
 
     expect(updatedWorkout.exercises[0].weight).toBe(25.5);
-    expect(updatedWorkout.exercises[0].reps).toBe(10);
-    expect(updatedWorkout.exercises[0].setNumber).toBe(1);
+    expect(updatedWorkout.exercises[0].weight).not.toBe(
+      vp.validWorkoutLineProps.weight
+    );
+    expect(updatedWorkout.exercises[0].reps).toBe(
+      vp.validWorkoutLineProps.reps
+    );
+    expect(updatedWorkout.exercises[0].setNumber).toBe(
+      vp.validWorkoutLineProps.setNumber
+    );
   });
 
   it('should update exercise set number in workout', async () => {
     const workout = Workout.create({
-      ...vp.validWorkoutPropsNoExercises,
+      ...vp.validWorkoutPropsNoExercises(),
       exercises: [workoutLine],
     });
 
@@ -107,13 +113,20 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
     });
 
     expect(updatedWorkout.exercises[0].setNumber).toBe(2);
-    expect(updatedWorkout.exercises[0].reps).toBe(10);
-    expect(updatedWorkout.exercises[0].weight).toBe(0);
+    expect(updatedWorkout.exercises[0].setNumber).not.toBe(
+      vp.validWorkoutLineProps.setNumber
+    );
+    expect(updatedWorkout.exercises[0].reps).toBe(
+      vp.validWorkoutLineProps.reps
+    );
+    expect(updatedWorkout.exercises[0].weight).toBe(
+      vp.validWorkoutLineProps.weight
+    );
   });
 
   it('should update multiple properties at once', async () => {
     const workout = Workout.create({
-      ...vp.validWorkoutPropsNoExercises,
+      ...vp.validWorkoutPropsNoExercises(),
       exercises: [workoutLine],
     });
 

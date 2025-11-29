@@ -57,16 +57,18 @@ export class Workout {
     return new Workout(workoutProps);
   }
 
-  addExercise(line: WorkoutLine) {
+  addExercise(newLine: WorkoutLine) {
     // NOTE: maybe allow duplicates in the future?
     const existingLine = this.props.exercises.find(
-      (l) => l.exerciseId === line.exerciseId && l.setNumber === line.setNumber
+      (line) =>
+        line.exerciseId === newLine.exerciseId &&
+        line.setNumber === newLine.setNumber
     );
     if (existingLine) {
       throw new ValidationError('Workout: Exercise already exists');
     }
 
-    this.props.exercises.push(line);
+    this.props.exercises.push(newLine);
     this.props.updatedAt = new Date();
   }
 

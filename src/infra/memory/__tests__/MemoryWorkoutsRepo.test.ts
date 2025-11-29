@@ -2,23 +2,30 @@ import * as vp from '@/../tests/createProps';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryWorkoutsRepo } from '../MemoryWorkoutsRepo';
+import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
 
 describe('MemoryWorkoutsRepo', () => {
   let repo: MemoryWorkoutsRepo;
   let workout: Workout;
+  let workoutLine: WorkoutLine;
 
   beforeEach(async () => {
     repo = new MemoryWorkoutsRepo();
     workout = Workout.create({
-      ...vp.validWorkoutProps,
+      ...vp.validWorkoutPropsNoExercises(),
       name: 'Push Day',
     });
+
+    workoutLine = WorkoutLine.create({
+      ...vp.validWorkoutLineProps,
+    });
+
     await repo.saveWorkout(workout);
   });
 
   it('should save a workout', async () => {
     const newWorkout = Workout.create({
-      ...vp.validWorkoutProps,
+      ...vp.validWorkoutPropsNoExercises(),
       id: 'another-workout-id',
       name: 'Pull Day',
     });
@@ -29,9 +36,19 @@ describe('MemoryWorkoutsRepo', () => {
     expect(allWorkouts[1].name).toBe('Pull Day');
   });
 
+  it('should save workout with its workoutLines', async () => {
+    workout.addExercise(workoutLine);
+    await repo.saveWorkout(workout);
+
+    const fetchedWorkout = await repo.getWorkoutById(workout.id);
+    expect(fetchedWorkout).not.toBeNull();
+    expect(fetchedWorkout?.exercises.length).toBe(1);
+    expect(fetchedWorkout?.exercises[0].id).toBe(workoutLine.id);
+  });
+
   it('should update an existing workout', async () => {
     const updatedWorkout = Workout.create({
-      ...vp.validWorkoutProps,
+      ...vp.validWorkoutPropsNoExercises(),
       name: 'Updated Push Day',
       updatedAt: new Date('2023-01-03'),
     });

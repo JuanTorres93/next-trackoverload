@@ -5,6 +5,7 @@ import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 
 export type WorkoutLineCreateProps = {
   id: string;
+  workoutId: string;
   exerciseId: string;
   setNumber: number;
   reps: number;
@@ -21,6 +22,7 @@ export type WorkoutLineUpdateProps = {
 
 export type WorkoutLineProps = {
   id: Id;
+  workoutId: Id;
   exerciseId: Id;
   setNumber: Integer;
   reps: Integer;
@@ -48,6 +50,7 @@ export class WorkoutLine {
   static create(props: WorkoutLineCreateProps): WorkoutLine {
     const entityProps: WorkoutLineProps = {
       id: Id.create(props.id),
+      workoutId: Id.create(props.workoutId),
       exerciseId: Id.create(props.exerciseId),
       setNumber: Integer.create(props.setNumber, setNumberIntegerOptions),
       reps: Integer.create(props.reps, repsIntegerOptions),

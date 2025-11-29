@@ -28,15 +28,17 @@ export const validWorkoutTemplateProps = {
   updatedAt: new Date(),
 };
 
-export const validWorkoutPropsNoExercises = {
-  id: 'workout-1',
-  userId: userId,
-  name: 'Push',
-  workoutTemplateId: 'template-1',
-  exercises: [],
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
+export function validWorkoutPropsNoExercises() {
+  return {
+    id: 'workout-1',
+    userId: userId,
+    name: 'Push',
+    workoutTemplateId: 'template-1',
+    exercises: [],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+}
 export const validWorkoutProps = {
   id: 'workout-1',
   userId: userId,
@@ -105,6 +107,7 @@ export const validUserProps = {
 
 export const validWorkoutLineProps = {
   id: 'workoutline-1',
+  workoutId: 'workout-1',
   exerciseId: 'exercise-1',
   setNumber: 1,
   reps: 10,

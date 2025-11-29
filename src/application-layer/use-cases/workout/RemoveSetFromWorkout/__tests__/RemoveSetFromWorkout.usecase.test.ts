@@ -8,6 +8,7 @@ import { RemoveSetFromWorkoutUsecase } from '../RemoveSetFromWorkout.usecase';
 import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
 
 describe('RemoveSetFromWorkoutUsecase', () => {
+  let workout: Workout;
   let workoutLine1: WorkoutLine;
   let workoutLine2: WorkoutLine;
   let workoutLine3: WorkoutLine;
@@ -19,8 +20,14 @@ describe('RemoveSetFromWorkoutUsecase', () => {
     workoutsRepo = new MemoryWorkoutsRepo();
     removeSetFromWorkoutUsecase = new RemoveSetFromWorkoutUsecase(workoutsRepo);
 
+    workout = Workout.create({
+      ...vp.validWorkoutPropsNoExercises(),
+      name: 'Push Day',
+    });
+
     workoutLine1 = WorkoutLine.create({
-      ...vp.validWorkoutPropsNoExercises,
+      ...vp.validWorkoutPropsNoExercises(),
+      workoutId: workout.id,
       exerciseId: 'exercise-1',
       setNumber: 1,
       reps: 10,
@@ -28,7 +35,8 @@ describe('RemoveSetFromWorkoutUsecase', () => {
     });
 
     workoutLine2 = WorkoutLine.create({
-      ...vp.validWorkoutPropsNoExercises,
+      ...vp.validWorkoutPropsNoExercises(),
+      workoutId: workout.id,
       exerciseId: 'exercise-1',
       setNumber: 2,
       reps: 8,
@@ -36,28 +44,25 @@ describe('RemoveSetFromWorkoutUsecase', () => {
     });
 
     workoutLine3 = WorkoutLine.create({
-      ...vp.validWorkoutPropsNoExercises,
+      ...vp.validWorkoutPropsNoExercises(),
+      workoutId: workout.id,
       exerciseId: 'exercise-2',
       setNumber: 1,
       reps: 15,
       weight: 20,
     });
+
+    workout.addExercise(workoutLine1);
+    workout.addExercise(workoutLine2);
+    workout.addExercise(workoutLine3);
+
+    workoutsRepo.saveWorkout(workout);
   });
 
   it('should remove specific set from workout', async () => {
-    const workout = Workout.create({
-      ...vp.validWorkoutProps,
-      name: 'Push Day',
-      exercises: [workoutLine1, workoutLine2, workoutLine3],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
-
-    await workoutsRepo.saveWorkout(workout);
-
     const updatedWorkout = await removeSetFromWorkoutUsecase.execute({
       userId: vp.userId,
-      workoutId: vp.validWorkoutProps.id,
+      workoutId: workout.id,
       exerciseId: 'exercise-1',
       setNumber: 1,
     });
@@ -77,16 +82,6 @@ describe('RemoveSetFromWorkoutUsecase', () => {
   });
 
   it('should return WorkoutDTO', async () => {
-    const workout = Workout.create({
-      ...vp.validWorkoutProps,
-      name: 'Push Day',
-      exercises: [workoutLine1],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
-
-    await workoutsRepo.saveWorkout(workout);
-
     const updatedWorkout = await removeSetFromWorkoutUsecase.execute({
       userId: vp.userId,
       workoutId: vp.validWorkoutProps.id,
@@ -102,21 +97,16 @@ describe('RemoveSetFromWorkoutUsecase', () => {
   });
 
   it('should remove only the specified set number', async () => {
-    const workout = Workout.create({
-      ...vp.validWorkoutProps,
-      name: 'Push Day',
-      exercises: [
-        workoutLine1,
-        workoutLine2,
-        WorkoutLine.create({
-          ...vp.validWorkoutPropsNoExercises,
-          exerciseId: 'exercise-1',
-          setNumber: 3,
-          reps: 6,
-          weight: 70,
-        }),
-      ],
-    });
+    workout.addExercise(
+      WorkoutLine.create({
+        ...vp.validWorkoutPropsNoExercises(),
+        workoutId: workout.id,
+        exerciseId: 'exercise-1',
+        setNumber: 3,
+        reps: 6,
+        weight: 70,
+      })
+    );
 
     await workoutsRepo.saveWorkout(workout);
 
@@ -127,17 +117,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
       setNumber: 2,
     });
 
-    expect(updatedWorkout.exercises).toHaveLength(2);
-    // After removing set 2, sets should be reordered: set 1 stays, set 3 becomes set 2
-    const exercise1Sets = updatedWorkout.exercises
-      .filter((e) => e.exerciseId === 'exercise-1')
-      .sort((a, b) => a.setNumber - b.setNumber);
-    expect(exercise1Sets).toHaveLength(2);
-    expect(exercise1Sets[0].setNumber).toBe(1); // Original set 1
-    expect(exercise1Sets[0].reps).toBe(10);
-    expect(exercise1Sets[1].setNumber).toBe(2); // Original set 3 reordered to set 2
-    expect(exercise1Sets[1].reps).toBe(6); // Original set 3 data
-    expect(exercise1Sets[1].weight).toBe(70); // Original set 3 data
+    expect(updatedWorkout.exercises).toHaveLength(3);
   });
 
   it('should not modify workout when set does not exist', async () => {
@@ -251,23 +231,18 @@ describe('RemoveSetFromWorkoutUsecase', () => {
   });
 
   it('should reorder sets correctly after removal', async () => {
-    const workout = Workout.create({
-      ...vp.validWorkoutProps,
-      name: 'Push Day',
-      exercises: [
-        workoutLine1,
-        workoutLine2,
-        WorkoutLine.create({
-          ...vp.validWorkoutPropsNoExercises,
-          exerciseId: 'exercise-1',
-          setNumber: 3,
-          reps: 6,
-          weight: 70,
-        }),
-      ],
-    });
+    workout.addExercise(
+      WorkoutLine.create({
+        ...vp.validWorkoutPropsNoExercises(),
+        workoutId: workout.id,
+        exerciseId: 'exercise-1',
+        setNumber: 3,
+        reps: 66,
+        weight: 700,
+      })
+    );
 
-    await workoutsRepo.saveWorkout(workout);
+    workoutsRepo.saveWorkout(workout);
 
     const updatedWorkout = await removeSetFromWorkoutUsecase.execute({
       userId: vp.userId,
@@ -276,9 +251,17 @@ describe('RemoveSetFromWorkoutUsecase', () => {
       setNumber: 2,
     });
 
-    expect(updatedWorkout.exercises).toHaveLength(2);
-    expect(updatedWorkout.exercises[0].setNumber).toBe(1);
-    expect(updatedWorkout.exercises[1].setNumber).toBe(2); // Set 3 should be renumbered to 2
+    expect(updatedWorkout.exercises).toHaveLength(3);
+    // After removing set 2, sets should be reordered: set 1 stays, set 3 becomes set 2 and 4 becomes 3
+    const exercise1Sets = updatedWorkout.exercises
+      .filter((e) => e.exerciseId === 'exercise-1')
+      .sort((a, b) => a.setNumber - b.setNumber);
+
+    expect(exercise1Sets).toHaveLength(2);
+    expect(exercise1Sets[0].setNumber).toBe(1);
+    expect(exercise1Sets[1].setNumber).toBe(2); // Original set 3 reordered to set 2
+    expect(exercise1Sets[1].reps).toBe(66); // Original set 3 data
+    expect(exercise1Sets[1].weight).toBe(700); // Original set 3 data
   });
 
   it('should throw ValidationError when userId is invalid', async () => {
