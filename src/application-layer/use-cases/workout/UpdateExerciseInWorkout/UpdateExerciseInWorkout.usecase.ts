@@ -46,6 +46,10 @@ export class UpdateExerciseInWorkoutUsecase {
       weight: request.weight,
     });
 
+    // TODO DELETE THESE DEBUG LOGS
+    console.log('workout');
+    console.log(workout);
+
     await this.workoutsRepo.saveWorkout(workout);
 
     return toWorkoutDTO(workout);

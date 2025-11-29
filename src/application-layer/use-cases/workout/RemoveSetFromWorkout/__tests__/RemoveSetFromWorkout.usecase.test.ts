@@ -5,40 +5,50 @@ import { Workout } from '@/domain/entities/workout/Workout';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { RemoveSetFromWorkoutUsecase } from '../RemoveSetFromWorkout.usecase';
+import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
 
 describe('RemoveSetFromWorkoutUsecase', () => {
+  let workoutLine1: WorkoutLine;
+  let workoutLine2: WorkoutLine;
+  let workoutLine3: WorkoutLine;
+
   let workoutsRepo: MemoryWorkoutsRepo;
   let removeSetFromWorkoutUsecase: RemoveSetFromWorkoutUsecase;
 
   beforeEach(() => {
     workoutsRepo = new MemoryWorkoutsRepo();
     removeSetFromWorkoutUsecase = new RemoveSetFromWorkoutUsecase(workoutsRepo);
+
+    workoutLine1 = WorkoutLine.create({
+      ...vp.validWorkoutPropsNoExercises,
+      exerciseId: 'exercise-1',
+      setNumber: 1,
+      reps: 10,
+      weight: 50,
+    });
+
+    workoutLine2 = WorkoutLine.create({
+      ...vp.validWorkoutPropsNoExercises,
+      exerciseId: 'exercise-1',
+      setNumber: 2,
+      reps: 8,
+      weight: 60,
+    });
+
+    workoutLine3 = WorkoutLine.create({
+      ...vp.validWorkoutPropsNoExercises,
+      exerciseId: 'exercise-2',
+      setNumber: 1,
+      reps: 15,
+      weight: 20,
+    });
   });
 
   it('should remove specific set from workout', async () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
       name: 'Push Day',
-      exercises: [
-        {
-          exerciseId: 'exercise-1',
-          setNumber: 1,
-          reps: 10,
-          weight: 50,
-        },
-        {
-          exerciseId: 'exercise-1',
-          setNumber: 2,
-          reps: 8,
-          weight: 60,
-        },
-        {
-          exerciseId: 'exercise-2',
-          setNumber: 1,
-          reps: 15,
-          weight: 20,
-        },
-      ],
+      exercises: [workoutLine1, workoutLine2, workoutLine3],
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -70,14 +80,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
       name: 'Push Day',
-      exercises: [
-        {
-          exerciseId: 'exercise-1',
-          setNumber: 1,
-          reps: 10,
-          weight: 50,
-        },
-      ],
+      exercises: [workoutLine1],
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -103,24 +106,15 @@ describe('RemoveSetFromWorkoutUsecase', () => {
       ...vp.validWorkoutProps,
       name: 'Push Day',
       exercises: [
-        {
-          exerciseId: 'exercise-1',
-          setNumber: 1,
-          reps: 10,
-          weight: 50,
-        },
-        {
-          exerciseId: 'exercise-1',
-          setNumber: 2,
-          reps: 8,
-          weight: 60,
-        },
-        {
+        workoutLine1,
+        workoutLine2,
+        WorkoutLine.create({
+          ...vp.validWorkoutPropsNoExercises,
           exerciseId: 'exercise-1',
           setNumber: 3,
           reps: 6,
           weight: 70,
-        },
+        }),
       ],
     });
 
@@ -150,14 +144,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
       name: 'Push Day',
-      exercises: [
-        {
-          exerciseId: 'exercise-1',
-          setNumber: 1,
-          reps: 10,
-          weight: 50,
-        },
-      ],
+      exercises: [workoutLine1],
     });
 
     await workoutsRepo.saveWorkout(workout);
@@ -178,14 +165,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
     const workout = Workout.create({
       ...vp.validWorkoutProps,
       name: 'Push Day',
-      exercises: [
-        {
-          exerciseId: 'exercise-1',
-          setNumber: 1,
-          reps: 10,
-          weight: 50,
-        },
-      ],
+      exercises: [workoutLine1],
     });
 
     await workoutsRepo.saveWorkout(workout);
@@ -275,24 +255,15 @@ describe('RemoveSetFromWorkoutUsecase', () => {
       ...vp.validWorkoutProps,
       name: 'Push Day',
       exercises: [
-        {
-          exerciseId: 'exercise-1',
-          setNumber: 1,
-          reps: 10,
-          weight: 50,
-        },
-        {
-          exerciseId: 'exercise-1',
-          setNumber: 2,
-          reps: 8,
-          weight: 60,
-        },
-        {
+        workoutLine1,
+        workoutLine2,
+        WorkoutLine.create({
+          ...vp.validWorkoutPropsNoExercises,
           exerciseId: 'exercise-1',
           setNumber: 3,
           reps: 6,
           weight: 70,
-        },
+        }),
       ],
     });
 

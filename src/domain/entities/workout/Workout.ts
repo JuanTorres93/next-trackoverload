@@ -1,30 +1,9 @@
 import { ValidationError } from '../../common/errors';
 import { Id } from '@/domain/value-objects/Id/Id';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
-import {
-  validateNonEmptyString,
-  validateGreaterThanZero,
-  validatePositiveNumber,
-  validateInteger,
-} from '../../common/validation';
 import { Text } from '@/domain/value-objects/Text/Text';
 import { Integer } from '@/domain/value-objects/Integer/Integer';
-
-export type WorkoutLine = {
-  // TODO change exerciseId to Id type
-  exerciseId: string;
-  setNumber: number;
-  reps: number;
-  weight: number; // in kg
-};
-
-const validateExerciseLine = (line: WorkoutLine) => {
-  validateNonEmptyString(line.exerciseId, 'WorkoutLine exerciseId');
-  validateGreaterThanZero(line.setNumber, 'WorkoutLine setNumber');
-  validatePositiveNumber(line.reps, 'WorkoutLine reps');
-  validateInteger(line.reps, 'WorkoutLine reps');
-  validatePositiveNumber(line.weight, 'WorkoutLine weight');
-};
+import { WorkoutLine } from '../workoutline/WorkoutLine';
 
 type WorkoutLineUpdateProps = {
   setNumber?: number;
@@ -65,10 +44,6 @@ export class Workout {
       throw new ValidationError('Workout: exercises must be an array');
     }
 
-    for (const line of props.exercises) {
-      validateExerciseLine(line);
-    }
-
     const workoutProps: WorkoutProps = {
       id: Id.create(props.id),
       userId: Id.create(props.userId),
@@ -90,8 +65,6 @@ export class Workout {
     if (existingLine) {
       throw new ValidationError('Workout: Exercise already exists');
     }
-
-    validateExerciseLine(line);
 
     this.props.exercises.push(line);
     this.props.updatedAt = new Date();
@@ -119,13 +92,15 @@ export class Workout {
     // If a set was actually removed, reorder the remaining sets for this exercise
     if (this.props.exercises.length !== initialLength) {
       // Get all sets for this exercise and sort by setNumber
-      const exerciseSets = this.props.exercises
+      const exerciseLines = this.props.exercises
         .filter((line) => line.exerciseId === exerciseId)
         .sort((a, b) => a.setNumber - b.setNumber);
 
       // Reorder set numbers to be consecutive (1, 2, 3, ...)
-      exerciseSets.forEach((set, index) => {
-        set.setNumber = index + 1;
+      exerciseLines.forEach((line, index) => {
+        line.update({
+          setNumber: index + 1,
+        });
       });
 
       this.props.updatedAt = new Date();
@@ -141,20 +116,13 @@ export class Workout {
     }
 
     if (updateProps.setNumber !== undefined) {
-      validateGreaterThanZero(
-        updateProps.setNumber,
-        'Workout ExerciseLine setNumber'
-      );
-      line.setNumber = updateProps.setNumber;
+      line.update({ setNumber: updateProps.setNumber });
     }
     if (updateProps.reps !== undefined) {
-      validatePositiveNumber(updateProps.reps, 'Workout ExerciseLine reps');
-      validateInteger(updateProps.reps, 'Workout ExerciseLine reps');
-      line.reps = updateProps.reps;
+      line.update({ reps: updateProps.reps });
     }
     if (updateProps.weight !== undefined) {
-      validatePositiveNumber(updateProps.weight, 'Workout ExerciseLine weight');
-      line.weight = updateProps.weight;
+      line.update({ weight: updateProps.weight });
     }
 
     this.props.updatedAt = new Date();

@@ -3,14 +3,24 @@ import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
-import { beforeEach, describe, expect, it } from 'vitest';
 import { UpdateExerciseInWorkoutUsecase } from '../UpdateExerciseInWorkout.usecase';
+import {
+  WorkoutLine,
+  WorkoutLineCreateProps,
+} from '@/domain/entities/workoutline/WorkoutLine';
 
 describe('UpdateExerciseInWorkoutUsecase', () => {
+  let workoutLineValidProps: WorkoutLineCreateProps;
+  let workoutLine: WorkoutLine;
   let workoutsRepo: MemoryWorkoutsRepo;
   let updateExerciseInWorkoutUsecase: UpdateExerciseInWorkoutUsecase;
 
   beforeEach(() => {
+    workoutLineValidProps = {
+      ...vp.validWorkoutLineProps,
+    };
+    workoutLine = WorkoutLine.create(workoutLineValidProps);
+
     workoutsRepo = new MemoryWorkoutsRepo();
     updateExerciseInWorkoutUsecase = new UpdateExerciseInWorkoutUsecase(
       workoutsRepo
@@ -19,23 +29,19 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
 
   it('should update exercise reps in workout', async () => {
     const workout = Workout.create({
-      ...vp.validWorkoutProps,
-      exercises: [
-        {
-          exerciseId: 'exercise-1',
-          setNumber: 1,
-          reps: 10,
-          weight: 0,
-        },
-      ],
+      ...vp.validWorkoutPropsNoExercises,
+      exercises: [workoutLine],
     });
 
     await workoutsRepo.saveWorkout(workout);
 
+    // TODO DELETE THESE DEBUG LOGS
+    console.log('ANTES workout.exercises[0]');
+    console.log(workout.exercises[0]);
     const updatedWorkout = await updateExerciseInWorkoutUsecase.execute({
       userId: vp.userId,
       workoutId: vp.validWorkoutProps.id,
-      exerciseId: 'exercise-1',
+      exerciseId: workoutLine.exerciseId,
       reps: 15,
     });
 
@@ -46,15 +52,8 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
 
   it('should return WorkoutDTO', async () => {
     const workout = Workout.create({
-      ...vp.validWorkoutProps,
-      exercises: [
-        {
-          exerciseId: 'exercise-1',
-          setNumber: 1,
-          reps: 10,
-          weight: 0,
-        },
-      ],
+      ...vp.validWorkoutPropsNoExercises,
+      exercises: [workoutLine],
     });
 
     await workoutsRepo.saveWorkout(workout);
@@ -74,15 +73,8 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
 
   it('should update exercise weight in workout', async () => {
     const workout = Workout.create({
-      ...vp.validWorkoutProps,
-      exercises: [
-        {
-          exerciseId: 'exercise-1',
-          setNumber: 1,
-          reps: 10,
-          weight: 0,
-        },
-      ],
+      ...vp.validWorkoutPropsNoExercises,
+      exercises: [workoutLine],
     });
 
     await workoutsRepo.saveWorkout(workout);
@@ -101,15 +93,8 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
 
   it('should update exercise set number in workout', async () => {
     const workout = Workout.create({
-      ...vp.validWorkoutProps,
-      exercises: [
-        {
-          exerciseId: 'exercise-1',
-          setNumber: 1,
-          reps: 10,
-          weight: 0,
-        },
-      ],
+      ...vp.validWorkoutPropsNoExercises,
+      exercises: [workoutLine],
     });
 
     await workoutsRepo.saveWorkout(workout);
@@ -128,15 +113,8 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
 
   it('should update multiple properties at once', async () => {
     const workout = Workout.create({
-      ...vp.validWorkoutProps,
-      exercises: [
-        {
-          exerciseId: 'exercise-1',
-          setNumber: 1,
-          reps: 10,
-          weight: 0,
-        },
-      ],
+      ...vp.validWorkoutPropsNoExercises,
+      exercises: [workoutLine],
     });
 
     await workoutsRepo.saveWorkout(workout);

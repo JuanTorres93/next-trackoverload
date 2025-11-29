@@ -4,6 +4,7 @@ import { Workout } from '@/domain/entities/workout/Workout';
 export class MemoryWorkoutsRepo implements WorkoutsRepo {
   private workouts: Workout[] = [];
 
+  // TODO NEXT: HANDLE WORKOUT LINES IN REPO. ALSO IN FILE SYSTEM REPO
   async saveWorkout(workout: Workout): Promise<void> {
     const existingIndex = this.workouts.findIndex((w) => w.id === workout.id);
 
