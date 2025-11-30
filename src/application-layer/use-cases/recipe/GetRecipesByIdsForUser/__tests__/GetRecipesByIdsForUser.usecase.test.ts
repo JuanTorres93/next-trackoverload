@@ -113,14 +113,6 @@ describe('GetRecipesByIdsForUserUsecase', () => {
     );
   });
 
-  it('should throw ValidationError for invalid id in array', async () => {
-    const request = { ids: ['valid-id', ''], userId: vp.userId };
-
-    await expect(getRecipesByIdsUsecase.execute(request)).rejects.toThrow(
-      ValidationError
-    );
-  });
-
   it('should handle duplicate ids gracefully', async () => {
     await recipesRepo.saveRecipe(testRecipes[0]);
 

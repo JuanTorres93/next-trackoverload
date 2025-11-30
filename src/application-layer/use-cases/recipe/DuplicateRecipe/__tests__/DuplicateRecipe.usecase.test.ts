@@ -2,7 +2,7 @@ import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toIngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
 import { toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
@@ -86,17 +86,6 @@ describe('DuplicateRecipeUsecase', () => {
     );
   });
 
-  it('should throw ValidationError for invalid recipeId', async () => {
-    const request = {
-      recipeId: '',
-      userId: vp.userId,
-    };
-
-    await expect(duplicateRecipeUsecase.execute(request)).rejects.toThrow(
-      ValidationError
-    );
-  });
-
   it('should preserve all ingredient lines from original recipe', async () => {
     const secondIngredient = Ingredient.create({
       ...vp.validIngredientProps,
@@ -167,22 +156,6 @@ describe('DuplicateRecipeUsecase', () => {
     expect(new Date(result.updatedAt).getTime()).toBeGreaterThan(
       testRecipe.updatedAt.getTime()
     );
-  });
-
-  it('should throw ValidationError for invalid userId', async () => {
-    const invalidUserIds = ['', '   ', null, 123, {}, []];
-
-    for (const userId of invalidUserIds) {
-      const request = {
-        recipeId: testRecipe.id,
-        userId: userId,
-      };
-
-      // @ts-expect-error testing invalid inputs
-      await expect(duplicateRecipeUsecase.execute(request)).rejects.toThrow(
-        ValidationError
-      );
-    }
   });
 
   it('should return RecipeDTO', async () => {

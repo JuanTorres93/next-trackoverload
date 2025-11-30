@@ -1,6 +1,5 @@
 import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { NotFoundError } from '@/domain/common/errors';
-import { validateNonEmptyString } from '@/domain/common/validation';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
@@ -22,15 +21,6 @@ export class AddIngredientToRecipeUsecase {
   async execute(
     request: AddIngredientToRecipeUsecaseRequest
   ): Promise<RecipeDTO> {
-    validateNonEmptyString(
-      request.recipeId,
-      'AddIngredientToRecipeUsecase recipeId'
-    );
-    validateNonEmptyString(
-      request.userId,
-      'AddIngredientToRecipeUsecase userId'
-    );
-
     const existingRecipe: Recipe | null =
       await this.recipesRepo.getRecipeByIdAndUserId(
         request.recipeId,

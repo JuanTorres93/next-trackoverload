@@ -1,5 +1,5 @@
 import * as vp from '@/../tests/createProps';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
@@ -82,19 +82,6 @@ describe('DeleteRecipeUsecase', () => {
     );
   });
 
-  it('should throw ValidationError for invalid id', async () => {
-    const invalidIds = ['', '   ', null, 123, {}, []];
-
-    for (const id of invalidIds) {
-      const request = { id: id, userId: vp.userId };
-
-      // @ts-expect-error Testing invalid types
-      await expect(deleteRecipeUsecase.execute(request)).rejects.toThrow(
-        ValidationError
-      );
-    }
-  });
-
   it('should not affect other recipes when deleting one', async () => {
     const secondRecipe = Recipe.create({
       ...vp.recipePropsNoIngredientLines,
@@ -113,18 +100,5 @@ describe('DeleteRecipeUsecase', () => {
 
     const deletedRecipe = await recipesRepo.getRecipeById(testRecipe.id);
     expect(deletedRecipe).toBeNull();
-  });
-
-  it('should throw ValidationError for invalid userId', async () => {
-    const invalidUserIds = ['', '   ', null, 123, {}, []];
-
-    for (const userId of invalidUserIds) {
-      const request = { id: testRecipe.id, userId: userId };
-
-      // @ts-expect-error Testing invalid types
-      await expect(deleteRecipeUsecase.execute(request)).rejects.toThrow(
-        ValidationError
-      );
-    }
   });
 });

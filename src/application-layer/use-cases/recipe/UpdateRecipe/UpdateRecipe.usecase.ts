@@ -1,8 +1,7 @@
-import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
-import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
-import { validateNonEmptyString } from '@/domain/common/validation';
 import { NotFoundError } from '@/domain/common/errors';
+import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
+import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 
 export type UpdateRecipeUsecaseRequest = {
   id: string;
@@ -15,9 +14,6 @@ export class UpdateRecipeUsecase {
   constructor(private recipesRepo: RecipesRepo) {}
 
   async execute(request: UpdateRecipeUsecaseRequest): Promise<RecipeDTO> {
-    validateNonEmptyString(request.id, 'UpdateRecipeUsecase id');
-    validateNonEmptyString(request.userId, 'UpdateRecipeUsecase userId');
-
     const existingRecipe = await this.recipesRepo.getRecipeByIdAndUserId(
       request.id,
       request.userId
@@ -31,10 +27,6 @@ export class UpdateRecipeUsecase {
     if (request.name !== undefined) {
       existingRecipe.rename(request.name);
     }
-
-    // Note: Recipe doesn't have setIngredientLines method
-    // We would need to recreate the recipe or add such method to the entity
-    // For now, we'll leave this functionality to the IngredientLine management use-cases
 
     await this.recipesRepo.saveRecipe(existingRecipe);
 

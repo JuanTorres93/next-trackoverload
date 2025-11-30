@@ -1,6 +1,6 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
@@ -66,35 +66,6 @@ describe('UpdateRecipeUsecase', () => {
     );
   });
 
-  it('should throw ValidationError for invalid id', async () => {
-    const request = {
-      id: '',
-      userId: vp.userId,
-      name: 'Updated Name',
-    };
-
-    await expect(updateRecipeUsecase.execute(request)).rejects.toThrow(
-      ValidationError
-    );
-  });
-
-  it('should throw ValidationError for invalid name', async () => {
-    await recipesRepo.saveRecipe(testRecipe);
-
-    const invalidNames = ['', '   ', null, 4];
-    for (const invalidName of invalidNames) {
-      const request = {
-        id: testRecipe.id,
-        name: invalidName,
-      };
-
-      // @ts-expect-error testing invalid inputs
-      await expect(updateRecipeUsecase.execute(request)).rejects.toThrow(
-        ValidationError
-      );
-    }
-  });
-
   it('should not update when no changes provided', async () => {
     await recipesRepo.saveRecipe(testRecipe);
     const originalUpdatedAt = testRecipe.updatedAt;
@@ -124,22 +95,6 @@ describe('UpdateRecipeUsecase', () => {
     expect(result).not.toBeInstanceOf(Recipe);
     for (const prop of dto.recipeDTOProperties) {
       expect(result).toHaveProperty(prop);
-    }
-  });
-
-  it('should throw ValidationError for invalid userId', async () => {
-    const invalidUserIds = ['', '   ', null, 4, {}, [], undefined, true];
-    for (const invalidUserId of invalidUserIds) {
-      const request = {
-        id: testRecipe.id,
-        userId: invalidUserId,
-        name: 'Updated Name',
-      };
-
-      // @ts-expect-error testing invalid inputs
-      await expect(updateRecipeUsecase.execute(request)).rejects.toThrow(
-        ValidationError
-      );
     }
   });
 });

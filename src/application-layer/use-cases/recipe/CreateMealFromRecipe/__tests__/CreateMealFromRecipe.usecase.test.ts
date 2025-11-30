@@ -2,7 +2,7 @@ import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toIngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
 import { toMealDTO } from '@/application-layer/dtos/MealDTO';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
@@ -93,35 +93,6 @@ describe('CreateMealFromRecipeUsecase', () => {
     );
   });
 
-  it('should throw ValidationError for invalid recipeId', async () => {
-    const request = {
-      recipeId: '',
-      userId: vp.userId,
-    };
-
-    await expect(createMealFromRecipeUsecase.execute(request)).rejects.toThrow(
-      ValidationError
-    );
-  });
-
-  it('should throw ValidationError for invalid mealName', async () => {
-    await recipesRepo.saveRecipe(testRecipe);
-    const invalidNames = [null, 123, {}, []];
-
-    for (const name of invalidNames) {
-      const request = {
-        userId: vp.userId,
-        recipeId: testRecipe.id,
-        mealName: name,
-      };
-
-      await expect(
-        // @ts-expect-error testing invalid types
-        createMealFromRecipeUsecase.execute(request)
-      ).rejects.toThrow(ValidationError);
-    }
-  });
-
   it('should preserve all ingredient lines from recipe', async () => {
     const secondIngredient = Ingredient.create({
       ...vp.validIngredientProps,
@@ -161,24 +132,6 @@ describe('CreateMealFromRecipeUsecase', () => {
     const result = await createMealFromRecipeUsecase.execute(request);
 
     expect(result.id).not.toBe(testRecipe.id);
-  });
-
-  it('should throw error when userId invalid', async () => {
-    const invalidUserIds = ['', null, 123, {}, [], undefined, NaN];
-
-    await recipesRepo.saveRecipe(testRecipe);
-
-    for (const userId of invalidUserIds) {
-      const request = {
-        recipeId: testRecipe.id,
-        userId: userId,
-      };
-
-      await expect(
-        // @ts-expect-error testing invalid types
-        createMealFromRecipeUsecase.execute(request)
-      ).rejects.toThrow(ValidationError);
-    }
   });
 
   it('should return MealDTO', async () => {

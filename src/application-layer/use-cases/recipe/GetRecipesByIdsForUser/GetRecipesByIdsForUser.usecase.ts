@@ -1,7 +1,6 @@
-import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
-import { validateNonEmptyString } from '@/domain/common/validation';
 import { ValidationError } from '@/domain/common/errors';
+import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 
 export type GetRecipesByIdsForUserUsecaseRequest = {
   ids: string[];
@@ -20,16 +19,7 @@ export class GetRecipesByIdsForUserUsecase {
       );
     }
 
-    validateNonEmptyString(
-      request.userId,
-      'GetRecipesByIdsForUserUsecase userId'
-    );
-
     const uniqueIds = Array.from(new Set(request.ids));
-
-    uniqueIds.forEach((id) => {
-      validateNonEmptyString(id, `GetRecipesByIdsForUserUsecase id  ${id}`);
-    });
 
     const recipes = await Promise.all(
       uniqueIds.map((id) =>

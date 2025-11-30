@@ -118,47 +118,4 @@ describe('GetAllRecipesForUserUsecase', () => {
     expect(user2Recipes).toHaveLength(1);
     expect(user2Recipes[0].userId).toBe(userId2);
   });
-
-  it('should throw an error if userId is not valid', async () => {
-    const invalidUserIds = [
-      null,
-      123,
-      '',
-      {},
-      [],
-      undefined,
-      '   ',
-      NaN,
-      false,
-      true,
-    ];
-
-    for (const invalidUserId of invalidUserIds) {
-      const request = { userId: invalidUserId as unknown as string };
-
-      await expect(getAllRecipesUsecase.execute(request)).rejects.toThrow();
-    }
-  });
-
-  it('should throw error for invalid userId', async () => {
-    const invalidUserIds = [
-      null,
-      123,
-      '',
-      {},
-      [],
-      undefined,
-      '   ',
-      NaN,
-      false,
-      true,
-    ];
-
-    for (const invalidUserId of invalidUserIds) {
-      const request = { userId: invalidUserId };
-
-      // @ts-expect-error testing invalid types
-      await expect(getAllRecipesUsecase.execute(request)).rejects.toThrow();
-    }
-  });
 });

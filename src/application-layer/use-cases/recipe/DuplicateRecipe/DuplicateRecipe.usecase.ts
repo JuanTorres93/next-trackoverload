@@ -1,5 +1,4 @@
 import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
-import { validateNonEmptyString } from '@/domain/common/validation';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 
@@ -16,9 +15,6 @@ export class DuplicateRecipeUsecase {
   constructor(private recipesRepo: RecipesRepo) {}
 
   async execute(request: DuplicateRecipeUsecaseRequest): Promise<RecipeDTO> {
-    validateNonEmptyString(request.recipeId, 'DuplicateRecipeUsecase recipeId');
-    validateNonEmptyString(request.userId, 'DuplicateRecipeUsecase userId');
-
     const originalRecipe = await this.recipesRepo.getRecipeByIdAndUserId(
       request.recipeId,
       request.userId

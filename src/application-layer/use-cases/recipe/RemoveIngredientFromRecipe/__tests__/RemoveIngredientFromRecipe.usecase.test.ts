@@ -1,4 +1,4 @@
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
@@ -105,36 +105,6 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
     ).rejects.toThrow(NotFoundError);
   });
 
-  it('should throw ValidationError for invalid recipeId', async () => {
-    const request = {
-      recipeId: '',
-      userId: vp.userId,
-      ingredientId: testIngredient.id,
-    };
-
-    await expect(
-      removeIngredientFromRecipeUsecase.execute(request)
-    ).rejects.toThrow(ValidationError);
-  });
-
-  it('should throw ValidationError for invalid ingredientId', async () => {
-    await recipesRepo.saveRecipe(testRecipe);
-
-    const request = {
-      recipeId: testRecipe.id,
-      userId: vp.userId,
-      ingredientId: '',
-    };
-
-    await expect(
-      removeIngredientFromRecipeUsecase.execute(request)
-    ).rejects.toThrow(ValidationError);
-
-    await expect(
-      removeIngredientFromRecipeUsecase.execute(request)
-    ).rejects.toThrow(/ingredientId/i);
-  });
-
   it('should throw error when ingredient not found in recipe', async () => {
     await recipesRepo.saveRecipe(testRecipe);
 
@@ -167,22 +137,5 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
     expect(new Date(result.updatedAt).getTime()).toBeGreaterThan(
       originalUpdatedAt.getTime()
     );
-  });
-
-  it('should throw error if userId is invalid', async () => {
-    const invalidUserIds = [null, '', '   ', 123, {}, []];
-
-    for (const invalidUserId of invalidUserIds) {
-      const request = {
-        recipeId: testRecipe.id,
-        ingredientId: testIngredient.id,
-        userId: invalidUserId,
-      };
-
-      await expect(
-        // @ts-expect-error testing invalid inputs
-        removeIngredientFromRecipeUsecase.execute(request)
-      ).rejects.toThrow(ValidationError);
-    }
   });
 });

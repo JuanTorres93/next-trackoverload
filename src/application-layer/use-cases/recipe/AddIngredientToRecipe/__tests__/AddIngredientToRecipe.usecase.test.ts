@@ -104,19 +104,6 @@ describe('AddIngredientToRecipeUsecase', () => {
     );
   });
 
-  it('should throw ValidationError for invalid recipeId', async () => {
-    const request = {
-      recipeId: '',
-      userId: vp.userId,
-      ingredientId: newIngredient.id,
-      quantityInGrams: 150,
-    };
-
-    await expect(addIngredientToRecipeUsecase.execute(request)).rejects.toThrow(
-      ValidationError
-    );
-  });
-
   it('should throw error for not found ingredient', async () => {
     await recipesRepo.saveRecipe(testRecipe);
 
@@ -152,24 +139,6 @@ describe('AddIngredientToRecipeUsecase', () => {
     expect(new Date(result.updatedAt).getTime()).toBeGreaterThan(
       originalUpdatedAt.getTime()
     );
-  });
-
-  it('should throw ValidationError for invalid userId', async () => {
-    const invalidUserIds = [null, '', '   ', 123, {}, []];
-
-    for (const invalidUserId of invalidUserIds) {
-      const request = {
-        recipeId: testRecipe.id,
-        userId: invalidUserId,
-        ingredientId: newIngredient.id,
-        quantityInGrams: 150,
-      };
-
-      await expect(
-        // @ts-expect-error testing invalid inputs
-        addIngredientToRecipeUsecase.execute(request)
-      ).rejects.toThrow(ValidationError);
-    }
   });
 
   it('should throw ValidationError when ingredient already exists in recipe', async () => {

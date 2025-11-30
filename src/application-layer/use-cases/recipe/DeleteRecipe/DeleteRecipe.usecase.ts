@@ -1,7 +1,6 @@
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { ImageManager } from '@/domain/services/ImageManager.port';
 
-import { validateNonEmptyString } from '@/domain/common/validation';
 import { NotFoundError } from '@/domain/common/errors';
 
 export type DeleteRecipeUsecaseRequest = {
@@ -16,9 +15,6 @@ export class DeleteRecipeUsecase {
   ) {}
 
   async execute(request: DeleteRecipeUsecaseRequest): Promise<void> {
-    validateNonEmptyString(request.id, 'DeleteRecipeUsecase id');
-    validateNonEmptyString(request.userId, 'DeleteRecipeUsecase userId');
-
     const existingRecipe = await this.recipesRepo.getRecipeByIdAndUserId(
       request.id,
       request.userId
