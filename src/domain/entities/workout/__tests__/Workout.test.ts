@@ -188,4 +188,29 @@ describe('Workout', () => {
       });
     }).toThrow(/Text.*empty/);
   });
+
+  it('should throw error if removing set from exercise that does not exist in workout', async () => {
+    expect(() => {
+      workout.removeSet('non-existent-exercise', 1);
+    }).toThrow(ValidationError);
+    expect(() => {
+      workout.removeSet('non-existent-exercise', 1);
+    }).toThrow(/Workout.*remove.*not.*exist/);
+  });
+
+  it('should update workout name', async () => {
+    const newName = 'Updated Workout Name';
+    workout.update({ name: newName });
+    expect(workout.name).toBe(newName);
+  });
+
+  it('should throw error if no patch is provided when updating', async () => {
+    expect(() => {
+      workout.update({});
+    }).toThrow(ValidationError);
+
+    expect(() => {
+      workout.update({});
+    }).toThrow(/Workout.*No.*patch/);
+  });
 });

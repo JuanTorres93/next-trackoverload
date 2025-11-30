@@ -1,4 +1,3 @@
-import { ValidationError } from '@/domain/common/errors';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -115,50 +114,5 @@ describe('GetWorkoutsByTemplateUsecase', () => {
     });
 
     expect(workouts).toHaveLength(0);
-  });
-
-  it('should throw ValidationError when templateId is invalid', async () => {
-    const invalidTemplateIds = [
-      '',
-      '   ',
-      null,
-      undefined,
-      123,
-      {},
-      [],
-      true,
-      false,
-    ];
-
-    for (const templateId of invalidTemplateIds) {
-      await expect(
-        // @ts-expect-error testing invalid inputs
-        getWorkoutsByTemplateUsecase.execute({ templateId: templateId })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
-
-  it('should throw ValidationError when userId is invalid', async () => {
-    const invalidUserIds = [
-      '',
-      '   ',
-      null,
-      undefined,
-      123,
-      {},
-      [],
-      true,
-      false,
-    ];
-
-    for (const userId of invalidUserIds) {
-      await expect(
-        getWorkoutsByTemplateUsecase.execute({
-          templateId: 'template-1',
-          // @ts-expect-error testing invalid inputs
-          userId: userId,
-        })
-      ).rejects.toThrow(ValidationError);
-    }
   });
 });

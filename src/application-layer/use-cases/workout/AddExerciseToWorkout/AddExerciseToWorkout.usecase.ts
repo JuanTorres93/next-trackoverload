@@ -1,15 +1,9 @@
-import { v4 as uuidv4 } from 'uuid';
-import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
-import { ExercisesRepo } from '@/domain/repos/ExercisesRepo.port';
 import { WorkoutDTO, toWorkoutDTO } from '@/application-layer/dtos/WorkoutDTO';
 import { NotFoundError } from '@/domain/common/errors';
-import {
-  validateGreaterThanZero,
-  validateInteger,
-  validateNonEmptyString,
-  validatePositiveNumber,
-} from '@/domain/common/validation';
 import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
+import { ExercisesRepo } from '@/domain/repos/ExercisesRepo.port';
+import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
+import { v4 as uuidv4 } from 'uuid';
 
 export type AddExerciseToWorkoutUsecaseRequest = {
   userId: string;
@@ -29,21 +23,6 @@ export class AddExerciseToWorkoutUsecase {
   async execute(
     request: AddExerciseToWorkoutUsecaseRequest
   ): Promise<WorkoutDTO> {
-    validateNonEmptyString(request.userId, 'AddExerciseToWorkout userId');
-    validateNonEmptyString(request.workoutId, 'AddExerciseToWorkout workoutId');
-    validateNonEmptyString(
-      request.exerciseId,
-      'AddExerciseToWorkout exerciseId'
-    );
-    validateGreaterThanZero(
-      request.setNumber,
-      'AddExerciseToWorkout setNumber'
-    );
-    validateInteger(request.setNumber, 'AddExerciseToWorkout setNumber');
-    validatePositiveNumber(request.reps, 'AddExerciseToWorkout reps');
-    validateInteger(request.reps, 'AddExerciseToWorkout reps');
-    validatePositiveNumber(request.weight, 'AddExerciseToWorkout weight');
-
     const workout = await this.workoutsRepo.getWorkoutByIdAndUserId(
       request.workoutId,
       request.userId
@@ -73,7 +52,6 @@ export class AddExerciseToWorkoutUsecase {
       updatedAt: new Date(),
     });
 
-    // NOTE: duplicate exercise handled in entity
     workout.addExercise(workoutLine);
 
     await this.workoutsRepo.saveWorkout(workout);

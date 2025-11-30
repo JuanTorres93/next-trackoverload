@@ -1,9 +1,9 @@
+import * as vp from '@/../tests/createProps';
+import { NotFoundError } from '@/domain/common/errors';
+import { Workout } from '@/domain/entities/workout/Workout';
+import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { DeleteWorkoutUsecase } from '../DeleteWorkout.usecase';
-import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
-import { Workout } from '@/domain/entities/workout/Workout';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
-import * as vp from '@/../tests/createProps';
 
 describe('DeleteWorkoutUsecase', () => {
   let workoutsRepo: MemoryWorkoutsRepo;
@@ -47,49 +47,5 @@ describe('DeleteWorkoutUsecase', () => {
         userId: vp.validWorkoutProps.userId,
       })
     ).rejects.toThrow(NotFoundError);
-  });
-
-  it('should throw error when id is invalid', async () => {
-    const invalidIds = ['', '   ', null, undefined, 123, {}, [], true, false];
-
-    for (const invalidId of invalidIds) {
-      await expect(
-        deleteWorkoutUsecase.execute({
-          // @ts-expect-error testing invalid types
-          id: invalidId,
-        })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
-
-  it('should throw error if userId is invalid', async () => {
-    const workout = Workout.create({
-      ...vp.validWorkoutProps,
-      exercises: [],
-    });
-
-    await workoutsRepo.saveWorkout(workout);
-
-    const invalidUserIds = [
-      '',
-      '   ',
-      null,
-      undefined,
-      123,
-      {},
-      [],
-      true,
-      false,
-    ];
-
-    for (const invalidUserId of invalidUserIds) {
-      await expect(
-        deleteWorkoutUsecase.execute({
-          id: vp.validWorkoutProps.id,
-          // @ts-expect-error testing invalid types
-          userId: invalidUserId,
-        })
-      ).rejects.toThrow(ValidationError);
-    }
   });
 });

@@ -1,10 +1,5 @@
 import { WorkoutDTO, toWorkoutDTO } from '@/application-layer/dtos/WorkoutDTO';
 import { NotFoundError } from '@/domain/common/errors';
-import {
-  validateGreaterThanZero,
-  validateInteger,
-  validateNonEmptyString,
-} from '@/domain/common/validation';
 import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
 
 export type RemoveSetFromWorkoutUsecaseRequest = {
@@ -20,18 +15,6 @@ export class RemoveSetFromWorkoutUsecase {
   async execute(
     request: RemoveSetFromWorkoutUsecaseRequest
   ): Promise<WorkoutDTO> {
-    validateNonEmptyString(request.userId, 'RemoveSetFromWorkout userId');
-    validateNonEmptyString(request.workoutId, 'RemoveSetFromWorkout workoutId');
-    validateNonEmptyString(
-      request.exerciseId,
-      'RemoveSetFromWorkout exerciseId'
-    );
-    validateGreaterThanZero(
-      request.setNumber,
-      'RemoveSetFromWorkout setNumber'
-    );
-    validateInteger(request.setNumber, 'RemoveSetFromWorkout setNumber');
-
     const workout = await this.workoutsRepo.getWorkoutByIdAndUserId(
       request.workoutId,
       request.userId

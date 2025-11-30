@@ -1,6 +1,6 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { NotFoundError } from '@/domain/common/errors';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -81,42 +81,5 @@ describe('UpdateWorkoutUsecase', () => {
         name: 'New Name',
       })
     ).rejects.toThrow(NotFoundError);
-  });
-
-  it('should throw ValidationError when id is invalid', async () => {
-    const invalidIds = ['', '   ', null, undefined, 123, {}, [], true, false];
-
-    for (const invalidId of invalidIds) {
-      await expect(
-        updateWorkoutUsecase.execute({
-          userId: vp.userId,
-          // @ts-expect-error Testing invalid inputs
-          id: invalidId,
-          name: 'New Name',
-        })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
-
-  it('should throw ValidationError when name is invalid', async () => {
-    const workout = Workout.create({
-      ...vp.validWorkoutProps,
-      name: 'Push Day',
-      exercises: [],
-    });
-
-    await workoutsRepo.saveWorkout(workout);
-    const invalidNames = ['', '   ', null, 123, {}, [], true, false];
-
-    for (const invalidName of invalidNames) {
-      await expect(
-        updateWorkoutUsecase.execute({
-          userId: vp.userId,
-          id: vp.validWorkoutProps.id,
-          // @ts-expect-error Testing invalid inputs
-          name: invalidName,
-        })
-      ).rejects.toThrow(ValidationError);
-    }
   });
 });

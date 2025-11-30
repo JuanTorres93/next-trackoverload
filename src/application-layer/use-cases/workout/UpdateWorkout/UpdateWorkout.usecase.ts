@@ -1,7 +1,6 @@
 import { WorkoutDTO, toWorkoutDTO } from '@/application-layer/dtos/WorkoutDTO';
 import { NotFoundError } from '@/domain/common/errors';
-import { validateNonEmptyString } from '@/domain/common/validation';
-import { Workout } from '@/domain/entities/workout/Workout';
+import { WorkoutUpdateProps } from '@/domain/entities/workout/Workout';
 import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
 
 export type UpdateWorkoutUsecaseRequest = {
@@ -14,11 +13,6 @@ export class UpdateWorkoutUsecase {
   constructor(private workoutsRepo: WorkoutsRepo) {}
 
   async execute(request: UpdateWorkoutUsecaseRequest): Promise<WorkoutDTO> {
-    validateNonEmptyString(request.id, 'UpdateWorkoutUsecase id');
-    validateNonEmptyString(request.userId, 'UpdateWorkoutUsecase userId');
-    if (request.name !== undefined)
-      validateNonEmptyString(request.name, 'UpdateWorkoutUsecase name');
-
     const existingWorkout = await this.workoutsRepo.getWorkoutByIdAndUserId(
       request.id,
       request.userId
@@ -28,18 +22,14 @@ export class UpdateWorkoutUsecase {
       throw new NotFoundError('UpdateWorkoutUsecase: Workout not found');
     }
 
-    const updatedWorkout = Workout.create({
-      id: existingWorkout.id,
-      userId: existingWorkout.userId,
-      name: request.name ?? existingWorkout.name,
-      workoutTemplateId: existingWorkout.workoutTemplateId,
-      exercises: existingWorkout.exercises,
-      createdAt: existingWorkout.createdAt,
-      updatedAt: new Date(),
-    });
+    const patch: WorkoutUpdateProps = {
+      name: request.name,
+    };
 
-    await this.workoutsRepo.saveWorkout(updatedWorkout);
+    existingWorkout.update(patch);
 
-    return toWorkoutDTO(updatedWorkout);
+    await this.workoutsRepo.saveWorkout(existingWorkout);
+
+    return toWorkoutDTO(existingWorkout);
   }
 }

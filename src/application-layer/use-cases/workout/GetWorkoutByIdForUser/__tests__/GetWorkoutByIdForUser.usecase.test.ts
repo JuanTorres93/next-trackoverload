@@ -1,7 +1,6 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toWorkoutDTO } from '@/application-layer/dtos/WorkoutDTO';
-import { ValidationError } from '@/domain/common/errors';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -60,27 +59,5 @@ describe('GetWorkoutByIdUsecase', () => {
     });
 
     expect(result).toBeNull();
-  });
-
-  it('should throw ValidationError when id is invalid', async () => {
-    const invalidIds = ['', '   ', 3, null, undefined, {}, [], true, false];
-
-    for (const id of invalidIds) {
-      await expect(
-        // @ts-expect-error Testing invalid types
-        getWorkoutByIdUsecase.execute({ id })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
-
-  it('should throw error when invalid userId', async () => {
-    const invalidIds = ['', '   ', 3, null, undefined, {}, [], true, false];
-
-    for (const userId of invalidIds) {
-      await expect(
-        // @ts-expect-error Testing invalid types
-        getWorkoutByIdUsecase.execute({ id: '1', userId })
-      ).rejects.toThrow(ValidationError);
-    }
   });
 });

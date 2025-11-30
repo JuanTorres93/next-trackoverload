@@ -1,6 +1,5 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
-import { ValidationError } from '@/domain/common/errors';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -70,28 +69,5 @@ describe('GetAllWorkoutsUsecase', () => {
   it('should return empty array when no workouts exist', async () => {
     const workouts = await getAllWorkoutsUsecase.execute({ userId: vp.userId });
     expect(workouts).toHaveLength(0);
-  });
-
-  it('should throw error when userId is invalid', async () => {
-    const invalidUserIds = [
-      null,
-      undefined,
-      '',
-      '   ',
-      123,
-      {},
-      [],
-      true,
-      false,
-      () => {},
-      NaN,
-    ];
-
-    for (const invalidUserId of invalidUserIds) {
-      await expect(async () => {
-        // @ts-expect-error testing invalid inputs
-        await getAllWorkoutsUsecase.execute({ userId: invalidUserId });
-      }).rejects.toThrow(ValidationError);
-    }
   });
 });

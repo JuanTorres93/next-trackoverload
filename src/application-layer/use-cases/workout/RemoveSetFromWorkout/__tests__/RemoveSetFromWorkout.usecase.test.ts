@@ -1,11 +1,11 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { NotFoundError } from '@/domain/common/errors';
 import { Workout } from '@/domain/entities/workout/Workout';
+import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { RemoveSetFromWorkoutUsecase } from '../RemoveSetFromWorkout.usecase';
-import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
 
 describe('RemoveSetFromWorkoutUsecase', () => {
   let workout: Workout;
@@ -141,26 +141,6 @@ describe('RemoveSetFromWorkoutUsecase', () => {
     expect(updatedWorkout.exercises[0].setNumber).toBe(1);
   });
 
-  it('should not modify workout when exercise does not exist', async () => {
-    const workout = Workout.create({
-      ...vp.validWorkoutProps,
-      name: 'Push Day',
-      exercises: [workoutLine1],
-    });
-
-    await workoutsRepo.saveWorkout(workout);
-
-    const updatedWorkout = await removeSetFromWorkoutUsecase.execute({
-      userId: vp.userId,
-      workoutId: vp.validWorkoutProps.id,
-      exerciseId: 'non-existent-exercise',
-      setNumber: 1,
-    });
-
-    expect(updatedWorkout.exercises).toHaveLength(1);
-    expect(updatedWorkout.exercises[0].exerciseId).toBe('exercise-1');
-  });
-
   it('should throw NotFoundError when workout does not exist', async () => {
     await expect(
       removeSetFromWorkoutUsecase.execute({
@@ -170,64 +150,6 @@ describe('RemoveSetFromWorkoutUsecase', () => {
         setNumber: 1,
       })
     ).rejects.toThrow(NotFoundError);
-  });
-
-  it('should throw ValidationError when workoutId is invalid', async () => {
-    const invalidIds = ['', '   ', 3, null, undefined, {}, [], true, false];
-
-    for (const id of invalidIds) {
-      await expect(
-        removeSetFromWorkoutUsecase.execute({
-          // @ts-expect-error Testing invalid types
-          workoutId: id,
-          exerciseId: 'exercise-1',
-          setNumber: 1,
-        })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
-
-  it('should throw ValidationError when exerciseId is invalid', async () => {
-    const invalidIds = ['', '   ', 3, null, undefined, {}, [], true, false];
-
-    for (const id of invalidIds) {
-      await expect(
-        removeSetFromWorkoutUsecase.execute({
-          userId: vp.userId,
-          workoutId: vp.validWorkoutProps.id,
-          // @ts-expect-error Testing invalid types
-          exerciseId: id,
-          setNumber: 1,
-        })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
-
-  it('should throw ValidationError when setNumber is invalid', async () => {
-    const invalidSetNumbers = [
-      0,
-      -1,
-      1.5,
-      null,
-      undefined,
-      'two',
-      {},
-      [],
-      true,
-      false,
-    ];
-
-    for (const setNumber of invalidSetNumbers) {
-      await expect(
-        removeSetFromWorkoutUsecase.execute({
-          userId: vp.userId,
-          workoutId: vp.validWorkoutProps.id,
-          exerciseId: 'exercise-1',
-          // @ts-expect-error Testing invalid types
-          setNumber,
-        })
-      ).rejects.toThrow(ValidationError);
-    }
   });
 
   it('should reorder sets correctly after removal', async () => {
@@ -262,21 +184,5 @@ describe('RemoveSetFromWorkoutUsecase', () => {
     expect(exercise1Sets[1].setNumber).toBe(2); // Original set 3 reordered to set 2
     expect(exercise1Sets[1].reps).toBe(66); // Original set 3 data
     expect(exercise1Sets[1].weight).toBe(700); // Original set 3 data
-  });
-
-  it('should throw ValidationError when userId is invalid', async () => {
-    const invalidIds = ['', '   ', 3, null, undefined, {}, [], true, false];
-
-    for (const userId of invalidIds) {
-      await expect(
-        removeSetFromWorkoutUsecase.execute({
-          // @ts-expect-error Testing invalid types
-          userId,
-          workoutId: vp.validWorkoutProps.id,
-          exerciseId: 'exercise-1',
-          setNumber: 1,
-        })
-      ).rejects.toThrow(ValidationError);
-    }
   });
 });

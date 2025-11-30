@@ -31,7 +31,7 @@ export type WorkoutLineProps = {
   updatedAt: Date;
 };
 
-const setNumberIntegerOptions = {
+export const setNumberIntegerOptions = {
   onlyPositive: true,
   canBeZero: false,
 };

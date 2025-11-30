@@ -174,20 +174,4 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
       })
     ).rejects.toThrow(ValidationError);
   });
-
-  it('should throw ValidationError when workoutId is invalid', async () => {
-    const invalidIds = ['', '   ', null, undefined, 123, {}, [], true, false];
-
-    for (const invalidId of invalidIds) {
-      await expect(
-        updateExerciseInWorkoutUsecase.execute({
-          userId: vp.userId,
-          // @ts-expect-error Testing invalid inputs
-          workoutId: invalidId,
-          exerciseId: 'exercise-1',
-          reps: 15,
-        })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
 });

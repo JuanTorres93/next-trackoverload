@@ -4,6 +4,7 @@ import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 import { Text } from '@/domain/value-objects/Text/Text';
 import { Integer } from '@/domain/value-objects/Integer/Integer';
 import { WorkoutLine } from '../workoutline/WorkoutLine';
+import { setNumberIntegerOptions } from '../workoutline/WorkoutLine';
 
 type WorkoutLineUpdateProps = {
   setNumber?: number;
@@ -19,6 +20,10 @@ export type WorkoutCreateProps = {
   exercises: WorkoutLine[];
   createdAt: Date;
   updatedAt: Date;
+};
+
+export type WorkoutUpdateProps = {
+  name?: string;
 };
 
 export type WorkoutProps = {
@@ -83,12 +88,29 @@ export class Workout {
   }
 
   removeSet(exerciseId: string, setNumber: number) {
+    const exerciseExists = this.props.exercises.some(
+      (line) => line.exerciseId === exerciseId
+    );
+    if (!exerciseExists) {
+      throw new ValidationError(
+        'Workout: Cannot remove set from exercise that does not exist in workout'
+      );
+    }
+
+    const validatedSetNumber = Integer.create(
+      setNumber,
+      setNumberIntegerOptions
+    ).value;
+
     const initialLength = this.props.exercises.length;
 
     // Remove the specific set
     this.props.exercises = this.props.exercises.filter(
       (line) =>
-        !(line.exerciseId === exerciseId && line.setNumber === setNumber)
+        !(
+          line.exerciseId === exerciseId &&
+          line.setNumber === validatedSetNumber
+        )
     );
 
     // If a set was actually removed, reorder the remaining sets for this exercise
@@ -107,6 +129,18 @@ export class Workout {
 
       this.props.updatedAt = new Date();
     }
+  }
+
+  update(patch: WorkoutUpdateProps) {
+    if (!patch || Object.keys(patch).length === 0) {
+      throw new ValidationError('Workout: No patch provided for update');
+    }
+
+    if (patch.name !== undefined) {
+      this.props.name = Text.create(patch.name, nameTextOptions);
+    }
+
+    this.props.updatedAt = new Date();
   }
 
   updateExercise(exerciseId: string, updateProps: WorkoutLineUpdateProps) {
