@@ -52,11 +52,11 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
     e.preventDefault();
 
     for (const line of newIngredientLines) {
-      // TODO IMPORTANT: FIX, NOT TESTED YET
-      // TODO DELETE THESE DEBUG LOGS
-      console.log('line');
-      console.log(line);
-      addIngredientToRecipe(recipe.id, createdLine);
+      addIngredientToRecipe(
+        recipe.id,
+        line.ingredient.id,
+        line.quantityInGrams
+      );
     }
 
     setNewIngredientLines([]);

@@ -5,25 +5,30 @@ import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
+import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { AddIngredientToRecipeUsecase } from '../AddIngredientToRecipe.usecase';
 
 describe('AddIngredientToRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
+  let ingredientsRepo: MemoryIngredientsRepo;
   let addIngredientToRecipeUsecase: AddIngredientToRecipeUsecase;
   let testRecipe: Recipe;
-  let newIngredientLine: IngredientLine;
   let newIngredient: Ingredient;
 
   beforeEach(async () => {
     recipesRepo = new MemoryRecipesRepo();
+    ingredientsRepo = new MemoryIngredientsRepo();
     addIngredientToRecipeUsecase = new AddIngredientToRecipeUsecase(
-      recipesRepo
+      recipesRepo,
+      ingredientsRepo
     );
 
     const testIngredient = Ingredient.create({
       ...vp.validIngredientProps,
     });
+
+    await ingredientsRepo.saveIngredient(testIngredient);
 
     const testIngredientLine = IngredientLine.create({
       ...vp.ingredientLineRecipePropsNoIngredient,
@@ -39,21 +44,19 @@ describe('AddIngredientToRecipeUsecase', () => {
       ...vp.validIngredientProps,
       id: 'new-ingredient-id',
     });
-
-    newIngredientLine = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
-      ingredient: newIngredient,
-    });
   });
 
   it('should add ingredient to recipe successfully', async () => {
     await recipesRepo.saveRecipe(testRecipe);
     const originalIngredientCount = testRecipe.ingredientLines.length;
 
+    await ingredientsRepo.saveIngredient(newIngredient);
+
     const request = {
       recipeId: testRecipe.id,
       userId: vp.userId,
-      ingredientLine: newIngredientLine,
+      ingredientId: newIngredient.id,
+      quantityInGrams: 150,
     };
 
     const result = await addIngredientToRecipeUsecase.execute(request);
@@ -62,15 +65,18 @@ describe('AddIngredientToRecipeUsecase', () => {
 
     const ingredientLineIds = result.ingredientLines.map((line) => line.id);
 
-    expect(ingredientLineIds).toContain(newIngredientLine.id);
+    expect(ingredientLineIds).toContain(newIngredient.id);
   });
 
   it('should return RecipeDTO', async () => {
     await recipesRepo.saveRecipe(testRecipe);
+    await ingredientsRepo.saveIngredient(newIngredient);
+
     const request = {
       recipeId: testRecipe.id,
       userId: vp.userId,
-      ingredientLine: newIngredientLine,
+      ingredientId: newIngredient.id,
+      quantityInGrams: 150,
     };
 
     const result = await addIngredientToRecipeUsecase.execute(request);
@@ -85,7 +91,8 @@ describe('AddIngredientToRecipeUsecase', () => {
     const request = {
       recipeId: 'non-existent-id',
       userId: vp.userId,
-      ingredientLine: newIngredientLine,
+      ingredientId: newIngredient.id,
+      quantityInGrams: 150,
     };
 
     await expect(addIngredientToRecipeUsecase.execute(request)).rejects.toThrow(
@@ -97,34 +104,12 @@ describe('AddIngredientToRecipeUsecase', () => {
     );
   });
 
-  it('should throw NotFoundError when IngredientLine does not exist', async () => {
-    await recipesRepo.saveRecipe(testRecipe);
-    const notInRepoIngredientLine = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
-      id: 'non-existent-ingredient-line-id',
-      ingredient: newIngredient,
-    });
-
-    const request = {
-      recipeId: testRecipe.id,
-      userId: vp.userId,
-      ingredientLine: notInRepoIngredientLine,
-    };
-
-    await expect(addIngredientToRecipeUsecase.execute(request)).rejects.toThrow(
-      NotFoundError
-    );
-
-    await expect(addIngredientToRecipeUsecase.execute(request)).rejects.toThrow(
-      /IngredientLine/
-    );
-  });
-
   it('should throw ValidationError for invalid recipeId', async () => {
     const request = {
       recipeId: '',
       userId: vp.userId,
-      ingredientLine: newIngredientLine,
+      ingredientId: newIngredient.id,
+      quantityInGrams: 150,
     };
 
     await expect(addIngredientToRecipeUsecase.execute(request)).rejects.toThrow(
@@ -132,36 +117,34 @@ describe('AddIngredientToRecipeUsecase', () => {
     );
   });
 
-  it('should throw error for invalid ingredientLine', async () => {
+  it('should throw error for not found ingredient', async () => {
     await recipesRepo.saveRecipe(testRecipe);
 
-    const invalidIngredientLines = [null, {}, { id: '123' }, []];
+    const request = {
+      recipeId: testRecipe.id,
+      userId: vp.userId,
+      ingredientId: 'non-existent-ingredient-id',
+      quantityInGrams: 150,
+    };
 
-    for (const invalidLine of invalidIngredientLines) {
-      const request = {
-        recipeId: testRecipe.id,
-        userId: vp.userId,
-        ingredientLine: invalidLine,
-      };
-
-      await expect(
-        // @ts-expect-error testing invalid inputs
-        addIngredientToRecipeUsecase.execute(request)
-      ).rejects.toThrow(ValidationError);
-    }
+    await expect(addIngredientToRecipeUsecase.execute(request)).rejects.toThrow(
+      NotFoundError
+    );
   });
 
   it('should update recipe updatedAt timestamp', async () => {
     await recipesRepo.saveRecipe(testRecipe);
+    await ingredientsRepo.saveIngredient(newIngredient);
     const originalUpdatedAt = testRecipe.updatedAt;
 
     // Wait a moment to ensure different timestamps
-    await new Promise((resolve) => setTimeout(resolve, 2));
+    await new Promise((resolve) => setTimeout(resolve, 10));
 
     const request = {
       userId: vp.userId,
       recipeId: testRecipe.id,
-      ingredientLine: newIngredientLine,
+      ingredientId: newIngredient.id,
+      quantityInGrams: 150,
     };
 
     const result = await addIngredientToRecipeUsecase.execute(request);
@@ -178,7 +161,8 @@ describe('AddIngredientToRecipeUsecase', () => {
       const request = {
         recipeId: testRecipe.id,
         userId: invalidUserId,
-        ingredientLine: newIngredientLine,
+        ingredientId: newIngredient.id,
+        quantityInGrams: 150,
       };
 
       await expect(
@@ -191,26 +175,18 @@ describe('AddIngredientToRecipeUsecase', () => {
   it('should throw ValidationError when ingredient already exists in recipe', async () => {
     await recipesRepo.saveRecipe(testRecipe);
 
-    // Get the ingredient from the existing ingredient line in the recipe
-    const existingIngredient = testRecipe.ingredientLines[0].ingredient;
-
-    // Create a new ingredient line with the same ingredient
-    const duplicateIngredientLine = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
-      ingredient: existingIngredient,
-    });
-
     const request = {
       recipeId: testRecipe.id,
       userId: vp.userId,
-      ingredientLine: duplicateIngredientLine,
+      ingredientId: testRecipe.ingredientLines[0].ingredient.id,
+      quantityInGrams: 150,
     };
 
     await expect(addIngredientToRecipeUsecase.execute(request)).rejects.toThrow(
       ValidationError
     );
     await expect(addIngredientToRecipeUsecase.execute(request)).rejects.toThrow(
-      /already exists in recipe/
+      /Recipe.*Ingredient.*already.*exists/
     );
   });
 });
