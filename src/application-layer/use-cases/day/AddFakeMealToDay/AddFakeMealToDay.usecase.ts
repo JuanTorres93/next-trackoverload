@@ -1,8 +1,9 @@
 import { DayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
-import { ValidationError } from '@/domain/common/errors';
+import { NotFoundError } from '@/domain/common/errors';
 import { Day } from '@/domain/entities/day/Day';
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
+import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 
 export type AddFakeMealToDayUsecaseRequest = {
   date: Date;
@@ -13,16 +14,24 @@ export type AddFakeMealToDayUsecaseRequest = {
 export class AddFakeMealToDayUsecase {
   constructor(
     private daysRepo: DaysRepo,
-    private fakeMealsRepo: FakeMealsRepo
+    private fakeMealsRepo: FakeMealsRepo,
+    private usersRepo: UsersRepo
   ) {}
 
   async execute(request: AddFakeMealToDayUsecaseRequest): Promise<DayDTO> {
+    const user = await this.usersRepo.getUserById(request.userId);
+    if (!user) {
+      throw new NotFoundError(
+        `AddFakeMealToDayUsecase: User with id ${request.userId} not found`
+      );
+    }
+
     const fakeMeal = await this.fakeMealsRepo.getFakeMealByIdAndUserId(
       request.fakeMealId,
       request.userId
     );
     if (!fakeMeal) {
-      throw new ValidationError(
+      throw new NotFoundError(
         `AddFakeMealToDayUsecase: FakeMeal with id ${request.fakeMealId} and userId ${request.userId} not found`
       );
     }

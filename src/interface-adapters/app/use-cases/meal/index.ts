@@ -11,7 +11,6 @@ export { AppGetMealsByIdsForUserUsecase } from './GetMealsByIdsForUser/getMealsB
 export { AppUpdateMealUsecase } from './UpdateMeal/updateMeal';
 export { AppAddIngredientToMealUsecase } from './AddIngredientToMeal/addIngredientToMeal';
 export { AppRemoveIngredientFromMealUsecase } from './RemoveIngredientFromMeal/removeIngredientFromMeal';
-export { AppUpdateIngredientInMealUsecase } from './UpdateIngredientInMeal/updateIngredientInMeal';
 
 // DELETE Operations
 export { AppDeleteMealUsecase } from './DeleteMeal/deleteMeal';

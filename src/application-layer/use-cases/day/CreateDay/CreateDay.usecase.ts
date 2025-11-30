@@ -1,8 +1,10 @@
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
+import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { Day } from '@/domain/entities/day/Day';
 import { DayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { NotFoundError } from '@/domain/common/errors';
 
 export type CreateDayUsecaseRequest = {
   date: Date;
@@ -11,10 +13,16 @@ export type CreateDayUsecaseRequest = {
 };
 
 export class CreateDayUsecase {
-  constructor(private daysRepo: DaysRepo) {}
+  constructor(private daysRepo: DaysRepo, private usersRepo: UsersRepo) {}
 
   async execute(request: CreateDayUsecaseRequest): Promise<DayDTO> {
-    // NOTE: id, userId and meals are validated in the entity
+    const user = await this.usersRepo.getUserById(request.userId);
+    if (!user) {
+      throw new NotFoundError(
+        `CreateDayUsecase: user with id ${request.userId} not found`
+      );
+    }
+
     const newDay = Day.create({
       id: request.date,
       userId: request.userId,
