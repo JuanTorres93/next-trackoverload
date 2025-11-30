@@ -3,7 +3,6 @@ import {
   toWorkoutTemplateDTO,
 } from '@/application-layer/dtos/WorkoutTemplateDTO';
 import { NotFoundError } from '@/domain/common/errors';
-import { validateNonEmptyString } from '@/domain/common/validation';
 import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
 
 export type RemoveExerciseFromWorkoutTemplateUsecaseRequest = {
@@ -18,19 +17,6 @@ export class RemoveExerciseFromWorkoutTemplateUsecase {
   async execute(
     request: RemoveExerciseFromWorkoutTemplateUsecaseRequest
   ): Promise<WorkoutTemplateDTO> {
-    validateNonEmptyString(
-      request.userId,
-      'RemoveExerciseFromWorkoutTemplate userId'
-    );
-    validateNonEmptyString(
-      request.workoutTemplateId,
-      'RemoveExerciseFromWorkoutTemplate workoutTemplateId'
-    );
-    validateNonEmptyString(
-      request.exerciseId,
-      'RemoveExerciseFromWorkoutTemplate exerciseId'
-    );
-
     const workoutTemplate =
       await this.workoutTemplatesRepo.getWorkoutTemplateByIdAndUserId(
         request.workoutTemplateId,

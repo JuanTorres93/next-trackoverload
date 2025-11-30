@@ -18,6 +18,10 @@ export type WorkoutTemplateCreateProps = {
   deletedAt?: Date;
 };
 
+export type WorkoutTemplateUpdateProps = {
+  name?: string;
+};
+
 export type WorkoutTemplateProps = {
   id: Id;
   userId: Id;
@@ -29,6 +33,7 @@ export type WorkoutTemplateProps = {
 };
 
 const nameTextOptions = { canBeEmpty: false, maxLength: Integer.create(100) };
+const exerciseIndexIntegerOptions = { onlyPositive: true };
 
 export class WorkoutTemplate {
   private constructor(private readonly props: WorkoutTemplateProps) {}
@@ -82,6 +87,11 @@ export class WorkoutTemplate {
   }
 
   reorderExercise(exerciseId: string, newIndex: number) {
+    const validatedNewIndex = Integer.create(
+      newIndex,
+      exerciseIndexIntegerOptions
+    ).value;
+
     const exercise = this.props.exercises.find(
       (line) => line.exerciseId === exerciseId
     );
@@ -90,7 +100,23 @@ export class WorkoutTemplate {
     this.props.exercises = this.props.exercises.filter(
       (line) => line.exerciseId !== exerciseId
     );
-    this.props.exercises.splice(newIndex, 0, exercise);
+    this.props.exercises.splice(validatedNewIndex, 0, exercise);
+  }
+
+  update(patch: WorkoutTemplateUpdateProps) {
+    // or all are undefined
+    if (
+      !patch ||
+      Object.keys(patch).length === 0 ||
+      Object.values(patch).every((value) => value === undefined)
+    )
+      throw new ValidationError('WorkoutTemplate: No update patch provided');
+
+    if (patch.name !== undefined) {
+      this.props.name = Text.create(patch.name, nameTextOptions);
+    }
+
+    this.props.updatedAt = new Date();
   }
 
   updateExercise(

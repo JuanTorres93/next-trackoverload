@@ -112,46 +112,6 @@ describe('RemoveExerciseFromWorkoutTemplateUsecase', () => {
     );
   });
 
-  it('should throw error if userId is invalid', async () => {
-    const invalidIds = ['', '   ', null, undefined, 8, {}, [], true, false];
-
-    for (const userId of invalidIds) {
-      const request = {
-        userId,
-        workoutTemplateId: 'some-template',
-        exerciseId: 'some-exercise',
-      };
-      // @ts-expect-error testing invalid inputs
-      await expect(usecase.execute(request)).rejects.toThrowError();
-    }
-  });
-
-  it('should throw error if workoutTemplateId is invalid', async () => {
-    const invalidIds = ['', '   ', null, undefined, 8, {}, [], true, false];
-
-    for (const workoutTemplateId of invalidIds) {
-      const request = {
-        workoutTemplateId,
-        exerciseId: 'some-exercise',
-      };
-      // @ts-expect-error testing invalid inputs
-      await expect(usecase.execute(request)).rejects.toThrowError();
-    }
-  });
-
-  it('should throw error if exerciseId is invalid', async () => {
-    const invalidIds = ['', '   ', null, undefined, 8, {}, [], true, false];
-
-    for (const exerciseId of invalidIds) {
-      const request = {
-        workoutTemplateId: 'valid-id',
-        exerciseId,
-      };
-      // @ts-expect-error testing invalid inputs
-      await expect(usecase.execute(request)).rejects.toThrowError();
-    }
-  });
-
   it('should throw error if template is deleted', async () => {
     const existingTemplate = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps(),

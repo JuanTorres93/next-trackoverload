@@ -1,6 +1,5 @@
 import { WorkoutDTO, toWorkoutDTO } from '@/application-layer/dtos/WorkoutDTO';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
-import { validateNonEmptyString } from '@/domain/common/validation';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
 import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
@@ -22,21 +21,6 @@ export class CreateWorkoutFromTemplateUsecase {
   async execute(
     request: CreateWorkoutFromTemplateUsecaseRequest
   ): Promise<WorkoutDTO> {
-    validateNonEmptyString(
-      request.userId,
-      'CreateWorkoutFromTemplateUsecase userId'
-    );
-    validateNonEmptyString(
-      request.workoutTemplateId,
-      'CreateWorkoutFromTemplateUsecase workoutTemplateId'
-    );
-
-    if (request.workoutName !== undefined)
-      validateNonEmptyString(
-        request.workoutName,
-        'CreateWorkoutFromTemplateUsecase workoutName'
-      );
-
     const workoutTemplate =
       await this.workoutTemplatesRepo.getWorkoutTemplateByIdAndUserId(
         request.workoutTemplateId,

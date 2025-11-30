@@ -17,7 +17,6 @@ export class CreateWorkoutTemplateUsecase {
   async execute(
     request: CreateWorkoutTemplateUsecaseRequest
   ): Promise<WorkoutTemplateDTO> {
-    // NOTE: validation is done at the entity level
     const newWorkoutTemplate = WorkoutTemplate.create({
       id: uuidv4(),
       userId: request.userId,

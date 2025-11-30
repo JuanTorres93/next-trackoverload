@@ -321,4 +321,37 @@ describe('WorkoutTemplate', () => {
       });
     }).toThrow(/Text.*empty/);
   });
+
+  it('should throw error if reordering to a negative index', async () => {
+    expect(() => {
+      workoutTemplate.reorderExercise(
+        vp.validWorkoutTemplateProps().exercises[0].exerciseId,
+        -1
+      );
+    }).toThrow(ValidationError);
+
+    expect(() => {
+      workoutTemplate.reorderExercise(
+        vp.validWorkoutTemplateProps().exercises[0].exerciseId,
+        -1
+      );
+    }).toThrow(/Integer.*positive/);
+  });
+
+  it('should update name', async () => {
+    const newName = 'Updated Template Name';
+    workoutTemplate.update({ name: newName });
+    expect(workoutTemplate.name).toBe(newName);
+  });
+
+  it('should throw error if no patch is provided when updating', async () => {
+    expect(() => {
+      // @ts-expect-error no patch provided
+      workoutTemplate.update();
+    }).toThrow(ValidationError);
+    expect(() => {
+      // @ts-expect-error no patch provided
+      workoutTemplate.update();
+    }).toThrow(/WorkoutTemplate.*patch/);
+  });
 });

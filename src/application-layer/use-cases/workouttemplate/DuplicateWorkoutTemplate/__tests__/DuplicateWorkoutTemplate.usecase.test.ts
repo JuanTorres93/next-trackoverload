@@ -139,26 +139,6 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
     expect(savedTemplate!.name).toBe('Empty Template (Copy)');
   });
 
-  it('should throw error if userId is invalid', async () => {
-    const invalidUserIds = ['', '   ', null, undefined, 8, {}, [], true, false];
-
-    for (const userId of invalidUserIds) {
-      const request = { userId, originalTemplateId: '1' };
-      // @ts-expect-error testing invalid inputs
-      await expect(usecase.execute(request)).rejects.toThrowError();
-    }
-  });
-
-  it('should throw error if originalTemplateId is invalid', async () => {
-    const invalidIds = ['', '   ', null, undefined, 8, {}, [], true, false];
-
-    for (const id of invalidIds) {
-      const request = { userId: vp.userId, originalTemplateId: id };
-      // @ts-expect-error testing invalid inputs
-      await expect(usecase.execute(request)).rejects.toThrowError();
-    }
-  });
-
   it('should throw NotFoundError when trying to duplicate deleted template', async () => {
     const originalTemplate = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps(),

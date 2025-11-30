@@ -35,7 +35,9 @@ describe('UpdateWorkoutTemplateUsecase', () => {
     expect(result.name).toBe('New Name');
     expect(result.id).toBe(vp.validWorkoutTemplateProps().id);
     expect(new Date(result.createdAt)).toEqual(existingTemplate.createdAt);
-    expect(new Date(result.updatedAt)).not.toEqual(existingTemplate.updatedAt);
+    expect(new Date(result.updatedAt)).not.toEqual(
+      vp.validWorkoutTemplateProps().updatedAt
+    );
 
     const exercisesIds = existingTemplate.exercises.map((ex) => ex.exerciseId);
     const resultExercisesIds = result.exercises.map((ex) => ex.exerciseId);
@@ -93,20 +95,6 @@ describe('UpdateWorkoutTemplateUsecase', () => {
         id: vp.validWorkoutTemplateProps().id,
         name: invalidName,
         userId: vp.userId,
-      };
-
-      // @ts-expect-error testing invalid inputs
-      await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
-    }
-  });
-
-  it('should throw error if id is invalid', async () => {
-    const invalidIds = [null, undefined, '', '   ', 3, {}, [], true, false];
-
-    for (const invalidId of invalidIds) {
-      const request = {
-        id: invalidId,
-        name: 'Valid Name',
       };
 
       // @ts-expect-error testing invalid inputs

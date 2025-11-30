@@ -3,11 +3,6 @@ import {
   toWorkoutTemplateDTO,
 } from '@/application-layer/dtos/WorkoutTemplateDTO';
 import { NotFoundError } from '@/domain/common/errors';
-import {
-  validateInteger,
-  validateNonEmptyString,
-  validatePositiveNumber,
-} from '@/domain/common/validation';
 import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
 
 export type ReorderExerciseInWorkoutTemplateUsecaseRequest = {
@@ -23,29 +18,6 @@ export class ReorderExerciseInWorkoutTemplateUsecase {
   async execute(
     request: ReorderExerciseInWorkoutTemplateUsecaseRequest
   ): Promise<WorkoutTemplateDTO> {
-    validateNonEmptyString(
-      request.userId,
-      'ReorderExerciseInWorkoutTemplate userId'
-    );
-    validateNonEmptyString(
-      request.workoutTemplateId,
-      'ReorderExerciseInWorkoutTemplate workoutTemplateId'
-    );
-    validateNonEmptyString(
-      request.exerciseId,
-      'ReorderExerciseInWorkoutTemplate exerciseId'
-    );
-
-    // Validate newIndex
-    validatePositiveNumber(
-      request.newIndex,
-      'ReorderExerciseInWorkoutTemplate newIndex'
-    );
-    validateInteger(
-      request.newIndex,
-      'ReorderExerciseInWorkoutTemplate newIndex'
-    );
-
     const workoutTemplate =
       await this.workoutTemplatesRepo.getWorkoutTemplateByIdAndUserId(
         request.workoutTemplateId,

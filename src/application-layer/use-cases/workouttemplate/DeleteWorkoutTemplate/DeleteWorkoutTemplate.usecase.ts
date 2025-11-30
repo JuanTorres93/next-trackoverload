@@ -1,6 +1,5 @@
-import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
 import { NotFoundError } from '@/domain/common/errors';
-import { validateNonEmptyString } from '@/domain/common/validation';
+import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
 
 export type DeleteWorkoutTemplateUsecaseRequest = {
   id: string;
@@ -11,9 +10,6 @@ export class DeleteWorkoutTemplateUsecase {
   constructor(private workoutTemplatesRepo: WorkoutTemplatesRepo) {}
 
   async execute(request: DeleteWorkoutTemplateUsecaseRequest): Promise<void> {
-    validateNonEmptyString(request.id, 'DeleteWorkoutTemplate id');
-    validateNonEmptyString(request.userId, 'DeleteWorkoutTemplate userId');
-
     const workoutTemplate =
       await this.workoutTemplatesRepo.getWorkoutTemplateByIdAndUserId(
         request.id,

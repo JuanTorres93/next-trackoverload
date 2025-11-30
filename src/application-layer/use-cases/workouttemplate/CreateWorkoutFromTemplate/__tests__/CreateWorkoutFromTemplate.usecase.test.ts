@@ -143,20 +143,6 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
     await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
   });
 
-  it('should throw ValidationError when workout name is invalid', async () => {
-    const invalidNames = ['', '   ', null, 3, [], {}, true];
-
-    for (const name of invalidNames) {
-      const request = {
-        workoutTemplateId: vp.validWorkoutTemplateProps().id,
-        workoutName: name,
-      };
-
-      // @ts-expect-error testing invalid inputs
-      await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
-    }
-  });
-
   it('should throw error when trying to create workout from deleted template', async () => {
     const template = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps(),
@@ -171,33 +157,5 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
     };
 
     await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
-  });
-
-  it('should throw error if workoutTemplateId is invalid', async () => {
-    const invalidTemplateIds = ['', '   ', null, 5, [], {}, true, undefined];
-
-    for (const workoutTemplateId of invalidTemplateIds) {
-      const request = {
-        userId: vp.userId,
-        workoutTemplateId,
-      };
-
-      // @ts-expect-error testing invalid inputs
-      await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
-    }
-  });
-
-  it('should throw error if userId is invalid', async () => {
-    const invalidUserIds = ['', '   ', null, 5, [], {}, true];
-
-    for (const userId of invalidUserIds) {
-      const request = {
-        workoutTemplateId: vp.validWorkoutTemplateProps().id,
-        userId,
-      };
-
-      // @ts-expect-error testing invalid inputs
-      await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
-    }
   });
 });

@@ -115,53 +115,6 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
     await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
   });
 
-  it('should throw error if workoutTemplateId is invalid', async () => {
-    const invalidIds = [null, undefined, '', '   ', 4, {}, [], true];
-
-    for (const invalidId of invalidIds) {
-      const request = {
-        userId: vp.userId,
-        workoutTemplateId: invalidId,
-        exerciseId: 'shoulder-press',
-        sets: 3,
-      };
-
-      // @ts-expect-error testing invalid inputs
-      await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
-    }
-  });
-
-  it('should throw error if exerciseId is invalid', async () => {
-    const invalidIds = [null, undefined, '', '   ', 4, {}, [], true];
-
-    for (const invalidId of invalidIds) {
-      const request = {
-        userId: vp.userId,
-        workoutTemplateId: '1',
-        exerciseId: invalidId,
-        sets: 3,
-      };
-
-      // @ts-expect-error testing invalid inputs
-      await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
-    }
-  });
-
-  it('should throw error if sets is invalid', async () => {
-    const invalidSets = [0, -1, 2.5, 'three', null, undefined, {}, [], true];
-
-    for (const sets of invalidSets) {
-      const request = {
-        userId: vp.userId,
-        workoutTemplateId: '1',
-        exerciseId: 'shoulder-press',
-        sets,
-      };
-      // @ts-expect-error testing invalid inputs
-      await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
-    }
-  });
-
   it('should throw error if exercise does not exist', async () => {
     const request = {
       userId: vp.userId,
@@ -205,21 +158,5 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
     };
 
     await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
-  });
-
-  it('should throw error if userId is invalid', async () => {
-    const invalidIds = [null, undefined, '', '   ', 4, {}, [], true];
-
-    for (const invalidId of invalidIds) {
-      const request = {
-        userId: invalidId,
-        workoutTemplateId: '1',
-        exerciseId: 'shoulder-press',
-        sets: 3,
-      };
-
-      // @ts-expect-error testing invalid inputs
-      await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
-    }
   });
 });

@@ -56,24 +56,4 @@ describe('CreateWorkoutTemplateUsecase', () => {
     expect(savedTemplate!.userId).toBe('user1');
     expect(savedTemplate!.name).toBe('Pull Day');
   });
-
-  it('should throw error if userId is invalid', async () => {
-    const invalidUserIds = ['', '   ', null, undefined, 8, {}, [], true, false];
-
-    for (const userId of invalidUserIds) {
-      const request = { userId, name: 'Test' };
-      // @ts-expect-error testing invalid inputs
-      await expect(usecase.execute(request)).rejects.toThrowError();
-    }
-  });
-
-  it('should throw error if name is invalid', async () => {
-    const invalidNames = ['', '   ', null, undefined, 8, {}, [], true, false];
-
-    for (const name of invalidNames) {
-      const request = { userId: 'user1', name };
-      // @ts-expect-error testing invalid inputs
-      await expect(usecase.execute(request)).rejects.toThrowError();
-    }
-  });
 });

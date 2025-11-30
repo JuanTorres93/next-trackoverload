@@ -21,7 +21,7 @@ export class Text extends ValueObject<TextProps> {
   }
 
   public static create(value: string, options?: TextOptions) {
-    if (typeof value !== 'string')
+    if (typeof value !== 'string' || value === null || value === undefined)
       throw new ValidationError('Text: value must be a string');
 
     if (options?.maxLength) {
