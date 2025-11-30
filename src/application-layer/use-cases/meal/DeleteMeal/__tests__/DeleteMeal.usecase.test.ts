@@ -1,9 +1,5 @@
 import * as vp from '@/../tests/createProps';
-import {
-  AuthError,
-  NotFoundError,
-  ValidationError,
-} from '@/domain/common/errors';
+import { AuthError, NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
@@ -52,28 +48,6 @@ describe('DeleteMealUsecase', () => {
     await expect(
       deleteMealUsecase.execute({ id: 'non-existent', userId: vp.userId })
     ).rejects.toThrow(NotFoundError);
-  });
-
-  it('should throw error when id is invalid', async () => {
-    const invalidIds = [true, 4, null, undefined, ''];
-
-    for (const invalidId of invalidIds) {
-      await expect(
-        // @ts-expect-error Testing invalid inputs
-        deleteMealUsecase.execute({ id: invalidId })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
-
-  it('should throw error when userId is invalid', async () => {
-    const invalidUserIds = [true, 4, null, undefined, ''];
-
-    for (const invalidUserId of invalidUserIds) {
-      await expect(
-        // @ts-expect-error Testing invalid inputs
-        deleteMealUsecase.execute({ id: '1', userId: invalidUserId })
-      ).rejects.toThrow(ValidationError);
-    }
   });
 
   it('should throw error when trying to delete a meal that does not belong to the user', async () => {

@@ -1,7 +1,6 @@
-import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 import { MealDTO, toMealDTO } from '@/application-layer/dtos/MealDTO';
-import { validateNonEmptyString } from '@/domain/common/validation';
 import { AuthError, NotFoundError } from '@/domain/common/errors';
+import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 
 export type RemoveIngredientFromMealUsecaseRequest = {
   userId: string;
@@ -15,19 +14,6 @@ export class RemoveIngredientFromMealUsecase {
   async execute(
     request: RemoveIngredientFromMealUsecaseRequest
   ): Promise<MealDTO> {
-    validateNonEmptyString(
-      request.userId,
-      'RemoveIngredientFromMealUsecase userId'
-    );
-    validateNonEmptyString(
-      request.mealId,
-      'RemoveIngredientFromMealUsecase mealId'
-    );
-    validateNonEmptyString(
-      request.ingredientId,
-      'RemoveIngredientFromMealUsecase ingredientId'
-    );
-
     const existingMeal = await this.mealsRepo.getMealById(request.mealId);
     if (!existingMeal) {
       throw new NotFoundError(
@@ -41,7 +27,6 @@ export class RemoveIngredientFromMealUsecase {
       );
     }
 
-    // NOTE: validation done in the entity method
     existingMeal.removeIngredientLineByIngredientId(request.ingredientId);
 
     await this.mealsRepo.saveMeal(existingMeal);

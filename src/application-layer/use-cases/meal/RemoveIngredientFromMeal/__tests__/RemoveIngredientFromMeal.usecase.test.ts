@@ -125,34 +125,6 @@ describe('RemoveIngredientFromMealUsecase', () => {
     ).rejects.toThrow(ValidationError);
   });
 
-  it('should throw ValidationError when mealId is invalid', async () => {
-    const invalidIds = [null, undefined, 3, '', true, {}];
-
-    for (const invalidId of invalidIds) {
-      await expect(
-        removeIngredientFromMealUsecase.execute({
-          // @ts-expect-error Testing invalid inputs
-          mealId: invalidId,
-          ingredientId: testIngredient.id,
-        })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
-
-  it('should throw ValidationError when ingredientId is invalid', async () => {
-    const invalidIds = [null, undefined, 3, '', true, {}];
-
-    for (const invalidId of invalidIds) {
-      await expect(
-        removeIngredientFromMealUsecase.execute({
-          mealId: testMeal.id,
-          // @ts-expect-error Testing invalid inputs
-          ingredientId: invalidId,
-        })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
-
   it("should update meal's updatedAt timestamp", async () => {
     await mealsRepo.saveMeal(testMeal);
     const originalUpdatedAt = testMeal.updatedAt;
@@ -171,21 +143,6 @@ describe('RemoveIngredientFromMealUsecase', () => {
     expect(new Date(result.updatedAt).getTime()).toBeGreaterThan(
       originalUpdatedAt.getTime()
     );
-  });
-
-  it('should throw error when userId is invalid', async () => {
-    const invalidUserIds = [null, undefined, 3, '', true, {}];
-
-    for (const invalidUserId of invalidUserIds) {
-      await expect(
-        removeIngredientFromMealUsecase.execute({
-          mealId: testMeal.id,
-          ingredientId: testIngredient.id,
-          // @ts-expect-error Testing invalid inputs
-          userId: invalidUserId,
-        })
-      ).rejects.toThrow(ValidationError);
-    }
   });
 
   it('should throw error when trying to remove an ingredient from other users meal', async () => {

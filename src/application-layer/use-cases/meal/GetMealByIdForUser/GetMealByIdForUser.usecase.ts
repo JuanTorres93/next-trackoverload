@@ -1,7 +1,6 @@
-import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 import { MealDTO, toMealDTO } from '@/application-layer/dtos/MealDTO';
-import { validateNonEmptyString } from '@/domain/common/validation';
 import { AuthError } from '@/domain/common/errors';
+import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 
 export type GetMealByIdUsecaseRequest = {
   id: string;
@@ -12,9 +11,6 @@ export class GetMealByIdForUserUsecase {
   constructor(private mealsRepo: MealsRepo) {}
 
   async execute(request: GetMealByIdUsecaseRequest): Promise<MealDTO | null> {
-    validateNonEmptyString(request.id, 'GetMealByIdForUserUsecase id');
-    validateNonEmptyString(request.userId, 'GetMealByIdForUserUsecase userId');
-
     const meal = await this.mealsRepo.getMealById(request.id);
 
     if (meal && meal.userId !== request.userId) {

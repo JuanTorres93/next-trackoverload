@@ -1,26 +1,34 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
-import {
-  AuthError,
-  NotFoundError,
-  ValidationError,
-} from '@/domain/common/errors';
+import { AuthError, NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
+import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
 import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { AddIngredientToMealUsecase } from '../AddIngredientToMeal.usecase';
+import {
+  AddIngredientToMealUsecase,
+  AddIngredientToMealUsecaseRequest,
+} from '../AddIngredientToMeal.usecase';
 
 describe('AddIngredientToMealUsecase', () => {
   let mealsRepo: MemoryMealsRepo;
+  let ingredientsRepo: MemoryIngredientsRepo;
   let addIngredientToMealUsecase: AddIngredientToMealUsecase;
   let testMeal: Meal;
-  let newIngredientLine: IngredientLine;
+  let newIngredientLineInfo: Omit<
+    AddIngredientToMealUsecaseRequest,
+    'mealId' | 'userId'
+  >;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     mealsRepo = new MemoryMealsRepo();
-    addIngredientToMealUsecase = new AddIngredientToMealUsecase(mealsRepo);
+    ingredientsRepo = new MemoryIngredientsRepo();
+    addIngredientToMealUsecase = new AddIngredientToMealUsecase(
+      mealsRepo,
+      ingredientsRepo
+    );
 
     const testIngredient = Ingredient.create({
       ...vp.validIngredientProps,
@@ -47,11 +55,12 @@ describe('AddIngredientToMealUsecase', () => {
       protein: 2.7,
     });
 
-    newIngredientLine = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
-      ingredient: newIngredient,
+    await ingredientsRepo.saveIngredient(newIngredient);
+
+    newIngredientLineInfo = {
+      ingredientId: newIngredient.id,
       quantityInGrams: 150,
-    });
+    };
   });
 
   it('should add ingredient to meal successfully', async () => {
@@ -60,8 +69,8 @@ describe('AddIngredientToMealUsecase', () => {
 
     const request = {
       mealId: testMeal.id,
-      ingredientLine: newIngredientLine,
       userId: vp.userId,
+      ...newIngredientLineInfo,
     };
 
     const result = await addIngredientToMealUsecase.execute(request);
@@ -71,7 +80,7 @@ describe('AddIngredientToMealUsecase', () => {
     const ingredientIds = result.ingredientLines.map(
       (line) => line.ingredient.id
     );
-    expect(ingredientIds).toContain(newIngredientLine.ingredient.id);
+    expect(ingredientIds).toContain(newIngredientLineInfo.ingredientId);
   });
 
   it('should return MealDTO', async () => {
@@ -79,8 +88,8 @@ describe('AddIngredientToMealUsecase', () => {
 
     const request = {
       mealId: testMeal.id,
-      ingredientLine: newIngredientLine,
       userId: vp.userId,
+      ...newIngredientLineInfo,
     };
 
     const result = await addIngredientToMealUsecase.execute(request);
@@ -95,49 +104,13 @@ describe('AddIngredientToMealUsecase', () => {
   it('should throw NotFoundError when meal does not exist', async () => {
     const request = {
       mealId: 'non-existent-id',
-      ingredientLine: newIngredientLine,
       userId: vp.userId,
+      ...newIngredientLineInfo,
     };
 
     await expect(addIngredientToMealUsecase.execute(request)).rejects.toThrow(
       NotFoundError
     );
-  });
-
-  it('should throw ValidationError when mealId is invalid', async () => {
-    const invalidIds = [null, undefined, 23, true, {}, ''];
-
-    for (const invalidId of invalidIds) {
-      await expect(
-        addIngredientToMealUsecase.execute({
-          // @ts-expect-error Testing invalid inputs
-          mealId: invalidId,
-          ingredientLine: newIngredientLine,
-        })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
-
-  it('should throw ValidationError when ingredientLine is not an IngredientLine instance', async () => {
-    await mealsRepo.saveMeal(testMeal);
-
-    const invalidIngredientLines = [
-      'not-an-ingredient-line',
-      123,
-      {},
-      null,
-      undefined,
-    ];
-
-    for (const invalidIngredientLine of invalidIngredientLines) {
-      await expect(
-        addIngredientToMealUsecase.execute({
-          mealId: testMeal.id,
-          // @ts-expect-error Testing invalid inputs
-          ingredientLine: invalidIngredientLine,
-        })
-      ).rejects.toThrow(ValidationError);
-    }
   });
 
   it("should update meal's updatedAt timestamp", async () => {
@@ -150,7 +123,7 @@ describe('AddIngredientToMealUsecase', () => {
     const request = {
       userId: vp.userId,
       mealId: testMeal.id,
-      ingredientLine: newIngredientLine,
+      ...newIngredientLineInfo,
     };
 
     const result = await addIngredientToMealUsecase.execute(request);
@@ -160,28 +133,13 @@ describe('AddIngredientToMealUsecase', () => {
     );
   });
 
-  it('should throw error if userId is invalid', async () => {
-    const invalidUserIds = [null, undefined, 23, true, {}, ''];
-
-    for (const invalidUserId of invalidUserIds) {
-      await expect(
-        addIngredientToMealUsecase.execute({
-          mealId: testMeal.id,
-          ingredientLine: newIngredientLine,
-          // @ts-expect-error Testing invalid inputs
-          userId: invalidUserId,
-        })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
-
   it("should not add ingredient to another user's meal", async () => {
     await mealsRepo.saveMeal(testMeal);
 
     const request = {
       userId: 'another-user-id',
       mealId: testMeal.id,
-      ingredientLine: newIngredientLine,
+      ...newIngredientLineInfo,
     };
 
     await expect(addIngredientToMealUsecase.execute(request)).rejects.toThrow(

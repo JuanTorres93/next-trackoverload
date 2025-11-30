@@ -1,6 +1,5 @@
-import { MealsRepo } from '@/domain/repos/MealsRepo.port';
-import { validateNonEmptyString } from '@/domain/common/validation';
 import { AuthError, NotFoundError } from '@/domain/common/errors';
+import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 
 export type DeleteMealUsecaseRequest = {
   id: string;
@@ -11,9 +10,6 @@ export class DeleteMealUsecase {
   constructor(private mealsRepo: MealsRepo) {}
 
   async execute(request: DeleteMealUsecaseRequest): Promise<void> {
-    validateNonEmptyString(request.id, 'DeleteMealUsecase id');
-    validateNonEmptyString(request.userId, 'DeleteMealUsecase userId');
-
     // Search meal
     const meal = await this.mealsRepo.getMealById(request.id);
 

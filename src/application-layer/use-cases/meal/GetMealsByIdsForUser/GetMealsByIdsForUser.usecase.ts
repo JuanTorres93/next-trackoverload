@@ -1,7 +1,6 @@
-import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 import { MealDTO, toMealDTO } from '@/application-layer/dtos/MealDTO';
-import { validateNonEmptyString } from '@/domain/common/validation';
 import { ValidationError } from '@/domain/common/errors';
+import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 
 export type GetMealsByIdsForUserUsecaseRequest = {
   ids: string[];
@@ -14,8 +13,6 @@ export class GetMealsByIdsForUserUsecase {
   async execute(
     request: GetMealsByIdsForUserUsecaseRequest
   ): Promise<MealDTO[]> {
-    validateNonEmptyString(request.userId, 'GetMealsByIdsUsecase userId');
-
     if (!Array.isArray(request.ids) || request.ids.length === 0) {
       throw new ValidationError(
         'GetMealsByIdsUsecase: ids must be a non-empty array'
@@ -23,10 +20,6 @@ export class GetMealsByIdsForUserUsecase {
     }
 
     const uniqueIds = Array.from(new Set(request.ids));
-
-    uniqueIds.forEach((id) => {
-      validateNonEmptyString(id, `GetMealsByIdsUsecase id  ${id}`);
-    });
 
     const meals = await Promise.all(
       uniqueIds.map((id) =>

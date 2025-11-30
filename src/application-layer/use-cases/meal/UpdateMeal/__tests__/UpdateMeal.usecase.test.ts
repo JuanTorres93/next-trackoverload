@@ -1,6 +1,6 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
@@ -34,6 +34,9 @@ describe('UpdateMealUsecase', () => {
 
     await mealsRepo.saveMeal(meal);
 
+    // Wait a bit to ensure updatedAt is different
+    await new Promise((resolve) => setTimeout(resolve, 2));
+
     const updatedMeal = await updateMealUsecase.execute({
       id: vp.mealPropsNoIngredientLines.id,
       userId: vp.userId,
@@ -44,33 +47,9 @@ describe('UpdateMealUsecase', () => {
     expect(updatedMeal.id).toBe(vp.mealPropsNoIngredientLines.id);
     expect(updatedMeal.ingredientLines).toHaveLength(1);
     expect(updatedMeal.createdAt).toBe(meal.createdAt.toISOString());
-    expect(updatedMeal.updatedAt).not.toBe(meal.updatedAt.toISOString());
-  });
-
-  it('should return same meal when no changes are made', async () => {
-    const ingredient = Ingredient.create({
-      ...vp.validIngredientProps,
-    });
-
-    const ingredientLine = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
-      ingredient,
-    });
-
-    const meal = Meal.create({
-      ...vp.mealPropsNoIngredientLines,
-      ingredientLines: [ingredientLine],
-    });
-
-    await mealsRepo.saveMeal(meal);
-
-    const result = await updateMealUsecase.execute({
-      id: vp.mealPropsNoIngredientLines.id,
-      userId: vp.userId,
-    });
-
-    expect(result.id).toBe(meal.id);
-    expect(result.name).toBe(meal.name);
+    expect(updatedMeal.updatedAt).not.toBe(
+      vp.mealPropsNoIngredientLines.updatedAt.toISOString()
+    );
   });
 
   it('should return MealDTO', async () => {
@@ -111,46 +90,5 @@ describe('UpdateMealUsecase', () => {
         name: 'New Name',
       })
     ).rejects.toThrow(NotFoundError);
-  });
-
-  it('should throw ValidationError when id is invalid', async () => {
-    const invalidIds = ['', null, undefined];
-
-    for (const invalidId of invalidIds) {
-      await expect(
-        // @ts-expect-error Testing invalid inputs
-        updateMealUsecase.execute({ id: invalidId, name: 'Valid Name' })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
-
-  it('should throw ValidationError when name is invalid', async () => {
-    const ingredient = Ingredient.create({
-      ...vp.validIngredientProps,
-    });
-
-    const ingredientLine = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
-      ingredient,
-    });
-
-    const meal = Meal.create({
-      ...vp.mealPropsNoIngredientLines,
-      ingredientLines: [ingredientLine],
-    });
-
-    await mealsRepo.saveMeal(meal);
-
-    const invalidNames = [null, 3, true, {}, []];
-
-    for (const invalidName of invalidNames) {
-      await expect(
-        updateMealUsecase.execute({
-          id: vp.mealPropsNoIngredientLines.id,
-          // @ts-expect-error Testing invalid inputs
-          name: invalidName,
-        })
-      ).rejects.toThrow(ValidationError);
-    }
   });
 });

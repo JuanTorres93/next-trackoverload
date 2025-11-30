@@ -133,30 +133,4 @@ describe('GetMealsByIdsUsecase', () => {
       getMealsByIdsUsecase.execute({ ids: [], userId: vp.userId })
     ).rejects.toThrow(ValidationError);
   });
-
-  it('should throw error when any id is invalid', async () => {
-    const invalidIds = [
-      ['', 'valid-id'],
-      ['valid-id', null],
-      ['valid-id', undefined],
-    ];
-
-    for (const ids of invalidIds) {
-      await expect(
-        // @ts-expect-error Testing invalid inputs
-        getMealsByIdsUsecase.execute({ ids })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
-
-  it('should throw error if userId is invalid', async () => {
-    const invalidUserIds = ['', null, undefined, '   ', 123, {}, [], true];
-
-    for (const userId of invalidUserIds) {
-      await expect(
-        // @ts-expect-error Testing invalid inputs
-        getMealsByIdsUsecase.execute({ ids: ['meal-1'], userId })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
 });

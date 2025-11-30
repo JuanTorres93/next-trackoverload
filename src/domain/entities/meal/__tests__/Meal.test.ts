@@ -209,4 +209,9 @@ describe('Meal', () => {
       });
     }).toThrow(/Text.*not exceed/);
   });
+
+  it('should throw error if no patch is specified when updating', async () => {
+    expect(() => meal.update({})).toThrow(ValidationError);
+    expect(() => meal.update({})).toThrow(/Meal.*No.*patch/);
+  });
 });

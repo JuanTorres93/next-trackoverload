@@ -82,6 +82,16 @@ export class Meal implements Calories, Protein {
   }
 
   update(patch: MealUpdateProps): void {
+    if (
+      !patch ||
+      Object.keys(patch).length === 0 ||
+      Object.values(patch).every((value) => value === undefined)
+    ) {
+      throw new ValidationError(
+        'Meal: No properties provided in patch for update'
+      );
+    }
+
     if (patch.name !== undefined) {
       this.props.name = Text.create(patch.name, nameTextOptions);
     }
