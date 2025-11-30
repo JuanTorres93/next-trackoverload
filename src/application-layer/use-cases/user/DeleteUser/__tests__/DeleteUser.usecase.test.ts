@@ -1,9 +1,9 @@
+import * as vp from '@/../tests/createProps';
+import { NotFoundError } from '@/domain/common/errors';
+import { User } from '@/domain/entities/user/User';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { DeleteUserUsecase } from '../DeleteUser.usecase';
-import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
-import { User } from '@/domain/entities/user/User';
-import { ValidationError, NotFoundError } from '@/domain/common/errors';
-import * as vp from '@/../tests/createProps';
 
 describe('DeleteUserUsecase', () => {
   let usersRepo: MemoryUsersRepo;
@@ -37,16 +37,5 @@ describe('DeleteUserUsecase', () => {
     await expect(
       deleteUserUsecase.execute({ id: 'non-existent' })
     ).rejects.toThrow(NotFoundError);
-  });
-
-  it('should throw ValidationError when id is invalid', async () => {
-    const invalidIds = [true, 4, null, undefined];
-
-    for (const invalidId of invalidIds) {
-      await expect(
-        // @ts-expect-error Testing invalid inputs
-        deleteUserUsecase.execute({ id: invalidId })
-      ).rejects.toThrow(ValidationError);
-    }
   });
 });

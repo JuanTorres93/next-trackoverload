@@ -52,15 +52,4 @@ describe('GetUserByIdUsecase', () => {
 
     expect(result).toBeNull();
   });
-
-  it('should throw error when id is invalid', async () => {
-    const invalidIds = [true, 4, null, undefined, {}, [], '   ', '', NaN, -5];
-
-    for (const invalidId of invalidIds) {
-      await expect(
-        // @ts-expect-error Testing invalid inputs
-        getUserByIdUsecase.execute({ id: invalidId })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
 });

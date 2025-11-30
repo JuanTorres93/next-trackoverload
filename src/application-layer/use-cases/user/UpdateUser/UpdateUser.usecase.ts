@@ -1,10 +1,6 @@
 import { UserDTO, toUserDTO } from '@/application-layer/dtos/UserDTO';
 import { NotFoundError } from '@/domain/common/errors';
-import {
-  validateNonEmptyString,
-  validateObject,
-} from '@/domain/common/validation';
-import { User, UserUpdateProps } from '@/domain/entities/user/User';
+import { UserUpdateProps } from '@/domain/entities/user/User';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 
 export type UpdateUserUsecaseRequest = {
@@ -16,10 +12,6 @@ export class UpdateUserUsecase {
   constructor(private usersRepo: UsersRepo) {}
 
   async execute(request: UpdateUserUsecaseRequest): Promise<UserDTO> {
-    validateNonEmptyString(request.id, 'UpdateUserUsecase id');
-    if (request.patch !== undefined)
-      validateObject(request.patch, 'UpdateUserUsecase patch');
-
     const existingUser = await this.usersRepo.getUserById(request.id);
 
     if (!existingUser) {
@@ -27,27 +19,10 @@ export class UpdateUserUsecase {
     }
 
     const patch: UserUpdateProps = request.patch || {};
+    existingUser.update(patch);
 
-    if (Object.keys(patch).length > 0) {
-      // Create a new user with the same properties
-      const updatedUser = User.create({
-        id: existingUser.id,
-        name: existingUser.name,
-        customerId: existingUser.customerId
-          ? existingUser.customerId
-          : undefined,
-        createdAt: existingUser.createdAt,
-        updatedAt: existingUser.updatedAt,
-      });
+    await this.usersRepo.saveUser(existingUser);
 
-      // Apply the updates using the entity's update method
-      updatedUser.update(patch);
-
-      await this.usersRepo.saveUser(updatedUser);
-
-      return toUserDTO(updatedUser);
-    }
-
-    return toUserDTO(existingUser); // No changes made, return the original
+    return toUserDTO(existingUser);
   }
 }

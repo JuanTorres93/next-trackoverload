@@ -12,7 +12,6 @@ export class CreateUserUsecase {
   constructor(private usersRepo: UsersRepo) {}
 
   async execute(request: CreateUserUsecaseRequest): Promise<UserDTO> {
-    // NOTE: name and customerId are validated in User.create()
     const newUser = User.create({
       id: uuidv4(),
       name: request.name,

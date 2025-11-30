@@ -103,4 +103,16 @@ describe('User', () => {
       })
     ).toThrowError(/Text.*not exceed/);
   });
+
+  it('should throw error if patch is not provided when updating', async () => {
+    expect(() =>
+      // @ts-expect-error Testing invalid inputs
+      user.update()
+    ).toThrowError(ValidationError);
+
+    expect(() =>
+      // @ts-expect-error Testing invalid inputs
+      user.update()
+    ).toThrowError(/User.*patch.*required/);
+  });
 });

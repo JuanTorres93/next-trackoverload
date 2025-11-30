@@ -2,6 +2,7 @@ import { Id } from '@/domain/value-objects/Id/Id';
 import { Integer } from '@/domain/value-objects/Integer/Integer';
 import { Text } from '@/domain/value-objects/Text/Text';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
+import { ValidationError } from '@/domain/common/errors';
 
 export type UserCreateProps = {
   id: string;
@@ -45,6 +46,16 @@ export class User {
   }
 
   update(patch: UserUpdateProps): void {
+    // or every entry undefined
+    if (
+      !patch ||
+      Object.keys(patch).length === 0 ||
+      typeof patch !== 'object' ||
+      Object.values(patch).every((value) => value === undefined)
+    ) {
+      throw new ValidationError('User update: patch object is required');
+    }
+
     if (patch.name) {
       this.props.name = Text.create(patch.name, nameTextOptions);
     }
