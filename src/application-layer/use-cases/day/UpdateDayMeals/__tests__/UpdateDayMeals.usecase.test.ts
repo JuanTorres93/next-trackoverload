@@ -1,6 +1,5 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
-import { ValidationError } from '@/domain/common/errors';
 import { Day } from '@/domain/entities/day/Day';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
@@ -150,40 +149,5 @@ describe('UpdateDayMealsUsecase', () => {
     expect(new Date(result.updatedAt).getTime()).toBeGreaterThan(
       originalCreatedAt.getTime()
     );
-  });
-
-  it('should throw error if date is invalid', async () => {
-    const invalidDates = [
-      null,
-      undefined,
-      new Date('invalid-date'),
-      123,
-      '2023-10-01',
-      {},
-      [],
-      true,
-      NaN,
-    ];
-
-    for (const date of invalidDates) {
-      await expect(
-        // @ts-expect-error testing invalid dates
-        updateDayMealsUsecase.execute({ date, meals: [] })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
-
-  it('should throw error if userId is invalid', async () => {
-    const invalidUserIds = ['', '   ', null, 3, undefined, {}, [], true];
-
-    for (const userId of invalidUserIds) {
-      await expect(
-        updateDayMealsUsecase.execute({
-          date: vp.dateId,
-          userId: userId as string,
-          meals: [],
-        })
-      ).rejects.toThrow(ValidationError);
-    }
   });
 });

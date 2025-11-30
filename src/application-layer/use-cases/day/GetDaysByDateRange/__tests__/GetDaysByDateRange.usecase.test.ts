@@ -168,29 +168,4 @@ describe('GetDaysByDateRangeUsecase', () => {
       ).rejects.toThrow(ValidationError);
     }
   });
-
-  it('should throw error if userId is invalid', async () => {
-    const invalidUserIds = [
-      '',
-      '   ',
-      null,
-      undefined,
-      123,
-      {},
-      [],
-      true,
-      false,
-    ];
-
-    for (const invalidUserId of invalidUserIds) {
-      await expect(
-        getDaysByDateRangeUsecase.execute({
-          startDate: vp.dateId,
-          // @ts-expect-error Testing invalid inputs
-          userId: invalidUserId,
-          endDate: new Date('2023-10-02'),
-        })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
 });

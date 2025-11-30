@@ -1,9 +1,9 @@
+import * as vp from '@/../tests/createProps';
+import { NotFoundError } from '@/domain/common/errors';
+import { Day } from '@/domain/entities/day/Day';
+import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { DeleteDayUsecase } from '../DeleteDay.usecase';
-import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
-import { Day } from '@/domain/entities/day/Day';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
-import * as vp from '@/../tests/createProps';
 
 describe('DeleteDayUsecase', () => {
   let daysRepo: MemoryDaysRepo;
@@ -30,33 +30,8 @@ describe('DeleteDayUsecase', () => {
     await expect(
       deleteDayUsecase.execute({ date: vp.dateId, userId: vp.userId })
     ).rejects.toThrow(NotFoundError);
-  });
-
-  it('should throw error when date is invalid', async () => {
-    const date = new Date('invalid');
     await expect(
-      deleteDayUsecase.execute({ date, userId: vp.userId })
-    ).rejects.toThrow(ValidationError);
-  });
-
-  it('should throw error when userId is invalid', async () => {
-    const invalidUserIds = [
-      '',
-      '   ',
-      null,
-      undefined,
-      123,
-      {},
-      [],
-      true,
-      false,
-    ];
-
-    for (const userId of invalidUserIds) {
-      await expect(
-        // @ts-expect-error testing invalid inputs
-        deleteDayUsecase.execute({ date: vp.dateId, userId })
-      ).rejects.toThrow(ValidationError);
-    }
+      deleteDayUsecase.execute({ date: vp.dateId, userId: vp.userId })
+    ).rejects.toThrow(/DeleteDayUsecase.*Day not found/);
   });
 });

@@ -1,8 +1,7 @@
+import { Day } from '@/domain/entities/day/Day';
+import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetDayByIdUsecase } from '../GetDayById.usecase';
-import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
-import { Day } from '@/domain/entities/day/Day';
-import { ValidationError } from '@/domain/common/errors';
 
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
@@ -51,46 +50,5 @@ describe('GetDayByIdUsecase', () => {
     });
 
     expect(result).toBeNull();
-  });
-
-  it('should throw error when date is invalid', async () => {
-    const invalidDates = [
-      null,
-      undefined,
-      '2023-10-10',
-      123,
-      {},
-      [],
-      true,
-      false,
-    ];
-
-    for (const date of invalidDates) {
-      await expect(
-        // @ts-expect-error testing invalid inputs
-        getDayByIdUsecase.execute({ date, userId: vp.userId })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
-
-  it('should throw error when userId is invalid', async () => {
-    const invalidUserIds = [
-      '',
-      '   ',
-      null,
-      undefined,
-      123,
-      {},
-      [],
-      true,
-      false,
-    ];
-
-    for (const userId of invalidUserIds) {
-      await expect(
-        // @ts-expect-error testing invalid inputs
-        getDayByIdUsecase.execute({ date: vp.dateId, userId })
-      ).rejects.toThrow(ValidationError);
-    }
   });
 });

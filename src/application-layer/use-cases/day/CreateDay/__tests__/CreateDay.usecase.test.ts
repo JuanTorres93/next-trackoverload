@@ -1,11 +1,10 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { CreateDayUsecase } from '../CreateDay.usecase';
-import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
-import { ValidationError } from '@/domain/common/errors';
-import { Day } from '@/domain/entities/day/Day';
-import { toDayDTO } from '@/application-layer/dtos/DayDTO';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { toDayDTO } from '@/application-layer/dtos/DayDTO';
+import { Day } from '@/domain/entities/day/Day';
+import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { CreateDayUsecase } from '../CreateDay.usecase';
 
 describe('CreateDayUsecase', () => {
   let daysRepo: MemoryDaysRepo;
@@ -56,30 +55,5 @@ describe('CreateDayUsecase', () => {
 
     expect(day.id).toEqual(request.date.toISOString());
     expect(day.meals).toEqual([]);
-  });
-
-  it('should throw an error if date is invalid', async () => {
-    const request = { date: new Date('invalid'), userId: vp.userId };
-
-    await expect(createDayUsecase.execute(request)).rejects.toThrow(
-      ValidationError
-    );
-  });
-
-  it('should throw an error if meals are invalid', async () => {
-    const invalidMeals = [{}, 3, 'invalid', { id: 'not-a-meal' }, null, 42];
-
-    await Promise.all(
-      invalidMeals.map((invalidMeal) =>
-        expect(
-          createDayUsecase.execute({
-            date: vp.dateId,
-            userId: vp.userId,
-            // @ts-expect-error Testing invalid inputs
-            meals: [invalidMeal],
-          })
-        ).rejects.toThrow(ValidationError)
-      )
-    );
   });
 });

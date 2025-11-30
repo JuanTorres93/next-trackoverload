@@ -64,25 +64,4 @@ describe('GetAllDaysUsecase', () => {
 
     expect(result).toEqual([]);
   });
-
-  it('should throw error when userId is invalid', async () => {
-    const invalidUserIds = [
-      '',
-      '   ',
-      null,
-      undefined,
-      123,
-      {},
-      [],
-      true,
-      false,
-    ];
-
-    for (const userId of invalidUserIds) {
-      await expect(
-        // @ts-expect-error testing invalid inputs
-        getAllDaysUsecase.execute({ userId })
-      ).rejects.toThrow();
-    }
-  });
 });

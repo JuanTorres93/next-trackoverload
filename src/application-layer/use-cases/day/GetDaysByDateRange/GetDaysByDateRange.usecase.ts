@@ -1,10 +1,7 @@
-import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { DayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
 import { ValidationError } from '@/domain/common/errors';
-import {
-  validateDate,
-  validateNonEmptyString,
-} from '@/domain/common/validation';
+import { validateDate } from '@/domain/common/validation';
+import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 
 export type GetDaysByDateRangeUsecaseRequest = {
   startDate: Date;
@@ -18,7 +15,6 @@ export class GetDaysByDateRangeUsecase {
   async execute(request: GetDaysByDateRangeUsecaseRequest): Promise<DayDTO[]> {
     validateDate(request.startDate, 'GetDaysByDateRangeUsecase startDate');
     validateDate(request.endDate, 'GetDaysByDateRangeUsecase endDate');
-    validateNonEmptyString(request.userId, 'GetDaysByDateRangeUsecase userId');
 
     if (request.startDate > request.endDate) {
       throw new ValidationError(

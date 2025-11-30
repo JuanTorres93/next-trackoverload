@@ -1,5 +1,5 @@
 import * as vp from '@/../tests/createProps';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { NotFoundError } from '@/domain/common/errors';
 import { Day } from '@/domain/entities/day/Day';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
@@ -69,54 +69,11 @@ describe('GetDayNutritionalSummaryUsecase', () => {
     });
   });
 
-  it('should throw error if date is invalid', async () => {
-    const invalidDates = [
-      new Date('invalid-date'),
-      new Date(''),
-      new Date('2023-13-01'),
-      2,
-      null,
-      undefined,
-      {},
-      '',
-      [],
-      NaN,
-    ];
-
-    for (const date of invalidDates) {
-      await expect(
-        // @ts-expect-error testing invalid inputs
-        getDayNutritionalSummaryUsecase.execute({ date, userId })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
-
   it('should throw error if day does not exist', async () => {
     const date = new Date('2023-10-01');
 
     await expect(
       getDayNutritionalSummaryUsecase.execute({ date, userId })
     ).rejects.toThrow(NotFoundError);
-  });
-
-  it('should throw error if userId is invalid', async () => {
-    const invalidUserIds = [
-      '',
-      '   ',
-      null,
-      undefined,
-      123,
-      {},
-      [],
-      true,
-      false,
-    ];
-
-    for (const userId of invalidUserIds) {
-      await expect(
-        // @ts-expect-error testing invalid inputs
-        getDayNutritionalSummaryUsecase.execute({ date: vp.dateId, userId })
-      ).rejects.toThrow(ValidationError);
-    }
   });
 });

@@ -23,6 +23,7 @@ export class AddMealToDayUsecase {
       request.date.toISOString(),
       request.userId
     );
+
     if (!day) {
       // NOTE: date and userId are validated in the entity
       day = Day.create({

@@ -115,6 +115,33 @@ describe('Meal', () => {
         ingredientLines: [],
       })
     ).toThrow(ValidationError);
+    expect(() =>
+      Meal.create({
+        ...validMealProps,
+        ingredientLines: [],
+      })
+    ).toThrow(/Meal:.*ingredientLines.*array/);
+  });
+
+  it('should throw error for invalid ingredient lines', async () => {
+    const invalidLines = [null, undefined, 42, 'invalid', {}, []];
+
+    for (const invalidLine of invalidLines) {
+      expect(() =>
+        Meal.create({
+          ...validMealProps,
+          // @ts-expect-error Testing invalid inputs
+          ingredientLines: [invalidLine],
+        })
+      ).toThrow(ValidationError);
+      expect(() =>
+        Meal.create({
+          ...validMealProps,
+          // @ts-expect-error Testing invalid inputs
+          ingredientLines: [invalidLine],
+        })
+      ).toThrow(/Meal:.*ingredientLines.*IngredientLine/);
+    }
   });
 
   it('should throw error if userId is invalid', async () => {

@@ -1,9 +1,5 @@
-import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { DayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
-import {
-  validateDate,
-  validateNonEmptyString,
-} from '@/domain/common/validation';
+import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 
 export type GetDayByIdUsecaseRequest = {
   date: Date;
@@ -14,9 +10,6 @@ export class GetDayByIdUsecase {
   constructor(private daysRepo: DaysRepo) {}
 
   async execute(request: GetDayByIdUsecaseRequest): Promise<DayDTO | null> {
-    validateDate(request.date, 'GetDayByIdUsecase date');
-    validateNonEmptyString(request.userId, 'GetDayByIdUsecase userId');
-
     const day = await this.daysRepo.getDayByIdAndUserId(
       request.date.toISOString(),
       request.userId
