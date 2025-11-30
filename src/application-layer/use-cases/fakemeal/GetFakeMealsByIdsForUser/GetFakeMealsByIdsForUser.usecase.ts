@@ -18,8 +18,6 @@ export class GetFakeMealsByIdsForUserUsecase {
   async execute(
     request: GetFakeMealsByIdsForUserUsecaseRequest
   ): Promise<FakeMealDTO[]> {
-    validateNonEmptyString(request.userId, 'GetFakeMealsByIdsUsecase: userId');
-
     if (!Array.isArray(request.ids) || request.ids.length === 0) {
       throw new ValidationError(
         'GetFakeMealsByIdsUsecase: ids must be a non-empty array'

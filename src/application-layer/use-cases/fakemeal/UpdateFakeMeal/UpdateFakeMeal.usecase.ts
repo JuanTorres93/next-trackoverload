@@ -1,11 +1,10 @@
-import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
-import { FakeUpdateProps } from '@/domain/entities/fakemeal/FakeMeal';
 import {
   FakeMealDTO,
   toFakeMealDTO,
 } from '@/application-layer/dtos/FakeMealDTO';
-import { validateNonEmptyString } from '@/domain/common/validation';
 import { NotFoundError } from '@/domain/common/errors';
+import { FakeUpdateProps } from '@/domain/entities/fakemeal/FakeMeal';
+import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
 
 export type UpdateFakeMealUsecaseRequest = {
   id: string;
@@ -17,9 +16,6 @@ export class UpdateFakeMealUsecase {
   constructor(private fakeMealsRepo: FakeMealsRepo) {}
 
   async execute(request: UpdateFakeMealUsecaseRequest): Promise<FakeMealDTO> {
-    validateNonEmptyString(request.id, 'UpdateFakeMealUsecase: id');
-    validateNonEmptyString(request.userId, 'UpdateFakeMealUsecase: userId');
-
     const fakeMeal = await this.fakeMealsRepo.getFakeMealByIdAndUserId(
       request.id,
       request.userId

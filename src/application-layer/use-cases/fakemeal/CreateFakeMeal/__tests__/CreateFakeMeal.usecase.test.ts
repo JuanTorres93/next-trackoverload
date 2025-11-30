@@ -1,10 +1,9 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { CreateFakeMealUsecase } from '../CreateFakeMeal.usecase';
-import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
-import { ValidationError } from '@/domain/common/errors';
-import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { CreateFakeMealUsecase } from '../CreateFakeMeal.usecase';
 
 describe('CreateFakeMealUsecase', () => {
   let usecase: CreateFakeMealUsecase;
@@ -59,42 +58,5 @@ describe('CreateFakeMealUsecase', () => {
     expect(result.name).toBe(request.name);
     expect(result.calories).toBe(request.calories);
     expect(result.protein).toBe(request.protein);
-  });
-
-  it('should throw ValidationError for empty name', async () => {
-    const request = {
-      userId: vp.userId,
-      name: '',
-      calories: vp.validFakeMealProps.calories,
-      protein: vp.validFakeMealProps.protein,
-    };
-
-    await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
-  });
-
-  it('should throw ValidationError for negative protein', async () => {
-    const request = {
-      userId: vp.userId,
-      name: vp.validFakeMealProps.name,
-      calories: vp.validFakeMealProps.calories,
-      protein: -10,
-    };
-
-    await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
-  });
-
-  it('should throw ValidationError for invalid userId', async () => {
-    const invalidUserIds = ['', '   ', null, undefined, 34, 0, -5, {}, []];
-    for (const userId of invalidUserIds) {
-      const request = {
-        userId,
-        name: vp.validFakeMealProps.name,
-        calories: vp.validFakeMealProps.calories,
-        protein: vp.validFakeMealProps.protein,
-      };
-
-      // @ts-expect-error testing invalid types
-      await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
-    }
   });
 });

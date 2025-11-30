@@ -1,5 +1,5 @@
 import * as vp from '@/../tests/createProps';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { NotFoundError } from '@/domain/common/errors';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -38,21 +38,6 @@ describe('DeleteFakeMealUsecase', () => {
     expect(afterDeletion).toBeNull();
   });
 
-  it('should throw NotFoundError when fake meal does not exist', async () => {
-    await expect(
-      usecase.execute({ id: 'non-existent-id', userId: vp.userId })
-    ).rejects.toThrow(NotFoundError);
-  });
-
-  it('should throw ValidationError for invalid id', async () => {
-    const invalidIds = ['', '   '];
-    for (const id of invalidIds) {
-      await expect(usecase.execute({ id, userId: vp.userId })).rejects.toThrow(
-        ValidationError
-      );
-    }
-  });
-
   it('should not affect other fake meals when deleting one', async () => {
     const fakeMeal1 = FakeMeal.create({
       ...vp.validFakeMealProps,
@@ -86,13 +71,12 @@ describe('DeleteFakeMealUsecase', () => {
     expect(remainingFakeMeal?.name).toBe('Test Fake Meal 2');
   });
 
-  it('should throw error for invalid userId', async () => {
-    const invalidUserIds = ['', '   ', null, undefined, 34, 0, -5, {}, []];
-    for (const userId of invalidUserIds) {
-      await expect(
-        // @ts-expect-error testing invalid types
-        usecase.execute({ id: 'test-id', userId })
-      ).rejects.toThrow(ValidationError);
-    }
+  it('should throw error if not found meal', async () => {
+    await expect(
+      usecase.execute({ id: 'non-existent-id', userId: vp.userId })
+    ).rejects.toThrow(NotFoundError);
+    await expect(
+      usecase.execute({ id: 'non-existent-id', userId: vp.userId })
+    ).rejects.toThrow(/DeleteFakeMealUsecase.*FakeMeal.* not found/);
   });
 });

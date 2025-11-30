@@ -1,6 +1,5 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
-import { ValidationError } from '@/domain/common/errors';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -84,15 +83,5 @@ describe('GetAllFakeMealsUsecase', () => {
     expect(returnedFakeMeal.name).toBe(fakeMeal.name);
     expect(returnedFakeMeal.calories).toBe(fakeMeal.calories);
     expect(returnedFakeMeal.protein).toBe(fakeMeal.protein);
-  });
-
-  it('should throw error for invalid userId', async () => {
-    const invalidUserIds = ['', '   ', null, undefined, 34, 0, -5, {}, []];
-    for (const userId of invalidUserIds) {
-      await expect(
-        // @ts-expect-error testing invalid types
-        usecase.execute({ userId })
-      ).rejects.toThrow(ValidationError);
-    }
   });
 });

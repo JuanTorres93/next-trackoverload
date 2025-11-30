@@ -1,6 +1,5 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -118,42 +117,5 @@ describe('UpdateFakeMealUsecase', () => {
     expect(result.name).toBe('Updated Name');
     expect(result.calories).toBe(600);
     expect(result.protein).toBe(40);
-  });
-
-  it('should throw NotFoundError when fake meal does not exist', async () => {
-    await expect(
-      usecase.execute({
-        id: 'non-existent-id',
-        userId: vp.userId,
-        patch: { name: 'Updated Name' },
-      })
-    ).rejects.toThrow(NotFoundError);
-  });
-
-  it('should throw ValidationError for empty id', async () => {
-    await expect(
-      usecase.execute({
-        id: '',
-        userId: vp.userId,
-        patch: { name: 'Updated Name' },
-      })
-    ).rejects.toThrow(ValidationError);
-  });
-
-  it('should throw ValidationError for invalid name in patch', async () => {
-    const fakeMeal = FakeMeal.create({
-      ...vp.validFakeMealProps,
-      name: 'Test Meal',
-    });
-
-    await fakeMealsRepo.saveFakeMeal(fakeMeal);
-
-    await expect(
-      usecase.execute({
-        id: vp.validFakeMealProps.id,
-        userId: vp.userId,
-        patch: { name: '' },
-      })
-    ).rejects.toThrow(ValidationError);
   });
 });

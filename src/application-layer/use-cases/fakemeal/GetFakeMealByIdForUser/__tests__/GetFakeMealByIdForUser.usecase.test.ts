@@ -1,6 +1,5 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
-import { ValidationError } from '@/domain/common/errors';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -82,23 +81,5 @@ describe('GetFakeMealByIdUsecase', () => {
     });
 
     expect(result).toBeNull();
-  });
-
-  it('should throw ValidationError for invalid id', async () => {
-    const invalidIds = ['', '   '];
-    for (const id of invalidIds) {
-      await expect(usecase.execute({ id, userId: vp.userId })).rejects.toThrow(
-        ValidationError
-      );
-    }
-  });
-
-  it('should throw ValidationError for invalid userId', async () => {
-    const invalidUserIds = ['', '   '];
-    for (const userId of invalidUserIds) {
-      await expect(
-        usecase.execute({ id: vp.validFakeMealProps.id, userId })
-      ).rejects.toThrow(ValidationError);
-    }
   });
 });
