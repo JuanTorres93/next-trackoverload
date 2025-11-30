@@ -1,5 +1,8 @@
+import { NotFoundError } from '@/domain/common/errors';
 import { Day } from '@/domain/entities/day/Day';
+import { User } from '@/domain/entities/user/User';
 import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetDayByIdUsecase } from '../GetDayById.usecase';
 
@@ -8,12 +11,21 @@ import * as dto from '@/../tests/dtoProperties';
 
 describe('GetDayByIdUsecase', () => {
   let daysRepo: MemoryDaysRepo;
+  let usersRepo: MemoryUsersRepo;
   let getDayByIdUsecase: GetDayByIdUsecase;
   let day: Day;
+  let user: User;
 
   beforeEach(async () => {
     daysRepo = new MemoryDaysRepo();
-    getDayByIdUsecase = new GetDayByIdUsecase(daysRepo);
+    usersRepo = new MemoryUsersRepo();
+    getDayByIdUsecase = new GetDayByIdUsecase(daysRepo, usersRepo);
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+    await usersRepo.saveUser(user);
+
     day = Day.create({
       ...vp.validDayProps,
     });
@@ -50,5 +62,21 @@ describe('GetDayByIdUsecase', () => {
     });
 
     expect(result).toBeNull();
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      getDayByIdUsecase.execute({
+        date: vp.dateId,
+        userId: 'non-existent',
+      })
+    ).rejects.toThrow(NotFoundError);
+
+    await expect(
+      getDayByIdUsecase.execute({
+        date: vp.dateId,
+        userId: 'non-existent',
+      })
+    ).rejects.toThrow(/GetDayById.*User.*not.*found/);
   });
 });

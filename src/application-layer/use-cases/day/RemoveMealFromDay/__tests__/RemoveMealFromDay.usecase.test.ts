@@ -1,20 +1,33 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { RemoveMealFromDayUsecase } from '../RemoveMealFromDay.usecase';
 import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { Day } from '@/domain/entities/day/Day';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { ValidationError } from '@/domain/common/errors';
+import { User } from '@/domain/entities/user/User';
+import { NotFoundError, ValidationError } from '@/domain/common/errors';
 
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 
 describe('RemoveMealFromDayUsecase', () => {
   let daysRepo: MemoryDaysRepo;
+  let usersRepo: MemoryUsersRepo;
   let removeMealFromDayUsecase: RemoveMealFromDayUsecase;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     daysRepo = new MemoryDaysRepo();
-    removeMealFromDayUsecase = new RemoveMealFromDayUsecase(daysRepo);
+    usersRepo = new MemoryUsersRepo();
+    removeMealFromDayUsecase = new RemoveMealFromDayUsecase(
+      daysRepo,
+      usersRepo
+    );
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+    await usersRepo.saveUser(user);
   });
 
   it('should remove meal from day', async () => {
@@ -89,5 +102,23 @@ describe('RemoveMealFromDayUsecase', () => {
         mealId: 'non-existent',
       })
     ).rejects.toThrow(ValidationError);
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      removeMealFromDayUsecase.execute({
+        date: vp.dateId,
+        userId: 'non-existent',
+        mealId: vp.validFakeMealProps.id,
+      })
+    ).rejects.toThrow(NotFoundError);
+
+    await expect(
+      removeMealFromDayUsecase.execute({
+        date: vp.dateId,
+        userId: 'non-existent',
+        mealId: vp.validFakeMealProps.id,
+      })
+    ).rejects.toThrow(/RemoveMealFromDay.*User.*not.*found/);
   });
 });

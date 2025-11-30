@@ -2,20 +2,32 @@ import * as vp from '@/../tests/createProps';
 import { NotFoundError } from '@/domain/common/errors';
 import { Day } from '@/domain/entities/day/Day';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { User } from '@/domain/entities/user/User';
 import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetDayNutritionalSummaryUsecase } from '../GetDayNutritionalSummary.usecase';
 
 describe('GetDayNutritionalSummaryUsecase', () => {
   let daysRepo: MemoryDaysRepo;
+  let usersRepo: MemoryUsersRepo;
   let getDayNutritionalSummaryUsecase: GetDayNutritionalSummaryUsecase;
+  let user: User;
   const userId = 'user-1';
 
-  beforeEach(() => {
+  beforeEach(async () => {
     daysRepo = new MemoryDaysRepo();
+    usersRepo = new MemoryUsersRepo();
     getDayNutritionalSummaryUsecase = new GetDayNutritionalSummaryUsecase(
-      daysRepo
+      daysRepo,
+      usersRepo
     );
+
+    user = User.create({
+      ...vp.validUserProps,
+      id: userId,
+    });
+    await usersRepo.saveUser(user);
   });
 
   it('should return nutritional summary for a day', async () => {
@@ -75,5 +87,21 @@ describe('GetDayNutritionalSummaryUsecase', () => {
     await expect(
       getDayNutritionalSummaryUsecase.execute({ date, userId })
     ).rejects.toThrow(NotFoundError);
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      getDayNutritionalSummaryUsecase.execute({
+        date: vp.dateId,
+        userId: 'non-existent',
+      })
+    ).rejects.toThrow(NotFoundError);
+
+    await expect(
+      getDayNutritionalSummaryUsecase.execute({
+        date: vp.dateId,
+        userId: 'non-existent',
+      })
+    ).rejects.toThrow(/GetDayNutritionalSummary.*User.*not.*found/);
   });
 });

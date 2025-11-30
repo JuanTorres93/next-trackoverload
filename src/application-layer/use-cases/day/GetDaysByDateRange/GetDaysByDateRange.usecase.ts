@@ -1,7 +1,8 @@
 import { DayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
-import { ValidationError } from '@/domain/common/errors';
+import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { validateDate } from '@/domain/common/validation';
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
+import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 
 export type GetDaysByDateRangeUsecaseRequest = {
   startDate: Date;
@@ -10,9 +11,16 @@ export type GetDaysByDateRangeUsecaseRequest = {
 };
 
 export class GetDaysByDateRangeUsecase {
-  constructor(private daysRepo: DaysRepo) {}
+  constructor(private daysRepo: DaysRepo, private usersRepo: UsersRepo) {}
 
   async execute(request: GetDaysByDateRangeUsecaseRequest): Promise<DayDTO[]> {
+    const user = await this.usersRepo.getUserById(request.userId);
+    if (!user) {
+      throw new NotFoundError(
+        `GetDaysByDateRangeUsecase: User with id ${request.userId} not found`
+      );
+    }
+
     validateDate(request.startDate, 'GetDaysByDateRangeUsecase startDate');
     validateDate(request.endDate, 'GetDaysByDateRangeUsecase endDate');
 

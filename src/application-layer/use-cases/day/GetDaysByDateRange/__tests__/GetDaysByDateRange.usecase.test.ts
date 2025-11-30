@@ -1,19 +1,33 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetDaysByDateRangeUsecase } from '../GetDaysByDateRange.usecase';
 import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { Day } from '@/domain/entities/day/Day';
-import { ValidationError } from '@/domain/common/errors';
+import { User } from '@/domain/entities/user/User';
+import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 
 describe('GetDaysByDateRangeUsecase', () => {
   let daysRepo: MemoryDaysRepo;
+  let usersRepo: MemoryUsersRepo;
   let getDaysByDateRangeUsecase: GetDaysByDateRangeUsecase;
+  let user: User;
   const userId = 'user-1';
 
-  beforeEach(() => {
+  beforeEach(async () => {
     daysRepo = new MemoryDaysRepo();
-    getDaysByDateRangeUsecase = new GetDaysByDateRangeUsecase(daysRepo);
+    usersRepo = new MemoryUsersRepo();
+    getDaysByDateRangeUsecase = new GetDaysByDateRangeUsecase(
+      daysRepo,
+      usersRepo
+    );
+
+    user = User.create({
+      ...vp.validUserProps,
+      id: userId,
+    });
+    await usersRepo.saveUser(user);
   });
 
   it('should return days within date range', async () => {
@@ -95,6 +109,24 @@ describe('GetDaysByDateRangeUsecase', () => {
         userId,
       })
     ).rejects.toThrow(ValidationError);
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      getDaysByDateRangeUsecase.execute({
+        startDate: vp.dateId,
+        endDate: new Date('2023-10-02'),
+        userId: 'non-existent',
+      })
+    ).rejects.toThrow(NotFoundError);
+
+    await expect(
+      getDaysByDateRangeUsecase.execute({
+        startDate: vp.dateId,
+        endDate: new Date('2023-10-02'),
+        userId: 'non-existent',
+      })
+    ).rejects.toThrow(/GetDaysByDateRange.*User.*not.*found/);
   });
 
   it('should include days on boundary dates', async () => {

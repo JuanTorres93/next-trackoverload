@@ -1,21 +1,32 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { NotFoundError } from '@/domain/common/errors';
 import { Day } from '@/domain/entities/day/Day';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
+import { User } from '@/domain/entities/user/User';
 import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { UpdateDayMealsUsecase } from '../UpdateDayMeals.usecase';
 
 describe('UpdateDayMealsUsecase', () => {
   let daysRepo: MemoryDaysRepo;
+  let usersRepo: MemoryUsersRepo;
   let updateDayMealsUsecase: UpdateDayMealsUsecase;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     daysRepo = new MemoryDaysRepo();
-    updateDayMealsUsecase = new UpdateDayMealsUsecase(daysRepo);
+    usersRepo = new MemoryUsersRepo();
+    updateDayMealsUsecase = new UpdateDayMealsUsecase(daysRepo, usersRepo);
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+    await usersRepo.saveUser(user);
   });
 
   it('should update meals for existing day', async () => {
@@ -149,5 +160,23 @@ describe('UpdateDayMealsUsecase', () => {
     expect(new Date(result.updatedAt).getTime()).toBeGreaterThan(
       originalCreatedAt.getTime()
     );
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      updateDayMealsUsecase.execute({
+        date: vp.dateId,
+        userId: 'non-existent',
+        meals: [],
+      })
+    ).rejects.toThrow(NotFoundError);
+
+    await expect(
+      updateDayMealsUsecase.execute({
+        date: vp.dateId,
+        userId: 'non-existent',
+        meals: [],
+      })
+    ).rejects.toThrow(/UpdateDayMeals.*User.*not.*found/);
   });
 });

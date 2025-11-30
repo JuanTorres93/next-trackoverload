@@ -1,18 +1,29 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetAllDaysUsecase } from '../GetAllDays.usecase';
 import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { Day } from '@/domain/entities/day/Day';
+import { User } from '@/domain/entities/user/User';
+import { NotFoundError } from '@/domain/common/errors';
 
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 
 describe('GetAllDaysUsecase', () => {
   let daysRepo: MemoryDaysRepo;
+  let usersRepo: MemoryUsersRepo;
   let getAllDaysUsecase: GetAllDaysUsecase;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     daysRepo = new MemoryDaysRepo();
-    getAllDaysUsecase = new GetAllDaysUsecase(daysRepo);
+    usersRepo = new MemoryUsersRepo();
+    getAllDaysUsecase = new GetAllDaysUsecase(daysRepo, usersRepo);
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+    await usersRepo.saveUser(user);
   });
 
   it('should return all days', async () => {
@@ -63,5 +74,15 @@ describe('GetAllDaysUsecase', () => {
     const result = await getAllDaysUsecase.execute({ userId: vp.userId });
 
     expect(result).toEqual([]);
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      getAllDaysUsecase.execute({ userId: 'non-existent' })
+    ).rejects.toThrow(NotFoundError);
+
+    await expect(
+      getAllDaysUsecase.execute({ userId: 'non-existent' })
+    ).rejects.toThrow(/GetAllDaysUsecase.*User.*not.*found/);
   });
 });
