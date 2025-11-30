@@ -1,11 +1,10 @@
-import { Ingredient } from '../ingredient/Ingredient';
-import { ValidationError } from '../../common/errors';
-import { validateGreaterThanZero } from '../../common/validation';
-import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
-import { Id } from '@/domain/value-objects/Id/Id';
 import { Calories } from '@/domain/interfaces/Calories';
 import { Protein } from '@/domain/interfaces/Protein';
 import { Float } from '@/domain/value-objects/Float/Float';
+import { Id } from '@/domain/value-objects/Id/Id';
+import { ValidationError } from '../../common/errors';
+import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
+import { Ingredient } from '../ingredient/Ingredient';
 
 export type IngredientLineCreateProps = {
   id: string;
@@ -66,17 +65,14 @@ export class IngredientLine implements Calories, Protein {
 
   update(patch: IngredientLineUpdateProps): void {
     if (patch.ingredient && !(patch.ingredient instanceof Ingredient)) {
-      throw new ValidationError('IngredientLine update ingredient');
+      throw new ValidationError(
+        'IngredientLine update ingredient must have a valid patch'
+      );
     }
 
     if (patch.ingredient) this.props.ingredient = patch.ingredient;
 
     if (patch.quantityInGrams !== undefined) {
-      validateGreaterThanZero(
-        patch.quantityInGrams,
-        'IngredientLine update quantityInGrams'
-      );
-
       this.props.quantityInGrams = Float.create(
         patch.quantityInGrams,
         quantityFloatOptions
