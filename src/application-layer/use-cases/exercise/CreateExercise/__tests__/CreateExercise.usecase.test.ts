@@ -1,11 +1,10 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { CreateExerciseUsecase } from '../CreateExercise.usecase';
-import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
-import { ValidationError } from '@/domain/common/errors';
-import { Exercise } from '@/domain/entities/exercise/Exercise';
-import { toExerciseDTO } from '@/application-layer/dtos/ExerciseDTO';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { toExerciseDTO } from '@/application-layer/dtos/ExerciseDTO';
+import { Exercise } from '@/domain/entities/exercise/Exercise';
+import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { CreateExerciseUsecase } from '../CreateExercise.usecase';
 
 describe('CreateExerciseUsecase', () => {
   let exercisesRepo: MemoryExercisesRepo;
@@ -41,22 +40,5 @@ describe('CreateExerciseUsecase', () => {
     for (const prop of dto.exerciseDTOProperties) {
       expect(exercise).toHaveProperty(prop);
     }
-  });
-
-  it('should throw an error if name is empty', async () => {
-    const request = { name: '' };
-
-    await expect(createExerciseUsecase.execute(request)).rejects.toThrow(
-      ValidationError
-    );
-  });
-
-  it('should throw an error if name is not a string', async () => {
-    const request = { name: 123 };
-
-    // @ts-expect-error testing invalid input
-    await expect(createExerciseUsecase.execute(request)).rejects.toThrow(
-      ValidationError
-    );
   });
 });

@@ -1,9 +1,8 @@
+import * as dto from '@/../tests/dtoProperties';
+import { Exercise } from '@/domain/entities/exercise/Exercise';
+import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetExercisesByIdsUsecase } from '../GetExercisesByIds.usecase';
-import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
-import { Exercise } from '@/domain/entities/exercise/Exercise';
-import { ValidationError } from '@/domain/common/errors';
-import * as dto from '@/../tests/dtoProperties';
 
 describe('GetExercisesByIdsUsecase', () => {
   let exercisesRepo: MemoryExercisesRepo;
@@ -88,16 +87,5 @@ describe('GetExercisesByIdsUsecase', () => {
     });
 
     expect(exercises).toHaveLength(0);
-  });
-
-  it('should throw error when ids are invalid', async () => {
-    const invalidIds = [true, 4, null, undefined];
-
-    for (const invalidId of invalidIds) {
-      await expect(
-        // @ts-expect-error Testing invalid inputs
-        getExercisesByIdsUsecase.execute({ ids: [invalidId] })
-      ).rejects.toThrow(ValidationError);
-    }
   });
 });

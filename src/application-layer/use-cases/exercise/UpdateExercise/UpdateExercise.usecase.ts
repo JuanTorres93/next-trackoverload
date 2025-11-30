@@ -1,11 +1,10 @@
-import { ExercisesRepo } from '@/domain/repos/ExercisesRepo.port';
-import { Exercise } from '@/domain/entities/exercise/Exercise';
 import {
   ExerciseDTO,
   toExerciseDTO,
 } from '@/application-layer/dtos/ExerciseDTO';
 import { NotFoundError } from '@/domain/common/errors';
-import { validateNonEmptyString } from '@/domain/common/validation';
+import { Exercise } from '@/domain/entities/exercise/Exercise';
+import { ExercisesRepo } from '@/domain/repos/ExercisesRepo.port';
 
 export type UpdateExerciseUsecaseRequest = {
   id: string;
@@ -16,16 +15,12 @@ export class UpdateExerciseUsecase {
   constructor(private exercisesRepo: ExercisesRepo) {}
 
   async execute(request: UpdateExerciseUsecaseRequest): Promise<ExerciseDTO> {
-    validateNonEmptyString(request.id, 'UpdateExerciseUsecase');
-    if (request.name !== undefined)
-      validateNonEmptyString(request.name, 'UpdateExerciseUsecase');
-
     const existingExercise = await this.exercisesRepo.getExerciseById(
       request.id
     );
 
     if (!existingExercise) {
-      throw new NotFoundError('Exercise not found');
+      throw new NotFoundError('UpdateExerciseUsecase: Exercise not found');
     }
 
     const updatedExercise = Exercise.create({

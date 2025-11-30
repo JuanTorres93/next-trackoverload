@@ -41,8 +41,6 @@ describe('GetAllExercisesUsecase', () => {
   it('should return an array of ExerciseDTO', async () => {
     const exercise1 = Exercise.create({
       ...vp.validExerciseProps,
-      id: '1',
-      name: 'Push Up',
     });
     const exercise2 = Exercise.create({
       ...vp.validExerciseProps,

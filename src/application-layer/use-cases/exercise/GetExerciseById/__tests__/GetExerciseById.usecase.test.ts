@@ -1,10 +1,9 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { GetExerciseByIdUsecase } from '../GetExerciseById.usecase';
-import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
-import { Exercise } from '@/domain/entities/exercise/Exercise';
-import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { Exercise } from '@/domain/entities/exercise/Exercise';
+import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { GetExerciseByIdUsecase } from '../GetExerciseById.usecase';
 
 describe('GetExerciseByIdUsecase', () => {
   let exercisesRepo: MemoryExercisesRepo;
@@ -51,16 +50,5 @@ describe('GetExerciseByIdUsecase', () => {
     const result = await getExerciseByIdUsecase.execute({ id: 'non-existent' });
 
     expect(result).toBeNull();
-  });
-
-  it('should throw error when id is invalid', async () => {
-    const invalidIds = [true, 4, null, undefined];
-
-    for (const invalidId of invalidIds) {
-      await expect(
-        // @ts-expect-error Testing invalid inputs
-        getExerciseByIdUsecase.execute({ id: invalidId })
-      ).rejects.toThrow(ValidationError);
-    }
   });
 });

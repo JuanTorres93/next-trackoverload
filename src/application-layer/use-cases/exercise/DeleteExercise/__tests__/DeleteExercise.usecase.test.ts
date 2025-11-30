@@ -17,15 +17,15 @@ describe('DeleteExerciseUsecase', () => {
   it('should delete existing exercise', async () => {
     const exercise = Exercise.create({
       ...vp.validExerciseProps,
-      id: '1',
-      name: 'Push Up',
     });
 
     await exercisesRepo.saveExercise(exercise);
 
-    await deleteExerciseUsecase.execute({ id: '1' });
+    await deleteExerciseUsecase.execute({ id: vp.validExerciseProps.id });
 
-    const deletedExercise = await exercisesRepo.getExerciseById('1');
+    const deletedExercise = await exercisesRepo.getExerciseById(
+      vp.validExerciseProps.id
+    );
     expect(deletedExercise).toBeNull();
   });
 

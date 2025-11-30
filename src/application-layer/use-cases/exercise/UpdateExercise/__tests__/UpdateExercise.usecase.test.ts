@@ -1,9 +1,9 @@
+import * as dto from '@/../tests/dtoProperties';
+import { NotFoundError } from '@/domain/common/errors';
+import { Exercise } from '@/domain/entities/exercise/Exercise';
+import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { UpdateExerciseUsecase } from '../UpdateExercise.usecase';
-import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
-import { Exercise } from '@/domain/entities/exercise/Exercise';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
-import * as dto from '@/../tests/dtoProperties';
 
 describe('UpdateExerciseUsecase', () => {
   let exercisesRepo: MemoryExercisesRepo;
@@ -84,25 +84,12 @@ describe('UpdateExerciseUsecase', () => {
     expect(updatedExercise.updatedAt).not.toEqual(exercise.updatedAt);
   });
 
-  it('should throw error when id is invalid', async () => {
-    const invalidIds = [true, 4, null, undefined];
-
-    for (const invalidId of invalidIds) {
-      await expect(
-        // @ts-expect-error Testing invalid inputs
-        updateExerciseUsecase.execute({ id: invalidId, name: 'New Name' })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
-
-  it('should throw error when name is invalid', async () => {
-    const invalidNames = [true, 4, null];
-
-    for (const invalidName of invalidNames) {
-      await expect(
-        // @ts-expect-error Testing invalid inputs
-        updateExerciseUsecase.execute({ id: '1', name: invalidName })
-      ).rejects.toThrow(ValidationError);
-    }
+  it('should throw error if exercise does not exist', async () => {
+    await expect(
+      updateExerciseUsecase.execute({ id: 'non-existent', name: 'New Name' })
+    ).rejects.toThrow(NotFoundError);
+    await expect(
+      updateExerciseUsecase.execute({ id: 'non-existent', name: 'New Name' })
+    ).rejects.toThrow(/UpdateExerciseUsecase.*Exercise.*not found/);
   });
 });
