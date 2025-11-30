@@ -64,6 +64,16 @@ export class IngredientLine implements Calories, Protein {
   }
 
   update(patch: IngredientLineUpdateProps): void {
+    if (
+      !patch ||
+      Object.keys(patch).length === 0 ||
+      Object.values(patch).every((value) => value === undefined)
+    ) {
+      throw new ValidationError(
+        'IngredientLine update must have at least one field to update'
+      );
+    }
+
     if (patch.ingredient && !(patch.ingredient instanceof Ingredient)) {
       throw new ValidationError(
         'IngredientLine update ingredient must have a valid patch'

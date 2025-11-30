@@ -1,10 +1,6 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
-import {
-  AuthError,
-  NotFoundError,
-  ValidationError,
-} from '@/domain/common/errors';
+import { AuthError, NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
@@ -160,106 +156,6 @@ describe('UpdateIngredientLineUsecase', () => {
       expect(result.ingredient.name).toBe('Turkey Breast');
       expect(result.quantityInGrams).toBe(250);
       expect(result.id).toBe(testIngredientLine.id);
-    });
-  });
-
-  describe('Validation errors', () => {
-    it('should throw error if userId is invalid', async () => {
-      const invalidUserIds = [null, undefined, 23, true, {}, ''];
-
-      for (const invalidUserId of invalidUserIds) {
-        await expect(
-          updateIngredientLineUsecase.execute({
-            userId: invalidUserId as string,
-            parentEntityType: 'recipe' as const,
-            parentEntityId: testRecipe.id,
-            ingredientLineId: testIngredientLine.id,
-            quantityInGrams: 300,
-          })
-        ).rejects.toThrow(ValidationError);
-      }
-    });
-
-    it('should throw error if parentEntityId is invalid', async () => {
-      const invalidParentEntityIds = [null, undefined, 23, true, {}, ''];
-
-      for (const invalidParentEntityId of invalidParentEntityIds) {
-        await expect(
-          updateIngredientLineUsecase.execute({
-            userId: userId,
-            parentEntityType: 'recipe' as const,
-            parentEntityId: invalidParentEntityId as string,
-            ingredientLineId: testIngredientLine.id,
-            quantityInGrams: 300,
-          })
-        ).rejects.toThrow(ValidationError);
-      }
-    });
-
-    it('should throw error if ingredientLineId is invalid', async () => {
-      const invalidIngredientLineIds = [null, undefined, 23, true, {}, ''];
-
-      for (const invalidIngredientLineId of invalidIngredientLineIds) {
-        await expect(
-          updateIngredientLineUsecase.execute({
-            userId: userId,
-            parentEntityType: 'recipe' as const,
-            parentEntityId: testRecipe.id,
-            ingredientLineId: invalidIngredientLineId as string,
-            quantityInGrams: 300,
-          })
-        ).rejects.toThrow(ValidationError);
-      }
-    });
-
-    it('should throw error if parentEntityType is invalid', async () => {
-      const invalidParentEntityTypes = [
-        'invalid',
-        null,
-        undefined,
-        23,
-        true,
-        {},
-      ];
-
-      for (const invalidParentEntityType of invalidParentEntityTypes) {
-        await expect(
-          updateIngredientLineUsecase.execute({
-            userId: userId,
-            parentEntityType: invalidParentEntityType as 'recipe' | 'meal',
-            parentEntityId: testRecipe.id,
-            ingredientLineId: testIngredientLine.id,
-            quantityInGrams: 300,
-          })
-        ).rejects.toThrow(ValidationError);
-      }
-    });
-
-    it('should throw error when no fields to update are provided', async () => {
-      await expect(
-        updateIngredientLineUsecase.execute({
-          userId: userId,
-          parentEntityType: 'recipe' as const,
-          parentEntityId: testRecipe.id,
-          ingredientLineId: testIngredientLine.id,
-        } as Parameters<typeof updateIngredientLineUsecase.execute>[0])
-      ).rejects.toThrow(ValidationError);
-    });
-
-    it('should throw error when quantityInGrams is invalid', async () => {
-      const invalidQuantities = [0, -1, -100, null, undefined, 'invalid', {}];
-
-      for (const invalidQuantity of invalidQuantities) {
-        await expect(
-          updateIngredientLineUsecase.execute({
-            userId: userId,
-            parentEntityType: 'recipe' as const,
-            parentEntityId: testRecipe.id,
-            ingredientLineId: testIngredientLine.id,
-            quantityInGrams: invalidQuantity as number,
-          })
-        ).rejects.toThrow(ValidationError);
-      }
     });
   });
 
