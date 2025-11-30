@@ -1,6 +1,7 @@
 import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
+import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 
 import { NotFoundError } from '@/domain/common/errors';
 import { v4 as uuidv4 } from 'uuid';
@@ -12,9 +13,15 @@ export type DuplicateRecipeUsecaseRequest = {
 };
 
 export class DuplicateRecipeUsecase {
-  constructor(private recipesRepo: RecipesRepo) {}
+  constructor(private recipesRepo: RecipesRepo, private usersRepo: UsersRepo) {}
 
   async execute(request: DuplicateRecipeUsecaseRequest): Promise<RecipeDTO> {
+    const user = await this.usersRepo.getUserById(request.userId);
+    if (!user) {
+      throw new NotFoundError(
+        `DuplicateRecipeUsecase: user with id ${request.userId} not found`
+      );
+    }
     const originalRecipe = await this.recipesRepo.getRecipeByIdAndUserId(
       request.recipeId,
       request.userId

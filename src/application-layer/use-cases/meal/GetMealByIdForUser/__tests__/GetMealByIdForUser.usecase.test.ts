@@ -1,20 +1,31 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
-import { AuthError } from '@/domain/common/errors';
+import { AuthError, NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
+import { User } from '@/domain/entities/user/User';
 import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetMealByIdForUserUsecase } from '../GetMealByIdForUser.usecase';
 
 describe('GetMealByIdUsecase', () => {
   let mealsRepo: MemoryMealsRepo;
+  let usersRepo: MemoryUsersRepo;
   let getMealByIdUsecase: GetMealByIdForUserUsecase;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     mealsRepo = new MemoryMealsRepo();
-    getMealByIdUsecase = new GetMealByIdForUserUsecase(mealsRepo);
+    usersRepo = new MemoryUsersRepo();
+    getMealByIdUsecase = new GetMealByIdForUserUsecase(mealsRepo, usersRepo);
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+
+    await usersRepo.saveUser(user);
   });
 
   it('should return meal when found', async () => {
@@ -84,6 +95,12 @@ describe('GetMealByIdUsecase', () => {
   });
 
   it("should throw error when trying to read another user's meal", async () => {
+    const anotherUser = User.create({
+      ...vp.validUserProps,
+      id: 'another-user-id',
+    });
+    await usersRepo.saveUser(anotherUser);
+
     const ingredient = Ingredient.create({
       ...vp.validIngredientProps,
     });
@@ -106,5 +123,14 @@ describe('GetMealByIdUsecase', () => {
         userId: 'another-user-id',
       })
     ).rejects.toThrow(AuthError);
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      getMealByIdUsecase.execute({ id: 'some-id', userId: 'non-existent' })
+    ).rejects.toThrow(NotFoundError);
+    await expect(
+      getMealByIdUsecase.execute({ id: 'some-id', userId: 'non-existent' })
+    ).rejects.toThrow(/GetMealByIdForUserUsecase.*user.*not.*found/);
   });
 });

@@ -1,21 +1,35 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
-import { ValidationError } from '@/domain/common/errors';
+import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
+import { User } from '@/domain/entities/user/User';
 import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetMealsByIdsForUserUsecase } from '../GetMealsByIdsForUser.usecase';
 
 describe('GetMealsByIdsUsecase', () => {
   let mealsRepo: MemoryMealsRepo;
+  let usersRepo: MemoryUsersRepo;
   let getMealsByIdsUsecase: GetMealsByIdsForUserUsecase;
+  let user: User;
   let testMeals: Meal[];
 
-  beforeEach(() => {
+  beforeEach(async () => {
     mealsRepo = new MemoryMealsRepo();
-    getMealsByIdsUsecase = new GetMealsByIdsForUserUsecase(mealsRepo);
+    usersRepo = new MemoryUsersRepo();
+    getMealsByIdsUsecase = new GetMealsByIdsForUserUsecase(
+      mealsRepo,
+      usersRepo
+    );
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+
+    await usersRepo.saveUser(user);
 
     const testIngredient = Ingredient.create({
       ...vp.validIngredientProps,
@@ -124,7 +138,7 @@ describe('GetMealsByIdsUsecase', () => {
   it('should throw error when ids is not an array', async () => {
     await expect(
       // @ts-expect-error Testing invalid input
-      getMealsByIdsUsecase.execute({ ids: 'not-an-array' })
+      getMealsByIdsUsecase.execute({ ids: 'not-an-array', userId: vp.userId })
     ).rejects.toThrow(ValidationError);
   });
 
@@ -132,5 +146,14 @@ describe('GetMealsByIdsUsecase', () => {
     await expect(
       getMealsByIdsUsecase.execute({ ids: [], userId: vp.userId })
     ).rejects.toThrow(ValidationError);
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      getMealsByIdsUsecase.execute({ ids: ['some-id'], userId: 'non-existent' })
+    ).rejects.toThrow(NotFoundError);
+    await expect(
+      getMealsByIdsUsecase.execute({ ids: ['some-id'], userId: 'non-existent' })
+    ).rejects.toThrow(/GetMealsByIdsForUserUsecase.*user.*not.*found/);
   });
 });

@@ -2,6 +2,7 @@ import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { AppRecipesRepo } from '@/interface-adapters/app/repos/AppRecipesRepo';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { createMockUser } from '../../../../../tests/mocks/user';
 import { createMockRecipes } from '@/../tests/mocks/recipes';
 
 const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
@@ -56,8 +57,9 @@ describe('RecipesPage', () => {
   });
 
   describe('Without recipes', () => {
-    beforeAll(() => {
+    beforeAll(async () => {
       recipesRepo.clearForTesting();
+      await createMockUser();
     });
 
     it('Renders no recipe text', async () => {

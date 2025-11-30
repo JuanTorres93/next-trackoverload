@@ -1,15 +1,17 @@
+import { AppUsersRepo } from '@/interface-adapters/app/repos/AppUsersRepo';
 import { AppIngredientsRepo } from '@/interface-adapters/app/repos/AppIngredientsRepo';
 import { AppRecipesRepo } from '@/interface-adapters/app/repos/AppRecipesRepo';
 import { AppCreateRecipeUsecase } from '@/interface-adapters/app/use-cases/recipe';
-import { testUserId } from './user';
+import { createMockUser } from './user';
 import { createMockIngredients } from './ingredients';
 
 export const createMockRecipes = async () => {
   const mockIngredients = await createMockIngredients();
+  const mockUser = await createMockUser();
 
   const recipesPropsForUseCase = [
     {
-      userId: testUserId,
+      userId: mockUser.id,
       name: 'Carrot Soup',
       ingredientLinesInfo: [
         { ingredientId: mockIngredients[0].id, quantityInGrams: 200 },
@@ -17,7 +19,7 @@ export const createMockRecipes = async () => {
       ],
     },
     {
-      userId: testUserId,
+      userId: mockUser.id,
       name: 'Cabbage Salad',
       ingredientLinesInfo: [
         { ingredientId: mockIngredients[1].id, quantityInGrams: 150 },
@@ -25,7 +27,7 @@ export const createMockRecipes = async () => {
       ],
     },
     {
-      userId: testUserId,
+      userId: mockUser.id,
       name: 'Celery Stir-fry',
       ingredientLinesInfo: [
         { ingredientId: mockIngredients[2].id, quantityInGrams: 250 },
@@ -47,7 +49,9 @@ export const createMockRecipes = async () => {
     AppIngredientsRepo.clearForTesting();
     // @ts-expect-error AppRecipesRepo will always be MemoryRecipesRepo
     AppRecipesRepo.clearForTesting();
+    // @ts-expect-error AppUsersRepo will always be MemoryUsersRepo
+    AppUsersRepo.clearForTesting();
   });
 
-  return { mockRecipes, mockIngredients };
+  return { mockRecipes, mockIngredients, mockUser };
 };

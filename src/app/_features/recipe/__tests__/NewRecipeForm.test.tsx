@@ -1,9 +1,10 @@
+import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
+import { AppRecipesRepo } from '@/interface-adapters/app/repos/AppRecipesRepo';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createServer } from '../../../../../tests/mocks/server';
 import { createMockIngredients } from '../../../../../tests/mocks/ingredients';
-import { AppRecipesRepo } from '@/interface-adapters/app/repos/AppRecipesRepo';
-import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
+import { createServer } from '../../../../../tests/mocks/server';
+import { createMockUser } from '../../../../../tests/mocks/user';
 
 const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
 
@@ -13,6 +14,7 @@ import '@/../tests/mocks/nextjs';
 import NewRecipeForm from '../NewRecipeForm';
 
 const mockIngredients = await createMockIngredients();
+await createMockUser();
 
 createServer([
   {
@@ -30,14 +32,6 @@ createServer([
     },
   },
 ]);
-
-beforeAll(() => {
-  recipesRepo.clearForTesting();
-});
-
-afterAll(() => {
-  recipesRepo.clearForTesting();
-});
 
 async function setup() {
   render(<NewRecipeForm />);

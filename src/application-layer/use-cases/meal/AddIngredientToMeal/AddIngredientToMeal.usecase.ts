@@ -3,6 +3,7 @@ import { AuthError, NotFoundError } from '@/domain/common/errors';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { MealsRepo } from '@/domain/repos/MealsRepo.port';
+import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { v4 as uuidv4 } from 'uuid';
 
 export type AddIngredientToMealUsecaseRequest = {
@@ -15,10 +16,18 @@ export type AddIngredientToMealUsecaseRequest = {
 export class AddIngredientToMealUsecase {
   constructor(
     private mealsRepo: MealsRepo,
-    private ingredientsRepo: IngredientsRepo
+    private ingredientsRepo: IngredientsRepo,
+    private usersRepo: UsersRepo
   ) {}
 
   async execute(request: AddIngredientToMealUsecaseRequest): Promise<MealDTO> {
+    const user = await this.usersRepo.getUserById(request.userId);
+    if (!user) {
+      throw new NotFoundError(
+        `AddIngredientToMealUsecase: user with id ${request.userId} not found`
+      );
+    }
+
     const existingMeal = await this.mealsRepo.getMealById(request.mealId);
     if (!existingMeal) {
       throw new NotFoundError(

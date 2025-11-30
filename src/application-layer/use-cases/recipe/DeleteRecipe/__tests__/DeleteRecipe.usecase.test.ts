@@ -3,8 +3,10 @@ import { NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { User } from '@/domain/entities/user/User';
 import { MemoryImageManager } from '@/infra';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
 import { DeleteRecipeUsecase } from '../DeleteRecipe.usecase';
@@ -12,16 +14,26 @@ import { DeleteRecipeUsecase } from '../DeleteRecipe.usecase';
 describe('DeleteRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
   let memoryImageManager: MemoryImageManager;
+  let usersRepo: MemoryUsersRepo;
   let deleteRecipeUsecase: DeleteRecipeUsecase;
   let testRecipe: Recipe;
+  let user: User;
 
   beforeEach(async () => {
     recipesRepo = new MemoryRecipesRepo();
     memoryImageManager = new MemoryImageManager();
+    usersRepo = new MemoryUsersRepo();
     deleteRecipeUsecase = new DeleteRecipeUsecase(
       recipesRepo,
-      memoryImageManager
+      memoryImageManager,
+      usersRepo
     );
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+
+    await usersRepo.saveUser(user);
 
     const testIngredient = Ingredient.create({
       ...vp.validIngredientProps,
@@ -100,5 +112,14 @@ describe('DeleteRecipeUsecase', () => {
 
     const deletedRecipe = await recipesRepo.getRecipeById(testRecipe.id);
     expect(deletedRecipe).toBeNull();
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      deleteRecipeUsecase.execute({ id: 'some-id', userId: 'non-existent' })
+    ).rejects.toThrow(NotFoundError);
+    await expect(
+      deleteRecipeUsecase.execute({ id: 'some-id', userId: 'non-existent' })
+    ).rejects.toThrow(/DeleteRecipeUsecase.*user.*not.*found/);
   });
 });

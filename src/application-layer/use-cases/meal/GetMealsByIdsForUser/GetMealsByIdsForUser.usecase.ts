@@ -1,6 +1,7 @@
 import { MealDTO, toMealDTO } from '@/application-layer/dtos/MealDTO';
-import { ValidationError } from '@/domain/common/errors';
+import { ValidationError, NotFoundError } from '@/domain/common/errors';
 import { MealsRepo } from '@/domain/repos/MealsRepo.port';
+import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 
 export type GetMealsByIdsForUserUsecaseRequest = {
   ids: string[];
@@ -8,11 +9,18 @@ export type GetMealsByIdsForUserUsecaseRequest = {
 };
 
 export class GetMealsByIdsForUserUsecase {
-  constructor(private mealsRepo: MealsRepo) {}
+  constructor(private mealsRepo: MealsRepo, private usersRepo: UsersRepo) {}
 
   async execute(
     request: GetMealsByIdsForUserUsecaseRequest
   ): Promise<MealDTO[]> {
+    const user = await this.usersRepo.getUserById(request.userId);
+    if (!user) {
+      throw new NotFoundError(
+        `GetMealsByIdsForUserUsecase: user with id ${request.userId} not found`
+      );
+    }
+
     if (!Array.isArray(request.ids) || request.ids.length === 0) {
       throw new ValidationError(
         'GetMealsByIdsUsecase: ids must be a non-empty array'

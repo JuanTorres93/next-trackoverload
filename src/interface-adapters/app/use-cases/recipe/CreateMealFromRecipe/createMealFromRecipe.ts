@@ -1,8 +1,10 @@
 import { AppRecipesRepo } from '@/interface-adapters/app/repos/AppRecipesRepo';
 import { AppMealsRepo } from '@/interface-adapters/app/repos/AppMealsRepo';
+import { AppUsersRepo } from '@/interface-adapters/app/repos/AppUsersRepo';
 import { CreateMealFromRecipeUsecase } from '@/application-layer/use-cases/recipe/CreateMealFromRecipe/CreateMealFromRecipe.usecase';
 
 export const AppCreateMealFromRecipeUsecase = new CreateMealFromRecipeUsecase(
   AppRecipesRepo,
-  AppMealsRepo
+  AppMealsRepo,
+  AppUsersRepo
 );

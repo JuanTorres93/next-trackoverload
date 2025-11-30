@@ -4,8 +4,10 @@ import { AuthError, NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
+import { User } from '@/domain/entities/user/User';
 import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
 import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
   AddIngredientToMealUsecase,
@@ -15,7 +17,9 @@ import {
 describe('AddIngredientToMealUsecase', () => {
   let mealsRepo: MemoryMealsRepo;
   let ingredientsRepo: MemoryIngredientsRepo;
+  let usersRepo: MemoryUsersRepo;
   let addIngredientToMealUsecase: AddIngredientToMealUsecase;
+  let user: User;
   let testMeal: Meal;
   let newIngredientLineInfo: Omit<
     AddIngredientToMealUsecaseRequest,
@@ -25,10 +29,18 @@ describe('AddIngredientToMealUsecase', () => {
   beforeEach(async () => {
     mealsRepo = new MemoryMealsRepo();
     ingredientsRepo = new MemoryIngredientsRepo();
+    usersRepo = new MemoryUsersRepo();
     addIngredientToMealUsecase = new AddIngredientToMealUsecase(
       mealsRepo,
-      ingredientsRepo
+      ingredientsRepo,
+      usersRepo
     );
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+
+    await usersRepo.saveUser(user);
 
     const testIngredient = Ingredient.create({
       ...vp.validIngredientProps,
@@ -134,6 +146,11 @@ describe('AddIngredientToMealUsecase', () => {
   });
 
   it("should not add ingredient to another user's meal", async () => {
+    const anotherUser = User.create({
+      ...vp.validUserProps,
+      id: 'another-user-id',
+    });
+    await usersRepo.saveUser(anotherUser);
     await mealsRepo.saveMeal(testMeal);
 
     const request = {
@@ -145,5 +162,24 @@ describe('AddIngredientToMealUsecase', () => {
     await expect(addIngredientToMealUsecase.execute(request)).rejects.toThrow(
       AuthError
     );
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      addIngredientToMealUsecase.execute({
+        userId: 'non-existent',
+        mealId: 'some-id',
+        ingredientId: 'some-ingredient-id',
+        quantityInGrams: 100,
+      })
+    ).rejects.toThrow(NotFoundError);
+    await expect(
+      addIngredientToMealUsecase.execute({
+        userId: 'non-existent',
+        mealId: 'some-id',
+        ingredientId: 'some-ingredient-id',
+        quantityInGrams: 100,
+      })
+    ).rejects.toThrow(/AddIngredientToMealUsecase.*user.*not.*found/);
   });
 });

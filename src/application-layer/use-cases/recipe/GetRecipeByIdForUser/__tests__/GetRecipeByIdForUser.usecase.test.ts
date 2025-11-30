@@ -1,21 +1,36 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
+import { NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { User } from '@/domain/entities/user/User';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetRecipeByIdForUserUsecase } from '../GetRecipeByIdForUser.usecase';
 
 describe('GetRecipeByIdForUserUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
+  let usersRepo: MemoryUsersRepo;
   let getRecipeByIdUsecase: GetRecipeByIdForUserUsecase;
   let testRecipe: Recipe;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     recipesRepo = new MemoryRecipesRepo();
-    getRecipeByIdUsecase = new GetRecipeByIdForUserUsecase(recipesRepo);
+    usersRepo = new MemoryUsersRepo();
+    getRecipeByIdUsecase = new GetRecipeByIdForUserUsecase(
+      recipesRepo,
+      usersRepo
+    );
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+
+    await usersRepo.saveUser(user);
 
     const testIngredient = Ingredient.create({
       ...vp.validIngredientProps,
@@ -58,5 +73,14 @@ describe('GetRecipeByIdForUserUsecase', () => {
     const result = await getRecipeByIdUsecase.execute(request);
 
     expect(result).toBeNull();
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      getRecipeByIdUsecase.execute({ id: 'some-id', userId: 'non-existent' })
+    ).rejects.toThrow(NotFoundError);
+    await expect(
+      getRecipeByIdUsecase.execute({ id: 'some-id', userId: 'non-existent' })
+    ).rejects.toThrow(/GetRecipeByIdForUserUsecase.*user.*not.*found/);
   });
 });

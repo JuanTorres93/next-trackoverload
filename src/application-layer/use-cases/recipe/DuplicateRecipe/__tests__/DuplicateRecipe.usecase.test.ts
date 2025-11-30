@@ -6,18 +6,29 @@ import { NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { User } from '@/domain/entities/user/User';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { DuplicateRecipeUsecase } from '../DuplicateRecipe.usecase';
 
 describe('DuplicateRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
+  let usersRepo: MemoryUsersRepo;
   let duplicateRecipeUsecase: DuplicateRecipeUsecase;
   let testRecipe: Recipe;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     recipesRepo = new MemoryRecipesRepo();
-    duplicateRecipeUsecase = new DuplicateRecipeUsecase(recipesRepo);
+    usersRepo = new MemoryUsersRepo();
+    duplicateRecipeUsecase = new DuplicateRecipeUsecase(recipesRepo, usersRepo);
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+
+    await usersRepo.saveUser(user);
 
     const testIngredient = Ingredient.create({
       ...vp.validIngredientProps,
@@ -172,5 +183,20 @@ describe('DuplicateRecipeUsecase', () => {
     for (const prop of dto.recipeDTOProperties) {
       expect(result).toHaveProperty(prop);
     }
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      duplicateRecipeUsecase.execute({
+        recipeId: 'some-id',
+        userId: 'non-existent',
+      })
+    ).rejects.toThrow(NotFoundError);
+    await expect(
+      duplicateRecipeUsecase.execute({
+        recipeId: 'some-id',
+        userId: 'non-existent',
+      })
+    ).rejects.toThrow(/DuplicateRecipeUsecase.*user.*not.*found/);
   });
 });

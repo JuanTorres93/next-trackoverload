@@ -1,6 +1,7 @@
 import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { NotFoundError } from '@/domain/common/errors';
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
+import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 
 export type RemoveIngredientFromRecipeUsecaseRequest = {
   recipeId: string;
@@ -9,11 +10,17 @@ export type RemoveIngredientFromRecipeUsecaseRequest = {
 };
 
 export class RemoveIngredientFromRecipeUsecase {
-  constructor(private recipesRepo: RecipesRepo) {}
+  constructor(private recipesRepo: RecipesRepo, private usersRepo: UsersRepo) {}
 
   async execute(
     request: RemoveIngredientFromRecipeUsecaseRequest
   ): Promise<RecipeDTO> {
+    const user = await this.usersRepo.getUserById(request.userId);
+    if (!user) {
+      throw new NotFoundError(
+        `RemoveIngredientFromRecipeUsecase: user with id ${request.userId} not found`
+      );
+    }
     const existingRecipe = await this.recipesRepo.getRecipeByIdAndUserId(
       request.recipeId,
       request.userId

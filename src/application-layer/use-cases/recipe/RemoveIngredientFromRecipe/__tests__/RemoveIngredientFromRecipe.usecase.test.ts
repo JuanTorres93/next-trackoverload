@@ -2,7 +2,9 @@ import { NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { User } from '@/domain/entities/user/User';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { RemoveIngredientFromRecipeUsecase } from '../RemoveIngredientFromRecipe.usecase';
 
@@ -11,16 +13,26 @@ import * as dto from '@/../tests/dtoProperties';
 
 describe('RemoveIngredientFromRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
+  let usersRepo: MemoryUsersRepo;
   let removeIngredientFromRecipeUsecase: RemoveIngredientFromRecipeUsecase;
   let testRecipe: Recipe;
   let testIngredient: Ingredient;
   let secondIngredient: Ingredient;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     recipesRepo = new MemoryRecipesRepo();
+    usersRepo = new MemoryUsersRepo();
     removeIngredientFromRecipeUsecase = new RemoveIngredientFromRecipeUsecase(
-      recipesRepo
+      recipesRepo,
+      usersRepo
     );
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+
+    await usersRepo.saveUser(user);
 
     testIngredient = Ingredient.create({
       ...vp.validIngredientProps,
@@ -137,5 +149,22 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
     expect(new Date(result.updatedAt).getTime()).toBeGreaterThan(
       originalUpdatedAt.getTime()
     );
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      removeIngredientFromRecipeUsecase.execute({
+        recipeId: 'some-id',
+        userId: 'non-existent',
+        ingredientId: 'ingredient-id',
+      })
+    ).rejects.toThrow(NotFoundError);
+    await expect(
+      removeIngredientFromRecipeUsecase.execute({
+        recipeId: 'some-id',
+        userId: 'non-existent',
+        ingredientId: 'ingredient-id',
+      })
+    ).rejects.toThrow(/RemoveIngredientFromRecipeUsecase.*user.*not.*found/);
   });
 });

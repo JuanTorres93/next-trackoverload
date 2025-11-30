@@ -4,6 +4,7 @@ import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine'
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
+import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 
 export type AddIngredientToRecipeUsecaseRequest = {
   recipeId: string;
@@ -15,12 +16,19 @@ export type AddIngredientToRecipeUsecaseRequest = {
 export class AddIngredientToRecipeUsecase {
   constructor(
     private recipesRepo: RecipesRepo,
-    private ingredientsRepo: IngredientsRepo
+    private ingredientsRepo: IngredientsRepo,
+    private usersRepo: UsersRepo
   ) {}
 
   async execute(
     request: AddIngredientToRecipeUsecaseRequest
   ): Promise<RecipeDTO> {
+    const user = await this.usersRepo.getUserById(request.userId);
+    if (!user) {
+      throw new NotFoundError(
+        `AddIngredientToRecipeUsecase: user with id ${request.userId} not found`
+      );
+    }
     const existingRecipe: Recipe | null =
       await this.recipesRepo.getRecipeByIdAndUserId(
         request.recipeId,

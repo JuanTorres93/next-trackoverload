@@ -1,17 +1,28 @@
 import * as vp from '@/../tests/createProps';
 import { NotFoundError } from '@/domain/common/errors';
+import { User } from '@/domain/entities/user/User';
 import { Workout } from '@/domain/entities/workout/Workout';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { DeleteWorkoutUsecase } from '../DeleteWorkout.usecase';
 
 describe('DeleteWorkoutUsecase', () => {
   let workoutsRepo: MemoryWorkoutsRepo;
+  let usersRepo: MemoryUsersRepo;
   let deleteWorkoutUsecase: DeleteWorkoutUsecase;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     workoutsRepo = new MemoryWorkoutsRepo();
-    deleteWorkoutUsecase = new DeleteWorkoutUsecase(workoutsRepo);
+    usersRepo = new MemoryUsersRepo();
+    deleteWorkoutUsecase = new DeleteWorkoutUsecase(workoutsRepo, usersRepo);
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+
+    await usersRepo.saveUser(user);
   });
 
   it('should delete workout when it exists', async () => {
@@ -47,5 +58,26 @@ describe('DeleteWorkoutUsecase', () => {
         userId: vp.validWorkoutProps.userId,
       })
     ).rejects.toThrow(NotFoundError);
+  });
+
+  it('should throw error if user does not exist', async () => {
+    const workout = Workout.create({
+      ...vp.validWorkoutProps,
+      exercises: [],
+    });
+
+    await workoutsRepo.saveWorkout(workout);
+
+    const request = {
+      id: vp.validWorkoutProps.id,
+      userId: 'non-existent',
+    };
+
+    await expect(deleteWorkoutUsecase.execute(request)).rejects.toThrow(
+      NotFoundError
+    );
+    await expect(deleteWorkoutUsecase.execute(request)).rejects.toThrow(
+      /DeleteWorkoutUsecase.*user.*not.*found/
+    );
   });
 });

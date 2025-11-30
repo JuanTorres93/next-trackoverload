@@ -7,24 +7,36 @@ import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { User } from '@/domain/entities/user/User';
 import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { CreateMealFromRecipeUsecase } from '../CreateMealFromRecipe.usecase';
 
 describe('CreateMealFromRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
   let mealsRepo: MemoryMealsRepo;
+  let usersRepo: MemoryUsersRepo;
   let createMealFromRecipeUsecase: CreateMealFromRecipeUsecase;
   let testRecipe: Recipe;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     recipesRepo = new MemoryRecipesRepo();
     mealsRepo = new MemoryMealsRepo();
+    usersRepo = new MemoryUsersRepo();
     createMealFromRecipeUsecase = new CreateMealFromRecipeUsecase(
       recipesRepo,
-      mealsRepo
+      mealsRepo,
+      usersRepo
     );
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+
+    await usersRepo.saveUser(user);
 
     const testIngredient = Ingredient.create({
       ...vp.validIngredientProps,
@@ -149,5 +161,20 @@ describe('CreateMealFromRecipeUsecase', () => {
     for (const prop of dto.mealDTOProperties) {
       expect(result).toHaveProperty(prop);
     }
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      createMealFromRecipeUsecase.execute({
+        recipeId: 'some-id',
+        userId: 'non-existent',
+      })
+    ).rejects.toThrow(NotFoundError);
+    await expect(
+      createMealFromRecipeUsecase.execute({
+        recipeId: 'some-id',
+        userId: 'non-existent',
+      })
+    ).rejects.toThrow(/CreateMealFromRecipeUsecase.*user.*not.*found/);
   });
 });

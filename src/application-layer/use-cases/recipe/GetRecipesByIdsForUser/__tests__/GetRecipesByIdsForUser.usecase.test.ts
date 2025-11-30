@@ -1,22 +1,36 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
-import { ValidationError } from '@/domain/common/errors';
+import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { User } from '@/domain/entities/user/User';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetRecipesByIdsForUserUsecase } from '../GetRecipesByIdsForUser.usecase';
 
 describe('GetRecipesByIdsForUserUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
+  let usersRepo: MemoryUsersRepo;
   let getRecipesByIdsUsecase: GetRecipesByIdsForUserUsecase;
   let testRecipes: Recipe[];
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     recipesRepo = new MemoryRecipesRepo();
-    getRecipesByIdsUsecase = new GetRecipesByIdsForUserUsecase(recipesRepo);
+    usersRepo = new MemoryUsersRepo();
+    getRecipesByIdsUsecase = new GetRecipesByIdsForUserUsecase(
+      recipesRepo,
+      usersRepo
+    );
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+
+    await usersRepo.saveUser(user);
 
     const testIngredient = Ingredient.create({
       ...vp.validIngredientProps,
@@ -125,5 +139,20 @@ describe('GetRecipesByIdsForUserUsecase', () => {
 
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(toRecipeDTO(testRecipes[0]));
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      getRecipesByIdsUsecase.execute({
+        ids: ['some-id'],
+        userId: 'non-existent',
+      })
+    ).rejects.toThrow(NotFoundError);
+    await expect(
+      getRecipesByIdsUsecase.execute({
+        ids: ['some-id'],
+        userId: 'non-existent',
+      })
+    ).rejects.toThrow(/GetRecipesByIdsForUserUsecase.*user.*not.*found/);
   });
 });

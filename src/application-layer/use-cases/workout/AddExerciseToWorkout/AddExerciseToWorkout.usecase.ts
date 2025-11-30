@@ -3,6 +3,7 @@ import { NotFoundError } from '@/domain/common/errors';
 import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
 import { ExercisesRepo } from '@/domain/repos/ExercisesRepo.port';
 import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
+import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { v4 as uuidv4 } from 'uuid';
 
 export type AddExerciseToWorkoutUsecaseRequest = {
@@ -17,12 +18,20 @@ export type AddExerciseToWorkoutUsecaseRequest = {
 export class AddExerciseToWorkoutUsecase {
   constructor(
     private workoutsRepo: WorkoutsRepo,
-    private exercisesRepo: ExercisesRepo
+    private exercisesRepo: ExercisesRepo,
+    private usersRepo: UsersRepo
   ) {}
 
   async execute(
     request: AddExerciseToWorkoutUsecaseRequest
   ): Promise<WorkoutDTO> {
+    const user = await this.usersRepo.getUserById(request.userId);
+    if (!user) {
+      throw new NotFoundError(
+        `AddExerciseToWorkoutUsecase: user with id ${request.userId} not found`
+      );
+    }
+
     const workout = await this.workoutsRepo.getWorkoutByIdAndUserId(
       request.workoutId,
       request.userId

@@ -1,18 +1,29 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
-import { ValidationError } from '@/domain/common/errors';
+import { ValidationError, NotFoundError } from '@/domain/common/errors';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { User } from '@/domain/entities/user/User';
 import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetFakeMealsByIdsForUserUsecase } from '../GetFakeMealsByIdsForUser.usecase';
 
 describe('GetFakeMealsByIdsUsecase', () => {
   let usecase: GetFakeMealsByIdsForUserUsecase;
   let fakeMealsRepo: MemoryFakeMealsRepo;
+  let usersRepo: MemoryUsersRepo;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     fakeMealsRepo = new MemoryFakeMealsRepo();
-    usecase = new GetFakeMealsByIdsForUserUsecase(fakeMealsRepo);
+    usersRepo = new MemoryUsersRepo();
+    usecase = new GetFakeMealsByIdsForUserUsecase(fakeMealsRepo, usersRepo);
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+
+    await usersRepo.saveUser(user);
   });
 
   it('should return fake meals for valid ids', async () => {
@@ -101,6 +112,15 @@ describe('GetFakeMealsByIdsUsecase', () => {
 
     expect(result).toHaveLength(1);
     expect(result[0].name).toBe('Test Fake Meal');
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      usecase.execute({ ids: ['some-id'], userId: 'non-existent' })
+    ).rejects.toThrow(NotFoundError);
+    await expect(
+      usecase.execute({ ids: ['some-id'], userId: 'non-existent' })
+    ).rejects.toThrow(/GetFakeMealsByIdsForUserUsecase.*user.*not.*found/);
   });
 
   it('should throw ValidationError for non-array ids', async () => {

@@ -2,8 +2,10 @@ import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
+import { User } from '@/domain/entities/user/User';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { AddExerciseToWorkoutUsecase } from '../AddExerciseToWorkout.usecase';
@@ -12,15 +14,25 @@ import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
 describe('AddExerciseToWorkoutUsecase', () => {
   let workoutsRepo: MemoryWorkoutsRepo;
   let exercisesRepo: MemoryExercisesRepo;
+  let usersRepo: MemoryUsersRepo;
   let addExerciseToWorkoutUsecase: AddExerciseToWorkoutUsecase;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     workoutsRepo = new MemoryWorkoutsRepo();
     exercisesRepo = new MemoryExercisesRepo();
+    usersRepo = new MemoryUsersRepo();
     addExerciseToWorkoutUsecase = new AddExerciseToWorkoutUsecase(
       workoutsRepo,
-      exercisesRepo
+      exercisesRepo,
+      usersRepo
     );
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+
+    await usersRepo.saveUser(user);
   });
 
   it('should add exercise to workout', async () => {
@@ -198,5 +210,36 @@ describe('AddExerciseToWorkoutUsecase', () => {
       reps: 12,
       weight: 5,
     });
+  });
+
+  it('should throw error if user does not exist', async () => {
+    const workout = Workout.create({
+      ...vp.validWorkoutProps,
+      exercises: [],
+    });
+
+    const exercise = Exercise.create({
+      ...vp.validExerciseProps,
+      name: 'Push Up',
+    });
+
+    await workoutsRepo.saveWorkout(workout);
+    await exercisesRepo.saveExercise(exercise);
+
+    const request = {
+      userId: 'non-existent',
+      workoutId: vp.validWorkoutProps.id,
+      exerciseId: vp.validExerciseProps.id,
+      setNumber: 1,
+      reps: 10,
+      weight: 0,
+    };
+
+    await expect(addExerciseToWorkoutUsecase.execute(request)).rejects.toThrow(
+      NotFoundError
+    );
+    await expect(addExerciseToWorkoutUsecase.execute(request)).rejects.toThrow(
+      /AddExerciseToWorkoutUsecase.*user.*not.*found/
+    );
   });
 });

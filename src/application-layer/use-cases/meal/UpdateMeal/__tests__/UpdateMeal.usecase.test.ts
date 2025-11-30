@@ -4,17 +4,28 @@ import { NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
+import { User } from '@/domain/entities/user/User';
 import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { UpdateMealUsecase } from '../UpdateMeal.usecase';
 
 describe('UpdateMealUsecase', () => {
   let mealsRepo: MemoryMealsRepo;
+  let usersRepo: MemoryUsersRepo;
   let updateMealUsecase: UpdateMealUsecase;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     mealsRepo = new MemoryMealsRepo();
-    updateMealUsecase = new UpdateMealUsecase(mealsRepo);
+    usersRepo = new MemoryUsersRepo();
+    updateMealUsecase = new UpdateMealUsecase(mealsRepo, usersRepo);
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+
+    await usersRepo.saveUser(user);
   });
 
   it('should update meal name', async () => {
@@ -90,5 +101,22 @@ describe('UpdateMealUsecase', () => {
         name: 'New Name',
       })
     ).rejects.toThrow(NotFoundError);
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      updateMealUsecase.execute({
+        id: 'some-id',
+        userId: 'non-existent',
+        name: 'New Name',
+      })
+    ).rejects.toThrow(NotFoundError);
+    await expect(
+      updateMealUsecase.execute({
+        id: 'some-id',
+        userId: 'non-existent',
+        name: 'New Name',
+      })
+    ).rejects.toThrow(/UpdateMealUsecase.*user.*not.*found/);
   });
 });

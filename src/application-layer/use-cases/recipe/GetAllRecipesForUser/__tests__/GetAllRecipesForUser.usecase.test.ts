@@ -1,22 +1,45 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { User } from '@/domain/entities/user/User';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetAllRecipesForUserUsecase } from '../GetAllRecipesForUser.usecase';
 
 describe('GetAllRecipesForUserUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
+  let usersRepo: MemoryUsersRepo;
   let getAllRecipesUsecase: GetAllRecipesForUserUsecase;
   let testRecipes: Recipe[];
+  let user1: User;
+  let user2: User;
   const userId1 = 'user-1';
   const userId2 = 'user-2';
 
-  beforeEach(() => {
+  beforeEach(async () => {
     recipesRepo = new MemoryRecipesRepo();
-    getAllRecipesUsecase = new GetAllRecipesForUserUsecase(recipesRepo);
+    usersRepo = new MemoryUsersRepo();
+    getAllRecipesUsecase = new GetAllRecipesForUserUsecase(
+      recipesRepo,
+      usersRepo
+    );
+
+    user1 = User.create({
+      ...vp.validUserProps,
+      id: userId1,
+    });
+
+    user2 = User.create({
+      ...vp.validUserProps,
+      id: userId2,
+    });
+
+    await usersRepo.saveUser(user1);
+    await usersRepo.saveUser(user2);
 
     const testIngredient = Ingredient.create({
       ...vp.validIngredientProps,
@@ -117,5 +140,14 @@ describe('GetAllRecipesForUserUsecase', () => {
     });
     expect(user2Recipes).toHaveLength(1);
     expect(user2Recipes[0].userId).toBe(userId2);
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      getAllRecipesUsecase.execute({ userId: 'non-existent' })
+    ).rejects.toThrow(NotFoundError);
+    await expect(
+      getAllRecipesUsecase.execute({ userId: 'non-existent' })
+    ).rejects.toThrow(/GetAllRecipesForUserUsecase.*user.*not.*found/);
   });
 });

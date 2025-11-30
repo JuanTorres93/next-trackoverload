@@ -1,9 +1,10 @@
 import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
-import { ValidationError } from '@/domain/common/errors';
+import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
+import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { ImageManager } from '@/domain/services/ImageManager.port';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -23,10 +24,18 @@ export class CreateRecipeUsecase {
   constructor(
     private recipesRepo: RecipesRepo,
     private ingredientsRepo: IngredientsRepo,
-    private imageManager: ImageManager
+    private imageManager: ImageManager,
+    private usersRepo: UsersRepo
   ) {}
 
   async execute(request: CreateRecipeUsecaseRequest): Promise<RecipeDTO> {
+    const user = await this.usersRepo.getUserById(request.userId);
+    if (!user) {
+      throw new NotFoundError(
+        `CreateRecipeUsecase: user with id ${request.userId} not found`
+      );
+    }
+
     const ingredientLines: IngredientLine[] = [];
     const newRecipeId = uuidv4();
 

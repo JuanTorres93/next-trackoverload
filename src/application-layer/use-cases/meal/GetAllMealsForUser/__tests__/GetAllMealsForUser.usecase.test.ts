@@ -1,19 +1,31 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
+import { User } from '@/domain/entities/user/User';
 import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetAllMealsForUserUsecase } from '../GetAllMealsForUser.usecase';
 
 describe('GetAllMealsUsecase', () => {
   let mealsRepo: MemoryMealsRepo;
+  let usersRepo: MemoryUsersRepo;
   let getAllMealsUsecase: GetAllMealsForUserUsecase;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     mealsRepo = new MemoryMealsRepo();
-    getAllMealsUsecase = new GetAllMealsForUserUsecase(mealsRepo);
+    usersRepo = new MemoryUsersRepo();
+    getAllMealsUsecase = new GetAllMealsForUserUsecase(mealsRepo, usersRepo);
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+
+    await usersRepo.saveUser(user);
   });
 
   it('should return all meals', async () => {
@@ -101,5 +113,14 @@ describe('GetAllMealsUsecase', () => {
 
     expect(meals).toHaveLength(0);
     expect(meals).toEqual([]);
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      getAllMealsUsecase.execute({ userId: 'non-existent' })
+    ).rejects.toThrow(NotFoundError);
+    await expect(
+      getAllMealsUsecase.execute({ userId: 'non-existent' })
+    ).rejects.toThrow(/GetAllMealsForUserUsecase.*user.*not.*found/);
   });
 });

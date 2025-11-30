@@ -1,17 +1,29 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { User } from '@/domain/entities/user/User';
+import { NotFoundError } from '@/domain/common/errors';
 import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { UpdateFakeMealUsecase } from '../UpdateFakeMeal.usecase';
 
 describe('UpdateFakeMealUsecase', () => {
   let usecase: UpdateFakeMealUsecase;
   let fakeMealsRepo: MemoryFakeMealsRepo;
+  let usersRepo: MemoryUsersRepo;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     fakeMealsRepo = new MemoryFakeMealsRepo();
-    usecase = new UpdateFakeMealUsecase(fakeMealsRepo);
+    usersRepo = new MemoryUsersRepo();
+    usecase = new UpdateFakeMealUsecase(fakeMealsRepo, usersRepo);
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+
+    await usersRepo.saveUser(user);
   });
 
   it('should update fake meal name successfully', async () => {
@@ -117,5 +129,28 @@ describe('UpdateFakeMealUsecase', () => {
     expect(result.name).toBe('Updated Name');
     expect(result.calories).toBe(600);
     expect(result.protein).toBe(40);
+  });
+
+  it('should throw error if user does not exist', async () => {
+    const fakeMeal = FakeMeal.create({
+      ...vp.validFakeMealProps,
+    });
+
+    await fakeMealsRepo.saveFakeMeal(fakeMeal);
+
+    await expect(
+      usecase.execute({
+        id: vp.validFakeMealProps.id,
+        userId: 'non-existent',
+        patch: { name: 'Updated Name' },
+      })
+    ).rejects.toThrow(NotFoundError);
+    await expect(
+      usecase.execute({
+        id: vp.validFakeMealProps.id,
+        userId: 'non-existent',
+        patch: { name: 'Updated Name' },
+      })
+    ).rejects.toThrow(/UpdateFakeMealUsecase.*user.*not.*found/);
   });
 });

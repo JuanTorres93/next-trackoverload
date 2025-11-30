@@ -8,22 +8,34 @@ import {
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
+import { User } from '@/domain/entities/user/User';
 import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { RemoveIngredientFromMealUsecase } from '../RemoveIngredientFromMeal.usecase';
 
 describe('RemoveIngredientFromMealUsecase', () => {
   let mealsRepo: MemoryMealsRepo;
+  let usersRepo: MemoryUsersRepo;
   let removeIngredientFromMealUsecase: RemoveIngredientFromMealUsecase;
+  let user: User;
   let testMeal: Meal;
   let testIngredient: Ingredient;
   let secondIngredient: Ingredient;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     mealsRepo = new MemoryMealsRepo();
+    usersRepo = new MemoryUsersRepo();
     removeIngredientFromMealUsecase = new RemoveIngredientFromMealUsecase(
-      mealsRepo
+      mealsRepo,
+      usersRepo
     );
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+
+    await usersRepo.saveUser(user);
 
     testIngredient = Ingredient.create({
       ...vp.validIngredientProps,
@@ -146,6 +158,11 @@ describe('RemoveIngredientFromMealUsecase', () => {
   });
 
   it('should throw error when trying to remove an ingredient from other users meal', async () => {
+    const anotherUser = User.create({
+      ...vp.validUserProps,
+      id: 'other-user-id',
+    });
+    await usersRepo.saveUser(anotherUser);
     await mealsRepo.saveMeal(testMeal);
 
     const request = {
@@ -157,5 +174,22 @@ describe('RemoveIngredientFromMealUsecase', () => {
     await expect(
       removeIngredientFromMealUsecase.execute(request)
     ).rejects.toThrow(AuthError);
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      removeIngredientFromMealUsecase.execute({
+        userId: 'non-existent',
+        mealId: 'some-id',
+        ingredientId: 'some-ingredient-id',
+      })
+    ).rejects.toThrow(NotFoundError);
+    await expect(
+      removeIngredientFromMealUsecase.execute({
+        userId: 'non-existent',
+        mealId: 'some-id',
+        ingredientId: 'some-ingredient-id',
+      })
+    ).rejects.toThrow(/RemoveIngredientFromMealUsecase.*user.*not.*found/);
   });
 });

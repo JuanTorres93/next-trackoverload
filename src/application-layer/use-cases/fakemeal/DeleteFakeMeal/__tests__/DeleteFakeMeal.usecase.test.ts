@@ -1,17 +1,28 @@
 import * as vp from '@/../tests/createProps';
 import { NotFoundError } from '@/domain/common/errors';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { User } from '@/domain/entities/user/User';
 import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { DeleteFakeMealUsecase } from '../DeleteFakeMeal.usecase';
 
 describe('DeleteFakeMealUsecase', () => {
   let usecase: DeleteFakeMealUsecase;
   let fakeMealsRepo: MemoryFakeMealsRepo;
+  let usersRepo: MemoryUsersRepo;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     fakeMealsRepo = new MemoryFakeMealsRepo();
-    usecase = new DeleteFakeMealUsecase(fakeMealsRepo);
+    usersRepo = new MemoryUsersRepo();
+    usecase = new DeleteFakeMealUsecase(fakeMealsRepo, usersRepo);
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+
+    await usersRepo.saveUser(user);
   });
 
   it('should delete fake meal successfully', async () => {
@@ -78,5 +89,14 @@ describe('DeleteFakeMealUsecase', () => {
     await expect(
       usecase.execute({ id: 'non-existent-id', userId: vp.userId })
     ).rejects.toThrow(/DeleteFakeMealUsecase.*FakeMeal.* not found/);
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      usecase.execute({ id: 'some-id', userId: 'non-existent' })
+    ).rejects.toThrow(NotFoundError);
+    await expect(
+      usecase.execute({ id: 'some-id', userId: 'non-existent' })
+    ).rejects.toThrow(/DeleteFakeMealUsecase.*user.*not.*found/);
   });
 });

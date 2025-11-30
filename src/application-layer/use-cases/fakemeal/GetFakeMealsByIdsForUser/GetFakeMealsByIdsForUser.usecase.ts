@@ -1,11 +1,12 @@
 import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
+import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import {
   FakeMealDTO,
   toFakeMealDTO,
 } from '@/application-layer/dtos/FakeMealDTO';
 import { validateNonEmptyString } from '@/domain/common/validation';
-import { ValidationError } from '@/domain/common/errors';
+import { ValidationError, NotFoundError } from '@/domain/common/errors';
 
 export type GetFakeMealsByIdsForUserUsecaseRequest = {
   ids: string[];
@@ -13,11 +14,21 @@ export type GetFakeMealsByIdsForUserUsecaseRequest = {
 };
 
 export class GetFakeMealsByIdsForUserUsecase {
-  constructor(private fakeMealsRepo: FakeMealsRepo) {}
+  constructor(
+    private fakeMealsRepo: FakeMealsRepo,
+    private usersRepo: UsersRepo
+  ) {}
 
   async execute(
     request: GetFakeMealsByIdsForUserUsecaseRequest
   ): Promise<FakeMealDTO[]> {
+    const user = await this.usersRepo.getUserById(request.userId);
+    if (!user) {
+      throw new NotFoundError(
+        `GetFakeMealsByIdsForUserUsecase: user with id ${request.userId} not found`
+      );
+    }
+
     if (!Array.isArray(request.ids) || request.ids.length === 0) {
       throw new ValidationError(
         'GetFakeMealsByIdsUsecase: ids must be a non-empty array'

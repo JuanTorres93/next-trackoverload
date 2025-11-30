@@ -1,12 +1,14 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
-import { ValidationError } from '@/domain/common/errors';
+import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { User } from '@/domain/entities/user/User';
 import { MemoryImageManager } from '@/infra';
 import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
 import {
@@ -18,20 +20,30 @@ describe('CreateRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
   let ingredientsRepo: MemoryIngredientsRepo;
   let imageManager: MemoryImageManager;
+  let usersRepo: MemoryUsersRepo;
   let createRecipeUsecase: CreateRecipeUsecase;
   let testIngredient: Ingredient;
   let testIngredientLineInfo: IngredientLineInfo;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     recipesRepo = new MemoryRecipesRepo();
     ingredientsRepo = new MemoryIngredientsRepo();
     imageManager = new MemoryImageManager();
+    usersRepo = new MemoryUsersRepo();
 
     createRecipeUsecase = new CreateRecipeUsecase(
       recipesRepo,
       ingredientsRepo,
-      imageManager
+      imageManager,
+      usersRepo
     );
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+
+    await usersRepo.saveUser(user);
 
     testIngredient = Ingredient.create({
       ...vp.validIngredientProps,
@@ -221,8 +233,25 @@ describe('CreateRecipeUsecase', () => {
 
       // @ts-expect-error testing invalid inputs
       await expect(createRecipeUsecase.execute(request)).rejects.toThrow(
-        ValidationError
+        NotFoundError
       );
     }
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      createRecipeUsecase.execute({
+        userId: 'non-existent',
+        name: 'Test Recipe',
+        ingredientLinesInfo: [testIngredientLineInfo],
+      })
+    ).rejects.toThrow(NotFoundError);
+    await expect(
+      createRecipeUsecase.execute({
+        userId: 'non-existent',
+        name: 'Test Recipe',
+        ingredientLinesInfo: [testIngredientLineInfo],
+      })
+    ).rejects.toThrow(/CreateRecipeUsecase.*user.*not.*found/);
   });
 });
