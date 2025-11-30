@@ -38,7 +38,7 @@ export function validWorkoutTemplateProps() {
   return {
     id: '1',
     userId: userId,
-    name: 'Push',
+    name: 'Test workout template',
     exercises: [templateLine1, templateLine2],
     createdAt: new Date(),
     updatedAt: new Date(),

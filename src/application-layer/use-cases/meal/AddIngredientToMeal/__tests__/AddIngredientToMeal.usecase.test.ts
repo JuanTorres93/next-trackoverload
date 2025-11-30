@@ -25,10 +25,8 @@ describe('AddIngredientToMealUsecase', () => {
     const testIngredient = Ingredient.create({
       ...vp.validIngredientProps,
       name: 'Chicken Breast',
-      nutritionalInfoPer100g: {
-        calories: 165,
-        protein: 31,
-      },
+      calories: 165,
+      protein: 31,
     });
 
     const testIngredientLine = IngredientLine.create({
@@ -45,10 +43,8 @@ describe('AddIngredientToMealUsecase', () => {
     const newIngredient = Ingredient.create({
       ...vp.validIngredientProps,
       name: 'Rice',
-      nutritionalInfoPer100g: {
-        calories: 130,
-        protein: 2.7,
-      },
+      calories: 130,
+      protein: 2.7,
     });
 
     newIngredientLine = IngredientLine.create({

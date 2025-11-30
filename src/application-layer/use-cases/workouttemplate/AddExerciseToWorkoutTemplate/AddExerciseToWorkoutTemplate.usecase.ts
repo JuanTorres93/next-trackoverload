@@ -8,8 +8,10 @@ import {
   validateInteger,
   validateNonEmptyString,
 } from '@/domain/common/validation';
+import { WorkoutTemplateLine } from '@/domain/entities/workouttemplateline/WorkoutTemplateLine';
 import { ExercisesRepo } from '@/domain/repos/ExercisesRepo.port';
 import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
+import { v4 as uuidv4 } from 'uuid';
 
 export type AddExerciseToWorkoutTemplateUsecaseRequest = {
   userId: string;
@@ -66,11 +68,16 @@ export class AddExerciseToWorkoutTemplateUsecase {
       );
     }
 
-    // NOTE: duplicate exercise handled in entity
-    workoutTemplate.addExercise({
+    const workoutTemplateLine = WorkoutTemplateLine.create({
+      id: uuidv4(),
       exerciseId: request.exerciseId,
       sets: request.sets,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
+
+    // NOTE: duplicate exercise handled in entity
+    workoutTemplate.addExercise(workoutTemplateLine);
 
     await this.workoutTemplatesRepo.saveWorkoutTemplate(workoutTemplate);
 

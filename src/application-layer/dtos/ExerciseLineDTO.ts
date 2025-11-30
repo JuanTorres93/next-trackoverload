@@ -1,4 +1,4 @@
-import { WorkoutLine } from '@/domain/entities/workout/Workout';
+import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
 
 export type ExerciseLineDTO = {
   exerciseId: string;

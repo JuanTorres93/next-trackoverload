@@ -25,10 +25,8 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
     testIngredient = Ingredient.create({
       ...vp.validIngredientProps,
       name: 'Chicken Breast',
-      nutritionalInfoPer100g: {
-        calories: 165,
-        protein: 31,
-      },
+      calories: 165,
+      protein: 31,
     });
 
     secondIngredient = Ingredient.create({

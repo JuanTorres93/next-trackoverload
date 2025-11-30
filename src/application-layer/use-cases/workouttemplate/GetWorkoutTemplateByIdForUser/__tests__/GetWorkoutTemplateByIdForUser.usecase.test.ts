@@ -18,15 +18,17 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
     const template = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps(),
       name: 'Push Day',
-      exercises: [{ exerciseId: 'ex1', sets: 3 }],
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(template);
 
-    const result = await usecase.execute({ id: '1', userId: vp.userId });
+    const result = await usecase.execute({
+      id: template.id,
+      userId: vp.userId,
+    });
 
     expect(result).not.toBeNull();
-    expect(result!.id).toBe('1');
+    expect(result!.id).toBe(template.id);
     expect(result!.userId).toBe(vp.userId);
     expect(result!.name).toBe('Push Day');
   });
@@ -35,13 +37,12 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
     const template = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps(),
       name: 'Leg Day',
-      exercises: [{ exerciseId: 'ex2', sets: 4 }],
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(template);
 
     const result = await usecase.execute({
-      id: vp.validWorkoutTemplateProps().id,
+      id: template.id,
       userId: vp.userId,
     });
 

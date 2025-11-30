@@ -7,6 +7,7 @@ import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { AddExerciseToWorkoutUsecase } from '../AddExerciseToWorkout.usecase';
+import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
 
 describe('AddExerciseToWorkoutUsecase', () => {
   let workoutsRepo: MemoryWorkoutsRepo;
@@ -126,21 +127,22 @@ describe('AddExerciseToWorkoutUsecase', () => {
   });
 
   it('should throw ValidationError when trying to add duplicate exercise with same set number', async () => {
+    const duplicateExercise = WorkoutLine.create({
+      ...vp.validWorkoutLineProps,
+      exerciseId: 'duplicate-exercise-id',
+      setNumber: 1,
+      reps: 10,
+      weight: 0,
+    });
+
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      exercises: [
-        {
-          exerciseId: 'exercise-1',
-          setNumber: 1,
-          reps: 10,
-          weight: 0,
-        },
-      ],
+      exercises: [duplicateExercise],
     });
 
     const exercise = Exercise.create({
       ...vp.validExerciseProps,
-      id: 'exercise-1',
+      id: 'duplicate-exercise-id',
       name: 'Push Up',
     });
 
@@ -151,7 +153,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
       addExerciseToWorkoutUsecase.execute({
         userId: vp.userId,
         workoutId: vp.validWorkoutProps.id,
-        exerciseId: 'exercise-1',
+        exerciseId: 'duplicate-exercise-id',
         setNumber: 1,
         reps: 12,
         weight: 5,
@@ -160,16 +162,16 @@ describe('AddExerciseToWorkoutUsecase', () => {
   });
 
   it('should add exercise with different set number', async () => {
+    const workoutLine = WorkoutLine.create({
+      ...vp.validWorkoutLineProps,
+      exerciseId: 'exercise-1',
+      setNumber: 1,
+      reps: 10,
+      weight: 0,
+    });
     const workout = Workout.create({
       ...vp.validWorkoutProps,
-      exercises: [
-        {
-          exerciseId: 'exercise-1',
-          setNumber: 1,
-          reps: 10,
-          weight: 0,
-        },
-      ],
+      exercises: [workoutLine],
     });
 
     const exercise = Exercise.create({

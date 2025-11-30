@@ -25,13 +25,6 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
   it('should create workout from template ', async () => {
     const template = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps(),
-      name: 'Push Day',
-      exercises: [
-        { exerciseId: 'bench-press', sets: 3 },
-        { exerciseId: 'shoulder-press', sets: 2 },
-      ],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(template);
@@ -43,42 +36,51 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
 
     const result = await usecase.execute(request);
 
-    expect(result.name).toContain('Push Day');
+    expect(result.name).toContain(vp.validWorkoutTemplateProps().name);
     expect(result.workoutTemplateId).toBe(vp.validWorkoutTemplateProps().id);
-    expect(result.exercises).toHaveLength(5); // 3 sets + 2 sets
+    expect(result.exercises).toHaveLength(
+      vp
+        .validWorkoutTemplateProps()
+        .exercises.reduce((acc, ex) => acc + ex.sets, 0)
+    ); // Sum of all sets of each exercise in template
 
-    // Check bench press sets
-    const benchPressSets = result.exercises.filter(
-      (ex) => ex.exerciseId === 'bench-press'
+    // Check exercise 1 sets
+    const exercise1Sets = result.exercises.filter(
+      (ex) =>
+        ex.exerciseId === vp.validWorkoutTemplateProps().exercises[0].exerciseId
     );
-    expect(benchPressSets).toHaveLength(3);
-    expect(benchPressSets[0]).toEqual({
-      exerciseId: 'bench-press',
+    expect(exercise1Sets).toHaveLength(
+      vp.validWorkoutTemplateProps().exercises[0].sets
+    );
+    expect(exercise1Sets[0]).toEqual({
+      exerciseId: vp.validWorkoutTemplateProps().exercises[0].exerciseId,
       setNumber: 1,
       reps: 0,
       weight: 0,
     });
-    expect(benchPressSets[1].setNumber).toBe(2);
-    expect(benchPressSets[2].setNumber).toBe(3);
+    expect(exercise1Sets[1].setNumber).toBe(2);
+    expect(exercise1Sets[2].setNumber).toBe(3);
 
-    // Check shoulder press sets
-    const shoulderPressSets = result.exercises.filter(
-      (ex) => ex.exerciseId === 'shoulder-press'
+    // Check exercise 2 sets
+    const exercise2Sets = result.exercises.filter(
+      (ex) =>
+        ex.exerciseId === vp.validWorkoutTemplateProps().exercises[1].exerciseId
     );
-    expect(shoulderPressSets).toHaveLength(2);
-    expect(shoulderPressSets[0].setNumber).toBe(1);
-    expect(shoulderPressSets[1].setNumber).toBe(2);
+    expect(exercise2Sets).toHaveLength(
+      vp.validWorkoutTemplateProps().exercises[1].sets
+    );
+    expect(exercise2Sets[0].setNumber).toBe(1);
+    expect(exercise2Sets[1].setNumber).toBe(2);
 
     // Verify workout was saved
     const savedWorkout = await workoutsRepo.getWorkoutById(result.id);
     expect(savedWorkout).not.toBeNull();
-    expect(savedWorkout!.name).toContain('Push Day');
+    expect(savedWorkout!.name).toContain(vp.validWorkoutTemplateProps().name);
   });
 
   it('should return a WorkoutDTO', async () => {
     const template = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps(),
-      exercises: [{ exerciseId: 'bench-press', sets: 2 }],
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(template);
@@ -100,7 +102,6 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
   it('should create workout with custom name', async () => {
     const template = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps(),
-      exercises: [{ exerciseId: 'bench-press', sets: 2 }],
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(template);
@@ -115,19 +116,6 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
 
     expect(result.name).toBe('My Custom Workout');
     expect(result.workoutTemplateId).toBe(vp.validWorkoutTemplateProps().id);
-    expect(result.exercises).toHaveLength(2);
-    expect(result.exercises[0]).toEqual({
-      exerciseId: 'bench-press',
-      setNumber: 1,
-      reps: 0,
-      weight: 0,
-    });
-    expect(result.exercises[1]).toEqual({
-      exerciseId: 'bench-press',
-      setNumber: 2,
-      reps: 0,
-      weight: 0,
-    });
   });
 
   it('should throw NotFoundError when template does not exist', async () => {

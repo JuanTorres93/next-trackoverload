@@ -40,7 +40,6 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
     // Create a template with one existing exercise
     existingTemplate = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps(),
-      exercises: [{ exerciseId: 'bench-press', sets: 3 }],
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
@@ -49,28 +48,27 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
   it('should add exercise to workout template', async () => {
     const request = {
       userId: vp.userId,
-      workoutTemplateId: '1',
+      workoutTemplateId: vp.validWorkoutTemplateProps().id,
       exerciseId: 'shoulder-press',
       sets: 4,
     };
 
     const result = await usecase.execute(request);
 
-    expect(result.exercises).toHaveLength(2);
-    expect(result.exercises[0]).toEqual({
-      exerciseId: 'bench-press',
-      sets: 3,
-    });
-    expect(result.exercises[1]).toEqual({
-      exerciseId: 'shoulder-press',
-      sets: 4,
-    });
+    expect(result.exercises).toHaveLength(
+      vp.validWorkoutTemplateProps().exercises.length + 1
+    );
+
+    const exercisesIds = result.exercises.map((ex) => ex.exerciseId);
+    expect(exercisesIds).toContain('shoulder-press');
 
     // Verify it was saved
     const savedTemplate = await workoutTemplatesRepo.getWorkoutTemplateById(
-      '1'
+      vp.validWorkoutTemplateProps().id
     );
-    expect(savedTemplate!.exercises).toHaveLength(2);
+    expect(savedTemplate!.exercises).toHaveLength(
+      vp.validWorkoutTemplateProps().exercises.length + 1
+    );
   });
 
   it('should return WorkoutTemplateDTO', async () => {
@@ -101,10 +99,16 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
   });
 
   it('should throw ValidationError when adding duplicate exercise', async () => {
+    const exercise = Exercise.create({
+      ...vp.validExerciseProps,
+      id: vp.validWorkoutTemplateProps().exercises[0].exerciseId,
+    });
+    await exercisesRepo.saveExercise(exercise);
+
     const request = {
       userId: vp.userId,
-      workoutTemplateId: '1',
-      exerciseId: 'bench-press',
+      workoutTemplateId: vp.validWorkoutTemplateProps().id,
+      exerciseId: vp.validWorkoutTemplateProps().exercises[0].exerciseId,
       sets: 4,
     };
 

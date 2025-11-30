@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
 import { ExercisesRepo } from '@/domain/repos/ExercisesRepo.port';
 import { WorkoutDTO, toWorkoutDTO } from '@/application-layer/dtos/WorkoutDTO';
@@ -8,6 +9,7 @@ import {
   validateNonEmptyString,
   validatePositiveNumber,
 } from '@/domain/common/validation';
+import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
 
 export type AddExerciseToWorkoutUsecaseRequest = {
   userId: string;
@@ -60,13 +62,19 @@ export class AddExerciseToWorkoutUsecase {
       );
     }
 
-    // NOTE: duplicate exercise handled in entity
-    workout.addExercise({
+    const workoutLine: WorkoutLine = WorkoutLine.create({
+      id: uuidv4(),
+      workoutId: workout.id,
       exerciseId: request.exerciseId,
       setNumber: request.setNumber,
       reps: request.reps,
       weight: request.weight,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
+
+    // NOTE: duplicate exercise handled in entity
+    workout.addExercise(workoutLine);
 
     await this.workoutsRepo.saveWorkout(workout);
 

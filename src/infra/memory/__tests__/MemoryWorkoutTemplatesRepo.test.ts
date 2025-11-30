@@ -2,6 +2,7 @@ import * as vp from '@/../tests/createProps';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryWorkoutTemplatesRepo } from '../MemoryWorkoutTemplatesRepo';
+import { WorkoutTemplateLine } from '@/domain/entities/workouttemplateline/WorkoutTemplateLine';
 
 describe('MemoryWorkoutTemplatesRepo', () => {
   let repo: MemoryWorkoutTemplatesRepo;
@@ -19,8 +20,16 @@ describe('MemoryWorkoutTemplatesRepo', () => {
       id: 'another-template-id',
       name: 'Pull Template',
       exercises: [
-        { exerciseId: 'ex3', sets: 3 },
-        { exerciseId: 'ex4', sets: 5 },
+        WorkoutTemplateLine.create({
+          ...vp.validWorkoutTemplateLineProps,
+          id: 'line3',
+          exerciseId: 'ex3',
+        }),
+        WorkoutTemplateLine.create({
+          ...vp.validWorkoutTemplateLineProps,
+          id: 'line4',
+          exerciseId: 'ex4',
+        }),
       ],
     });
     await repo.saveWorkoutTemplate(newWorkoutTemplate);

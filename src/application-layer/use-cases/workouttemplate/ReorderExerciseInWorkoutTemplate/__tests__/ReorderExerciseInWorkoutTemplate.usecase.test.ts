@@ -5,31 +5,36 @@ import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTempla
 import { NotFoundError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { WorkoutTemplateLine } from '@/domain/entities/workouttemplateline/WorkoutTemplateLine';
 
 describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
   let usecase: ReorderExerciseInWorkoutTemplateUsecase;
+  let testTemplate: WorkoutTemplate;
+  let additionalWorkoutTemplateLine: WorkoutTemplateLine;
 
   beforeEach(() => {
     workoutTemplatesRepo = new MemoryWorkoutTemplatesRepo();
     usecase = new ReorderExerciseInWorkoutTemplateUsecase(workoutTemplatesRepo);
+
+    testTemplate = WorkoutTemplate.create(vp.validWorkoutTemplateProps());
+    additionalWorkoutTemplateLine = WorkoutTemplateLine.create({
+      ...vp.validWorkoutTemplateLineProps,
+      id: 'line3',
+      exerciseId: 'ex3',
+      sets: 3,
+    });
   });
 
   it('should reorder exercise in workout template', async () => {
-    const existingTemplate = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps(),
-      exercises: [
-        { exerciseId: 'bench-press', sets: 3 },
-        { exerciseId: 'shoulder-press', sets: 3 },
-        { exerciseId: 'tricep-dips', sets: 3 },
-      ],
-    });
+    const existingTemplate = testTemplate;
+    testTemplate.addExercise(additionalWorkoutTemplateLine);
 
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
     const request = {
       workoutTemplateId: vp.validWorkoutTemplateProps().id,
-      exerciseId: 'tricep-dips',
+      exerciseId: 'ex3',
       userId: vp.userId,
       newIndex: 0,
     };
@@ -37,33 +42,27 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
     const result = await usecase.execute(request);
 
     expect(result.exercises).toHaveLength(3);
-    expect(result.exercises[0].exerciseId).toBe('tricep-dips');
-    expect(result.exercises[1].exerciseId).toBe('bench-press');
-    expect(result.exercises[2].exerciseId).toBe('shoulder-press');
+    expect(result.exercises[0].exerciseId).toBe('ex3');
+    expect(result.exercises[1].exerciseId).toBe('ex1');
+    expect(result.exercises[2].exerciseId).toBe('ex2');
 
     // Verify template was saved
     const savedTemplate = await workoutTemplatesRepo.getWorkoutTemplateById(
       result.id
     );
     expect(savedTemplate).not.toBeNull();
-    expect(savedTemplate!.exercises[0].exerciseId).toBe('tricep-dips');
+    expect(savedTemplate!.exercises[0].exerciseId).toBe('ex3');
   });
 
   it('should return WorkoutTemplateDTO', async () => {
-    const existingTemplate = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps(),
-      exercises: [
-        { exerciseId: 'bench-press', sets: 3 },
-        { exerciseId: 'shoulder-press', sets: 3 },
-        { exerciseId: 'tricep-dips', sets: 3 },
-      ],
-    });
+    const existingTemplate = testTemplate;
+    testTemplate.addExercise(additionalWorkoutTemplateLine);
 
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
     const request = {
       workoutTemplateId: vp.validWorkoutTemplateProps().id,
-      exerciseId: 'tricep-dips',
+      exerciseId: 'ex3',
       newIndex: 0,
       userId: vp.userId,
     };
@@ -77,20 +76,13 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
   });
 
   it('should reorder exercise to middle position', async () => {
-    const existingTemplate = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps(),
-      exercises: [
-        { exerciseId: 'bench-press', sets: 3 },
-        { exerciseId: 'shoulder-press', sets: 3 },
-        { exerciseId: 'tricep-dips', sets: 3 },
-      ],
-    });
-
+    const existingTemplate = testTemplate;
+    testTemplate.addExercise(additionalWorkoutTemplateLine);
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
     const request = {
       workoutTemplateId: vp.validWorkoutTemplateProps().id,
-      exerciseId: 'bench-press',
+      exerciseId: 'ex1',
       newIndex: 1,
       userId: vp.userId,
     };
@@ -98,15 +90,15 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
     const result = await usecase.execute(request);
 
     expect(result.exercises).toHaveLength(3);
-    expect(result.exercises[0].exerciseId).toBe('shoulder-press');
-    expect(result.exercises[1].exerciseId).toBe('bench-press');
-    expect(result.exercises[2].exerciseId).toBe('tricep-dips');
+    expect(result.exercises[0].exerciseId).toBe('ex2');
+    expect(result.exercises[1].exerciseId).toBe('ex1');
+    expect(result.exercises[2].exerciseId).toBe('ex3');
   });
 
   it('should throw NotFoundError when workout template does not exist', async () => {
     const request = {
       workoutTemplateId: 'non-existent',
-      exerciseId: 'bench-press',
+      exerciseId: 'ex1',
       userId: vp.userId,
       newIndex: 0,
     };
@@ -119,14 +111,7 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
   });
 
   it('should handle reordering non-existent exercise gracefully', async () => {
-    const existingTemplate = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps(),
-      exercises: [
-        { exerciseId: 'bench-press', sets: 3 },
-        { exerciseId: 'shoulder-press', sets: 3 },
-      ],
-    });
-
+    const existingTemplate = testTemplate;
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
     const request = {
@@ -140,8 +125,8 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
 
     // Should not change existing exercises when trying to reorder non-existent one
     expect(result.exercises).toHaveLength(2);
-    expect(result.exercises[0].exerciseId).toBe('bench-press');
-    expect(result.exercises[1].exerciseId).toBe('shoulder-press');
+    expect(result.exercises[0].exerciseId).toBe('ex1');
+    expect(result.exercises[1].exerciseId).toBe('ex2');
 
     // Verify template was saved
     const savedTemplate = await workoutTemplatesRepo.getWorkoutTemplateById(
@@ -158,7 +143,7 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
       const request = {
         userId: invalidId as string,
         workoutTemplateId: 'valid-id',
-        exerciseId: 'bench-press',
+        exerciseId: 'ex1',
         newIndex: 0,
       };
 
@@ -176,7 +161,7 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
     for (const invalidId of invalidIds) {
       const request = {
         workoutTemplateId: invalidId as string,
-        exerciseId: 'bench-press',
+        exerciseId: 'ex1',
         newIndex: 0,
         userId: vp.userId,
       };
@@ -224,7 +209,7 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
     for (const invalidIndex of invalidIndexes) {
       const request = {
         workoutTemplateId: 'valid-id',
-        exerciseId: 'bench-press',
+        exerciseId: 'ex1',
         newIndex: invalidIndex as number,
         userId: vp.userId,
       };
@@ -238,15 +223,8 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
   });
 
   it('should throw error if template is deleted', async () => {
-    const existingTemplate = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps(),
-      exercises: [
-        { exerciseId: 'bench-press', sets: 3 },
-        { exerciseId: 'shoulder-press', sets: 3 },
-        { exerciseId: 'tricep-dips', sets: 3 },
-      ],
-    });
-
+    const existingTemplate = testTemplate;
+    testTemplate.addExercise(additionalWorkoutTemplateLine);
     existingTemplate.markAsDeleted();
 
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
@@ -254,7 +232,7 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
     const request = {
       workoutTemplateId: vp.validWorkoutTemplateProps().id,
       userId: vp.userId,
-      exerciseId: 'tricep-dips',
+      exerciseId: 'ex3',
       newIndex: 0,
     };
 

@@ -20,6 +20,9 @@ export class Integer extends ValueObject<IntegerProps> {
   }
 
   public static create(value: number, options?: IntegerOptions) {
+    if (value === null || value === undefined)
+      throw new ValidationError('Integer: value is required');
+
     if (typeof value !== 'number' || isNaN(value))
       throw new ValidationError('Integer: value must be a number');
 

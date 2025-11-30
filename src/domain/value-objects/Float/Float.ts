@@ -20,6 +20,9 @@ export class Float extends ValueObject<FloatProps> {
   }
 
   public static create(value: number, options?: FloatOptions) {
+    if (value === null || value === undefined)
+      throw new ValidationError('Float: value is required');
+
     if (typeof value !== 'number' || isNaN(value))
       throw new ValidationError('Float: value must be a number');
 

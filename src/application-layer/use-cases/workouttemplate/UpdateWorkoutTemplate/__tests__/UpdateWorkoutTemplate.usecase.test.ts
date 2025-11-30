@@ -18,7 +18,6 @@ describe('UpdateWorkoutTemplateUsecase', () => {
   it('should update the workout template name', async () => {
     const existingTemplate = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps(),
-      exercises: [{ exerciseId: 'ex1', sets: 3 }],
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
@@ -35,9 +34,12 @@ describe('UpdateWorkoutTemplateUsecase', () => {
 
     expect(result.name).toBe('New Name');
     expect(result.id).toBe(vp.validWorkoutTemplateProps().id);
-    expect(result.exercises).toEqual([{ exerciseId: 'ex1', sets: 3 }]);
     expect(new Date(result.createdAt)).toEqual(existingTemplate.createdAt);
     expect(new Date(result.updatedAt)).not.toEqual(existingTemplate.updatedAt);
+
+    const exercisesIds = existingTemplate.exercises.map((ex) => ex.exerciseId);
+    const resultExercisesIds = result.exercises.map((ex) => ex.exerciseId);
+    expect(resultExercisesIds).toEqual(exercisesIds);
 
     // Verify it was saved in the repo
     const savedTemplate = await workoutTemplatesRepo.getWorkoutTemplateById(
@@ -49,7 +51,6 @@ describe('UpdateWorkoutTemplateUsecase', () => {
   it('should return WorkoutTemplateDTO', async () => {
     const existingTemplate = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps(),
-      exercises: [{ exerciseId: 'ex1', sets: 3 }],
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
@@ -81,7 +82,6 @@ describe('UpdateWorkoutTemplateUsecase', () => {
   it('should throw error if name is invalid', async () => {
     const existingTemplate = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps(),
-      exercises: [{ exerciseId: 'ex1', sets: 3 }],
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
@@ -117,25 +117,6 @@ describe('UpdateWorkoutTemplateUsecase', () => {
   it('should throw NotFoundError when trying to update deleted template', async () => {
     const existingTemplate = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps(),
-      exercises: [{ exerciseId: 'ex1', sets: 3 }],
-    });
-
-    existingTemplate.markAsDeleted();
-    await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
-
-    const request = {
-      id: vp.validWorkoutTemplateProps().id,
-      name: 'Updated Name',
-      userId: vp.userId,
-    };
-
-    await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
-  });
-
-  it('should throw NotFoundError when trying to update deleted template', async () => {
-    const existingTemplate = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps(),
-      exercises: [{ exerciseId: 'ex1', sets: 3 }],
     });
 
     existingTemplate.markAsDeleted();

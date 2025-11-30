@@ -2,6 +2,7 @@ import { WorkoutDTO, toWorkoutDTO } from '@/application-layer/dtos/WorkoutDTO';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { validateNonEmptyString } from '@/domain/common/validation';
 import { Workout } from '@/domain/entities/workout/Workout';
+import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
 import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
 import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
 import { v4 as uuidv4 } from 'uuid';
@@ -55,21 +56,29 @@ export class CreateWorkoutFromTemplateUsecase {
         'CreateWorkoutFromTemplateUsecase: Cannot create workout from an empty template'
       );
 
+    const newWorkoutId = uuidv4();
+
     // Convert template exercises to workout exercises
     const workoutExercises = [];
     for (const templateExercise of workoutTemplate.exercises) {
       for (let setNumber = 1; setNumber <= templateExercise.sets; setNumber++) {
-        workoutExercises.push({
+        const workoutLine: WorkoutLine = WorkoutLine.create({
+          id: uuidv4(),
+          workoutId: newWorkoutId,
           exerciseId: templateExercise.exerciseId,
           setNumber,
           reps: 0,
           weight: 0,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         });
+
+        workoutExercises.push(workoutLine);
       }
     }
 
     const newWorkout = Workout.create({
-      id: uuidv4(),
+      id: newWorkoutId,
       userId: request.userId,
       name:
         request.workoutName ??

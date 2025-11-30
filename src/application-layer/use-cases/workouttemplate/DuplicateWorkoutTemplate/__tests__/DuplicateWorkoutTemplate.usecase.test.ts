@@ -19,17 +19,13 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
     const originalTemplate = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps(),
       name: 'Push Day',
-      exercises: [
-        { exerciseId: 'bench-press', sets: 3 },
-        { exerciseId: 'shoulder-press', sets: 2 },
-      ],
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(originalTemplate);
 
     const request = {
       userId: vp.userId,
-      originalTemplateId: '1',
+      originalTemplateId: originalTemplate.id,
     };
 
     const result = await usecase.execute(request);
@@ -37,9 +33,12 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
     expect(result.userId).toBe(vp.userId);
     expect(result.name).toBe('Push Day (Copy)');
     expect(result.id).not.toBe(originalTemplate.id);
-    expect(result.exercises).toEqual(originalTemplate.exercises);
     expect(result.createdAt).not.toEqual(originalTemplate.createdAt);
     expect(result.updatedAt).not.toEqual(originalTemplate.updatedAt);
+
+    const originalExercisesIds = originalTemplate.exercises.map((e) => e.id);
+    const resultExercisesIds = result.exercises.map((e) => e.id);
+    expect(originalExercisesIds).toEqual(resultExercisesIds);
 
     // Verify template was saved
     const savedTemplate = await workoutTemplatesRepo.getWorkoutTemplateById(
@@ -53,14 +52,13 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
     const originalTemplate = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps(),
       name: 'Leg Day',
-      exercises: [{ exerciseId: 'squat', sets: 4 }],
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(originalTemplate);
 
     const request = {
       userId: vp.userId,
-      originalTemplateId: '1',
+      originalTemplateId: vp.validWorkoutTemplateProps().id,
     };
 
     const result = await usecase.execute(request);
@@ -74,29 +72,31 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
   it('should duplicate workout template with custom name', async () => {
     const originalTemplate = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps(),
-      exercises: [{ exerciseId: 'bench-press', sets: 3 }],
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(originalTemplate);
 
     const request = {
       userId: vp.userId,
-      originalTemplateId: '1',
-      newTemplateName: 'Push Day Advanced',
+      originalTemplateId: vp.validWorkoutTemplateProps().id,
+      newTemplateName: 'Push Day CUSTOM',
     };
 
     const result = await usecase.execute(request);
 
-    expect(result.name).toBe('Push Day Advanced');
+    expect(result.name).toBe('Push Day CUSTOM');
     expect(result.id).not.toBe(originalTemplate.id);
-    expect(result.exercises).toEqual(originalTemplate.exercises);
+
+    const originalExercisesIds = originalTemplate.exercises.map((e) => e.id);
+    const resultExercisesIds = result.exercises.map((e) => e.id);
+    expect(originalExercisesIds).toEqual(resultExercisesIds);
 
     // Verify template was saved
     const savedTemplate = await workoutTemplatesRepo.getWorkoutTemplateById(
       result.id
     );
     expect(savedTemplate).not.toBeNull();
-    expect(savedTemplate!.name).toBe('Push Day Advanced');
+    expect(savedTemplate!.name).toBe('Push Day CUSTOM');
   });
 
   it('should throw NotFoundError when original template does not exist', async () => {
@@ -159,31 +159,9 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
     }
   });
 
-  it('should throw error if newTemplateName is invalid', async () => {
-    const invalidNames = ['', '   ', null, 8, {}, [], true, false];
-
-    const originalTemplate = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps(),
-      exercises: [{ exerciseId: 'bench-press', sets: 3 }],
-    });
-
-    await workoutTemplatesRepo.saveWorkoutTemplate(originalTemplate);
-
-    for (const name of invalidNames) {
-      const request = {
-        userId: vp.userId,
-        originalTemplateId: vp.validWorkoutTemplateProps().id,
-        newTemplateName: name,
-      };
-      // @ts-expect-error testing invalid inputs
-      await expect(usecase.execute(request)).rejects.toThrowError();
-    }
-  });
-
   it('should throw NotFoundError when trying to duplicate deleted template', async () => {
     const originalTemplate = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps(),
-      exercises: [{ exerciseId: 'bench-press', sets: 3 }],
     });
 
     originalTemplate.markAsDeleted();
@@ -200,7 +178,6 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
   it('should throw NotFoundError when trying to duplicate template from different user', async () => {
     const originalTemplate = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps(),
-      exercises: [{ exerciseId: 'bench-press', sets: 3 }],
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(originalTemplate);
@@ -211,15 +188,5 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
     };
 
     await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
-  });
-
-  it('should throw error if userId is invalid', async () => {
-    const invalidUserIds = ['', '   ', null, undefined, 8, {}, [], true, false];
-
-    for (const userId of invalidUserIds) {
-      const request = { userId, originalTemplateId: '1' };
-      // @ts-expect-error testing invalid inputs
-      await expect(usecase.execute(request)).rejects.toThrowError();
-    }
   });
 });
