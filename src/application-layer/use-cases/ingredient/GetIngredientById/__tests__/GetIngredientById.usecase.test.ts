@@ -1,6 +1,5 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
-import { ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -58,22 +57,5 @@ describe('GetIngredientByIdUsecase', () => {
     });
 
     expect(result).toBeNull();
-  });
-
-  it('should throw error when id is invalid', async () => {
-    const invalidIds = [true, 4, null, undefined];
-
-    for (const invalidId of invalidIds) {
-      await expect(
-        // @ts-expect-error Testing invalid inputs
-        getIngredientByIdUsecase.execute({ id: invalidId })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
-
-  it('should throw error when id is empty string', async () => {
-    await expect(getIngredientByIdUsecase.execute({ id: '' })).rejects.toThrow(
-      ValidationError
-    );
   });
 });

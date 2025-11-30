@@ -38,6 +38,15 @@ describe('Ingredient', () => {
     });
   });
 
+  it('should throw error if patch is not provided when updating', async () => {
+    expect(() => {
+      ingredient.update({});
+    }).toThrowError(ValidationError);
+    expect(() => {
+      ingredient.update({});
+    }).toThrowError(/Ingredient.*No patch provided/);
+  });
+
   it('should throw error if id is not Id type', async () => {
     expect(() => {
       Ingredient.create({

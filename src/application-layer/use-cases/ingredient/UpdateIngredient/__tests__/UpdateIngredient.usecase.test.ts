@@ -7,24 +7,29 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { UpdateIngredientUsecase } from '../UpdateIngredient.usecase';
 
 describe('UpdateIngredientUsecase', () => {
+  let ingredient: Ingredient;
   let ingredientsRepo: MemoryIngredientsRepo;
   let updateIngredientUsecase: UpdateIngredientUsecase;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     ingredientsRepo = new MemoryIngredientsRepo();
     updateIngredientUsecase = new UpdateIngredientUsecase(ingredientsRepo);
-  });
 
-  it('should update ingredient name', async () => {
-    const ingredient = Ingredient.create({
+    ingredient = Ingredient.create({
       ...vp.validIngredientProps,
     });
 
     await ingredientsRepo.saveIngredient(ingredient);
+    // Wait a bit to ensure updatedAt will be different
+    await new Promise((resolve) => setTimeout(resolve, 5));
+  });
 
+  it('should update ingredient name', async () => {
     const updatedIngredient = await updateIngredientUsecase.execute({
       id: ingredient.id,
-      name: 'UPDATED INGREDIENT',
+      patch: {
+        name: 'UPDATED INGREDIENT',
+      },
     });
 
     expect(updatedIngredient.name).toBe('UPDATED INGREDIENT');
@@ -39,20 +44,16 @@ describe('UpdateIngredientUsecase', () => {
       ingredient.createdAt.toISOString()
     );
     expect(updatedIngredient.updatedAt).not.toBe(
-      ingredient.updatedAt.toISOString()
+      vp.validIngredientProps.updatedAt.toISOString()
     );
   });
 
   it('should update ingredient calories', async () => {
-    const ingredient = Ingredient.create({
-      ...vp.validIngredientProps,
-    });
-
-    await ingredientsRepo.saveIngredient(ingredient);
-
     const updatedIngredient = await updateIngredientUsecase.execute({
       id: ingredient.id,
-      calories: 3333,
+      patch: {
+        calories: 3333,
+      },
     });
 
     expect(updatedIngredient.name).toBe(vp.validIngredientProps.name);
@@ -61,20 +62,16 @@ describe('UpdateIngredientUsecase', () => {
       vp.validIngredientProps.protein
     );
     expect(updatedIngredient.updatedAt).not.toBe(
-      ingredient.updatedAt.toISOString()
+      vp.validIngredientProps.updatedAt.toISOString()
     );
   });
 
   it('should update ingredient protein', async () => {
-    const ingredient = Ingredient.create({
-      ...vp.validIngredientProps,
-    });
-
-    await ingredientsRepo.saveIngredient(ingredient);
-
     const updatedIngredient = await updateIngredientUsecase.execute({
       id: ingredient.id,
-      protein: 666,
+      patch: {
+        protein: 666,
+      },
     });
 
     expect(updatedIngredient.name).toBe(vp.validIngredientProps.name);
@@ -83,29 +80,25 @@ describe('UpdateIngredientUsecase', () => {
     );
     expect(updatedIngredient.nutritionalInfoPer100g.protein).toBe(666);
     expect(updatedIngredient.updatedAt).not.toBe(
-      ingredient.updatedAt.toISOString()
+      vp.validIngredientProps.updatedAt.toISOString()
     );
   });
 
   it('should update multiple properties at once', async () => {
-    const ingredient = Ingredient.create({
-      ...vp.validIngredientProps,
-    });
-
-    await ingredientsRepo.saveIngredient(ingredient);
-
     const updatedIngredient = await updateIngredientUsecase.execute({
       id: ingredient.id,
-      name: 'UPDATED NAME',
-      calories: 222,
-      protein: 888,
+      patch: {
+        name: 'UPDATED NAME',
+        calories: 222,
+        protein: 888,
+      },
     });
 
     expect(updatedIngredient.name).toBe('UPDATED NAME');
     expect(updatedIngredient.nutritionalInfoPer100g.calories).toBe(222);
     expect(updatedIngredient.nutritionalInfoPer100g.protein).toBe(888);
     expect(updatedIngredient.updatedAt).not.toBe(
-      ingredient.updatedAt.toISOString()
+      vp.validIngredientProps.updatedAt.toISOString()
     );
   });
 
@@ -113,114 +106,39 @@ describe('UpdateIngredientUsecase', () => {
     await expect(
       updateIngredientUsecase.execute({
         id: 'non-existent',
-        name: 'New Name',
+        patch: {
+          name: 'New Name',
+        },
       })
     ).rejects.toThrow(NotFoundError);
   });
 
-  it('should not update ingredient if no changes provided', async () => {
-    const ingredient = Ingredient.create({
-      id: '1',
-      name: 'Chicken Breast',
-      calories: 165,
-      protein: 31,
-      createdAt: new Date('2023-01-01'),
-      updatedAt: new Date('2023-01-01'),
-    });
-
-    await ingredientsRepo.saveIngredient(ingredient);
-
-    const updatedIngredient = await updateIngredientUsecase.execute({
-      id: '1',
-    });
-
-    expect(updatedIngredient.name).toBe(ingredient.name);
-    expect(updatedIngredient.nutritionalInfoPer100g).toEqual(
-      ingredient.nutritionalInfoPer100g
-    );
-    expect(updatedIngredient.updatedAt).toBe(
-      ingredient.updatedAt.toISOString()
-    );
-  });
-
-  it('should throw error when id is invalid', async () => {
-    const invalidIds = [true, 4, null, undefined];
-
-    for (const invalidId of invalidIds) {
-      await expect(
-        // @ts-expect-error Testing invalid inputs
-        updateIngredientUsecase.execute({ id: invalidId, name: 'New Name' })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
-
-  it('should throw error when name is invalid', async () => {
-    const ingredient = Ingredient.create({
-      id: '1',
-      name: 'Chicken Breast',
-      calories: 165,
-      protein: 31,
-      createdAt: new Date('2023-01-01'),
-      updatedAt: new Date('2023-01-01'),
-    });
-
-    await ingredientsRepo.saveIngredient(ingredient);
-
-    const invalidNames = [true, 4, null];
-
-    for (const invalidName of invalidNames) {
-      await expect(
-        // @ts-expect-error Testing invalid inputs
-        updateIngredientUsecase.execute({ id: '1', name: invalidName })
-      ).rejects.toThrow(ValidationError);
-    }
-  });
-
   it('should throw error when calories is  negative', async () => {
-    const ingredient = Ingredient.create({
-      id: '1',
-      name: 'Chicken Breast',
-      calories: 165,
-      protein: 31,
-      createdAt: new Date('2023-01-01'),
-      updatedAt: new Date('2023-01-01'),
-    });
-
-    await ingredientsRepo.saveIngredient(ingredient);
-
     await expect(
-      updateIngredientUsecase.execute({ id: '1', calories: -10 })
+      updateIngredientUsecase.execute({
+        id: ingredient.id,
+        patch: {
+          calories: -10,
+        },
+      })
     ).rejects.toThrow(ValidationError);
   });
 
   it('should throw error when protein is negative', async () => {
-    const ingredient = Ingredient.create({
-      id: '1',
-      name: 'Chicken Breast',
-      calories: 165,
-      protein: 31,
-      createdAt: new Date('2023-01-01'),
-      updatedAt: new Date('2023-01-01'),
-    });
-
-    await ingredientsRepo.saveIngredient(ingredient);
-
     await expect(
-      updateIngredientUsecase.execute({ id: '1', protein: -5 })
+      updateIngredientUsecase.execute({
+        id: ingredient.id,
+        patch: { protein: -5 },
+      })
     ).rejects.toThrow(ValidationError);
   });
 
   it('should return IngredientDTO', async () => {
-    const ingredient = Ingredient.create({
-      ...vp.validIngredientProps,
-      id: '1',
-    });
-
-    await ingredientsRepo.saveIngredient(ingredient);
-
     const updatedIngredient = await updateIngredientUsecase.execute({
-      id: '1',
-      name: 'Updated Name',
+      id: ingredient.id,
+      patch: {
+        name: 'Updated Name',
+      },
     });
 
     expect(updatedIngredient).not.toBeInstanceOf(Ingredient);

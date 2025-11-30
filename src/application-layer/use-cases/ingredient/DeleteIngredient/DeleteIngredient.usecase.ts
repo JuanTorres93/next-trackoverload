@@ -1,6 +1,5 @@
-import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
-import { validateNonEmptyString } from '@/domain/common/validation';
 import { NotFoundError } from '@/domain/common/errors';
+import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 
 export type DeleteIngredientUsecaseRequest = {
   id: string;
@@ -10,9 +9,6 @@ export class DeleteIngredientUsecase {
   constructor(private ingredientsRepo: IngredientsRepo) {}
 
   async execute(request: DeleteIngredientUsecaseRequest): Promise<void> {
-    validateNonEmptyString(request.id, 'DeleteIngredientUsecase');
-
-    // Search ingredient
     const ingredient = await this.ingredientsRepo.getIngredientById(request.id);
 
     if (!ingredient) {

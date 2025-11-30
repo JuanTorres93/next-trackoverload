@@ -3,18 +3,12 @@ import {
   toIngredientDTO,
 } from '@/application-layer/dtos/IngredientDTO';
 import { NotFoundError } from '@/domain/common/errors';
-import { validateNonEmptyString } from '@/domain/common/validation';
-import {
-  Ingredient,
-  IngredientUpdateProps,
-} from '@/domain/entities/ingredient/Ingredient';
+import { IngredientUpdateProps } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 
 export type UpdateIngredientUsecaseRequest = {
   id: string;
-  name?: string;
-  calories?: number;
-  protein?: number;
+  patch: IngredientUpdateProps;
 };
 
 export class UpdateIngredientUsecase {
@@ -23,8 +17,6 @@ export class UpdateIngredientUsecase {
   async execute(
     request: UpdateIngredientUsecaseRequest
   ): Promise<IngredientDTO> {
-    validateNonEmptyString(request.id, 'UpdateIngredientUsecase');
-
     const existingIngredient = await this.ingredientsRepo.getIngredientById(
       request.id
     );
@@ -33,32 +25,10 @@ export class UpdateIngredientUsecase {
       throw new NotFoundError('Ingredient not found');
     }
 
-    const patch: IngredientUpdateProps = {};
+    existingIngredient.update(request.patch);
 
-    // NOTE: Validation is done in the entity's update method
-    if (request.name !== undefined) patch.name = request.name;
-    if (request.calories !== undefined) patch.calories = request.calories;
-    if (request.protein !== undefined) patch.protein = request.protein;
+    await this.ingredientsRepo.saveIngredient(existingIngredient);
 
-    if (Object.keys(patch).length > 0) {
-      // Create a new ingredient with the same properties
-      const updatedIngredient = Ingredient.create({
-        id: existingIngredient.id,
-        name: existingIngredient.name,
-        calories: existingIngredient.nutritionalInfoPer100g.calories,
-        protein: existingIngredient.nutritionalInfoPer100g.protein,
-        createdAt: existingIngredient.createdAt,
-        updatedAt: existingIngredient.updatedAt,
-      });
-
-      // Apply the updates using the entity's update method
-      updatedIngredient.update(patch);
-
-      await this.ingredientsRepo.saveIngredient(updatedIngredient);
-
-      return toIngredientDTO(updatedIngredient);
-    }
-
-    return toIngredientDTO(existingIngredient); // No changes made, return the original
+    return toIngredientDTO(existingIngredient);
   }
 }

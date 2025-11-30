@@ -1,10 +1,9 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { CreateIngredientUsecase } from '../CreateIngredient.usecase';
-import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { CreateIngredientUsecase } from '../CreateIngredient.usecase';
 
 describe('CreateIngredientUsecase', () => {
   let ingredientsRepo: MemoryIngredientsRepo;
@@ -51,88 +50,5 @@ describe('CreateIngredientUsecase', () => {
     for (const prop of dto.ingredientDTOProperties) {
       expect(ingredient).toHaveProperty(prop);
     }
-  });
-
-  it('should throw an error if name is empty', async () => {
-    const request = {
-      name: '',
-      calories: 165,
-      protein: 31,
-    };
-
-    await expect(createIngredientUsecase.execute(request)).rejects.toThrow(
-      ValidationError
-    );
-  });
-
-  it('should throw an error if calories is negative', async () => {
-    const requestNegative = {
-      name: 'Chicken Breast',
-      calories: -10,
-      protein: 31,
-    };
-
-    await expect(
-      createIngredientUsecase.execute(requestNegative)
-    ).rejects.toThrow(ValidationError);
-
-    await expect(
-      createIngredientUsecase.execute(requestNegative)
-    ).rejects.toThrow(/Float.*positive/);
-  });
-
-  it('should throw an error if protein is negative', async () => {
-    const requestNegative = {
-      name: 'Chicken Breast',
-      calories: 165,
-      protein: -5,
-    };
-
-    await expect(
-      createIngredientUsecase.execute(requestNegative)
-    ).rejects.toThrow(ValidationError);
-
-    await expect(
-      createIngredientUsecase.execute(requestNegative)
-    ).rejects.toThrow(/Float.*positive/);
-  });
-
-  it('should throw an error if name is not a string', async () => {
-    const request = {
-      name: 123,
-      calories: 165,
-      protein: 31,
-    };
-
-    // @ts-expect-error testing invalid input
-    await expect(createIngredientUsecase.execute(request)).rejects.toThrow(
-      ValidationError
-    );
-  });
-
-  it('should throw an error if calories is not a number', async () => {
-    const request = {
-      name: 'Chicken Breast',
-      calories: 'invalid',
-      protein: 31,
-    };
-
-    // @ts-expect-error testing invalid input
-    await expect(createIngredientUsecase.execute(request)).rejects.toThrow(
-      ValidationError
-    );
-  });
-
-  it('should throw an error if protein is not a number', async () => {
-    const request = {
-      name: 'Chicken Breast',
-      calories: 165,
-      protein: 'invalid',
-    };
-
-    // @ts-expect-error testing invalid input
-    await expect(createIngredientUsecase.execute(request)).rejects.toThrow(
-      ValidationError
-    );
   });
 });

@@ -1,9 +1,8 @@
-import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import {
   IngredientDTO,
   toIngredientDTO,
 } from '@/application-layer/dtos/IngredientDTO';
-import { validateNonEmptyString } from '@/domain/common/validation';
+import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 
 export type GetIngredientsByIdsUsecaseRequest = {
   ids: string[];
@@ -16,11 +15,6 @@ export class GetIngredientsByIdsUsecase {
     request: GetIngredientsByIdsUsecaseRequest
   ): Promise<IngredientDTO[]> {
     const ingredientDTOs: IngredientDTO[] = [];
-
-    // First, validate all IDs
-    for (const id of request.ids) {
-      validateNonEmptyString(id, 'GetIngredientsByIdsUsecase');
-    }
 
     // Then, fetch ingredients to avoid partial results if validation fails
     for (const id of request.ids) {

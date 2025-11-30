@@ -3,6 +3,7 @@ import { Id } from '@/domain/value-objects/Id/Id';
 import { Text } from '@/domain/value-objects/Text/Text';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 import { Integer } from '@/domain/value-objects/Integer/Integer';
+import { ValidationError } from '@/domain/common/errors';
 
 type NutritionalInfoPer100g = {
   calories: Float;
@@ -59,6 +60,10 @@ export class Ingredient {
   }
 
   update(patch: IngredientUpdateProps): void {
+    if (!patch || Object.keys(patch).length === 0) {
+      throw new ValidationError('Ingredient: No patch provided');
+    }
+
     if (patch.name !== undefined) {
       this.props.name = Text.create(patch.name, nameTextOptions);
     }
