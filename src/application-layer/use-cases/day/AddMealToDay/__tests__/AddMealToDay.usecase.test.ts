@@ -33,7 +33,7 @@ describe('AddMealToDayUsecase', () => {
       usersRepo
     );
     day = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
     });
     ingredient = Ingredient.create({
       ...vp.validIngredientProps,

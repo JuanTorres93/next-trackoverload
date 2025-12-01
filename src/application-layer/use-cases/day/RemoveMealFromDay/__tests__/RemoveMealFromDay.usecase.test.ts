@@ -36,7 +36,7 @@ describe('RemoveMealFromDayUsecase', () => {
       ...vp.validFakeMealProps,
     });
     const day = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
       meals: [fakeMeal],
     });
 
@@ -57,7 +57,7 @@ describe('RemoveMealFromDayUsecase', () => {
       ...vp.validFakeMealProps,
     });
     const day = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
       meals: [fakeMeal],
     });
 
@@ -89,7 +89,7 @@ describe('RemoveMealFromDayUsecase', () => {
 
   it('should throw error if meal does not exist in day', async () => {
     const day = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
       meals: [],
     });
 

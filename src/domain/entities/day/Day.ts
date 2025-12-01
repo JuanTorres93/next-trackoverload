@@ -65,6 +65,12 @@ export class Day implements Protein, Calories {
   addMeal(meal: Meal | FakeMeal): void {
     validateMeal(meal);
 
+    if (this.props.meals.find((m) => m.id === meal.id)) {
+      throw new ValidationError(
+        `Day: (Fake)Meal with id ${meal.id} already exists in the day`
+      );
+    }
+
     this.props.meals.push(meal);
     this.props.updatedAt = new Date();
   }

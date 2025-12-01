@@ -41,7 +41,7 @@ describe('GetDayNutritionalSummaryUsecase', () => {
       id: 'fakeMeal2',
     });
     const day = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
       meals: [fakeMeal1, fakeMeal2],
     });
 
@@ -62,7 +62,7 @@ describe('GetDayNutritionalSummaryUsecase', () => {
 
   it('should return zero values for day with no meals', async () => {
     const day = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
       meals: [],
     });
 

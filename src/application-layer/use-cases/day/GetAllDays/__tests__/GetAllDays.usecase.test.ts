@@ -28,10 +28,10 @@ describe('GetAllDaysUsecase', () => {
 
   it('should return all days', async () => {
     const day1 = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
     });
     const day2 = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
       id: new Date('2023-10-02'),
     });
     await daysRepo.saveDay(day1);
@@ -46,10 +46,10 @@ describe('GetAllDaysUsecase', () => {
 
   it('should return an array of DayDTOs', async () => {
     const day1 = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
     });
     const day2 = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
       id: new Date('2023-10-02'),
     });
     await daysRepo.saveDay(day1);

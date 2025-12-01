@@ -17,7 +17,7 @@ describe('FileSystemDaysRepo', () => {
     fakeMeal = FakeMeal.create(vp.validFakeMealProps);
 
     day = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
       meals: [fakeMeal],
     });
 
@@ -34,7 +34,7 @@ describe('FileSystemDaysRepo', () => {
 
   it('should save a day', async () => {
     const newDay = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
       id: new Date('2023-10-02'),
       meals: [fakeMeal],
     });
@@ -51,7 +51,7 @@ describe('FileSystemDaysRepo', () => {
 
   it('should update an existing day', async () => {
     const updatedDay = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
       meals: [], // No meals
     });
     await repo.saveDay(updatedDay);
@@ -82,12 +82,12 @@ describe('FileSystemDaysRepo', () => {
   it('should retrieve days by date range', async () => {
     // Add more days
     const day2 = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
       id: new Date('2023-10-02'),
       meals: [fakeMeal],
     });
     const day3 = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
       id: new Date('2023-10-05'),
       meals: [fakeMeal],
     });
@@ -104,7 +104,7 @@ describe('FileSystemDaysRepo', () => {
 
   it('should retrieve days by date range and user ID', async () => {
     const day2 = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
       id: new Date('2023-10-02'),
       meals: [fakeMeal],
     });

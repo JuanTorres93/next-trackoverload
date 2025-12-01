@@ -3,13 +3,15 @@ import { WorkoutTemplateLine } from '@/domain/entities/workouttemplateline/Worko
 export const userId = 'user-1';
 export const dateId = new Date('2023-10-01');
 
-export const validDayProps = {
-  id: dateId,
-  userId: userId,
-  meals: [], // TODO make deep copy in constructor if testing issues arise
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
+export function validDayProps() {
+  return {
+    id: dateId,
+    userId: userId,
+    meals: [],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+}
 
 export const recipePropsNoIngredientLines = {
   id: 'recipe1',

@@ -26,7 +26,7 @@ describe('DeleteDayUsecase', () => {
 
   it('should delete a day', async () => {
     const day = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
     });
     await daysRepo.saveDay(day);
 

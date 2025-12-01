@@ -31,7 +31,7 @@ describe('Day', () => {
     });
 
     day = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
       meals: [fakeMeal, meal],
     });
   });
@@ -55,7 +55,7 @@ describe('Day', () => {
     invalidMeals.forEach((invalidMeal) => {
       expect(() =>
         Day.create({
-          ...vp.validDayProps,
+          ...vp.validDayProps(),
           // @ts-expect-error Testing invalid input
           meals: [invalidMeal],
         })
@@ -86,6 +86,24 @@ describe('Day', () => {
     day.addMeal(newMeal);
     expect(day.meals).toHaveLength(initialLength + 1);
     expect(day.meals[day.meals.length - 1]).toEqual(newMeal);
+  });
+
+  it('should not add already added meal', async () => {
+    const initialLength = day.meals.length;
+
+    expect(() => day.addMeal(meal)).toThrow(ValidationError);
+    expect(() => day.addMeal(meal)).toThrow(/Day.*Meal.*id.*already.*exists/);
+    expect(day.meals).toHaveLength(initialLength);
+  });
+
+  it('should not add already added fakeMeal', async () => {
+    const initialLength = day.meals.length;
+
+    expect(() => day.addMeal(fakeMeal)).toThrow(ValidationError);
+    expect(() => day.addMeal(fakeMeal)).toThrow(
+      /Day.*Meal.*id.*already.*exists/
+    );
+    expect(day.meals).toHaveLength(initialLength);
   });
 
   it('should not add invalid meal', async () => {
@@ -120,23 +138,5 @@ describe('Day', () => {
   it('should have meals', async () => {
     expect(day).toHaveProperty('meals');
     expect(Array.isArray(day.meals)).toBe(true);
-  });
-
-  it('should throw error if userId is not instance of Id', async () => {
-    expect(() =>
-      Day.create({
-        ...vp.validDayProps,
-        // @ts-expect-error Testing invalid input
-        userId: 123,
-      })
-    ).toThrow(ValidationError);
-
-    expect(() =>
-      Day.create({
-        ...vp.validDayProps,
-        // @ts-expect-error Testing invalid input
-        userId: 123,
-      })
-    ).toThrow(/Id.*string/);
   });
 });

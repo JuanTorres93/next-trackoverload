@@ -27,7 +27,7 @@ describe('GetDayByIdUsecase', () => {
     await usersRepo.saveUser(user);
 
     day = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
     });
     await daysRepo.saveDay(day);
   });

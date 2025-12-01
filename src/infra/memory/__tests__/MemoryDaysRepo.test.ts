@@ -14,7 +14,7 @@ describe('MemoryDaysRepo', () => {
     fakeMeal = FakeMeal.create(vp.validFakeMealProps);
 
     day = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
       meals: [fakeMeal],
     });
 
@@ -23,7 +23,7 @@ describe('MemoryDaysRepo', () => {
 
   it('should save a day', async () => {
     const newDay = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
       id: new Date('2023-10-02'),
       meals: [fakeMeal],
     });
@@ -36,7 +36,7 @@ describe('MemoryDaysRepo', () => {
 
   it('should update an existing day', async () => {
     const updatedDay = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
       meals: [], // No meals
     });
     await repo.saveDay(updatedDay);

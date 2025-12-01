@@ -34,7 +34,7 @@ describe('AddFakeMealToDayUsecase', () => {
 
     date = new Date('2023-10-01');
     day = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
     });
     fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
@@ -119,6 +119,16 @@ describe('AddFakeMealToDayUsecase', () => {
         fakeMealId: fakeMeal.id,
       })
     ).rejects.toThrow(/AddFakeMealToDay.*User.*not.*found/);
+  });
+
+  it('should throw error if fake meal does not belong to user', async () => {
+    await expect(
+      addFakeMealToDayUsecase.execute({
+        date,
+        userId: anotherUser.id,
+        fakeMealId: fakeMeal.id,
+      })
+    ).rejects.toThrow(NotFoundError);
   });
 
   it('should throw error if day does not belong to user', async () => {

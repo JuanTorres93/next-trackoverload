@@ -34,7 +34,7 @@ describe('UpdateDayMealsUsecase', () => {
       ...vp.validFakeMealProps,
     });
     const day = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
       meals: [oldFakeMeal],
     });
 
@@ -82,7 +82,7 @@ describe('UpdateDayMealsUsecase', () => {
       ...vp.validFakeMealProps,
     });
     const day = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
       meals: [fakeMeal],
     });
 
@@ -123,7 +123,7 @@ describe('UpdateDayMealsUsecase', () => {
       ...vp.validFakeMealProps,
     });
     const day = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
       meals: [fakeMeal],
     });
 
@@ -143,7 +143,7 @@ describe('UpdateDayMealsUsecase', () => {
   it('should preserve createdAt but update updatedAt', async () => {
     const originalCreatedAt = new Date('2023-09-01');
     const day = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
       createdAt: originalCreatedAt,
       updatedAt: originalCreatedAt,
     });

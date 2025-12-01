@@ -32,15 +32,15 @@ describe('GetDaysByDateRangeUsecase', () => {
 
   it('should return days within date range', async () => {
     const day1 = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
       id: new Date('2023-10-01'),
     });
     const day2 = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
       id: new Date('2023-10-02'),
     });
     const day3 = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
       id: new Date('2023-10-05'),
     });
 
@@ -62,11 +62,11 @@ describe('GetDaysByDateRangeUsecase', () => {
 
   it('should return an array of DayDTOs', async () => {
     const day1 = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
       id: new Date('2023-10-01'),
     });
     const day2 = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
       id: new Date('2023-10-02'),
     });
 
@@ -131,11 +131,11 @@ describe('GetDaysByDateRangeUsecase', () => {
 
   it('should include days on boundary dates', async () => {
     const day1 = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
       id: new Date('2023-10-01'),
     });
     const day2 = Day.create({
-      ...vp.validDayProps,
+      ...vp.validDayProps(),
       id: new Date('2023-10-03'),
     });
 
