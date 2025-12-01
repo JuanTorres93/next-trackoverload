@@ -1,13 +1,11 @@
-import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { Day } from '@/domain/entities/day/Day';
+import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 
 export class MemoryDaysRepo implements DaysRepo {
   private days: Day[] = [];
 
   async saveDay(day: Day): Promise<void> {
-    const existingIndex = this.days.findIndex(
-      (d) => d.id.getTime() === day.id.getTime()
-    );
+    const existingIndex = this.days.findIndex((d) => d.id === day.id);
 
     if (existingIndex !== -1) {
       this.days[existingIndex] = day;
@@ -25,46 +23,37 @@ export class MemoryDaysRepo implements DaysRepo {
   }
 
   async getDayById(id: string): Promise<Day | null> {
-    const dayDate = new Date(id);
-    const day = this.days.find((d) => d.id.getTime() === dayDate.getTime());
+    const day = this.days.find((d) => d.id === id);
     return day || null;
   }
 
   async getDayByIdAndUserId(id: string, userId: string): Promise<Day | null> {
-    const dayDate = new Date(id);
-    const day = this.days.find(
-      (d) => d.id.getTime() === dayDate.getTime() && d.userId === userId
-    );
+    const day = this.days.find((d) => d.id === id && d.userId === userId);
     return day || null;
   }
 
-  async getDaysByDateRange(startDate: Date, endDate: Date): Promise<Day[]> {
+  async getDaysByDateRange(startDate: string, endDate: string): Promise<Day[]> {
     return this.days.filter((day) => {
-      const dayTime = day.id.getTime();
-      return dayTime >= startDate.getTime() && dayTime <= endDate.getTime();
+      const dayTime = day.id;
+      return dayTime >= startDate && dayTime <= endDate;
     });
   }
 
   async getDaysByDateRangeAndUserId(
-    startDate: Date,
-    endDate: Date,
+    startDate: string,
+    endDate: string,
     userId: string
   ): Promise<Day[]> {
     return this.days.filter((day) => {
-      const dayTime = day.id.getTime();
+      const dayTime = day.id;
       return (
-        dayTime >= startDate.getTime() &&
-        dayTime <= endDate.getTime() &&
-        day.userId === userId
+        dayTime >= startDate && dayTime <= endDate && day.userId === userId
       );
     });
   }
 
   async deleteDay(id: string): Promise<void> {
-    const dayDate = new Date(id);
-    const index = this.days.findIndex(
-      (d) => d.id.getTime() === dayDate.getTime()
-    );
+    const index = this.days.findIndex((d) => d.id === id);
 
     if (index !== -1) {
       this.days.splice(index, 1);

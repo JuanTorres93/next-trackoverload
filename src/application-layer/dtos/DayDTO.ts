@@ -5,7 +5,7 @@ import { MealDTO, toMealDTO } from './MealDTO';
 import { FakeMealDTO, toFakeMealDTO } from './FakeMealDTO';
 
 export type DayDTO = {
-  id: string; // Date as ISO string
+  id: string; // Date as YYYYMMDD
   userId: string;
   meals: (MealDTO | FakeMealDTO)[];
   calories: number;
@@ -16,7 +16,7 @@ export type DayDTO = {
 
 export function toDayDTO(day: Day): DayDTO {
   return {
-    id: day.id.toISOString(),
+    id: day.id,
     userId: day.userId,
     meals: day.meals.map((meal) => {
       if (meal instanceof Meal) {

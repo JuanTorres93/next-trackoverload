@@ -3,7 +3,7 @@ import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 
 export type DeleteDayUsecaseRequest = {
-  date: Date;
+  date: string;
   userId: string;
 };
 
@@ -19,13 +19,13 @@ export class DeleteDayUsecase {
     }
 
     const day = await this.daysRepo.getDayByIdAndUserId(
-      request.date.toISOString(),
+      request.date,
       request.userId
     );
     if (!day) {
       throw new NotFoundError('DeleteDayUsecase: Day not found');
     }
 
-    await this.daysRepo.deleteDay(request.date.toISOString());
+    await this.daysRepo.deleteDay(request.date);
   }
 }

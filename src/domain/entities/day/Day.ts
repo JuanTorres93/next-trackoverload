@@ -10,6 +10,7 @@ import { Id } from '@/domain/value-objects/Id/Id';
 import { FakeMeal } from '../fakemeal/FakeMeal';
 import { Protein } from '../../interfaces/Protein';
 import { Calories } from '../../interfaces/Calories';
+import { DayId } from '@/domain/value-objects/DayId/DayId';
 
 export type DayCreateProps = {
   id: Date;
@@ -20,7 +21,7 @@ export type DayCreateProps = {
 };
 
 export type DayProps = {
-  id: Date;
+  id: DayId;
   userId: Id;
   meals: (Meal | FakeMeal)[];
   createdAt: Date;
@@ -52,7 +53,7 @@ export class Day implements Protein, Calories {
     }
 
     const dayProps: DayProps = {
-      id: props.id,
+      id: DayId.create(props.id),
       userId: Id.create(props.userId),
       meals: props.meals,
       createdAt: handleCreatedAt(props.createdAt),
@@ -83,7 +84,7 @@ export class Day implements Protein, Calories {
 
     this.props.meals = this.props.meals.filter((meal) => meal.id !== mealId);
 
-    if (this.props.meals.length === initialLength) {
+    if (this.props.meals.length === initialLength || initialLength === 0) {
       throw new ValidationError(`Day: No meal found with id ${mealId}`);
     }
     this.props.updatedAt = new Date();
@@ -91,7 +92,7 @@ export class Day implements Protein, Calories {
 
   // Getters
   get id() {
-    return this.props.id;
+    return this.props.id.value;
   }
 
   get userId() {

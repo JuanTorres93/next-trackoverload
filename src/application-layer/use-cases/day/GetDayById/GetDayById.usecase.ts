@@ -4,7 +4,7 @@ import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 
 export type GetDayByIdUsecaseRequest = {
-  date: Date;
+  date: string;
   userId: string;
 };
 
@@ -20,7 +20,7 @@ export class GetDayByIdUsecase {
     }
 
     const day = await this.daysRepo.getDayByIdAndUserId(
-      request.date.toISOString(),
+      request.date,
       request.userId
     );
 

@@ -75,7 +75,7 @@ describe('AddMealToDayUsecase', () => {
 
     expect(result.id).not.toBeUndefined();
     expect(result.id).not.toBe(recipe.id);
-    expect(result.id).not.toBe(day.id);
+    expect(result.id).toBe(day.id);
   });
 
   it('should create new independent ingredient lines from recipe', async () => {
@@ -121,16 +121,16 @@ describe('AddMealToDayUsecase', () => {
   });
 
   it('should create new day and add meal if day does not exist', async () => {
-    const date = new Date('2023-10-02');
+    const dayId = '20231001';
     expect(day.meals).toHaveLength(0);
 
     const result = await addMealToDayUsecase.execute({
-      date,
+      date: dayId,
       userId: vp.userId,
       recipeId: recipe.id,
     });
 
-    expect(result.id).toEqual(date.toISOString());
+    expect(result.id).toEqual(dayId);
     expect(result.meals).toHaveLength(1);
   });
 
@@ -147,7 +147,7 @@ describe('AddMealToDayUsecase', () => {
   });
 
   it('should throw error if user does not exist', async () => {
-    const date = new Date('2023-10-01');
+    const date = '20231001';
     const nonExistentUserId = 'non-existent-user';
 
     await expect(

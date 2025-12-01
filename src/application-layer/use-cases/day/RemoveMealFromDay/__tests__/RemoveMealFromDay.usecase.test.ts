@@ -15,6 +15,8 @@ describe('RemoveMealFromDayUsecase', () => {
   let usersRepo: MemoryUsersRepo;
   let removeMealFromDayUsecase: RemoveMealFromDayUsecase;
   let user: User;
+  let fakeMeal: FakeMeal;
+  let day: Day;
 
   beforeEach(async () => {
     daysRepo = new MemoryDaysRepo();
@@ -24,26 +26,25 @@ describe('RemoveMealFromDayUsecase', () => {
       usersRepo
     );
 
-    user = User.create({
-      ...vp.validUserProps,
-    });
-    await usersRepo.saveUser(user);
-  });
-
-  it('should remove meal from day', async () => {
-    const date = new Date('2023-10-01');
-    const fakeMeal = FakeMeal.create({
+    fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
     });
-    const day = Day.create({
+    day = Day.create({
       ...vp.validDayProps(),
       meals: [fakeMeal],
     });
 
-    await daysRepo.saveDay(day);
+    user = User.create({
+      ...vp.validUserProps,
+    });
 
+    await usersRepo.saveUser(user);
+    await daysRepo.saveDay(day);
+  });
+
+  it('should remove meal from day', async () => {
     const result = await removeMealFromDayUsecase.execute({
-      date,
+      date: day.id,
       userId: vp.userId,
       mealId: vp.validFakeMealProps.id,
     });
@@ -52,19 +53,8 @@ describe('RemoveMealFromDayUsecase', () => {
   });
 
   it('should return a DayDTO', async () => {
-    const date = new Date('2023-10-01');
-    const fakeMeal = FakeMeal.create({
-      ...vp.validFakeMealProps,
-    });
-    const day = Day.create({
-      ...vp.validDayProps(),
-      meals: [fakeMeal],
-    });
-
-    await daysRepo.saveDay(day);
-
     const result = await removeMealFromDayUsecase.execute({
-      date,
+      date: day.id,
       userId: vp.userId,
       mealId: vp.validFakeMealProps.id,
     });
@@ -76,7 +66,7 @@ describe('RemoveMealFromDayUsecase', () => {
   });
 
   it('should throw error if day does not exist', async () => {
-    const date = new Date('2023-10-01');
+    const date = '11111001';
 
     await expect(
       removeMealFromDayUsecase.execute({
@@ -88,16 +78,9 @@ describe('RemoveMealFromDayUsecase', () => {
   });
 
   it('should throw error if meal does not exist in day', async () => {
-    const day = Day.create({
-      ...vp.validDayProps(),
-      meals: [],
-    });
-
-    await daysRepo.saveDay(day);
-
     await expect(
       removeMealFromDayUsecase.execute({
-        date: vp.dateId,
+        date: day.id,
         userId: vp.userId,
         mealId: 'non-existent',
       })
@@ -107,7 +90,7 @@ describe('RemoveMealFromDayUsecase', () => {
   it('should throw error if user does not exist', async () => {
     await expect(
       removeMealFromDayUsecase.execute({
-        date: vp.dateId,
+        date: day.id,
         userId: 'non-existent',
         mealId: vp.validFakeMealProps.id,
       })
@@ -115,7 +98,7 @@ describe('RemoveMealFromDayUsecase', () => {
 
     await expect(
       removeMealFromDayUsecase.execute({
-        date: vp.dateId,
+        date: day.id,
         userId: 'non-existent',
         mealId: vp.validFakeMealProps.id,
       })

@@ -14,6 +14,7 @@ describe('CreateDayUsecase', () => {
   let usersRepo: MemoryUsersRepo;
   let createDayUsecase: CreateDayUsecase;
   let user: User;
+  const dayId = '20231001';
 
   beforeEach(async () => {
     daysRepo = new MemoryDaysRepo();
@@ -28,11 +29,11 @@ describe('CreateDayUsecase', () => {
   });
 
   it('should create and save a new day', async () => {
-    const request = { date: vp.dateId, userId: vp.userId };
+    const request = { date: dayId, userId: vp.userId };
 
     const day = await createDayUsecase.execute(request);
 
-    expect(day.id).toEqual(request.date.toISOString());
+    expect(day.id).toEqual(request.date);
     expect(day.meals).toEqual([]);
     expect(day.calories).toBe(0);
     expect(day.protein).toBe(0);
@@ -46,7 +47,7 @@ describe('CreateDayUsecase', () => {
   });
 
   it('should return DayDTO', async () => {
-    const request = { date: vp.dateId, userId: vp.userId };
+    const request = { date: dayId, userId: vp.userId };
 
     const day = await createDayUsecase.execute(request);
 
@@ -58,19 +59,19 @@ describe('CreateDayUsecase', () => {
 
   it('should create a day with initial meals', async () => {
     const request = {
-      date: vp.dateId,
+      date: dayId,
       userId: vp.userId,
       meals: [],
     };
 
     const day = await createDayUsecase.execute(request);
 
-    expect(day.id).toEqual(request.date.toISOString());
+    expect(day.id).toEqual(request.date);
     expect(day.meals).toEqual([]);
   });
 
   it('should throw error if user does not exist', async () => {
-    const request = { date: vp.dateId, userId: 'non-existent' };
+    const request = { date: dayId, userId: 'non-existent' };
 
     await expect(createDayUsecase.execute(request)).rejects.toThrow(
       NotFoundError

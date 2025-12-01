@@ -139,4 +139,11 @@ describe('Day', () => {
     expect(day).toHaveProperty('meals');
     expect(Array.isArray(day.meals)).toBe(true);
   });
+
+  it('should throw error if removing meal that is not contained in day', async () => {
+    expect(() => day.removeMealById('non-existent')).toThrow(ValidationError);
+    expect(() => day.removeMealById('non-existent')).toThrow(
+      /Day.*No.*meal.*found.*id/
+    );
+  });
 });

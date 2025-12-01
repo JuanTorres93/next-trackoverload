@@ -27,7 +27,7 @@ describe('FileSystemDaysRepo', () => {
   afterEach(async () => {
     try {
       await fs.rm(testDir, { recursive: true, force: true });
-    } catch (error) {
+    } catch {
       // Directory might not exist
     }
   });
@@ -43,9 +43,7 @@ describe('FileSystemDaysRepo', () => {
     const allDays = await repo.getAllDays();
     expect(allDays.length).toBe(2);
 
-    const savedDay = allDays.find(
-      (d) => d.id.toISOString() === new Date('2023-10-02').toISOString()
-    );
+    const savedDay = allDays.find((d) => d.id === '20231002');
     expect(savedDay).toBeDefined();
   });
 
@@ -62,9 +60,9 @@ describe('FileSystemDaysRepo', () => {
   });
 
   it('should retrieve a day by ID', async () => {
-    const fetchedDay = await repo.getDayById('2023-10-01');
+    const fetchedDay = await repo.getDayById('20231001');
     expect(fetchedDay).not.toBeNull();
-    expect(fetchedDay?.id).toEqual(new Date('2023-10-01'));
+    expect(fetchedDay?.id).toEqual('20231001');
   });
 
   it('should retrieve days by user ID', async () => {
@@ -74,7 +72,7 @@ describe('FileSystemDaysRepo', () => {
   });
 
   it('should retrieve a day by ID and user ID', async () => {
-    const fetchedDay = await repo.getDayByIdAndUserId('2023-10-01', vp.userId);
+    const fetchedDay = await repo.getDayByIdAndUserId('20231001', vp.userId);
     expect(fetchedDay).not.toBeNull();
     expect(fetchedDay?.userId).toBe(vp.userId);
   });
@@ -94,10 +92,7 @@ describe('FileSystemDaysRepo', () => {
     await repo.saveDay(day2);
     await repo.saveDay(day3);
 
-    const daysInRange = await repo.getDaysByDateRange(
-      new Date('2023-10-01'),
-      new Date('2023-10-03')
-    );
+    const daysInRange = await repo.getDaysByDateRange('20231001', '20231003');
 
     expect(daysInRange.length).toBe(2);
   });
@@ -111,8 +106,8 @@ describe('FileSystemDaysRepo', () => {
     await repo.saveDay(day2);
 
     const daysInRange = await repo.getDaysByDateRangeAndUserId(
-      new Date('2023-10-01'),
-      new Date('2023-10-03'),
+      '20231001',
+      '20231003',
       vp.userId
     );
 
@@ -129,15 +124,15 @@ describe('FileSystemDaysRepo', () => {
     const allDays = await repo.getAllDays();
     expect(allDays.length).toBe(1);
 
-    await repo.deleteDay('2023-10-01');
+    await repo.deleteDay('20231001');
 
     const allDaysAfterDeletion = await repo.getAllDays();
     expect(allDaysAfterDeletion.length).toBe(0);
   });
 
   it('should persist day to filesystem with correct filename', async () => {
-    // Verify file exists with correct name (YYYY-MM-DD.json)
-    const fileName = '2023-10-01.json';
+    // Verify file exists with correct name (YYYYMMDD.json)
+    const fileName = '20231001.json';
     const filePath = path.join(testDir, fileName);
     const fileExists = await fs
       .access(filePath)

@@ -5,12 +5,13 @@ export interface DaysRepo {
   getAllDaysByUserId(userId: string): Promise<Day[]>;
   getDayById(id: string): Promise<Day | null>;
   getDayByIdAndUserId(id: string, userId: string): Promise<Day | null>;
-  getDaysByDateRange(startDate: Date, endDate: Date): Promise<Day[]>;
+  getDaysByDateRange(startDate: string, endDate: string): Promise<Day[]>;
   getDaysByDateRangeAndUserId(
-    startDate: Date,
-    endDate: Date,
+    startDate: string,
+    endDate: string,
     userId: string
   ): Promise<Day[]>;
   saveDay(day: Day): Promise<void>;
+  // TODO IMPORTANT: Refactor to remove day from user
   deleteDay(id: string): Promise<void>;
 }

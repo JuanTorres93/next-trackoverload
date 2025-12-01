@@ -3,6 +3,7 @@ import { MemoryDaysRepo } from '../MemoryDaysRepo';
 import { Day } from '@/domain/entities/day/Day';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import * as vp from '@/../tests/createProps';
+import { DayId } from '@/domain/value-objects/DayId/DayId';
 
 describe('MemoryDaysRepo', () => {
   let repo: MemoryDaysRepo;
@@ -22,16 +23,17 @@ describe('MemoryDaysRepo', () => {
   });
 
   it('should save a day', async () => {
+    const day = new Date('2023-10-02');
     const newDay = Day.create({
       ...vp.validDayProps(),
-      id: new Date('2023-10-02'),
+      id: day,
       meals: [fakeMeal],
     });
     await repo.saveDay(newDay);
 
     const allDays = await repo.getAllDays();
     expect(allDays.length).toBe(2);
-    expect(allDays[1].id).toEqual(new Date('2023-10-02'));
+    expect(allDays[1].id).toEqual(DayId.create(day).value);
   });
 
   it('should update an existing day', async () => {
@@ -47,13 +49,13 @@ describe('MemoryDaysRepo', () => {
   });
 
   it('should retrieve a day by ID', async () => {
-    const fetchedDay = await repo.getDayById('2023-10-01');
+    const fetchedDay = await repo.getDayById('20231001');
     expect(fetchedDay).not.toBeNull();
-    expect(fetchedDay?.id).toEqual(new Date('2023-10-01'));
+    expect(fetchedDay!.id).toEqual('20231001');
   });
 
   it('should return null for non-existent day ID', async () => {
-    const fetchedDay = await repo.getDayById('2023-12-31');
+    const fetchedDay = await repo.getDayById('20231101');
     expect(fetchedDay).toBeNull();
   });
 
@@ -61,8 +63,7 @@ describe('MemoryDaysRepo', () => {
     const allDays = await repo.getAllDays();
     expect(allDays.length).toBe(1);
 
-    await repo.deleteDay('2023-10-01');
-
+    await repo.deleteDay('20231001');
     const allDaysAfterDeletion = await repo.getAllDays();
     expect(allDaysAfterDeletion.length).toBe(0);
   });

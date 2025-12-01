@@ -34,3 +34,18 @@ export class DayId extends ValueObject<DayIdProps> {
     return this._value;
   }
 }
+
+export function stringDayIdToDate(dayId: string): Date {
+  if (!/^\d{8}$/.test(dayId)) {
+    throw new ValidationError(
+      'stringDayIdToDate: dayId must be in YYYYMMDD format'
+    );
+  }
+
+  const year = parseInt(dayId.slice(0, 4), 10);
+  // month must be human readable
+  const month = parseInt(dayId.slice(4, 6), 10) - 1; // Months are zero-indexed
+  const day = parseInt(dayId.slice(6, 8), 10);
+
+  return new Date(Date.UTC(year, month, day));
+}

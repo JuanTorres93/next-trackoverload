@@ -3,12 +3,12 @@ import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 
 export type GetDayNutritionalSummaryUsecaseRequest = {
-  date: Date;
+  date: string;
   userId: string;
 };
 
 export type DayNutritionalSummary = {
-  date: Date;
+  date: string;
   totalCalories: number;
   totalProtein: number;
   mealsCount: number;
@@ -28,15 +28,13 @@ export class GetDayNutritionalSummaryUsecase {
     }
 
     const day = await this.daysRepo.getDayByIdAndUserId(
-      request.date.toISOString(),
+      request.date,
       request.userId
     );
 
     if (!day) {
       throw new NotFoundError(
-        `GetDayNutritionalSummaryUsecase: Day not found for date ${request.date.toISOString()} and userId ${
-          request.userId
-        }`
+        `GetDayNutritionalSummaryUsecase: Day not found for date ${request.date} and userId ${request.userId}`
       );
     }
 

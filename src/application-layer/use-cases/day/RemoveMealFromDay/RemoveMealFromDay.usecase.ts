@@ -4,7 +4,7 @@ import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 
 export type RemoveMealFromDayUsecaseRequest = {
-  date: Date;
+  date: string;
   userId: string;
   mealId: string;
 };
@@ -21,14 +21,12 @@ export class RemoveMealFromDayUsecase {
     }
 
     const day = await this.daysRepo.getDayByIdAndUserId(
-      request.date.toISOString(),
+      request.date,
       request.userId
     );
     if (!day) {
       throw new ValidationError(
-        `RemoveMealFromDayUsecase: Day not found for date ${request.date.toISOString()} and userId ${
-          request.userId
-        }`
+        `RemoveMealFromDayUsecase: Day not found for date ${request.date} and userId ${request.userId}`
       );
     }
 

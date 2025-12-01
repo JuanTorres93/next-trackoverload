@@ -48,12 +48,12 @@ describe('GetDayNutritionalSummaryUsecase', () => {
     await daysRepo.saveDay(day);
 
     const result = await getDayNutritionalSummaryUsecase.execute({
-      date: vp.dateId,
+      date: day.id,
       userId,
     });
 
     expect(result).toEqual({
-      date: vp.dateId,
+      date: day.id,
       totalCalories: vp.validFakeMealProps.calories + fakeMeal2.calories, // 200 + 500
       totalProtein: vp.validFakeMealProps.protein + fakeMeal2.protein, // 30 + 30
       mealsCount: 2,
@@ -69,12 +69,12 @@ describe('GetDayNutritionalSummaryUsecase', () => {
     await daysRepo.saveDay(day);
 
     const result = await getDayNutritionalSummaryUsecase.execute({
-      date: vp.dateId,
+      date: day.id,
       userId,
     });
 
     expect(result).toEqual({
-      date: vp.dateId,
+      date: day.id,
       totalCalories: 0,
       totalProtein: 0,
       mealsCount: 0,
@@ -82,24 +82,35 @@ describe('GetDayNutritionalSummaryUsecase', () => {
   });
 
   it('should throw error if day does not exist', async () => {
-    const date = new Date('2023-10-01');
+    const date = '11111101';
 
     await expect(
       getDayNutritionalSummaryUsecase.execute({ date, userId })
     ).rejects.toThrow(NotFoundError);
+
+    await expect(
+      getDayNutritionalSummaryUsecase.execute({ date, userId })
+    ).rejects.toThrow(/GetDayNutritionalSummaryUsecase.*Day.*not.*found/);
   });
 
   it('should throw error if user does not exist', async () => {
+    const day = Day.create({
+      ...vp.validDayProps(),
+      meals: [],
+    });
+
+    await daysRepo.saveDay(day);
+
     await expect(
       getDayNutritionalSummaryUsecase.execute({
-        date: vp.dateId,
+        date: day.id,
         userId: 'non-existent',
       })
     ).rejects.toThrow(NotFoundError);
 
     await expect(
       getDayNutritionalSummaryUsecase.execute({
-        date: vp.dateId,
+        date: day.id,
         userId: 'non-existent',
       })
     ).rejects.toThrow(/GetDayNutritionalSummary.*User.*not.*found/);

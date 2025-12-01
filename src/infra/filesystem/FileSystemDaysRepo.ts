@@ -1,3 +1,4 @@
+import { stringDayIdToDate } from '@/domain/value-objects/DayId/DayId';
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { Day } from '@/domain/entities/day/Day';
 import { Meal } from '@/domain/entities/meal/Meal';
@@ -49,7 +50,7 @@ type FakeMealData = {
 };
 
 type DayData = {
-  id: string; // ISO string of the date
+  id: string; // YYYYMMDD
   userId: string;
   meals: (MealData | FakeMealData)[];
   createdAt: string;
@@ -73,8 +74,7 @@ export class FileSystemDaysRepo implements DaysRepo {
 
   private getFilePath(id: string): string {
     // Use ISO date string as filename
-    const date = new Date(id);
-    const fileName = date.toISOString().split('T')[0]; // YYYY-MM-DD
+    const fileName = id; // YYYY-MM-DD
     return path.join(this.daysDir, `${fileName}.json`);
   }
 
@@ -180,7 +180,7 @@ export class FileSystemDaysRepo implements DaysRepo {
 
   private serializeDay(day: Day): DayData {
     return {
-      id: day.id.toISOString(),
+      id: day.id,
       userId: day.userId,
       meals: day.meals.map((meal) =>
         meal instanceof Meal
@@ -194,7 +194,7 @@ export class FileSystemDaysRepo implements DaysRepo {
 
   private deserializeDay(data: DayData): Day {
     return Day.create({
-      id: new Date(data.id),
+      id: stringDayIdToDate(data.id),
       userId: data.userId,
       meals: data.meals.map((mealData) =>
         mealData.type === 'meal'
@@ -209,7 +209,7 @@ export class FileSystemDaysRepo implements DaysRepo {
   async saveDay(day: Day): Promise<void> {
     await this.ensureDataDir();
     const data = this.serializeDay(day);
-    const filePath = this.getFilePath(day.id.toISOString());
+    const filePath = this.getFilePath(day.id);
     await fs.writeFile(filePath, JSON.stringify(data, null, 2));
   }
 
@@ -260,26 +260,24 @@ export class FileSystemDaysRepo implements DaysRepo {
     return null;
   }
 
-  async getDaysByDateRange(startDate: Date, endDate: Date): Promise<Day[]> {
+  async getDaysByDateRange(startDate: string, endDate: string): Promise<Day[]> {
     const allDays = await this.getAllDays();
     return allDays.filter((day) => {
-      const dayTime = day.id.getTime();
-      return dayTime >= startDate.getTime() && dayTime <= endDate.getTime();
+      const dayTime = day.id;
+      return dayTime >= startDate && dayTime <= endDate;
     });
   }
 
   async getDaysByDateRangeAndUserId(
-    startDate: Date,
-    endDate: Date,
+    startDate: string,
+    endDate: string,
     userId: string
   ): Promise<Day[]> {
     const allDays = await this.getAllDays();
     return allDays.filter((day) => {
-      const dayTime = day.id.getTime();
+      const dayTime = day.id;
       return (
-        dayTime >= startDate.getTime() &&
-        dayTime <= endDate.getTime() &&
-        day.userId === userId
+        dayTime >= startDate && dayTime <= endDate && day.userId === userId
       );
     });
   }

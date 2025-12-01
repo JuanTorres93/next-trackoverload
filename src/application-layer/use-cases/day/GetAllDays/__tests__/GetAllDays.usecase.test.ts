@@ -40,8 +40,8 @@ describe('GetAllDaysUsecase', () => {
     const result = await getAllDaysUsecase.execute({ userId: vp.userId });
 
     expect(result).toHaveLength(2);
-    expect(result[0].id).toEqual(day1.id.toISOString());
-    expect(result[1].id).toEqual(day2.id.toISOString());
+    expect(result[0].id).toEqual(day1.id);
+    expect(result[1].id).toEqual(day2.id);
   });
 
   it('should return an array of DayDTOs', async () => {
