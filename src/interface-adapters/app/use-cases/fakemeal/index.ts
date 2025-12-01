@@ -2,9 +2,6 @@
 // FAKE MEAL USE CASES - CONFIGURED INSTANCES
 // =============================================================================
 
-// CREATE Operations
-export { AppCreateFakeMealUsecase } from './CreateFakeMeal/createFakeMeal';
-
 // READ Operations
 export { AppGetAllFakeMealsForUserUsecase } from './GetAllFakeMealsForUser/getAllFakeMealsForUser';
 export { AppGetFakeMealByIdForUserUsecase } from './GetFakeMealByIdForUser/getFakeMealByIdForUser';
