@@ -2,16 +2,16 @@ import { v4 as uuidv4 } from 'uuid';
 import { DayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
 import { NotFoundError } from '@/domain/common/errors';
 import { Day } from '@/domain/entities/day/Day';
-import { stringDayIdToDate } from '@/domain/value-objects/DayId/DayId';
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
+import { dayIdToDayMonthYear } from '@/domain/value-objects/DayId/DayId';
 
 export type AddMealToDayUsecaseRequest = {
-  date: string;
+  dayId: string;
   userId: string;
   recipeId: string;
 };
@@ -44,13 +44,13 @@ export class AddMealToDayUsecase {
     }
 
     let day = await this.daysRepo.getDayByIdAndUserId(
-      request.date,
+      request.dayId,
       request.userId
     );
 
     if (!day) {
       day = Day.create({
-        id: stringDayIdToDate(request.date),
+        ...dayIdToDayMonthYear(request.dayId),
         userId: request.userId,
         meals: [],
         createdAt: new Date(),

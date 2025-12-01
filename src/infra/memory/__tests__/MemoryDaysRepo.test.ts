@@ -1,9 +1,8 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { MemoryDaysRepo } from '../MemoryDaysRepo';
+import * as vp from '@/../tests/createProps';
 import { Day } from '@/domain/entities/day/Day';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import * as vp from '@/../tests/createProps';
-import { DayId } from '@/domain/value-objects/DayId/DayId';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { MemoryDaysRepo } from '../MemoryDaysRepo';
 
 describe('MemoryDaysRepo', () => {
   let repo: MemoryDaysRepo;
@@ -23,17 +22,18 @@ describe('MemoryDaysRepo', () => {
   });
 
   it('should save a day', async () => {
-    const day = new Date('2023-10-02');
     const newDay = Day.create({
       ...vp.validDayProps(),
-      id: day,
+      day: 2,
+      month: 10,
+      year: 2023,
       meals: [fakeMeal],
     });
     await repo.saveDay(newDay);
 
     const allDays = await repo.getAllDays();
     expect(allDays.length).toBe(2);
-    expect(allDays[1].id).toEqual(DayId.create(day).value);
+    expect(allDays[1].id).toEqual('20231002');
   });
 
   it('should update an existing day', async () => {

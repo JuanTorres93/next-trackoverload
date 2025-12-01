@@ -1,10 +1,10 @@
-import { stringDayIdToDate } from '@/domain/value-objects/DayId/DayId';
-import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { Day } from '@/domain/entities/day/Day';
-import { Meal } from '@/domain/entities/meal/Meal';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
+import { Meal } from '@/domain/entities/meal/Meal';
+import { DaysRepo } from '@/domain/repos/DaysRepo.port';
+import { dayIdToDayMonthYear } from '@/domain/value-objects/DayId/DayId';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -194,7 +194,7 @@ export class FileSystemDaysRepo implements DaysRepo {
 
   private deserializeDay(data: DayData): Day {
     return Day.create({
-      id: stringDayIdToDate(data.id),
+      ...dayIdToDayMonthYear(data.id),
       userId: data.userId,
       meals: data.meals.map((mealData) =>
         mealData.type === 'meal'

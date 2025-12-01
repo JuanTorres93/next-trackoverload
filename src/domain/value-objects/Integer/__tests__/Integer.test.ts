@@ -94,4 +94,44 @@ describe('Integer', () => {
       Integer.create(0, options);
     }).toThrow(/Integer.*zero/);
   });
+
+  it('should throw error if min not respected', async () => {
+    const options = { min: 10 };
+
+    expect(() => {
+      Integer.create(5, options);
+    }).toThrow(ValidationError);
+    expect(() => {
+      Integer.create(5, options);
+    }).toThrow(/Integer.*must.*greater/);
+  });
+
+  it('should allow creating Integer equal to min', async () => {
+    const options = { min: 10 };
+    const integerValue = 10;
+
+    const integer = Integer.create(integerValue, options);
+    expect(integer).toBeInstanceOf(Integer);
+    expect(integer.value).toBe(integerValue);
+  });
+
+  it('should throw error if max is not respected', async () => {
+    const options = { max: 20 };
+
+    expect(() => {
+      Integer.create(25, options);
+    }).toThrow(ValidationError);
+    expect(() => {
+      Integer.create(25, options);
+    }).toThrow(/Integer.*must.*less/);
+  });
+
+  it('should allow creating Integer equal to max', async () => {
+    const options = { max: 20 };
+    const integerValue = 20;
+
+    const integer = Integer.create(integerValue, options);
+    expect(integer).toBeInstanceOf(Integer);
+    expect(integer.value).toBe(integerValue);
+  });
 });

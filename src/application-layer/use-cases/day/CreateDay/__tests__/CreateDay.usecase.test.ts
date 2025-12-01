@@ -1,20 +1,19 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toDayDTO } from '@/application-layer/dtos/DayDTO';
+import { NotFoundError } from '@/domain/common/errors';
 import { Day } from '@/domain/entities/day/Day';
+import { User } from '@/domain/entities/user/User';
 import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { CreateDayUsecase } from '../CreateDay.usecase';
-import { User } from '@/domain/entities/user/User';
-import { NotFoundError } from '@/domain/common/errors';
 
 describe('CreateDayUsecase', () => {
   let daysRepo: MemoryDaysRepo;
   let usersRepo: MemoryUsersRepo;
   let createDayUsecase: CreateDayUsecase;
   let user: User;
-  const dayId = '20231001';
 
   beforeEach(async () => {
     daysRepo = new MemoryDaysRepo();
@@ -29,11 +28,16 @@ describe('CreateDayUsecase', () => {
   });
 
   it('should create and save a new day', async () => {
-    const request = { date: dayId, userId: vp.userId };
+    const request = {
+      day: vp.validDayProps().day,
+      month: vp.validDayProps().month,
+      year: vp.validDayProps().year,
+      userId: vp.userId,
+    };
 
     const day = await createDayUsecase.execute(request);
 
-    expect(day.id).toEqual(request.date);
+    expect(day.id).toEqual('20231001');
     expect(day.meals).toEqual([]);
     expect(day.calories).toBe(0);
     expect(day.protein).toBe(0);
@@ -47,7 +51,12 @@ describe('CreateDayUsecase', () => {
   });
 
   it('should return DayDTO', async () => {
-    const request = { date: dayId, userId: vp.userId };
+    const request = {
+      day: vp.validDayProps().day,
+      month: vp.validDayProps().month,
+      year: vp.validDayProps().year,
+      userId: vp.userId,
+    };
 
     const day = await createDayUsecase.execute(request);
 
@@ -59,19 +68,26 @@ describe('CreateDayUsecase', () => {
 
   it('should create a day with initial meals', async () => {
     const request = {
-      date: dayId,
+      day: vp.validDayProps().day,
+      month: vp.validDayProps().month,
+      year: vp.validDayProps().year,
       userId: vp.userId,
       meals: [],
     };
 
     const day = await createDayUsecase.execute(request);
 
-    expect(day.id).toEqual(request.date);
+    expect(day.id).toEqual('20231001');
     expect(day.meals).toEqual([]);
   });
 
   it('should throw error if user does not exist', async () => {
-    const request = { date: dayId, userId: 'non-existent' };
+    const request = {
+      day: vp.validDayProps().day,
+      month: vp.validDayProps().month,
+      year: vp.validDayProps().year,
+      userId: 'non-existent',
+    };
 
     await expect(createDayUsecase.execute(request)).rejects.toThrow(
       NotFoundError

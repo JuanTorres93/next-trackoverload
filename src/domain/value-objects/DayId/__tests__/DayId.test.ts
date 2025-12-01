@@ -1,137 +1,76 @@
 import { ValidationError } from '@/domain/common/errors';
-import { DayId, stringDayIdToDate } from '../DayId';
+import { DayId } from '../DayId';
 
 describe('DayId', () => {
   it('should create a valid DayId', async () => {
-    const idValue = new Date('2024-01-01');
-
-    const id = DayId.create(idValue);
+    const id = DayId.create({
+      day: 1,
+      month: 1,
+      year: 2024,
+    });
 
     expect(id).toBeInstanceOf(DayId);
     expect(id.value).toBe('20240101');
   });
 
-  it('should throw ValidationError if id is string', async () => {
-    const idValue = 'string-id';
-
-    expect(() => {
-      // @ts-expect-error testing invalid type
-      DayId.create(idValue);
-    }).toThrowError(ValidationError);
-
-    expect(() => {
-      // @ts-expect-error testing invalid type
-      DayId.create(idValue);
-    }).toThrowError(/date instance/i);
+  it('should throw ValidationError when day is 0', async () => {
+    expect(() => DayId.create({ day: 0, month: 1, year: 2024 })).toThrow(
+      ValidationError
+    );
   });
 
-  it('should throw ValidationError if id is null', async () => {
-    const idValue = null;
-
-    expect(() => {
-      // @ts-expect-error testing invalid type
-      DayId.create(idValue);
-    }).toThrowError(ValidationError);
-
-    expect(() => {
-      // @ts-expect-error testing invalid type
-      DayId.create(idValue);
-    }).toThrowError(/empty/i);
+  it('should throw ValidationError when day is 32', async () => {
+    expect(() => DayId.create({ day: 32, month: 1, year: 2024 })).toThrow(
+      ValidationError
+    );
   });
 
-  it('should throw ValidationError if id is undefined', async () => {
-    const idValue = undefined;
-
-    expect(() => {
-      // @ts-expect-error testing invalid type
-      DayId.create(idValue);
-    }).toThrowError(ValidationError);
-
-    expect(() => {
-      // @ts-expect-error testing invalid type
-      DayId.create(idValue);
-    }).toThrowError(/empty/i);
+  it('should throw ValidationError when month is 0', async () => {
+    expect(() => DayId.create({ day: 15, month: 0, year: 2024 })).toThrow(
+      ValidationError
+    );
   });
 
-  it('should throw ValidationError for number id', async () => {
-    const idValue = 123;
-
-    expect(() => {
-      // @ts-expect-error testing invalid type
-      DayId.create(idValue);
-    }).toThrowError(ValidationError);
-
-    expect(() => {
-      // @ts-expect-error testing invalid type
-      DayId.create(idValue);
-    }).toThrowError(/date instance/i);
+  it('should throw ValidationError when month is 13', async () => {
+    expect(() => DayId.create({ day: 15, month: 13, year: 2024 })).toThrow(
+      ValidationError
+    );
   });
 
-  it('should throw ValidationError for object id', async () => {
-    const idValue = { key: 'value' };
-
-    expect(() => {
-      // @ts-expect-error testing invalid type
-      DayId.create(idValue);
-    }).toThrowError(ValidationError);
-
-    expect(() => {
-      // @ts-expect-error testing invalid type
-      DayId.create(idValue);
-    }).toThrowError(/date instance/i);
+  it('should throw ValidationError when year is negative', async () => {
+    expect(() => DayId.create({ day: 15, month: 1, year: -1 })).toThrow(
+      ValidationError
+    );
   });
 
-  it('should throw ValidationError for array id', async () => {
-    const idValue = ['array'];
-
-    expect(() => {
-      // @ts-expect-error testing invalid type
-      DayId.create(idValue);
-    }).toThrowError(ValidationError);
-
-    expect(() => {
-      // @ts-expect-error testing invalid type
-      DayId.create(idValue);
-    }).toThrowError(/date instance/i);
+  it('should throw ValidationError when day is missing', async () => {
+    // @ts-expect-error Testing missing property
+    expect(() => DayId.create({ month: 1, year: 2024 })).toThrow(
+      ValidationError
+    );
   });
 
-  it('should throw ValidationError for boolean id', async () => {
-    const idValue = true;
-
-    expect(() => {
-      // @ts-expect-error testing invalid type
-      DayId.create(idValue);
-    }).toThrowError(ValidationError);
-
-    expect(() => {
-      // @ts-expect-error testing invalid type
-      DayId.create(idValue);
-    }).toThrowError(/date instance/i);
+  it('should throw ValidationError when month is missing', async () => {
+    // @ts-expect-error Testing missing property
+    expect(() => DayId.create({ day: 15, year: 2024 })).toThrow(
+      ValidationError
+    );
   });
 
-  describe('helper function', () => {
-    it('should correctly parse DayId string to Date', async () => {
-      const dayIdString = '20240615';
+  it('should throw ValidationError when year is missing', async () => {
+    // @ts-expect-error Testing missing property
+    expect(() => DayId.create({ day: 15, month: 1 })).toThrow(ValidationError);
+  });
 
-      const date = stringDayIdToDate(dayIdString);
+  it('should throw ValidationError when day is negative', async () => {
+    expect(() => DayId.create({ day: -5, month: 1, year: 2024 })).toThrow(
+      ValidationError
+    );
+  });
 
-      expect(date).toBeInstanceOf(Date);
-      expect(date.getUTCFullYear()).toBe(2024);
-      // Month is June (6th)
-      expect(date.getUTCMonth()).toBe(5); // Months are zero-indexed
-      expect(date.getUTCDate()).toBe(15);
-    });
-
-    it('should throw ValidationError for invalid DayId string', async () => {
-      const invalidDayIdString = '2024-06-15';
-
-      expect(() => {
-        stringDayIdToDate(invalidDayIdString);
-      }).toThrowError(ValidationError);
-
-      expect(() => {
-        stringDayIdToDate(invalidDayIdString);
-      }).toThrowError(/yyyyMMdd format/i);
-    });
+  it('should throw ValidationError when month is negative', async () => {
+    expect(() => DayId.create({ day: 15, month: -3, year: 2024 })).toThrow(
+      ValidationError
+    );
   });
 });

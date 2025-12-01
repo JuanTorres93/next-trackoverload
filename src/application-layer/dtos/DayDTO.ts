@@ -11,6 +11,9 @@ export type DayDTO = {
   calories: number;
   protein: number;
   createdAt: string;
+  day: number;
+  month: number;
+  year: number;
   updatedAt: string;
 };
 
@@ -29,6 +32,9 @@ export function toDayDTO(day: Day): DayDTO {
     }),
     calories: day.calories,
     protein: day.protein,
+    day: day.day,
+    month: day.month,
+    year: day.year,
     createdAt: day.createdAt.toISOString(),
     updatedAt: day.updatedAt.toISOString(),
   };

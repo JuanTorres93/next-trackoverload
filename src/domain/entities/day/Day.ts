@@ -1,19 +1,20 @@
+import { DayId } from '@/domain/value-objects/DayId/DayId';
+import { Id } from '@/domain/value-objects/Id/Id';
 import { ValidationError } from '../../common/errors';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 import {
-  validatePositiveNumber,
-  validateDate,
   validateNonEmptyString,
+  validatePositiveNumber,
 } from '../../common/validation';
-import { Meal } from '../meal/Meal';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { FakeMeal } from '../fakemeal/FakeMeal';
-import { Protein } from '../../interfaces/Protein';
 import { Calories } from '../../interfaces/Calories';
-import { DayId } from '@/domain/value-objects/DayId/DayId';
+import { Protein } from '../../interfaces/Protein';
+import { FakeMeal } from '../fakemeal/FakeMeal';
+import { Meal } from '../meal/Meal';
 
 export type DayCreateProps = {
-  id: Date;
+  day: number;
+  month: number;
+  year: number;
   userId: string;
   meals: (Meal | FakeMeal)[];
   createdAt: Date;
@@ -42,8 +43,6 @@ export class Day implements Protein, Calories {
   private constructor(private readonly props: DayProps) {}
 
   static create(props: DayCreateProps): Day {
-    validateDate(props.id, 'Day id');
-
     // Validate meals is instance of Meal or FakeMeal
     if (!Array.isArray(props.meals)) {
       throw new ValidationError('Day: meals must be an array');
@@ -53,7 +52,11 @@ export class Day implements Protein, Calories {
     }
 
     const dayProps: DayProps = {
-      id: DayId.create(props.id),
+      id: DayId.create({
+        day: props.day,
+        month: props.month,
+        year: props.year,
+      }),
       userId: Id.create(props.userId),
       meals: props.meals,
       createdAt: handleCreatedAt(props.createdAt),
@@ -97,6 +100,18 @@ export class Day implements Protein, Calories {
 
   get userId() {
     return this.props.userId.value;
+  }
+
+  get day() {
+    return this.props.id.day;
+  }
+
+  get month() {
+    return this.props.id.month;
+  }
+
+  get year() {
+    return this.props.id.year;
   }
 
   get meals() {

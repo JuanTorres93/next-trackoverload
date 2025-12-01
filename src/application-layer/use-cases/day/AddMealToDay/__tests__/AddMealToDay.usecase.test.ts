@@ -66,7 +66,7 @@ describe('AddMealToDayUsecase', () => {
 
   it('should add meal to existing day', async () => {
     const result = await addMealToDayUsecase.execute({
-      date: day.id,
+      dayId: day.id,
       userId: vp.userId,
       recipeId: recipe.id,
     });
@@ -80,7 +80,7 @@ describe('AddMealToDayUsecase', () => {
 
   it('should create new independent ingredient lines from recipe', async () => {
     const result = await addMealToDayUsecase.execute({
-      date: day.id,
+      dayId: day.id,
       userId: vp.userId,
       recipeId: recipe.id,
     });
@@ -109,7 +109,7 @@ describe('AddMealToDayUsecase', () => {
 
   it('should return DayDTO', async () => {
     const result = await addMealToDayUsecase.execute({
-      date: day.id,
+      dayId: day.id,
       userId: vp.userId,
       recipeId: recipe.id,
     });
@@ -120,25 +120,30 @@ describe('AddMealToDayUsecase', () => {
     }
   });
 
-  it('should create new day and add meal if day does not exist', async () => {
-    const dayId = '20231001';
-    expect(day.meals).toHaveLength(0);
+  it('should create new day if not exist and add meal ', async () => {
+    const currentDays = await daysRepo.getAllDays();
+    expect(currentDays.length).toBe(1);
+
+    const nonExistentdayId = '11110204';
 
     const result = await addMealToDayUsecase.execute({
-      date: dayId,
+      dayId: nonExistentdayId,
       userId: vp.userId,
       recipeId: recipe.id,
     });
 
-    expect(result.id).toEqual(dayId);
+    expect(result.id).toEqual(nonExistentdayId);
     expect(result.meals).toHaveLength(1);
+
+    const allDays = await daysRepo.getAllDays();
+    expect(allDays.length).toBe(2);
   });
 
   it('should create new meal', async () => {
     expect(day.meals).toHaveLength(0);
 
     const result = await addMealToDayUsecase.execute({
-      date: day.id,
+      dayId: day.id,
       userId: vp.userId,
       recipeId: recipe.id,
     });
@@ -152,7 +157,7 @@ describe('AddMealToDayUsecase', () => {
 
     await expect(
       addMealToDayUsecase.execute({
-        date,
+        dayId: date,
         userId: nonExistentUserId,
         recipeId: recipe.id,
       })
@@ -160,7 +165,7 @@ describe('AddMealToDayUsecase', () => {
 
     await expect(
       addMealToDayUsecase.execute({
-        date,
+        dayId: date,
         userId: nonExistentUserId,
         recipeId: recipe.id,
       })
@@ -170,7 +175,7 @@ describe('AddMealToDayUsecase', () => {
   it('should throw error if recipe does not exist', async () => {
     await expect(
       addMealToDayUsecase.execute({
-        date: day.id,
+        dayId: day.id,
         userId: vp.userId,
         recipeId: 'non-existent-recipe',
       })
@@ -178,7 +183,7 @@ describe('AddMealToDayUsecase', () => {
 
     await expect(
       addMealToDayUsecase.execute({
-        date: day.id,
+        dayId: day.id,
         userId: vp.userId,
         recipeId: 'non-existent-recipe',
       })

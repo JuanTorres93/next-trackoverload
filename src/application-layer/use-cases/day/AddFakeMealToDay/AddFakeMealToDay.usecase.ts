@@ -1,15 +1,15 @@
-import { v4 as uuidv4 } from 'uuid';
 import { DayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
 import { NotFoundError } from '@/domain/common/errors';
-import { stringDayIdToDate } from '@/domain/value-objects/DayId/DayId';
 import { Day } from '@/domain/entities/day/Day';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
+import { dayIdToDayMonthYear } from '@/domain/value-objects/DayId/DayId';
+import { v4 as uuidv4 } from 'uuid';
 
 export type AddFakeMealToDayUsecaseRequest = {
-  date: string;
+  dayId: string;
   userId: string;
   name: string;
   calories: number;
@@ -32,12 +32,13 @@ export class AddFakeMealToDayUsecase {
     }
 
     let day = await this.daysRepo.getDayByIdAndUserId(
-      request.date,
+      request.dayId,
       request.userId
     );
+
     if (!day) {
       day = Day.create({
-        id: stringDayIdToDate(request.date),
+        ...dayIdToDayMonthYear(request.dayId),
         userId: request.userId,
         meals: [],
         createdAt: new Date(),

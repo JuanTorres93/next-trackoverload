@@ -1,14 +1,15 @@
-import { DaysRepo } from '@/domain/repos/DaysRepo.port';
-import { stringDayIdToDate } from '@/domain/value-objects/DayId/DayId';
-import { UsersRepo } from '@/domain/repos/UsersRepo.port';
-import { Day } from '@/domain/entities/day/Day';
 import { DayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
-import { Meal } from '@/domain/entities/meal/Meal';
-import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { NotFoundError } from '@/domain/common/errors';
+import { Day } from '@/domain/entities/day/Day';
+import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { Meal } from '@/domain/entities/meal/Meal';
+import { DaysRepo } from '@/domain/repos/DaysRepo.port';
+import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 
 export type CreateDayUsecaseRequest = {
-  date: string;
+  day: number;
+  month: number;
+  year: number;
   userId: string;
   meals?: (Meal | FakeMeal)[];
 };
@@ -25,7 +26,9 @@ export class CreateDayUsecase {
     }
 
     const newDay = Day.create({
-      id: stringDayIdToDate(request.date),
+      day: request.day,
+      month: request.month,
+      year: request.year,
       userId: request.userId,
       meals: request.meals || [],
       createdAt: new Date(),

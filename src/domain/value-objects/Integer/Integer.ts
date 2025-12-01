@@ -8,6 +8,8 @@ type IntegerProps = {
 type IntegerOptions = {
   onlyPositive?: boolean;
   canBeZero?: boolean;
+  min?: number;
+  max?: number;
 };
 
 export class Integer extends ValueObject<IntegerProps> {
@@ -35,6 +37,18 @@ export class Integer extends ValueObject<IntegerProps> {
 
     if (options?.canBeZero === false && value === 0) {
       throw new ValidationError('Integer: value cannot be zero');
+    }
+
+    if (options?.min !== undefined && value < options.min) {
+      throw new ValidationError(
+        `Integer: value must be greater than or equal to ${options.min}`
+      );
+    }
+
+    if (options?.max !== undefined && value > options.max) {
+      throw new ValidationError(
+        `Integer: value must be less than or equal to ${options.max}`
+      );
     }
 
     return new Integer({ value });

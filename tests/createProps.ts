@@ -5,7 +5,9 @@ export const dateId = new Date('2023-10-01');
 
 export function validDayProps() {
   return {
-    id: dateId,
+    day: 1,
+    month: 10,
+    year: 2023,
     userId: userId,
     meals: [],
     createdAt: new Date(),

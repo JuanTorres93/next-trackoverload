@@ -146,4 +146,22 @@ describe('Day', () => {
       /Day.*No.*meal.*found.*id/
     );
   });
+
+  it('should return its day', async () => {
+    expect(day).toHaveProperty('day');
+    expect(typeof day.day).toBe('number');
+    expect(day.day).toBe(vp.validDayProps().day);
+  });
+
+  it('should return its month', async () => {
+    expect(day).toHaveProperty('month');
+    expect(typeof day.month).toBe('number');
+    expect(day.month).toBe(vp.validDayProps().month);
+  });
+
+  it('should return its year', async () => {
+    expect(day).toHaveProperty('year');
+    expect(typeof day.year).toBe('number');
+    expect(day.year).toBe(vp.validDayProps().year);
+  });
 });

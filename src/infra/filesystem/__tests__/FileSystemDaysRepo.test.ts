@@ -35,7 +35,9 @@ describe('FileSystemDaysRepo', () => {
   it('should save a day', async () => {
     const newDay = Day.create({
       ...vp.validDayProps(),
-      id: new Date('2023-10-02'),
+      day: 2,
+      month: 10,
+      year: 1111,
       meals: [fakeMeal],
     });
     await repo.saveDay(newDay);
@@ -43,7 +45,7 @@ describe('FileSystemDaysRepo', () => {
     const allDays = await repo.getAllDays();
     expect(allDays.length).toBe(2);
 
-    const savedDay = allDays.find((d) => d.id === '20231002');
+    const savedDay = allDays.find((d) => d.id === '11111002');
     expect(savedDay).toBeDefined();
   });
 
@@ -81,12 +83,16 @@ describe('FileSystemDaysRepo', () => {
     // Add more days
     const day2 = Day.create({
       ...vp.validDayProps(),
-      id: new Date('2023-10-02'),
+      day: 2,
+      month: 10,
+      year: 2023,
       meals: [fakeMeal],
     });
     const day3 = Day.create({
       ...vp.validDayProps(),
-      id: new Date('2023-10-05'),
+      day: 5,
+      month: 10,
+      year: 2023,
       meals: [fakeMeal],
     });
     await repo.saveDay(day2);
@@ -100,7 +106,9 @@ describe('FileSystemDaysRepo', () => {
   it('should retrieve days by date range and user ID', async () => {
     const day2 = Day.create({
       ...vp.validDayProps(),
-      id: new Date('2023-10-02'),
+      day: 2,
+      month: 10,
+      year: 2023,
       meals: [fakeMeal],
     });
     await repo.saveDay(day2);

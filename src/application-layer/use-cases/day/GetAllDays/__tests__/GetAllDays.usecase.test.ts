@@ -8,6 +8,24 @@ import { NotFoundError } from '@/domain/common/errors';
 
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+let day1: Day;
+let day2: Day;
+
+async function createDays(daysRepo: MemoryDaysRepo) {
+  day1 = Day.create({
+    ...vp.validDayProps(),
+  });
+
+  day2 = Day.create({
+    ...vp.validDayProps(),
+    day: 2,
+    month: 10,
+    year: 2023,
+  });
+
+  await daysRepo.saveDay(day1);
+  await daysRepo.saveDay(day2);
+}
 
 describe('GetAllDaysUsecase', () => {
   let daysRepo: MemoryDaysRepo;
@@ -27,16 +45,7 @@ describe('GetAllDaysUsecase', () => {
   });
 
   it('should return all days', async () => {
-    const day1 = Day.create({
-      ...vp.validDayProps(),
-    });
-    const day2 = Day.create({
-      ...vp.validDayProps(),
-      id: new Date('2023-10-02'),
-    });
-    await daysRepo.saveDay(day1);
-    await daysRepo.saveDay(day2);
-
+    await createDays(daysRepo);
     const result = await getAllDaysUsecase.execute({ userId: vp.userId });
 
     expect(result).toHaveLength(2);
@@ -45,15 +54,7 @@ describe('GetAllDaysUsecase', () => {
   });
 
   it('should return an array of DayDTOs', async () => {
-    const day1 = Day.create({
-      ...vp.validDayProps(),
-    });
-    const day2 = Day.create({
-      ...vp.validDayProps(),
-      id: new Date('2023-10-02'),
-    });
-    await daysRepo.saveDay(day1);
-    await daysRepo.saveDay(day2);
+    await createDays(daysRepo);
 
     const result = await getAllDaysUsecase.execute({ userId: vp.userId });
 
@@ -77,6 +78,7 @@ describe('GetAllDaysUsecase', () => {
   });
 
   it('should throw error if user does not exist', async () => {
+    await createDays(daysRepo);
     await expect(
       getAllDaysUsecase.execute({ userId: 'non-existent' })
     ).rejects.toThrow(NotFoundError);

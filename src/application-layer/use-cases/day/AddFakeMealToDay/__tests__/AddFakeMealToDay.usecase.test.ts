@@ -51,7 +51,7 @@ describe('AddFakeMealToDayUsecase', () => {
     expect(day.meals).toHaveLength(0);
 
     const result = await addFakeMealToDayUsecase.execute({
-      date: day.id,
+      dayId: day.id,
       userId: user.id,
       name: vp.validFakeMealProps.name,
       calories: vp.validFakeMealProps.calories,
@@ -63,7 +63,7 @@ describe('AddFakeMealToDayUsecase', () => {
 
   it('should return DayDTO', async () => {
     const result = await addFakeMealToDayUsecase.execute({
-      date: day.id,
+      dayId: day.id,
       userId: user.id,
       name: vp.validFakeMealProps.name,
       calories: vp.validFakeMealProps.calories,
@@ -81,17 +81,17 @@ describe('AddFakeMealToDayUsecase', () => {
     const currentDays = await daysRepo.getAllDays();
     expect(currentDays).toHaveLength(1);
 
-    const date = '20230606';
+    const dayId = '11110606';
 
     const result = await addFakeMealToDayUsecase.execute({
-      date,
+      dayId,
       userId: user.id,
       name: vp.validFakeMealProps.name,
       calories: vp.validFakeMealProps.calories,
       protein: vp.validFakeMealProps.protein,
     });
 
-    expect(result.id).toEqual(date);
+    expect(result.id).toEqual(dayId);
     expect(result.meals).toHaveLength(1);
     const afterDays = await daysRepo.getAllDays();
     expect(afterDays).toHaveLength(2);
@@ -102,7 +102,7 @@ describe('AddFakeMealToDayUsecase', () => {
     expect(currentFakeMealCount).toHaveLength(0);
 
     await addFakeMealToDayUsecase.execute({
-      date: day.id,
+      dayId: day.id,
       userId: user.id,
       name: vp.validFakeMealProps.name,
       calories: vp.validFakeMealProps.calories,
@@ -116,7 +116,7 @@ describe('AddFakeMealToDayUsecase', () => {
   it('should throw error if user does not exist', async () => {
     await expect(
       addFakeMealToDayUsecase.execute({
-        date: day.id,
+        dayId: day.id,
         userId: 'non-existent',
         name: vp.validFakeMealProps.name,
         calories: vp.validFakeMealProps.calories,
@@ -126,7 +126,7 @@ describe('AddFakeMealToDayUsecase', () => {
 
     await expect(
       addFakeMealToDayUsecase.execute({
-        date: day.id,
+        dayId: day.id,
         userId: 'non-existent',
         name: vp.validFakeMealProps.name,
         calories: vp.validFakeMealProps.calories,
