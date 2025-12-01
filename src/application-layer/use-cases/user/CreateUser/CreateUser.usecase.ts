@@ -12,6 +12,7 @@ export class CreateUserUsecase {
   constructor(private usersRepo: UsersRepo) {}
 
   async execute(request: CreateUserUsecaseRequest): Promise<UserDTO> {
+    // TODO IMPORTANT. When implementing user fully, check for existing user and prevent duplicates.
     const newUser = User.create({
       id: uuidv4(),
       name: request.name,

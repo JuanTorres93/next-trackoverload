@@ -8,6 +8,7 @@ import { IngredientLineCreateProps } from '@/domain/entities/ingredientline/Ingr
 import { Meal } from '@/domain/entities/meal/Meal';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
+import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 
@@ -24,12 +25,20 @@ export class UpdateIngredientLineUsecase {
   constructor(
     private ingredientsRepo: IngredientsRepo,
     private recipesRepo: RecipesRepo,
-    private mealsRepo: MealsRepo
+    private mealsRepo: MealsRepo,
+    private usersRepo: UsersRepo
   ) {}
 
   async execute(
     request: UpdateIngredientLineUsecaseRequest
   ): Promise<IngredientLineDTO> {
+    const user = await this.usersRepo.getUserById(request.userId);
+    if (!user) {
+      throw new NotFoundError(
+        `UpdateIngredientLineUsecase: User with id ${request.userId} not found`
+      );
+    }
+
     // Get parent entity from repo
     let parentEntity: Recipe | Meal | null = null;
 

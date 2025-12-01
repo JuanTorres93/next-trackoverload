@@ -8,6 +8,8 @@ import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
 import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
+import { User } from '@/domain/entities/user/User';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { UpdateIngredientLineUsecase } from '../UpdateIngredientLine.usecase';
 
@@ -15,12 +17,15 @@ describe('UpdateIngredientLineUsecase', () => {
   let ingredientsRepo: MemoryIngredientsRepo;
   let recipesRepo: MemoryRecipesRepo;
   let mealsRepo: MemoryMealsRepo;
+  let usersRepo: MemoryUsersRepo;
   let updateIngredientLineUsecase: UpdateIngredientLineUsecase;
   let testIngredientLine: IngredientLine;
   let testIngredient: Ingredient;
   let alternativeIngredient: Ingredient;
   let testRecipe: Recipe;
   let testMeal: Meal;
+  let user: User;
+  let anotherUser: User;
   const userId = 'test-user-id';
   const anotherUserId = 'another-user-id';
 
@@ -28,11 +33,22 @@ describe('UpdateIngredientLineUsecase', () => {
     ingredientsRepo = new MemoryIngredientsRepo();
     recipesRepo = new MemoryRecipesRepo();
     mealsRepo = new MemoryMealsRepo();
+    usersRepo = new MemoryUsersRepo();
     updateIngredientLineUsecase = new UpdateIngredientLineUsecase(
       ingredientsRepo,
       recipesRepo,
-      mealsRepo
+      mealsRepo,
+      usersRepo
     );
+
+    user = User.create({
+      ...vp.validUserProps,
+      id: userId,
+    });
+    anotherUser = User.create({
+      ...vp.validUserProps,
+      id: anotherUserId,
+    });
 
     testIngredient = Ingredient.create({
       ...vp.validIngredientProps,
@@ -65,6 +81,8 @@ describe('UpdateIngredientLineUsecase', () => {
     });
 
     // Save entities to repos
+    await usersRepo.saveUser(user);
+    await usersRepo.saveUser(anotherUser);
     await ingredientsRepo.saveIngredient(testIngredient);
     await ingredientsRepo.saveIngredient(alternativeIngredient);
     await recipesRepo.saveRecipe(testRecipe);
@@ -245,5 +263,47 @@ describe('UpdateIngredientLineUsecase', () => {
         updateIngredientLineUsecase.execute(request)
       ).rejects.toThrow(AuthError);
     });
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      updateIngredientLineUsecase.execute({
+        userId: 'non-existent',
+        parentEntityType: 'recipe',
+        parentEntityId: testRecipe.id,
+        ingredientLineId: testIngredientLine.id,
+        quantityInGrams: 300,
+      })
+    ).rejects.toThrow(NotFoundError);
+
+    await expect(
+      updateIngredientLineUsecase.execute({
+        userId: 'non-existent',
+        parentEntityType: 'recipe',
+        parentEntityId: testRecipe.id,
+        ingredientLineId: testIngredientLine.id,
+        quantityInGrams: 300,
+      })
+    ).rejects.toThrow(/UpdateIngredientLine.*User.*not.*found/);
+
+    await expect(
+      updateIngredientLineUsecase.execute({
+        userId: 'non-existent',
+        parentEntityType: 'meal',
+        parentEntityId: testMeal.id,
+        ingredientLineId: testIngredientLine.id,
+        quantityInGrams: 300,
+      })
+    ).rejects.toThrow(NotFoundError);
+
+    await expect(
+      updateIngredientLineUsecase.execute({
+        userId: 'non-existent',
+        parentEntityType: 'meal',
+        parentEntityId: testMeal.id,
+        ingredientLineId: testIngredientLine.id,
+        quantityInGrams: 300,
+      })
+    ).rejects.toThrow(/UpdateIngredientLine.*User.*not.*found/);
   });
 });
