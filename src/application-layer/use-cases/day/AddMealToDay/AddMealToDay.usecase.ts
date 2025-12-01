@@ -1,21 +1,26 @@
+import { v4 as uuidv4 } from 'uuid';
 import { DayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
 import { NotFoundError } from '@/domain/common/errors';
 import { Day } from '@/domain/entities/day/Day';
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
+import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
+import { Meal } from '@/domain/entities/meal/Meal';
+import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 
 export type AddMealToDayUsecaseRequest = {
   date: Date;
   userId: string;
-  mealId: string;
+  recipeId: string;
 };
 
 export class AddMealToDayUsecase {
   constructor(
     private daysRepo: DaysRepo,
     private mealsRepo: MealsRepo,
-    private usersRepo: UsersRepo
+    private usersRepo: UsersRepo,
+    private recipesRepo: RecipesRepo
   ) {}
 
   async execute(request: AddMealToDayUsecaseRequest): Promise<DayDTO> {
@@ -26,14 +31,14 @@ export class AddMealToDayUsecase {
       );
     }
 
-    const meal = await this.mealsRepo.getMealByIdForUser(
-      request.mealId,
+    const recipe = await this.recipesRepo.getRecipeByIdAndUserId(
+      request.recipeId,
       request.userId
     );
 
-    if (!meal) {
+    if (!recipe) {
       throw new NotFoundError(
-        `AddMealToDayUsecase: meal with id ${request.mealId} not found`
+        `AddMealToDayUsecase: Recipe with id ${request.recipeId} not found`
       );
     }
 
@@ -43,7 +48,6 @@ export class AddMealToDayUsecase {
     );
 
     if (!day) {
-      // NOTE: date and userId are validated in the entity
       day = Day.create({
         id: request.date,
         userId: request.userId,
@@ -53,7 +57,32 @@ export class AddMealToDayUsecase {
       });
     }
 
+    const newMealId = uuidv4();
+
+    const mealIngredientLines = recipe.ingredientLines.map((line) =>
+      IngredientLine.create({
+        id: uuidv4(),
+        parentId: newMealId,
+        parentType: 'meal',
+        ingredient: line.ingredient,
+        quantityInGrams: line.quantityInGrams,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+    );
+
+    const meal = Meal.create({
+      id: newMealId,
+      userId: request.userId,
+      name: recipe.name,
+      ingredientLines: mealIngredientLines,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
     day.addMeal(meal);
+
+    await this.mealsRepo.saveMeal(meal);
     await this.daysRepo.saveDay(day);
 
     return toDayDTO(day);

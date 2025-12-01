@@ -4,7 +4,6 @@
 
 // CREATE Operations
 export { AppCreateRecipeUsecase } from './CreateRecipe/createRecipe';
-export { AppCreateMealFromRecipeUsecase } from './CreateMealFromRecipe/createMealFromRecipe';
 export { AppDuplicateRecipeUsecase } from './DuplicateRecipe/duplicateRecipe';
 
 // READ Operations
