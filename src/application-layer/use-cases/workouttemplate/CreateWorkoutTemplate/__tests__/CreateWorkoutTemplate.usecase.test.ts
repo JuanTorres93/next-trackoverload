@@ -1,27 +1,39 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { CreateWorkoutTemplateUsecase } from '../CreateWorkoutTemplate.usecase';
 import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
+import { NotFoundError } from '@/domain/common/errors';
+import { User } from '@/domain/entities/user/User';
 import * as dto from '@/../tests/dtoProperties';
+import * as vp from '@/../tests/createProps';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 
 describe('CreateWorkoutTemplateUsecase', () => {
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
+  let usersRepo: MemoryUsersRepo;
   let usecase: CreateWorkoutTemplateUsecase;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     workoutTemplatesRepo = new MemoryWorkoutTemplatesRepo();
-    usecase = new CreateWorkoutTemplateUsecase(workoutTemplatesRepo);
+    usersRepo = new MemoryUsersRepo();
+    usecase = new CreateWorkoutTemplateUsecase(workoutTemplatesRepo, usersRepo);
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+    await usersRepo.saveUser(user);
   });
 
   it('should create a new workout template with the given name', async () => {
     const request = {
-      userId: 'user1',
+      userId: vp.userId,
       name: 'Push Day',
     };
 
     const result = await usecase.execute(request);
 
-    expect(result.userId).toBe('user1');
+    expect(result.userId).toBe(vp.userId);
     expect(result.name).toBe('Push Day');
     expect(result.exercises).toEqual([]);
     expect(result.id).toBeDefined();
@@ -29,7 +41,7 @@ describe('CreateWorkoutTemplateUsecase', () => {
 
   it('should return a WorkoutTemplateDTO', async () => {
     const request = {
-      userId: 'user1',
+      userId: vp.userId,
       name: 'Leg Day',
     };
 
@@ -43,7 +55,7 @@ describe('CreateWorkoutTemplateUsecase', () => {
 
   it('should save the workout template in the repository', async () => {
     const request = {
-      userId: 'user1',
+      userId: vp.userId,
       name: 'Pull Day',
     };
 
@@ -53,7 +65,23 @@ describe('CreateWorkoutTemplateUsecase', () => {
       result.id
     );
     expect(savedTemplate).not.toBeNull();
-    expect(savedTemplate!.userId).toBe('user1');
+    expect(savedTemplate!.userId).toBe(vp.userId);
     expect(savedTemplate!.name).toBe('Pull Day');
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      usecase.execute({
+        userId: 'non-existent',
+        name: 'Push Day',
+      })
+    ).rejects.toThrow(NotFoundError);
+
+    await expect(
+      usecase.execute({
+        userId: 'non-existent',
+        name: 'Push Day',
+      })
+    ).rejects.toThrow(/CreateWorkoutTemplateUsecase.*User.*not.*found/);
   });
 });

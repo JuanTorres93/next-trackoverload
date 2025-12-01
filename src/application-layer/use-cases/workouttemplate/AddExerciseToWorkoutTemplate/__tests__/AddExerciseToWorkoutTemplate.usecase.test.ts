@@ -2,8 +2,10 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { AddExerciseToWorkoutTemplateUsecase } from '../AddExerciseToWorkoutTemplate.usecase';
 import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
 import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
+import { User } from '@/domain/entities/user/User';
 import { NotFoundError } from '@/domain/common/errors';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
@@ -12,16 +14,23 @@ import * as dto from '@/../tests/dtoProperties';
 describe('AddExerciseToWorkoutTemplateUsecase', () => {
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
   let exercisesRepo: MemoryExercisesRepo;
+  let usersRepo: MemoryUsersRepo;
   let usecase: AddExerciseToWorkoutTemplateUsecase;
   let existingTemplate: WorkoutTemplate;
+  let user: User;
 
   beforeEach(async () => {
     workoutTemplatesRepo = new MemoryWorkoutTemplatesRepo();
     exercisesRepo = new MemoryExercisesRepo();
+    usersRepo = new MemoryUsersRepo();
     usecase = new AddExerciseToWorkoutTemplateUsecase(
       workoutTemplatesRepo,
-      exercisesRepo
+      exercisesRepo,
+      usersRepo
     );
+
+    user = User.create({ ...vp.validUserProps });
+    await usersRepo.saveUser(user);
 
     // Create the exercises that will be used in tests
     const benchPressExercise = Exercise.create({
@@ -158,5 +167,25 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
     };
 
     await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      usecase.execute({
+        userId: 'non-existent',
+        workoutTemplateId: vp.validWorkoutTemplateProps().id,
+        exerciseId: 'bench-press',
+        sets: 3,
+      })
+    ).rejects.toThrow(NotFoundError);
+
+    await expect(
+      usecase.execute({
+        userId: 'non-existent',
+        workoutTemplateId: vp.validWorkoutTemplateProps().id,
+        exerciseId: 'bench-press',
+        sets: 3,
+      })
+    ).rejects.toThrow(/AddExerciseToWorkoutTemplateUsecase.*User.*not.*found/);
   });
 });

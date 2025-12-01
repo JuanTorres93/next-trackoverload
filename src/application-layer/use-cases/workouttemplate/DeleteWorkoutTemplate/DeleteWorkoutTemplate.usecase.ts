@@ -1,4 +1,5 @@
 import { NotFoundError } from '@/domain/common/errors';
+import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
 
 export type DeleteWorkoutTemplateUsecaseRequest = {
@@ -7,9 +8,19 @@ export type DeleteWorkoutTemplateUsecaseRequest = {
 };
 
 export class DeleteWorkoutTemplateUsecase {
-  constructor(private workoutTemplatesRepo: WorkoutTemplatesRepo) {}
+  constructor(
+    private workoutTemplatesRepo: WorkoutTemplatesRepo,
+    private usersRepo: UsersRepo
+  ) {}
 
   async execute(request: DeleteWorkoutTemplateUsecaseRequest): Promise<void> {
+    const user = await this.usersRepo.getUserById(request.userId);
+    if (!user) {
+      throw new NotFoundError(
+        `DeleteWorkoutTemplateUsecase: User with id ${request.userId} not found`
+      );
+    }
+
     const workoutTemplate =
       await this.workoutTemplatesRepo.getWorkoutTemplateByIdAndUserId(
         request.id,

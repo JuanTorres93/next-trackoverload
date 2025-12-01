@@ -1,18 +1,32 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toWorkoutDTO } from '@/application-layer/dtos/WorkoutDTO';
+import { NotFoundError } from '@/domain/common/errors';
+import { User } from '@/domain/entities/user/User';
 import { Workout } from '@/domain/entities/workout/Workout';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetWorkoutByIdForUserUsecase } from '../GetWorkoutByIdForUser.usecase';
 
 describe('GetWorkoutByIdUsecase', () => {
   let workoutsRepo: MemoryWorkoutsRepo;
+  let usersRepo: MemoryUsersRepo;
   let getWorkoutByIdUsecase: GetWorkoutByIdForUserUsecase;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     workoutsRepo = new MemoryWorkoutsRepo();
-    getWorkoutByIdUsecase = new GetWorkoutByIdForUserUsecase(workoutsRepo);
+    usersRepo = new MemoryUsersRepo();
+    getWorkoutByIdUsecase = new GetWorkoutByIdForUserUsecase(
+      workoutsRepo,
+      usersRepo
+    );
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+    await usersRepo.saveUser(user);
   });
 
   it('should return workout when it exists', async () => {
@@ -59,5 +73,21 @@ describe('GetWorkoutByIdUsecase', () => {
     });
 
     expect(result).toBeNull();
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      getWorkoutByIdUsecase.execute({
+        id: vp.validWorkoutProps.id,
+        userId: 'non-existent',
+      })
+    ).rejects.toThrow(NotFoundError);
+
+    await expect(
+      getWorkoutByIdUsecase.execute({
+        id: vp.validWorkoutProps.id,
+        userId: 'non-existent',
+      })
+    ).rejects.toThrow(/GetWorkoutByIdForUserUsecase.*User.*not.*found/);
   });
 });

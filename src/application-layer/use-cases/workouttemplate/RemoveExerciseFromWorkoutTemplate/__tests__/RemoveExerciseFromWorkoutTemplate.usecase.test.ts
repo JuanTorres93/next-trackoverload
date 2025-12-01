@@ -1,20 +1,29 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { RemoveExerciseFromWorkoutTemplateUsecase } from '../RemoveExerciseFromWorkoutTemplate.usecase';
 import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
+import { User } from '@/domain/entities/user/User';
 import { NotFoundError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 
 describe('RemoveExerciseFromWorkoutTemplateUsecase', () => {
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
+  let usersRepo: MemoryUsersRepo;
   let usecase: RemoveExerciseFromWorkoutTemplateUsecase;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     workoutTemplatesRepo = new MemoryWorkoutTemplatesRepo();
+    usersRepo = new MemoryUsersRepo();
     usecase = new RemoveExerciseFromWorkoutTemplateUsecase(
-      workoutTemplatesRepo
+      workoutTemplatesRepo,
+      usersRepo
     );
+
+    user = User.create({ ...vp.validUserProps });
+    await usersRepo.saveUser(user);
   });
 
   it('should remove exercise from workout template', async () => {
@@ -128,5 +137,25 @@ describe('RemoveExerciseFromWorkoutTemplateUsecase', () => {
     };
 
     await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      usecase.execute({
+        workoutTemplateId: vp.validWorkoutTemplateProps().id,
+        userId: 'non-existent',
+        exerciseId: vp.validWorkoutTemplateProps().exercises[0].exerciseId,
+      })
+    ).rejects.toThrow(NotFoundError);
+
+    await expect(
+      usecase.execute({
+        workoutTemplateId: vp.validWorkoutTemplateProps().id,
+        userId: 'non-existent',
+        exerciseId: vp.validWorkoutTemplateProps().exercises[0].exerciseId,
+      })
+    ).rejects.toThrow(
+      /RemoveExerciseFromWorkoutTemplateUsecase.*User.*not.*found/
+    );
   });
 });

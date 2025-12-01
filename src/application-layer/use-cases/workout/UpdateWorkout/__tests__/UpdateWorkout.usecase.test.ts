@@ -1,18 +1,28 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError } from '@/domain/common/errors';
+import { User } from '@/domain/entities/user/User';
 import { Workout } from '@/domain/entities/workout/Workout';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { UpdateWorkoutUsecase } from '../UpdateWorkout.usecase';
 
 describe('UpdateWorkoutUsecase', () => {
   let workoutsRepo: MemoryWorkoutsRepo;
+  let usersRepo: MemoryUsersRepo;
   let updateWorkoutUsecase: UpdateWorkoutUsecase;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     workoutsRepo = new MemoryWorkoutsRepo();
-    updateWorkoutUsecase = new UpdateWorkoutUsecase(workoutsRepo);
+    usersRepo = new MemoryUsersRepo();
+    updateWorkoutUsecase = new UpdateWorkoutUsecase(workoutsRepo, usersRepo);
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+    await usersRepo.saveUser(user);
   });
 
   it('should update workout name', async () => {
@@ -81,5 +91,23 @@ describe('UpdateWorkoutUsecase', () => {
         name: 'New Name',
       })
     ).rejects.toThrow(NotFoundError);
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      updateWorkoutUsecase.execute({
+        id: vp.validWorkoutProps.id,
+        userId: 'non-existent',
+        name: 'New Name',
+      })
+    ).rejects.toThrow(NotFoundError);
+
+    await expect(
+      updateWorkoutUsecase.execute({
+        id: vp.validWorkoutProps.id,
+        userId: 'non-existent',
+        name: 'New Name',
+      })
+    ).rejects.toThrow(/UpdateWorkoutUsecase.*User.*not.*found/);
   });
 });

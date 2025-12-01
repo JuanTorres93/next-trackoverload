@@ -3,6 +3,7 @@ import {
   toWorkoutTemplateDTO,
 } from '@/application-layer/dtos/WorkoutTemplateDTO';
 import { NotFoundError } from '@/domain/common/errors';
+import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
 
 export type UpdateExerciseInWorkoutTemplateUsecaseRequest = {
@@ -13,11 +14,21 @@ export type UpdateExerciseInWorkoutTemplateUsecaseRequest = {
 };
 
 export class UpdateExerciseInWorkoutTemplateUsecase {
-  constructor(private workoutTemplatesRepo: WorkoutTemplatesRepo) {}
+  constructor(
+    private workoutTemplatesRepo: WorkoutTemplatesRepo,
+    private usersRepo: UsersRepo
+  ) {}
 
   async execute(
     request: UpdateExerciseInWorkoutTemplateUsecaseRequest
   ): Promise<WorkoutTemplateDTO> {
+    const user = await this.usersRepo.getUserById(request.userId);
+    if (!user) {
+      throw new NotFoundError(
+        `UpdateExerciseInWorkoutTemplateUsecase: User with id ${request.userId} not found`
+      );
+    }
+
     const workoutTemplate =
       await this.workoutTemplatesRepo.getWorkoutTemplateByIdAndUserId(
         request.workoutTemplateId,

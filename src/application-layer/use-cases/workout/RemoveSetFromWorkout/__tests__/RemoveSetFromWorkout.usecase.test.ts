@@ -1,8 +1,10 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError } from '@/domain/common/errors';
+import { User } from '@/domain/entities/user/User';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { RemoveSetFromWorkoutUsecase } from '../RemoveSetFromWorkout.usecase';
@@ -14,11 +16,22 @@ describe('RemoveSetFromWorkoutUsecase', () => {
   let workoutLine3: WorkoutLine;
 
   let workoutsRepo: MemoryWorkoutsRepo;
+  let usersRepo: MemoryUsersRepo;
   let removeSetFromWorkoutUsecase: RemoveSetFromWorkoutUsecase;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     workoutsRepo = new MemoryWorkoutsRepo();
-    removeSetFromWorkoutUsecase = new RemoveSetFromWorkoutUsecase(workoutsRepo);
+    usersRepo = new MemoryUsersRepo();
+    removeSetFromWorkoutUsecase = new RemoveSetFromWorkoutUsecase(
+      workoutsRepo,
+      usersRepo
+    );
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+    await usersRepo.saveUser(user);
 
     workout = Workout.create({
       ...vp.validWorkoutPropsNoExercises(),
@@ -184,5 +197,25 @@ describe('RemoveSetFromWorkoutUsecase', () => {
     expect(exercise1Sets[1].setNumber).toBe(2); // Original set 3 reordered to set 2
     expect(exercise1Sets[1].reps).toBe(66); // Original set 3 data
     expect(exercise1Sets[1].weight).toBe(700); // Original set 3 data
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      removeSetFromWorkoutUsecase.execute({
+        userId: 'non-existent',
+        workoutId: vp.validWorkoutProps.id,
+        exerciseId: 'exercise-1',
+        setNumber: 1,
+      })
+    ).rejects.toThrow(NotFoundError);
+
+    await expect(
+      removeSetFromWorkoutUsecase.execute({
+        userId: 'non-existent',
+        workoutId: vp.validWorkoutProps.id,
+        exerciseId: 'exercise-1',
+        setNumber: 1,
+      })
+    ).rejects.toThrow(/RemoveSetFromWorkoutUsecase.*User.*not.*found/);
   });
 });

@@ -2,16 +2,28 @@ import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
+import { User } from '@/domain/entities/user/User';
+import { NotFoundError } from '@/domain/common/errors';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetWorkoutTemplateByIdForUserUsecase } from '../GetWorkoutTemplateByIdForUser.usecase';
 
 describe('GetWorkoutTemplateByIdForUserUsecase', () => {
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
+  let usersRepo: MemoryUsersRepo;
   let usecase: GetWorkoutTemplateByIdForUserUsecase;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     workoutTemplatesRepo = new MemoryWorkoutTemplatesRepo();
-    usecase = new GetWorkoutTemplateByIdForUserUsecase(workoutTemplatesRepo);
+    usersRepo = new MemoryUsersRepo();
+    usecase = new GetWorkoutTemplateByIdForUserUsecase(
+      workoutTemplatesRepo,
+      usersRepo
+    );
+
+    user = User.create({ ...vp.validUserProps });
+    await usersRepo.saveUser(user);
   });
 
   it('should return workout template by id for the correct user', async () => {
@@ -53,6 +65,13 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
   });
 
   it('should return null if template belongs to different user', async () => {
+    // Create another user
+    const user2 = User.create({
+      ...vp.validUserProps,
+      id: 'user2',
+    });
+    await usersRepo.saveUser(user2);
+
     const template = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps(),
     });
@@ -88,5 +107,21 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
     });
 
     expect(result).toBeNull();
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      usecase.execute({
+        id: vp.validWorkoutTemplateProps().id,
+        userId: 'non-existent',
+      })
+    ).rejects.toThrow(NotFoundError);
+
+    await expect(
+      usecase.execute({
+        id: vp.validWorkoutTemplateProps().id,
+        userId: 'non-existent',
+      })
+    ).rejects.toThrow(/GetWorkoutTemplateByIdForUserUsecase.*User.*not.*found/);
   });
 });

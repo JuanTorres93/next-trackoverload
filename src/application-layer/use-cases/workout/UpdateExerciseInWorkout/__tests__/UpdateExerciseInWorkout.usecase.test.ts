@@ -1,25 +1,36 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { User } from '@/domain/entities/user/User';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { UpdateExerciseInWorkoutUsecase } from '../UpdateExerciseInWorkout.usecase';
 
 describe('UpdateExerciseInWorkoutUsecase', () => {
   let workoutLine: WorkoutLine;
   let workoutsRepo: MemoryWorkoutsRepo;
+  let usersRepo: MemoryUsersRepo;
   let updateExerciseInWorkoutUsecase: UpdateExerciseInWorkoutUsecase;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     workoutLine = WorkoutLine.create({
       ...vp.validWorkoutLineProps,
     });
 
     workoutsRepo = new MemoryWorkoutsRepo();
+    usersRepo = new MemoryUsersRepo();
     updateExerciseInWorkoutUsecase = new UpdateExerciseInWorkoutUsecase(
-      workoutsRepo
+      workoutsRepo,
+      usersRepo
     );
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+    await usersRepo.saveUser(user);
   });
 
   it('should update exercise reps in workout', async () => {
@@ -173,5 +184,25 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
         reps: 15,
       })
     ).rejects.toThrow(ValidationError);
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      updateExerciseInWorkoutUsecase.execute({
+        userId: 'non-existent',
+        workoutId: vp.validWorkoutProps.id,
+        exerciseId: 'exercise-1',
+        reps: 15,
+      })
+    ).rejects.toThrow(NotFoundError);
+
+    await expect(
+      updateExerciseInWorkoutUsecase.execute({
+        userId: 'non-existent',
+        workoutId: vp.validWorkoutProps.id,
+        exerciseId: 'exercise-1',
+        reps: 15,
+      })
+    ).rejects.toThrow(/UpdateExerciseInWorkoutUsecase.*User.*not.*found/);
   });
 });

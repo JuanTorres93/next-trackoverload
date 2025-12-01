@@ -2,7 +2,9 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { CreateWorkoutFromTemplateUsecase } from '../CreateWorkoutFromTemplate.usecase';
 import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
+import { User } from '@/domain/entities/user/User';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
@@ -11,15 +13,22 @@ import { Workout } from '@/domain/entities/workout/Workout';
 describe('CreateWorkoutFromTemplateUsecase', () => {
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
   let workoutsRepo: MemoryWorkoutsRepo;
+  let usersRepo: MemoryUsersRepo;
   let usecase: CreateWorkoutFromTemplateUsecase;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     workoutTemplatesRepo = new MemoryWorkoutTemplatesRepo();
     workoutsRepo = new MemoryWorkoutsRepo();
+    usersRepo = new MemoryUsersRepo();
     usecase = new CreateWorkoutFromTemplateUsecase(
       workoutTemplatesRepo,
-      workoutsRepo
+      workoutsRepo,
+      usersRepo
     );
+
+    user = User.create({ ...vp.validUserProps });
+    await usersRepo.saveUser(user);
   });
 
   it('should create workout from template ', async () => {
@@ -157,5 +166,21 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
     };
 
     await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      usecase.execute({
+        userId: 'non-existent',
+        workoutTemplateId: vp.validWorkoutTemplateProps().id,
+      })
+    ).rejects.toThrow(NotFoundError);
+
+    await expect(
+      usecase.execute({
+        userId: 'non-existent',
+        workoutTemplateId: vp.validWorkoutTemplateProps().id,
+      })
+    ).rejects.toThrow(/CreateWorkoutFromTemplateUsecase.*User.*not.*found/);
   });
 });

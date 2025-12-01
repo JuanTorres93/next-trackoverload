@@ -1,17 +1,27 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { DeleteWorkoutTemplateUsecase } from '../DeleteWorkoutTemplate.usecase';
 import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
+import { User } from '@/domain/entities/user/User';
 import { NotFoundError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 
 describe('DeleteWorkoutTemplateUsecase', () => {
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
+  let usersRepo: MemoryUsersRepo;
   let usecase: DeleteWorkoutTemplateUsecase;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     workoutTemplatesRepo = new MemoryWorkoutTemplatesRepo();
-    usecase = new DeleteWorkoutTemplateUsecase(workoutTemplatesRepo);
+    usersRepo = new MemoryUsersRepo();
+    usecase = new DeleteWorkoutTemplateUsecase(workoutTemplatesRepo, usersRepo);
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+    await usersRepo.saveUser(user);
   });
 
   it('should soft delete the workout template when it exists', async () => {
@@ -57,5 +67,21 @@ describe('DeleteWorkoutTemplateUsecase', () => {
     await expect(
       usecase.execute({ id: existingTemplate.id, userId: vp.userId })
     ).rejects.toThrow(NotFoundError);
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      usecase.execute({
+        id: 'some-id',
+        userId: 'non-existent',
+      })
+    ).rejects.toThrow(NotFoundError);
+
+    await expect(
+      usecase.execute({
+        id: 'some-id',
+        userId: 'non-existent',
+      })
+    ).rejects.toThrow(/DeleteWorkoutTemplateUsecase.*User.*not.*found/);
   });
 });

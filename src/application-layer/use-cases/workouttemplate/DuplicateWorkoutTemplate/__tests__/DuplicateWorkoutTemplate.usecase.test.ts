@@ -1,18 +1,29 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { DuplicateWorkoutTemplateUsecase } from '../DuplicateWorkoutTemplate.usecase';
 import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
+import { User } from '@/domain/entities/user/User';
 import { NotFoundError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 
 describe('DuplicateWorkoutTemplateUsecase', () => {
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
+  let usersRepo: MemoryUsersRepo;
   let usecase: DuplicateWorkoutTemplateUsecase;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     workoutTemplatesRepo = new MemoryWorkoutTemplatesRepo();
-    usecase = new DuplicateWorkoutTemplateUsecase(workoutTemplatesRepo);
+    usersRepo = new MemoryUsersRepo();
+    usecase = new DuplicateWorkoutTemplateUsecase(
+      workoutTemplatesRepo,
+      usersRepo
+    );
+
+    user = User.create({ ...vp.validUserProps });
+    await usersRepo.saveUser(user);
   });
 
   it('should duplicate workout template with default copy name', async () => {
@@ -168,5 +179,21 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
     };
 
     await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      usecase.execute({
+        userId: 'non-existent',
+        originalTemplateId: vp.validWorkoutTemplateProps().id,
+      })
+    ).rejects.toThrow(NotFoundError);
+
+    await expect(
+      usecase.execute({
+        userId: 'non-existent',
+        originalTemplateId: vp.validWorkoutTemplateProps().id,
+      })
+    ).rejects.toThrow(/DuplicateWorkoutTemplateUsecase.*User.*not.*found/);
   });
 });

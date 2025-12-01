@@ -1,7 +1,9 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { ReorderExerciseInWorkoutTemplateUsecase } from '../ReorderExerciseInWorkoutTemplate.usecase';
 import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
+import { User } from '@/domain/entities/user/User';
 import { NotFoundError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
@@ -9,13 +11,22 @@ import { WorkoutTemplateLine } from '@/domain/entities/workouttemplateline/Worko
 
 describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
+  let usersRepo: MemoryUsersRepo;
   let usecase: ReorderExerciseInWorkoutTemplateUsecase;
   let testTemplate: WorkoutTemplate;
   let additionalWorkoutTemplateLine: WorkoutTemplateLine;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     workoutTemplatesRepo = new MemoryWorkoutTemplatesRepo();
-    usecase = new ReorderExerciseInWorkoutTemplateUsecase(workoutTemplatesRepo);
+    usersRepo = new MemoryUsersRepo();
+    usecase = new ReorderExerciseInWorkoutTemplateUsecase(
+      workoutTemplatesRepo,
+      usersRepo
+    );
+
+    user = User.create({ ...vp.validUserProps });
+    await usersRepo.saveUser(user);
 
     testTemplate = WorkoutTemplate.create(vp.validWorkoutTemplateProps());
     additionalWorkoutTemplateLine = WorkoutTemplateLine.create({
@@ -151,5 +162,27 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
     };
 
     await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      usecase.execute({
+        workoutTemplateId: vp.validWorkoutTemplateProps().id,
+        exerciseId: 'ex1',
+        userId: 'non-existent',
+        newIndex: 0,
+      })
+    ).rejects.toThrow(NotFoundError);
+
+    await expect(
+      usecase.execute({
+        workoutTemplateId: vp.validWorkoutTemplateProps().id,
+        exerciseId: 'ex1',
+        userId: 'non-existent',
+        newIndex: 0,
+      })
+    ).rejects.toThrow(
+      /ReorderExerciseInWorkoutTemplateUsecase.*User.*not.*found/
+    );
   });
 });

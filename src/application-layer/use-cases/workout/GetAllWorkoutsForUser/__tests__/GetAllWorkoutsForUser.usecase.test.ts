@@ -1,17 +1,31 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { NotFoundError } from '@/domain/common/errors';
+import { User } from '@/domain/entities/user/User';
 import { Workout } from '@/domain/entities/workout/Workout';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetAllWorkoutsForUserUsecase } from '../GetAllWorkoutsForUser.usecase';
 
 describe('GetAllWorkoutsUsecase', () => {
   let workoutsRepo: MemoryWorkoutsRepo;
+  let usersRepo: MemoryUsersRepo;
   let getAllWorkoutsUsecase: GetAllWorkoutsForUserUsecase;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     workoutsRepo = new MemoryWorkoutsRepo();
-    getAllWorkoutsUsecase = new GetAllWorkoutsForUserUsecase(workoutsRepo);
+    usersRepo = new MemoryUsersRepo();
+    getAllWorkoutsUsecase = new GetAllWorkoutsForUserUsecase(
+      workoutsRepo,
+      usersRepo
+    );
+
+    user = User.create({
+      ...vp.validUserProps,
+    });
+    await usersRepo.saveUser(user);
   });
 
   it('should return all workouts', async () => {
@@ -69,5 +83,19 @@ describe('GetAllWorkoutsUsecase', () => {
   it('should return empty array when no workouts exist', async () => {
     const workouts = await getAllWorkoutsUsecase.execute({ userId: vp.userId });
     expect(workouts).toHaveLength(0);
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      getAllWorkoutsUsecase.execute({
+        userId: 'non-existent',
+      })
+    ).rejects.toThrow(NotFoundError);
+
+    await expect(
+      getAllWorkoutsUsecase.execute({
+        userId: 'non-existent',
+      })
+    ).rejects.toThrow(/GetAllWorkoutsForUserUsecase.*User.*not.*found/);
   });
 });

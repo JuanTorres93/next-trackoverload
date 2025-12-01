@@ -4,6 +4,7 @@ import {
 } from '@/application-layer/dtos/WorkoutTemplateDTO';
 import { NotFoundError } from '@/domain/common/errors';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
+import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -14,11 +15,21 @@ export type DuplicateWorkoutTemplateUsecaseRequest = {
 };
 
 export class DuplicateWorkoutTemplateUsecase {
-  constructor(private workoutTemplatesRepo: WorkoutTemplatesRepo) {}
+  constructor(
+    private workoutTemplatesRepo: WorkoutTemplatesRepo,
+    private usersRepo: UsersRepo
+  ) {}
 
   async execute(
     request: DuplicateWorkoutTemplateUsecaseRequest
   ): Promise<WorkoutTemplateDTO> {
+    const user = await this.usersRepo.getUserById(request.userId);
+    if (!user) {
+      throw new NotFoundError(
+        `DuplicateWorkoutTemplateUsecase: User with id ${request.userId} not found`
+      );
+    }
+
     const originalTemplate =
       await this.workoutTemplatesRepo.getWorkoutTemplateByIdAndUserId(
         request.originalTemplateId,

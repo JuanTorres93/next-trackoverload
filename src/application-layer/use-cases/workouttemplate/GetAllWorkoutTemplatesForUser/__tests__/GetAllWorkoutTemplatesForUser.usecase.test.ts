@@ -2,16 +2,28 @@ import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
+import { User } from '@/domain/entities/user/User';
+import { NotFoundError } from '@/domain/common/errors';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetAllWorkoutTemplatesForUserUsecase } from '../GetAllWorkoutTemplatesForUser.usecase';
 
 describe('GetAllWorkoutTemplatesForUserUsecase', () => {
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
+  let usersRepo: MemoryUsersRepo;
   let usecase: GetAllWorkoutTemplatesForUserUsecase;
+  let user: User;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     workoutTemplatesRepo = new MemoryWorkoutTemplatesRepo();
-    usecase = new GetAllWorkoutTemplatesForUserUsecase(workoutTemplatesRepo);
+    usersRepo = new MemoryUsersRepo();
+    usecase = new GetAllWorkoutTemplatesForUserUsecase(
+      workoutTemplatesRepo,
+      usersRepo
+    );
+
+    user = User.create({ ...vp.validUserProps });
+    await usersRepo.saveUser(user);
   });
 
   it('should return all workout templates for a specific user', async () => {
@@ -92,5 +104,19 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
 
     expect(result).toHaveLength(1);
     expect(result[0].id).toBe('another-template-id');
+  });
+
+  it('should throw error if user does not exist', async () => {
+    await expect(
+      usecase.execute({
+        userId: 'non-existent',
+      })
+    ).rejects.toThrow(NotFoundError);
+
+    await expect(
+      usecase.execute({
+        userId: 'non-existent',
+      })
+    ).rejects.toThrow(/GetAllWorkoutTemplatesForUserUsecase.*User.*not.*found/);
   });
 });
