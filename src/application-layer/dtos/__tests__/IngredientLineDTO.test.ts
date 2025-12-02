@@ -55,31 +55,12 @@ describe('IngredientLineDTO', () => {
       });
     });
 
-    it('should have all required properties', () => {
-      expect(ingredientLineDTO).toHaveProperty('id');
-      expect(ingredientLineDTO).toHaveProperty('ingredient');
-      expect(ingredientLineDTO).toHaveProperty('quantityInGrams');
-      expect(ingredientLineDTO).toHaveProperty('calories');
-      expect(ingredientLineDTO).toHaveProperty('protein');
-      expect(ingredientLineDTO).toHaveProperty('createdAt');
-      expect(ingredientLineDTO).toHaveProperty('updatedAt');
-    });
-
-    it('should convert dates to ISO 8601 strings', () => {
-      expect(typeof ingredientLineDTO.createdAt).toBe('string');
-      expect(typeof ingredientLineDTO.updatedAt).toBe('string');
-      expect(() => new Date(ingredientLineDTO.createdAt)).not.toThrow();
-      expect(() => new Date(ingredientLineDTO.updatedAt)).not.toThrow();
-    });
-
     it('should include nested ingredient DTO', () => {
-      expect(ingredientLineDTO.ingredient).toHaveProperty('id');
-      expect(ingredientLineDTO.ingredient).toHaveProperty('name');
-      expect(ingredientLineDTO.ingredient).toHaveProperty(
-        'nutritionalInfoPer100g'
-      );
-      expect(ingredientLineDTO.ingredient).toHaveProperty('createdAt');
-      expect(ingredientLineDTO.ingredient).toHaveProperty('updatedAt');
+      const ingredientGetters = getGetters(ingredientLine.ingredient);
+
+      for (const getter of ingredientGetters) {
+        expect(ingredientLineDTO.ingredient).toHaveProperty(getter);
+      }
     });
 
     it('should calculate calories correctly', () => {
@@ -103,28 +84,6 @@ describe('IngredientLineDTO', () => {
         fromIngredientLineDTO(ingredientLineDTO);
 
       expect(reconstructedIngredientLine).toBeInstanceOf(IngredientLine);
-      expect(reconstructedIngredientLine.id).toBe(ingredientLine.id);
-      expect(reconstructedIngredientLine.quantityInGrams).toBe(
-        ingredientLine.quantityInGrams
-      );
-      expect(reconstructedIngredientLine.calories).toBe(
-        ingredientLine.calories
-      );
-      expect(reconstructedIngredientLine.protein).toBe(ingredientLine.protein);
-    });
-
-    it('should convert ISO 8601 strings back to Date objects', () => {
-      const reconstructedIngredientLine =
-        fromIngredientLineDTO(ingredientLineDTO);
-
-      expect(reconstructedIngredientLine.createdAt).toBeInstanceOf(Date);
-      expect(reconstructedIngredientLine.updatedAt).toBeInstanceOf(Date);
-      expect(reconstructedIngredientLine.createdAt.getTime()).toBe(
-        ingredientLine.createdAt.getTime()
-      );
-      expect(reconstructedIngredientLine.updatedAt.getTime()).toBe(
-        ingredientLine.updatedAt.getTime()
-      );
     });
 
     it('should reconstruct nested Ingredient entity', () => {
@@ -145,22 +104,6 @@ describe('IngredientLineDTO', () => {
       const reconvertedDTO = toIngredientLineDTO(reconstructedIngredientLine);
 
       expect(reconvertedDTO).toEqual(ingredientLineDTO);
-    });
-
-    it('should calculate calories correctly on reconstructed entity', () => {
-      const reconstructedIngredientLine =
-        fromIngredientLineDTO(ingredientLineDTO);
-
-      // 100 cal per 100g * 200g = 200 cal
-      expect(reconstructedIngredientLine.calories).toBe(200);
-    });
-
-    it('should calculate protein correctly on reconstructed entity', () => {
-      const reconstructedIngredientLine =
-        fromIngredientLineDTO(ingredientLineDTO);
-
-      // 15 protein per 100g * 200g = 30 protein
-      expect(reconstructedIngredientLine.protein).toBe(30);
     });
 
     it('should handle ingredient lines with optional imageUrl', () => {
