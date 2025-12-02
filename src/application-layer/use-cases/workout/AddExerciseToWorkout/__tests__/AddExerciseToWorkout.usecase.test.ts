@@ -4,12 +4,12 @@ import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
 import { User } from '@/domain/entities/user/User';
 import { Workout } from '@/domain/entities/workout/Workout';
+import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
 import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { AddExerciseToWorkoutUsecase } from '../AddExerciseToWorkout.usecase';
-import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
 
 describe('AddExerciseToWorkoutUsecase', () => {
   let workoutsRepo: MemoryWorkoutsRepo;
@@ -61,10 +61,14 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
     expect(updatedWorkout.exercises).toHaveLength(1);
     expect(updatedWorkout.exercises[0]).toEqual({
+      id: updatedWorkout.exercises[0].id,
+      workoutId: workout.id,
       exerciseId: 'exercise-1',
       setNumber: 1,
       reps: 10,
       weight: 0,
+      createdAt: updatedWorkout.exercises[0].createdAt,
+      updatedAt: updatedWorkout.exercises[0].updatedAt,
     });
   });
 
@@ -205,10 +209,14 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
     expect(updatedWorkout.exercises).toHaveLength(2);
     expect(updatedWorkout.exercises[1]).toEqual({
+      id: updatedWorkout.exercises[1].id,
+      workoutId: workout.id,
       exerciseId: vp.validExerciseProps.id,
       setNumber: 2,
       reps: 12,
       weight: 5,
+      createdAt: updatedWorkout.exercises[1].createdAt,
+      updatedAt: updatedWorkout.exercises[1].updatedAt,
     });
   });
 

@@ -1,12 +1,12 @@
 import { Workout } from '@/domain/entities/workout/Workout';
-import { ExerciseLineDTO, toExerciseLineDTO } from './ExerciseLineDTO';
+import { WorkoutLineDTO, toWorkoutLineDTO } from './WorkoutLineDTO';
 
 export type WorkoutDTO = {
   id: string;
   userId: string;
   name: string;
   workoutTemplateId: string;
-  exercises: ExerciseLineDTO[];
+  exercises: WorkoutLineDTO[];
   createdAt: string;
   updatedAt: string;
 };
@@ -17,7 +17,7 @@ export function toWorkoutDTO(workout: Workout): WorkoutDTO {
     userId: workout.userId,
     name: workout.name,
     workoutTemplateId: workout.workoutTemplateId,
-    exercises: workout.exercises.map(toExerciseLineDTO),
+    exercises: workout.exercises.map(toWorkoutLineDTO),
     createdAt: workout.createdAt.toISOString(),
     updatedAt: workout.updatedAt.toISOString(),
   };

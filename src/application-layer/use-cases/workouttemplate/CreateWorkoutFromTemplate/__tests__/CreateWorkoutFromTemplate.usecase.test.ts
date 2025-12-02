@@ -1,14 +1,14 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { CreateWorkoutFromTemplateUsecase } from '../CreateWorkoutFromTemplate.usecase';
-import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
-import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
-import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
-import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
-import { User } from '@/domain/entities/user/User';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { User } from '@/domain/entities/user/User';
 import { Workout } from '@/domain/entities/workout/Workout';
+import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
+import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
+import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { CreateWorkoutFromTemplateUsecase } from '../CreateWorkoutFromTemplate.usecase';
 
 describe('CreateWorkoutFromTemplateUsecase', () => {
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
@@ -62,10 +62,14 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
       vp.validWorkoutTemplateProps().exercises[0].sets
     );
     expect(exercise1Sets[0]).toEqual({
+      id: exercise1Sets[0].id,
+      workoutId: result.id,
       exerciseId: vp.validWorkoutTemplateProps().exercises[0].exerciseId,
       setNumber: 1,
       reps: 0,
       weight: 0,
+      createdAt: exercise1Sets[0].createdAt,
+      updatedAt: exercise1Sets[0].updatedAt,
     });
     expect(exercise1Sets[1].setNumber).toBe(2);
     expect(exercise1Sets[2].setNumber).toBe(3);

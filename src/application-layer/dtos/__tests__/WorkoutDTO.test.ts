@@ -1,0 +1,71 @@
+import { getGetters } from '../utils/getGetters';
+import { toWorkoutDTO, WorkoutDTO } from '../WorkoutDTO';
+import { Workout } from '@/domain/entities/workout/Workout';
+import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
+import * as vp from '@/../tests/createProps';
+
+describe('WorkoutDTO', () => {
+  let workout: Workout;
+  let workoutLine: WorkoutLine;
+  let workoutDTO: WorkoutDTO;
+
+  beforeEach(() => {
+    workoutLine = WorkoutLine.create(vp.validWorkoutLineProps);
+    workout = Workout.create({
+      ...vp.validWorkoutPropsNoExercises(),
+      exercises: [workoutLine],
+    });
+  });
+
+  describe('toWorkoutDTO', () => {
+    beforeEach(() => {
+      workoutDTO = toWorkoutDTO(workout);
+    });
+
+    it('should have a prop for each workout getter', () => {
+      const workoutGetters: string[] = getGetters(workout);
+
+      for (const getter of workoutGetters) {
+        expect(workoutDTO).toHaveProperty(getter);
+      }
+    });
+
+    it('should convert Workout to WorkoutDTO', () => {
+      expect(workoutDTO).toEqual({
+        id: workout.id,
+        userId: workout.userId,
+        name: workout.name,
+        workoutTemplateId: workout.workoutTemplateId,
+        exercises: workout.exercises.map((line) => ({
+          id: line.id,
+          workoutId: line.workoutId,
+          exerciseId: line.exerciseId,
+          setNumber: line.setNumber,
+          reps: line.reps,
+          weight: line.weight,
+          createdAt: line.createdAt.toISOString(),
+          updatedAt: line.updatedAt.toISOString(),
+        })),
+        createdAt: workout.createdAt.toISOString(),
+        updatedAt: workout.updatedAt.toISOString(),
+      });
+    });
+
+    it('should convert dates to ISO strings', () => {
+      expect(typeof workoutDTO.createdAt).toBe('string');
+      expect(typeof workoutDTO.updatedAt).toBe('string');
+      expect(workoutDTO.createdAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+      expect(workoutDTO.updatedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+    });
+
+    it('should include nested exercise line DTOs', () => {
+      expect(workoutDTO.exercises).toHaveLength(1);
+      const workoutLineDTO = workoutDTO.exercises[0];
+
+      const workoutLineGetters = getGetters(workoutLine);
+      for (const getter of workoutLineGetters) {
+        expect(workoutLineDTO).toHaveProperty(getter);
+      }
+    });
+  });
+});

@@ -87,6 +87,10 @@ export class WorkoutLine {
     return this.props.exerciseId.value;
   }
 
+  get workoutId() {
+    return this.props.workoutId.value;
+  }
+
   get setNumber() {
     return this.props.setNumber.value;
   }
