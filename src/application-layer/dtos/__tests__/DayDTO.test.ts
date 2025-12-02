@@ -1,4 +1,4 @@
-import { getGetters } from '../utils/getGetters';
+import { getGetters } from './_getGettersUtil';
 import { toDayDTO, DayDTO } from '../DayDTO';
 import { Day } from '@/domain/entities/day/Day';
 import { Meal } from '@/domain/entities/meal/Meal';

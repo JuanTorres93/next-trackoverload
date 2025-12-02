@@ -1,4 +1,4 @@
-import { getGetters } from '../utils/getGetters';
+import { getGetters } from './_getGettersUtil';
 import { toWorkoutLineDTO, WorkoutLineDTO } from '../WorkoutLineDTO';
 import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
 import * as vp from '@/../tests/createProps';

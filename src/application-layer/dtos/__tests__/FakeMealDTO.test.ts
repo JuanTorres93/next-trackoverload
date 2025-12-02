@@ -1,4 +1,4 @@
-import { getGetters } from '../utils/getGetters';
+import { getGetters } from './_getGettersUtil';
 import { toFakeMealDTO, FakeMealDTO } from '../FakeMealDTO';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import * as vp from '@/../tests/createProps';

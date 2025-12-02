@@ -1,4 +1,4 @@
-import { getGetters } from '../utils/getGetters';
+import { getGetters } from './_getGettersUtil';
 import { toMealDTO, MealDTO } from '../MealDTO';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';

@@ -1,4 +1,4 @@
-import { getGetters } from '../utils/getGetters';
+import { getGetters } from './_getGettersUtil';
 import { toWorkoutDTO, WorkoutDTO } from '../WorkoutDTO';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
