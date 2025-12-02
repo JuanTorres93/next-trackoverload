@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { getGetters } from '../utils/getGetters';
 import {
   toIngredientLineDTO,
   fromIngredientLineDTO,
@@ -24,6 +24,14 @@ describe('IngredientLineDTO', () => {
   describe('toIngredientLineDTO', () => {
     beforeEach(() => {
       ingredientLineDTO = toIngredientLineDTO(ingredientLine);
+    });
+
+    it('should have a prop for each ingredient line getter', async () => {
+      const ingredientLineGetters: string[] = getGetters(ingredientLine);
+
+      for (const getter of ingredientLineGetters) {
+        expect(ingredientLineDTO).toHaveProperty(getter);
+      }
     });
 
     it('should convert IngredientLine to IngredientLineDTO', () => {

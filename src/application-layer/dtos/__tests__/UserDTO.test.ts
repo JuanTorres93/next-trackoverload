@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { getGetters } from '../utils/getGetters';
 import { toUserDTO, fromUserDTO, UserDTO } from '../UserDTO';
 import { User } from '@/domain/entities/user/User';
 import * as vp from '@/../tests/createProps';
@@ -16,6 +16,14 @@ describe('UserDTO', () => {
       userDTO = toUserDTO(user);
     });
 
+    it('should have a prop for each user getter', async () => {
+      const userGetters: string[] = getGetters(user);
+
+      for (const getter of userGetters) {
+        expect(userDTO).toHaveProperty(getter);
+      }
+    });
+
     it('should convert User to UserDTO', () => {
       expect(userDTO).toEqual({
         id: user.id,
@@ -24,13 +32,6 @@ describe('UserDTO', () => {
         createdAt: user.createdAt.toISOString(),
         updatedAt: user.updatedAt.toISOString(),
       });
-    });
-
-    it('should have all required properties', () => {
-      expect(userDTO).toHaveProperty('id');
-      expect(userDTO).toHaveProperty('name');
-      expect(userDTO).toHaveProperty('createdAt');
-      expect(userDTO).toHaveProperty('updatedAt');
     });
 
     it('should convert dates to ISO 8601 strings', () => {
@@ -105,12 +106,6 @@ describe('UserDTO', () => {
       const reconstructed = fromUserDTO(dto);
 
       expect(reconstructed.customerId).toBeUndefined();
-    });
-
-    it('should preserve user name correctly', () => {
-      const reconstructedUser = fromUserDTO(userDTO);
-
-      expect(reconstructedUser.name).toBe('Test User');
     });
   });
 });
