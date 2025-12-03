@@ -26,6 +26,6 @@ export class DeleteDayUsecase {
       throw new NotFoundError('DeleteDayUsecase: Day not found');
     }
 
-    await this.daysRepo.deleteDay(request.date);
+    await this.daysRepo.deleteDayForUser(request.date, request.userId);
   }
 }

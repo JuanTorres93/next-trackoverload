@@ -12,6 +12,5 @@ export interface DaysRepo {
     userId: string
   ): Promise<Day[]>;
   saveDay(day: Day): Promise<void>;
-  // TODO IMPORTANT: Refactor to remove day from user
-  deleteDay(id: string): Promise<void>;
+  deleteDayForUser(id: string, userId: string): Promise<void>;
 }

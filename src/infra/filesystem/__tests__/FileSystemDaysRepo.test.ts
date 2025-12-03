@@ -128,11 +128,11 @@ describe('FileSystemDaysRepo', () => {
     expect(fetchedDay).toBeNull();
   });
 
-  it('should delete a day by ID', async () => {
+  it('should delete a day by ID and user ID', async () => {
     const allDays = await repo.getAllDays();
     expect(allDays.length).toBe(1);
 
-    await repo.deleteDay('20231001');
+    await repo.deleteDayForUser('20231001', vp.userId);
 
     const allDaysAfterDeletion = await repo.getAllDays();
     expect(allDaysAfterDeletion.length).toBe(0);

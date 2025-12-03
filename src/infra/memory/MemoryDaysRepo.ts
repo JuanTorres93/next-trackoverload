@@ -52,8 +52,10 @@ export class MemoryDaysRepo implements DaysRepo {
     });
   }
 
-  async deleteDay(id: string): Promise<void> {
-    const index = this.days.findIndex((d) => d.id === id);
+  async deleteDayForUser(id: string, userId: string): Promise<void> {
+    const index = this.days.findIndex(
+      (d) => d.id === id && d.userId === userId
+    );
 
     if (index !== -1) {
       this.days.splice(index, 1);
