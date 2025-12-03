@@ -3,7 +3,6 @@ import { Integer } from '@/domain/value-objects/Integer/Integer';
 import { Text } from '@/domain/value-objects/Text/Text';
 import { ValidationError } from '../../common/errors';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
-import { validateNonEmptyString } from '../../common/validation';
 import { Calories } from '../../interfaces/Calories';
 import { Protein } from '../../interfaces/Protein';
 import { IngredientLine } from '../ingredientline/IngredientLine';
@@ -67,12 +66,11 @@ export class Meal implements Calories, Protein {
   }
 
   removeIngredientLineByIngredientId(ingredientId: string): void {
-    validateNonEmptyString(ingredientId, 'Ingredient id');
-
     const initialLength = this.props.ingredientLines.length;
     this.props.ingredientLines = this.props.ingredientLines.filter(
       (line) => line.ingredient.id !== ingredientId
     );
+
     if (this.props.ingredientLines.length === initialLength) {
       throw new ValidationError(
         `Meal: No ingredient line found with ingredient id ${ingredientId}`

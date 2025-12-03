@@ -61,6 +61,16 @@ describe('Day', () => {
         })
       ).toThrow(ValidationError);
     });
+
+    invalidMeals.forEach((invalidMeal) => {
+      expect(() =>
+        Day.create({
+          ...vp.validDayProps(),
+          // @ts-expect-error Testing invalid input
+          meals: [invalidMeal],
+        })
+      ).toThrow(/Day.*meal.*must.*instance.*Meal.*or.*FakeMeal/);
+    });
   });
 
   it('should compute total calories', async () => {

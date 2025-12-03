@@ -1,12 +1,12 @@
-import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
-import { UsersRepo } from '@/domain/repos/UsersRepo.port';
-import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import {
   FakeMealDTO,
   toFakeMealDTO,
 } from '@/application-layer/dtos/FakeMealDTO';
-import { validateNonEmptyString } from '@/domain/common/validation';
-import { ValidationError, NotFoundError } from '@/domain/common/errors';
+import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
+import { UsersRepo } from '@/domain/repos/UsersRepo.port';
+import { Id } from '@/domain/value-objects/Id/Id';
 
 export type GetFakeMealsByIdsForUserUsecaseRequest = {
   ids: string[];
@@ -38,7 +38,8 @@ export class GetFakeMealsByIdsForUserUsecase {
     const uniqueIds = Array.from(new Set(request.ids));
 
     uniqueIds.forEach((id) => {
-      validateNonEmptyString(id, `GetFakeMealsByIdsUsecase id ${id}`);
+      // Validate id
+      Id.create(id);
     });
 
     const fakeMeals = await Promise.all(

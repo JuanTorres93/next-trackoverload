@@ -2,10 +2,6 @@ import { DayId } from '@/domain/value-objects/DayId/DayId';
 import { Id } from '@/domain/value-objects/Id/Id';
 import { ValidationError } from '../../common/errors';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
-import {
-  validateNonEmptyString,
-  validatePositiveNumber,
-} from '../../common/validation';
 import { Calories } from '../../interfaces/Calories';
 import { Protein } from '../../interfaces/Protein';
 import { FakeMeal } from '../fakemeal/FakeMeal';
@@ -35,8 +31,6 @@ function validateMeal(meal: Meal | FakeMeal) {
       'Day: meal must be an instance of Meal or FakeMeal'
     );
   }
-  validatePositiveNumber(meal.calories, 'Day meal calories');
-  validatePositiveNumber(meal.protein, 'Day meal protein');
 }
 
 export class Day implements Protein, Calories {
@@ -80,9 +74,6 @@ export class Day implements Protein, Calories {
   }
 
   removeMealById(mealId: string): void {
-    // TODO remove when Meal also has Id type for id
-    validateNonEmptyString(mealId, 'Day removeMealById mealId');
-
     const initialLength = this.props.meals.length;
 
     this.props.meals = this.props.meals.filter((meal) => meal.id !== mealId);
