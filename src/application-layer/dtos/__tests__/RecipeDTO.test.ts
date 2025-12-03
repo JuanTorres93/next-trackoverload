@@ -1,5 +1,5 @@
 import { getGetters } from './_getGettersUtil';
-import { toRecipeDTO, RecipeDTO } from '../RecipeDTO';
+import { toRecipeDTO, fromRecipeDTO, RecipeDTO } from '../RecipeDTO';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
@@ -102,6 +102,64 @@ describe('RecipeDTO', () => {
 
       const dto = toRecipeDTO(recipeWithImage);
       expect(dto.imageUrl).toBe('https://example.com/recipe.jpg');
+    });
+  });
+
+  describe('fromRecipeDTO', () => {
+    beforeEach(() => {
+      recipeDTO = toRecipeDTO(recipe);
+    });
+
+    it('should convert RecipeDTO to Recipe', () => {
+      const reconstructedRecipe = fromRecipeDTO(recipeDTO);
+
+      expect(reconstructedRecipe).toBeInstanceOf(Recipe);
+    });
+
+    it('should reconstruct nested IngredientLine entities', () => {
+      const reconstructedRecipe = fromRecipeDTO(recipeDTO);
+
+      expect(reconstructedRecipe.ingredientLines).toHaveLength(1);
+      expect(reconstructedRecipe.ingredientLines[0]).toBeInstanceOf(
+        IngredientLine
+      );
+    });
+
+    it('should reconstruct nested Ingredient entities within ingredient lines', () => {
+      const reconstructedRecipe = fromRecipeDTO(recipeDTO);
+      const reconstructedIngredient =
+        reconstructedRecipe.ingredientLines[0].ingredient;
+
+      expect(reconstructedIngredient).toBeInstanceOf(Ingredient);
+    });
+
+    it('should maintain data integrity after round-trip conversion', () => {
+      const reconstructedRecipe = fromRecipeDTO(recipeDTO);
+      const reconvertedDTO = toRecipeDTO(reconstructedRecipe);
+
+      expect(reconvertedDTO).toEqual(recipeDTO);
+    });
+
+    it('should handle recipes with multiple ingredient lines', () => {
+      const ingredientLine2 = IngredientLine.create({
+        ...vp.ingredientLineRecipePropsNoIngredient,
+        id: 'line-2',
+        parentId: recipe.id,
+        ingredient,
+        quantityInGrams: 100,
+      });
+
+      const recipeWithMultipleLines = Recipe.create({
+        ...vp.recipePropsNoIngredientLines,
+        ingredientLines: [ingredientLine, ingredientLine2],
+      });
+
+      const dto = toRecipeDTO(recipeWithMultipleLines);
+      const reconstructed = fromRecipeDTO(dto);
+
+      expect(reconstructed.ingredientLines).toHaveLength(2);
+      expect(reconstructed.ingredientLines[0].id).toBe(ingredientLine.id);
+      expect(reconstructed.ingredientLines[1].id).toBe(ingredientLine2.id);
     });
   });
 });

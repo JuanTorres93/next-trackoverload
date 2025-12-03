@@ -1,5 +1,5 @@
 import { getGetters } from './_getGettersUtil';
-import { toDayDTO, DayDTO } from '../DayDTO';
+import { toDayDTO, fromDayDTO, DayDTO } from '../DayDTO';
 import { Day } from '@/domain/entities/day/Day';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
@@ -136,6 +136,118 @@ describe('DayDTO', () => {
       const dto = toDayDTO(dayWithOnlyFakeMeals);
       expect(dto.meals).toHaveLength(1);
       expect(dto.meals[0]).not.toHaveProperty('ingredientLines');
+    });
+  });
+
+  describe('fromDayDTO', () => {
+    beforeEach(() => {
+      dayDTO = toDayDTO(day);
+    });
+
+    it('should convert DayDTO to Day', () => {
+      const reconstructedDay = fromDayDTO(dayDTO);
+
+      expect(reconstructedDay).toBeInstanceOf(Day);
+    });
+
+    it('should reconstruct nested Meal entities', () => {
+      const reconstructedDay = fromDayDTO(dayDTO);
+
+      expect(reconstructedDay.meals).toHaveLength(2);
+      expect(reconstructedDay.meals[0]).toBeInstanceOf(Meal);
+    });
+
+    it('should reconstruct nested FakeMeal entities', () => {
+      const reconstructedDay = fromDayDTO(dayDTO);
+
+      expect(reconstructedDay.meals[1]).toBeInstanceOf(FakeMeal);
+    });
+
+    it('should reconstruct nested IngredientLine entities within meals', () => {
+      const reconstructedDay = fromDayDTO(dayDTO);
+      const reconstructedMeal = reconstructedDay.meals[0] as Meal;
+
+      expect(reconstructedMeal.ingredientLines).toHaveLength(1);
+      expect(reconstructedMeal.ingredientLines[0]).toBeInstanceOf(
+        IngredientLine
+      );
+    });
+
+    it('should reconstruct nested Ingredient entities', () => {
+      const reconstructedDay = fromDayDTO(dayDTO);
+      const reconstructedMeal = reconstructedDay.meals[0] as Meal;
+      const reconstructedIngredient =
+        reconstructedMeal.ingredientLines[0].ingredient;
+
+      expect(reconstructedIngredient).toBeInstanceOf(Ingredient);
+    });
+
+    it('should maintain data integrity after round-trip conversion', () => {
+      const reconstructedDay = fromDayDTO(dayDTO);
+      const reconvertedDTO = toDayDTO(reconstructedDay);
+
+      expect(reconvertedDTO).toEqual(dayDTO);
+    });
+
+    it('should handle day with only meals', () => {
+      const dayWithOnlyMeals = Day.create({
+        ...vp.validDayProps(),
+        meals: [meal],
+      });
+
+      const dto = toDayDTO(dayWithOnlyMeals);
+      const reconstructed = fromDayDTO(dto);
+
+      expect(reconstructed.meals).toHaveLength(1);
+      expect(reconstructed.meals[0]).toBeInstanceOf(Meal);
+    });
+
+    it('should handle day with only fake meals', () => {
+      const dayWithOnlyFakeMeals = Day.create({
+        ...vp.validDayProps(),
+        meals: [fakeMeal],
+      });
+
+      const dto = toDayDTO(dayWithOnlyFakeMeals);
+      const reconstructed = fromDayDTO(dto);
+
+      expect(reconstructed.meals).toHaveLength(1);
+      expect(reconstructed.meals[0]).toBeInstanceOf(FakeMeal);
+    });
+
+    it('should correctly parse day, month, year from id', () => {
+      const reconstructedDay = fromDayDTO(dayDTO);
+
+      expect(reconstructedDay.day).toBe(day.day);
+      expect(reconstructedDay.month).toBe(day.month);
+      expect(reconstructedDay.year).toBe(day.year);
+    });
+
+    it('should handle days with multiple meals of different types', () => {
+      const meal2 = Meal.create({
+        ...vp.mealPropsNoIngredientLines,
+        id: 'meal-2',
+        ingredientLines: [ingredientLine],
+      });
+
+      const fakeMeal2 = FakeMeal.create({
+        ...vp.validFakeMealProps,
+        id: 'fakemeal-2',
+      });
+
+      const complexDay = Day.create({
+        ...vp.validDayProps(),
+        meals: [meal, fakeMeal, meal2, fakeMeal2],
+      });
+
+      const dto = toDayDTO(complexDay);
+      const reconstructed = fromDayDTO(dto);
+
+      expect(reconstructed.meals).toHaveLength(4);
+      expect(reconstructed.meals[0]).toBeInstanceOf(Meal);
+      expect(reconstructed.meals[1]).toBeInstanceOf(FakeMeal);
+      expect(reconstructed.meals[2]).toBeInstanceOf(Meal);
+      expect(reconstructed.meals[3]).toBeInstanceOf(FakeMeal);
     });
   });
 });

@@ -1,8 +1,9 @@
 import { Day } from '@/domain/entities/day/Day';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { MealDTO, toMealDTO } from './MealDTO';
-import { FakeMealDTO, toFakeMealDTO } from './FakeMealDTO';
+import { MealDTO, toMealDTO, fromMealDTO } from './MealDTO';
+import { FakeMealDTO, toFakeMealDTO, fromFakeMealDTO } from './FakeMealDTO';
+import { dayIdToDayMonthYear } from '@/domain/value-objects/DayId/DayId';
 
 export type DayDTO = {
   id: string; // Date as YYYYMMDD
@@ -38,4 +39,23 @@ export function toDayDTO(day: Day): DayDTO {
     createdAt: day.createdAt.toISOString(),
     updatedAt: day.updatedAt.toISOString(),
   };
+}
+
+export function fromDayDTO(dto: DayDTO): Day {
+  const meals: (Meal | FakeMeal)[] = dto.meals.map((mealDTO) => {
+    // Check if it's a MealDTO by presence of ingredientLines property
+    if ('ingredientLines' in mealDTO) {
+      return fromMealDTO(mealDTO as MealDTO);
+    } else {
+      return fromFakeMealDTO(mealDTO as FakeMealDTO);
+    }
+  });
+
+  return Day.create({
+    ...dayIdToDayMonthYear(dto.id),
+    userId: dto.userId,
+    meals,
+    createdAt: new Date(dto.createdAt),
+    updatedAt: new Date(dto.updatedAt),
+  });
 }

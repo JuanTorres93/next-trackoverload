@@ -1,5 +1,5 @@
 import { getGetters } from './_getGettersUtil';
-import { toMealDTO, MealDTO } from '../MealDTO';
+import { toMealDTO, fromMealDTO, MealDTO } from '../MealDTO';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
@@ -92,6 +92,65 @@ describe('MealDTO', () => {
       for (const getter of ingredientGetters) {
         expect(ingredientLineDTO.ingredient).toHaveProperty(getter);
       }
+    });
+  });
+
+  describe('fromMealDTO', () => {
+    beforeEach(() => {
+      mealDTO = toMealDTO(meal);
+    });
+
+    it('should convert MealDTO to Meal', () => {
+      const reconstructedMeal = fromMealDTO(mealDTO);
+
+      expect(reconstructedMeal).toBeInstanceOf(Meal);
+    });
+
+    it('should reconstruct nested IngredientLine entities', () => {
+      const reconstructedMeal = fromMealDTO(mealDTO);
+
+      expect(reconstructedMeal.ingredientLines).toHaveLength(1);
+      expect(reconstructedMeal.ingredientLines[0]).toBeInstanceOf(
+        IngredientLine
+      );
+    });
+
+    it('should reconstruct nested Ingredient entities within ingredient lines', () => {
+      const reconstructedMeal = fromMealDTO(mealDTO);
+      const reconstructedIngredient =
+        reconstructedMeal.ingredientLines[0].ingredient;
+
+      expect(reconstructedIngredient).toBeInstanceOf(Ingredient);
+    });
+
+    it('should maintain data integrity after round-trip conversion', () => {
+      const reconstructedMeal = fromMealDTO(mealDTO);
+      const reconvertedDTO = toMealDTO(reconstructedMeal);
+
+      expect(reconvertedDTO).toEqual(mealDTO);
+    });
+
+    it('should handle meals with multiple ingredient lines', () => {
+      const ingredientLine2 = IngredientLine.create({
+        ...vp.ingredientLineRecipePropsNoIngredient,
+        id: 'line-2',
+        parentId: meal.id,
+        parentType: 'meal',
+        ingredient,
+        quantityInGrams: 100,
+      });
+
+      const mealWithMultipleLines = Meal.create({
+        ...vp.mealPropsNoIngredientLines,
+        ingredientLines: [ingredientLine, ingredientLine2],
+      });
+
+      const dto = toMealDTO(mealWithMultipleLines);
+      const reconstructed = fromMealDTO(dto);
+
+      expect(reconstructed.ingredientLines).toHaveLength(2);
+      expect(reconstructed.ingredientLines[0].id).toBe(ingredientLine.id);
+      expect(reconstructed.ingredientLines[1].id).toBe(ingredientLine2.id);
     });
   });
 });

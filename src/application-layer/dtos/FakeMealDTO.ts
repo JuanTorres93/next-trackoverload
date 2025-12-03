@@ -21,3 +21,15 @@ export function toFakeMealDTO(fakeMeal: FakeMeal): FakeMealDTO {
     updatedAt: fakeMeal.updatedAt.toISOString(),
   };
 }
+
+export function fromFakeMealDTO(dto: FakeMealDTO): FakeMeal {
+  return FakeMeal.create({
+    id: dto.id,
+    userId: dto.userId,
+    name: dto.name,
+    calories: dto.calories,
+    protein: dto.protein,
+    createdAt: new Date(dto.createdAt),
+    updatedAt: new Date(dto.updatedAt),
+  });
+}

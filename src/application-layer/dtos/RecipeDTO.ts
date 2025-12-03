@@ -1,5 +1,9 @@
 import { Recipe } from '@/domain/entities/recipe/Recipe';
-import { IngredientLineDTO, toIngredientLineDTO } from './IngredientLineDTO';
+import {
+  IngredientLineDTO,
+  toIngredientLineDTO,
+  fromIngredientLineDTO,
+} from './IngredientLineDTO';
 
 export type RecipeDTO = {
   id: string;
@@ -25,4 +29,16 @@ export function toRecipeDTO(recipe: Recipe): RecipeDTO {
     createdAt: recipe.createdAt.toISOString(),
     updatedAt: recipe.updatedAt.toISOString(),
   };
+}
+
+export function fromRecipeDTO(dto: RecipeDTO): Recipe {
+  return Recipe.create({
+    id: dto.id,
+    userId: dto.userId,
+    name: dto.name,
+    imageUrl: dto.imageUrl,
+    ingredientLines: dto.ingredientLines.map(fromIngredientLineDTO),
+    createdAt: new Date(dto.createdAt),
+    updatedAt: new Date(dto.updatedAt),
+  });
 }
