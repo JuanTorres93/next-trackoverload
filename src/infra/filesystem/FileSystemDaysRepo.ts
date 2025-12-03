@@ -1,61 +1,8 @@
 import { Day } from '@/domain/entities/day/Day';
-import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
-import { Meal } from '@/domain/entities/meal/Meal';
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
-import { dayIdToDayMonthYear } from '@/domain/value-objects/DayId/DayId';
+import { DayDTO, toDayDTO, fromDayDTO } from '@/application-layer/dtos/DayDTO';
 import fs from 'fs/promises';
 import path from 'path';
-
-type IngredientData = {
-  id: string;
-  name: string;
-  calories: number;
-  protein: number;
-  imageUrl?: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-type IngredientLineData = {
-  id: string;
-  parentId: string;
-  parentType: 'meal' | 'recipe';
-  ingredient: IngredientData;
-  quantityInGrams: number;
-  createdAt: string;
-  updatedAt: string;
-};
-
-type MealData = {
-  type: 'meal';
-  id: string;
-  userId: string;
-  name: string;
-  ingredientLines: IngredientLineData[];
-  createdAt: string;
-  updatedAt: string;
-};
-
-type FakeMealData = {
-  type: 'fakemeal';
-  id: string;
-  userId: string;
-  name: string;
-  calories: number;
-  protein: number;
-  createdAt: string;
-  updatedAt: string;
-};
-
-type DayData = {
-  id: string; // YYYYMMDD
-  userId: string;
-  meals: (MealData | FakeMealData)[];
-  createdAt: string;
-  updatedAt: string;
-};
 
 export class FileSystemDaysRepo implements DaysRepo {
   private readonly daysDir: string;
@@ -78,137 +25,9 @@ export class FileSystemDaysRepo implements DaysRepo {
     return path.join(this.daysDir, `${fileName}.json`);
   }
 
-  private serializeIngredient(ingredient: Ingredient): IngredientData {
-    return {
-      id: ingredient.id,
-      name: ingredient.name,
-      calories: ingredient.nutritionalInfoPer100g.calories,
-      protein: ingredient.nutritionalInfoPer100g.protein,
-      imageUrl: ingredient.imageUrl,
-      createdAt: ingredient.createdAt.toISOString(),
-      updatedAt: ingredient.updatedAt.toISOString(),
-    };
-  }
-
-  private deserializeIngredient(data: IngredientData): Ingredient {
-    return Ingredient.create({
-      id: data.id,
-      name: data.name,
-      calories: data.calories,
-      protein: data.protein,
-      imageUrl: data.imageUrl,
-      createdAt: new Date(data.createdAt),
-      updatedAt: new Date(data.updatedAt),
-    });
-  }
-
-  private serializeIngredientLine(line: IngredientLine): IngredientLineData {
-    return {
-      id: line.id,
-      parentId: line.parentId,
-      parentType: line.parentType,
-      ingredient: this.serializeIngredient(line.ingredient),
-      quantityInGrams: line.quantityInGrams,
-      createdAt: line.createdAt.toISOString(),
-      updatedAt: line.updatedAt.toISOString(),
-    };
-  }
-
-  private deserializeIngredientLine(data: IngredientLineData): IngredientLine {
-    return IngredientLine.create({
-      id: data.id,
-      parentId: data.parentId,
-      parentType: data.parentType,
-      ingredient: this.deserializeIngredient(data.ingredient),
-      quantityInGrams: data.quantityInGrams,
-      createdAt: new Date(data.createdAt),
-      updatedAt: new Date(data.updatedAt),
-    });
-  }
-
-  private serializeMeal(meal: Meal): MealData {
-    return {
-      type: 'meal',
-      id: meal.id,
-      userId: meal.userId,
-      name: meal.name,
-      ingredientLines: meal.ingredientLines.map((line) =>
-        this.serializeIngredientLine(line)
-      ),
-      createdAt: meal.createdAt.toISOString(),
-      updatedAt: meal.updatedAt.toISOString(),
-    };
-  }
-
-  private deserializeMeal(data: MealData): Meal {
-    return Meal.create({
-      id: data.id,
-      userId: data.userId,
-      name: data.name,
-      ingredientLines: data.ingredientLines.map((lineData) =>
-        this.deserializeIngredientLine(lineData)
-      ),
-      createdAt: new Date(data.createdAt),
-      updatedAt: new Date(data.updatedAt),
-    });
-  }
-
-  private serializeFakeMeal(fakeMeal: FakeMeal): FakeMealData {
-    return {
-      type: 'fakemeal',
-      id: fakeMeal.id,
-      userId: fakeMeal.userId,
-      name: fakeMeal.name,
-      calories: fakeMeal.calories,
-      protein: fakeMeal.protein,
-      createdAt: fakeMeal.createdAt.toISOString(),
-      updatedAt: fakeMeal.updatedAt.toISOString(),
-    };
-  }
-
-  private deserializeFakeMeal(data: FakeMealData): FakeMeal {
-    return FakeMeal.create({
-      id: data.id,
-      userId: data.userId,
-      name: data.name,
-      calories: data.calories,
-      protein: data.protein,
-      createdAt: new Date(data.createdAt),
-      updatedAt: new Date(data.updatedAt),
-    });
-  }
-
-  private serializeDay(day: Day): DayData {
-    return {
-      id: day.id,
-      userId: day.userId,
-      meals: day.meals.map((meal) =>
-        meal instanceof Meal
-          ? this.serializeMeal(meal)
-          : this.serializeFakeMeal(meal)
-      ),
-      createdAt: day.createdAt.toISOString(),
-      updatedAt: day.updatedAt.toISOString(),
-    };
-  }
-
-  private deserializeDay(data: DayData): Day {
-    return Day.create({
-      ...dayIdToDayMonthYear(data.id),
-      userId: data.userId,
-      meals: data.meals.map((mealData) =>
-        mealData.type === 'meal'
-          ? this.deserializeMeal(mealData)
-          : this.deserializeFakeMeal(mealData)
-      ),
-      createdAt: new Date(data.createdAt),
-      updatedAt: new Date(data.updatedAt),
-    });
-  }
-
   async saveDay(day: Day): Promise<void> {
     await this.ensureDataDir();
-    const data = this.serializeDay(day);
+    const data = toDayDTO(day);
     const filePath = this.getFilePath(day.id);
     await fs.writeFile(filePath, JSON.stringify(data, null, 2));
   }
@@ -224,8 +43,8 @@ export class FileSystemDaysRepo implements DaysRepo {
         jsonFiles.map(async (file) => {
           const filePath = path.join(this.daysDir, file);
           const content = await fs.readFile(filePath, 'utf-8');
-          const data = JSON.parse(content) as DayData;
-          return this.deserializeDay(data);
+          const data = JSON.parse(content) as DayDTO;
+          return fromDayDTO(data);
         })
       );
 
@@ -245,8 +64,8 @@ export class FileSystemDaysRepo implements DaysRepo {
 
     try {
       const content = await fs.readFile(filePath, 'utf-8');
-      const data = JSON.parse(content) as DayData;
-      return this.deserializeDay(data);
+      const data = JSON.parse(content) as DayDTO;
+      return fromDayDTO(data);
     } catch {
       return null;
     }

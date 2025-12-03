@@ -1,9 +1,9 @@
 import * as vp from '@/../tests/createProps';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { beforeEach, afterEach, describe, expect, it } from 'vitest';
-import { FileSystemIngredientsRepo } from '../FileSystemIngredientsRepo';
 import fs from 'fs/promises';
 import path from 'path';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { FileSystemIngredientsRepo } from '../FileSystemIngredientsRepo';
 
 describe('FileSystemIngredientsRepo', () => {
   let repo: FileSystemIngredientsRepo;
@@ -20,7 +20,7 @@ describe('FileSystemIngredientsRepo', () => {
     // Clean up test directory
     try {
       await fs.rm(testDir, { recursive: true, force: true });
-    } catch (error) {
+    } catch {
       // Directory might not exist
     }
   });
@@ -76,7 +76,7 @@ describe('FileSystemIngredientsRepo', () => {
     // which rejects with null when trying to delete (to be caught by use case)
     try {
       await repo.deleteIngredient(vp.validIngredientProps.id);
-    } catch (error) {
+    } catch {
       // Expected to throw/reject
     }
 
@@ -93,13 +93,17 @@ describe('FileSystemIngredientsRepo', () => {
       .catch(() => false);
     expect(fileExists).toBe(true);
 
-    // Verify file content
+    // Verify file content (DTO structure)
     const content = await fs.readFile(filePath, 'utf-8');
     const data = JSON.parse(content);
     expect(data.id).toBe(ingredient.id);
     expect(data.name).toBe(ingredient.name);
-    expect(data.calories).toBe(ingredient.nutritionalInfoPer100g.calories);
-    expect(data.protein).toBe(ingredient.nutritionalInfoPer100g.protein);
+    expect(data.nutritionalInfoPer100g.calories).toBe(
+      ingredient.nutritionalInfoPer100g.calories
+    );
+    expect(data.nutritionalInfoPer100g.protein).toBe(
+      ingredient.nutritionalInfoPer100g.protein
+    );
   });
 
   describe('getByFuzzyName', () => {

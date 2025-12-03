@@ -1,39 +1,13 @@
-import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
+import { toIngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
+import {
+  fromRecipeDTO,
+  RecipeDTO,
+  toRecipeDTO,
+} from '@/application-layer/dtos/RecipeDTO';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
-import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import fs from 'fs/promises';
 import path from 'path';
-
-type IngredientData = {
-  id: string;
-  name: string;
-  calories: number;
-  protein: number;
-  imageUrl?: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-type IngredientLineData = {
-  id: string;
-  parentId: string;
-  parentType: 'meal' | 'recipe';
-  ingredient: IngredientData;
-  quantityInGrams: number;
-  createdAt: string;
-  updatedAt: string;
-};
-
-type RecipeData = {
-  id: string;
-  userId: string;
-  name: string;
-  imageUrl?: string;
-  ingredientLines: IngredientLineData[];
-  createdAt: string;
-  updatedAt: string;
-};
 
 export class FileSystemRecipesRepo implements RecipesRepo {
   private readonly recipesDir: string;
@@ -64,91 +38,15 @@ export class FileSystemRecipesRepo implements RecipesRepo {
     return path.join(this.ingredientLinesDir, `${id}.json`);
   }
 
-  private serializeIngredient(ingredient: Ingredient): IngredientData {
-    return {
-      id: ingredient.id,
-      name: ingredient.name,
-      calories: ingredient.nutritionalInfoPer100g.calories,
-      protein: ingredient.nutritionalInfoPer100g.protein,
-      imageUrl: ingredient.imageUrl,
-      createdAt: ingredient.createdAt.toISOString(),
-      updatedAt: ingredient.updatedAt.toISOString(),
-    };
-  }
-
-  private deserializeIngredient(data: IngredientData): Ingredient {
-    return Ingredient.create({
-      id: data.id,
-      name: data.name,
-      calories: data.calories,
-      protein: data.protein,
-      imageUrl: data.imageUrl,
-      createdAt: new Date(data.createdAt),
-      updatedAt: new Date(data.updatedAt),
-    });
-  }
-
-  private serializeIngredientLine(line: IngredientLine): IngredientLineData {
-    return {
-      id: line.id,
-      parentId: line.parentId,
-      parentType: line.parentType,
-      ingredient: this.serializeIngredient(line.ingredient),
-      quantityInGrams: line.quantityInGrams,
-      createdAt: line.createdAt.toISOString(),
-      updatedAt: line.updatedAt.toISOString(),
-    };
-  }
-
-  private deserializeIngredientLine(data: IngredientLineData): IngredientLine {
-    return IngredientLine.create({
-      id: data.id,
-      parentId: data.parentId,
-      parentType: data.parentType,
-      ingredient: this.deserializeIngredient(data.ingredient),
-      quantityInGrams: data.quantityInGrams,
-      createdAt: new Date(data.createdAt),
-      updatedAt: new Date(data.updatedAt),
-    });
-  }
-
-  private serializeRecipe(recipe: Recipe): RecipeData {
-    return {
-      id: recipe.id,
-      userId: recipe.userId,
-      name: recipe.name,
-      imageUrl: recipe.imageUrl,
-      ingredientLines: recipe.ingredientLines.map((line) =>
-        this.serializeIngredientLine(line)
-      ),
-      createdAt: recipe.createdAt.toISOString(),
-      updatedAt: recipe.updatedAt.toISOString(),
-    };
-  }
-
-  private deserializeRecipe(data: RecipeData): Recipe {
-    return Recipe.create({
-      id: data.id,
-      userId: data.userId,
-      name: data.name,
-      imageUrl: data.imageUrl,
-      ingredientLines: data.ingredientLines.map((lineData) =>
-        this.deserializeIngredientLine(lineData)
-      ),
-      createdAt: new Date(data.createdAt),
-      updatedAt: new Date(data.updatedAt),
-    });
-  }
-
   async saveRecipe(recipe: Recipe): Promise<void> {
     await this.ensureDataDirs();
-    const data = this.serializeRecipe(recipe);
+    const data = toRecipeDTO(recipe);
     const filePath = this.getRecipeFilePath(recipe.id);
     await fs.writeFile(filePath, JSON.stringify(data, null, 2));
 
     // Save ingredient lines separately
     for (const line of recipe.ingredientLines) {
-      const lineData = this.serializeIngredientLine(line);
+      const lineData = toIngredientLineDTO(line);
       const lineFilePath = this.getIngredientLineFilePath(line.id);
       await fs.writeFile(lineFilePath, JSON.stringify(lineData, null, 2));
     }
@@ -165,8 +63,8 @@ export class FileSystemRecipesRepo implements RecipesRepo {
         jsonFiles.map(async (file) => {
           const filePath = path.join(this.recipesDir, file);
           const content = await fs.readFile(filePath, 'utf-8');
-          const data = JSON.parse(content) as RecipeData;
-          return this.deserializeRecipe(data);
+          const data = JSON.parse(content) as RecipeDTO;
+          return fromRecipeDTO(data);
         })
       );
 
@@ -186,8 +84,8 @@ export class FileSystemRecipesRepo implements RecipesRepo {
 
     try {
       const content = await fs.readFile(filePath, 'utf-8');
-      const data = JSON.parse(content) as RecipeData;
-      return this.deserializeRecipe(data);
+      const data = JSON.parse(content) as RecipeDTO;
+      return fromRecipeDTO(data);
     } catch {
       return null;
     }

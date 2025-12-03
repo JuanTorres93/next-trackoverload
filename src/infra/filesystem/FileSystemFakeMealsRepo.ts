@@ -1,17 +1,12 @@
 import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import {
+  FakeMealDTO,
+  toFakeMealDTO,
+  fromFakeMealDTO,
+} from '@/application-layer/dtos/FakeMealDTO';
 import fs from 'fs/promises';
 import path from 'path';
-
-type FakeMealData = {
-  id: string;
-  userId: string;
-  name: string;
-  calories: number;
-  protein: number;
-  createdAt: string;
-  updatedAt: string;
-};
 
 export class FileSystemFakeMealsRepo implements FakeMealsRepo {
   private readonly dataDir: string;
@@ -32,33 +27,9 @@ export class FileSystemFakeMealsRepo implements FakeMealsRepo {
     return path.join(this.dataDir, `${id}.json`);
   }
 
-  private serializeFakeMeal(fakeMeal: FakeMeal): FakeMealData {
-    return {
-      id: fakeMeal.id,
-      userId: fakeMeal.userId,
-      name: fakeMeal.name,
-      calories: fakeMeal.calories,
-      protein: fakeMeal.protein,
-      createdAt: fakeMeal.createdAt.toISOString(),
-      updatedAt: fakeMeal.updatedAt.toISOString(),
-    };
-  }
-
-  private deserializeFakeMeal(data: FakeMealData): FakeMeal {
-    return FakeMeal.create({
-      id: data.id,
-      userId: data.userId,
-      name: data.name,
-      calories: data.calories,
-      protein: data.protein,
-      createdAt: new Date(data.createdAt),
-      updatedAt: new Date(data.updatedAt),
-    });
-  }
-
   async saveFakeMeal(fakeMeal: FakeMeal): Promise<void> {
     await this.ensureDataDir();
-    const data = this.serializeFakeMeal(fakeMeal);
+    const data = toFakeMealDTO(fakeMeal);
     const filePath = this.getFilePath(fakeMeal.id);
     await fs.writeFile(filePath, JSON.stringify(data, null, 2));
   }
@@ -74,8 +45,8 @@ export class FileSystemFakeMealsRepo implements FakeMealsRepo {
         jsonFiles.map(async (file) => {
           const filePath = path.join(this.dataDir, file);
           const content = await fs.readFile(filePath, 'utf-8');
-          const data = JSON.parse(content) as FakeMealData;
-          return this.deserializeFakeMeal(data);
+          const data = JSON.parse(content) as FakeMealDTO;
+          return fromFakeMealDTO(data);
         })
       );
 
@@ -95,8 +66,8 @@ export class FileSystemFakeMealsRepo implements FakeMealsRepo {
 
     try {
       const content = await fs.readFile(filePath, 'utf-8');
-      const data = JSON.parse(content) as FakeMealData;
-      return this.deserializeFakeMeal(data);
+      const data = JSON.parse(content) as FakeMealDTO;
+      return fromFakeMealDTO(data);
     } catch {
       return null;
     }

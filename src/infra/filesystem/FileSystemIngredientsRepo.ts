@@ -1,17 +1,12 @@
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import {
+  IngredientDTO,
+  toIngredientDTO,
+  fromIngredientDTO,
+} from '@/application-layer/dtos/IngredientDTO';
 import fs from 'fs/promises';
 import path from 'path';
-
-type IngredientData = {
-  id: string;
-  name: string;
-  calories: number;
-  protein: number;
-  imageUrl?: string;
-  createdAt: string;
-  updatedAt: string;
-};
 
 export class FileSystemIngredientsRepo implements IngredientsRepo {
   private readonly dataDir: string;
@@ -32,33 +27,9 @@ export class FileSystemIngredientsRepo implements IngredientsRepo {
     return path.join(this.dataDir, `${id}.json`);
   }
 
-  private serializeIngredient(ingredient: Ingredient): IngredientData {
-    return {
-      id: ingredient.id,
-      name: ingredient.name,
-      calories: ingredient.nutritionalInfoPer100g.calories,
-      protein: ingredient.nutritionalInfoPer100g.protein,
-      imageUrl: ingredient.imageUrl,
-      createdAt: ingredient.createdAt.toISOString(),
-      updatedAt: ingredient.updatedAt.toISOString(),
-    };
-  }
-
-  private deserializeIngredient(data: IngredientData): Ingredient {
-    return Ingredient.create({
-      id: data.id,
-      name: data.name,
-      calories: data.calories,
-      protein: data.protein,
-      imageUrl: data.imageUrl,
-      createdAt: new Date(data.createdAt),
-      updatedAt: new Date(data.updatedAt),
-    });
-  }
-
   async saveIngredient(ingredient: Ingredient): Promise<void> {
     await this.ensureDataDir();
-    const data = this.serializeIngredient(ingredient);
+    const data = toIngredientDTO(ingredient);
     const filePath = this.getFilePath(ingredient.id);
     await fs.writeFile(filePath, JSON.stringify(data, null, 2));
   }
@@ -74,8 +45,8 @@ export class FileSystemIngredientsRepo implements IngredientsRepo {
         jsonFiles.map(async (file) => {
           const filePath = path.join(this.dataDir, file);
           const content = await fs.readFile(filePath, 'utf-8');
-          const data = JSON.parse(content) as IngredientData;
-          return this.deserializeIngredient(data);
+          const data = JSON.parse(content) as IngredientDTO;
+          return fromIngredientDTO(data);
         })
       );
 
@@ -90,8 +61,8 @@ export class FileSystemIngredientsRepo implements IngredientsRepo {
 
     try {
       const content = await fs.readFile(filePath, 'utf-8');
-      const data = JSON.parse(content) as IngredientData;
-      return this.deserializeIngredient(data);
+      const data = JSON.parse(content) as IngredientDTO;
+      return fromIngredientDTO(data);
     } catch {
       return null;
     }

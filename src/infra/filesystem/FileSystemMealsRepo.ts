@@ -1,38 +1,13 @@
-import { MealsRepo } from '@/domain/repos/MealsRepo.port';
+import { toIngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
+import {
+  fromMealDTO,
+  MealDTO,
+  toMealDTO,
+} from '@/application-layer/dtos/MealDTO';
 import { Meal } from '@/domain/entities/meal/Meal';
-import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 import fs from 'fs/promises';
 import path from 'path';
-
-type IngredientData = {
-  id: string;
-  name: string;
-  calories: number;
-  protein: number;
-  imageUrl?: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-type IngredientLineData = {
-  id: string;
-  parentId: string;
-  parentType: 'meal' | 'recipe';
-  ingredient: IngredientData;
-  quantityInGrams: number;
-  createdAt: string;
-  updatedAt: string;
-};
-
-type MealData = {
-  id: string;
-  userId: string;
-  name: string;
-  ingredientLines: IngredientLineData[];
-  createdAt: string;
-  updatedAt: string;
-};
 
 export class FileSystemMealsRepo implements MealsRepo {
   private readonly mealsDir: string;
@@ -63,89 +38,15 @@ export class FileSystemMealsRepo implements MealsRepo {
     return path.join(this.ingredientLinesDir, `${id}.json`);
   }
 
-  private serializeIngredient(ingredient: Ingredient): IngredientData {
-    return {
-      id: ingredient.id,
-      name: ingredient.name,
-      calories: ingredient.nutritionalInfoPer100g.calories,
-      protein: ingredient.nutritionalInfoPer100g.protein,
-      imageUrl: ingredient.imageUrl,
-      createdAt: ingredient.createdAt.toISOString(),
-      updatedAt: ingredient.updatedAt.toISOString(),
-    };
-  }
-
-  private deserializeIngredient(data: IngredientData): Ingredient {
-    return Ingredient.create({
-      id: data.id,
-      name: data.name,
-      calories: data.calories,
-      protein: data.protein,
-      imageUrl: data.imageUrl,
-      createdAt: new Date(data.createdAt),
-      updatedAt: new Date(data.updatedAt),
-    });
-  }
-
-  private serializeIngredientLine(line: IngredientLine): IngredientLineData {
-    return {
-      id: line.id,
-      parentId: line.parentId,
-      parentType: line.parentType,
-      ingredient: this.serializeIngredient(line.ingredient),
-      quantityInGrams: line.quantityInGrams,
-      createdAt: line.createdAt.toISOString(),
-      updatedAt: line.updatedAt.toISOString(),
-    };
-  }
-
-  private deserializeIngredientLine(data: IngredientLineData): IngredientLine {
-    return IngredientLine.create({
-      id: data.id,
-      parentId: data.parentId,
-      parentType: data.parentType,
-      ingredient: this.deserializeIngredient(data.ingredient),
-      quantityInGrams: data.quantityInGrams,
-      createdAt: new Date(data.createdAt),
-      updatedAt: new Date(data.updatedAt),
-    });
-  }
-
-  private serializeMeal(meal: Meal): MealData {
-    return {
-      id: meal.id,
-      userId: meal.userId,
-      name: meal.name,
-      ingredientLines: meal.ingredientLines.map((line) =>
-        this.serializeIngredientLine(line)
-      ),
-      createdAt: meal.createdAt.toISOString(),
-      updatedAt: meal.updatedAt.toISOString(),
-    };
-  }
-
-  private deserializeMeal(data: MealData): Meal {
-    return Meal.create({
-      id: data.id,
-      userId: data.userId,
-      name: data.name,
-      ingredientLines: data.ingredientLines.map((lineData) =>
-        this.deserializeIngredientLine(lineData)
-      ),
-      createdAt: new Date(data.createdAt),
-      updatedAt: new Date(data.updatedAt),
-    });
-  }
-
   async saveMeal(meal: Meal): Promise<void> {
     await this.ensureDataDirs();
-    const data = this.serializeMeal(meal);
+    const data = toMealDTO(meal);
     const filePath = this.getMealFilePath(meal.id);
     await fs.writeFile(filePath, JSON.stringify(data, null, 2));
 
     // Save ingredient lines separately
     for (const line of meal.ingredientLines) {
-      const lineData = this.serializeIngredientLine(line);
+      const lineData = toIngredientLineDTO(line);
       const lineFilePath = this.getIngredientLineFilePath(line.id);
       await fs.writeFile(lineFilePath, JSON.stringify(lineData, null, 2));
     }
@@ -162,8 +63,8 @@ export class FileSystemMealsRepo implements MealsRepo {
         jsonFiles.map(async (file) => {
           const filePath = path.join(this.mealsDir, file);
           const content = await fs.readFile(filePath, 'utf-8');
-          const data = JSON.parse(content) as MealData;
-          return this.deserializeMeal(data);
+          const data = JSON.parse(content) as MealDTO;
+          return fromMealDTO(data);
         })
       );
 
@@ -183,8 +84,8 @@ export class FileSystemMealsRepo implements MealsRepo {
 
     try {
       const content = await fs.readFile(filePath, 'utf-8');
-      const data = JSON.parse(content) as MealData;
-      return this.deserializeMeal(data);
+      const data = JSON.parse(content) as MealDTO;
+      return fromMealDTO(data);
     } catch {
       return null;
     }
