@@ -2,17 +2,12 @@ import { DayId } from '@/domain/value-objects/DayId/DayId';
 import { Id } from '@/domain/value-objects/Id/Id';
 import { ValidationError } from '../../common/errors';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
-import { Calories } from '../../interfaces/Calories';
-import { Protein } from '../../interfaces/Protein';
-import { FakeMeal } from '../fakemeal/FakeMeal';
-import { Meal } from '../meal/Meal';
 
 export type DayCreateProps = {
   day: number;
   month: number;
   year: number;
   userId: string;
-  meals: (Meal | FakeMeal)[];
   createdAt: Date;
   updatedAt: Date;
 };
@@ -20,31 +15,16 @@ export type DayCreateProps = {
 export type DayProps = {
   id: DayId;
   userId: Id;
-  meals: (Meal | FakeMeal)[];
+  mealIds: Id[];
+  fakeMealIds: Id[];
   createdAt: Date;
   updatedAt: Date;
 };
 
-function validateMeal(meal: Meal | FakeMeal) {
-  if (!(meal instanceof Meal) && !(meal instanceof FakeMeal)) {
-    throw new ValidationError(
-      'Day: meal must be an instance of Meal or FakeMeal'
-    );
-  }
-}
-
-export class Day implements Protein, Calories {
+export class Day {
   private constructor(private readonly props: DayProps) {}
 
   static create(props: DayCreateProps): Day {
-    // Validate meals is instance of Meal or FakeMeal
-    if (!Array.isArray(props.meals)) {
-      throw new ValidationError('Day: meals must be an array');
-    }
-    for (const meal of props.meals) {
-      validateMeal(meal);
-    }
-
     const dayProps: DayProps = {
       id: DayId.create({
         day: props.day,
@@ -52,7 +32,8 @@ export class Day implements Protein, Calories {
         year: props.year,
       }),
       userId: Id.create(props.userId),
-      meals: props.meals,
+      mealIds: [],
+      fakeMealIds: [],
       createdAt: handleCreatedAt(props.createdAt),
       updatedAt: handleUpdatedAt(props.updatedAt),
     };
@@ -60,26 +41,63 @@ export class Day implements Protein, Calories {
     return new Day(dayProps);
   }
 
-  addMeal(meal: Meal | FakeMeal): void {
-    validateMeal(meal);
+  addMeal(mealId: string): void {
+    const validMealId = Id.create(mealId);
 
-    if (this.props.meals.find((m) => m.id === meal.id)) {
+    if (this.props.mealIds.find((mealId) => mealId.equals(validMealId))) {
       throw new ValidationError(
-        `Day: (Fake)Meal with id ${meal.id} already exists in the day`
+        `Day: (Fake)Meal with id ${validMealId} already exists in the day`
       );
     }
 
-    this.props.meals.push(meal);
+    this.props.mealIds.push(validMealId);
+    this.props.updatedAt = new Date();
+  }
+
+  addFakeMeal(fakeMealId: string): void {
+    const validFakeMealId = Id.create(fakeMealId);
+
+    if (
+      this.props.fakeMealIds.find((mealId) => mealId.equals(validFakeMealId))
+    ) {
+      throw new ValidationError(
+        `Day: FakeMeal with id ${validFakeMealId} already exists in the day`
+      );
+    }
+
+    this.props.fakeMealIds.push(validFakeMealId);
     this.props.updatedAt = new Date();
   }
 
   removeMealById(mealId: string): void {
-    const initialLength = this.props.meals.length;
+    const validMealId = Id.create(mealId);
+    const initialLength = this.props.mealIds.length;
 
-    this.props.meals = this.props.meals.filter((meal) => meal.id !== mealId);
+    this.props.mealIds = this.props.mealIds.filter(
+      (mealId) => !mealId.equals(validMealId)
+    );
 
-    if (this.props.meals.length === initialLength || initialLength === 0) {
+    if (this.props.mealIds.length === initialLength || initialLength === 0) {
       throw new ValidationError(`Day: No meal found with id ${mealId}`);
+    }
+    this.props.updatedAt = new Date();
+  }
+
+  removeFakeMealById(fakeMealId: string): void {
+    const validFakeMealId = Id.create(fakeMealId);
+    const initialLength = this.props.fakeMealIds.length;
+
+    this.props.fakeMealIds = this.props.fakeMealIds.filter(
+      (mealId) => !mealId.equals(validFakeMealId)
+    );
+
+    if (
+      this.props.fakeMealIds.length === initialLength ||
+      initialLength === 0
+    ) {
+      throw new ValidationError(
+        `Day: No fake meal found with id ${fakeMealId}`
+      );
     }
     this.props.updatedAt = new Date();
   }
@@ -105,16 +123,12 @@ export class Day implements Protein, Calories {
     return this.props.id.year;
   }
 
-  get meals() {
-    return [...this.props.meals];
+  get mealIds() {
+    return this.props.mealIds?.map((id) => id.value);
   }
 
-  get calories() {
-    return this.props.meals.reduce((total, meal) => total + meal.calories, 0);
-  }
-
-  get protein() {
-    return this.props.meals.reduce((total, meal) => total + meal.protein, 0);
+  get fakeMealIds() {
+    return this.props.fakeMealIds?.map((id) => id.value);
   }
 
   get createdAt() {

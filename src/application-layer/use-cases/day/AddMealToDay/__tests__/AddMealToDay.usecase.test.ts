@@ -1,6 +1,5 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
-import { MealDTO } from '@/application-layer/dtos/MealDTO';
 import { NotFoundError } from '@/domain/common/errors';
 import { Day } from '@/domain/entities/day/Day';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
@@ -71,7 +70,7 @@ describe('AddMealToDayUsecase', () => {
       recipeId: recipe.id,
     });
 
-    expect(result.meals).toHaveLength(1);
+    expect(result.mealIds).toHaveLength(1);
 
     expect(result.id).not.toBeUndefined();
     expect(result.id).not.toBe(recipe.id);
@@ -85,14 +84,14 @@ describe('AddMealToDayUsecase', () => {
       recipeId: recipe.id,
     });
 
-    const addedMeal = result.meals[0] as MealDTO;
+    const addedMeal = await mealsRepo.getMealById(result.mealIds[0]);
 
-    expect(addedMeal.ingredientLines).toHaveLength(
+    expect(addedMeal!.ingredientLines).toHaveLength(
       recipe.ingredientLines.length
     );
-    expect(addedMeal.ingredientLines).toHaveLength(1);
+    expect(addedMeal!.ingredientLines).toHaveLength(1);
 
-    const addedIngredientLine = addedMeal.ingredientLines[0];
+    const addedIngredientLine = addedMeal!.ingredientLines[0];
 
     expect(addedIngredientLine.id).not.toBe(ingredientLine.id);
     expect(addedIngredientLine.parentId).not.toBe(ingredientLine.parentId);
@@ -133,22 +132,24 @@ describe('AddMealToDayUsecase', () => {
     });
 
     expect(result.id).toEqual(nonExistentdayId);
-    expect(result.meals).toHaveLength(1);
+    expect(result.mealIds).toHaveLength(1);
 
     const allDays = await daysRepo.getAllDays();
     expect(allDays.length).toBe(2);
   });
 
   it('should create new meal', async () => {
-    expect(day.meals).toHaveLength(0);
+    const initialMeals = await mealsRepo.getAllMeals();
+    expect(initialMeals.length).toBe(0);
 
-    const result = await addMealToDayUsecase.execute({
+    await addMealToDayUsecase.execute({
       dayId: day.id,
       userId: vp.userId,
       recipeId: recipe.id,
     });
 
-    expect(result.meals).toHaveLength(1);
+    const allMeals = await mealsRepo.getAllMeals();
+    expect(allMeals.length).toBe(1);
   });
 
   it('should throw error if user does not exist', async () => {

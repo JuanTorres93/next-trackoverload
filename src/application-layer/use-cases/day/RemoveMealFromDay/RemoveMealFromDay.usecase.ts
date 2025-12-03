@@ -2,6 +2,7 @@ import { DayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
+import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 
 export type RemoveMealFromDayUsecaseRequest = {
   date: string;
@@ -10,7 +11,11 @@ export type RemoveMealFromDayUsecaseRequest = {
 };
 
 export class RemoveMealFromDayUsecase {
-  constructor(private daysRepo: DaysRepo, private usersRepo: UsersRepo) {}
+  constructor(
+    private daysRepo: DaysRepo,
+    private usersRepo: UsersRepo,
+    private mealsRepo: MealsRepo
+  ) {}
 
   async execute(request: RemoveMealFromDayUsecaseRequest): Promise<DayDTO> {
     const user = await this.usersRepo.getUserById(request.userId);
@@ -30,8 +35,8 @@ export class RemoveMealFromDayUsecase {
       );
     }
 
-    // NOTE: meal id validation is done inside the Day entity
     day.removeMealById(request.mealId);
+    await this.mealsRepo.deleteMeal(request.mealId);
     await this.daysRepo.saveDay(day);
 
     return toDayDTO(day);

@@ -18,8 +18,9 @@ describe('FileSystemDaysRepo', () => {
 
     day = Day.create({
       ...vp.validDayProps(),
-      meals: [fakeMeal],
     });
+
+    day.addFakeMeal(fakeMeal.id);
 
     await repo.saveDay(day);
   });
@@ -38,8 +39,8 @@ describe('FileSystemDaysRepo', () => {
       day: 2,
       month: 10,
       year: 1111,
-      meals: [fakeMeal],
     });
+    newDay.addFakeMeal(fakeMeal.id);
     await repo.saveDay(newDay);
 
     const allDays = await repo.getAllDays();
@@ -52,13 +53,12 @@ describe('FileSystemDaysRepo', () => {
   it('should update an existing day', async () => {
     const updatedDay = Day.create({
       ...vp.validDayProps(),
-      meals: [], // No meals
     });
     await repo.saveDay(updatedDay);
 
     const allDays = await repo.getAllDays();
     expect(allDays.length).toBe(1);
-    expect(allDays[0].meals.length).toBe(0);
+    expect(allDays[0].mealIds.length).toBe(0);
   });
 
   it('should retrieve a day by ID', async () => {
@@ -86,15 +86,15 @@ describe('FileSystemDaysRepo', () => {
       day: 2,
       month: 10,
       year: 2023,
-      meals: [fakeMeal],
     });
+
     const day3 = Day.create({
       ...vp.validDayProps(),
       day: 5,
       month: 10,
       year: 2023,
-      meals: [fakeMeal],
     });
+
     await repo.saveDay(day2);
     await repo.saveDay(day3);
 
@@ -109,7 +109,6 @@ describe('FileSystemDaysRepo', () => {
       day: 2,
       month: 10,
       year: 2023,
-      meals: [fakeMeal],
     });
     await repo.saveDay(day2);
 
@@ -140,8 +139,9 @@ describe('FileSystemDaysRepo', () => {
 
   it('should persist day to filesystem with correct filename', async () => {
     // Verify file exists with correct name (YYYYMMDD.json)
-    const fileName = '20231001.json';
+    const fileName = `${day.id}.json`;
     const filePath = path.join(testDir, fileName);
+
     const fileExists = await fs
       .access(filePath)
       .then(() => true)
@@ -152,6 +152,6 @@ describe('FileSystemDaysRepo', () => {
     const content = await fs.readFile(filePath, 'utf-8');
     const data = JSON.parse(content);
     expect(data.userId).toBe(vp.userId);
-    expect(data.meals).toHaveLength(1);
+    expect(data.fakeMealIds).toHaveLength(1);
   });
 });

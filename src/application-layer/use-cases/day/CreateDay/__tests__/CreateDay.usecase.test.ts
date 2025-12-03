@@ -38,9 +38,8 @@ describe('CreateDayUsecase', () => {
     const day = await createDayUsecase.execute(request);
 
     expect(day.id).toEqual('20231001');
-    expect(day.meals).toEqual([]);
-    expect(day.calories).toBe(0);
-    expect(day.protein).toBe(0);
+    expect(day.mealIds).toEqual([]);
+    expect(day.fakeMealIds).toEqual([]);
     expect(day).toHaveProperty('createdAt');
     expect(day).toHaveProperty('updatedAt');
 
@@ -64,21 +63,6 @@ describe('CreateDayUsecase', () => {
     for (const prop of dto.dayDTOProperties) {
       expect(day).toHaveProperty(prop);
     }
-  });
-
-  it('should create a day with initial meals', async () => {
-    const request = {
-      day: vp.validDayProps().day,
-      month: vp.validDayProps().month,
-      year: vp.validDayProps().year,
-      userId: vp.userId,
-      meals: [],
-    };
-
-    const day = await createDayUsecase.execute(request);
-
-    expect(day.id).toEqual('20231001');
-    expect(day.meals).toEqual([]);
   });
 
   it('should throw error if user does not exist', async () => {

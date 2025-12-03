@@ -1,9 +1,9 @@
+// TODO delete this entire file and use the getters util in dtos
 export const dayDTOProperties = [
   'id',
   'userId',
-  'meals',
-  'calories',
-  'protein',
+  'mealIds',
+  'fakeMealIds',
   'createdAt',
   'updatedAt',
 ];

@@ -48,7 +48,7 @@ describe('AddFakeMealToDayUsecase', () => {
   });
 
   it('should add fake meal to existing day', async () => {
-    expect(day.meals).toHaveLength(0);
+    expect(day.fakeMealIds).toHaveLength(0);
 
     const result = await addFakeMealToDayUsecase.execute({
       dayId: day.id,
@@ -58,7 +58,7 @@ describe('AddFakeMealToDayUsecase', () => {
       protein: vp.validFakeMealProps.protein,
     });
 
-    expect(result.meals).toHaveLength(1);
+    expect(result.fakeMealIds).toHaveLength(1);
   });
 
   it('should return DayDTO', async () => {
@@ -77,7 +77,7 @@ describe('AddFakeMealToDayUsecase', () => {
   });
 
   it('should add fake meal and create new day if it does not exist', async () => {
-    expect(day.meals).toHaveLength(0);
+    expect(day.fakeMealIds).toHaveLength(0);
     const currentDays = await daysRepo.getAllDays();
     expect(currentDays).toHaveLength(1);
 
@@ -92,7 +92,7 @@ describe('AddFakeMealToDayUsecase', () => {
     });
 
     expect(result.id).toEqual(dayId);
-    expect(result.meals).toHaveLength(1);
+    expect(result.fakeMealIds).toHaveLength(1);
     const afterDays = await daysRepo.getAllDays();
     expect(afterDays).toHaveLength(2);
   });

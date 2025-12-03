@@ -1,8 +1,6 @@
 import { DayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
 import { NotFoundError } from '@/domain/common/errors';
 import { Day } from '@/domain/entities/day/Day';
-import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { Meal } from '@/domain/entities/meal/Meal';
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 
@@ -11,7 +9,6 @@ export type CreateDayUsecaseRequest = {
   month: number;
   year: number;
   userId: string;
-  meals?: (Meal | FakeMeal)[];
 };
 
 export class CreateDayUsecase {
@@ -30,7 +27,6 @@ export class CreateDayUsecase {
       month: request.month,
       year: request.year,
       userId: request.userId,
-      meals: request.meals || [],
       createdAt: new Date(),
       updatedAt: new Date(),
     });

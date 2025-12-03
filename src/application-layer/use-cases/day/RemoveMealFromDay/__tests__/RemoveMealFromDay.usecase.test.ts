@@ -1,44 +1,62 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { RemoveMealFromDayUsecase } from '../RemoveMealFromDay.usecase';
+import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { Day } from '@/domain/entities/day/Day';
+import { User } from '@/domain/entities/user/User';
 import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
-import { Day } from '@/domain/entities/day/Day';
-import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { User } from '@/domain/entities/user/User';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { RemoveMealFromDayUsecase } from '../RemoveMealFromDay.usecase';
 
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
+import { Meal } from '@/domain/entities/meal/Meal';
 
 describe('RemoveMealFromDayUsecase', () => {
   let daysRepo: MemoryDaysRepo;
   let usersRepo: MemoryUsersRepo;
+  let mealsRepo: MemoryMealsRepo;
+
   let removeMealFromDayUsecase: RemoveMealFromDayUsecase;
   let user: User;
-  let fakeMeal: FakeMeal;
+  let meal: Meal;
   let day: Day;
 
   beforeEach(async () => {
     daysRepo = new MemoryDaysRepo();
     usersRepo = new MemoryUsersRepo();
+    mealsRepo = new MemoryMealsRepo();
     removeMealFromDayUsecase = new RemoveMealFromDayUsecase(
       daysRepo,
-      usersRepo
+      usersRepo,
+      mealsRepo
     );
 
-    fakeMeal = FakeMeal.create({
-      ...vp.validFakeMealProps,
+    const ingredient = Ingredient.create(vp.validIngredientProps);
+    const ingredientLine = IngredientLine.create({
+      ...vp.ingredientLineRecipePropsNoIngredient,
+      ingredient,
+      quantityInGrams: 150,
     });
+
+    meal = Meal.create({
+      ...vp.mealPropsNoIngredientLines,
+      ingredientLines: [ingredientLine],
+    });
+
     day = Day.create({
       ...vp.validDayProps(),
-      meals: [fakeMeal],
     });
 
     user = User.create({
       ...vp.validUserProps,
     });
 
+    day.addMeal(meal.id);
+
     await usersRepo.saveUser(user);
+    await mealsRepo.saveMeal(meal);
     await daysRepo.saveDay(day);
   });
 
@@ -46,17 +64,31 @@ describe('RemoveMealFromDayUsecase', () => {
     const result = await removeMealFromDayUsecase.execute({
       date: day.id,
       userId: vp.userId,
-      mealId: vp.validFakeMealProps.id,
+      mealId: vp.mealPropsNoIngredientLines.id,
     });
 
-    expect(result.meals).toHaveLength(0);
+    expect(result.mealIds).toHaveLength(0);
+  });
+
+  it('should remove meal from repo', async () => {
+    const initialMeals = await mealsRepo.getAllMeals();
+    expect(initialMeals).toHaveLength(1);
+
+    await removeMealFromDayUsecase.execute({
+      date: day.id,
+      userId: vp.userId,
+      mealId: vp.mealPropsNoIngredientLines.id,
+    });
+
+    const mealsAfterRemoval = await mealsRepo.getAllMeals();
+    expect(mealsAfterRemoval).toHaveLength(0);
   });
 
   it('should return a DayDTO', async () => {
     const result = await removeMealFromDayUsecase.execute({
       date: day.id,
       userId: vp.userId,
-      mealId: vp.validFakeMealProps.id,
+      mealId: vp.mealPropsNoIngredientLines.id,
     });
 
     expect(result).not.toBeInstanceOf(Day);

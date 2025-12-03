@@ -40,7 +40,6 @@ export class AddFakeMealToDayUsecase {
       day = Day.create({
         ...dayIdToDayMonthYear(request.dayId),
         userId: request.userId,
-        meals: [],
         createdAt: new Date(),
         updatedAt: new Date(),
       });
@@ -56,7 +55,7 @@ export class AddFakeMealToDayUsecase {
       updatedAt: new Date(),
     });
 
-    day.addMeal(fakeMeal);
+    day.addFakeMeal(fakeMeal.id);
     await this.fakeMealsRepo.saveFakeMeal(fakeMeal);
     await this.daysRepo.saveDay(day);
 

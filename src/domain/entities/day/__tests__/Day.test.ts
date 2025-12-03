@@ -1,159 +1,29 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { ValidationError } from '@/domain/common/errors';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
-import { FakeMeal } from '../../fakemeal/FakeMeal';
-import { Meal } from '../../meal/Meal';
 import { Day } from '../Day';
 
 import * as vp from '@/../tests/createProps';
+import { DayId } from '@/domain/value-objects/DayId/DayId';
 
 describe('Day', () => {
   let day: Day;
-  let fakeMeal: FakeMeal;
-  let ingredient: Ingredient;
-  let ingredientLine: IngredientLine;
-  let meal: Meal;
 
   beforeEach(() => {
-    fakeMeal = FakeMeal.create(vp.validFakeMealProps);
-    ingredient = Ingredient.create(vp.validIngredientProps);
-
-    ingredientLine = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
-      ingredient,
-    });
-
-    meal = Meal.create({
-      ...vp.mealPropsNoIngredientLines,
-      ingredientLines: [ingredientLine],
-    });
-
     day = Day.create({
       ...vp.validDayProps(),
-      meals: [fakeMeal, meal],
     });
   });
 
-  it('should create a valid day', () => {
-    expect(day).toBeInstanceOf(Day);
-  });
-
-  it('should throw error if meals are not Meal or FakeMeal instances', async () => {
-    const invalidMeals = [
-      {},
-      3,
-      'invalid',
-      { id: 'not-a-meal' },
-      null,
-      undefined,
-      42,
-      [fakeMeal],
-    ];
-
-    invalidMeals.forEach((invalidMeal) => {
-      expect(() =>
-        Day.create({
-          ...vp.validDayProps(),
-          // @ts-expect-error Testing invalid input
-          meals: [invalidMeal],
-        })
-      ).toThrow(ValidationError);
-    });
-
-    invalidMeals.forEach((invalidMeal) => {
-      expect(() =>
-        Day.create({
-          ...vp.validDayProps(),
-          // @ts-expect-error Testing invalid input
-          meals: [invalidMeal],
-        })
-      ).toThrow(/Day.*meal.*must.*instance.*Meal.*or.*FakeMeal/);
-    });
-  });
-
-  it('should compute total calories', async () => {
-    const totalCalories = day.calories;
-    expect(totalCalories).toBe(400);
-  });
-
-  it('should compute total protein', async () => {
-    const totalProtein = day.protein;
-    expect(totalProtein).toBe(60);
-  });
-
-  it('should add meal', async () => {
-    const initialLength = day.meals.length;
-
-    const newMeal = Meal.create({
-      ...vp.mealPropsNoIngredientLines,
-      id: 'meal2',
-      name: 'Another Meal',
-      ingredientLines: [ingredientLine],
-    });
-
-    day.addMeal(newMeal);
-    expect(day.meals).toHaveLength(initialLength + 1);
-    expect(day.meals[day.meals.length - 1]).toEqual(newMeal);
-  });
-
-  it('should not add already added meal', async () => {
-    const initialLength = day.meals.length;
-
-    expect(() => day.addMeal(meal)).toThrow(ValidationError);
-    expect(() => day.addMeal(meal)).toThrow(/Day.*Meal.*id.*already.*exists/);
-    expect(day.meals).toHaveLength(initialLength);
-  });
-
-  it('should not add already added fakeMeal', async () => {
-    const initialLength = day.meals.length;
-
-    expect(() => day.addMeal(fakeMeal)).toThrow(ValidationError);
-    expect(() => day.addMeal(fakeMeal)).toThrow(
-      /Day.*Meal.*id.*already.*exists/
-    );
-    expect(day.meals).toHaveLength(initialLength);
-  });
-
-  it('should not add invalid meal', async () => {
-    const initialLength = day.meals.length;
-
-    const invalidMeals = [
-      {},
-      3,
-      'invalid',
-      { id: 'not-a-meal' },
-      null,
-      42,
-      [fakeMeal],
-    ];
-
-    invalidMeals.forEach((invalidMeal) => {
-      // @ts-expect-error Testing invalid input
-      expect(() => day.addMeal(invalidMeal)).toThrow(ValidationError);
-      expect(day.meals).toHaveLength(initialLength);
-    });
-  });
-
-  it('should remove meal', async () => {
-    const initialLength = day.meals.length;
-
-    day.removeMealById('fakeMeal1');
-
-    expect(day.meals).toHaveLength(initialLength - 1);
-    expect(day.meals).not.toContain(fakeMeal);
-  });
-
-  it('should have meals', async () => {
-    expect(day).toHaveProperty('meals');
-    expect(Array.isArray(day.meals)).toBe(true);
-  });
-
-  it('should throw error if removing meal that is not contained in day', async () => {
-    expect(() => day.removeMealById('non-existent')).toThrow(ValidationError);
-    expect(() => day.removeMealById('non-existent')).toThrow(
-      /Day.*No.*meal.*found.*id/
+  it('should return its id', async () => {
+    expect(day).toHaveProperty('id');
+    expect(typeof day.id).toBe('string');
+    expect(day.id).toBe(
+      DayId.create({
+        day: vp.validDayProps().day,
+        month: vp.validDayProps().month,
+        year: vp.validDayProps().year,
+      }).value
     );
   });
 
@@ -173,5 +43,113 @@ describe('Day', () => {
     expect(day).toHaveProperty('year');
     expect(typeof day.year).toBe('number');
     expect(day.year).toBe(vp.validDayProps().year);
+  });
+
+  describe('creation', () => {
+    it('should create a valid day', () => {
+      expect(day).toBeInstanceOf(Day);
+    });
+  });
+
+  describe('meal management', () => {
+    const newMealId = 'new-meal-id';
+
+    it('should add meal', async () => {
+      const initialLength = day.mealIds.length;
+
+      day.addMeal(newMealId);
+      expect(day.mealIds).toHaveLength(initialLength + 1);
+      expect(day.mealIds[day.mealIds.length - 1]).toEqual(newMealId);
+    });
+
+    it('should have an array of meal ids that belong to the day', async () => {
+      expect(day).toHaveProperty('mealIds');
+      expect(Array.isArray(day.mealIds)).toBe(true);
+
+      day.addMeal(newMealId);
+      expect(day.mealIds).toContain(newMealId);
+    });
+
+    it('should not add already added meal', async () => {
+      day.addMeal(newMealId); // First addition
+      const initialLength = day.mealIds.length;
+
+      expect(() => day.addMeal(newMealId)).toThrow(ValidationError);
+      expect(() => day.addMeal(newMealId)).toThrow(
+        /Day.*Meal.*id.*already.*exists/
+      );
+      expect(day.mealIds).toHaveLength(initialLength);
+    });
+
+    it('should remove meal', async () => {
+      day.addMeal(newMealId); // First addition to ensure it exists
+
+      const initialLength = day.mealIds.length;
+      day.removeMealById(newMealId);
+
+      expect(day.mealIds).toHaveLength(initialLength - 1);
+      expect(day.mealIds).not.toContain(newMealId);
+    });
+
+    it('should throw error if removing meal that is not contained in day', async () => {
+      expect(() => day.removeMealById('non-existent')).toThrow(ValidationError);
+      expect(() => day.removeMealById('non-existent')).toThrow(
+        /Day.*No.*meal.*found.*id/
+      );
+    });
+  });
+
+  describe('fake meal management', () => {
+    const fakeMealId = 'fake-meal-id';
+
+    it('should have an array of fakeMeal ids that belong to the day', async () => {
+      expect(day).toHaveProperty('fakeMealIds');
+      expect(Array.isArray(day.fakeMealIds)).toBe(true);
+
+      day.addFakeMeal(fakeMealId);
+      expect(day.fakeMealIds).toContain(fakeMealId);
+    });
+
+    it('should add fake meal', async () => {
+      const initialLength = day.fakeMealIds.length;
+
+      const newFakeMealId = 'new-fake-meal-id';
+
+      day.addFakeMeal(newFakeMealId);
+      expect(day.fakeMealIds).toHaveLength(initialLength + 1);
+      expect(day.fakeMealIds[day.fakeMealIds.length - 1]).toEqual(
+        newFakeMealId
+      );
+    });
+
+    it('should not add already added fake meal', async () => {
+      day.addFakeMeal(fakeMealId); // First addition
+      const initialLength = day.fakeMealIds.length;
+
+      expect(() => day.addFakeMeal(fakeMealId)).toThrow(ValidationError);
+      expect(() => day.addFakeMeal(fakeMealId)).toThrow(
+        /Day.*FakeMeal.*id.*already.*exists/
+      );
+      expect(day.fakeMealIds).toHaveLength(initialLength);
+    });
+
+    it('should remove fake meal', async () => {
+      day.addFakeMeal(fakeMealId); // First addition to ensure it exists
+      const initialLength = day.fakeMealIds.length;
+
+      day.removeFakeMealById(fakeMealId);
+
+      expect(day.fakeMealIds).toHaveLength(initialLength - 1);
+      expect(day.fakeMealIds).not.toContain(fakeMealId);
+    });
+
+    it('should throw error if removing fake meal that is not contained in day', async () => {
+      expect(() => day.removeFakeMealById('non-existent')).toThrow(
+        ValidationError
+      );
+      expect(() => day.removeFakeMealById('non-existent')).toThrow(
+        /Day.*No.*fake meal.*found.*id/
+      );
+    });
   });
 });

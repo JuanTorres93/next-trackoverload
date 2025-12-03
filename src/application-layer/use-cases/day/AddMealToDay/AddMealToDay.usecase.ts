@@ -52,7 +52,6 @@ export class AddMealToDayUsecase {
       day = Day.create({
         ...dayIdToDayMonthYear(request.dayId),
         userId: request.userId,
-        meals: [],
         createdAt: new Date(),
         updatedAt: new Date(),
       });
@@ -81,7 +80,7 @@ export class AddMealToDayUsecase {
       updatedAt: new Date(),
     });
 
-    day.addMeal(meal);
+    day.addMeal(meal.id);
 
     await this.mealsRepo.saveMeal(meal);
     await this.daysRepo.saveDay(day);

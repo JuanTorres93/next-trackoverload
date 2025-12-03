@@ -15,8 +15,9 @@ describe('MemoryDaysRepo', () => {
 
     day = Day.create({
       ...vp.validDayProps(),
-      meals: [fakeMeal],
     });
+
+    day.addFakeMeal(fakeMeal.id);
 
     await repo.saveDay(day);
   });
@@ -27,8 +28,9 @@ describe('MemoryDaysRepo', () => {
       day: 2,
       month: 10,
       year: 2023,
-      meals: [fakeMeal],
     });
+
+    newDay.addFakeMeal(fakeMeal.id);
     await repo.saveDay(newDay);
 
     const allDays = await repo.getAllDays();
@@ -39,13 +41,12 @@ describe('MemoryDaysRepo', () => {
   it('should update an existing day', async () => {
     const updatedDay = Day.create({
       ...vp.validDayProps(),
-      meals: [], // No meals
     });
     await repo.saveDay(updatedDay);
 
     const allDays = await repo.getAllDays();
     expect(allDays.length).toBe(1);
-    expect(allDays[0].meals.length).toBe(0);
+    expect(allDays[0].fakeMealIds.length).toBe(0);
   });
 
   it('should retrieve a day by ID', async () => {
