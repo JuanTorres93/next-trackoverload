@@ -224,4 +224,29 @@ export class FileSystemMealsRepo implements MealsRepo {
       return Promise.reject(null);
     }
   }
+
+  async deleteMultipleMeals(ids: string[]): Promise<void> {
+    await Promise.all(
+      ids.map(async (id) => {
+        const meal = await this.getMealById(id);
+        if (meal) {
+          const filePath = this.getMealFilePath(id);
+          try {
+            await fs.unlink(filePath);
+            // Delete associated ingredient lines
+            for (const line of meal.ingredientLines) {
+              const lineFilePath = this.getIngredientLineFilePath(line.id);
+              try {
+                await fs.unlink(lineFilePath);
+              } catch {
+                // Line file might not exist
+              }
+            }
+          } catch {
+            // Meal file might not exist
+          }
+        }
+      })
+    );
+  }
 }

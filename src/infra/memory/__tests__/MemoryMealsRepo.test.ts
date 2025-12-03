@@ -103,4 +103,55 @@ describe('MemoryMealsRepo', () => {
     const allMealsAfterDeletion = await repo.getAllMeals();
     expect(allMealsAfterDeletion.length).toBe(0);
   });
+
+  it('should delete multiple meals by IDs', async () => {
+    const meal2 = Meal.create({
+      ...vp.mealPropsNoIngredientLines,
+      id: 'meal-2',
+      name: 'Chicken Salad',
+      ingredientLines: [ingredientLine],
+    });
+    const meal3 = Meal.create({
+      ...vp.mealPropsNoIngredientLines,
+      id: 'meal-3',
+      name: 'Turkey Sandwich',
+      ingredientLines: [ingredientLine],
+    });
+    await repo.saveMeal(meal2);
+    await repo.saveMeal(meal3);
+
+    const allMeals = await repo.getAllMeals();
+    expect(allMeals.length).toBe(3);
+
+    await repo.deleteMultipleMeals([
+      vp.mealPropsNoIngredientLines.id,
+      'meal-2',
+    ]);
+
+    const allMealsAfterDeletion = await repo.getAllMeals();
+    expect(allMealsAfterDeletion.length).toBe(1);
+    expect(allMealsAfterDeletion[0].id).toBe('meal-3');
+  });
+
+  it('should handle deleting multiple meals with non-existent IDs', async () => {
+    const meal2 = Meal.create({
+      ...vp.mealPropsNoIngredientLines,
+      id: 'meal-2',
+      name: 'Chicken Salad',
+      ingredientLines: [ingredientLine],
+    });
+    await repo.saveMeal(meal2);
+
+    const allMeals = await repo.getAllMeals();
+    expect(allMeals.length).toBe(2);
+
+    await repo.deleteMultipleMeals([
+      vp.mealPropsNoIngredientLines.id,
+      'non-existent',
+    ]);
+
+    const allMealsAfterDeletion = await repo.getAllMeals();
+    expect(allMealsAfterDeletion.length).toBe(1);
+    expect(allMealsAfterDeletion[0].id).toBe('meal-2');
+  });
 });

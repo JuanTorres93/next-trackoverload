@@ -119,4 +119,49 @@ describe('MemoryFakeMealsRepo', () => {
     expect(allFakeMealsAfterDeletion.length).toBe(1);
     expect(allFakeMealsAfterDeletion[0].userId).toBe('user-2');
   });
+
+  it('should delete multiple fake meals by IDs', async () => {
+    const fakeMeal2 = FakeMeal.create({
+      ...vp.validFakeMealProps,
+      id: '2',
+      name: 'Energy Bar',
+    });
+    const fakeMeal3 = FakeMeal.create({
+      ...vp.validFakeMealProps,
+      id: '3',
+      name: 'Protein Bar',
+    });
+    await repo.saveFakeMeal(fakeMeal2);
+    await repo.saveFakeMeal(fakeMeal3);
+
+    const allFakeMeals = await repo.getAllFakeMeals();
+    expect(allFakeMeals.length).toBe(3);
+
+    await repo.deleteMultipleFakeMeals([vp.validFakeMealProps.id, '2']);
+
+    const allFakeMealsAfterDeletion = await repo.getAllFakeMeals();
+    expect(allFakeMealsAfterDeletion.length).toBe(1);
+    expect(allFakeMealsAfterDeletion[0].id).toBe('3');
+  });
+
+  it('should handle deleting multiple fake meals with non-existent IDs', async () => {
+    const fakeMeal2 = FakeMeal.create({
+      ...vp.validFakeMealProps,
+      id: '2',
+      name: 'Energy Bar',
+    });
+    await repo.saveFakeMeal(fakeMeal2);
+
+    const allFakeMeals = await repo.getAllFakeMeals();
+    expect(allFakeMeals.length).toBe(2);
+
+    await repo.deleteMultipleFakeMeals([
+      vp.validFakeMealProps.id,
+      'non-existent',
+    ]);
+
+    const allFakeMealsAfterDeletion = await repo.getAllFakeMeals();
+    expect(allFakeMealsAfterDeletion.length).toBe(1);
+    expect(allFakeMealsAfterDeletion[0].id).toBe('2');
+  });
 });

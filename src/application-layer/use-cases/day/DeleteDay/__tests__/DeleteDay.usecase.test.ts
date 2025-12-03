@@ -4,12 +4,17 @@ import { Day } from '@/domain/entities/day/Day';
 import { User } from '@/domain/entities/user/User';
 import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
+import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
+import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { DeleteDayUsecase } from '../DeleteDay.usecase';
 
 describe('DeleteDayUsecase', () => {
   let daysRepo: MemoryDaysRepo;
   let usersRepo: MemoryUsersRepo;
+  let mealsRepo: MemoryMealsRepo;
+  let fakeMealsRepo: MemoryFakeMealsRepo;
+
   let deleteDayUsecase: DeleteDayUsecase;
   let user: User;
   let day: Day;
@@ -17,7 +22,15 @@ describe('DeleteDayUsecase', () => {
   beforeEach(async () => {
     daysRepo = new MemoryDaysRepo();
     usersRepo = new MemoryUsersRepo();
-    deleteDayUsecase = new DeleteDayUsecase(daysRepo, usersRepo);
+    mealsRepo = new MemoryMealsRepo();
+    fakeMealsRepo = new MemoryFakeMealsRepo();
+
+    deleteDayUsecase = new DeleteDayUsecase(
+      daysRepo,
+      usersRepo,
+      mealsRepo,
+      fakeMealsRepo
+    );
 
     day = Day.create({
       ...vp.validDayProps(),
@@ -32,7 +45,7 @@ describe('DeleteDayUsecase', () => {
   });
 
   it('should delete a day', async () => {
-    await deleteDayUsecase.execute({ date: day.id, userId: vp.userId });
+    await deleteDayUsecase.execute({ dayId: day.id, userId: vp.userId });
 
     const result = await daysRepo.getDayById(vp.dateId.toISOString());
     expect(result).toBeNull();
@@ -40,24 +53,24 @@ describe('DeleteDayUsecase', () => {
 
   it('should throw error when deleting non-existent day', async () => {
     await expect(
-      deleteDayUsecase.execute({ date: 'non-existent', userId: vp.userId })
+      deleteDayUsecase.execute({ dayId: 'non-existent', userId: vp.userId })
     ).rejects.toThrow(NotFoundError);
     await expect(
-      deleteDayUsecase.execute({ date: 'non-existent', userId: vp.userId })
+      deleteDayUsecase.execute({ dayId: 'non-existent', userId: vp.userId })
     ).rejects.toThrow(/DeleteDayUsecase.*Day not found/);
   });
 
   it('should throw error if user does not exist', async () => {
     await expect(
       deleteDayUsecase.execute({
-        date: day.id,
+        dayId: day.id,
         userId: 'non-existent',
       })
     ).rejects.toThrow(NotFoundError);
 
     await expect(
       deleteDayUsecase.execute({
-        date: day.id,
+        dayId: day.id,
         userId: 'non-existent',
       })
     ).rejects.toThrow(/DeleteDayUsecase.*User.*not.*found/);

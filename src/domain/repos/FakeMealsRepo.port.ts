@@ -10,5 +10,6 @@ export interface FakeMealsRepo {
   ): Promise<FakeMeal | null>;
   saveFakeMeal(fakeMeal: FakeMeal): Promise<void>;
   deleteFakeMeal(id: string): Promise<void>;
+  deleteMultipleFakeMeals(ids: string[]): Promise<void>;
   deleteFakeMealByIdAndUserId(id: string, userId: string): Promise<void>;
 }

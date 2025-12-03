@@ -46,7 +46,7 @@ describe('FileSystemMealsRepo', () => {
     try {
       await fs.rm(testMealsDir, { recursive: true, force: true });
       await fs.rm(testIngredientLinesDir, { recursive: true, force: true });
-    } catch (error) {
+    } catch {
       // Directories might not exist
     }
   });
@@ -154,5 +154,95 @@ describe('FileSystemMealsRepo', () => {
       .then(() => true)
       .catch(() => false);
     expect(lineFileExists).toBe(false);
+  });
+
+  it('should delete multiple meals by IDs', async () => {
+    const ingredientLine2 = IngredientLine.create({
+      ...vp.ingredientLineRecipePropsNoIngredient,
+      id: 'line-2',
+      ingredient,
+      quantityInGrams: 200,
+    });
+    const meal2 = Meal.create({
+      ...vp.mealPropsNoIngredientLines,
+      id: 'meal-2',
+      name: 'Chicken Salad',
+      ingredientLines: [ingredientLine2],
+    });
+    const ingredientLine3 = IngredientLine.create({
+      ...vp.ingredientLineRecipePropsNoIngredient,
+      id: 'line-3',
+      ingredient,
+      quantityInGrams: 100,
+    });
+    const meal3 = Meal.create({
+      ...vp.mealPropsNoIngredientLines,
+      id: 'meal-3',
+      name: 'Turkey Sandwich',
+      ingredientLines: [ingredientLine3],
+    });
+    await repo.saveMeal(meal2);
+    await repo.saveMeal(meal3);
+
+    const allMeals = await repo.getAllMeals();
+    expect(allMeals.length).toBe(3);
+
+    await repo.deleteMultipleMeals([
+      vp.mealPropsNoIngredientLines.id,
+      'meal-2',
+    ]);
+
+    const allMealsAfterDeletion = await repo.getAllMeals();
+    expect(allMealsAfterDeletion.length).toBe(1);
+    expect(allMealsAfterDeletion[0].id).toBe('meal-3');
+
+    // Verify ingredient lines are also deleted
+    const lineFilePath = path.join(
+      testIngredientLinesDir,
+      `${ingredientLine.id}.json`
+    );
+    const lineFileExists = await fs
+      .access(lineFilePath)
+      .then(() => true)
+      .catch(() => false);
+    expect(lineFileExists).toBe(false);
+
+    const line2FilePath = path.join(
+      testIngredientLinesDir,
+      `${ingredientLine2.id}.json`
+    );
+    const line2FileExists = await fs
+      .access(line2FilePath)
+      .then(() => true)
+      .catch(() => false);
+    expect(line2FileExists).toBe(false);
+  });
+
+  it('should handle deleting multiple meals with non-existent IDs', async () => {
+    const ingredientLine2 = IngredientLine.create({
+      ...vp.ingredientLineRecipePropsNoIngredient,
+      id: 'line-4',
+      ingredient,
+      quantityInGrams: 120,
+    });
+    const meal2 = Meal.create({
+      ...vp.mealPropsNoIngredientLines,
+      id: 'meal-2',
+      name: 'Chicken Salad',
+      ingredientLines: [ingredientLine2],
+    });
+    await repo.saveMeal(meal2);
+
+    const allMeals = await repo.getAllMeals();
+    expect(allMeals.length).toBe(2);
+
+    await repo.deleteMultipleMeals([
+      vp.mealPropsNoIngredientLines.id,
+      'non-existent',
+    ]);
+
+    const allMealsAfterDeletion = await repo.getAllMeals();
+    expect(allMealsAfterDeletion.length).toBe(1);
+    expect(allMealsAfterDeletion[0].id).toBe('meal-2');
   });
 });

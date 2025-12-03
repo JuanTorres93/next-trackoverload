@@ -7,4 +7,5 @@ export interface MealsRepo {
   getMealByIdForUser(id: string, userId: string): Promise<Meal | null>;
   saveMeal(meal: Meal): Promise<void>;
   deleteMeal(id: string): Promise<void>;
+  deleteMultipleMeals(ids: string[]): Promise<void>;
 }

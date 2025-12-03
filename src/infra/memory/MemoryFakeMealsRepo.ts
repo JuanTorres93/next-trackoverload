@@ -57,6 +57,10 @@ export class MemoryFakeMealsRepo implements FakeMealsRepo {
     this.fakeMeals.splice(index, 1);
   }
 
+  async deleteMultipleFakeMeals(ids: string[]): Promise<void> {
+    this.fakeMeals = this.fakeMeals.filter((fm) => !ids.includes(fm.id));
+  }
+
   // IMPORTANT NOTE: Helper method for testing - not part of the interface
   clearForTesting(): void {
     this.fakeMeals = [];

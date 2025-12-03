@@ -40,6 +40,10 @@ export class MemoryMealsRepo implements MealsRepo {
     this.meals.splice(index, 1);
   }
 
+  async deleteMultipleMeals(ids: string[]): Promise<void> {
+    this.meals = this.meals.filter((m) => !ids.includes(m.id));
+  }
+
   // IMPORTANT NOTE: Helper method for testing - not part of the interface
   clearForTesting(): void {
     this.meals = [];
