@@ -260,24 +260,27 @@ export class FileSystemDaysRepo implements DaysRepo {
     return null;
   }
 
-  async getDaysByDateRange(startDate: string, endDate: string): Promise<Day[]> {
+  async getDaysByDateRange(
+    startDayId: string,
+    endDayId: string
+  ): Promise<Day[]> {
     const allDays = await this.getAllDays();
     return allDays.filter((day) => {
       const dayTime = day.id;
-      return dayTime >= startDate && dayTime <= endDate;
+      return dayTime >= startDayId && dayTime <= endDayId;
     });
   }
 
   async getDaysByDateRangeAndUserId(
-    startDate: string,
-    endDate: string,
+    startDayId: string,
+    endDayId: string,
     userId: string
   ): Promise<Day[]> {
     const allDays = await this.getAllDays();
     return allDays.filter((day) => {
       const dayTime = day.id;
       return (
-        dayTime >= startDate && dayTime <= endDate && day.userId === userId
+        dayTime >= startDayId && dayTime <= endDayId && day.userId === userId
       );
     });
   }

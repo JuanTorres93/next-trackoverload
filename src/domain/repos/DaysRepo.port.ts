@@ -5,10 +5,10 @@ export interface DaysRepo {
   getAllDaysByUserId(userId: string): Promise<Day[]>;
   getDayById(id: string): Promise<Day | null>;
   getDayByIdAndUserId(id: string, userId: string): Promise<Day | null>;
-  getDaysByDateRange(startDate: string, endDate: string): Promise<Day[]>;
+  getDaysByDateRange(startDayId: string, endDayId: string): Promise<Day[]>;
   getDaysByDateRangeAndUserId(
-    startDate: string,
-    endDate: string,
+    startDayId: string,
+    endDayId: string,
     userId: string
   ): Promise<Day[]>;
   saveDay(day: Day): Promise<void>;
