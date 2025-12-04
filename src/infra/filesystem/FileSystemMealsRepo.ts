@@ -91,6 +91,16 @@ export class FileSystemMealsRepo implements MealsRepo {
     }
   }
 
+  async getMealByIds(ids: string[]): Promise<Meal[]> {
+    const meals = await Promise.all(
+      ids.map(async (id) => {
+        const meal = await this.getMealById(id);
+        return meal;
+      })
+    );
+    return meals.filter((meal): meal is Meal => meal !== null);
+  }
+
   async getMealByIdForUser(id: string, userId: string): Promise<Meal | null> {
     const meal = await this.getMealById(id);
     if (meal && meal.userId === userId) {

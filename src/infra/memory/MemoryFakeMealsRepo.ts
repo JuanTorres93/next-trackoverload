@@ -29,6 +29,10 @@ export class MemoryFakeMealsRepo implements FakeMealsRepo {
     return fakeMeal || null;
   }
 
+  async getFakeMealByIds(ids: string[]): Promise<FakeMeal[]> {
+    return this.fakeMeals.filter((fm) => ids.includes(fm.id));
+  }
+
   async getFakeMealByIdAndUserId(
     id: string,
     userId: string

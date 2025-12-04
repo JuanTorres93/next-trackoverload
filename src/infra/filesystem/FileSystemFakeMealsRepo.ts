@@ -73,6 +73,18 @@ export class FileSystemFakeMealsRepo implements FakeMealsRepo {
     }
   }
 
+  async getFakeMealByIds(ids: string[]): Promise<FakeMeal[]> {
+    const fakeMeals = await Promise.all(
+      ids.map(async (id) => {
+        const fakeMeal = await this.getFakeMealById(id);
+        return fakeMeal;
+      })
+    );
+    return fakeMeals.filter(
+      (fakeMeal): fakeMeal is FakeMeal => fakeMeal !== null
+    );
+  }
+
   async getFakeMealByIdAndUserId(
     id: string,
     userId: string

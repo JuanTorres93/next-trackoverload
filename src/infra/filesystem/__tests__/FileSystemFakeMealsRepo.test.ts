@@ -43,6 +43,57 @@ describe('FileSystemFakeMealsRepo', () => {
     expect(fetchedFakeMeal?.name).toBe(vp.validFakeMealProps.name);
   });
 
+  it('should retrieve multiple fake meals by IDs', async () => {
+    const fakeMeal2 = FakeMeal.create({
+      ...vp.validFakeMealProps,
+      id: 'fakemeal-2',
+      name: 'Energy Bar',
+    });
+    const fakeMeal3 = FakeMeal.create({
+      ...vp.validFakeMealProps,
+      id: 'fakemeal-3',
+      name: 'Protein Bar',
+    });
+    await repo.saveFakeMeal(fakeMeal2);
+    await repo.saveFakeMeal(fakeMeal3);
+
+    const fetchedFakeMeals = await repo.getFakeMealByIds([
+      vp.validFakeMealProps.id,
+      'fakemeal-2',
+    ]);
+    expect(fetchedFakeMeals.length).toBe(2);
+    expect(fetchedFakeMeals[0].name).toBe(vp.validFakeMealProps.name);
+    expect(fetchedFakeMeals[1].name).toBe('Energy Bar');
+  });
+
+  it('should return empty array when no IDs match', async () => {
+    const fetchedFakeMeals = await repo.getFakeMealByIds([
+      'non-existent-1',
+      'non-existent-2',
+    ]);
+    expect(fetchedFakeMeals.length).toBe(0);
+  });
+
+  it('should retrieve only existing fake meals when some IDs do not exist', async () => {
+    const fakeMeal2 = FakeMeal.create({
+      ...vp.validFakeMealProps,
+      id: 'fakemeal-2',
+      name: 'Energy Bar',
+    });
+    await repo.saveFakeMeal(fakeMeal2);
+
+    const fetchedFakeMeals = await repo.getFakeMealByIds([
+      vp.validFakeMealProps.id,
+      'non-existent',
+      'fakemeal-2',
+    ]);
+    expect(fetchedFakeMeals.length).toBe(2);
+    expect(fetchedFakeMeals.map((fm) => fm.id)).toContain(
+      vp.validFakeMealProps.id
+    );
+    expect(fetchedFakeMeals.map((fm) => fm.id)).toContain('fakemeal-2');
+  });
+
   it('should retrieve fake meals by user ID', async () => {
     const fakeMeals = await repo.getAllFakeMealsByUserId(
       vp.validFakeMealProps.userId

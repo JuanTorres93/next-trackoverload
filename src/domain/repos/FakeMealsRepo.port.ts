@@ -4,6 +4,7 @@ export interface FakeMealsRepo {
   getAllFakeMeals(): Promise<FakeMeal[]>;
   getAllFakeMealsByUserId(userId: string): Promise<FakeMeal[]>;
   getFakeMealById(id: string): Promise<FakeMeal | null>;
+  getFakeMealByIds(ids: string[]): Promise<FakeMeal[]>;
   getFakeMealByIdAndUserId(
     id: string,
     userId: string

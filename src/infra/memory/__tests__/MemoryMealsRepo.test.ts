@@ -73,6 +73,60 @@ describe('MemoryMealsRepo', () => {
     expect(fetchedMeal?.name).toBe('Grilled Chicken');
   });
 
+  it('should retrieve multiple meals by IDs', async () => {
+    const meal2 = Meal.create({
+      ...vp.mealPropsNoIngredientLines,
+      id: 'meal-2',
+      name: 'Chicken Salad',
+      ingredientLines: [ingredientLine],
+    });
+    const meal3 = Meal.create({
+      ...vp.mealPropsNoIngredientLines,
+      id: 'meal-3',
+      name: 'Turkey Sandwich',
+      ingredientLines: [ingredientLine],
+    });
+    await repo.saveMeal(meal2);
+    await repo.saveMeal(meal3);
+
+    const fetchedMeals = await repo.getMealByIds([
+      vp.mealPropsNoIngredientLines.id,
+      'meal-2',
+    ]);
+    expect(fetchedMeals.length).toBe(2);
+    expect(fetchedMeals[0].name).toBe('Grilled Chicken');
+    expect(fetchedMeals[1].name).toBe('Chicken Salad');
+  });
+
+  it('should return empty array when no IDs match', async () => {
+    const fetchedMeals = await repo.getMealByIds([
+      'non-existent-1',
+      'non-existent-2',
+    ]);
+    expect(fetchedMeals.length).toBe(0);
+  });
+
+  it('should retrieve only existing meals when some IDs do not exist', async () => {
+    const meal2 = Meal.create({
+      ...vp.mealPropsNoIngredientLines,
+      id: 'meal-2',
+      name: 'Chicken Salad',
+      ingredientLines: [ingredientLine],
+    });
+    await repo.saveMeal(meal2);
+
+    const fetchedMeals = await repo.getMealByIds([
+      vp.mealPropsNoIngredientLines.id,
+      'non-existent',
+      'meal-2',
+    ]);
+    expect(fetchedMeals.length).toBe(2);
+    expect(fetchedMeals.map((m) => m.id)).toContain(
+      vp.mealPropsNoIngredientLines.id
+    );
+    expect(fetchedMeals.map((m) => m.id)).toContain('meal-2');
+  });
+
   it('should retrieve all meals by a user', async () => {
     const userMeals = await repo.getAllMealsForUser(vp.userId);
     expect(userMeals.length).toBe(1);
