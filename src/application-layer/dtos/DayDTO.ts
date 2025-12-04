@@ -1,5 +1,7 @@
 import { Day } from '@/domain/entities/day/Day';
 import { dayIdToDayMonthYear } from '@/domain/value-objects/DayId/DayId';
+import { MealDTO } from './MealDTO';
+import { FakeMealDTO } from './FakeMealDTO';
 
 export type DayDTO = {
   id: string; // Date as YYYYMMDD
@@ -11,6 +13,12 @@ export type DayDTO = {
   month: number;
   year: number;
   updatedAt: string;
+};
+
+// This type is used in usecases
+export type AssembledDayDTO = DayDTO & {
+  meals: MealDTO[];
+  fakeMeals: FakeMealDTO[];
 };
 
 export function toDayDTO(day: Day): DayDTO {

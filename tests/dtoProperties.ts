@@ -91,3 +91,8 @@ const sampleDay = Day.create({
   ...vp.validDayProps(),
 });
 export const dayDTOProperties = getGetters(sampleDay);
+export const assembledDayDTOProperties = [
+  ...dayDTOProperties,
+  'meals',
+  'fakeMeals',
+];

@@ -1,3 +1,5 @@
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { WorkoutTemplateLine } from '@/domain/entities/workouttemplateline/WorkoutTemplateLine';
 
 export const userId = 'user-1';
@@ -119,6 +121,24 @@ export const mealPropsNoIngredientLines = {
   createdAt: new Date(),
   updatedAt: new Date(),
 };
+
+export function validMealWithIngredientLines() {
+  const ingredientLine1 = IngredientLine.create({
+    ...ingredientLineRecipePropsNoIngredient,
+    id: 'line-1',
+    ingredient: Ingredient.create(validIngredientProps),
+    quantityInGrams: 150,
+  });
+
+  return {
+    id: 'meal1',
+    userId: userId,
+    name: 'Chicken Meal',
+    ingredientLines: [ingredientLine1],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+}
 
 export const validUserProps = {
   id: userId,
