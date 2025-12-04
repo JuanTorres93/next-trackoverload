@@ -1,91 +1,93 @@
-// TODO delete this entire file and use the getters util in dtos
-export const dayDTOProperties = [
-  'id',
-  'userId',
-  'mealIds',
-  'fakeMealIds',
-  'createdAt',
-  'updatedAt',
-];
+import { getGetters } from '@/application-layer/dtos/__tests__/_getGettersUtil';
+import * as vp from '@/../tests/createProps';
 
-export const exerciseDTOProperties = ['id', 'name', 'createdAt', 'updatedAt'];
+import { Exercise } from '@/domain/entities/exercise/Exercise';
+import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
+import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { Meal } from '@/domain/entities/meal/Meal';
+import { Workout } from '@/domain/entities/workout/Workout';
+import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
+import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
+import { WorkoutTemplateLine } from '@/domain/entities/workouttemplateline/WorkoutTemplateLine';
+import { User } from '@/domain/entities/user/User';
+import { Day } from '@/domain/entities/day/Day';
 
-export const fakeMealDTOProperties = [
-  'id',
-  'userId',
-  'name',
-  'calories',
-  'protein',
-  'createdAt',
-  'updatedAt',
-];
+// FakeMeal DTO
+const sampleFakeMeal = FakeMeal.create({
+  ...vp.validFakeMealProps,
+});
+export const fakeMealDTOProperties = getGetters(sampleFakeMeal);
 
-export const ingredientDTOProperties = [
-  'id',
-  'name',
-  'nutritionalInfoPer100g',
-  'imageUrl',
-  'createdAt',
-  'updatedAt',
-];
+// Ingredient DTO
+const sampleIngredient = Ingredient.create({
+  ...vp.validIngredientProps,
+});
+export const ingredientDTOProperties = getGetters(sampleIngredient);
 
-export const ingredientLineDTOProperties = [
-  'id',
-  'ingredient',
-  'quantityInGrams',
-  'calories',
-  'protein',
-  'createdAt',
-  'updatedAt',
-];
+// IngredientLine DTO
+const sampleIngredientLine = IngredientLine.create({
+  ...vp.ingredientLineRecipePropsNoIngredient,
+  ingredient: sampleIngredient,
+});
+export const ingredientLineDTOProperties = getGetters(sampleIngredientLine);
 
-export const mealDTOProperties = [
-  'id',
-  'userId',
-  'name',
-  'ingredientLines',
-  'calories',
-  'protein',
-  'createdAt',
-  'updatedAt',
-];
+// Meal DTO
+const sampleMeal = Meal.create({
+  ...vp.mealPropsNoIngredientLines,
+  ingredientLines: [sampleIngredientLine],
+});
+export const mealDTOProperties = getGetters(sampleMeal);
 
-export const recipeDTOProperties = [
-  'id',
-  'userId',
-  'name',
-  'ingredientLines',
-  'imageUrl',
-  'calories',
-  'protein',
-  'createdAt',
-  'updatedAt',
-];
+// Recipe DTO
+const sampleRecipe = Recipe.create({
+  ...vp.recipePropsNoIngredientLines,
+  ingredientLines: [sampleIngredientLine],
+});
+export const recipeDTOProperties = getGetters(sampleRecipe);
 
-export const userDTOProperties = [
-  'id',
-  'name',
-  'customerId',
-  'createdAt',
-  'updatedAt',
-];
+// User
+const sampleUser = User.create({
+  ...vp.validUserProps,
+});
+export const userDTOProperties = getGetters(sampleUser);
 
-export const workoutDTOProperties = [
-  'id',
-  'userId',
-  'name',
-  'workoutTemplateId',
-  'exercises',
-  'createdAt',
-  'updatedAt',
-];
+// Exercise DTO
+const sampleExercise = Exercise.create({
+  ...vp.validExerciseProps,
+});
+export const exerciseDTOProperties = getGetters(sampleExercise);
 
-export const workoutTemplateDTOProperties = [
-  'id',
-  'userId',
-  'name',
-  'exercises',
-  'createdAt',
-  'updatedAt',
-  'deletedAt',
-];
+// WorkoutLine DTO
+const sampleWorkoutLine = WorkoutLine.create({
+  ...vp.validWorkoutLineProps,
+});
+export const workoutLineDTOProperties = getGetters(sampleWorkoutLine);
+
+// Workout
+const sampleWorkout = Workout.create({
+  ...vp.validWorkoutProps,
+  exercises: [sampleWorkoutLine],
+});
+export const workoutDTOProperties = getGetters(sampleWorkout);
+
+// WorkoutTemplate DTO
+const sampleWorkoutTemplate = WorkoutTemplate.create({
+  ...vp.validWorkoutTemplateProps(),
+});
+export const workoutTemplateDTOProperties = getGetters(sampleWorkoutTemplate);
+
+// WorkoutTemplateLine DTO
+const sampleWorkoutTemplateLine = WorkoutTemplateLine.create({
+  ...vp.validWorkoutTemplateLineProps,
+});
+export const workoutTemplateLineDTOProperties = getGetters(
+  sampleWorkoutTemplateLine
+);
+
+// Day DTO
+const sampleDay = Day.create({
+  ...vp.validDayProps(),
+});
+export const dayDTOProperties = getGetters(sampleDay);

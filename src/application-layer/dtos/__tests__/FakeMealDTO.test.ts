@@ -1,7 +1,7 @@
-import { getGetters } from './_getGettersUtil';
-import { toFakeMealDTO, fromFakeMealDTO, FakeMealDTO } from '../FakeMealDTO';
-import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
+import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { FakeMealDTO, fromFakeMealDTO, toFakeMealDTO } from '../FakeMealDTO';
 
 describe('FakeMealDTO', () => {
   let fakeMeal: FakeMeal;
@@ -17,9 +17,7 @@ describe('FakeMealDTO', () => {
     });
 
     it('should have a prop for each fake meal getter', () => {
-      const fakeMealGetters: string[] = getGetters(fakeMeal);
-
-      for (const getter of fakeMealGetters) {
+      for (const getter of dto.fakeMealDTOProperties) {
         expect(fakeMealDTO).toHaveProperty(getter);
       }
     });

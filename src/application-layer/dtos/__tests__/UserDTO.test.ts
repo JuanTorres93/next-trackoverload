@@ -1,7 +1,7 @@
-import { getGetters } from './_getGettersUtil';
 import { toUserDTO, fromUserDTO, UserDTO } from '../UserDTO';
 import { User } from '@/domain/entities/user/User';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('UserDTO', () => {
   let user: User;
@@ -17,9 +17,7 @@ describe('UserDTO', () => {
     });
 
     it('should have a prop for each user getter', async () => {
-      const userGetters: string[] = getGetters(user);
-
-      for (const getter of userGetters) {
+      for (const getter of dto.userDTOProperties) {
         expect(userDTO).toHaveProperty(getter);
       }
     });

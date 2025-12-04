@@ -1,11 +1,11 @@
-import { getGetters } from './_getGettersUtil';
+import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
+import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import {
-  toIngredientDTO,
   fromIngredientDTO,
   IngredientDTO,
+  toIngredientDTO,
 } from '../IngredientDTO';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import * as vp from '@/../tests/createProps';
 
 describe('IngredientDTO', () => {
   let ingredient: Ingredient;
@@ -21,9 +21,7 @@ describe('IngredientDTO', () => {
     });
 
     it('should have a prop for each ingredient getter', () => {
-      const ingredientGetters: string[] = getGetters(ingredient);
-
-      for (const getter of ingredientGetters) {
+      for (const getter of dto.ingredientDTOProperties) {
         expect(ingredientDTO).toHaveProperty(getter);
       }
     });

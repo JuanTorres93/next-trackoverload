@@ -5,10 +5,10 @@ import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { AddFakeMealToDayUsecase } from '../AddFakeMealToDay.usecase';
+import { User } from '@/domain/entities/user/User';
 
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
-import { User } from '@/domain/entities/user/User';
 
 describe('AddFakeMealToDayUsecase', () => {
   let daysRepo: MemoryDaysRepo;

@@ -1,12 +1,12 @@
-import { getGetters } from './_getGettersUtil';
-import {
-  toIngredientLineDTO,
-  fromIngredientLineDTO,
-  IngredientLineDTO,
-} from '../IngredientLineDTO';
+import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
-import * as vp from '@/../tests/createProps';
+import {
+  fromIngredientLineDTO,
+  IngredientLineDTO,
+  toIngredientLineDTO,
+} from '../IngredientLineDTO';
 
 describe('IngredientLineDTO', () => {
   let ingredient: Ingredient;
@@ -27,9 +27,7 @@ describe('IngredientLineDTO', () => {
     });
 
     it('should have a prop for each ingredient line getter', async () => {
-      const ingredientLineGetters: string[] = getGetters(ingredientLine);
-
-      for (const getter of ingredientLineGetters) {
+      for (const getter of dto.ingredientLineDTOProperties) {
         expect(ingredientLineDTO).toHaveProperty(getter);
       }
     });
@@ -56,9 +54,7 @@ describe('IngredientLineDTO', () => {
     });
 
     it('should include nested ingredient DTO', () => {
-      const ingredientGetters = getGetters(ingredientLine.ingredient);
-
-      for (const getter of ingredientGetters) {
+      for (const getter of dto.ingredientDTOProperties) {
         expect(ingredientLineDTO.ingredient).toHaveProperty(getter);
       }
     });

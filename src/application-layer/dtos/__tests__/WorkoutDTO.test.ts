@@ -1,8 +1,8 @@
-import { getGetters } from './_getGettersUtil';
 import { toWorkoutDTO, WorkoutDTO } from '../WorkoutDTO';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('WorkoutDTO', () => {
   let workout: Workout;
@@ -23,9 +23,7 @@ describe('WorkoutDTO', () => {
     });
 
     it('should have a prop for each workout getter', () => {
-      const workoutGetters: string[] = getGetters(workout);
-
-      for (const getter of workoutGetters) {
+      for (const getter of dto.workoutDTOProperties) {
         expect(workoutDTO).toHaveProperty(getter);
       }
     });
@@ -62,8 +60,7 @@ describe('WorkoutDTO', () => {
       expect(workoutDTO.exercises).toHaveLength(1);
       const workoutLineDTO = workoutDTO.exercises[0];
 
-      const workoutLineGetters = getGetters(workoutLine);
-      for (const getter of workoutLineGetters) {
+      for (const getter of dto.workoutLineDTOProperties) {
         expect(workoutLineDTO).toHaveProperty(getter);
       }
     });

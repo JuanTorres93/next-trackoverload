@@ -1,7 +1,7 @@
-import { getGetters } from './_getGettersUtil';
-import { toExerciseDTO, ExerciseDTO } from '../ExerciseDTO';
-import { Exercise } from '@/domain/entities/exercise/Exercise';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
+import { Exercise } from '@/domain/entities/exercise/Exercise';
+import { ExerciseDTO, toExerciseDTO } from '../ExerciseDTO';
 
 describe('ExerciseDTO', () => {
   let exercise: Exercise;
@@ -17,9 +17,7 @@ describe('ExerciseDTO', () => {
     });
 
     it('should have a prop for each exercise getter', () => {
-      const exerciseGetters: string[] = getGetters(exercise);
-
-      for (const getter of exerciseGetters) {
+      for (const getter of dto.exerciseDTOProperties) {
         expect(exerciseDTO).toHaveProperty(getter);
       }
     });

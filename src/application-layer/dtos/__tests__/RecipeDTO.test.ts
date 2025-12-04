@@ -1,9 +1,9 @@
-import { getGetters } from './_getGettersUtil';
 import { toRecipeDTO, fromRecipeDTO, RecipeDTO } from '../RecipeDTO';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('RecipeDTO', () => {
   let recipe: Recipe;
@@ -29,9 +29,7 @@ describe('RecipeDTO', () => {
     });
 
     it('should have a prop for each recipe getter', () => {
-      const recipeGetters: string[] = getGetters(recipe);
-
-      for (const getter of recipeGetters) {
+      for (const getter of dto.recipeDTOProperties) {
         expect(recipeDTO).toHaveProperty(getter);
       }
     });
@@ -78,17 +76,15 @@ describe('RecipeDTO', () => {
       expect(recipeDTO.ingredientLines).toHaveLength(1);
       const ingredientLineDTO = recipeDTO.ingredientLines[0];
 
-      const ingredientLineGetters = getGetters(ingredientLine);
-      for (const getter of ingredientLineGetters) {
+      for (const getter of dto.ingredientLineDTOProperties) {
         expect(ingredientLineDTO).toHaveProperty(getter);
       }
     });
 
     it('should include nested ingredient DTOs within ingredient lines', () => {
       const ingredientLineDTO = recipeDTO.ingredientLines[0];
-      const ingredientGetters = getGetters(ingredient);
 
-      for (const getter of ingredientGetters) {
+      for (const getter of dto.ingredientDTOProperties) {
         expect(ingredientLineDTO.ingredient).toHaveProperty(getter);
       }
     });

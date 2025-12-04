@@ -6,7 +6,6 @@
 export { AppCreateDayUsecase } from './CreateDay/createDay';
 
 // READ Operations
-export { AppGetAllDaysUsecase } from './GetAllDays/getAllDays';
 export { AppGetDayByIdUsecase } from './GetDayById/getDayById';
 
 // UPDATE Operations

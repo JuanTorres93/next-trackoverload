@@ -1,20 +1,17 @@
-import { getGetters } from './_getGettersUtil';
 import {
   toWorkoutTemplateDTO,
   WorkoutTemplateDTO,
 } from '../WorkoutTemplateDTO';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
-import { WorkoutTemplateLine } from '@/domain/entities/workouttemplateline/WorkoutTemplateLine';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('WorkoutTemplateDTO', () => {
   let workoutTemplate: WorkoutTemplate;
-  let templateLine: WorkoutTemplateLine;
   let workoutTemplateDTO: WorkoutTemplateDTO;
 
   beforeEach(() => {
     const validProps = vp.validWorkoutTemplateProps();
-    templateLine = validProps.exercises[0];
     workoutTemplate = WorkoutTemplate.create(validProps);
   });
 
@@ -24,9 +21,7 @@ describe('WorkoutTemplateDTO', () => {
     });
 
     it('should have a prop for each workout template getter', () => {
-      const workoutTemplateGetters: string[] = getGetters(workoutTemplate);
-
-      for (const getter of workoutTemplateGetters) {
+      for (const getter of dto.workoutTemplateDTOProperties) {
         expect(workoutTemplateDTO).toHaveProperty(getter);
       }
     });
@@ -61,8 +56,7 @@ describe('WorkoutTemplateDTO', () => {
       expect(workoutTemplateDTO.exercises).toHaveLength(2);
       const templateLineDTO = workoutTemplateDTO.exercises[0];
 
-      const templateLineGetters = getGetters(templateLine);
-      for (const getter of templateLineGetters) {
+      for (const getter of dto.workoutTemplateLineDTOProperties) {
         expect(templateLineDTO).toHaveProperty(getter);
       }
     });

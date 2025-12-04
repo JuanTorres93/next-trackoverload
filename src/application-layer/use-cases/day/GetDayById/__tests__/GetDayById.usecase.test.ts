@@ -34,7 +34,7 @@ describe('GetDayByIdUsecase', () => {
 
   it('should return a day if it exists', async () => {
     const result = await getDayByIdUsecase.execute({
-      date: day.id,
+      dayId: day.id,
       userId: vp.userId,
     });
 
@@ -43,7 +43,7 @@ describe('GetDayByIdUsecase', () => {
 
   it('should return DayDTO', async () => {
     const result = await getDayByIdUsecase.execute({
-      date: day.id,
+      dayId: day.id,
       userId: vp.userId,
     });
 
@@ -55,7 +55,7 @@ describe('GetDayByIdUsecase', () => {
 
   it('should return null if day does not exist', async () => {
     const result = await getDayByIdUsecase.execute({
-      date: '11110122',
+      dayId: '11110122',
       userId: vp.userId,
     });
 
@@ -65,14 +65,14 @@ describe('GetDayByIdUsecase', () => {
   it('should throw error if user does not exist', async () => {
     await expect(
       getDayByIdUsecase.execute({
-        date: day.id,
+        dayId: day.id,
         userId: 'non-existent',
       })
     ).rejects.toThrow(NotFoundError);
 
     await expect(
       getDayByIdUsecase.execute({
-        date: day.id,
+        dayId: day.id,
         userId: 'non-existent',
       })
     ).rejects.toThrow(/GetDayById.*User.*not.*found/);

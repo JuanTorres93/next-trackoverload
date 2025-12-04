@@ -1,10 +1,10 @@
-import { getGetters } from './_getGettersUtil';
 import {
   toWorkoutTemplateLineDTO,
   WorkoutTemplateLineDTO,
 } from '../WorkoutTemplateLineDTO';
 import { WorkoutTemplateLine } from '@/domain/entities/workouttemplateline/WorkoutTemplateLine';
 import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 
 describe('WorkoutTemplateLineDTO', () => {
   let workoutTemplateLine: WorkoutTemplateLine;
@@ -22,9 +22,7 @@ describe('WorkoutTemplateLineDTO', () => {
     });
 
     it('should have a prop for each workout template line getter', () => {
-      const templateLineGetters: string[] = getGetters(workoutTemplateLine);
-
-      for (const getter of templateLineGetters) {
+      for (const getter of dto.workoutTemplateLineDTOProperties) {
         expect(workoutTemplateLineDTO).toHaveProperty(getter);
       }
     });

@@ -1,11 +1,11 @@
-import { getGetters } from './_getGettersUtil';
-import { toDayDTO, fromDayDTO, DayDTO } from '../DayDTO';
+import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
 import { Day } from '@/domain/entities/day/Day';
-import { Meal } from '@/domain/entities/meal/Meal';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
-import * as vp from '@/../tests/createProps';
+import { Meal } from '@/domain/entities/meal/Meal';
+import { DayDTO, fromDayDTO, toDayDTO } from '../DayDTO';
 
 describe('DayDTO', () => {
   let day: Day;
@@ -43,9 +43,7 @@ describe('DayDTO', () => {
     });
 
     it('should have a prop for each day getter', () => {
-      const dayGetters: string[] = getGetters(day);
-
-      for (const getter of dayGetters) {
+      for (const getter of dto.dayDTOProperties) {
         expect(dayDTO).toHaveProperty(getter);
       }
     });
