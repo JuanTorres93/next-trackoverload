@@ -44,35 +44,39 @@ describe('DeleteDayUsecase', () => {
     await daysRepo.saveDay(day);
   });
 
-  it('should delete a day', async () => {
-    await deleteDayUsecase.execute({ dayId: day.id, userId: vp.userId });
+  describe('Deletion', () => {
+    it('should delete a day', async () => {
+      await deleteDayUsecase.execute({ dayId: day.id, userId: vp.userId });
 
-    const result = await daysRepo.getDayById(vp.dateId.toISOString());
-    expect(result).toBeNull();
+      const result = await daysRepo.getDayById(vp.dateId.toISOString());
+      expect(result).toBeNull();
+    });
   });
 
-  it('should throw error when deleting non-existent day', async () => {
-    await expect(
-      deleteDayUsecase.execute({ dayId: 'non-existent', userId: vp.userId })
-    ).rejects.toThrow(NotFoundError);
-    await expect(
-      deleteDayUsecase.execute({ dayId: 'non-existent', userId: vp.userId })
-    ).rejects.toThrow(/DeleteDayUsecase.*Day not found/);
-  });
+  describe('Errors', () => {
+    it('should throw error when deleting non-existent day', async () => {
+      await expect(
+        deleteDayUsecase.execute({ dayId: 'non-existent', userId: vp.userId })
+      ).rejects.toThrow(NotFoundError);
+      await expect(
+        deleteDayUsecase.execute({ dayId: 'non-existent', userId: vp.userId })
+      ).rejects.toThrow(/DeleteDayUsecase.*Day not found/);
+    });
 
-  it('should throw error if user does not exist', async () => {
-    await expect(
-      deleteDayUsecase.execute({
-        dayId: day.id,
-        userId: 'non-existent',
-      })
-    ).rejects.toThrow(NotFoundError);
+    it('should throw error if user does not exist', async () => {
+      await expect(
+        deleteDayUsecase.execute({
+          dayId: day.id,
+          userId: 'non-existent',
+        })
+      ).rejects.toThrow(NotFoundError);
 
-    await expect(
-      deleteDayUsecase.execute({
-        dayId: day.id,
-        userId: 'non-existent',
-      })
-    ).rejects.toThrow(/DeleteDayUsecase.*User.*not.*found/);
+      await expect(
+        deleteDayUsecase.execute({
+          dayId: day.id,
+          userId: 'non-existent',
+        })
+      ).rejects.toThrow(/DeleteDayUsecase.*User.*not.*found/);
+    });
   });
 });

@@ -47,91 +47,97 @@ describe('AddFakeMealToDayUsecase', () => {
     await usersRepo.saveUser(anotherUser);
   });
 
-  it('should add fake meal to existing day', async () => {
-    expect(day.fakeMealIds).toHaveLength(0);
+  describe('Addition', () => {
+    it('should add fake meal to existing day', async () => {
+      expect(day.fakeMealIds).toHaveLength(0);
 
-    const result = await addFakeMealToDayUsecase.execute({
-      dayId: day.id,
-      userId: user.id,
-      name: vp.validFakeMealProps.name,
-      calories: vp.validFakeMealProps.calories,
-      protein: vp.validFakeMealProps.protein,
-    });
-
-    expect(result.fakeMealIds).toHaveLength(1);
-  });
-
-  it('should return DayDTO', async () => {
-    const result = await addFakeMealToDayUsecase.execute({
-      dayId: day.id,
-      userId: user.id,
-      name: vp.validFakeMealProps.name,
-      calories: vp.validFakeMealProps.calories,
-      protein: vp.validFakeMealProps.protein,
-    });
-
-    expect(result).not.toBeInstanceOf(Day);
-    for (const prop of dto.dayDTOProperties) {
-      expect(result).toHaveProperty(prop);
-    }
-  });
-
-  it('should add fake meal and create new day if it does not exist', async () => {
-    expect(day.fakeMealIds).toHaveLength(0);
-    const currentDays = await daysRepo.getAllDays();
-    expect(currentDays).toHaveLength(1);
-
-    const dayId = '11110606';
-
-    const result = await addFakeMealToDayUsecase.execute({
-      dayId,
-      userId: user.id,
-      name: vp.validFakeMealProps.name,
-      calories: vp.validFakeMealProps.calories,
-      protein: vp.validFakeMealProps.protein,
-    });
-
-    expect(result.id).toEqual(dayId);
-    expect(result.fakeMealIds).toHaveLength(1);
-    const afterDays = await daysRepo.getAllDays();
-    expect(afterDays).toHaveLength(2);
-  });
-
-  it('should create new fake meal', async () => {
-    const currentFakeMealCount = await fakeMealsRepo.getAllFakeMeals();
-    expect(currentFakeMealCount).toHaveLength(0);
-
-    await addFakeMealToDayUsecase.execute({
-      dayId: day.id,
-      userId: user.id,
-      name: vp.validFakeMealProps.name,
-      calories: vp.validFakeMealProps.calories,
-      protein: vp.validFakeMealProps.protein,
-    });
-
-    const afterFakeMealCount = await fakeMealsRepo.getAllFakeMeals();
-    expect(afterFakeMealCount).toHaveLength(1);
-  });
-
-  it('should throw error if user does not exist', async () => {
-    await expect(
-      addFakeMealToDayUsecase.execute({
+      const result = await addFakeMealToDayUsecase.execute({
         dayId: day.id,
-        userId: 'non-existent',
+        userId: user.id,
         name: vp.validFakeMealProps.name,
         calories: vp.validFakeMealProps.calories,
         protein: vp.validFakeMealProps.protein,
-      })
-    ).rejects.toThrow(NotFoundError);
+      });
 
-    await expect(
-      addFakeMealToDayUsecase.execute({
+      expect(result.fakeMealIds).toHaveLength(1);
+    });
+
+    it('should return DayDTO', async () => {
+      const result = await addFakeMealToDayUsecase.execute({
         dayId: day.id,
-        userId: 'non-existent',
+        userId: user.id,
         name: vp.validFakeMealProps.name,
         calories: vp.validFakeMealProps.calories,
         protein: vp.validFakeMealProps.protein,
-      })
-    ).rejects.toThrow(/AddFakeMealToDay.*User.*not.*found/);
+      });
+
+      expect(result).not.toBeInstanceOf(Day);
+      for (const prop of dto.dayDTOProperties) {
+        expect(result).toHaveProperty(prop);
+      }
+    });
+  });
+
+  describe('Side effects', () => {
+    it('should create new fake meal', async () => {
+      const currentFakeMealCount = await fakeMealsRepo.getAllFakeMeals();
+      expect(currentFakeMealCount).toHaveLength(0);
+
+      await addFakeMealToDayUsecase.execute({
+        dayId: day.id,
+        userId: user.id,
+        name: vp.validFakeMealProps.name,
+        calories: vp.validFakeMealProps.calories,
+        protein: vp.validFakeMealProps.protein,
+      });
+
+      const afterFakeMealCount = await fakeMealsRepo.getAllFakeMeals();
+      expect(afterFakeMealCount).toHaveLength(1);
+    });
+
+    it('should create new day if it does not exist and add fake meal', async () => {
+      expect(day.fakeMealIds).toHaveLength(0);
+      const currentDays = await daysRepo.getAllDays();
+      expect(currentDays).toHaveLength(1);
+
+      const dayId = '11110606';
+
+      const result = await addFakeMealToDayUsecase.execute({
+        dayId,
+        userId: user.id,
+        name: vp.validFakeMealProps.name,
+        calories: vp.validFakeMealProps.calories,
+        protein: vp.validFakeMealProps.protein,
+      });
+
+      expect(result.id).toEqual(dayId);
+      expect(result.fakeMealIds).toHaveLength(1);
+      const afterDays = await daysRepo.getAllDays();
+      expect(afterDays).toHaveLength(2);
+    });
+  });
+
+  describe('Errors', () => {
+    it('should throw error if user does not exist', async () => {
+      await expect(
+        addFakeMealToDayUsecase.execute({
+          dayId: day.id,
+          userId: 'non-existent',
+          name: vp.validFakeMealProps.name,
+          calories: vp.validFakeMealProps.calories,
+          protein: vp.validFakeMealProps.protein,
+        })
+      ).rejects.toThrow(NotFoundError);
+
+      await expect(
+        addFakeMealToDayUsecase.execute({
+          dayId: day.id,
+          userId: 'non-existent',
+          name: vp.validFakeMealProps.name,
+          calories: vp.validFakeMealProps.calories,
+          protein: vp.validFakeMealProps.protein,
+        })
+      ).rejects.toThrow(/AddFakeMealToDay.*User.*not.*found/);
+    });
   });
 });

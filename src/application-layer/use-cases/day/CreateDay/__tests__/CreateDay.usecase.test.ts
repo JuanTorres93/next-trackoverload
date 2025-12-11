@@ -27,57 +27,61 @@ describe('CreateDayUsecase', () => {
     await usersRepo.saveUser(user);
   });
 
-  it('should create and save a new day', async () => {
-    const request = {
-      day: vp.validDayProps().day,
-      month: vp.validDayProps().month,
-      year: vp.validDayProps().year,
-      userId: vp.userId,
-    };
+  describe('Creation', () => {
+    it('should create and save a new day', async () => {
+      const request = {
+        day: vp.validDayProps().day,
+        month: vp.validDayProps().month,
+        year: vp.validDayProps().year,
+        userId: vp.userId,
+      };
 
-    const day = await createDayUsecase.execute(request);
+      const day = await createDayUsecase.execute(request);
 
-    expect(day.id).toEqual('20231001');
-    expect(day.mealIds).toEqual([]);
-    expect(day.fakeMealIds).toEqual([]);
-    expect(day).toHaveProperty('createdAt');
-    expect(day).toHaveProperty('updatedAt');
+      expect(day.id).toEqual('20231001');
+      expect(day.mealIds).toEqual([]);
+      expect(day.fakeMealIds).toEqual([]);
+      expect(day).toHaveProperty('createdAt');
+      expect(day).toHaveProperty('updatedAt');
 
-    const savedDay = await daysRepo.getDayById(day.id);
+      const savedDay = await daysRepo.getDayById(day.id);
 
-    // @ts-expect-error savedDay won't be null
-    expect(toDayDTO(savedDay)).toEqual(day);
+      // @ts-expect-error savedDay won't be null
+      expect(toDayDTO(savedDay)).toEqual(day);
+    });
+
+    it('should return DayDTO', async () => {
+      const request = {
+        day: vp.validDayProps().day,
+        month: vp.validDayProps().month,
+        year: vp.validDayProps().year,
+        userId: vp.userId,
+      };
+
+      const day = await createDayUsecase.execute(request);
+
+      expect(day).not.toBeInstanceOf(Day);
+      for (const prop of dto.dayDTOProperties) {
+        expect(day).toHaveProperty(prop);
+      }
+    });
   });
 
-  it('should return DayDTO', async () => {
-    const request = {
-      day: vp.validDayProps().day,
-      month: vp.validDayProps().month,
-      year: vp.validDayProps().year,
-      userId: vp.userId,
-    };
+  describe('Errors', () => {
+    it('should throw error if user does not exist', async () => {
+      const request = {
+        day: vp.validDayProps().day,
+        month: vp.validDayProps().month,
+        year: vp.validDayProps().year,
+        userId: 'non-existent',
+      };
 
-    const day = await createDayUsecase.execute(request);
-
-    expect(day).not.toBeInstanceOf(Day);
-    for (const prop of dto.dayDTOProperties) {
-      expect(day).toHaveProperty(prop);
-    }
-  });
-
-  it('should throw error if user does not exist', async () => {
-    const request = {
-      day: vp.validDayProps().day,
-      month: vp.validDayProps().month,
-      year: vp.validDayProps().year,
-      userId: 'non-existent',
-    };
-
-    await expect(createDayUsecase.execute(request)).rejects.toThrow(
-      NotFoundError
-    );
-    await expect(createDayUsecase.execute(request)).rejects.toThrow(
-      /CreateDayUsecase.*user.*not.*found/
-    );
+      await expect(createDayUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+      await expect(createDayUsecase.execute(request)).rejects.toThrow(
+        /CreateDayUsecase.*user.*not.*found/
+      );
+    });
   });
 });

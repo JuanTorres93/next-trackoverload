@@ -47,73 +47,77 @@ describe('GetAssembledDayByIdUsecase', () => {
     await usersRepo.saveUser(user);
   });
 
-  it('should return AssembledDayDTO', async () => {
-    const result = await usecase.execute({
-      dayId: day.id,
-      userId: user.id,
+  describe('Found', () => {
+    it('should return AssembledDayDTO', async () => {
+      const result = await usecase.execute({
+        dayId: day.id,
+        userId: user.id,
+      });
+
+      expect(result).not.toBeInstanceOf(Day);
+      for (const prop of dto.assembledDayDTOProperties) {
+        expect(result).toHaveProperty(prop);
+      }
     });
 
-    expect(result).not.toBeInstanceOf(Day);
-    for (const prop of dto.assembledDayDTOProperties) {
-      expect(result).toHaveProperty(prop);
-    }
-  });
+    it('should assemble related meals and fake meals', async () => {
+      const meal = Meal.create(vp.validMealWithIngredientLines());
+      const fakeMeal = FakeMeal.create(vp.validFakeMealProps);
 
-  it('should throw error if user does not exist', async () => {
-    await expect(
-      usecase.execute({
+      await mealsRepo.saveMeal(meal);
+      await fakeMealsRepo.saveFakeMeal(fakeMeal);
+
+      // Update day to include these meals
+      day.addMeal(meal.id);
+      day.addFakeMeal(fakeMeal.id);
+      await daysRepo.saveDay(day);
+
+      const result = await usecase.execute({
         dayId: day.id,
-        userId: 'non-existent-user-id',
-      })
-    ).rejects.toThrowError(NotFoundError);
+        userId: user.id,
+      });
 
-    await expect(
-      usecase.execute({
-        dayId: day.id,
-        userId: 'non-existent-user-id',
-      })
-    ).rejects.toThrowError(/not found/);
+      expect(result!.meals.length).toBe(1);
+      expect(result!.meals[0].id).toBe(meal.id);
+      expect(result!.meals[0].name).toBe(meal.name);
+
+      expect(result!.fakeMeals.length).toBe(1);
+      expect(result!.fakeMeals[0].id).toBe(fakeMeal.id);
+      expect(result!.fakeMeals[0].name).toBe(fakeMeal.name);
+    });
   });
 
-  it('should throw NotFoundError if day does not exist', async () => {
-    await expect(
-      usecase.execute({
-        dayId: 'non-existent-day-id',
-        userId: user.id,
-      })
-    ).rejects.toThrowError(NotFoundError);
+  describe('Errors', () => {
+    it('should throw error if user does not exist', async () => {
+      await expect(
+        usecase.execute({
+          dayId: day.id,
+          userId: 'non-existent-user-id',
+        })
+      ).rejects.toThrowError(NotFoundError);
 
-    await expect(
-      usecase.execute({
-        dayId: 'non-existent-day-id',
-        userId: user.id,
-      })
-    ).rejects.toThrowError(/GetAssembledDayByIdUsecase.*Day.*not found/);
-  });
-
-  it('should assemble related meals and fake meals', async () => {
-    const meal = Meal.create(vp.validMealWithIngredientLines());
-    const fakeMeal = FakeMeal.create(vp.validFakeMealProps);
-
-    await mealsRepo.saveMeal(meal);
-    await fakeMealsRepo.saveFakeMeal(fakeMeal);
-
-    // Update day to include these meals
-    day.addMeal(meal.id);
-    day.addFakeMeal(fakeMeal.id);
-    await daysRepo.saveDay(day);
-
-    const result = await usecase.execute({
-      dayId: day.id,
-      userId: user.id,
+      await expect(
+        usecase.execute({
+          dayId: day.id,
+          userId: 'non-existent-user-id',
+        })
+      ).rejects.toThrowError(/not found/);
     });
 
-    expect(result!.meals.length).toBe(1);
-    expect(result!.meals[0].id).toBe(meal.id);
-    expect(result!.meals[0].name).toBe(meal.name);
+    it('should throw NotFoundError if day does not exist', async () => {
+      await expect(
+        usecase.execute({
+          dayId: 'non-existent-day-id',
+          userId: user.id,
+        })
+      ).rejects.toThrowError(NotFoundError);
 
-    expect(result!.fakeMeals.length).toBe(1);
-    expect(result!.fakeMeals[0].id).toBe(fakeMeal.id);
-    expect(result!.fakeMeals[0].name).toBe(fakeMeal.name);
+      await expect(
+        usecase.execute({
+          dayId: 'non-existent-day-id',
+          userId: user.id,
+        })
+      ).rejects.toThrowError(/GetAssembledDayByIdUsecase.*Day.*not found/);
+    });
   });
 });
