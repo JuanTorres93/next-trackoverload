@@ -41,6 +41,58 @@ describe('GetDayByIdUsecase', () => {
     expect(result!.id).toEqual(day.id);
   });
 
+  it('should have list of meals ids', async () => {
+    const result = await getDayByIdUsecase.execute({
+      dayId: day.id,
+      userId: vp.userId,
+    });
+
+    expect(result).toHaveProperty('mealIds');
+    expect(Array.isArray(result!.mealIds)).toBe(true);
+  })
+
+  it('should have list of fake meals ids', async () => {
+    const result = await getDayByIdUsecase.execute({
+      dayId: day.id,
+      userId: vp.userId,
+    });
+
+    expect(result).toHaveProperty('fakeMealIds');
+    expect(Array.isArray(result!.fakeMealIds)).toBe(true);
+  })
+
+  it('should populate meal ids correctly', async () => {
+    const mealIds = ['meal1', 'meal2', 'meal3'];
+    for (const mealId of mealIds) {
+      day.addMeal(mealId);
+    }
+    await daysRepo.saveDay(day);
+
+    const result = await getDayByIdUsecase.execute({
+      dayId: day.id,
+      userId: vp.userId,
+    });
+
+    expect(result!.mealIds).toEqual(mealIds);
+    expect(result!.fakeMealIds).toEqual([]);
+  })
+
+it('should populate fake meal ids correctly', async () => {
+    const fakeMealIds = ['fakeMeal1', 'fakeMeal2'];
+    for (const fakeMealId of fakeMealIds) {
+      day.addFakeMeal(fakeMealId);
+    }
+    await daysRepo.saveDay(day);
+
+    const result = await getDayByIdUsecase.execute({
+      dayId: day.id,
+      userId: vp.userId,
+    });
+
+    expect(result!.fakeMealIds).toEqual(fakeMealIds);
+    expect(result!.mealIds).toEqual([]);
+  });
+
   it('should return DayDTO', async () => {
     const result = await getDayByIdUsecase.execute({
       dayId: day.id,

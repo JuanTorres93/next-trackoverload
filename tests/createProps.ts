@@ -11,7 +11,6 @@ export function validDayProps() {
     month: 10,
     year: 2023,
     userId: userId,
-    meals: [],
     createdAt: new Date(),
     updatedAt: new Date(),
   };
