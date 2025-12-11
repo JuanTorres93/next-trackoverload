@@ -37,7 +37,6 @@ export class UpdateFakeMealUsecase {
       );
     }
 
-    // NOTE: The update method on the entity handles validation of the patch
     fakeMeal.update(request.patch);
     await this.fakeMealsRepo.saveFakeMeal(fakeMeal);
 
