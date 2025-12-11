@@ -10,7 +10,6 @@ import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { User } from '@/domain/entities/user/User';
-import { beforeEach, describe, expect, it } from 'vitest';
 import { UpdateIngredientLineUsecase } from '../UpdateIngredientLine.usecase';
 
 describe('UpdateIngredientLineUsecase', () => {
@@ -89,221 +88,344 @@ describe('UpdateIngredientLineUsecase', () => {
     await mealsRepo.saveMeal(testMeal);
   });
 
-  describe('Successful updates', () => {
-    it('should update only the quantity when quantityInGrams is provided for recipe', async () => {
-      const request = {
-        userId: userId,
-        parentEntityType: 'recipe' as const,
-        parentEntityId: testRecipe.id,
-        ingredientLineId: testIngredientLine.id,
-        quantityInGrams: 300,
-      };
+  describe('Recipe line', () => {
+    describe('Updated', () => {
+      it('should update only the quantity when quantityInGrams is provided for recipe', async () => {
+        const request = {
+          userId: userId,
+          parentEntityType: 'recipe' as const,
+          parentEntityId: testRecipe.id,
+          ingredientLineId: testIngredientLine.id,
+          quantityInGrams: 300,
+        };
 
-      const result = await updateIngredientLineUsecase.execute(request);
+        const result = await updateIngredientLineUsecase.execute(request);
 
-      expect(result.quantityInGrams).toBe(300);
-      expect(result.ingredient.id).toBe(testIngredient.id);
-      expect(result.ingredient.name).toBe('Chicken Breast');
-      expect(result.id).toBe(testIngredientLine.id);
+        expect(result.quantityInGrams).toBe(300);
+        expect(result.ingredient.id).toBe(testIngredient.id);
+        expect(result.ingredient.name).toBe('Chicken Breast');
+        expect(result.id).toBe(testIngredientLine.id);
+      });
+
+      it('should return IngredientLineDTO', async () => {
+        const request = {
+          userId: userId,
+          parentEntityType: 'recipe' as const,
+          parentEntityId: testRecipe.id,
+          ingredientLineId: testIngredientLine.id,
+          quantityInGrams: 300,
+        };
+
+        const result = await updateIngredientLineUsecase.execute(request);
+
+        expect(result).not.toBeInstanceOf(IngredientLine);
+        for (const prop of dto.ingredientLineDTOProperties) {
+          expect(result).toHaveProperty(prop);
+        }
+      });
+
+      it('should update only the ingredient when ingredientId is provided', async () => {
+        const request = {
+          userId: userId,
+          parentEntityType: 'recipe' as const,
+          parentEntityId: testRecipe.id,
+          ingredientLineId: testIngredientLine.id,
+          ingredientId: alternativeIngredient.id,
+        };
+
+        const result = await updateIngredientLineUsecase.execute(request);
+
+        expect(result.ingredient.id).toBe(alternativeIngredient.id);
+        expect(result.ingredient.name).toBe('Turkey Breast');
+        expect(result.quantityInGrams).toBe(200);
+        expect(result.id).toBe(testIngredientLine.id);
+      });
+
+      it('should update both ingredient and quantity when both are provided', async () => {
+        const request = {
+          userId: userId,
+          parentEntityType: 'recipe' as const,
+          parentEntityId: testRecipe.id,
+          ingredientLineId: testIngredientLine.id,
+          ingredientId: alternativeIngredient.id,
+          quantityInGrams: 250,
+        };
+
+        const result = await updateIngredientLineUsecase.execute(request);
+
+        expect(result.ingredient.id).toBe(alternativeIngredient.id);
+        expect(result.ingredient.name).toBe('Turkey Breast');
+        expect(result.quantityInGrams).toBe(250);
+        expect(result.id).toBe(testIngredientLine.id);
+      });
     });
 
-    it('should update only the quantity when quantityInGrams is provided for meal', async () => {
-      const request = {
-        userId: userId,
-        parentEntityType: 'meal' as const,
-        parentEntityId: testMeal.id,
-        ingredientLineId: testIngredientLine.id,
-        quantityInGrams: 350,
-      };
+    describe('Errors', () => {
+      it('should throw NotFoundError when recipe does not exist', async () => {
+        const request = {
+          userId: userId,
+          parentEntityType: 'recipe' as const,
+          parentEntityId: 'non-existent-recipe-id',
+          ingredientLineId: testIngredientLine.id,
+          quantityInGrams: 300,
+        };
 
-      const result = await updateIngredientLineUsecase.execute(request);
+        await expect(
+          updateIngredientLineUsecase.execute(request)
+        ).rejects.toThrow(NotFoundError);
+      });
 
-      expect(result.quantityInGrams).toBe(350);
-      expect(result.ingredient.id).toBe(testIngredient.id);
-      expect(result.id).toBe(testIngredientLine.id);
-    });
+      it('should throw NotFoundError when recipe does not exist', async () => {
+        const request = {
+          userId: userId,
+          parentEntityType: 'recipe' as const,
+          parentEntityId: 'non-existent-recipe-id',
+          ingredientLineId: testIngredientLine.id,
+          quantityInGrams: 300,
+        };
 
-    it('should return IngredientLineDTO', async () => {
-      const request = {
-        userId: userId,
-        parentEntityType: 'recipe' as const,
-        parentEntityId: testRecipe.id,
-        ingredientLineId: testIngredientLine.id,
-        quantityInGrams: 300,
-      };
+        await expect(
+          updateIngredientLineUsecase.execute(request)
+        ).rejects.toThrow(NotFoundError);
 
-      const result = await updateIngredientLineUsecase.execute(request);
+        await expect(
+          updateIngredientLineUsecase.execute(request)
+        ).rejects.toThrow(/UpdateIngredientLineUsecase:.*recipe.*not found/i);
+      });
 
-      // Verificación de que se retorna DTO
-      expect(result).not.toBeInstanceOf(IngredientLine);
-      for (const prop of dto.ingredientLineDTOProperties) {
-        expect(result).toHaveProperty(prop);
-      }
-    });
+      it('should throw NotFoundError when ingredient line does not exist', async () => {
+        const request = {
+          userId: userId,
+          parentEntityType: 'recipe' as const,
+          parentEntityId: testRecipe.id,
+          ingredientLineId: 'non-existent-ingredient-line-id',
+          quantityInGrams: 300,
+        };
 
-    it('should update only the ingredient when ingredientId is provided', async () => {
-      const request = {
-        userId: userId,
-        parentEntityType: 'recipe' as const,
-        parentEntityId: testRecipe.id,
-        ingredientLineId: testIngredientLine.id,
-        ingredientId: alternativeIngredient.id,
-      };
+        await expect(
+          updateIngredientLineUsecase.execute(request)
+        ).rejects.toThrow(NotFoundError);
 
-      const result = await updateIngredientLineUsecase.execute(request);
+        await expect(
+          updateIngredientLineUsecase.execute(request)
+        ).rejects.toThrow(
+          /UpdateIngredientLineUsecase:.*IngredientLine.*not.*belong.*recipe/i
+        );
+      });
 
-      expect(result.ingredient.id).toBe(alternativeIngredient.id);
-      expect(result.ingredient.name).toBe('Turkey Breast');
-      expect(result.quantityInGrams).toBe(200);
-      expect(result.id).toBe(testIngredientLine.id);
-    });
+      it("should throw error when user tries to access another user's recipe", async () => {
+        const request = {
+          userId: anotherUserId,
+          parentEntityType: 'recipe' as const,
+          parentEntityId: testRecipe.id,
+          ingredientLineId: testIngredientLine.id,
+          quantityInGrams: 300,
+        };
 
-    it('should update both ingredient and quantity when both are provided', async () => {
-      const request = {
-        userId: userId,
-        parentEntityType: 'meal' as const,
-        parentEntityId: testMeal.id,
-        ingredientLineId: testIngredientLine.id,
-        ingredientId: alternativeIngredient.id,
-        quantityInGrams: 250,
-      };
+        await expect(
+          updateIngredientLineUsecase.execute(request)
+        ).rejects.toThrow(AuthError);
 
-      const result = await updateIngredientLineUsecase.execute(request);
-
-      expect(result.ingredient.id).toBe(alternativeIngredient.id);
-      expect(result.ingredient.name).toBe('Turkey Breast');
-      expect(result.quantityInGrams).toBe(250);
-      expect(result.id).toBe(testIngredientLine.id);
+        await expect(
+          updateIngredientLineUsecase.execute(request)
+        ).rejects.toThrow(
+          /UpdateIngredientLineUsecase:.*recipe.*not found for user/i
+        );
+      });
     });
   });
 
-  describe('Not found errors', () => {
-    it('should throw NotFoundError when recipe does not exist', async () => {
-      const request = {
-        userId: userId,
-        parentEntityType: 'recipe' as const,
-        parentEntityId: 'non-existent-recipe-id',
-        ingredientLineId: testIngredientLine.id,
-        quantityInGrams: 300,
-      };
+  describe('Meal line', () => {
+    describe('Updated', () => {
+      it('should update only the quantity when quantityInGrams is provided for meal', async () => {
+        const request = {
+          userId: userId,
+          parentEntityType: 'meal' as const,
+          parentEntityId: testMeal.id,
+          ingredientLineId: testIngredientLine.id,
+          quantityInGrams: 350,
+        };
 
-      await expect(
-        updateIngredientLineUsecase.execute(request)
-      ).rejects.toThrow(NotFoundError);
+        const result = await updateIngredientLineUsecase.execute(request);
+
+        expect(result.quantityInGrams).toBe(350);
+        expect(result.ingredient.id).toBe(testIngredient.id);
+        expect(result.id).toBe(testIngredientLine.id);
+      });
+
+      it('should return IngredientLineDTO', async () => {
+        const request = {
+          userId: userId,
+          parentEntityType: 'meal' as const,
+          parentEntityId: testMeal.id,
+          ingredientLineId: testIngredientLine.id,
+          quantityInGrams: 350,
+        };
+
+        const result = await updateIngredientLineUsecase.execute(request);
+
+        expect(result).not.toBeInstanceOf(IngredientLine);
+        for (const prop of dto.ingredientLineDTOProperties) {
+          expect(result).toHaveProperty(prop);
+        }
+      });
+
+      it('should update only the ingredient when ingredientId is provided', async () => {
+        const request = {
+          userId: userId,
+          parentEntityType: 'meal' as const,
+          parentEntityId: testMeal.id,
+          ingredientLineId: testIngredientLine.id,
+          ingredientId: alternativeIngredient.id,
+        };
+
+        const result = await updateIngredientLineUsecase.execute(request);
+
+        expect(result.ingredient.id).toBe(alternativeIngredient.id);
+        expect(result.ingredient.name).toBe('Turkey Breast');
+        expect(result.quantityInGrams).toBe(200);
+        expect(result.id).toBe(testIngredientLine.id);
+      });
+
+      it('should update both ingredient and quantity when both are provided', async () => {
+        const request = {
+          userId: userId,
+          parentEntityType: 'meal' as const,
+          parentEntityId: testMeal.id,
+          ingredientLineId: testIngredientLine.id,
+          ingredientId: alternativeIngredient.id,
+          quantityInGrams: 250,
+        };
+
+        const result = await updateIngredientLineUsecase.execute(request);
+
+        expect(result.ingredient.id).toBe(alternativeIngredient.id);
+        expect(result.ingredient.name).toBe('Turkey Breast');
+        expect(result.quantityInGrams).toBe(250);
+        expect(result.id).toBe(testIngredientLine.id);
+      });
     });
 
-    it('should throw NotFoundError when meal does not exist', async () => {
-      const request = {
-        userId: userId,
-        parentEntityType: 'meal' as const,
-        parentEntityId: 'non-existent-meal-id',
-        ingredientLineId: testIngredientLine.id,
-        quantityInGrams: 300,
-      };
+    describe('Errors', () => {
+      it('should throw NotFoundError when meal does not exist', async () => {
+        const request = {
+          userId: userId,
+          parentEntityType: 'meal' as const,
+          parentEntityId: 'non-existent-meal-id',
+          ingredientLineId: testIngredientLine.id,
+          quantityInGrams: 300,
+        };
 
-      await expect(
-        updateIngredientLineUsecase.execute(request)
-      ).rejects.toThrow(NotFoundError);
+        await expect(
+          updateIngredientLineUsecase.execute(request)
+        ).rejects.toThrow(NotFoundError);
+
+        await expect(
+          updateIngredientLineUsecase.execute(request)
+        ).rejects.toThrow(/UpdateIngredientLineUsecase:.*meal.*not found/i);
+      });
+
+      it('should throw NotFoundError when ingredient line does not exist', async () => {
+        const request = {
+          userId: userId,
+          parentEntityType: 'meal' as const,
+          parentEntityId: testMeal.id,
+          ingredientLineId: 'non-existent-ingredient-line-id',
+          quantityInGrams: 300,
+        };
+
+        await expect(
+          updateIngredientLineUsecase.execute(request)
+        ).rejects.toThrow(NotFoundError);
+
+        await expect(
+          updateIngredientLineUsecase.execute(request)
+        ).rejects.toThrow(
+          /UpdateIngredientLineUsecase:.*IngredientLine.*not.*belong.*meal/i
+        );
+      });
+
+      it("should throw error when user tries to access another user's meal", async () => {
+        const request = {
+          userId: anotherUserId,
+          parentEntityType: 'meal' as const,
+          parentEntityId: testMeal.id,
+          ingredientLineId: testIngredientLine.id,
+          quantityInGrams: 300,
+        };
+
+        await expect(
+          updateIngredientLineUsecase.execute(request)
+        ).rejects.toThrow(AuthError);
+
+        await expect(
+          updateIngredientLineUsecase.execute(request)
+        ).rejects.toThrow(
+          /UpdateIngredientLineUsecase:.*meal.*not found for user/i
+        );
+      });
+    });
+  });
+
+  describe('Shared Errors', () => {
+    let differentInfo: Array<{
+      parentEntityType: 'recipe' | 'meal';
+      parentEntityId: string;
+    }>;
+
+    beforeAll(() => {
+      differentInfo = [
+        {
+          parentEntityType: 'recipe' as const,
+          parentEntityId: testRecipe.id,
+        },
+        {
+          parentEntityType: 'meal' as const,
+          parentEntityId: testMeal.id,
+        },
+      ];
     });
 
     it('should throw NotFoundError when ingredient does not exist', async () => {
-      const request = {
-        userId: userId,
-        parentEntityType: 'recipe' as const,
-        parentEntityId: testRecipe.id,
-        ingredientLineId: testIngredientLine.id,
-        ingredientId: 'non-existent-ingredient-id',
-      };
+      for (const info of differentInfo) {
+        const request = {
+          userId: userId,
+          parentEntityType: info.parentEntityType,
+          parentEntityId: info.parentEntityId,
+          ingredientLineId: testIngredientLine.id,
+          ingredientId: 'non-existent-ingredient-id',
+        };
 
-      await expect(
-        updateIngredientLineUsecase.execute(request)
-      ).rejects.toThrow(NotFoundError);
+        await expect(
+          updateIngredientLineUsecase.execute(request)
+        ).rejects.toThrow(NotFoundError);
+
+        await expect(
+          updateIngredientLineUsecase.execute(request)
+        ).rejects.toThrow(
+          /UpdateIngredientLineUsecase:.*Ingredient.*not found/i
+        );
+      }
     });
 
-    it('should throw NotFoundError when ingredient line does not exist', async () => {
-      const request = {
-        userId: userId,
-        parentEntityType: 'recipe' as const,
-        parentEntityId: testRecipe.id,
-        ingredientLineId: 'non-existent-ingredient-line-id',
-        quantityInGrams: 300,
-      };
+    it('should throw error if user does not exist', async () => {
+      for (const info of differentInfo) {
+        const request = {
+          userId: 'non-existent',
+          parentEntityType: info.parentEntityType,
+          parentEntityId: info.parentEntityId,
+          ingredientLineId: testIngredientLine.id,
+          quantityInGrams: 300,
+        };
 
-      await expect(
-        updateIngredientLineUsecase.execute(request)
-      ).rejects.toThrow(NotFoundError);
+        await expect(
+          updateIngredientLineUsecase.execute(request)
+        ).rejects.toThrow(NotFoundError);
+
+        await expect(
+          updateIngredientLineUsecase.execute(request)
+        ).rejects.toThrow(/UpdateIngredientLine.*User.*not.*found/);
+      }
     });
-  });
-
-  describe('Authorization errors', () => {
-    it("should throw AuthError when user tries to access another user's recipe", async () => {
-      const request = {
-        userId: anotherUserId,
-        parentEntityType: 'recipe' as const,
-        parentEntityId: testRecipe.id,
-        ingredientLineId: testIngredientLine.id,
-        quantityInGrams: 300,
-      };
-
-      await expect(
-        updateIngredientLineUsecase.execute(request)
-      ).rejects.toThrow(AuthError);
-    });
-
-    it("should throw AuthError when user tries to access another user's meal", async () => {
-      const request = {
-        userId: anotherUserId,
-        parentEntityType: 'meal' as const,
-        parentEntityId: testMeal.id,
-        ingredientLineId: testIngredientLine.id,
-        quantityInGrams: 300,
-      };
-
-      await expect(
-        updateIngredientLineUsecase.execute(request)
-      ).rejects.toThrow(AuthError);
-    });
-  });
-
-  it('should throw error if user does not exist', async () => {
-    await expect(
-      updateIngredientLineUsecase.execute({
-        userId: 'non-existent',
-        parentEntityType: 'recipe',
-        parentEntityId: testRecipe.id,
-        ingredientLineId: testIngredientLine.id,
-        quantityInGrams: 300,
-      })
-    ).rejects.toThrow(NotFoundError);
-
-    await expect(
-      updateIngredientLineUsecase.execute({
-        userId: 'non-existent',
-        parentEntityType: 'recipe',
-        parentEntityId: testRecipe.id,
-        ingredientLineId: testIngredientLine.id,
-        quantityInGrams: 300,
-      })
-    ).rejects.toThrow(/UpdateIngredientLine.*User.*not.*found/);
-
-    await expect(
-      updateIngredientLineUsecase.execute({
-        userId: 'non-existent',
-        parentEntityType: 'meal',
-        parentEntityId: testMeal.id,
-        ingredientLineId: testIngredientLine.id,
-        quantityInGrams: 300,
-      })
-    ).rejects.toThrow(NotFoundError);
-
-    await expect(
-      updateIngredientLineUsecase.execute({
-        userId: 'non-existent',
-        parentEntityType: 'meal',
-        parentEntityId: testMeal.id,
-        ingredientLineId: testIngredientLine.id,
-        quantityInGrams: 300,
-      })
-    ).rejects.toThrow(/UpdateIngredientLine.*User.*not.*found/);
   });
 });

@@ -83,7 +83,7 @@ export class UpdateIngredientLineUsecase {
 
       if (!foundIngredient) {
         throw new NotFoundError(
-          `Ingredient with id ${request.ingredientId} not found`
+          `UpdateIngredientLineUsecase: Ingredient with id ${request.ingredientId} not found`
         );
       }
 
