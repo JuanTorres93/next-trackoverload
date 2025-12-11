@@ -61,21 +61,40 @@ export class Meal implements Calories, Protein {
     if (!(ingredientLine instanceof IngredientLine)) {
       throw new ValidationError('Meal: Invalid ingredient line');
     }
+
+    const exists = this.props.ingredientLines.some(
+      (line) => line.ingredient.id === ingredientLine.ingredient.id
+    );
+
+    if (exists) {
+      throw new ValidationError(
+        `Meal: Ingredient with id ${ingredientLine.ingredient.id} already exists in the meal`
+      );
+    }
+
     this.props.ingredientLines.push(ingredientLine);
     this.props.updatedAt = new Date();
   }
 
   removeIngredientLineByIngredientId(ingredientId: string): void {
     const initialLength = this.props.ingredientLines.length;
-    this.props.ingredientLines = this.props.ingredientLines.filter(
+    const memoryComputation = this.props.ingredientLines.filter(
       (line) => line.ingredient.id !== ingredientId
     );
 
-    if (this.props.ingredientLines.length === initialLength) {
+    if (memoryComputation.length === 0) {
+      throw new ValidationError(
+        'Meal: At least one ingredient line must exist in the meal'
+      );
+    }
+
+    if (memoryComputation.length === initialLength) {
       throw new ValidationError(
         `Meal: No ingredient line found with ingredient id ${ingredientId}`
       );
     }
+
+    this.props.ingredientLines = memoryComputation;
     this.props.updatedAt = new Date();
   }
 

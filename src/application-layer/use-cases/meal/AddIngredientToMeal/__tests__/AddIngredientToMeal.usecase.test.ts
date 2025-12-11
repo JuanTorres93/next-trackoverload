@@ -62,6 +62,7 @@ describe('AddIngredientToMealUsecase', () => {
 
     const newIngredient = Ingredient.create({
       ...vp.validIngredientProps,
+      id: 'ing-new',
       name: 'Rice',
       calories: 130,
       protein: 2.7,
