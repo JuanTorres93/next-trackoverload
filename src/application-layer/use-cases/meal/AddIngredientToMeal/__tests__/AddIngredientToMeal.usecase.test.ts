@@ -75,111 +75,161 @@ describe('AddIngredientToMealUsecase', () => {
     };
   });
 
-  it('should add ingredient to meal successfully', async () => {
-    await mealsRepo.saveMeal(testMeal);
-    const originalIngredientCount = testMeal.ingredientLines.length;
+  describe('Addition', () => {
+    it('should add ingredient to meal successfully', async () => {
+      await mealsRepo.saveMeal(testMeal);
+      const originalIngredientCount = testMeal.ingredientLines.length;
 
-    const request = {
-      mealId: testMeal.id,
-      userId: vp.userId,
-      ...newIngredientLineInfo,
-    };
+      const request = {
+        mealId: testMeal.id,
+        userId: vp.userId,
+        ...newIngredientLineInfo,
+      };
 
-    const result = await addIngredientToMealUsecase.execute(request);
+      const result = await addIngredientToMealUsecase.execute(request);
 
-    expect(result.ingredientLines).toHaveLength(originalIngredientCount + 1);
+      expect(result.ingredientLines).toHaveLength(originalIngredientCount + 1);
 
-    const ingredientIds = result.ingredientLines.map(
-      (line) => line.ingredient.id
-    );
-    expect(ingredientIds).toContain(newIngredientLineInfo.ingredientId);
-  });
-
-  it('should return MealDTO', async () => {
-    await mealsRepo.saveMeal(testMeal);
-
-    const request = {
-      mealId: testMeal.id,
-      userId: vp.userId,
-      ...newIngredientLineInfo,
-    };
-
-    const result = await addIngredientToMealUsecase.execute(request);
-
-    expect(result).not.toBeInstanceOf(Meal);
-
-    for (const prop of dto.mealDTOProperties) {
-      expect(result).toHaveProperty(prop);
-    }
-  });
-
-  it('should throw NotFoundError when meal does not exist', async () => {
-    const request = {
-      mealId: 'non-existent-id',
-      userId: vp.userId,
-      ...newIngredientLineInfo,
-    };
-
-    await expect(addIngredientToMealUsecase.execute(request)).rejects.toThrow(
-      NotFoundError
-    );
-  });
-
-  it("should update meal's updatedAt timestamp", async () => {
-    await mealsRepo.saveMeal(testMeal);
-    const originalUpdatedAt = testMeal.updatedAt;
-
-    // Wait a bit to ensure timestamp difference
-    await new Promise((resolve) => setTimeout(resolve, 2));
-
-    const request = {
-      userId: vp.userId,
-      mealId: testMeal.id,
-      ...newIngredientLineInfo,
-    };
-
-    const result = await addIngredientToMealUsecase.execute(request);
-
-    expect(new Date(result.updatedAt).getTime()).toBeGreaterThan(
-      originalUpdatedAt.getTime()
-    );
-  });
-
-  it("should not add ingredient to another user's meal", async () => {
-    const anotherUser = User.create({
-      ...vp.validUserProps,
-      id: 'another-user-id',
+      const ingredientIds = result.ingredientLines.map(
+        (line) => line.ingredient.id
+      );
+      expect(ingredientIds).toContain(newIngredientLineInfo.ingredientId);
     });
-    await usersRepo.saveUser(anotherUser);
-    await mealsRepo.saveMeal(testMeal);
 
-    const request = {
-      userId: 'another-user-id',
-      mealId: testMeal.id,
-      ...newIngredientLineInfo,
-    };
+    it('should save updated meal in repo', async () => {
+      await mealsRepo.saveMeal(testMeal);
+      const originalIngredientCount = testMeal.ingredientLines.length;
 
-    await expect(addIngredientToMealUsecase.execute(request)).rejects.toThrow(
-      AuthError
-    );
+      const request = {
+        mealId: testMeal.id,
+        userId: vp.userId,
+        ...newIngredientLineInfo,
+      };
+
+      await addIngredientToMealUsecase.execute(request);
+
+      const savedMeal = await mealsRepo.getMealById(testMeal.id);
+      expect(savedMeal).toBeDefined();
+      expect(savedMeal!.ingredientLines).toHaveLength(
+        originalIngredientCount + 1
+      );
+    });
+
+    it('should return MealDTO', async () => {
+      await mealsRepo.saveMeal(testMeal);
+
+      const request = {
+        mealId: testMeal.id,
+        userId: vp.userId,
+        ...newIngredientLineInfo,
+      };
+
+      const result = await addIngredientToMealUsecase.execute(request);
+
+      expect(result).not.toBeInstanceOf(Meal);
+
+      for (const prop of dto.mealDTOProperties) {
+        expect(result).toHaveProperty(prop);
+      }
+    });
+
+    it("should update meal's updatedAt timestamp", async () => {
+      await mealsRepo.saveMeal(testMeal);
+      const originalUpdatedAt = testMeal.updatedAt;
+
+      // Wait a bit to ensure timestamp difference
+      await new Promise((resolve) => setTimeout(resolve, 2));
+
+      const request = {
+        userId: vp.userId,
+        mealId: testMeal.id,
+        ...newIngredientLineInfo,
+      };
+
+      const result = await addIngredientToMealUsecase.execute(request);
+
+      expect(new Date(result.updatedAt).getTime()).toBeGreaterThan(
+        originalUpdatedAt.getTime()
+      );
+    });
   });
 
-  it('should throw error if user does not exist', async () => {
-    await expect(
-      addIngredientToMealUsecase.execute({
-        userId: 'non-existent',
-        mealId: 'some-id',
-        ingredientId: 'some-ingredient-id',
+  describe('Errors', () => {
+    it('should throw NotFoundError when meal does not exist', async () => {
+      const request = {
+        mealId: 'non-existent-id',
+        userId: vp.userId,
+        ...newIngredientLineInfo,
+      };
+
+      await expect(addIngredientToMealUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+
+      await expect(addIngredientToMealUsecase.execute(request)).rejects.toThrow(
+        /AddIngredientToMealUsecase.*Meal.*not.*found/
+      );
+    });
+
+    it("should not add ingredient to another user's meal", async () => {
+      const anotherUser = User.create({
+        ...vp.validUserProps,
+        id: 'another-user-id',
+      });
+      await usersRepo.saveUser(anotherUser);
+      await mealsRepo.saveMeal(testMeal);
+
+      const request = {
+        userId: 'another-user-id',
+        mealId: testMeal.id,
+        ...newIngredientLineInfo,
+      };
+
+      await expect(addIngredientToMealUsecase.execute(request)).rejects.toThrow(
+        AuthError
+      );
+
+      await expect(addIngredientToMealUsecase.execute(request)).rejects.toThrow(
+        /AddIngredientToMealUsecase.*not.*authorized/
+      );
+    });
+
+    it('should throw error if user does not exist', async () => {
+      await expect(
+        addIngredientToMealUsecase.execute({
+          userId: 'non-existent',
+          mealId: 'some-id',
+          ingredientId: 'some-ingredient-id',
+          quantityInGrams: 100,
+        })
+      ).rejects.toThrow(NotFoundError);
+      await expect(
+        addIngredientToMealUsecase.execute({
+          userId: 'non-existent',
+          mealId: 'some-id',
+          ingredientId: 'some-ingredient-id',
+          quantityInGrams: 100,
+        })
+      ).rejects.toThrow(/AddIngredientToMealUsecase.*user.*not.*found/);
+    });
+
+    it('should throw NotFoundError when ingredient does not exist', async () => {
+      await mealsRepo.saveMeal(testMeal);
+
+      const request = {
+        mealId: testMeal.id,
+        userId: vp.userId,
+        ingredientId: 'non-existent-ingredient-id',
         quantityInGrams: 100,
-      })
-    ).rejects.toThrow(NotFoundError);
-    await expect(
-      addIngredientToMealUsecase.execute({
-        userId: 'non-existent',
-        mealId: 'some-id',
-        ingredientId: 'some-ingredient-id',
-        quantityInGrams: 100,
-      })
-    ).rejects.toThrow(/AddIngredientToMealUsecase.*user.*not.*found/);
+      };
+
+      await expect(addIngredientToMealUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+
+      await expect(addIngredientToMealUsecase.execute(request)).rejects.toThrow(
+        /AddIngredientToMealUsecase.*Ingredient.*not.*found/
+      );
+    });
   });
 });
