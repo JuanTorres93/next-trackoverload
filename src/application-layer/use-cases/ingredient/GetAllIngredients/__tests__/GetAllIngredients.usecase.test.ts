@@ -14,59 +14,61 @@ describe('GetAllIngredientsUsecase', () => {
     getAllIngredientsUsecase = new GetAllIngredientsUsecase(ingredientsRepo);
   });
 
-  it('should return all ingredients', async () => {
-    const ingredient1 = Ingredient.create({
-      ...vp.validIngredientProps,
-      name: 'Chicken Breast',
-    });
-    const ingredient2 = Ingredient.create({
-      ...vp.validIngredientProps,
-      id: 'ing-2',
-      name: 'Rice',
-    });
+  describe('Found', () => {
+    it('should return all ingredients', async () => {
+      const ingredient1 = Ingredient.create({
+        ...vp.validIngredientProps,
+        name: 'Chicken Breast',
+      });
+      const ingredient2 = Ingredient.create({
+        ...vp.validIngredientProps,
+        id: 'ing-2',
+        name: 'Rice',
+      });
 
-    await ingredientsRepo.saveIngredient(ingredient1);
-    await ingredientsRepo.saveIngredient(ingredient2);
+      await ingredientsRepo.saveIngredient(ingredient1);
+      await ingredientsRepo.saveIngredient(ingredient2);
 
-    const ingredients = await getAllIngredientsUsecase.execute();
+      const ingredients = await getAllIngredientsUsecase.execute();
 
-    const ingredientIds = ingredients.map((i) => i.id);
+      const ingredientIds = ingredients.map((i) => i.id);
 
-    expect(ingredients).toHaveLength(2);
-    expect(ingredientIds).toContain(ingredient1.id);
-    expect(ingredientIds).toContain(ingredient2.id);
-  });
-
-  it('should return an array of IngredientDTO', async () => {
-    const ingredient1 = Ingredient.create({
-      ...vp.validIngredientProps,
-      name: 'Chicken Breast',
-    });
-    const ingredient2 = Ingredient.create({
-      ...vp.validIngredientProps,
-      id: 'ing-2',
-      name: 'Rice',
+      expect(ingredients).toHaveLength(2);
+      expect(ingredientIds).toContain(ingredient1.id);
+      expect(ingredientIds).toContain(ingredient2.id);
     });
 
-    await ingredientsRepo.saveIngredient(ingredient1);
-    await ingredientsRepo.saveIngredient(ingredient2);
+    it('should return an array of IngredientDTO', async () => {
+      const ingredient1 = Ingredient.create({
+        ...vp.validIngredientProps,
+        name: 'Chicken Breast',
+      });
+      const ingredient2 = Ingredient.create({
+        ...vp.validIngredientProps,
+        id: 'ing-2',
+        name: 'Rice',
+      });
 
-    const ingredients = await getAllIngredientsUsecase.execute();
+      await ingredientsRepo.saveIngredient(ingredient1);
+      await ingredientsRepo.saveIngredient(ingredient2);
 
-    expect(ingredients).toHaveLength(2);
+      const ingredients = await getAllIngredientsUsecase.execute();
 
-    for (const ingredient of ingredients) {
-      expect(ingredient).not.toBeInstanceOf(Ingredient);
+      expect(ingredients).toHaveLength(2);
 
-      for (const prop of dto.ingredientDTOProperties) {
-        expect(ingredient).toHaveProperty(prop);
+      for (const ingredient of ingredients) {
+        expect(ingredient).not.toBeInstanceOf(Ingredient);
+
+        for (const prop of dto.ingredientDTOProperties) {
+          expect(ingredient).toHaveProperty(prop);
+        }
       }
-    }
-  });
+    });
 
-  it('should return empty array when no ingredients exist', async () => {
-    const ingredients = await getAllIngredientsUsecase.execute();
+    it('should return empty array when no ingredients exist', async () => {
+      const ingredients = await getAllIngredientsUsecase.execute();
 
-    expect(ingredients).toHaveLength(0);
+      expect(ingredients).toHaveLength(0);
+    });
   });
 });

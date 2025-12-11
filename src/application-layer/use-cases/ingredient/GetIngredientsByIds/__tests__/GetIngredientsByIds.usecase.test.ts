@@ -16,74 +16,75 @@ describe('GetIngredientsByIdsUsecase', () => {
     );
   });
 
-  it('should return ingredients that exist', async () => {
-    const ingredient1 = Ingredient.create({
-      ...vp.validIngredientProps,
-      name: 'Chicken Breast',
-    });
-    const ingredient2 = Ingredient.create({
-      ...vp.validIngredientProps,
-      id: '2',
-      name: 'Rice',
-    });
+  describe('Found', () => {
+    it('should return ingredients that exist', async () => {
+      const ingredient1 = Ingredient.create({
+        ...vp.validIngredientProps,
+        name: 'Chicken Breast',
+      });
+      const ingredient2 = Ingredient.create({
+        ...vp.validIngredientProps,
+        id: '2',
+        name: 'Rice',
+      });
 
-    await ingredientsRepo.saveIngredient(ingredient1);
-    await ingredientsRepo.saveIngredient(ingredient2);
+      await ingredientsRepo.saveIngredient(ingredient1);
+      await ingredientsRepo.saveIngredient(ingredient2);
 
-    const ingredients = await getIngredientsByIdsUsecase.execute({
-      // NOTE: in the future this will fail, because I'll add UUID validation
-      ids: [vp.validIngredientProps.id, '2', 'non-existent'],
-    });
+      const ingredients = await getIngredientsByIdsUsecase.execute({
+        ids: [vp.validIngredientProps.id, '2', 'non-existent'],
+      });
 
-    const ingredientIds = ingredients.map((i) => i.id);
+      const ingredientIds = ingredients.map((i) => i.id);
 
-    expect(ingredients).toHaveLength(2);
-    expect(ingredientIds).toContain(ingredient1.id);
-    expect(ingredientIds).toContain(ingredient2.id);
-  });
-
-  it('should return an array of IngredientDTO', async () => {
-    const ingredient1 = Ingredient.create({
-      ...vp.validIngredientProps,
-      name: 'Chicken Breast',
-    });
-    const ingredient2 = Ingredient.create({
-      ...vp.validIngredientProps,
-      id: '2',
-      name: 'Rice',
+      expect(ingredients).toHaveLength(2);
+      expect(ingredientIds).toContain(ingredient1.id);
+      expect(ingredientIds).toContain(ingredient2.id);
     });
 
-    await ingredientsRepo.saveIngredient(ingredient1);
-    await ingredientsRepo.saveIngredient(ingredient2);
+    it('should return an array of IngredientDTO', async () => {
+      const ingredient1 = Ingredient.create({
+        ...vp.validIngredientProps,
+        name: 'Chicken Breast',
+      });
+      const ingredient2 = Ingredient.create({
+        ...vp.validIngredientProps,
+        id: '2',
+        name: 'Rice',
+      });
 
-    const ingredients = await getIngredientsByIdsUsecase.execute({
-      ids: [vp.validIngredientProps.id, '2'],
-    });
+      await ingredientsRepo.saveIngredient(ingredient1);
+      await ingredientsRepo.saveIngredient(ingredient2);
 
-    expect(ingredients).toHaveLength(2);
+      const ingredients = await getIngredientsByIdsUsecase.execute({
+        ids: [vp.validIngredientProps.id, '2'],
+      });
 
-    for (const ingredient of ingredients) {
-      expect(ingredient).not.toBeInstanceOf(Ingredient);
+      expect(ingredients).toHaveLength(2);
 
-      for (const prop of dto.ingredientDTOProperties) {
-        expect(ingredient).toHaveProperty(prop);
+      for (const ingredient of ingredients) {
+        expect(ingredient).not.toBeInstanceOf(Ingredient);
+
+        for (const prop of dto.ingredientDTOProperties) {
+          expect(ingredient).toHaveProperty(prop);
+        }
       }
-    }
-  });
-
-  it('should return empty array when no ingredients found', async () => {
-    const ingredients = await getIngredientsByIdsUsecase.execute({
-      ids: ['non-existent-1', 'non-existent-2'],
     });
 
-    expect(ingredients).toHaveLength(0);
-  });
+    it('should return empty array when no ingredients found', async () => {
+      const ingredients = await getIngredientsByIdsUsecase.execute({
+        ids: ['non-existent-1', 'non-existent-2'],
+      });
 
-  it('should return empty array when ids array is empty', async () => {
-    const ingredients = await getIngredientsByIdsUsecase.execute({
-      ids: [],
+      expect(ingredients).toHaveLength(0);
     });
 
-    expect(ingredients).toHaveLength(0);
+    it('should return empty array when ids array is empty', async () => {
+      const ingredients = await getIngredientsByIdsUsecase.execute({
+        ids: [],
+      });
+
+      expect(ingredients).toHaveLength(0);
+    });
   });
 });

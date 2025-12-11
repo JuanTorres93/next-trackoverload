@@ -22,7 +22,7 @@ export class UpdateIngredientUsecase {
     );
 
     if (!existingIngredient) {
-      throw new NotFoundError('Ingredient not found');
+      throw new NotFoundError('UpdateIngredientUsecase: Ingredient not found');
     }
 
     existingIngredient.update(request.patch);

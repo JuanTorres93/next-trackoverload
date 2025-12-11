@@ -131,13 +131,17 @@ describe('GetIngredientsByFuzzyNameUsecase', () => {
     });
   });
 
-  describe('input validation', () => {
+  describe('Errors', () => {
     it('should throw ValidationError when name is not provided', async () => {
       const input = {} as GetIngredientsByFuzzyNameInput;
 
       await expect(
         getIngredientsByFuzzyNameUsecase.execute(input)
       ).rejects.toThrow(ValidationError);
+
+      await expect(
+        getIngredientsByFuzzyNameUsecase.execute(input)
+      ).rejects.toThrow(/GetIngredientsByFuzzyName.*name.* required/);
     });
 
     it('should throw ValidationError when name is null', async () => {
@@ -146,6 +150,10 @@ describe('GetIngredientsByFuzzyNameUsecase', () => {
       await expect(
         getIngredientsByFuzzyNameUsecase.execute(input)
       ).rejects.toThrow(ValidationError);
+
+      await expect(
+        getIngredientsByFuzzyNameUsecase.execute(input)
+      ).rejects.toThrow(/GetIngredientsByFuzzyName.*name.* required/);
     });
 
     it('should throw ValidationError when name is not a string', async () => {
@@ -154,14 +162,26 @@ describe('GetIngredientsByFuzzyNameUsecase', () => {
       await expect(
         getIngredientsByFuzzyNameUsecase.execute(input)
       ).rejects.toThrow(ValidationError);
+
+      await expect(
+        getIngredientsByFuzzyNameUsecase.execute(input)
+      ).rejects.toThrow(/GetIngredientsByFuzzyName.*name.* must.*string/);
     });
 
     it('should throw ValidationError when input is undefined', async () => {
       await expect(
         getIngredientsByFuzzyNameUsecase.execute(
-          undefined as unknown as GetIngredientsByFuzzyNameInput
+          // @ts-expect-error Testing undefined input
+          undefined
         )
       ).rejects.toThrow(ValidationError);
+
+      await expect(
+        getIngredientsByFuzzyNameUsecase.execute(
+          // @ts-expect-error Testing undefined input
+          undefined
+        )
+      ).rejects.toThrow(/GetIngredientsByFuzzyName.*name.* required/);
     });
   });
 

@@ -14,41 +14,43 @@ describe('CreateIngredientUsecase', () => {
     createIngredientUsecase = new CreateIngredientUsecase(ingredientsRepo);
   });
 
-  it('should create and save a new ingredient', async () => {
-    const request = {
-      name: vp.validIngredientProps.name,
-      calories: vp.validIngredientProps.calories,
-      protein: vp.validIngredientProps.protein,
-    };
+  describe('Creation', () => {
+    it('should create and save a new ingredient', async () => {
+      const request = {
+        name: vp.validIngredientProps.name,
+        calories: vp.validIngredientProps.calories,
+        protein: vp.validIngredientProps.protein,
+      };
 
-    const ingredient = await createIngredientUsecase.execute(request);
+      const ingredient = await createIngredientUsecase.execute(request);
 
-    expect(ingredient).toHaveProperty('id');
-    expect(ingredient.name).toBe(request.name);
-    expect(ingredient.nutritionalInfoPer100g.calories).toBe(request.calories);
-    expect(ingredient.nutritionalInfoPer100g.protein).toBe(request.protein);
-    expect(ingredient).toHaveProperty('createdAt');
-    expect(ingredient).toHaveProperty('updatedAt');
+      expect(ingredient).toHaveProperty('id');
+      expect(ingredient.name).toBe(request.name);
+      expect(ingredient.nutritionalInfoPer100g.calories).toBe(request.calories);
+      expect(ingredient.nutritionalInfoPer100g.protein).toBe(request.protein);
+      expect(ingredient).toHaveProperty('createdAt');
+      expect(ingredient).toHaveProperty('updatedAt');
 
-    const savedIngredient = await ingredientsRepo.getIngredientById(
-      ingredient.id
-    );
-    expect(savedIngredient).toBeDefined();
-  });
+      const savedIngredient = await ingredientsRepo.getIngredientById(
+        ingredient.id
+      );
+      expect(savedIngredient).toBeDefined();
+    });
 
-  it('should return IngredientDTO', async () => {
-    const request = {
-      name: vp.validIngredientProps.name,
-      calories: vp.validIngredientProps.calories,
-      protein: vp.validIngredientProps.protein,
-    };
+    it('should return IngredientDTO', async () => {
+      const request = {
+        name: vp.validIngredientProps.name,
+        calories: vp.validIngredientProps.calories,
+        protein: vp.validIngredientProps.protein,
+      };
 
-    const ingredient = await createIngredientUsecase.execute(request);
+      const ingredient = await createIngredientUsecase.execute(request);
 
-    expect(ingredient).not.toBeInstanceOf(Ingredient);
+      expect(ingredient).not.toBeInstanceOf(Ingredient);
 
-    for (const prop of dto.ingredientDTOProperties) {
-      expect(ingredient).toHaveProperty(prop);
-    }
+      for (const prop of dto.ingredientDTOProperties) {
+        expect(ingredient).toHaveProperty(prop);
+      }
+    });
   });
 });

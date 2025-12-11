@@ -14,29 +14,33 @@ describe('DeleteIngredientUsecase', () => {
     deleteIngredientUsecase = new DeleteIngredientUsecase(ingredientsRepo);
   });
 
-  it('should delete existing ingredient', async () => {
-    const ingredient = Ingredient.create({
-      ...vp.validIngredientProps,
+  describe('Deletion', () => {
+    it('should delete existing ingredient', async () => {
+      const ingredient = Ingredient.create({
+        ...vp.validIngredientProps,
+      });
+
+      await ingredientsRepo.saveIngredient(ingredient);
+
+      await deleteIngredientUsecase.execute({
+        id: vp.validIngredientProps.id,
+      });
+
+      const deletedIngredient = await ingredientsRepo.getIngredientById(
+        vp.validIngredientProps.id
+      );
+      expect(deletedIngredient).toBeNull();
     });
-
-    await ingredientsRepo.saveIngredient(ingredient);
-
-    await deleteIngredientUsecase.execute({
-      id: vp.validIngredientProps.id,
-    });
-
-    const deletedIngredient = await ingredientsRepo.getIngredientById(
-      vp.validIngredientProps.id
-    );
-    expect(deletedIngredient).toBeNull();
   });
 
-  it('should throw NotFoundError when ingredient does not exist', async () => {
-    await expect(
-      deleteIngredientUsecase.execute({ id: 'non-existent' })
-    ).rejects.toThrow(NotFoundError);
-    await expect(
-      deleteIngredientUsecase.execute({ id: 'non-existent' })
-    ).rejects.toThrow(/DeleteIngredientUsecase.*Ingredient.*not found/);
+  describe('Errors', () => {
+    it('should throw NotFoundError when ingredient does not exist', async () => {
+      await expect(
+        deleteIngredientUsecase.execute({ id: 'non-existent' })
+      ).rejects.toThrow(NotFoundError);
+      await expect(
+        deleteIngredientUsecase.execute({ id: 'non-existent' })
+      ).rejects.toThrow(/DeleteIngredientUsecase.*Ingredient.*not found/);
+    });
   });
 });

@@ -14,48 +14,50 @@ describe('GetIngredientByIdUsecase', () => {
     getIngredientByIdUsecase = new GetIngredientByIdUsecase(ingredientsRepo);
   });
 
-  it('should return ingredient when found', async () => {
-    const ingredient = Ingredient.create({
-      ...vp.validIngredientProps,
-      name: 'Chicken Breast',
+  describe('Found', () => {
+    it('should return ingredient when found', async () => {
+      const ingredient = Ingredient.create({
+        ...vp.validIngredientProps,
+        name: 'Chicken Breast',
+      });
+
+      await ingredientsRepo.saveIngredient(ingredient);
+
+      const result = await getIngredientByIdUsecase.execute({
+        id: vp.validIngredientProps.id,
+      });
+
+      expect(result).not.toBeNull();
+      expect(result?.id).toBe(ingredient.id);
+      expect(result?.name).toBe(ingredient.name);
     });
 
-    await ingredientsRepo.saveIngredient(ingredient);
+    it('should return IngredientDTO when ingredient found', async () => {
+      const ingredient = Ingredient.create({
+        ...vp.validIngredientProps,
+        name: 'Chicken Breast',
+      });
 
-    const result = await getIngredientByIdUsecase.execute({
-      id: vp.validIngredientProps.id,
+      await ingredientsRepo.saveIngredient(ingredient);
+
+      const result = await getIngredientByIdUsecase.execute({
+        id: vp.validIngredientProps.id,
+      });
+
+      expect(result).not.toBeNull();
+      expect(result).not.toBeInstanceOf(Ingredient);
+
+      for (const prop of dto.ingredientDTOProperties) {
+        expect(result).toHaveProperty(prop);
+      }
     });
 
-    expect(result).not.toBeNull();
-    expect(result?.id).toBe(ingredient.id);
-    expect(result?.name).toBe(ingredient.name);
-  });
+    it('should return null when ingredient not found', async () => {
+      const result = await getIngredientByIdUsecase.execute({
+        id: 'non-existent',
+      });
 
-  it('should return IngredientDTO when ingredient found', async () => {
-    const ingredient = Ingredient.create({
-      ...vp.validIngredientProps,
-      name: 'Chicken Breast',
+      expect(result).toBeNull();
     });
-
-    await ingredientsRepo.saveIngredient(ingredient);
-
-    const result = await getIngredientByIdUsecase.execute({
-      id: vp.validIngredientProps.id,
-    });
-
-    expect(result).not.toBeNull();
-    expect(result).not.toBeInstanceOf(Ingredient);
-
-    for (const prop of dto.ingredientDTOProperties) {
-      expect(result).toHaveProperty(prop);
-    }
-  });
-
-  it('should return null when ingredient not found', async () => {
-    const result = await getIngredientByIdUsecase.execute({
-      id: 'non-existent',
-    });
-
-    expect(result).toBeNull();
   });
 });

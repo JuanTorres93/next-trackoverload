@@ -18,7 +18,6 @@ export class CreateIngredientUsecase {
   async execute(
     request: CreateIngredientUsecaseRequest
   ): Promise<IngredientDTO> {
-    // Validation is done in the entity constructor
     const newIngredient = Ingredient.create({
       id: uuidv4(),
       name: request.name,

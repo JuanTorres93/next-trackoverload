@@ -16,7 +16,6 @@ export class GetIngredientsByIdsUsecase {
   ): Promise<IngredientDTO[]> {
     const ingredientDTOs: IngredientDTO[] = [];
 
-    // Then, fetch ingredients to avoid partial results if validation fails
     for (const id of request.ids) {
       const ingredient = await this.ingredientsRepo.getIngredientById(id);
       if (ingredient) {
