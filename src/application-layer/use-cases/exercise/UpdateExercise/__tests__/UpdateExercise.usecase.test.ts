@@ -14,82 +14,88 @@ describe('UpdateExerciseUsecase', () => {
     updateExerciseUsecase = new UpdateExerciseUsecase(exercisesRepo);
   });
 
-  it('should update exercise name', async () => {
-    const exercise = Exercise.create({
-      id: '1',
-      name: 'Push Up',
-      createdAt: new Date('2023-01-01'),
-      updatedAt: new Date('2023-01-01'),
+  describe('Updated', () => {
+    it('should update exercise name', async () => {
+      const exercise = Exercise.create({
+        id: '1',
+        name: 'Push Up',
+        createdAt: new Date('2023-01-01'),
+        updatedAt: new Date('2023-01-01'),
+      });
+
+      await exercisesRepo.saveExercise(exercise);
+
+      const updatedExercise = await updateExerciseUsecase.execute({
+        id: '1',
+        name: 'Modified Push Up',
+      });
+
+      expect(updatedExercise.name).toBe('Modified Push Up');
+      expect(updatedExercise.id).toBe('1');
+      expect(updatedExercise.createdAt).toEqual(
+        exercise.createdAt.toISOString()
+      );
+      expect(updatedExercise.updatedAt).not.toEqual(exercise.updatedAt);
     });
 
-    await exercisesRepo.saveExercise(exercise);
+    it('should return an ExerciseDTO', async () => {
+      const exercise = Exercise.create({
+        id: '1',
+        name: 'Push Up',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
 
-    const updatedExercise = await updateExerciseUsecase.execute({
-      id: '1',
-      name: 'Modified Push Up',
+      await exercisesRepo.saveExercise(exercise);
+
+      const updatedExercise = await updateExerciseUsecase.execute({
+        id: '1',
+        name: 'Modified Push Up',
+      });
+
+      expect(updatedExercise).not.toBeInstanceOf(Exercise);
+
+      for (const prop of dto.exerciseDTOProperties) {
+        expect(updatedExercise).toHaveProperty(prop);
+      }
     });
 
-    expect(updatedExercise.name).toBe('Modified Push Up');
-    expect(updatedExercise.id).toBe('1');
-    expect(updatedExercise.createdAt).toEqual(exercise.createdAt.toISOString());
-    expect(updatedExercise.updatedAt).not.toEqual(exercise.updatedAt);
+    it('should not update exercise if no changes provided', async () => {
+      const exercise = Exercise.create({
+        id: '1',
+        name: 'Push Up',
+        createdAt: new Date('2023-01-01'),
+        updatedAt: new Date('2023-01-01'),
+      });
+
+      await exercisesRepo.saveExercise(exercise);
+
+      const updatedExercise = await updateExerciseUsecase.execute({
+        id: '1',
+      });
+
+      expect(updatedExercise.name).toBe(exercise.name);
+      expect(updatedExercise.updatedAt).not.toEqual(exercise.updatedAt);
+    });
   });
 
-  it('should return an array of ExerciseDTO', async () => {
-    const exercise = Exercise.create({
-      id: '1',
-      name: 'Push Up',
-      createdAt: new Date(),
-      updatedAt: new Date(),
+  describe('Errors', () => {
+    it('should throw NotFoundError when exercise does not exist', async () => {
+      await expect(
+        updateExerciseUsecase.execute({
+          id: 'non-existent',
+          name: 'New Name',
+        })
+      ).rejects.toThrow(NotFoundError);
     });
 
-    await exercisesRepo.saveExercise(exercise);
-
-    const updatedExercise = await updateExerciseUsecase.execute({
-      id: '1',
-      name: 'Modified Push Up',
+    it('should throw error if exercise does not exist', async () => {
+      await expect(
+        updateExerciseUsecase.execute({ id: 'non-existent', name: 'New Name' })
+      ).rejects.toThrow(NotFoundError);
+      await expect(
+        updateExerciseUsecase.execute({ id: 'non-existent', name: 'New Name' })
+      ).rejects.toThrow(/UpdateExerciseUsecase.*Exercise.*not found/);
     });
-
-    expect(updatedExercise).not.toBeInstanceOf(Exercise);
-
-    for (const prop of dto.exerciseDTOProperties) {
-      expect(updatedExercise).toHaveProperty(prop);
-    }
-  });
-
-  it('should throw NotFoundError when exercise does not exist', async () => {
-    await expect(
-      updateExerciseUsecase.execute({
-        id: 'non-existent',
-        name: 'New Name',
-      })
-    ).rejects.toThrow(NotFoundError);
-  });
-
-  it('should not update exercise if no changes provided', async () => {
-    const exercise = Exercise.create({
-      id: '1',
-      name: 'Push Up',
-      createdAt: new Date('2023-01-01'),
-      updatedAt: new Date('2023-01-01'),
-    });
-
-    await exercisesRepo.saveExercise(exercise);
-
-    const updatedExercise = await updateExerciseUsecase.execute({
-      id: '1',
-    });
-
-    expect(updatedExercise.name).toBe(exercise.name);
-    expect(updatedExercise.updatedAt).not.toEqual(exercise.updatedAt);
-  });
-
-  it('should throw error if exercise does not exist', async () => {
-    await expect(
-      updateExerciseUsecase.execute({ id: 'non-existent', name: 'New Name' })
-    ).rejects.toThrow(NotFoundError);
-    await expect(
-      updateExerciseUsecase.execute({ id: 'non-existent', name: 'New Name' })
-    ).rejects.toThrow(/UpdateExerciseUsecase.*Exercise.*not found/);
   });
 });

@@ -15,30 +15,32 @@ describe('CreateExerciseUsecase', () => {
     createExerciseUsecase = new CreateExerciseUsecase(exercisesRepo);
   });
 
-  it('should create and save a new exercise', async () => {
-    const request = { name: vp.validExerciseProps.name };
+  describe('Creation', () => {
+    it('should create and save a new exercise', async () => {
+      const request = { name: vp.validExerciseProps.name };
 
-    const exercise = await createExerciseUsecase.execute(request);
+      const exercise = await createExerciseUsecase.execute(request);
 
-    expect(exercise).toHaveProperty('id');
-    expect(exercise.name).toBe(request.name);
-    expect(exercise).toHaveProperty('createdAt');
-    expect(exercise).toHaveProperty('updatedAt');
+      expect(exercise).toHaveProperty('id');
+      expect(exercise.name).toBe(request.name);
+      expect(exercise).toHaveProperty('createdAt');
+      expect(exercise).toHaveProperty('updatedAt');
 
-    const savedExercise = await exercisesRepo.getExerciseById(exercise.id);
+      const savedExercise = await exercisesRepo.getExerciseById(exercise.id);
 
-    // @ts-expect-error savedExercise is not null here
-    expect(toExerciseDTO(savedExercise)).toEqual(exercise);
-  });
+      // @ts-expect-error savedExercise is not null here
+      expect(toExerciseDTO(savedExercise)).toEqual(exercise);
+    });
 
-  it('should return ExerciseDTO', async () => {
-    const request = { name: vp.validExerciseProps.name };
+    it('should return ExerciseDTO', async () => {
+      const request = { name: vp.validExerciseProps.name };
 
-    const exercise = await createExerciseUsecase.execute(request);
+      const exercise = await createExerciseUsecase.execute(request);
 
-    expect(exercise).not.toBeInstanceOf(Exercise);
-    for (const prop of dto.exerciseDTOProperties) {
-      expect(exercise).toHaveProperty(prop);
-    }
+      expect(exercise).not.toBeInstanceOf(Exercise);
+      for (const prop of dto.exerciseDTOProperties) {
+        expect(exercise).toHaveProperty(prop);
+      }
+    });
   });
 });

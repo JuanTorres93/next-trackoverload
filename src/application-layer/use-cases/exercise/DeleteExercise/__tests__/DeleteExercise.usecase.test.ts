@@ -14,24 +14,32 @@ describe('DeleteExerciseUsecase', () => {
     deleteExerciseUsecase = new DeleteExerciseUsecase(exercisesRepo);
   });
 
-  it('should delete existing exercise', async () => {
-    const exercise = Exercise.create({
-      ...vp.validExerciseProps,
+  describe('Deletion', () => {
+    it('should delete existing exercise', async () => {
+      const exercise = Exercise.create({
+        ...vp.validExerciseProps,
+      });
+
+      await exercisesRepo.saveExercise(exercise);
+
+      await deleteExerciseUsecase.execute({ id: vp.validExerciseProps.id });
+
+      const deletedExercise = await exercisesRepo.getExerciseById(
+        vp.validExerciseProps.id
+      );
+      expect(deletedExercise).toBeNull();
     });
-
-    await exercisesRepo.saveExercise(exercise);
-
-    await deleteExerciseUsecase.execute({ id: vp.validExerciseProps.id });
-
-    const deletedExercise = await exercisesRepo.getExerciseById(
-      vp.validExerciseProps.id
-    );
-    expect(deletedExercise).toBeNull();
   });
 
-  it('should throw NotFoundError when exercise does not exist', async () => {
-    await expect(
-      deleteExerciseUsecase.execute({ id: 'non-existent' })
-    ).rejects.toThrow(NotFoundError);
+  describe('Errors', () => {
+    it('should throw NotFoundError when exercise does not exist', async () => {
+      await expect(
+        deleteExerciseUsecase.execute({ id: 'non-existent' })
+      ).rejects.toThrow(NotFoundError);
+
+      await expect(
+        deleteExerciseUsecase.execute({ id: 'non-existent' })
+      ).rejects.toThrow(/DeleteExerciseUsecase.*Exercise.*not/);
+    });
   });
 });

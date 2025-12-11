@@ -14,59 +14,61 @@ describe('GetAllExercisesUsecase', () => {
     getAllExercisesUsecase = new GetAllExercisesUsecase(exercisesRepo);
   });
 
-  it('should return all exercises', async () => {
-    const exercise1 = Exercise.create({
-      ...vp.validExerciseProps,
-      id: '1',
-      name: 'Push Up',
-    });
-    const exercise2 = Exercise.create({
-      ...vp.validExerciseProps,
-      id: '2',
-      name: 'Squat',
-    });
+  describe('Found', () => {
+    it('should return all exercises', async () => {
+      const exercise1 = Exercise.create({
+        ...vp.validExerciseProps,
+        id: '1',
+        name: 'Push Up',
+      });
+      const exercise2 = Exercise.create({
+        ...vp.validExerciseProps,
+        id: '2',
+        name: 'Squat',
+      });
 
-    await exercisesRepo.saveExercise(exercise1);
-    await exercisesRepo.saveExercise(exercise2);
+      await exercisesRepo.saveExercise(exercise1);
+      await exercisesRepo.saveExercise(exercise2);
 
-    const exercises = await getAllExercisesUsecase.execute();
+      const exercises = await getAllExercisesUsecase.execute();
 
-    const exerciseIds = exercises.map((e) => e.id);
+      const exerciseIds = exercises.map((e) => e.id);
 
-    expect(exercises).toHaveLength(2);
-    expect(exerciseIds).toContain(exercise1.id);
-    expect(exerciseIds).toContain(exercise2.id);
-  });
-
-  it('should return an array of ExerciseDTO', async () => {
-    const exercise1 = Exercise.create({
-      ...vp.validExerciseProps,
-    });
-    const exercise2 = Exercise.create({
-      ...vp.validExerciseProps,
-      id: '2',
-      name: 'Squat',
+      expect(exercises).toHaveLength(2);
+      expect(exerciseIds).toContain(exercise1.id);
+      expect(exerciseIds).toContain(exercise2.id);
     });
 
-    await exercisesRepo.saveExercise(exercise1);
-    await exercisesRepo.saveExercise(exercise2);
+    it('should return an array of ExerciseDTO', async () => {
+      const exercise1 = Exercise.create({
+        ...vp.validExerciseProps,
+      });
+      const exercise2 = Exercise.create({
+        ...vp.validExerciseProps,
+        id: '2',
+        name: 'Squat',
+      });
 
-    const exercises = await getAllExercisesUsecase.execute();
+      await exercisesRepo.saveExercise(exercise1);
+      await exercisesRepo.saveExercise(exercise2);
 
-    expect(exercises).toHaveLength(2);
+      const exercises = await getAllExercisesUsecase.execute();
 
-    for (const exercise of exercises) {
-      expect(exercise).not.toBeInstanceOf(Exercise);
+      expect(exercises).toHaveLength(2);
 
-      for (const prop of dto.exerciseDTOProperties) {
-        expect(exercise).toHaveProperty(prop);
+      for (const exercise of exercises) {
+        expect(exercise).not.toBeInstanceOf(Exercise);
+
+        for (const prop of dto.exerciseDTOProperties) {
+          expect(exercise).toHaveProperty(prop);
+        }
       }
-    }
-  });
+    });
 
-  it('should return empty array when no exercises exist', async () => {
-    const exercises = await getAllExercisesUsecase.execute();
+    it('should return empty array when no exercises exist', async () => {
+      const exercises = await getAllExercisesUsecase.execute();
 
-    expect(exercises).toHaveLength(0);
+      expect(exercises).toHaveLength(0);
+    });
   });
 });

@@ -17,7 +17,6 @@ export class GetExercisesByIdsUsecase {
   ): Promise<ExerciseDTO[]> {
     const exercises: Exercise[] = [];
 
-    // Then, fetch exercises to avoid partial results if validation fails
     for (const id of request.ids) {
       const exercise = await this.exercisesRepo.getExerciseById(id);
       if (exercise) {
