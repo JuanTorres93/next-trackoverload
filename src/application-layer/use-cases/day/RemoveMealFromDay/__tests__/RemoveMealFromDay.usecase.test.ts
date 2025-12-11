@@ -2,8 +2,8 @@ import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { Day } from '@/domain/entities/day/Day';
 import { User } from '@/domain/entities/user/User';
 import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
-import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { RemoveMealFromDayUsecase } from '../RemoveMealFromDay.usecase';
 
@@ -83,6 +83,21 @@ describe('RemoveMealFromDayUsecase', () => {
     const mealsAfterRemoval = await mealsRepo.getAllMeals();
     expect(mealsAfterRemoval).toHaveLength(0);
   });
+
+  it('should not affect fake meals', async () => {
+    day.addFakeMeal("fakeMeal1");
+    await daysRepo.saveDay(day);
+
+    await removeMealFromDayUsecase.execute({
+      date: day.id,
+      userId: vp.userId,
+      mealId: vp.mealPropsNoIngredientLines.id,
+    });
+
+    const updatedDay = await daysRepo.getDayByIdAndUserId(day.id, vp.userId);
+    expect(updatedDay!.fakeMealIds).toHaveLength(1);
+    expect(updatedDay!.fakeMealIds[0]).toBe("fakeMeal1");
+  })
 
   it('should return a DayDTO', async () => {
     const result = await removeMealFromDayUsecase.execute({
