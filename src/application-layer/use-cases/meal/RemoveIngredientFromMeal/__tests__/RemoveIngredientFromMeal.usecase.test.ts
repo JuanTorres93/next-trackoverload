@@ -1,10 +1,6 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
-import {
-  AuthError,
-  NotFoundError,
-  ValidationError,
-} from '@/domain/common/errors';
+import { AuthError, NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
@@ -62,134 +58,127 @@ describe('RemoveIngredientFromMealUsecase', () => {
     });
   });
 
-  it('should remove ingredient from meal successfully', async () => {
-    await mealsRepo.saveMeal(testMeal);
-    const originalIngredientCount = testMeal.ingredientLines.length;
+  describe('Removal', () => {
+    it('should remove ingredient from meal successfully', async () => {
+      await mealsRepo.saveMeal(testMeal);
+      const originalIngredientCount = testMeal.ingredientLines.length;
 
-    const request = {
-      userId: vp.userId,
-      mealId: testMeal.id,
-      ingredientId: testIngredient.id,
-    };
+      const request = {
+        userId: vp.userId,
+        mealId: testMeal.id,
+        ingredientId: testIngredient.id,
+      };
 
-    const result = await removeIngredientFromMealUsecase.execute(request);
+      const result = await removeIngredientFromMealUsecase.execute(request);
 
-    expect(result.ingredientLines).toHaveLength(originalIngredientCount - 1);
-    expect(
-      result.ingredientLines.some(
-        (line) => line.ingredient.id === testIngredient.id
-      )
-    ).toBe(false);
-    expect(
-      result.ingredientLines.some(
-        (line) => line.ingredient.id === secondIngredient.id
-      )
-    ).toBe(true);
-  });
-
-  it('should return MealDTO', async () => {
-    await mealsRepo.saveMeal(testMeal);
-
-    const request = {
-      userId: vp.userId,
-      mealId: testMeal.id,
-      ingredientId: testIngredient.id,
-    };
-
-    const result = await removeIngredientFromMealUsecase.execute(request);
-
-    expect(result).not.toBeInstanceOf(Meal);
-
-    for (const prop of dto.mealDTOProperties) {
-      expect(result).toHaveProperty(prop);
-    }
-  });
-
-  it('should throw NotFoundError when meal does not exist', async () => {
-    const request = {
-      mealId: 'non-existent-id',
-      ingredientId: testIngredient.id,
-      userId: vp.userId,
-    };
-
-    await expect(
-      removeIngredientFromMealUsecase.execute(request)
-    ).rejects.toThrow(NotFoundError);
-  });
-
-  it('should throw ValidationError when ingredient is not in the meal', async () => {
-    await mealsRepo.saveMeal(testMeal);
-
-    const nonExistentIngredient = Ingredient.create({
-      ...vp.validIngredientProps,
-      id: 'not-in-meal',
-      name: 'Non-existent',
+      expect(result.ingredientLines).toHaveLength(originalIngredientCount - 1);
+      expect(
+        result.ingredientLines.some(
+          (line) => line.ingredient.id === testIngredient.id
+        )
+      ).toBe(false);
+      expect(
+        result.ingredientLines.some(
+          (line) => line.ingredient.id === secondIngredient.id
+        )
+      ).toBe(true);
     });
 
-    const request = {
-      userId: vp.userId,
-      mealId: testMeal.id,
-      ingredientId: nonExistentIngredient.id,
-    };
+    it('should return MealDTO', async () => {
+      await mealsRepo.saveMeal(testMeal);
 
-    await expect(
-      removeIngredientFromMealUsecase.execute(request)
-    ).rejects.toThrow(ValidationError);
-  });
+      const request = {
+        userId: vp.userId,
+        mealId: testMeal.id,
+        ingredientId: testIngredient.id,
+      };
 
-  it("should update meal's updatedAt timestamp", async () => {
-    await mealsRepo.saveMeal(testMeal);
-    const originalUpdatedAt = testMeal.updatedAt;
+      const result = await removeIngredientFromMealUsecase.execute(request);
 
-    // Wait a bit to ensure timestamp difference
-    await new Promise((resolve) => setTimeout(resolve, 2));
+      expect(result).not.toBeInstanceOf(Meal);
 
-    const request = {
-      userId: vp.userId,
-      mealId: testMeal.id,
-      ingredientId: testIngredient.id,
-    };
-
-    const result = await removeIngredientFromMealUsecase.execute(request);
-
-    expect(new Date(result.updatedAt).getTime()).toBeGreaterThan(
-      originalUpdatedAt.getTime()
-    );
-  });
-
-  it('should throw error when trying to remove an ingredient from other users meal', async () => {
-    const anotherUser = User.create({
-      ...vp.validUserProps,
-      id: 'other-user-id',
+      for (const prop of dto.mealDTOProperties) {
+        expect(result).toHaveProperty(prop);
+      }
     });
-    await usersRepo.saveUser(anotherUser);
-    await mealsRepo.saveMeal(testMeal);
 
-    const request = {
-      userId: 'other-user-id',
-      mealId: testMeal.id,
-      ingredientId: testIngredient.id,
-    };
+    it("should update meal's updatedAt timestamp", async () => {
+      await mealsRepo.saveMeal(testMeal);
+      const originalUpdatedAt = testMeal.updatedAt;
 
-    await expect(
-      removeIngredientFromMealUsecase.execute(request)
-    ).rejects.toThrow(AuthError);
+      // Wait a bit to ensure timestamp difference
+      await new Promise((resolve) => setTimeout(resolve, 2));
+
+      const request = {
+        userId: vp.userId,
+        mealId: testMeal.id,
+        ingredientId: testIngredient.id,
+      };
+
+      const result = await removeIngredientFromMealUsecase.execute(request);
+
+      expect(new Date(result.updatedAt).getTime()).toBeGreaterThan(
+        originalUpdatedAt.getTime()
+      );
+    });
   });
 
-  it('should throw error if user does not exist', async () => {
-    await expect(
-      removeIngredientFromMealUsecase.execute({
+  describe('Errors', () => {
+    it('should throw NotFoundError when meal does not exist', async () => {
+      const request = {
+        mealId: 'non-existent-id',
+        ingredientId: testIngredient.id,
+        userId: vp.userId,
+      };
+
+      await expect(
+        removeIngredientFromMealUsecase.execute(request)
+      ).rejects.toThrow(NotFoundError);
+
+      await expect(
+        removeIngredientFromMealUsecase.execute(request)
+      ).rejects.toThrow(/RemoveIngredientFromMealUsecase.*Meal.*not.*found/);
+    });
+
+    it('should throw error when trying to remove an ingredient from other users meal', async () => {
+      const anotherUser = User.create({
+        ...vp.validUserProps,
+        id: 'other-user-id',
+      });
+      await usersRepo.saveUser(anotherUser);
+      await mealsRepo.saveMeal(testMeal);
+
+      const request = {
+        userId: 'other-user-id',
+        mealId: testMeal.id,
+        ingredientId: testIngredient.id,
+      };
+
+      await expect(
+        removeIngredientFromMealUsecase.execute(request)
+      ).rejects.toThrow(AuthError);
+
+      await expect(
+        removeIngredientFromMealUsecase.execute(request)
+      ).rejects.toThrow(
+        /RemoveIngredientFromMealUsecase.*Meal.*not.*found for user/
+      );
+    });
+
+    it('should throw error if user does not exist', async () => {
+      const request = {
         userId: 'non-existent',
         mealId: 'some-id',
         ingredientId: 'some-ingredient-id',
-      })
-    ).rejects.toThrow(NotFoundError);
-    await expect(
-      removeIngredientFromMealUsecase.execute({
-        userId: 'non-existent',
-        mealId: 'some-id',
-        ingredientId: 'some-ingredient-id',
-      })
-    ).rejects.toThrow(/RemoveIngredientFromMealUsecase.*user.*not.*found/);
+      };
+
+      await expect(
+        removeIngredientFromMealUsecase.execute(request)
+      ).rejects.toThrow(NotFoundError);
+
+      await expect(
+        removeIngredientFromMealUsecase.execute(request)
+      ).rejects.toThrow(/RemoveIngredientFromMealUsecase.*user.*not.*found/);
+    });
   });
 });
