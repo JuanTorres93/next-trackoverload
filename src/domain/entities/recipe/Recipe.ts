@@ -46,6 +46,18 @@ export class Recipe implements Protein, Calories {
       );
     }
 
+    // Ensure no duplicate ingredients in ingredientLines
+    const ingredientIds = props.ingredientLines.map(
+      (line) => line.ingredient.id
+    );
+    const uniqueIngredientIds = new Set(ingredientIds);
+
+    if (uniqueIngredientIds.size < ingredientIds.length) {
+      throw new ValidationError(
+        'Recipe: ingredientLines contain duplicate ingredients'
+      );
+    }
+
     const recipeProps: RecipeProps = {
       id: Id.create(props.id),
       userId: Id.create(props.userId),
@@ -69,15 +81,7 @@ export class Recipe implements Protein, Calories {
       throw new ValidationError('Recipe: Invalid ingredient line');
     }
 
-    const ingredientAlreadyExists = this.props.ingredientLines.some(
-      (line) => line.ingredient.id === ingredientLine.ingredient.id
-    );
-
-    if (ingredientAlreadyExists) {
-      throw new ValidationError(
-        `Recipe: Ingredient with id ${ingredientLine.ingredient.id} already exists in recipe`
-      );
-    }
+    this._throwIfIngredientExists(ingredientLine.ingredient.id);
 
     this.props.ingredientLines.push(ingredientLine);
     this.props.updatedAt = new Date();
@@ -148,5 +152,17 @@ export class Recipe implements Protein, Calories {
       (total, line) => total + line.protein,
       0
     );
+  }
+
+  private _throwIfIngredientExists(ingredientId: string): void {
+    const ingredientAlreadyExists = this.props.ingredientLines.some(
+      (line) => line.ingredient.id === ingredientId
+    );
+
+    if (ingredientAlreadyExists) {
+      throw new ValidationError(
+        `Recipe: Ingredient with id ${ingredientId} already exists in recipe`
+      );
+    }
   }
 }

@@ -137,11 +137,15 @@ describe('RecipeDTO', () => {
     });
 
     it('should handle recipes with multiple ingredient lines', () => {
+      const ingredient2 = Ingredient.create({
+        ...vp.validIngredientProps,
+        id: 'ing-2',
+      });
       const ingredientLine2 = IngredientLine.create({
         ...vp.ingredientLineRecipePropsNoIngredient,
         id: 'line-2',
         parentId: recipe.id,
-        ingredient,
+        ingredient: ingredient2,
         quantityInGrams: 100,
       });
 
