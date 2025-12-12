@@ -54,105 +54,113 @@ describe('GetRecipesByIdsForUserUsecase', () => {
     ];
   });
 
-  it('should return recipes for valid ids', async () => {
-    for (const recipe of testRecipes) {
-      await recipesRepo.saveRecipe(recipe);
-    }
-
-    const request = {
-      ids: [testRecipes[0].id, testRecipes[1].id],
-      userId: vp.userId,
-    };
-
-    const result = await getRecipesByIdsUsecase.execute(request);
-
-    expect(result).toHaveLength(2);
-    expect(result).toEqual(
-      expect.arrayContaining(testRecipes.map(toRecipeDTO))
-    );
-  });
-
-  it('should return an array of RecipeDTOs', async () => {
-    for (const recipe of testRecipes) {
-      await recipesRepo.saveRecipe(recipe);
-    }
-
-    const request = {
-      ids: [testRecipes[0].id, testRecipes[1].id],
-      userId: vp.userId,
-    };
-
-    const result = await getRecipesByIdsUsecase.execute(request);
-
-    for (const recipe of result) {
-      expect(recipe).not.toBeInstanceOf(Recipe);
-
-      for (const prop of dto.recipeDTOProperties) {
-        expect(recipe).toHaveProperty(prop);
+  describe('Execution', () => {
+    it('should return recipes for valid ids', async () => {
+      for (const recipe of testRecipes) {
+        await recipesRepo.saveRecipe(recipe);
       }
-    }
+
+      const request = {
+        ids: [testRecipes[0].id, testRecipes[1].id],
+        userId: vp.userId,
+      };
+
+      const result = await getRecipesByIdsUsecase.execute(request);
+
+      expect(result).toHaveLength(2);
+      expect(result).toEqual(
+        expect.arrayContaining(testRecipes.map(toRecipeDTO))
+      );
+    });
+
+    it('should return an array of RecipeDTOs', async () => {
+      for (const recipe of testRecipes) {
+        await recipesRepo.saveRecipe(recipe);
+      }
+
+      const request = {
+        ids: [testRecipes[0].id, testRecipes[1].id],
+        userId: vp.userId,
+      };
+
+      const result = await getRecipesByIdsUsecase.execute(request);
+
+      for (const recipe of result) {
+        expect(recipe).not.toBeInstanceOf(Recipe);
+
+        for (const prop of dto.recipeDTOProperties) {
+          expect(recipe).toHaveProperty(prop);
+        }
+      }
+    });
+
+    it('should filter out non-existent recipes', async () => {
+      await recipesRepo.saveRecipe(testRecipes[0]);
+
+      const request = {
+        ids: [testRecipes[0].id, 'non-existent-id'],
+        userId: vp.userId,
+      };
+
+      const result = await getRecipesByIdsUsecase.execute(request);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toEqual(toRecipeDTO(testRecipes[0]));
+    });
+
+    it('should return empty array for all non-existent ids', async () => {
+      // NOTE: this test will change to throw ValidationError
+      const request = {
+        ids: ['non-existent-1', 'non-existent-2'],
+        userId: vp.userId,
+      };
+
+      const result = await getRecipesByIdsUsecase.execute(request);
+
+      expect(result).toEqual([]);
+    });
+
+    it('should handle duplicate ids gracefully', async () => {
+      await recipesRepo.saveRecipe(testRecipes[0]);
+
+      const request = {
+        ids: [testRecipes[0].id, testRecipes[0].id],
+        userId: vp.userId,
+      };
+
+      const result = await getRecipesByIdsUsecase.execute(request);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toEqual(toRecipeDTO(testRecipes[0]));
+    });
   });
 
-  it('should filter out non-existent recipes', async () => {
-    await recipesRepo.saveRecipe(testRecipes[0]);
+  describe('Errors', () => {
+    it('should throw ValidationError for empty ids array', async () => {
+      const request = { ids: [], userId: vp.userId };
 
-    const request = {
-      ids: [testRecipes[0].id, 'non-existent-id'],
-      userId: vp.userId,
-    };
+      await expect(getRecipesByIdsUsecase.execute(request)).rejects.toThrow(
+        ValidationError
+      );
 
-    const result = await getRecipesByIdsUsecase.execute(request);
+      await expect(getRecipesByIdsUsecase.execute(request)).rejects.toThrow(
+        /GetRecipesByIdsForUserUsecase.*ids.*non-empty array/
+      );
+    });
 
-    expect(result).toHaveLength(1);
-    expect(result[0]).toEqual(toRecipeDTO(testRecipes[0]));
-  });
-
-  it('should return empty array for all non-existent ids', async () => {
-    // NOTE: this test will change to throw ValidationError
-    const request = {
-      ids: ['non-existent-1', 'non-existent-2'],
-      userId: vp.userId,
-    };
-
-    const result = await getRecipesByIdsUsecase.execute(request);
-
-    expect(result).toEqual([]);
-  });
-
-  it('should throw ValidationError for empty ids array', async () => {
-    const request = { ids: [], userId: vp.userId };
-
-    await expect(getRecipesByIdsUsecase.execute(request)).rejects.toThrow(
-      ValidationError
-    );
-  });
-
-  it('should handle duplicate ids gracefully', async () => {
-    await recipesRepo.saveRecipe(testRecipes[0]);
-
-    const request = {
-      ids: [testRecipes[0].id, testRecipes[0].id],
-      userId: vp.userId,
-    };
-
-    const result = await getRecipesByIdsUsecase.execute(request);
-
-    expect(result).toHaveLength(1);
-    expect(result[0]).toEqual(toRecipeDTO(testRecipes[0]));
-  });
-
-  it('should throw error if user does not exist', async () => {
-    await expect(
-      getRecipesByIdsUsecase.execute({
-        ids: ['some-id'],
-        userId: 'non-existent',
-      })
-    ).rejects.toThrow(NotFoundError);
-    await expect(
-      getRecipesByIdsUsecase.execute({
-        ids: ['some-id'],
-        userId: 'non-existent',
-      })
-    ).rejects.toThrow(/GetRecipesByIdsForUserUsecase.*user.*not.*found/);
+    it('should throw error if user does not exist', async () => {
+      await expect(
+        getRecipesByIdsUsecase.execute({
+          ids: ['some-id'],
+          userId: 'non-existent',
+        })
+      ).rejects.toThrow(NotFoundError);
+      await expect(
+        getRecipesByIdsUsecase.execute({
+          ids: ['some-id'],
+          userId: 'non-existent',
+        })
+      ).rejects.toThrow(/GetRecipesByIdsForUserUsecase.*user.*not.*found/);
+    });
   });
 });
