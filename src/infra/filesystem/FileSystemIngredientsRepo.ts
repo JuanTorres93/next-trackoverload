@@ -68,6 +68,19 @@ export class FileSystemIngredientsRepo implements IngredientsRepo {
     }
   }
 
+  async getIngredientsByIds(ids: string[]): Promise<Ingredient[]> {
+    const ingredients = await Promise.all(
+      ids.map(async (id) => {
+        const ingredient = await this.getIngredientById(id);
+        return ingredient;
+      })
+    );
+
+    return ingredients.filter(
+      (ingredient): ingredient is Ingredient => ingredient !== null
+    );
+  }
+
   async deleteIngredient(id: string): Promise<void> {
     const filePath = this.getFilePath(id);
 

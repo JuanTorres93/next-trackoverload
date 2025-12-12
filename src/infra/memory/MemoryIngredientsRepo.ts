@@ -25,6 +25,10 @@ export class MemoryIngredientsRepo implements IngredientsRepo {
     return ingredient || null;
   }
 
+  async getIngredientsByIds(ids: string[]): Promise<Ingredient[]> {
+    return this.ingredients.filter((ingredient) => ids.includes(ingredient.id));
+  }
+
   async deleteIngredient(id: string): Promise<void> {
     const index = this.ingredients.findIndex((ing) => ing.id === id);
     // Validation is done in the use case to avoid false positives when using a real repo

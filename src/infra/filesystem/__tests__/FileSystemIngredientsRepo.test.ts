@@ -68,6 +68,88 @@ describe('FileSystemIngredientsRepo', () => {
     expect(fetchedIngredient).toBeNull();
   });
 
+  describe('getIngredientsByIds', () => {
+    beforeEach(async () => {
+      await fs.rm(testDir, { recursive: true, force: true });
+      repo = new FileSystemIngredientsRepo(testDir);
+
+      const ingredients = [
+        Ingredient.create({
+          ...vp.validIngredientProps,
+          id: 'id-1',
+          name: 'Ingredient 1',
+        }),
+        Ingredient.create({
+          ...vp.validIngredientProps,
+          id: 'id-2',
+          name: 'Ingredient 2',
+        }),
+        Ingredient.create({
+          ...vp.validIngredientProps,
+          id: 'id-3',
+          name: 'Ingredient 3',
+        }),
+      ];
+
+      for (const ingredient of ingredients) {
+        await repo.saveIngredient(ingredient);
+      }
+    });
+
+    it('should retrieve multiple ingredients by their IDs', async () => {
+      const ingredients = await repo.getIngredientsByIds(['id-1', 'id-3']);
+
+      expect(ingredients).toHaveLength(2);
+      expect(ingredients.map((i) => i.id)).toContain('id-1');
+      expect(ingredients.map((i) => i.id)).toContain('id-3');
+    });
+
+    it('should retrieve single ingredient when only one ID is provided', async () => {
+      const ingredients = await repo.getIngredientsByIds(['id-2']);
+
+      expect(ingredients).toHaveLength(1);
+      expect(ingredients[0].id).toBe('id-2');
+      expect(ingredients[0].name).toBe('Ingredient 2');
+    });
+
+    it('should return empty array when provided IDs do not exist', async () => {
+      const ingredients = await repo.getIngredientsByIds([
+        'non-existent-1',
+        'non-existent-2',
+      ]);
+
+      expect(ingredients).toHaveLength(0);
+    });
+
+    it('should return empty array when provided with empty array', async () => {
+      const ingredients = await repo.getIngredientsByIds([]);
+
+      expect(ingredients).toHaveLength(0);
+    });
+
+    it('should filter out non-existent IDs and return only existing ones', async () => {
+      const ingredients = await repo.getIngredientsByIds([
+        'id-1',
+        'non-existent',
+        'id-2',
+      ]);
+
+      expect(ingredients).toHaveLength(2);
+      expect(ingredients.map((i) => i.id)).toContain('id-1');
+      expect(ingredients.map((i) => i.id)).toContain('id-2');
+    });
+
+    it('should retrieve all ingredients when all IDs are provided', async () => {
+      const ingredients = await repo.getIngredientsByIds([
+        'id-1',
+        'id-2',
+        'id-3',
+      ]);
+
+      expect(ingredients).toHaveLength(3);
+    });
+  });
+
   it('should delete an ingredient by ID', async () => {
     const allIngredients = await repo.getAllIngredients();
     expect(allIngredients.length).toBe(1);
