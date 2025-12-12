@@ -194,6 +194,27 @@ describe('CreateRecipeUsecase', () => {
     });
   });
 
+  describe('Side effects', () => {
+    it('should store an image', async () => {
+      const initialImageCount = imageManager.getImageCount();
+
+      expect(initialImageCount).toBe(0);
+
+      const testImage = createTestImage('small');
+      const request = {
+        userId: vp.userId,
+        name: 'Recipe with Image',
+        ingredientLinesInfo: [testIngredientLineInfo],
+        imageBuffer: testImage,
+      };
+
+      await createRecipeUsecase.execute(request);
+
+      const finalImageCount = imageManager.getImageCount();
+      expect(finalImageCount).toBe(1);
+    });
+  });
+
   describe('Error', () => {
     it('should throw an error if ingredientLines is empty', async () => {
       const request = {

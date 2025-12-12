@@ -50,76 +50,86 @@ describe('DeleteRecipeUsecase', () => {
     });
   });
 
-  it('should delete recipe successfully', async () => {
-    await recipesRepo.saveRecipe(testRecipe);
-    const request = { id: testRecipe.id, userId: vp.userId };
-    await deleteRecipeUsecase.execute(request);
+  describe('Deletion', () => {
+    it('should delete recipe successfully', async () => {
+      await recipesRepo.saveRecipe(testRecipe);
+      const request = { id: testRecipe.id, userId: vp.userId };
+      await deleteRecipeUsecase.execute(request);
 
-    const deletedRecipe = await recipesRepo.getRecipeById(testRecipe.id);
-    expect(deletedRecipe).toBeNull();
+      const deletedRecipe = await recipesRepo.getRecipeById(testRecipe.id);
+      expect(deletedRecipe).toBeNull();
+    });
   });
 
-  it('should delete recipe image if exists', async () => {
-    const testImage = createTestImage();
-    const uploadedImage = await memoryImageManager.uploadImage(
-      testImage,
-      'test-recipe-image.png',
-      { allowedMimeTypes: ['image/png'], quality: 0.8 }
-    );
+  describe('Side effects', () => {
+    it('should delete recipe image if exists', async () => {
+      const testImage = createTestImage();
+      const uploadedImage = await memoryImageManager.uploadImage(
+        testImage,
+        'test-recipe-image.png',
+        { allowedMimeTypes: ['image/png'], quality: 0.8 }
+      );
 
-    const recipe = Recipe.create({
-      ...vp.recipePropsNoIngredientLines,
-      ingredientLines: testRecipe.ingredientLines,
-      imageUrl: uploadedImage.url,
+      const recipe = Recipe.create({
+        ...vp.recipePropsNoIngredientLines,
+        ingredientLines: testRecipe.ingredientLines,
+        imageUrl: uploadedImage.url,
+      });
+
+      expect(recipe.imageUrl).toBeDefined();
+      const currentImages = memoryImageManager.getImageCount();
+      expect(currentImages).toBe(1);
+
+      await recipesRepo.saveRecipe(recipe);
+
+      const request = { id: recipe.id, userId: vp.userId };
+      await deleteRecipeUsecase.execute(request);
+
+      const afterDeleteImages = memoryImageManager.getImageCount();
+      expect(afterDeleteImages).toBe(0);
     });
 
-    expect(recipe.imageUrl).toBeDefined();
-    const currentImages = memoryImageManager.getImageCount();
-    expect(currentImages).toBe(1);
+    it('should not affect other recipes when deleting one', async () => {
+      const secondRecipe = Recipe.create({
+        ...vp.recipePropsNoIngredientLines,
+        id: 'second-recipe-id',
+        ingredientLines: testRecipe.ingredientLines,
+      });
 
-    await recipesRepo.saveRecipe(recipe);
+      await recipesRepo.saveRecipe(testRecipe);
+      await recipesRepo.saveRecipe(secondRecipe);
 
-    const request = { id: recipe.id, userId: vp.userId };
-    await deleteRecipeUsecase.execute(request);
+      const request = { id: testRecipe.id, userId: vp.userId };
+      await deleteRecipeUsecase.execute(request);
 
-    const afterDeleteImages = memoryImageManager.getImageCount();
-    expect(afterDeleteImages).toBe(0);
+      const remainingRecipe = await recipesRepo.getRecipeById(secondRecipe.id);
+      expect(remainingRecipe).toEqual(secondRecipe);
+
+      const deletedRecipe = await recipesRepo.getRecipeById(testRecipe.id);
+      expect(deletedRecipe).toBeNull();
+    });
   });
 
-  it('should throw NotFoundError when recipe does not exist', async () => {
-    const request = { id: 'non-existent-id', userId: vp.userId };
+  describe('Errors', () => {
+    it('should throw NotFoundError when recipe does not exist', async () => {
+      const request = { id: 'non-existent-id', userId: vp.userId };
 
-    await expect(deleteRecipeUsecase.execute(request)).rejects.toThrow(
-      NotFoundError
-    );
-  });
+      await expect(deleteRecipeUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
 
-  it('should not affect other recipes when deleting one', async () => {
-    const secondRecipe = Recipe.create({
-      ...vp.recipePropsNoIngredientLines,
-      id: 'second-recipe-id',
-      ingredientLines: testRecipe.ingredientLines,
+      await expect(deleteRecipeUsecase.execute(request)).rejects.toThrow(
+        /DeleteRecipeUsecase.*Recipe.*not.*found/
+      );
     });
 
-    await recipesRepo.saveRecipe(testRecipe);
-    await recipesRepo.saveRecipe(secondRecipe);
-
-    const request = { id: testRecipe.id, userId: vp.userId };
-    await deleteRecipeUsecase.execute(request);
-
-    const remainingRecipe = await recipesRepo.getRecipeById(secondRecipe.id);
-    expect(remainingRecipe).toEqual(secondRecipe);
-
-    const deletedRecipe = await recipesRepo.getRecipeById(testRecipe.id);
-    expect(deletedRecipe).toBeNull();
-  });
-
-  it('should throw error if user does not exist', async () => {
-    await expect(
-      deleteRecipeUsecase.execute({ id: 'some-id', userId: 'non-existent' })
-    ).rejects.toThrow(NotFoundError);
-    await expect(
-      deleteRecipeUsecase.execute({ id: 'some-id', userId: 'non-existent' })
-    ).rejects.toThrow(/DeleteRecipeUsecase.*user.*not.*found/);
+    it('should throw error if user does not exist', async () => {
+      await expect(
+        deleteRecipeUsecase.execute({ id: 'some-id', userId: 'non-existent' })
+      ).rejects.toThrow(NotFoundError);
+      await expect(
+        deleteRecipeUsecase.execute({ id: 'some-id', userId: 'non-existent' })
+      ).rejects.toThrow(/DeleteRecipeUsecase.*user.*not.*found/);
+    });
   });
 });

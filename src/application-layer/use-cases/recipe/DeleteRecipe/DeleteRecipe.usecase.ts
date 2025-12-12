@@ -29,7 +29,9 @@ export class DeleteRecipeUsecase {
     );
 
     if (!existingRecipe) {
-      throw new NotFoundError(`Recipe with id ${request.id} not found`);
+      throw new NotFoundError(
+        `DeleteRecipeUsecase: Recipe with id ${request.id} not found`
+      );
     }
 
     // Remove associated image if exists
