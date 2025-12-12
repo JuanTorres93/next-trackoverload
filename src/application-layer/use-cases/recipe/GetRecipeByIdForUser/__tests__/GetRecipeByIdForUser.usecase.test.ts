@@ -47,40 +47,44 @@ describe('GetRecipeByIdForUserUsecase', () => {
     });
   });
 
-  it('should return recipe when it exists', async () => {
-    await recipesRepo.saveRecipe(testRecipe);
+  describe('Execution', () => {
+    it('should return recipe when it exists', async () => {
+      await recipesRepo.saveRecipe(testRecipe);
 
-    const request = { id: testRecipe.id, userId: vp.userId };
-    const result = await getRecipeByIdUsecase.execute(request);
+      const request = { id: testRecipe.id, userId: vp.userId };
+      const result = await getRecipeByIdUsecase.execute(request);
 
-    expect(result).toEqual(toRecipeDTO(testRecipe));
+      expect(result).toEqual(toRecipeDTO(testRecipe));
+    });
+
+    it('should return RecipeDTO', async () => {
+      await recipesRepo.saveRecipe(testRecipe);
+
+      const request = { id: testRecipe.id, userId: vp.userId };
+      const result = await getRecipeByIdUsecase.execute(request);
+
+      expect(result).not.toBeInstanceOf(Recipe);
+      for (const prop of dto.recipeDTOProperties) {
+        expect(result).toHaveProperty(prop);
+      }
+    });
+
+    it('should return null when recipe does not exist', async () => {
+      const request = { id: 'non-existent-id', userId: vp.userId };
+      const result = await getRecipeByIdUsecase.execute(request);
+
+      expect(result).toBeNull();
+    });
   });
 
-  it('should return RecipeDTO', async () => {
-    await recipesRepo.saveRecipe(testRecipe);
-
-    const request = { id: testRecipe.id, userId: vp.userId };
-    const result = await getRecipeByIdUsecase.execute(request);
-
-    expect(result).not.toBeInstanceOf(Recipe);
-    for (const prop of dto.recipeDTOProperties) {
-      expect(result).toHaveProperty(prop);
-    }
-  });
-
-  it('should return null when recipe does not exist', async () => {
-    const request = { id: 'non-existent-id', userId: vp.userId };
-    const result = await getRecipeByIdUsecase.execute(request);
-
-    expect(result).toBeNull();
-  });
-
-  it('should throw error if user does not exist', async () => {
-    await expect(
-      getRecipeByIdUsecase.execute({ id: 'some-id', userId: 'non-existent' })
-    ).rejects.toThrow(NotFoundError);
-    await expect(
-      getRecipeByIdUsecase.execute({ id: 'some-id', userId: 'non-existent' })
-    ).rejects.toThrow(/GetRecipeByIdForUserUsecase.*user.*not.*found/);
+  describe('Error', () => {
+    it('should throw error if user does not exist', async () => {
+      await expect(
+        getRecipeByIdUsecase.execute({ id: 'some-id', userId: 'non-existent' })
+      ).rejects.toThrow(NotFoundError);
+      await expect(
+        getRecipeByIdUsecase.execute({ id: 'some-id', userId: 'non-existent' })
+      ).rejects.toThrow(/GetRecipeByIdForUserUsecase.*user.*not.*found/);
+    });
   });
 });
