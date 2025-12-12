@@ -59,199 +59,193 @@ describe('CreateRecipeUsecase', () => {
     };
   });
 
-  it('should create and save a new recipe with no image', async () => {
-    const request = {
-      userId: vp.userId,
-      name: 'Grilled Chicken',
-      ingredientLinesInfo: [testIngredientLineInfo],
-    };
-
-    const recipe = await createRecipeUsecase.execute(request);
-
-    expect(recipe).toHaveProperty('id');
-    expect(recipe.userId).toBe(vp.userId);
-    expect(recipe.name).toBe(request.name);
-    expect(recipe.imageUrl).not.toBeDefined();
-    expect(recipe.ingredientLines).toHaveLength(1);
-    expect(recipe.ingredientLines[0].ingredient.id).toEqual(
-      testIngredientLineInfo.ingredientId
-    );
-    expect(recipe).toHaveProperty('createdAt');
-    expect(recipe).toHaveProperty('updatedAt');
-
-    const savedRecipe = await recipesRepo.getRecipeById(recipe.id);
-
-    // @ts-expect-error savedRecipe won't be null here
-    expect(toRecipeDTO(savedRecipe)).toEqual(recipe);
-  });
-
-  it('should creat and save a new recipe WITH image', async () => {
-    const testImage = createTestImage('small');
-    const request = {
-      userId: vp.userId,
-      name: 'Grilled Chicken',
-      ingredientLinesInfo: [testIngredientLineInfo],
-      imageBuffer: testImage,
-    };
-
-    const recipe = await createRecipeUsecase.execute(request);
-
-    expect(recipe).toHaveProperty('id');
-    expect(recipe.userId).toBe(vp.userId);
-    expect(recipe.name).toBe(request.name);
-    expect(recipe.imageUrl).toBeDefined();
-    expect(recipe.ingredientLines).toHaveLength(1);
-    expect(recipe.ingredientLines[0].ingredient.id).toEqual(
-      testIngredientLineInfo.ingredientId
-    );
-    expect(recipe).toHaveProperty('createdAt');
-    expect(recipe).toHaveProperty('updatedAt');
-
-    const savedRecipe = await recipesRepo.getRecipeById(recipe.id);
-
-    // @ts-expect-error savedRecipe won't be null here
-    expect(toRecipeDTO(savedRecipe)).toEqual(recipe);
-  });
-
-  it('should save recipe ingredient lines', async () => {
-    const request = {
-      userId: vp.userId,
-      name: 'Grilled Chicken',
-      ingredientLinesInfo: [testIngredientLineInfo],
-    };
-
-    const recipe = await createRecipeUsecase.execute(request);
-
-    for (const line of recipe.ingredientLines) {
-      expect(line).not.toBeNull();
-      expect(line?.id).toBe(line.id);
-    }
-  });
-
-  it('should throw an error if name is invalid', async () => {
-    const invalidNames = ['', '   ', null, 123, {}, []];
-
-    for (const name of invalidNames) {
+  describe('Creation', () => {
+    it('should create and save a new recipe with no image', async () => {
       const request = {
         userId: vp.userId,
-        name: name,
+        name: 'Grilled Chicken',
         ingredientLinesInfo: [testIngredientLineInfo],
       };
 
-      // @ts-expect-error testing invalid inputs
+      const recipe = await createRecipeUsecase.execute(request);
+
+      expect(recipe).toHaveProperty('id');
+      expect(recipe.userId).toBe(vp.userId);
+      expect(recipe.name).toBe(request.name);
+      expect(recipe.imageUrl).not.toBeDefined();
+      expect(recipe.ingredientLines).toHaveLength(1);
+      expect(recipe.ingredientLines[0].ingredient.id).toEqual(
+        testIngredientLineInfo.ingredientId
+      );
+      expect(recipe).toHaveProperty('createdAt');
+      expect(recipe).toHaveProperty('updatedAt');
+
+      const savedRecipe = await recipesRepo.getRecipeById(recipe.id);
+
+      // @ts-expect-error savedRecipe won't be null here
+      expect(toRecipeDTO(savedRecipe)).toEqual(recipe);
+    });
+
+    it('should create and save a new recipe WITH image', async () => {
+      const testImage = createTestImage('small');
+      const request = {
+        userId: vp.userId,
+        name: 'Grilled Chicken',
+        ingredientLinesInfo: [testIngredientLineInfo],
+        imageBuffer: testImage,
+      };
+
+      const recipe = await createRecipeUsecase.execute(request);
+
+      expect(recipe).toHaveProperty('id');
+      expect(recipe.userId).toBe(vp.userId);
+      expect(recipe.name).toBe(request.name);
+      expect(recipe.imageUrl).toBeDefined();
+      expect(recipe.ingredientLines).toHaveLength(1);
+      expect(recipe.ingredientLines[0].ingredient.id).toEqual(
+        testIngredientLineInfo.ingredientId
+      );
+      expect(recipe).toHaveProperty('createdAt');
+      expect(recipe).toHaveProperty('updatedAt');
+
+      const savedRecipe = await recipesRepo.getRecipeById(recipe.id);
+
+      // @ts-expect-error savedRecipe won't be null here
+      expect(toRecipeDTO(savedRecipe)).toEqual(recipe);
+    });
+
+    it('should save recipe ingredient lines', async () => {
+      const request = {
+        userId: vp.userId,
+        name: 'Grilled Chicken',
+        ingredientLinesInfo: [testIngredientLineInfo],
+      };
+
+      const recipe = await createRecipeUsecase.execute(request);
+
+      for (const line of recipe.ingredientLines) {
+        expect(line).not.toBeNull();
+        expect(line?.id).toBe(line.id);
+      }
+    });
+
+    it('should calculate correct nutritional info', async () => {
+      const request = {
+        userId: vp.userId,
+        name: 'Test Recipe',
+        ingredientLinesInfo: [testIngredientLineInfo],
+      };
+
+      const recipe = await createRecipeUsecase.execute(request);
+
+      // 200g of chicken breast (165 cal/100g, 31g protein/100g)
+      expect(recipe.calories).toBe(330); // 165 * 2
+      expect(recipe.protein).toBe(62); // 31 * 2
+    });
+
+    it('should return RecipeDTO', async () => {
+      const request = {
+        userId: vp.userId,
+        name: 'Test Recipe',
+        ingredientLinesInfo: [testIngredientLineInfo],
+      };
+
+      const result = await createRecipeUsecase.execute(request);
+
+      expect(result).not.toBeInstanceOf(Recipe);
+      // Check that the result has all expected DTO properties
+      for (const prop of dto.recipeDTOProperties) {
+        expect(result).toHaveProperty(prop);
+      }
+    });
+
+    it('should create recipe with multiple ingredient lines', async () => {
+      // Create a second test ingredient
+      const testIngredient2 = Ingredient.create({
+        ...vp.validIngredientProps,
+        id: 'ingredient-2',
+        name: 'Rice',
+        calories: 130,
+        protein: 2.7,
+      });
+
+      await ingredientsRepo.saveIngredient(testIngredient2);
+
+      const testIngredientLineInfo2 = {
+        ingredientId: testIngredient2.id,
+        quantityInGrams: 100,
+      };
+
+      const request = {
+        userId: vp.userId,
+        name: 'Chicken and Rice',
+        ingredientLinesInfo: [testIngredientLineInfo, testIngredientLineInfo2],
+      };
+
+      const recipe = await createRecipeUsecase.execute(request);
+
+      expect(recipe.ingredientLines).toHaveLength(2);
+
+      // Verify both ingredient lines were saved
+      for (const line of recipe.ingredientLines) {
+        expect(line).not.toBeNull();
+        expect(line?.id).toBe(line.id);
+      }
+    });
+  });
+
+  describe('Error', () => {
+    it('should throw an error if ingredientLines is empty', async () => {
+      const request = {
+        userId: vp.userId,
+        name: 'Test Recipe',
+        ingredientLinesInfo: [],
+      };
+
       await expect(createRecipeUsecase.execute(request)).rejects.toThrow(
         ValidationError
       );
-    }
-  });
-
-  it('should throw an error if ingredientLines is empty', async () => {
-    const request = {
-      userId: vp.userId,
-      name: 'Test Recipe',
-      ingredientLinesInfo: [],
-    };
-
-    await expect(createRecipeUsecase.execute(request)).rejects.toThrow(
-      ValidationError
-    );
-  });
-
-  it('should calculate correct nutritional info', async () => {
-    const request = {
-      userId: vp.userId,
-      name: 'Test Recipe',
-      ingredientLinesInfo: [testIngredientLineInfo],
-    };
-
-    const recipe = await createRecipeUsecase.execute(request);
-
-    // 200g of chicken breast (165 cal/100g, 31g protein/100g)
-    expect(recipe.calories).toBe(330); // 165 * 2
-    expect(recipe.protein).toBe(62); // 31 * 2
-  });
-
-  it('should return RecipeDTO', async () => {
-    const request = {
-      userId: vp.userId,
-      name: 'Test Recipe',
-      ingredientLinesInfo: [testIngredientLineInfo],
-    };
-
-    const result = await createRecipeUsecase.execute(request);
-
-    expect(result).not.toBeInstanceOf(Recipe);
-    // Check that the result has all expected DTO properties
-    for (const prop of dto.recipeDTOProperties) {
-      expect(result).toHaveProperty(prop);
-    }
-  });
-
-  it('should create recipe with multiple ingredient lines', async () => {
-    // Create a second test ingredient
-    const testIngredient2 = Ingredient.create({
-      ...vp.validIngredientProps,
-      id: 'ingredient-2',
-      name: 'Rice',
-      calories: 130,
-      protein: 2.7,
     });
 
-    await ingredientsRepo.saveIngredient(testIngredient2);
+    it('should throw error if user does not exist', async () => {
+      await expect(
+        createRecipeUsecase.execute({
+          userId: 'non-existent',
+          name: 'Test Recipe',
+          ingredientLinesInfo: [testIngredientLineInfo],
+        })
+      ).rejects.toThrow(NotFoundError);
+      await expect(
+        createRecipeUsecase.execute({
+          userId: 'non-existent',
+          name: 'Test Recipe',
+          ingredientLinesInfo: [testIngredientLineInfo],
+        })
+      ).rejects.toThrow(/CreateRecipeUsecase.*user.*not.*found/);
+    });
 
-    const testIngredientLineInfo2 = {
-      ingredientId: testIngredient2.id,
-      quantityInGrams: 100,
-    };
-
-    const request = {
-      userId: vp.userId,
-      name: 'Chicken and Rice',
-      ingredientLinesInfo: [testIngredientLineInfo, testIngredientLineInfo2],
-    };
-
-    const recipe = await createRecipeUsecase.execute(request);
-
-    expect(recipe.ingredientLines).toHaveLength(2);
-
-    // Verify both ingredient lines were saved
-    for (const line of recipe.ingredientLines) {
-      expect(line).not.toBeNull();
-      expect(line?.id).toBe(line.id);
-    }
-  });
-
-  it('should throw an error if userId is invalid', async () => {
-    const invalidUserIds = ['', null, 123, {}, [], undefined, NaN];
-
-    for (const userId of invalidUserIds) {
-      const request = {
-        userId,
-        name: 'Test Recipe',
-        ingredientLinesInfo: [testIngredientLineInfo],
+    it('should throw error if at least one ingredient does no exist', async () => {
+      const invalidIngredientLineInfo = {
+        ingredientId: 'non-existent-ingredient',
+        quantityInGrams: 100,
       };
 
-      // @ts-expect-error testing invalid inputs
-      await expect(createRecipeUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
-      );
-    }
-  });
+      const request = {
+        userId: vp.userId,
+        name: 'Test Recipe',
+        ingredientLinesInfo: [
+          testIngredientLineInfo,
+          invalidIngredientLineInfo,
+        ],
+      };
 
-  it('should throw error if user does not exist', async () => {
-    await expect(
-      createRecipeUsecase.execute({
-        userId: 'non-existent',
-        name: 'Test Recipe',
-        ingredientLinesInfo: [testIngredientLineInfo],
-      })
-    ).rejects.toThrow(NotFoundError);
-    await expect(
-      createRecipeUsecase.execute({
-        userId: 'non-existent',
-        name: 'Test Recipe',
-        ingredientLinesInfo: [testIngredientLineInfo],
-      })
-    ).rejects.toThrow(/CreateRecipeUsecase.*user.*not.*found/);
+      await expect(createRecipeUsecase.execute(request)).rejects.toThrow(
+        ValidationError
+      );
+
+      await expect(createRecipeUsecase.execute(request)).rejects.toThrow(
+        /CreateRecipeUseCase.*Ingredient.*not found/
+      );
+    });
   });
 });

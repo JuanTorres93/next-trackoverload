@@ -39,24 +39,40 @@ export class CreateRecipeUsecase {
     const ingredientLines: IngredientLine[] = [];
     const newRecipeId = uuidv4();
 
-    for (const info of request.ingredientLinesInfo) {
-      // TODO: Improve the fetching strategy
-      const ingredient = await this.ingredientsRepo.getIngredientById(
-        info.ingredientId
+    // Fetch all ingredients by their IDs
+    const ingredientIds = request.ingredientLinesInfo.map(
+      (info) => info.ingredientId
+    );
+    const fetchedIngredients = await this.ingredientsRepo.getIngredientsByIds(
+      ingredientIds
+    );
+
+    // If any ingredient is missing, throw an error
+    if (fetchedIngredients.length !== ingredientIds.length) {
+      const missingIds = ingredientIds.filter(
+        (id) => !fetchedIngredients.some((ing) => ing.id === id)
       );
 
-      if (!ingredient) {
-        throw new ValidationError(
-          `CreateRecipeUseCase: Ingredient with ID ${info.ingredientId} not found while creating recipe`
-        );
-      }
+      throw new ValidationError(
+        `CreateRecipeUseCase: Ingredients with IDs ${missingIds.join(
+          ', '
+        )} not found while creating recipe`
+      );
+    }
+
+    // Create IngredientLine entities
+    for (const ingredient of fetchedIngredients) {
+      // Find the corresponding quantityInGrams from the request
+      const quantityInGrams = request.ingredientLinesInfo.find(
+        (lineInfo) => lineInfo.ingredientId === ingredient.id
+      )!.quantityInGrams;
 
       const ingredientLine = IngredientLine.create({
         id: uuidv4(),
         parentId: newRecipeId,
         parentType: 'recipe',
         ingredient: ingredient,
-        quantityInGrams: info.quantityInGrams,
+        quantityInGrams: quantityInGrams,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
