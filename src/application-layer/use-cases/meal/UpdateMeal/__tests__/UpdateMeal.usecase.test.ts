@@ -15,6 +15,7 @@ describe('UpdateMealUsecase', () => {
   let usersRepo: MemoryUsersRepo;
   let updateMealUsecase: UpdateMealUsecase;
   let user: User;
+  let meal: Meal;
 
   beforeEach(async () => {
     mealsRepo = new MemoryMealsRepo();
@@ -26,9 +27,7 @@ describe('UpdateMealUsecase', () => {
     });
 
     await usersRepo.saveUser(user);
-  });
 
-  it('should update meal name', async () => {
     const ingredient = Ingredient.create({
       ...vp.validIngredientProps,
     });
@@ -38,85 +37,79 @@ describe('UpdateMealUsecase', () => {
       ingredient,
     });
 
-    const meal = Meal.create({
+    meal = Meal.create({
       ...vp.mealPropsNoIngredientLines,
       ingredientLines: [ingredientLine],
     });
 
     await mealsRepo.saveMeal(meal);
 
-    // Wait a bit to ensure updatedAt is different
+    // Wait a bit to ensure updatedAt will be different
     await new Promise((resolve) => setTimeout(resolve, 2));
-
-    const updatedMeal = await updateMealUsecase.execute({
-      id: vp.mealPropsNoIngredientLines.id,
-      userId: vp.userId,
-      name: 'High Protein Meal',
-    });
-
-    expect(updatedMeal.name).toBe('High Protein Meal');
-    expect(updatedMeal.id).toBe(vp.mealPropsNoIngredientLines.id);
-    expect(updatedMeal.ingredientLines).toHaveLength(1);
-    expect(updatedMeal.createdAt).toBe(meal.createdAt.toISOString());
-    expect(updatedMeal.updatedAt).not.toBe(
-      vp.mealPropsNoIngredientLines.updatedAt.toISOString()
-    );
   });
 
-  it('should return MealDTO', async () => {
-    const ingredient = Ingredient.create({
-      ...vp.validIngredientProps,
+  describe('Updated', () => {
+    it('should update meal name', async () => {
+      const updatedMeal = await updateMealUsecase.execute({
+        id: meal.id,
+        userId: vp.userId,
+        name: 'High Protein Meal',
+      });
+
+      expect(updatedMeal.name).toBe('High Protein Meal');
+      expect(updatedMeal.id).toBe(vp.mealPropsNoIngredientLines.id);
+      expect(updatedMeal.ingredientLines).toHaveLength(1);
+      expect(updatedMeal.createdAt).toBe(meal.createdAt.toISOString());
+      expect(updatedMeal.updatedAt).not.toBe(
+        vp.mealPropsNoIngredientLines.updatedAt.toISOString()
+      );
     });
 
-    const ingredientLine = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
-      ingredient,
+    it('should return MealDTO', async () => {
+      const result = await updateMealUsecase.execute({
+        id: meal.id,
+        userId: vp.userId,
+        name: 'Updated Meal Name',
+      });
+
+      expect(result).not.toBeInstanceOf(Meal);
+
+      for (const prop of dto.mealDTOProperties) {
+        expect(result).toHaveProperty(prop);
+      }
     });
-
-    const meal = Meal.create({
-      ...vp.mealPropsNoIngredientLines,
-      ingredientLines: [ingredientLine],
-    });
-
-    await mealsRepo.saveMeal(meal);
-
-    const result = await updateMealUsecase.execute({
-      id: vp.mealPropsNoIngredientLines.id,
-      userId: vp.userId,
-      name: 'Updated Meal Name',
-    });
-
-    expect(result).not.toBeInstanceOf(Meal);
-
-    for (const prop of dto.mealDTOProperties) {
-      expect(result).toHaveProperty(prop);
-    }
   });
 
-  it('should throw NotFoundError when meal does not exist', async () => {
-    await expect(
-      updateMealUsecase.execute({
-        id: 'non-existent',
+  describe('Errors', () => {
+    it('should throw NotFoundError when meal does not exist', async () => {
+      const request = {
+        id: 'non-existent-meal-id',
         userId: vp.userId,
         name: 'New Name',
-      })
-    ).rejects.toThrow(NotFoundError);
-  });
+      };
 
-  it('should throw error if user does not exist', async () => {
-    await expect(
-      updateMealUsecase.execute({
-        id: 'some-id',
+      await expect(updateMealUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+
+      await expect(updateMealUsecase.execute(request)).rejects.toThrow(
+        /UpdateMealUsecase.*Meal.*not.*found/
+      );
+    });
+
+    it('should throw error if user does not exist', async () => {
+      const request = {
+        id: meal.id,
         userId: 'non-existent',
         name: 'New Name',
-      })
-    ).rejects.toThrow(NotFoundError);
-    await expect(
-      updateMealUsecase.execute({
-        id: 'some-id',
-        userId: 'non-existent',
-        name: 'New Name',
-      })
-    ).rejects.toThrow(/UpdateMealUsecase.*user.*not.*found/);
+      };
+
+      await expect(updateMealUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+      await expect(updateMealUsecase.execute(request)).rejects.toThrow(
+        /UpdateMealUsecase.*user.*not.*found/
+      );
+    });
   });
 });
