@@ -26,6 +26,7 @@ describe('UserDTO', () => {
       expect(userDTO).toEqual({
         id: user.id,
         name: user.name,
+        email: user.email,
         customerId: user.customerId,
         createdAt: user.createdAt.toISOString(),
         updatedAt: user.updatedAt.toISOString(),

@@ -7,6 +7,7 @@ export const testUserId = 'dev-user';
 export const createMockUser = async () => {
   const mockUser = await AppCreateUserUsecase.execute({
     name: 'test user',
+    email: 'testuser@example.com',
   });
 
   // Some ugly hackery to set a specific id for the mock user

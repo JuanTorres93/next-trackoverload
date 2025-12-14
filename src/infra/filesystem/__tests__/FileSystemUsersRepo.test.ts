@@ -19,7 +19,7 @@ describe('FileSystemUsersRepo', () => {
   afterEach(async () => {
     try {
       await fs.rm(testDir, { recursive: true, force: true });
-    } catch (error) {
+    } catch {
       // Directory might not exist
     }
   });

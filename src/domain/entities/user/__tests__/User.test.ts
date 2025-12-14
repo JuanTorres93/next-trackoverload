@@ -15,104 +15,90 @@ describe('User', () => {
     user = User.create(validUserProps);
   });
 
-  it('should create a valid user', () => {
-    expect(user).toBeInstanceOf(User);
-  });
-
-  it('should change its name', async () => {
-    const patch = { name: 'Updated User' };
-    user.update(patch);
-    expect(user.name).toBe('Updated User');
-  });
-
-  it('should change its customerId', async () => {
-    const newCustomerId = 'new-customer-id';
-    const patch = { customerId: newCustomerId };
-
-    user.update(patch);
-    expect(user.customerId).toBe(newCustomerId);
-  });
-
-  it('should throw ValidationError for empty name', () => {
-    expect(() => User.create({ ...validUserProps, name: '' })).toThrowError(
-      ValidationError
-    );
-  });
-
-  it('should set createdAt and updatedAt if not provided', () => {
-    const userWithoutDates = User.create({
-      id: 'another-user-id',
-      name: 'Another User',
-      customerId: 'another-customer-id',
-      createdAt: undefined as unknown as Date,
-      updatedAt: undefined as unknown as Date,
+  describe('Behavior', () => {
+    it('should create a valid user', () => {
+      expect(user).toBeInstanceOf(User);
     });
-    expect(userWithoutDates.createdAt).toBeInstanceOf(Date);
-    expect(userWithoutDates.updatedAt).toBeInstanceOf(Date);
+
+    it('should have an email', async () => {
+      expect(user.email).not.toBeUndefined();
+      expect(user.email).toBe(validUserProps.email);
+    });
+
+    it('should change its name', async () => {
+      const patch = { name: 'Updated User' };
+      user.update(patch);
+      expect(user.name).toBe('Updated User');
+    });
+
+    it('should change its customerId', async () => {
+      const newCustomerId = 'new-customer-id';
+      const patch = { customerId: newCustomerId };
+
+      user.update(patch);
+      expect(user.customerId).toBe(newCustomerId);
+    });
+
+    it('should set createdAt and updatedAt if not provided', () => {
+      const userWithoutDates = User.create({
+        id: 'another-user-id',
+        name: 'Another User',
+        email: 'anotheruser@example.com',
+        customerId: 'another-customer-id',
+        createdAt: undefined as unknown as Date,
+        updatedAt: undefined as unknown as Date,
+      });
+      expect(userWithoutDates.createdAt).toBeInstanceOf(Date);
+      expect(userWithoutDates.updatedAt).toBeInstanceOf(Date);
+    });
   });
 
-  it('should throw error if id is not instance of Id', async () => {
-    expect(() =>
-      User.create({
-        ...validUserProps,
+  describe('Errors', () => {
+    it('should throw error if customerId exists and is not instance of Id', async () => {
+      expect(() =>
+        User.create({
+          ...validUserProps,
+          // @ts-expect-error Testing invalid inputs
+          customerId: 123,
+        })
+      ).toThrowError(ValidationError);
+
+      expect(() =>
+        User.create({
+          ...validUserProps,
+          // @ts-expect-error Testing invalid inputs
+          customerId: 123,
+        })
+      ).toThrowError(/Id.*string/);
+    });
+
+    it('should throw error if name is larger than 100 characters', async () => {
+      const longName = 'a'.repeat(101);
+      expect(() =>
+        User.create({
+          ...validUserProps,
+          name: longName,
+        })
+      ).toThrowError(ValidationError);
+
+      expect(() =>
+        User.create({
+          ...validUserProps,
+          name: longName,
+        })
+      ).toThrowError(/Text.*not exceed/);
+    });
+
+    it('should throw error if patch is not provided when updating', async () => {
+      expect(() =>
         // @ts-expect-error Testing invalid inputs
-        id: 123,
-      })
-    ).toThrowError(ValidationError);
+        user.update()
+      ).toThrowError(ValidationError);
 
-    expect(() =>
-      User.create({
-        ...validUserProps,
+      expect(() =>
         // @ts-expect-error Testing invalid inputs
-        id: 123,
-      })
-    ).toThrowError(/Id.*string/);
-  });
-
-  it('should throw error if customerId exists and is not instance of Id', async () => {
-    expect(() =>
-      User.create({
-        ...validUserProps,
-        // @ts-expect-error Testing invalid inputs
-        customerId: 123,
-      })
-    ).toThrowError(ValidationError);
-
-    expect(() =>
-      User.create({
-        ...validUserProps,
-        // @ts-expect-error Testing invalid inputs
-        customerId: 123,
-      })
-    ).toThrowError(/Id.*string/);
-  });
-
-  it('should throw error if name is larger than 100 characters', async () => {
-    const longName = 'a'.repeat(101);
-    expect(() =>
-      User.create({
-        ...validUserProps,
-        name: longName,
-      })
-    ).toThrowError(ValidationError);
-
-    expect(() =>
-      User.create({
-        ...validUserProps,
-        name: longName,
-      })
-    ).toThrowError(/Text.*not exceed/);
-  });
-
-  it('should throw error if patch is not provided when updating', async () => {
-    expect(() =>
-      // @ts-expect-error Testing invalid inputs
-      user.update()
-    ).toThrowError(ValidationError);
-
-    expect(() =>
-      // @ts-expect-error Testing invalid inputs
-      user.update()
-    ).toThrowError(/User.*patch.*required/);
+        user.update()
+      ).toThrowError(/User.*patch.*required/);
+    });
   });
 });

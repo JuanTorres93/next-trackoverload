@@ -3,10 +3,12 @@ import { Integer } from '@/domain/value-objects/Integer/Integer';
 import { Text } from '@/domain/value-objects/Text/Text';
 import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 import { ValidationError } from '@/domain/common/errors';
+import { Email } from '@/domain/value-objects/Email/Email';
 
 export type UserCreateProps = {
   id: string;
   name: string;
+  email: string;
   customerId?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -20,6 +22,7 @@ export type UserUpdateProps = {
 export type UserProps = {
   id: Id;
   name: Text;
+  email: Email;
   customerId?: Id;
   createdAt: Date;
   updatedAt: Date;
@@ -37,6 +40,7 @@ export class User {
     const userProps: UserProps = {
       id: Id.create(props.id),
       name: Text.create(props.name, nameTextOptions),
+      email: Email.create(props.email),
       customerId: props.customerId ? Id.create(props.customerId) : undefined,
       createdAt: handleCreatedAt(props.createdAt),
       updatedAt: handleUpdatedAt(props.updatedAt),
@@ -74,6 +78,10 @@ export class User {
 
   get name() {
     return this.props.name.value;
+  }
+
+  get email() {
+    return this.props.email.value;
   }
 
   get customerId() {
