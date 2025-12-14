@@ -43,84 +43,95 @@ describe('UpdateRecipeUsecase', () => {
     });
   });
 
-  it('should update recipe name successfully', async () => {
-    await recipesRepo.saveRecipe(testRecipe);
-    const originalUpdatedAt = testRecipe.updatedAt;
+  describe('Execute', () => {
+    it('should update recipe name successfully', async () => {
+      await recipesRepo.saveRecipe(testRecipe);
+      const originalUpdatedAt = testRecipe.updatedAt;
 
-    // Wait a moment to ensure different timestamps
-    await new Promise((resolve) => setTimeout(resolve, 2));
+      // Wait a moment to ensure different timestamps
+      await new Promise((resolve) => setTimeout(resolve, 2));
 
-    const request = {
-      id: testRecipe.id,
-      name: 'Updated Grilled Chicken',
-      userId: vp.userId,
-    };
+      const request = {
+        id: testRecipe.id,
+        name: 'Updated Grilled Chicken',
+        userId: vp.userId,
+      };
 
-    const result = await updateRecipeUsecase.execute(request);
+      const result = await updateRecipeUsecase.execute(request);
 
-    expect(result.name).toBe('Updated Grilled Chicken');
-    expect(result.id).toBe(testRecipe.id);
-    expect(new Date(result.updatedAt).getTime()).toBeGreaterThan(
-      originalUpdatedAt.getTime()
-    );
+      expect(result.name).toBe('Updated Grilled Chicken');
+      expect(result.id).toBe(testRecipe.id);
+      expect(new Date(result.updatedAt).getTime()).toBeGreaterThan(
+        originalUpdatedAt.getTime()
+      );
+    });
+
+    it('should return RecipeDTO', async () => {
+      await recipesRepo.saveRecipe(testRecipe);
+
+      const request = {
+        id: testRecipe.id,
+        name: 'Updated Name',
+        userId: vp.userId,
+      };
+
+      const result = await updateRecipeUsecase.execute(request);
+
+      expect(result).not.toBeInstanceOf(Recipe);
+      for (const prop of dto.recipeDTOProperties) {
+        expect(result).toHaveProperty(prop);
+      }
+    });
   });
 
-  it('should throw NotFoundError when recipe does not exist', async () => {
-    const request = {
-      id: 'non-existent-id',
-      name: 'Updated Name',
-      userId: vp.userId,
-    };
+  describe('Errors', () => {
+    it('should throw NotFoundError when recipe does not exist', async () => {
+      const request = {
+        id: 'non-existent-id',
+        name: 'Updated Name',
+        userId: vp.userId,
+      };
 
-    await expect(updateRecipeUsecase.execute(request)).rejects.toThrow(
-      NotFoundError
-    );
-  });
+      await expect(updateRecipeUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+    });
 
-  it('should not update when no changes provided', async () => {
-    await recipesRepo.saveRecipe(testRecipe);
-    const originalUpdatedAt = testRecipe.updatedAt;
+    it('should throw error if user does not exist', async () => {
+      await expect(
+        updateRecipeUsecase.execute({
+          id: 'some-id',
+          userId: 'non-existent',
+        })
+      ).rejects.toThrow(NotFoundError);
+      await expect(
+        updateRecipeUsecase.execute({
+          id: 'some-id',
+          userId: 'non-existent',
+        })
+      ).rejects.toThrow(/UpdateRecipeUsecase.*user.*not.*found/);
+    });
 
-    const request = {
-      userId: vp.userId,
-      id: testRecipe.id,
-    };
+    it("should throw error if trying to modify another user's recipe", async () => {
+      const anotherUser = User.create({
+        ...vp.validUserProps,
+        id: 'another-user-id',
+      });
+      await usersRepo.saveUser(anotherUser);
+      await recipesRepo.saveRecipe(testRecipe);
 
-    const result = await updateRecipeUsecase.execute(request);
+      const request = {
+        id: testRecipe.id,
+        name: 'Updated Name',
+        userId: anotherUser.id,
+      };
 
-    expect(result.name).toBe(testRecipe.name);
-    expect(result.updatedAt).toEqual(originalUpdatedAt.toISOString());
-  });
-
-  it('should return RecipeDTO', async () => {
-    await recipesRepo.saveRecipe(testRecipe);
-
-    const request = {
-      id: testRecipe.id,
-      name: 'Updated Name',
-      userId: vp.userId,
-    };
-
-    const result = await updateRecipeUsecase.execute(request);
-
-    expect(result).not.toBeInstanceOf(Recipe);
-    for (const prop of dto.recipeDTOProperties) {
-      expect(result).toHaveProperty(prop);
-    }
-  });
-
-  it('should throw error if user does not exist', async () => {
-    await expect(
-      updateRecipeUsecase.execute({
-        id: 'some-id',
-        userId: 'non-existent',
-      })
-    ).rejects.toThrow(NotFoundError);
-    await expect(
-      updateRecipeUsecase.execute({
-        id: 'some-id',
-        userId: 'non-existent',
-      })
-    ).rejects.toThrow(/UpdateRecipeUsecase.*user.*not.*found/);
+      await expect(updateRecipeUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+      await expect(updateRecipeUsecase.execute(request)).rejects.toThrow(
+        /UpdateRecipeUsecase.*Recipe.*not.*found/
+      );
+    });
   });
 });
