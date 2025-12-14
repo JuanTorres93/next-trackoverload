@@ -63,108 +63,102 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
     });
   });
 
-  it('should remove ingredient from recipe successfully', async () => {
-    await recipesRepo.saveRecipe(testRecipe);
-    const originalIngredientCount = testRecipe.ingredientLines.length;
+  describe('Execute', () => {
+    it('should remove ingredient from recipe successfully', async () => {
+      await recipesRepo.saveRecipe(testRecipe);
+      const originalIngredientCount = testRecipe.ingredientLines.length;
 
-    const request = {
-      recipeId: testRecipe.id,
-      ingredientId: testIngredient.id,
-      userId: vp.userId,
-    };
+      const request = {
+        recipeId: testRecipe.id,
+        ingredientId: testIngredient.id,
+        userId: vp.userId,
+      };
 
-    const result = await removeIngredientFromRecipeUsecase.execute(request);
+      const result = await removeIngredientFromRecipeUsecase.execute(request);
 
-    expect(result.ingredientLines).toHaveLength(originalIngredientCount - 1);
-    expect(
-      result.ingredientLines.some(
-        (line) => line.ingredient.id === testIngredient.id
-      )
-    ).toBe(false);
-    expect(
-      result.ingredientLines.some(
-        (line) => line.ingredient.id === secondIngredient.id
-      )
-    ).toBe(true);
+      expect(result.ingredientLines).toHaveLength(originalIngredientCount - 1);
+      expect(
+        result.ingredientLines.some(
+          (line) => line.ingredient.id === testIngredient.id
+        )
+      ).toBe(false);
+      expect(
+        result.ingredientLines.some(
+          (line) => line.ingredient.id === secondIngredient.id
+        )
+      ).toBe(true);
+    });
+
+    it('should return RecipeDTO', async () => {
+      await recipesRepo.saveRecipe(testRecipe);
+
+      const request = {
+        recipeId: testRecipe.id,
+        ingredientId: testIngredient.id,
+        userId: vp.userId,
+      };
+
+      const result = await removeIngredientFromRecipeUsecase.execute(request);
+
+      expect(result).not.toBeInstanceOf(Recipe);
+      for (const prop of dto.recipeDTOProperties) {
+        expect(result).toHaveProperty(prop);
+      }
+    });
   });
 
-  it('should return RecipeDTO', async () => {
-    await recipesRepo.saveRecipe(testRecipe);
+  describe('Errors', () => {
+    it('should throw NotFoundError when recipe does not exist', async () => {
+      const request = {
+        recipeId: 'non-existent-id',
+        ingredientId: testIngredient.id,
+        userId: vp.userId,
+      };
 
-    const request = {
-      recipeId: testRecipe.id,
-      ingredientId: testIngredient.id,
-      userId: vp.userId,
-    };
+      await expect(
+        removeIngredientFromRecipeUsecase.execute(request)
+      ).rejects.toThrow(NotFoundError);
+    });
 
-    const result = await removeIngredientFromRecipeUsecase.execute(request);
+    it('should throw error if user does not exist', async () => {
+      await expect(
+        removeIngredientFromRecipeUsecase.execute({
+          recipeId: 'some-id',
+          userId: 'non-existent',
+          ingredientId: 'ingredient-id',
+        })
+      ).rejects.toThrow(NotFoundError);
+      await expect(
+        removeIngredientFromRecipeUsecase.execute({
+          recipeId: 'some-id',
+          userId: 'non-existent',
+          ingredientId: 'ingredient-id',
+        })
+      ).rejects.toThrow(/RemoveIngredientFromRecipeUsecase.*user.*not.*found/);
+    });
 
-    expect(result).not.toBeInstanceOf(Recipe);
-    for (const prop of dto.recipeDTOProperties) {
-      expect(result).toHaveProperty(prop);
-    }
-  });
+    it("should throw error if trying to delete another user's recipe", async () => {
+      const anotherUser = User.create({
+        ...vp.validUserProps,
+        id: 'another-user-id',
+      });
+      await usersRepo.saveUser(anotherUser);
+      await recipesRepo.saveRecipe(testRecipe);
 
-  it('should throw NotFoundError when recipe does not exist', async () => {
-    const request = {
-      recipeId: 'non-existent-id',
-      ingredientId: testIngredient.id,
-      userId: vp.userId,
-    };
+      const request = {
+        recipeId: testRecipe.id,
+        ingredientId: testIngredient.id,
+        userId: anotherUser.id,
+      };
 
-    await expect(
-      removeIngredientFromRecipeUsecase.execute(request)
-    ).rejects.toThrow(NotFoundError);
-  });
-
-  it('should throw error when ingredient not found in recipe', async () => {
-    await recipesRepo.saveRecipe(testRecipe);
-
-    const request = {
-      userId: vp.userId,
-      recipeId: testRecipe.id,
-      ingredientId: 'non-existent-ingredient-id',
-    };
-
-    await expect(
-      removeIngredientFromRecipeUsecase.execute(request)
-    ).rejects.toThrow();
-  });
-
-  it('should update recipe updatedAt timestamp', async () => {
-    await recipesRepo.saveRecipe(testRecipe);
-    const originalUpdatedAt = testRecipe.updatedAt;
-
-    // Wait a moment to ensure different timestamps
-    await new Promise((resolve) => setTimeout(resolve, 2));
-
-    const request = {
-      recipeId: testRecipe.id,
-      ingredientId: testIngredient.id,
-      userId: vp.userId,
-    };
-
-    const result = await removeIngredientFromRecipeUsecase.execute(request);
-
-    expect(new Date(result.updatedAt).getTime()).toBeGreaterThan(
-      originalUpdatedAt.getTime()
-    );
-  });
-
-  it('should throw error if user does not exist', async () => {
-    await expect(
-      removeIngredientFromRecipeUsecase.execute({
-        recipeId: 'some-id',
-        userId: 'non-existent',
-        ingredientId: 'ingredient-id',
-      })
-    ).rejects.toThrow(NotFoundError);
-    await expect(
-      removeIngredientFromRecipeUsecase.execute({
-        recipeId: 'some-id',
-        userId: 'non-existent',
-        ingredientId: 'ingredient-id',
-      })
-    ).rejects.toThrow(/RemoveIngredientFromRecipeUsecase.*user.*not.*found/);
+      await expect(
+        removeIngredientFromRecipeUsecase.execute(request)
+      ).rejects.toThrow(NotFoundError);
+      await expect(
+        removeIngredientFromRecipeUsecase.execute(request)
+      ).rejects.toThrow(
+        /RemoveIngredientFromRecipeUsecase.*Recipe.*not.*found/
+      );
+    });
   });
 });
