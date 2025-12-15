@@ -15,56 +15,58 @@ describe('GetAllUsersUsecase', () => {
     getAllUsersUsecase = new GetAllUsersUsecase(usersRepo);
   });
 
-  it('should return all users', async () => {
-    const user1 = User.create({
-      ...vp.validUserProps,
-      name: 'User One',
+  describe('Execute', () => {
+    it('should return all users', async () => {
+      const user1 = User.create({
+        ...vp.validUserProps,
+        name: 'User One',
+      });
+
+      const user2 = User.create({
+        ...vp.validUserProps,
+        id: 'another-user-id',
+        name: 'User Two',
+      });
+
+      await usersRepo.saveUser(user1);
+      await usersRepo.saveUser(user2);
+
+      const result = await getAllUsersUsecase.execute();
+
+      expect(result).toHaveLength(2);
+      expect(result).toContainEqual(toUserDTO(user1));
+      expect(result).toContainEqual(toUserDTO(user2));
     });
 
-    const user2 = User.create({
-      ...vp.validUserProps,
-      id: 'another-user-id',
-      name: 'User Two',
-    });
+    it('should return array of UserDTO', async () => {
+      const user1 = User.create({
+        ...vp.validUserProps,
+        name: 'User One',
+      });
 
-    await usersRepo.saveUser(user1);
-    await usersRepo.saveUser(user2);
+      const user2 = User.create({
+        ...vp.validUserProps,
+        id: 'another-user-id',
+        name: 'User Two',
+      });
 
-    const result = await getAllUsersUsecase.execute();
+      await usersRepo.saveUser(user1);
+      await usersRepo.saveUser(user2);
 
-    expect(result).toHaveLength(2);
-    expect(result).toContainEqual(toUserDTO(user1));
-    expect(result).toContainEqual(toUserDTO(user2));
-  });
+      const result = await getAllUsersUsecase.execute();
 
-  it('should return array of UserDTO', async () => {
-    const user1 = User.create({
-      ...vp.validUserProps,
-      name: 'User One',
-    });
-
-    const user2 = User.create({
-      ...vp.validUserProps,
-      id: 'another-user-id',
-      name: 'User Two',
-    });
-
-    await usersRepo.saveUser(user1);
-    await usersRepo.saveUser(user2);
-
-    const result = await getAllUsersUsecase.execute();
-
-    for (const user of result) {
-      expect(user).not.toBeInstanceOf(User);
-      for (const prop of dto.userDTOProperties) {
-        expect(user).toHaveProperty(prop);
+      for (const user of result) {
+        expect(user).not.toBeInstanceOf(User);
+        for (const prop of dto.userDTOProperties) {
+          expect(user).toHaveProperty(prop);
+        }
       }
-    }
-  });
+    });
 
-  it('should return empty array when no users exist', async () => {
-    const result = await getAllUsersUsecase.execute();
+    it('should return empty array when no users exist', async () => {
+      const result = await getAllUsersUsecase.execute();
 
-    expect(result).toEqual([]);
+      expect(result).toEqual([]);
+    });
   });
 });
