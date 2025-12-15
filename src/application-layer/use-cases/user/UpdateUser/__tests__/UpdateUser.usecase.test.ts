@@ -15,67 +15,74 @@ describe('UpdateUserUsecase', () => {
     updateUserUsecase = new UpdateUserUsecase(usersRepo);
   });
 
-  it('should update user name successfully', async () => {
-    const user = User.create({
-      ...vp.validUserProps,
-      name: 'Old Name',
+  describe('Execute', () => {
+    it('should update user name successfully', async () => {
+      const user = User.create({
+        ...vp.validUserProps,
+        name: 'Old Name',
+      });
+
+      await usersRepo.saveUser(user);
+
+      const result = await updateUserUsecase.execute({
+        id: vp.userId,
+        patch: { name: 'New Name' },
+      });
+
+      expect(result.name).toBe('New Name');
+      expect(result.id).toBe(vp.userId);
+      expect(result.customerId).toBe(user.customerId);
     });
 
-    await usersRepo.saveUser(user);
+    it('should return UserDTO', async () => {
+      const user = User.create({
+        ...vp.validUserProps,
+        name: 'Old Name',
+      });
 
-    const result = await updateUserUsecase.execute({
-      id: vp.userId,
-      patch: { name: 'New Name' },
+      await usersRepo.saveUser(user);
+
+      const result = await updateUserUsecase.execute({
+        id: vp.userId,
+        patch: { name: 'New Name' },
+      });
+
+      for (const prop of dto.userDTOProperties) {
+        expect(result).not.toBeInstanceOf(User);
+        expect(result).toHaveProperty(prop);
+      }
     });
 
-    expect(result.name).toBe('New Name');
-    expect(result.id).toBe(vp.userId);
-    expect(result.customerId).toBe(user.customerId);
+    it('should update user and persist changes', async () => {
+      const user = User.create({
+        ...vp.validUserProps,
+        name: 'Original Name',
+      });
+
+      await usersRepo.saveUser(user);
+
+      await updateUserUsecase.execute({
+        id: vp.userId,
+        patch: { name: 'Updated Name' },
+      });
+
+      // Verify the change was persisted
+      const persistedUser = await usersRepo.getUserById(vp.userId);
+      expect(persistedUser?.name).toBe('Updated Name');
+    });
   });
 
-  it('should return UserDTO', async () => {
-    const user = User.create({
-      ...vp.validUserProps,
-      name: 'Old Name',
+  describe('Errors', () => {
+    it('should throw NotFoundError when user does not exist', async () => {
+      const request = { id: 'non-existent', patch: { name: 'Test' } };
+
+      await expect(updateUserUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+
+      await expect(updateUserUsecase.execute(request)).rejects.toThrow(
+        /UpdateUserUsecase.*User.*not found/
+      );
     });
-
-    await usersRepo.saveUser(user);
-
-    const result = await updateUserUsecase.execute({
-      id: vp.userId,
-      patch: { name: 'New Name' },
-    });
-
-    for (const prop of dto.userDTOProperties) {
-      expect(result).not.toBeInstanceOf(User);
-      expect(result).toHaveProperty(prop);
-    }
-  });
-
-  it('should throw NotFoundError when user does not exist', async () => {
-    await expect(
-      updateUserUsecase.execute({
-        id: 'non-existent',
-        patch: { name: 'Test' },
-      })
-    ).rejects.toThrow(NotFoundError);
-  });
-
-  it('should update user and persist changes', async () => {
-    const user = User.create({
-      ...vp.validUserProps,
-      name: 'Original Name',
-    });
-
-    await usersRepo.saveUser(user);
-
-    await updateUserUsecase.execute({
-      id: vp.userId,
-      patch: { name: 'Updated Name' },
-    });
-
-    // Verify the change was persisted
-    const persistedUser = await usersRepo.getUserById(vp.userId);
-    expect(persistedUser?.name).toBe('Updated Name');
   });
 });
