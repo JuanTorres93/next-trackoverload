@@ -46,6 +46,18 @@ describe('FileSystemUsersRepo', () => {
     expect(fetchedUser?.name).toBe(vp.validUserProps.name);
   });
 
+  it('should retrieve a user by email', async () => {
+    const fetchedUser = await repo.getUserByEmail(vp.validUserProps.email);
+    expect(fetchedUser).not.toBeNull();
+    expect(fetchedUser?.email).toBe(vp.validUserProps.email);
+    expect(fetchedUser?.name).toBe(vp.validUserProps.name);
+  });
+
+  it('should return null for non-existent email', async () => {
+    const fetchedUser = await repo.getUserByEmail('non-existent@example.com');
+    expect(fetchedUser).toBeNull();
+  });
+
   it('should update an existing user', async () => {
     const updatedUser = User.create({
       ...vp.validUserProps,

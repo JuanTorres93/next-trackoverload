@@ -86,6 +86,12 @@ export class FileSystemUsersRepo implements UsersRepo {
     }
   }
 
+  async getUserByEmail(email: string): Promise<User | null> {
+    const users = await this.getAllUsers();
+    const user = users.find((u) => u.email === email);
+    return user || null;
+  }
+
   async deleteUser(id: string): Promise<void> {
     const filePath = this.getFilePath(id);
 

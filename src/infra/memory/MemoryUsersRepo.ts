@@ -13,6 +13,11 @@ export class MemoryUsersRepo implements UsersRepo {
     return user || null;
   }
 
+  async getUserByEmail(email: string): Promise<User | null> {
+    const user = this.users.find((u) => u.email === email);
+    return user || null;
+  }
+
   async deleteUser(id: string): Promise<void> {
     const index = this.users.findIndex((u) => u.id === id);
     // NOTE: Throw error in use case in order not to have false positives in tests
