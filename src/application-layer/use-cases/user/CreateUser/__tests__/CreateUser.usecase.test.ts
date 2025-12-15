@@ -95,5 +95,29 @@ describe('CreateUserUsecase', () => {
         /CreateUserUsecase.*User.*email.*already exists/
       );
     });
+
+    it('should throw error if customer id already exists', async () => {
+      // Create first user with customerId
+      await createUserUsecase.execute({
+        name: 'First User',
+        email: 'firstuser@example.com',
+        customerId: 'customer-123',
+      });
+
+      // Attempt to create second user with same customerId
+      const request = {
+        name: 'Second User',
+        email: 'seconduser@example.com',
+        customerId: 'customer-123',
+      };
+
+      await expect(createUserUsecase.execute(request)).rejects.toThrow(
+        AlreadyExistsError
+      );
+
+      await expect(createUserUsecase.execute(request)).rejects.toThrow(
+        /CreateUserUsecase.*User.*customerId.*already exists/
+      );
+    });
   });
 });

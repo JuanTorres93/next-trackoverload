@@ -15,16 +15,34 @@ export class CreateUserUsecase {
   constructor(private usersRepo: UsersRepo) {}
 
   async execute(request: CreateUserUsecaseRequest): Promise<UserDTO> {
+    // Validate email
     const email = Email.create(request.email).value;
 
-    const existingUser = await this.usersRepo.getUserByEmail(email);
+    // Check for existing user with same email or customerId
+    const existingEmailPromise = this.usersRepo.getUserByEmail(email);
 
-    if (existingUser) {
+    const existingCustomerIdPromise = request.customerId
+      ? this.usersRepo.getUserByCustomerId(request.customerId)
+      : Promise.resolve(null);
+
+    const [existingEmail, existingCustomer] = await Promise.all([
+      existingEmailPromise,
+      existingCustomerIdPromise,
+    ]);
+
+    if (existingEmail) {
       throw new AlreadyExistsError(
         'CreateUserUsecase: User with this email already exists'
       );
     }
 
+    if (existingCustomer) {
+      throw new AlreadyExistsError(
+        'CreateUserUsecase: User with this customerId already exists'
+      );
+    }
+
+    // Create new user
     const newUser = User.create({
       id: uuidv4(),
       name: request.name,
