@@ -50,6 +50,22 @@ describe('MemoryUsersRepo', () => {
     expect(fetchedUser).toBeNull();
   });
 
+  it('should retrieve a user by customerId', async () => {
+    const fetchedUser = await repo.getUserByCustomerId(
+      vp.validUserProps.customerId
+    );
+    expect(fetchedUser).not.toBeNull();
+    expect(fetchedUser?.customerId).toBe(vp.validUserProps.customerId);
+    expect(fetchedUser?.name).toBe(vp.validUserProps.name);
+  });
+
+  it('should return null for non-existent customerId', async () => {
+    const fetchedUser = await repo.getUserByCustomerId(
+      'non-existent-customer-id'
+    );
+    expect(fetchedUser).toBeNull();
+  });
+
   it('should return null for non-existent user ID', async () => {
     const fetchedUser = await repo.getUserById('non-existent-id');
     expect(fetchedUser).toBeNull();

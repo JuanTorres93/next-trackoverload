@@ -4,7 +4,8 @@ export interface UsersRepo {
   getAllUsers(): Promise<User[]>;
   getUserById(id: string): Promise<User | null>;
   getUserByEmail(email: string): Promise<User | null>;
-  // NOTE: implement deletion in Auth?
+  getUserByCustomerId(customerId: string): Promise<User | null>;
+  // NOTE: implement deletion in Auth? Don't think so
   deleteUser(id: string): Promise<void>;
   saveUser(user: User): Promise<void>;
 }

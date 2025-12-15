@@ -92,6 +92,12 @@ export class FileSystemUsersRepo implements UsersRepo {
     return user || null;
   }
 
+  async getUserByCustomerId(customerId: string): Promise<User | null> {
+    const users = await this.getAllUsers();
+    const user = users.find((u) => u.customerId === customerId);
+    return user || null;
+  }
+
   async deleteUser(id: string): Promise<void> {
     const filePath = this.getFilePath(id);
 
