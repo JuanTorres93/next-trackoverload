@@ -12,6 +12,7 @@ describe('DeleteWorkoutUsecase', () => {
   let usersRepo: MemoryUsersRepo;
   let deleteWorkoutUsecase: DeleteWorkoutUsecase;
   let user: User;
+  let workout: Workout;
 
   beforeEach(async () => {
     workoutsRepo = new MemoryWorkoutsRepo();
@@ -22,62 +23,64 @@ describe('DeleteWorkoutUsecase', () => {
       ...vp.validUserProps,
     });
 
-    await usersRepo.saveUser(user);
-  });
-
-  it('should delete workout when it exists', async () => {
-    const workout = Workout.create({
+    workout = Workout.create({
       ...vp.validWorkoutProps,
       exercises: [],
     });
 
+    await usersRepo.saveUser(user);
     await workoutsRepo.saveWorkout(workout);
-
-    // Verify workout exists
-    const existingWorkout = await workoutsRepo.getWorkoutById(
-      vp.validWorkoutProps.id
-    );
-    expect(existingWorkout).toBe(workout);
-
-    await deleteWorkoutUsecase.execute({
-      id: vp.validWorkoutProps.id,
-      userId: vp.validWorkoutProps.userId,
-    });
-
-    // Verify workout is deleted
-    const deletedWorkout = await workoutsRepo.getWorkoutById(
-      vp.validWorkoutProps.id
-    );
-    expect(deletedWorkout).toBeNull();
   });
 
-  it('should throw NotFoundError when workout does not exist', async () => {
-    await expect(
-      deleteWorkoutUsecase.execute({
+  describe('Execute', () => {
+    it('should delete workout when it exists', async () => {
+      // Verify workout exists
+      const existingWorkout = await workoutsRepo.getWorkoutById(
+        vp.validWorkoutProps.id
+      );
+      expect(existingWorkout).toBe(workout);
+
+      await deleteWorkoutUsecase.execute({
+        id: vp.validWorkoutProps.id,
+        userId: vp.validWorkoutProps.userId,
+      });
+
+      // Verify workout is deleted
+      const deletedWorkout = await workoutsRepo.getWorkoutById(
+        vp.validWorkoutProps.id
+      );
+      expect(deletedWorkout).toBeNull();
+    });
+  });
+
+  describe('Errors', () => {
+    it('should throw NotFoundError when workout does not exist', async () => {
+      const request = {
         id: 'non-existent',
         userId: vp.validWorkoutProps.userId,
-      })
-    ).rejects.toThrow(NotFoundError);
-  });
+      };
 
-  it('should throw error if user does not exist', async () => {
-    const workout = Workout.create({
-      ...vp.validWorkoutProps,
-      exercises: [],
+      await expect(deleteWorkoutUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+
+      await expect(deleteWorkoutUsecase.execute(request)).rejects.toThrow(
+        /DeleteWorkoutUsecase.*Workout.*not found/
+      );
     });
 
-    await workoutsRepo.saveWorkout(workout);
+    it('should throw error if user does not exist', async () => {
+      const request = {
+        id: vp.validWorkoutProps.id,
+        userId: 'non-existent',
+      };
 
-    const request = {
-      id: vp.validWorkoutProps.id,
-      userId: 'non-existent',
-    };
-
-    await expect(deleteWorkoutUsecase.execute(request)).rejects.toThrow(
-      NotFoundError
-    );
-    await expect(deleteWorkoutUsecase.execute(request)).rejects.toThrow(
-      /DeleteWorkoutUsecase.*user.*not.*found/
-    );
+      await expect(deleteWorkoutUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+      await expect(deleteWorkoutUsecase.execute(request)).rejects.toThrow(
+        /DeleteWorkoutUsecase.*user.*not.*found/
+      );
+    });
   });
 });
