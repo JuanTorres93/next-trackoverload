@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next Trackoverload (provisional name)
 
-## Getting Started
+A full-stack web application designed to take control of your fitness.
 
-First, run the development server:
+## Demo / Screenshots
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Demo: currently not available.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Why this project exists
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This project was created to implement the method that I follow to gain muscle and lose fat. Combining both exercise and nutrition in one user-focused place.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Ease of batch meals logging.
+- Tracking only important nutritional information.
+- Tracking of workout sessions.
 
-## Learn More
+## Problem it solves
 
-To learn more about Next.js, take a look at the following resources:
+Every nutrition app that I have used is cumbersome. They provides lots of irrelevant data and make the tracking process tedious. This app aims to make it easy.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Architecture
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The project follows Clean Architecture principles and design patterns:
 
-## Deploy on Vercel
+- Domain: entities, value objects, errors, service interfaces and repo interfaces.
+- Application: use cases and DTOs.
+- Infrastructure: implementation of the interfaces. Currently:
+  - Memory repos and image management.
+  - Filesystem repos and image management.
+  - (to come) Supabase repos and image management.
+  - Next.js app router.
+- Interface-adapters: Dependency injection of repos and services to Next.js app. It selects between Filesystem implementation for development and Memory implementation for integration testing.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Tech stack
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Next.js (React)
+- (In the future) PostgreSQL powered by Supabase
+- Docker.
+
+The stack was chosen for security and long-term maintainability.
+
+## Key technical decisions.
+
+- Value Objects are used for data validation in domain entities.
+- No third party code is allowed in the application and domain layers.
+- Business and application rules throw errors.
+- Domain, application and presentation layers are fully testable without infrastructure.
+  - Some integration test will be needed when implementing external services, but they will be independent.
+
+## Testing
+
+- Unit tests for domain layer.
+- Unit tests for application layer.
+- Integration tests for presentation layer.
+
+## What you can learn from this project
+
+- How to structure a project using Clean Architecture
+- How to design value objects in TypeScript
+- How to avoid framework coupling
