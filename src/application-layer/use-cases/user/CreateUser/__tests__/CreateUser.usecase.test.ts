@@ -1,110 +1,99 @@
+import * as vp from '@/../tests/createProps';
+import * as dto from '@/../tests/dtoProperties';
+import { toUserDTO, UserDTO } from '@/application-layer/dtos/UserDTO';
+import { AlreadyExistsError } from '@/domain/common/errors';
+import { User } from '@/domain/entities/user/User';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { CreateUserUsecase } from '../CreateUser.usecase';
-import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
-import { ValidationError } from '@/domain/common/errors';
-import * as dto from '@/../tests/dtoProperties';
-import { User } from '@/domain/entities/user/User';
-import { toUserDTO } from '@/application-layer/dtos/UserDTO';
-
-// TODO NEXT: DRY this file and implement duplicate user creation prevention
 
 describe('CreateUserUsecase', () => {
   let usersRepo: MemoryUsersRepo;
   let createUserUsecase: CreateUserUsecase;
+  let user: UserDTO;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     usersRepo = new MemoryUsersRepo();
     createUserUsecase = new CreateUserUsecase(usersRepo);
+    user = await createUserUsecase.execute({
+      name: vp.validUserProps.name,
+      email: vp.validUserProps.email,
+    });
   });
 
   describe('Execute', () => {
-    it('should create user with name only', async () => {
-      const result = await createUserUsecase.execute({
-        name: 'John Doe',
-        email: 'johndoe@example.com',
-      });
+    it('should create user', async () => {
+      expect(user.name).toBe(vp.validUserProps.name);
+      expect(user.email).toBe(vp.validUserProps.email);
+      expect(user.id).toBeDefined();
+      expect(user.customerId).toBeUndefined();
+      expect(user.createdAt).toBeDefined();
+      expect(user.updatedAt).toBeDefined();
+    });
 
-      expect(result.name).toBe('John Doe');
-      expect(result.id).toBeDefined();
-      expect(result.customerId).toBeUndefined();
-      expect(result.createdAt).toBeDefined();
-      expect(result.updatedAt).toBeDefined();
+    it('should save user to repo', async () => {
+      const savedUser = await usersRepo.getUserById(user.id);
 
-      // Verify user was saved in repository
-      const savedUser = await usersRepo.getUserById(result.id);
-
-      // @ts-expect-error savedUser won't be null
-      expect(toUserDTO(savedUser)).toEqual(result);
+      expect(toUserDTO(savedUser!)).toEqual(user);
     });
 
     it('should return UserDTO', async () => {
-      const result = await createUserUsecase.execute({
-        name: 'John Doe',
-        email: 'johndoe@example.com',
-      });
+      expect(user).not.toBeInstanceOf(User);
 
-      expect(result).not.toBeInstanceOf(User);
       for (const prop of dto.userDTOProperties) {
-        expect(result).toHaveProperty(prop);
+        expect(user).toHaveProperty(prop);
       }
     });
 
-    it('should create user with name and customerId', async () => {
+    it('should create user with customerId', async () => {
       const result = await createUserUsecase.execute({
         name: 'Jane Doe',
         email: 'janedoe@example.com',
         customerId: 'customer-123',
       });
 
-      expect(result.name).toBe('Jane Doe');
       expect(result.customerId).toBe('customer-123');
-      expect(result.id).toBeDefined();
-      expect(result.createdAt).toBeDefined();
-      expect(result.updatedAt).toBeDefined();
-
-      // Verify user was saved in repository
-      const savedUser = await usersRepo.getUserById(result.id);
-      // @ts-expect-error savedUser won't be null
-      expect(toUserDTO(savedUser)).toEqual(result);
     });
 
     it('should generate unique IDs for different users', async () => {
-      const user1 = await createUserUsecase.execute({
-        name: 'User One',
-        email: 'userone@example.com',
-      });
-
       const user2 = await createUserUsecase.execute({
         name: 'User Two',
         email: 'usertwo@example.com',
       });
 
-      expect(user1.id).not.toBe(user2.id);
+      expect(user.id).not.toBe(user2.id);
     });
   });
 
   describe('Errors', () => {
-    it('should throw ValidationError when name is invalid', async () => {
-      // TODO DELETE THIS TEST
-      const invalidNames = [
-        '',
-        '   ',
-        null,
-        undefined,
-        true,
-        123,
-        {},
-        [],
-        () => {},
-        NaN,
-      ];
+    it('should throw error if email already exists', async () => {
+      const request = {
+        name: 'Duplicate Email User',
+        email: vp.validUserProps.email,
+      };
 
-      for (const invalidName of invalidNames) {
-        await expect(
-          // @ts-expect-error Testing invalid inputs
-          createUserUsecase.execute({ name: invalidName })
-        ).rejects.toThrow(ValidationError);
-      }
+      await expect(createUserUsecase.execute(request)).rejects.toThrow(
+        AlreadyExistsError
+      );
+
+      await expect(createUserUsecase.execute(request)).rejects.toThrow(
+        /CreateUserUsecase.*User.*email.*already exists/
+      );
+    });
+
+    it('should throw error for same email with different case', async () => {
+      const request = {
+        name: 'Duplicate Email User',
+        email: vp.validUserProps.email.toUpperCase(),
+      };
+
+      await expect(createUserUsecase.execute(request)).rejects.toThrow(
+        AlreadyExistsError
+      );
+
+      await expect(createUserUsecase.execute(request)).rejects.toThrow(
+        /CreateUserUsecase.*User.*email.*already exists/
+      );
     });
   });
 });

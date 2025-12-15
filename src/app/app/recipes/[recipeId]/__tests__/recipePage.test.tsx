@@ -4,6 +4,8 @@ import { createServer } from '@/../tests/mocks/server';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { AppRecipesRepo } from '@/interface-adapters/app/repos/AppRecipesRepo';
+import { AppUsersRepo } from '@/interface-adapters/app/repos/AppUsersRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -12,6 +14,7 @@ import '@/../tests/mocks/nextjs';
 import RecipePage from '../page';
 
 const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
+const usersRepo = AppUsersRepo as MemoryUsersRepo;
 let mockRecipes: RecipeDTO[] = [];
 const mockIngredients = await createMockIngredients();
 
@@ -46,6 +49,7 @@ async function setup() {
 
 afterEach(() => {
   recipesRepo.clearForTesting();
+  usersRepo.clearForTesting();
 });
 
 describe('RecipePage', () => {
@@ -252,4 +256,8 @@ describe('RecipePage', () => {
     expect(finalRecipe).not.toBeNull();
     expect(finalRecipe!.ingredientLines.length).toBe(1);
   });
+
+  // TODO test update recipe name
+  // TODO test update recipe image
+  // TODO test Add ingredient
 });

@@ -20,6 +20,15 @@ describe('Email', () => {
     expect(email.value).toBe(trimmedValue);
   });
 
+  it('should convert to lower case', async () => {
+    const emailValue = 'USER@EXAMPLE.COM';
+    const lowerCaseValue = 'user@example.com';
+
+    const email = Email.create(emailValue);
+
+    expect(email.value).toBe(lowerCaseValue);
+  });
+
   it('should throw validation error if email is not a string', () => {
     // @ts-expect-error testing invalid input
     expect(() => Email.create(123)).toThrow(ValidationError);

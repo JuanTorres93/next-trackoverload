@@ -25,7 +25,7 @@ export class Email extends ValueObject<EmailProps> {
       throw new ValidationError('Email: value must be a valid email format');
     }
 
-    return new Email({ value: text.value });
+    return new Email({ value: text.value.toLocaleLowerCase() });
   }
 
   get value(): string {
