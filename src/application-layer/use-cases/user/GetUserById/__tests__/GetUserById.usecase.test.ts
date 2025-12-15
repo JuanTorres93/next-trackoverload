@@ -1,7 +1,6 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toUserDTO } from '@/application-layer/dtos/UserDTO';
-import { ValidationError } from '@/domain/common/errors';
 import { User } from '@/domain/entities/user/User';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -16,40 +15,42 @@ describe('GetUserByIdUsecase', () => {
     getUserByIdUsecase = new GetUserByIdUsecase(usersRepo);
   });
 
-  it('should return user when found', async () => {
-    const user = User.create({
-      ...vp.validUserProps,
+  describe('Execute', () => {
+    it('should return user when found', async () => {
+      const user = User.create({
+        ...vp.validUserProps,
+      });
+
+      await usersRepo.saveUser(user);
+
+      const result = await getUserByIdUsecase.execute({
+        id: vp.validUserProps.id,
+      });
+
+      expect(result).toEqual(toUserDTO(user));
     });
 
-    await usersRepo.saveUser(user);
+    it('should return user DTO when found', async () => {
+      const user = User.create({
+        ...vp.validUserProps,
+      });
 
-    const result = await getUserByIdUsecase.execute({
-      id: vp.validUserProps.id,
+      await usersRepo.saveUser(user);
+
+      const result = await getUserByIdUsecase.execute({
+        id: vp.validUserProps.id,
+      });
+
+      for (const prop of dto.userDTOProperties) {
+        expect(result).not.toBeInstanceOf(User);
+        expect(result).toHaveProperty(prop);
+      }
     });
 
-    expect(result).toEqual(toUserDTO(user));
-  });
+    it('should return null when user not found', async () => {
+      const result = await getUserByIdUsecase.execute({ id: 'non-existent' });
 
-  it('should return user DTO when found', async () => {
-    const user = User.create({
-      ...vp.validUserProps,
+      expect(result).toBeNull();
     });
-
-    await usersRepo.saveUser(user);
-
-    const result = await getUserByIdUsecase.execute({
-      id: vp.validUserProps.id,
-    });
-
-    for (const prop of dto.userDTOProperties) {
-      expect(result).not.toBeInstanceOf(User);
-      expect(result).toHaveProperty(prop);
-    }
-  });
-
-  it('should return null when user not found', async () => {
-    const result = await getUserByIdUsecase.execute({ id: 'non-existent' });
-
-    expect(result).toBeNull();
   });
 });
