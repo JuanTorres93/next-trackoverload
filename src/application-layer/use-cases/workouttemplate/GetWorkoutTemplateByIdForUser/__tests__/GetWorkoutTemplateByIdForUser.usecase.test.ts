@@ -13,6 +13,7 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
   let usersRepo: MemoryUsersRepo;
   let usecase: GetWorkoutTemplateByIdForUserUsecase;
   let user: User;
+  let template: WorkoutTemplate;
 
   beforeEach(async () => {
     workoutTemplatesRepo = new MemoryWorkoutTemplatesRepo();
@@ -23,105 +24,91 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
     );
 
     user = User.create({ ...vp.validUserProps });
-    await usersRepo.saveUser(user);
-  });
 
-  it('should return workout template by id for the correct user', async () => {
-    const template = WorkoutTemplate.create({
+    template = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps(),
       name: 'Push Day',
     });
 
+    await usersRepo.saveUser(user);
     await workoutTemplatesRepo.saveWorkoutTemplate(template);
-
-    const result = await usecase.execute({
-      id: template.id,
-      userId: vp.userId,
-    });
-
-    expect(result).not.toBeNull();
-    expect(result!.id).toBe(template.id);
-    expect(result!.userId).toBe(vp.userId);
-    expect(result!.name).toBe('Push Day');
   });
 
-  it('should return WorkoutTemplateDTO', async () => {
-    const template = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps(),
-      name: 'Leg Day',
+  describe('Execution', () => {
+    it('should return workout template by id for the correct user', async () => {
+      const result = await usecase.execute({
+        id: template.id,
+        userId: vp.userId,
+      });
+
+      expect(result).not.toBeNull();
+      expect(result!.id).toBe(template.id);
+      expect(result!.userId).toBe(vp.userId);
+      expect(result!.name).toBe('Push Day');
     });
 
-    await workoutTemplatesRepo.saveWorkoutTemplate(template);
+    it('should return WorkoutTemplateDTO', async () => {
+      const result = await usecase.execute({
+        id: template.id,
+        userId: vp.userId,
+      });
 
-    const result = await usecase.execute({
-      id: template.id,
-      userId: vp.userId,
+      expect(result).not.toBeInstanceOf(WorkoutTemplate);
+      for (const prop of dto.workoutTemplateDTOProperties) {
+        expect(result).toHaveProperty(prop);
+      }
     });
 
-    expect(result).not.toBeInstanceOf(WorkoutTemplate);
-    for (const prop of dto.workoutTemplateDTOProperties) {
-      expect(result).toHaveProperty(prop);
-    }
-  });
+    it('should return null if template belongs to different user', async () => {
+      const user2 = User.create({
+        ...vp.validUserProps,
+        id: 'user2',
+      });
+      await usersRepo.saveUser(user2);
 
-  it('should return null if template belongs to different user', async () => {
-    // Create another user
-    const user2 = User.create({
-      ...vp.validUserProps,
-      id: 'user2',
-    });
-    await usersRepo.saveUser(user2);
-
-    const template = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps(),
-    });
-
-    await workoutTemplatesRepo.saveWorkoutTemplate(template);
-
-    const result = await usecase.execute({
-      id: vp.validWorkoutTemplateProps().id,
-      userId: 'user2',
-    });
-    expect(result).toBeNull();
-  });
-
-  it('should return null if template does not exist', async () => {
-    const result = await usecase.execute({ id: '999', userId: vp.userId });
-
-    expect(result).toBeNull();
-  });
-
-  it('should return null if template is deleted', async () => {
-    const template = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps(),
-      id: 'to-be-deleted-id',
-    });
-
-    await workoutTemplatesRepo.saveWorkoutTemplate(template);
-    template.markAsDeleted();
-    await workoutTemplatesRepo.saveWorkoutTemplate(template);
-
-    const result = await usecase.execute({
-      id: 'to-be-deleted-id',
-      userId: vp.userId,
-    });
-
-    expect(result).toBeNull();
-  });
-
-  it('should throw error if user does not exist', async () => {
-    await expect(
-      usecase.execute({
+      const result = await usecase.execute({
         id: vp.validWorkoutTemplateProps().id,
-        userId: 'non-existent',
-      })
-    ).rejects.toThrow(NotFoundError);
+        userId: 'user2',
+      });
+      expect(result).toBeNull();
+    });
 
-    await expect(
-      usecase.execute({
-        id: vp.validWorkoutTemplateProps().id,
-        userId: 'non-existent',
-      })
-    ).rejects.toThrow(/GetWorkoutTemplateByIdForUserUsecase.*User.*not.*found/);
+    it('should return null if template does not exist', async () => {
+      const result = await usecase.execute({ id: '999', userId: vp.userId });
+
+      expect(result).toBeNull();
+    });
+
+    it('should return null if template is deleted', async () => {
+      template.markAsDeleted();
+      await workoutTemplatesRepo.saveWorkoutTemplate(template);
+
+      const result = await usecase.execute({
+        id: 'to-be-deleted-id',
+        userId: vp.userId,
+      });
+
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('Errors', () => {
+    it('should throw error if user does not exist', async () => {
+      await expect(
+        usecase.execute({
+          id: vp.validWorkoutTemplateProps().id,
+          userId: 'non-existent',
+        })
+      ).rejects.toThrow(NotFoundError);
+
+      await expect(
+        usecase.execute({
+          id: vp.validWorkoutTemplateProps().id,
+          userId: 'non-existent',
+        })
+      ).rejects.toThrow(
+        /GetWorkoutTemplateByIdForUserUsecase.*User.*not.*found/
+      );
+    });
   });
 });
