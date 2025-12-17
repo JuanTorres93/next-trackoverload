@@ -37,7 +37,9 @@ export class RemoveExerciseFromWorkoutTemplateUsecase {
     const isDeleted = workoutTemplate?.isDeleted ?? false;
 
     if (!workoutTemplate || isDeleted) {
-      throw new NotFoundError('WorkoutTemplate not found');
+      throw new NotFoundError(
+        ' RemoveExerciseFromWorkoutTemplateUsecase: WorkoutTemplate not found'
+      );
     }
 
     workoutTemplate.removeExercise(request.exerciseId);

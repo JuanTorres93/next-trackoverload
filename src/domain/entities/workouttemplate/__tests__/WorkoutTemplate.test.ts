@@ -297,5 +297,15 @@ describe('WorkoutTemplate', () => {
         workoutTemplate.update();
       }).toThrow(/WorkoutTemplate.*patch/);
     });
+
+    it('should throw error if trying to remove a non-existent exercise', async () => {
+      expect(() => {
+        workoutTemplate.removeExercise('non-existent-exercise');
+      }).toThrow(ValidationError);
+
+      expect(() => {
+        workoutTemplate.removeExercise('non-existent-exercise');
+      }).toThrow(/WorkoutTemplate: Exercise to remove not found/);
+    });
   });
 });

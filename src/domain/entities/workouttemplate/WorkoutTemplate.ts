@@ -81,6 +81,15 @@ export class WorkoutTemplate {
   }
 
   removeExercise(exerciseId: string) {
+    const existingLine = this.props.exercises.find(
+      (line) => line.exerciseId === exerciseId
+    );
+    if (!existingLine) {
+      throw new ValidationError(
+        'WorkoutTemplate: Exercise to remove not found'
+      );
+    }
+
     this.props.exercises = this.props.exercises.filter(
       (line) => line.exerciseId !== exerciseId
     );
