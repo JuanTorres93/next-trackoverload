@@ -29,65 +29,69 @@ describe('GetWorkoutByIdUsecase', () => {
     await usersRepo.saveUser(user);
   });
 
-  it('should return workout when it exists', async () => {
-    const workout = Workout.create({
-      ...vp.validWorkoutProps,
-      exercises: [],
-    });
+  describe('Execution', () => {
+    it('should return workout when it exists', async () => {
+      const workout = Workout.create({
+        ...vp.validWorkoutProps,
+        exercises: [],
+      });
 
-    await workoutsRepo.saveWorkout(workout);
+      await workoutsRepo.saveWorkout(workout);
 
-    const result = await getWorkoutByIdUsecase.execute({
-      id: vp.validWorkoutProps.id,
-      userId: vp.userId,
-    });
-
-    expect(result).toEqual(toWorkoutDTO(workout));
-  });
-
-  it('should return WorkoutDTO', async () => {
-    const workout = Workout.create({
-      ...vp.validWorkoutProps,
-      name: 'Push Day',
-      exercises: [],
-    });
-
-    await workoutsRepo.saveWorkout(workout);
-
-    const result = await getWorkoutByIdUsecase.execute({
-      id: vp.validWorkoutProps.id,
-      userId: vp.userId,
-    });
-
-    expect(result).not.toBeInstanceOf(Workout);
-
-    for (const prop of dto.workoutDTOProperties) {
-      expect(result).toHaveProperty(prop);
-    }
-  });
-
-  it('should return null when workout does not exist', async () => {
-    const result = await getWorkoutByIdUsecase.execute({
-      id: 'non-existent',
-      userId: vp.userId,
-    });
-
-    expect(result).toBeNull();
-  });
-
-  it('should throw error if user does not exist', async () => {
-    await expect(
-      getWorkoutByIdUsecase.execute({
+      const result = await getWorkoutByIdUsecase.execute({
         id: vp.validWorkoutProps.id,
-        userId: 'non-existent',
-      })
-    ).rejects.toThrow(NotFoundError);
+        userId: vp.userId,
+      });
 
-    await expect(
-      getWorkoutByIdUsecase.execute({
+      expect(result).toEqual(toWorkoutDTO(workout));
+    });
+
+    it('should return WorkoutDTO', async () => {
+      const workout = Workout.create({
+        ...vp.validWorkoutProps,
+        name: 'Push Day',
+        exercises: [],
+      });
+
+      await workoutsRepo.saveWorkout(workout);
+
+      const result = await getWorkoutByIdUsecase.execute({
         id: vp.validWorkoutProps.id,
-        userId: 'non-existent',
-      })
-    ).rejects.toThrow(/GetWorkoutByIdForUserUsecase.*User.*not.*found/);
+        userId: vp.userId,
+      });
+
+      expect(result).not.toBeInstanceOf(Workout);
+
+      for (const prop of dto.workoutDTOProperties) {
+        expect(result).toHaveProperty(prop);
+      }
+    });
+
+    it('should return null when workout does not exist', async () => {
+      const result = await getWorkoutByIdUsecase.execute({
+        id: 'non-existent',
+        userId: vp.userId,
+      });
+
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('Errors', () => {
+    it('should throw error if user does not exist', async () => {
+      await expect(
+        getWorkoutByIdUsecase.execute({
+          id: vp.validWorkoutProps.id,
+          userId: 'non-existent',
+        })
+      ).rejects.toThrow(NotFoundError);
+
+      await expect(
+        getWorkoutByIdUsecase.execute({
+          id: vp.validWorkoutProps.id,
+          userId: 'non-existent',
+        })
+      ).rejects.toThrow(/GetWorkoutByIdForUserUsecase.*User.*not.*found/);
+    });
   });
 });
