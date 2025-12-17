@@ -64,7 +64,6 @@ export class AddExerciseToWorkoutTemplateUsecase {
       updatedAt: new Date(),
     });
 
-    // NOTE: duplicate exercise handled in entity
     workoutTemplate.addExercise(workoutTemplateLine);
 
     await this.workoutTemplatesRepo.saveWorkoutTemplate(workoutTemplate);
