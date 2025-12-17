@@ -13,6 +13,7 @@ describe('UpdateWorkoutUsecase', () => {
   let usersRepo: MemoryUsersRepo;
   let updateWorkoutUsecase: UpdateWorkoutUsecase;
   let user: User;
+  let workout: Workout;
 
   beforeEach(async () => {
     workoutsRepo = new MemoryWorkoutsRepo();
@@ -22,92 +23,84 @@ describe('UpdateWorkoutUsecase', () => {
     user = User.create({
       ...vp.validUserProps,
     });
+
+    workout = Workout.create({
+      ...vp.validWorkoutProps,
+      exercises: [],
+    });
+
     await usersRepo.saveUser(user);
-  });
-
-  it('should update workout name', async () => {
-    const workout = Workout.create({
-      ...vp.validWorkoutProps,
-      exercises: [],
-    });
-
     await workoutsRepo.saveWorkout(workout);
-
-    const updatedWorkout = await updateWorkoutUsecase.execute({
-      id: vp.validWorkoutProps.id,
-      userId: vp.userId,
-      name: 'Updated Push Day',
-    });
-
-    expect(updatedWorkout.name).toBe('Updated Push Day');
-    expect(updatedWorkout.id).toBe(vp.validWorkoutProps.id);
-    expect(updatedWorkout.workoutTemplateId).toBe('template-1');
-    expect(updatedWorkout.exercises).toEqual([]);
   });
 
-  it('should return WorkoutDTO', async () => {
-    const workout = Workout.create({
-      ...vp.validWorkoutProps,
-      name: 'Push Day',
-      exercises: [],
+  describe('Execution', () => {
+    it('should update workout name', async () => {
+      const updatedWorkout = await updateWorkoutUsecase.execute({
+        id: vp.validWorkoutProps.id,
+        userId: vp.userId,
+        name: 'Updated Push Day',
+      });
+
+      expect(updatedWorkout.name).toBe('Updated Push Day');
+      expect(updatedWorkout.id).toBe(vp.validWorkoutProps.id);
+      expect(updatedWorkout.workoutTemplateId).toBe('template-1');
+      expect(updatedWorkout.exercises).toEqual([]);
     });
 
-    await workoutsRepo.saveWorkout(workout);
+    it('should return WorkoutDTO', async () => {
+      const updatedWorkout = await updateWorkoutUsecase.execute({
+        id: vp.validWorkoutProps.id,
+        userId: vp.userId,
+        name: 'Updated Push Day',
+      });
 
-    const updatedWorkout = await updateWorkoutUsecase.execute({
-      id: vp.validWorkoutProps.id,
-      userId: vp.userId,
-      name: 'Updated Push Day',
+      expect(updatedWorkout).not.toBeInstanceOf(Workout);
+      for (const prop of dto.workoutDTOProperties) {
+        expect(updatedWorkout).toHaveProperty(prop);
+      }
     });
 
-    expect(updatedWorkout).not.toBeInstanceOf(Workout);
-    for (const prop of dto.workoutDTOProperties) {
-      expect(updatedWorkout).toHaveProperty(prop);
-    }
+    it('should keep existing name when not provided', async () => {
+      const updatedWorkout = await updateWorkoutUsecase.execute({
+        id: vp.validWorkoutProps.id,
+        userId: vp.userId,
+      });
+
+      expect(updatedWorkout.name).toBe(vp.validWorkoutProps.name);
+    });
   });
 
-  it('should keep existing name when not provided', async () => {
-    const workout = Workout.create({
-      ...vp.validWorkoutProps,
-      name: 'Push Day',
-      exercises: [],
-    });
-
-    await workoutsRepo.saveWorkout(workout);
-
-    const updatedWorkout = await updateWorkoutUsecase.execute({
-      id: vp.validWorkoutProps.id,
-      userId: vp.userId,
-    });
-
-    expect(updatedWorkout.name).toBe('Push Day');
-  });
-
-  it('should throw NotFoundError when workout does not exist', async () => {
-    await expect(
-      updateWorkoutUsecase.execute({
+  describe('Errors', () => {
+    it('should throw NotFoundError when workout does not exist', async () => {
+      const request = {
         id: 'non-existent',
         userId: vp.userId,
         name: 'New Name',
-      })
-    ).rejects.toThrow(NotFoundError);
-  });
+      };
 
-  it('should throw error if user does not exist', async () => {
-    await expect(
-      updateWorkoutUsecase.execute({
+      await expect(updateWorkoutUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+
+      await expect(updateWorkoutUsecase.execute(request)).rejects.toThrow(
+        /UpdateWorkoutUsecase.*Workout.*not.*found/
+      );
+    });
+
+    it('should throw error if user does not exist', async () => {
+      const request = {
         id: vp.validWorkoutProps.id,
         userId: 'non-existent',
         name: 'New Name',
-      })
-    ).rejects.toThrow(NotFoundError);
+      };
 
-    await expect(
-      updateWorkoutUsecase.execute({
-        id: vp.validWorkoutProps.id,
-        userId: 'non-existent',
-        name: 'New Name',
-      })
-    ).rejects.toThrow(/UpdateWorkoutUsecase.*User.*not.*found/);
+      await expect(updateWorkoutUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+
+      await expect(updateWorkoutUsecase.execute(request)).rejects.toThrow(
+        /UpdateWorkoutUsecase.*User.*not.*found/
+      );
+    });
   });
 });
