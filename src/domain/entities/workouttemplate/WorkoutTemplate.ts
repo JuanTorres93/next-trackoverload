@@ -85,9 +85,7 @@ export class WorkoutTemplate {
       (line) => line.exerciseId === exerciseId
     );
     if (!existingLine) {
-      throw new ValidationError(
-        'WorkoutTemplate: Exercise to remove not found'
-      );
+      throw new NotFoundError('WorkoutTemplate: Exercise to remove not found');
     }
 
     this.props.exercises = this.props.exercises.filter(
@@ -104,7 +102,8 @@ export class WorkoutTemplate {
     const exercise = this.props.exercises.find(
       (line) => line.exerciseId === exerciseId
     );
-    if (!exercise) return;
+    if (!exercise)
+      throw new NotFoundError('WorkoutTemplate: Exercise to reorder not found');
 
     this.props.exercises = this.props.exercises.filter(
       (line) => line.exerciseId !== exerciseId

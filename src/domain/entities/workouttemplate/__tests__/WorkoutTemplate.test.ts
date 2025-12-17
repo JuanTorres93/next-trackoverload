@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import * as vp from '@/../tests/createProps';
-import { ValidationError } from '@/domain/common/errors';
+import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import {
   WorkoutTemplate,
   WorkoutTemplateCreateProps,
@@ -301,11 +301,21 @@ describe('WorkoutTemplate', () => {
     it('should throw error if trying to remove a non-existent exercise', async () => {
       expect(() => {
         workoutTemplate.removeExercise('non-existent-exercise');
-      }).toThrow(ValidationError);
+      }).toThrow(NotFoundError);
 
       expect(() => {
         workoutTemplate.removeExercise('non-existent-exercise');
       }).toThrow(/WorkoutTemplate: Exercise to remove not found/);
+    });
+
+    it('should throw error if trying to reorder an exercise that is not contained in the template', async () => {
+      expect(() => {
+        workoutTemplate.reorderExercise('non-existent-exercise', 0);
+      }).toThrow(NotFoundError);
+
+      expect(() => {
+        workoutTemplate.reorderExercise('non-existent-exercise', 0);
+      }).toThrow(/WorkoutTemplate.*Exercise.*not found/);
     });
   });
 });
