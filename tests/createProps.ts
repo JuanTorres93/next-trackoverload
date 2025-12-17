@@ -1,6 +1,7 @@
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { WorkoutTemplateLine } from '@/domain/entities/workouttemplateline/WorkoutTemplateLine';
+import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
 
 export const userId = 'user-1';
 export const dateId = new Date('2023-10-01');
@@ -23,6 +24,39 @@ export const recipePropsNoIngredientLines = {
   createdAt: new Date(),
   updatedAt: new Date(),
 };
+
+export function validRecipePropsWithIngredientLines() {
+  const ingredientLine1 = IngredientLine.create({
+    ...ingredientLineRecipePropsNoIngredient,
+    id: 'line-1',
+    ingredient: Ingredient.create(validIngredientProps),
+    quantityInGrams: 100,
+  });
+
+  const ingredientLine2 = IngredientLine.create({
+    ...ingredientLineRecipePropsNoIngredient,
+    id: 'line-2',
+    ingredient: Ingredient.create({
+      id: 'ing2',
+      name: 'Rice',
+      calories: 130,
+      protein: 3,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }),
+    quantityInGrams: 200,
+  });
+
+  return {
+    id: 'recipe1',
+    userId: userId,
+    name: 'Test Recipe',
+    ingredientLines: [ingredientLine1, ingredientLine2],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+}
+
 export function validWorkoutTemplateProps() {
   const templateId = '1';
 
@@ -65,6 +99,41 @@ export function validWorkoutPropsNoExercises() {
     updatedAt: new Date(),
   };
 }
+
+export function validWorkoutPropsWithExercises() {
+  const workoutLine1 = WorkoutLine.create({
+    id: 'line1',
+    workoutId: 'workout-1',
+    exerciseId: 'ex1',
+    setNumber: 1,
+    reps: 10,
+    weight: 50,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  });
+
+  const workoutLine2 = WorkoutLine.create({
+    id: 'line2',
+    workoutId: 'workout-1',
+    exerciseId: 'ex2',
+    setNumber: 1,
+    reps: 8,
+    weight: 70,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  });
+
+  return {
+    id: 'workout-1',
+    userId: userId,
+    name: 'Push',
+    workoutTemplateId: 'template-1',
+    exercises: [workoutLine1, workoutLine2],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+}
+
 export const validWorkoutProps = {
   id: 'workout-1',
   userId: userId,
