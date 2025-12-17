@@ -208,4 +208,32 @@ describe('MemoryMealsRepo', () => {
     expect(allMealsAfterDeletion.length).toBe(1);
     expect(allMealsAfterDeletion[0].id).toBe('meal-2');
   });
+
+  it('should delete all meals for a user', async () => {
+    const meal2 = Meal.create({
+      ...vp.mealPropsNoIngredientLines,
+      id: 'meal-2',
+      name: 'Chicken Salad',
+      ingredientLines: [ingredientLine],
+    });
+    await repo.saveMeal(meal2);
+
+    const meal3 = Meal.create({
+      ...vp.mealPropsNoIngredientLines,
+      id: 'meal-3',
+      userId: 'user-2',
+      name: 'Turkey Sandwich',
+      ingredientLines: [ingredientLine],
+    });
+    await repo.saveMeal(meal3);
+
+    const allMealsBefore = await repo.getAllMeals();
+    expect(allMealsBefore.length).toBe(3);
+
+    await repo.deleteAllMealsForUser(vp.userId);
+
+    const allMealsAfter = await repo.getAllMeals();
+    expect(allMealsAfter.length).toBe(1);
+    expect(allMealsAfter[0].userId).toBe('user-2');
+  });
 });

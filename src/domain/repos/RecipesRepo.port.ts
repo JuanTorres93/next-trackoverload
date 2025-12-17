@@ -15,4 +15,5 @@ export interface RecipesRepo {
     ids: string[],
     ingredientLineIds: string[]
   ): Promise<void>;
+  deleteAllRecipesForUser(userId: string): Promise<void>;
 }

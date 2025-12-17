@@ -218,4 +218,29 @@ export class FileSystemWorkoutsRepo implements WorkoutsRepo {
       // File might not exist, consistent with memory repo
     }
   }
+
+  async deleteAllWorkoutsForUser(userId: string): Promise<void> {
+    const allWorkouts = await this.getAllWorkouts();
+    const userWorkouts = allWorkouts.filter((w) => w.userId === userId);
+
+    await Promise.all(
+      userWorkouts.map(async (workout) => {
+        const filePath = this.getWorkoutFilePath(workout.id);
+        try {
+          await fs.unlink(filePath);
+          // Delete associated workout lines
+          for (const line of workout.exercises) {
+            const lineFilePath = this.getWorkoutLineFilePath(line.id);
+            try {
+              await fs.unlink(lineFilePath);
+            } catch {
+              // Line file might not exist
+            }
+          }
+        } catch {
+          // Workout file might not exist
+        }
+      })
+    );
+  }
 }

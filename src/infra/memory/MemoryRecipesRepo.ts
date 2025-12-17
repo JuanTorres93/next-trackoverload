@@ -69,6 +69,10 @@ export class MemoryRecipesRepo implements RecipesRepo {
     }
   }
 
+  async deleteAllRecipesForUser(userId: string): Promise<void> {
+    this.recipes = this.recipes.filter((r) => r.userId !== userId);
+  }
+
   // IMPORTANT NOTE: Helper method for testing - not part of the interface
   clearForTesting(): void {
     this.recipes = [];

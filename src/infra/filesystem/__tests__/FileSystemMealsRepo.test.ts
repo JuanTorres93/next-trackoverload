@@ -317,4 +317,43 @@ describe('FileSystemMealsRepo', () => {
     expect(allMealsAfterDeletion.length).toBe(1);
     expect(allMealsAfterDeletion[0].id).toBe('meal-2');
   });
+
+  it('should delete all meals for a user', async () => {
+    const ingredientLine2 = IngredientLine.create({
+      ...vp.ingredientLineRecipePropsNoIngredient,
+      id: 'line-5',
+      ingredient,
+      quantityInGrams: 120,
+    });
+    const meal2 = Meal.create({
+      ...vp.mealPropsNoIngredientLines,
+      id: 'meal-2',
+      name: 'Chicken Salad',
+      ingredientLines: [ingredientLine2],
+    });
+    const ingredientLine3 = IngredientLine.create({
+      ...vp.ingredientLineRecipePropsNoIngredient,
+      id: 'line-6',
+      ingredient,
+      quantityInGrams: 100,
+    });
+    const meal3 = Meal.create({
+      ...vp.mealPropsNoIngredientLines,
+      id: 'meal-3',
+      userId: 'user-2',
+      name: 'Turkey Sandwich',
+      ingredientLines: [ingredientLine3],
+    });
+    await repo.saveMeal(meal2);
+    await repo.saveMeal(meal3);
+
+    const allMealsBefore = await repo.getAllMeals();
+    expect(allMealsBefore.length).toBe(3);
+
+    await repo.deleteAllMealsForUser(vp.userId);
+
+    const allMealsAfter = await repo.getAllMeals();
+    expect(allMealsAfter.length).toBe(1);
+    expect(allMealsAfter[0].userId).toBe('user-2');
+  });
 });

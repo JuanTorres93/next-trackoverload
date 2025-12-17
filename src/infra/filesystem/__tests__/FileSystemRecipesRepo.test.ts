@@ -146,4 +146,43 @@ describe('FileSystemRecipesRepo', () => {
       .catch(() => false);
     expect(lineFileExists).toBe(false);
   });
+
+  it('should delete all recipes for a user', async () => {
+    const ingredientLine2 = IngredientLine.create({
+      ...vp.ingredientLineRecipePropsNoIngredient,
+      id: 'line-2',
+      ingredient,
+      quantityInGrams: 100,
+    });
+    const recipe2 = Recipe.create({
+      ...vp.recipePropsNoIngredientLines,
+      id: 'recipe-2',
+      name: 'Pasta',
+      ingredientLines: [ingredientLine2],
+    });
+    const ingredientLine3 = IngredientLine.create({
+      ...vp.ingredientLineRecipePropsNoIngredient,
+      id: 'line-3',
+      ingredient,
+      quantityInGrams: 150,
+    });
+    const recipe3 = Recipe.create({
+      ...vp.recipePropsNoIngredientLines,
+      id: 'recipe-3',
+      userId: 'user-2',
+      name: 'Pizza',
+      ingredientLines: [ingredientLine3],
+    });
+    await repo.saveRecipe(recipe2);
+    await repo.saveRecipe(recipe3);
+
+    const allRecipesBefore = await repo.getAllRecipes();
+    expect(allRecipesBefore.length).toBe(3);
+
+    await repo.deleteAllRecipesForUser(vp.userId);
+
+    const allRecipesAfter = await repo.getAllRecipes();
+    expect(allRecipesAfter.length).toBe(1);
+    expect(allRecipesAfter[0].userId).toBe('user-2');
+  });
 });

@@ -144,4 +144,29 @@ describe('FileSystemWorkoutTemplatesRepo', () => {
     expect(fetchedTemplate?.isDeleted).toBe(true);
     expect(fetchedTemplate?.deletedAt).toBeDefined();
   });
+
+  it('should delete all workout templates for a user', async () => {
+    const workoutTemplate2 = WorkoutTemplate.create({
+      ...vp.validWorkoutTemplateProps(),
+      id: 'template-2',
+      name: 'Pull Template',
+    });
+    const workoutTemplate3 = WorkoutTemplate.create({
+      ...vp.validWorkoutTemplateProps(),
+      id: 'template-3',
+      userId: 'user-2',
+      name: 'Leg Template',
+    });
+    await repo.saveWorkoutTemplate(workoutTemplate2);
+    await repo.saveWorkoutTemplate(workoutTemplate3);
+
+    const allTemplatesBefore = await repo.getAllWorkoutTemplates();
+    expect(allTemplatesBefore.length).toBe(3);
+
+    await repo.deleteAllWorkoutTemplatesForUser(vp.userId);
+
+    const allTemplatesAfter = await repo.getAllWorkoutTemplates();
+    expect(allTemplatesAfter.length).toBe(1);
+    expect(allTemplatesAfter[0].userId).toBe('user-2');
+  });
 });

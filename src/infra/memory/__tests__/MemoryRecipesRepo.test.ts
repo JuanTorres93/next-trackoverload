@@ -79,4 +79,32 @@ describe('MemoryRecipesRepo', () => {
     const allRecipesAfterDeletion = await repo.getAllRecipes();
     expect(allRecipesAfterDeletion.length).toBe(0);
   });
+
+  it('should delete all recipes for a user', async () => {
+    const recipe2 = Recipe.create({
+      ...vp.recipePropsNoIngredientLines,
+      id: 'recipe-2',
+      name: 'Pasta',
+      ingredientLines: [ingredientLine],
+    });
+    await repo.saveRecipe(recipe2);
+
+    const recipe3 = Recipe.create({
+      ...vp.recipePropsNoIngredientLines,
+      id: 'recipe-3',
+      userId: 'user-2',
+      name: 'Pizza',
+      ingredientLines: [ingredientLine],
+    });
+    await repo.saveRecipe(recipe3);
+
+    const allRecipesBefore = await repo.getAllRecipes();
+    expect(allRecipesBefore.length).toBe(3);
+
+    await repo.deleteAllRecipesForUser(vp.userId);
+
+    const allRecipesAfter = await repo.getAllRecipes();
+    expect(allRecipesAfter.length).toBe(1);
+    expect(allRecipesAfter[0].userId).toBe('user-2');
+  });
 });

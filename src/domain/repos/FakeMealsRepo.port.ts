@@ -13,4 +13,5 @@ export interface FakeMealsRepo {
   deleteFakeMeal(id: string): Promise<void>;
   deleteMultipleFakeMeals(ids: string[]): Promise<void>;
   deleteFakeMealByIdAndUserId(id: string, userId: string): Promise<void>;
+  deleteAllFakeMealsForUser(userId: string): Promise<void>;
 }

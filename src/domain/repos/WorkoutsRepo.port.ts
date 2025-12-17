@@ -12,4 +12,5 @@ export interface WorkoutsRepo {
   ): Promise<Workout[]>;
   saveWorkout(workout: Workout): Promise<void>;
   deleteWorkout(id: string): Promise<void>;
+  deleteAllWorkoutsForUser(userId: string): Promise<void>;
 }

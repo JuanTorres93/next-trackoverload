@@ -65,6 +65,10 @@ export class MemoryFakeMealsRepo implements FakeMealsRepo {
     this.fakeMeals = this.fakeMeals.filter((fm) => !ids.includes(fm.id));
   }
 
+  async deleteAllFakeMealsForUser(userId: string): Promise<void> {
+    this.fakeMeals = this.fakeMeals.filter((fm) => fm.userId !== userId);
+  }
+
   // IMPORTANT NOTE: Helper method for testing - not part of the interface
   clearForTesting(): void {
     this.fakeMeals = [];

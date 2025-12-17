@@ -47,6 +47,12 @@ export class MemoryWorkoutTemplatesRepo implements WorkoutTemplatesRepo {
     return workoutTemplate || null;
   }
 
+  async deleteAllWorkoutTemplatesForUser(userId: string): Promise<void> {
+    this.workoutTemplates = this.workoutTemplates.filter(
+      (wt) => wt.userId !== userId
+    );
+  }
+
   // IMPORTANT NOTE: Helper method for testing - not part of the interface
   // Used sparingly in tests to verify internal state (specifically for soft deletes)
   get workoutTemplatesForTesting(): WorkoutTemplate[] {

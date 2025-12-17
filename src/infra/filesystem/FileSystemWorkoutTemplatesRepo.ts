@@ -155,4 +155,29 @@ export class FileSystemWorkoutTemplatesRepo implements WorkoutTemplatesRepo {
     }
     return null;
   }
+
+  async deleteAllWorkoutTemplatesForUser(userId: string): Promise<void> {
+    const allTemplates = await this.getAllWorkoutTemplates();
+    const userTemplates = allTemplates.filter((t) => t.userId === userId);
+
+    await Promise.all(
+      userTemplates.map(async (template) => {
+        const filePath = this.getTemplateFilePath(template.id);
+        try {
+          await fs.unlink(filePath);
+          // Delete associated template lines
+          for (const line of template.exercises) {
+            const lineFilePath = this.getTemplateLineFilePath(line.id);
+            try {
+              await fs.unlink(lineFilePath);
+            } catch {
+              // Line file might not exist
+            }
+          }
+        } catch {
+          // Template file might not exist
+        }
+      })
+    );
+  }
 }

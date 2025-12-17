@@ -66,6 +66,10 @@ export class MemoryDaysRepo implements DaysRepo {
     // No error for non-existent days - consistent with other repos
   }
 
+  async deleteAllDaysForUser(userId: string): Promise<void> {
+    this.days = this.days.filter((d) => d.userId !== userId);
+  }
+
   // IMPORTANT NOTE: Helper method for testing - not part of the interface
   clearForTesting(): void {
     this.days = [];

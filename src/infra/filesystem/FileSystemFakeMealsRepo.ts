@@ -125,4 +125,20 @@ export class FileSystemFakeMealsRepo implements FakeMealsRepo {
       })
     );
   }
+
+  async deleteAllFakeMealsForUser(userId: string): Promise<void> {
+    const allFakeMeals = await this.getAllFakeMeals();
+    const userFakeMeals = allFakeMeals.filter((fm) => fm.userId === userId);
+
+    await Promise.all(
+      userFakeMeals.map(async (fakeMeal) => {
+        const filePath = this.getFilePath(fakeMeal.id);
+        try {
+          await fs.unlink(filePath);
+        } catch {
+          // File might not exist
+        }
+      })
+    );
+  }
 }

@@ -152,4 +152,29 @@ describe('FileSystemWorkoutsRepo', () => {
       .catch(() => false);
     expect(lineFileExists).toBe(true);
   });
+
+  it('should delete all workouts for a user', async () => {
+    const workout2 = Workout.create({
+      ...vp.validWorkoutPropsNoExercises(),
+      id: 'workout-2',
+      name: 'Pull Day',
+    });
+    const workout3 = Workout.create({
+      ...vp.validWorkoutPropsNoExercises(),
+      id: 'workout-3',
+      userId: 'user-2',
+      name: 'Leg Day',
+    });
+    await repo.saveWorkout(workout2);
+    await repo.saveWorkout(workout3);
+
+    const allWorkoutsBefore = await repo.getAllWorkouts();
+    expect(allWorkoutsBefore.length).toBe(3);
+
+    await repo.deleteAllWorkoutsForUser(vp.userId);
+
+    const allWorkoutsAfter = await repo.getAllWorkouts();
+    expect(allWorkoutsAfter.length).toBe(1);
+    expect(allWorkoutsAfter[0].userId).toBe('user-2');
+  });
 });

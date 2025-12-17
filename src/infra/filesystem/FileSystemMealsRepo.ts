@@ -160,4 +160,29 @@ export class FileSystemMealsRepo implements MealsRepo {
       })
     );
   }
+
+  async deleteAllMealsForUser(userId: string): Promise<void> {
+    const allMeals = await this.getAllMeals();
+    const userMeals = allMeals.filter((m) => m.userId === userId);
+
+    await Promise.all(
+      userMeals.map(async (meal) => {
+        const filePath = this.getMealFilePath(meal.id);
+        try {
+          await fs.unlink(filePath);
+          // Delete associated ingredient lines
+          for (const line of meal.ingredientLines) {
+            const lineFilePath = this.getIngredientLineFilePath(line.id);
+            try {
+              await fs.unlink(lineFilePath);
+            } catch {
+              // Line file might not exist
+            }
+          }
+        } catch {
+          // Meal file might not exist
+        }
+      })
+    );
+  }
 }

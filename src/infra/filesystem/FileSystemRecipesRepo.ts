@@ -164,4 +164,29 @@ export class FileSystemRecipesRepo implements RecipesRepo {
       await this.deleteIngredientLineInRecipe(ids[i], ingredientLineIds[i]);
     }
   }
+
+  async deleteAllRecipesForUser(userId: string): Promise<void> {
+    const allRecipes = await this.getAllRecipes();
+    const userRecipes = allRecipes.filter((r) => r.userId === userId);
+
+    await Promise.all(
+      userRecipes.map(async (recipe) => {
+        const filePath = this.getRecipeFilePath(recipe.id);
+        try {
+          await fs.unlink(filePath);
+          // Delete associated ingredient lines
+          for (const line of recipe.ingredientLines) {
+            const lineFilePath = this.getIngredientLineFilePath(line.id);
+            try {
+              await fs.unlink(lineFilePath);
+            } catch {
+              // Line file might not exist
+            }
+          }
+        } catch {
+          // Recipe file might not exist
+        }
+      })
+    );
+  }
 }

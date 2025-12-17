@@ -48,6 +48,10 @@ export class MemoryMealsRepo implements MealsRepo {
     this.meals = this.meals.filter((m) => !ids.includes(m.id));
   }
 
+  async deleteAllMealsForUser(userId: string): Promise<void> {
+    this.meals = this.meals.filter((m) => m.userId !== userId);
+  }
+
   // IMPORTANT NOTE: Helper method for testing - not part of the interface
   clearForTesting(): void {
     this.meals = [];

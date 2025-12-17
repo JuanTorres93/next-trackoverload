@@ -116,4 +116,20 @@ export class FileSystemDaysRepo implements DaysRepo {
       }
     }
   }
+
+  async deleteAllDaysForUser(userId: string): Promise<void> {
+    const allDays = await this.getAllDays();
+    const userDays = allDays.filter((d) => d.userId === userId);
+
+    await Promise.all(
+      userDays.map(async (day) => {
+        const filePath = this.getFilePath(day.id);
+        try {
+          await fs.unlink(filePath);
+        } catch {
+          // File might not exist
+        }
+      })
+    );
+  }
 }

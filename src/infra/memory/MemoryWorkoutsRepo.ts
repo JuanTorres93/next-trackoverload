@@ -58,6 +58,10 @@ export class MemoryWorkoutsRepo implements WorkoutsRepo {
     this.workouts.splice(index, 1);
   }
 
+  async deleteAllWorkoutsForUser(userId: string): Promise<void> {
+    this.workouts = this.workouts.filter((w) => w.userId !== userId);
+  }
+
   // IMPORTANT NOTE: Helper method for testing - not part of the interface
   clearForTesting(): void {
     this.workouts = [];

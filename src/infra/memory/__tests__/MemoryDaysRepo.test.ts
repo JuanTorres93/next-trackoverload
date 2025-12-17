@@ -68,4 +68,32 @@ describe('MemoryDaysRepo', () => {
     const allDaysAfterDeletion = await repo.getAllDays();
     expect(allDaysAfterDeletion.length).toBe(0);
   });
+
+  it('should delete all days for a user', async () => {
+    const day2 = Day.create({
+      ...vp.validDayProps(),
+      day: 2,
+      month: 10,
+      year: 2023,
+    });
+    await repo.saveDay(day2);
+
+    const day3 = Day.create({
+      ...vp.validDayProps(),
+      userId: 'user-2',
+      day: 3,
+      month: 10,
+      year: 2023,
+    });
+    await repo.saveDay(day3);
+
+    const allDaysBefore = await repo.getAllDays();
+    expect(allDaysBefore.length).toBe(3);
+
+    await repo.deleteAllDaysForUser(vp.userId);
+
+    const allDaysAfter = await repo.getAllDays();
+    expect(allDaysAfter.length).toBe(1);
+    expect(allDaysAfter[0].userId).toBe('user-2');
+  });
 });

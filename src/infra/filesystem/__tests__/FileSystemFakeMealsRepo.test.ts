@@ -207,4 +207,30 @@ describe('FileSystemFakeMealsRepo', () => {
     expect(allFakeMealsAfterDeletion.length).toBe(1);
     expect(allFakeMealsAfterDeletion[0].id).toBe('fakemeal-2');
   });
+
+  it('should delete all fake meals for a user', async () => {
+    const fakeMeal2 = FakeMeal.create({
+      ...vp.validFakeMealProps,
+      id: '2',
+      name: 'Energy Bar',
+    });
+    await repo.saveFakeMeal(fakeMeal2);
+
+    const fakeMeal3 = FakeMeal.create({
+      ...vp.validFakeMealProps,
+      id: '3',
+      userId: 'user-2',
+      name: 'Protein Bar',
+    });
+    await repo.saveFakeMeal(fakeMeal3);
+
+    const allFakeMealsBefore = await repo.getAllFakeMeals();
+    expect(allFakeMealsBefore.length).toBe(3);
+
+    await repo.deleteAllFakeMealsForUser(vp.userId);
+
+    const allFakeMealsAfter = await repo.getAllFakeMeals();
+    expect(allFakeMealsAfter.length).toBe(1);
+    expect(allFakeMealsAfter[0].userId).toBe('user-2');
+  });
 });
