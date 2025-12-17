@@ -16,6 +16,7 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
   let usersRepo: MemoryUsersRepo;
   let usecase: CreateWorkoutFromTemplateUsecase;
   let user: User;
+  let template: WorkoutTemplate;
 
   beforeEach(async () => {
     workoutTemplatesRepo = new MemoryWorkoutTemplatesRepo();
@@ -28,163 +29,161 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
     );
 
     user = User.create({ ...vp.validUserProps });
+
+    template = WorkoutTemplate.create({
+      ...vp.validWorkoutTemplateProps(),
+    });
+
     await usersRepo.saveUser(user);
-  });
-
-  it('should create workout from template ', async () => {
-    const template = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps(),
-    });
-
     await workoutTemplatesRepo.saveWorkoutTemplate(template);
-
-    const request = {
-      userId: vp.userId,
-      workoutTemplateId: vp.validWorkoutTemplateProps().id,
-    };
-
-    const result = await usecase.execute(request);
-
-    expect(result.name).toContain(vp.validWorkoutTemplateProps().name);
-    expect(result.workoutTemplateId).toBe(vp.validWorkoutTemplateProps().id);
-    expect(result.exercises).toHaveLength(
-      vp
-        .validWorkoutTemplateProps()
-        .exercises.reduce((acc, ex) => acc + ex.sets, 0)
-    ); // Sum of all sets of each exercise in template
-
-    // Check exercise 1 sets
-    const exercise1Sets = result.exercises.filter(
-      (ex) =>
-        ex.exerciseId === vp.validWorkoutTemplateProps().exercises[0].exerciseId
-    );
-    expect(exercise1Sets).toHaveLength(
-      vp.validWorkoutTemplateProps().exercises[0].sets
-    );
-    expect(exercise1Sets[0]).toEqual({
-      id: exercise1Sets[0].id,
-      workoutId: result.id,
-      exerciseId: vp.validWorkoutTemplateProps().exercises[0].exerciseId,
-      setNumber: 1,
-      reps: 0,
-      weight: 0,
-      createdAt: exercise1Sets[0].createdAt,
-      updatedAt: exercise1Sets[0].updatedAt,
-    });
-    expect(exercise1Sets[1].setNumber).toBe(2);
-    expect(exercise1Sets[2].setNumber).toBe(3);
-
-    // Check exercise 2 sets
-    const exercise2Sets = result.exercises.filter(
-      (ex) =>
-        ex.exerciseId === vp.validWorkoutTemplateProps().exercises[1].exerciseId
-    );
-    expect(exercise2Sets).toHaveLength(
-      vp.validWorkoutTemplateProps().exercises[1].sets
-    );
-    expect(exercise2Sets[0].setNumber).toBe(1);
-    expect(exercise2Sets[1].setNumber).toBe(2);
-
-    // Verify workout was saved
-    const savedWorkout = await workoutsRepo.getWorkoutById(result.id);
-    expect(savedWorkout).not.toBeNull();
-    expect(savedWorkout!.name).toContain(vp.validWorkoutTemplateProps().name);
   });
 
-  it('should return a WorkoutDTO', async () => {
-    const template = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps(),
-    });
+  describe('Execution', () => {
+    it('should create workout from template ', async () => {
+      const request = {
+        userId: vp.userId,
+        workoutTemplateId: vp.validWorkoutTemplateProps().id,
+      };
 
-    await workoutTemplatesRepo.saveWorkoutTemplate(template);
+      const result = await usecase.execute(request);
 
-    const request = {
-      userId: vp.userId,
-      workoutTemplateId: vp.validWorkoutTemplateProps().id,
-    };
+      expect(result.name).toContain(vp.validWorkoutTemplateProps().name);
+      expect(result.workoutTemplateId).toBe(vp.validWorkoutTemplateProps().id);
+      expect(result.exercises).toHaveLength(
+        vp
+          .validWorkoutTemplateProps()
+          .exercises.reduce((acc, ex) => acc + ex.sets, 0)
+      ); // Sum of all sets of each exercise in template
 
-    const result = await usecase.execute(request);
+      // Check exercise 1 sets
+      const exercise1Sets = result.exercises.filter(
+        (ex) =>
+          ex.exerciseId ===
+          vp.validWorkoutTemplateProps().exercises[0].exerciseId
+      );
+      expect(exercise1Sets).toHaveLength(
+        vp.validWorkoutTemplateProps().exercises[0].sets
+      );
+      expect(exercise1Sets[0]).toEqual({
+        id: exercise1Sets[0].id,
+        workoutId: result.id,
+        exerciseId: vp.validWorkoutTemplateProps().exercises[0].exerciseId,
+        setNumber: 1,
+        reps: 0,
+        weight: 0,
+        createdAt: exercise1Sets[0].createdAt,
+        updatedAt: exercise1Sets[0].updatedAt,
+      });
+      expect(exercise1Sets[1].setNumber).toBe(2);
+      expect(exercise1Sets[2].setNumber).toBe(3);
 
-    expect(result).not.toBeInstanceOf(WorkoutTemplate);
-    expect(result).not.toBeInstanceOf(Workout);
-    for (const prop of dto.workoutDTOProperties) {
-      expect(result).toHaveProperty(prop);
-    }
-  });
+      // Check exercise 2 sets
+      const exercise2Sets = result.exercises.filter(
+        (ex) =>
+          ex.exerciseId ===
+          vp.validWorkoutTemplateProps().exercises[1].exerciseId
+      );
+      expect(exercise2Sets).toHaveLength(
+        vp.validWorkoutTemplateProps().exercises[1].sets
+      );
+      expect(exercise2Sets[0].setNumber).toBe(1);
+      expect(exercise2Sets[1].setNumber).toBe(2);
 
-  it('should create workout with custom name', async () => {
-    const template = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps(),
+      // Verify workout was saved
+      const savedWorkout = await workoutsRepo.getWorkoutById(result.id);
+      expect(savedWorkout).not.toBeNull();
+      expect(savedWorkout!.name).toContain(vp.validWorkoutTemplateProps().name);
     });
 
-    await workoutTemplatesRepo.saveWorkoutTemplate(template);
+    it('should return a WorkoutDTO', async () => {
+      const request = {
+        userId: vp.userId,
+        workoutTemplateId: vp.validWorkoutTemplateProps().id,
+      };
 
-    const request = {
-      workoutTemplateId: vp.validWorkoutTemplateProps().id,
-      userId: vp.userId,
-      workoutName: 'My Custom Workout',
-    };
+      const result = await usecase.execute(request);
 
-    const result = await usecase.execute(request);
-
-    expect(result.name).toBe('My Custom Workout');
-    expect(result.workoutTemplateId).toBe(vp.validWorkoutTemplateProps().id);
-  });
-
-  it('should throw NotFoundError when template does not exist', async () => {
-    const request = {
-      workoutTemplateId: 'non-existent',
-      userId: vp.userId,
-    };
-
-    await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
-  });
-
-  it('should throw error when template has no exercises', async () => {
-    const template = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps(),
-      exercises: [],
+      expect(result).not.toBeInstanceOf(WorkoutTemplate);
+      expect(result).not.toBeInstanceOf(Workout);
+      for (const prop of dto.workoutDTOProperties) {
+        expect(result).toHaveProperty(prop);
+      }
     });
 
-    await workoutTemplatesRepo.saveWorkoutTemplate(template);
+    it('should create workout with custom name', async () => {
+      const request = {
+        workoutTemplateId: vp.validWorkoutTemplateProps().id,
+        userId: vp.userId,
+        workoutName: 'My Custom Workout',
+      };
 
-    const request = {
-      userId: vp.userId,
-      workoutTemplateId: vp.validWorkoutTemplateProps().id,
-    };
+      const result = await usecase.execute(request);
 
-    await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
+      expect(result.name).toBe('My Custom Workout');
+      expect(result.workoutTemplateId).toBe(vp.validWorkoutTemplateProps().id);
+    });
   });
 
-  it('should throw error when trying to create workout from deleted template', async () => {
-    const template = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps(),
+  describe('Errors', () => {
+    it('should throw NotFoundError when template does not exist', async () => {
+      const request = {
+        workoutTemplateId: 'non-existent',
+        userId: vp.userId,
+      };
+
+      await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+
+      await expect(usecase.execute(request)).rejects.toThrow(
+        /CreateWorkoutFromTemplateUsecase:.*WorkoutTemplate not found/
+      );
     });
 
-    template.markAsDeleted();
-    await workoutTemplatesRepo.saveWorkoutTemplate(template);
+    it('should throw error when template has no exercises', async () => {
+      const template = WorkoutTemplate.create({
+        ...vp.validWorkoutTemplateProps(),
+        exercises: [],
+      });
 
-    const request = {
-      userId: vp.userId,
-      workoutTemplateId: vp.validWorkoutTemplateProps().id,
-    };
+      await workoutTemplatesRepo.saveWorkoutTemplate(template);
 
-    await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
-  });
+      const request = {
+        userId: vp.userId,
+        workoutTemplateId: vp.validWorkoutTemplateProps().id,
+      };
 
-  it('should throw error if user does not exist', async () => {
-    await expect(
-      usecase.execute({
+      await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
+
+      await expect(usecase.execute(request)).rejects.toThrow(
+        /CreateWorkoutFromTemplateUsecase.*Cannot.*from.*empty template/
+      );
+    });
+
+    it('should throw error when trying to create workout from deleted template', async () => {
+      template.markAsDeleted();
+      await workoutTemplatesRepo.saveWorkoutTemplate(template);
+
+      const request = {
+        userId: vp.userId,
+        workoutTemplateId: vp.validWorkoutTemplateProps().id,
+      };
+
+      await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+      await expect(usecase.execute(request)).rejects.toThrow(
+        /CreateWorkoutFromTemplateUsecase:.*WorkoutTemplate.*not found/
+      );
+    });
+
+    it('should throw error if user does not exist', async () => {
+      const request = {
         userId: 'non-existent',
         workoutTemplateId: vp.validWorkoutTemplateProps().id,
-      })
-    ).rejects.toThrow(NotFoundError);
+      };
 
-    await expect(
-      usecase.execute({
-        userId: 'non-existent',
-        workoutTemplateId: vp.validWorkoutTemplateProps().id,
-      })
-    ).rejects.toThrow(/CreateWorkoutFromTemplateUsecase.*User.*not.*found/);
+      await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+
+      await expect(usecase.execute(request)).rejects.toThrow(
+        /CreateWorkoutFromTemplateUsecase.*User.*not.*found/
+      );
+    });
   });
 });

@@ -40,7 +40,7 @@ export class CreateWorkoutFromTemplateUsecase {
 
     if (!workoutTemplate || isDeleted) {
       throw new NotFoundError(
-        'CreateWorkoutTemplateUsecase: WorkoutTemplate not found'
+        'CreateWorkoutFromTemplateUsecase: WorkoutTemplate not found'
       );
     }
 
@@ -51,7 +51,7 @@ export class CreateWorkoutFromTemplateUsecase {
 
     const newWorkoutId = uuidv4();
 
-    // Convert template exercises to workout exercises
+    // Create a WorkoutLine for each set of each exercise in the template
     const workoutExercises = [];
     for (const templateExercise of workoutTemplate.exercises) {
       for (let setNumber = 1; setNumber <= templateExercise.sets; setNumber++) {
