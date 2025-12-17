@@ -78,6 +78,54 @@ describe('Workout', () => {
       workout.update({ name: newName });
       expect(workout.name).toBe(newName);
     });
+
+    it('should reorder exercises after a set removal', async () => {
+      // Second set of the same exercise
+      workout.addExercise(
+        WorkoutLine.create({
+          ...vp.validWorkoutPropsNoExercises(),
+          workoutId: workout.id,
+          exerciseId: workoutLine.exerciseId,
+          setNumber: 2,
+          reps: 8,
+          weight: 80,
+        })
+      );
+
+      // Third set of the same exercise
+      workout.addExercise(
+        WorkoutLine.create({
+          ...vp.validWorkoutPropsNoExercises(),
+          workoutId: workout.id,
+          exerciseId: workoutLine.exerciseId,
+          setNumber: 3,
+          reps: 6,
+          weight: 70,
+        })
+      );
+
+      // Remove the second set (the one first added in this test)
+      workout.removeSet(workoutLine.exerciseId, 2);
+
+      const remainingSets = workout.exercises.filter(
+        (line) => line.exerciseId === workoutLine.exerciseId
+      );
+
+      // Defined in beforeEach block
+      const originalWorkoutLine = remainingSets[0];
+      // Newly added third set, which should now be the second set
+      const lastWorkoutLine = remainingSets[1];
+
+      expect(remainingSets).toHaveLength(2);
+      expect(originalWorkoutLine.setNumber).toBe(1);
+      expect(lastWorkoutLine.setNumber).toBe(2);
+
+      expect(originalWorkoutLine.reps).toBe(workoutLine.reps);
+      expect(originalWorkoutLine.weight).toBe(workoutLine.weight);
+
+      expect(lastWorkoutLine.reps).toBe(6);
+      expect(lastWorkoutLine.weight).toBe(70);
+    });
   });
 
   describe('Errors', () => {
