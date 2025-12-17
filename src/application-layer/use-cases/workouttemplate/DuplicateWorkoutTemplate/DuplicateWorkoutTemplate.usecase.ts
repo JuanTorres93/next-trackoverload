@@ -4,6 +4,7 @@ import {
 } from '@/application-layer/dtos/WorkoutTemplateDTO';
 import { NotFoundError } from '@/domain/common/errors';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
+import { WorkoutTemplateLine } from '@/domain/entities/workouttemplateline/WorkoutTemplateLine';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
 import { v4 as uuidv4 } from 'uuid';
@@ -39,17 +40,34 @@ export class DuplicateWorkoutTemplateUsecase {
     const isDeleted = originalTemplate?.isDeleted ?? false;
 
     if (!originalTemplate || isDeleted) {
-      throw new NotFoundError('WorkoutTemplate not found');
+      throw new NotFoundError(
+        'DuplicateWorkoutTemplateUsecase: WorkoutTemplate not found'
+      );
     }
 
     const newTemplateName =
       request.newTemplateName ?? `${originalTemplate.name} (Copy)`;
 
+    const newTemplateId = uuidv4();
+
+    // Duplicate exercises
+    const duplicatedExercises: WorkoutTemplateLine[] =
+      originalTemplate.exercises.map((exercise) =>
+        WorkoutTemplateLine.create({
+          id: uuidv4(),
+          templateId: newTemplateId,
+          exerciseId: exercise.exerciseId,
+          sets: exercise.sets,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })
+      );
+
     const duplicatedTemplate = WorkoutTemplate.create({
-      id: uuidv4(),
+      id: newTemplateId,
       userId: request.userId,
       name: newTemplateName,
-      exercises: [...originalTemplate.exercises],
+      exercises: duplicatedExercises,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
