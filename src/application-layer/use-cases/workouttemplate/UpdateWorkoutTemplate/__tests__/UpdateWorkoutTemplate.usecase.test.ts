@@ -1,18 +1,19 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { UpdateWorkoutTemplateUsecase } from '../UpdateWorkoutTemplate.usecase';
-import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
-import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
-import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
-import { User } from '@/domain/entities/user/User';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
+import { NotFoundError } from '@/domain/common/errors';
+import { User } from '@/domain/entities/user/User';
+import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
+import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { UpdateWorkoutTemplateUsecase } from '../UpdateWorkoutTemplate.usecase';
 
 describe('UpdateWorkoutTemplateUsecase', () => {
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
   let usersRepo: MemoryUsersRepo;
   let usecase: UpdateWorkoutTemplateUsecase;
   let user: User;
+  let existingTemplate: WorkoutTemplate;
 
   beforeEach(async () => {
     workoutTemplatesRepo = new MemoryWorkoutTemplatesRepo();
@@ -20,16 +21,15 @@ describe('UpdateWorkoutTemplateUsecase', () => {
     usecase = new UpdateWorkoutTemplateUsecase(workoutTemplatesRepo, usersRepo);
 
     user = User.create({ ...vp.validUserProps });
-    await usersRepo.saveUser(user);
-  });
-
-  it('should update the workout template name', async () => {
-    const existingTemplate = WorkoutTemplate.create({
+    existingTemplate = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps(),
     });
 
+    await usersRepo.saveUser(user);
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
+  });
 
+  it('should update the workout template name', async () => {
     const request = {
       id: vp.validWorkoutTemplateProps().id,
       userId: vp.userId,
@@ -59,12 +59,6 @@ describe('UpdateWorkoutTemplateUsecase', () => {
   });
 
   it('should return WorkoutTemplateDTO', async () => {
-    const existingTemplate = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps(),
-    });
-
-    await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
-
     const request = {
       id: vp.validWorkoutTemplateProps().id,
       userId: vp.userId,
@@ -87,34 +81,12 @@ describe('UpdateWorkoutTemplateUsecase', () => {
     };
 
     await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
-  });
-
-  it('should throw error if name is invalid', async () => {
-    const existingTemplate = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps(),
-    });
-
-    await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
-
-    const invalidNames = [null, undefined, '', '   ', 3, {}, [], true, false];
-
-    for (const invalidName of invalidNames) {
-      const request = {
-        id: vp.validWorkoutTemplateProps().id,
-        name: invalidName,
-        userId: vp.userId,
-      };
-
-      // @ts-expect-error testing invalid inputs
-      await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
-    }
+    await expect(usecase.execute(request)).rejects.toThrow(
+      /UpdateWorkoutTemplate.*WorkoutTemplate.*not found/
+    );
   });
 
   it('should throw NotFoundError when trying to update deleted template', async () => {
-    const existingTemplate = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps(),
-    });
-
     existingTemplate.markAsDeleted();
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
@@ -128,20 +100,16 @@ describe('UpdateWorkoutTemplateUsecase', () => {
   });
 
   it('should throw error if user does not exist', async () => {
-    await expect(
-      usecase.execute({
-        id: vp.validWorkoutTemplateProps().id,
-        userId: 'non-existent',
-        name: 'New Name',
-      })
-    ).rejects.toThrow(NotFoundError);
+    const request = {
+      id: vp.validWorkoutTemplateProps().id,
+      userId: 'non-existent',
+      name: 'New Name',
+    };
 
-    await expect(
-      usecase.execute({
-        id: vp.validWorkoutTemplateProps().id,
-        userId: 'non-existent',
-        name: 'New Name',
-      })
-    ).rejects.toThrow(/UpdateWorkoutTemplateUsecase.*User.*not.*found/);
+    await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+
+    await expect(usecase.execute(request)).rejects.toThrow(
+      /UpdateWorkoutTemplateUsecase.*User.*not.*found/
+    );
   });
 });

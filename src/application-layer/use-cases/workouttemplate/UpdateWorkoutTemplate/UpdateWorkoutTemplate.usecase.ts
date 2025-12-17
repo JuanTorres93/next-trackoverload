@@ -38,7 +38,9 @@ export class UpdateWorkoutTemplateUsecase {
     const isDeleted = workoutTemplate?.isDeleted ?? false;
 
     if (!workoutTemplate || isDeleted) {
-      throw new NotFoundError('WorkoutTemplate not found');
+      throw new NotFoundError(
+        'UpdateWorkoutTemplateUsecase: WorkoutTemplate not found'
+      );
     }
 
     const patch: WorkoutTemplateUpdateProps = {
