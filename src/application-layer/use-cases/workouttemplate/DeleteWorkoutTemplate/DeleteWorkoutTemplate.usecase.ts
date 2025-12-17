@@ -30,7 +30,9 @@ export class DeleteWorkoutTemplateUsecase {
     const isDeleted = workoutTemplate?.isDeleted ?? false;
 
     if (!workoutTemplate || isDeleted) {
-      throw new NotFoundError('WorkoutTemplate not found');
+      throw new NotFoundError(
+        ' DeleteWorkoutTemplateUsecase: WorkoutTemplate not found'
+      );
     }
 
     workoutTemplate.markAsDeleted();

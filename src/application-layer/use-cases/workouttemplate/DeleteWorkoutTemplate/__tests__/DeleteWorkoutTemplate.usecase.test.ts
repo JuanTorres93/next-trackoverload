@@ -12,6 +12,7 @@ describe('DeleteWorkoutTemplateUsecase', () => {
   let usersRepo: MemoryUsersRepo;
   let usecase: DeleteWorkoutTemplateUsecase;
   let user: User;
+  let existingTemplate: WorkoutTemplate;
 
   beforeEach(async () => {
     workoutTemplatesRepo = new MemoryWorkoutTemplatesRepo();
@@ -21,67 +22,71 @@ describe('DeleteWorkoutTemplateUsecase', () => {
     user = User.create({
       ...vp.validUserProps,
     });
+
+    existingTemplate = WorkoutTemplate.create({
+      ...vp.validWorkoutTemplateProps(),
+    });
+
     await usersRepo.saveUser(user);
+    await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
   });
 
-  it('should soft delete the workout template when it exists', async () => {
-    const existingTemplate = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps(),
-    });
+  describe('Execution', () => {
+    it('should soft delete the workout template when it exists because workout references template id', async () => {
+      await usecase.execute({ id: existingTemplate.id, userId: vp.userId });
 
-    await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
-
-    await usecase.execute({ id: existingTemplate.id, userId: vp.userId });
-
-    // Verify template was soft deleted (not accessible via normal getter)
-    const deletedTemplate = await workoutTemplatesRepo.getWorkoutTemplateById(
-      existingTemplate.id
-    );
-    expect(deletedTemplate).toBeNull();
-
-    // But still exists when including deleted templates
-    const templateIncludingDeleted =
-      workoutTemplatesRepo.workoutTemplatesForTesting.find(
-        (t) => t.id === existingTemplate.id
+      // Verify template was soft deleted (not accessible via normal getter)
+      const deletedTemplate = await workoutTemplatesRepo.getWorkoutTemplateById(
+        existingTemplate.id
       );
-    expect(templateIncludingDeleted).not.toBeNull();
-    expect(templateIncludingDeleted?.isDeleted).toBe(true);
-    expect(templateIncludingDeleted?.deletedAt).toBeDefined();
+      expect(deletedTemplate).toBeNull();
+
+      // But still exists in repo
+      const templateIncludingDeleted =
+        workoutTemplatesRepo.workoutTemplatesForTesting.find(
+          (t) => t.id === existingTemplate.id
+        );
+      expect(templateIncludingDeleted).not.toBeNull();
+      expect(templateIncludingDeleted?.isDeleted).toBe(true);
+      expect(templateIncludingDeleted?.deletedAt).toBeDefined();
+    });
   });
 
-  it('should throw NotFoundError when workout template does not exist', async () => {
-    await expect(
-      usecase.execute({ id: 'non-existent', userId: vp.userId })
-    ).rejects.toThrow(NotFoundError);
-  });
+  describe('Errors', () => {
+    it('should throw NotFoundError when workout template does not exist', async () => {
+      const request = { id: 'non-existent', userId: vp.userId };
 
-  it('should throw error if workout template is deleted', async () => {
-    const existingTemplate = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps(),
+      await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+
+      await expect(usecase.execute(request)).rejects.toThrow(
+        /DeleteWorkoutTemplateUsecase.*WorkoutTemplate.*not.*found/
+      );
     });
 
-    await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
+    it('should throw error if workout template is already deleted', async () => {
+      const request = { id: existingTemplate.id, userId: vp.userId };
 
-    await usecase.execute({ id: existingTemplate.id, userId: vp.userId });
+      // Delete it first
+      await usecase.execute(request);
 
-    await expect(
-      usecase.execute({ id: existingTemplate.id, userId: vp.userId })
-    ).rejects.toThrow(NotFoundError);
-  });
+      // Try deleting it again
+      await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+      await expect(usecase.execute(request)).rejects.toThrow(
+        /DeleteWorkoutTemplateUsecase.*WorkoutTemplate.*not.*found/
+      );
+    });
 
-  it('should throw error if user does not exist', async () => {
-    await expect(
-      usecase.execute({
+    it('should throw error if user does not exist', async () => {
+      const request = {
         id: 'some-id',
         userId: 'non-existent',
-      })
-    ).rejects.toThrow(NotFoundError);
+      };
 
-    await expect(
-      usecase.execute({
-        id: 'some-id',
-        userId: 'non-existent',
-      })
-    ).rejects.toThrow(/DeleteWorkoutTemplateUsecase.*User.*not.*found/);
+      await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+
+      await expect(usecase.execute(request)).rejects.toThrow(
+        /DeleteWorkoutTemplateUsecase.*User.*not.*found/
+      );
+    });
   });
 });
