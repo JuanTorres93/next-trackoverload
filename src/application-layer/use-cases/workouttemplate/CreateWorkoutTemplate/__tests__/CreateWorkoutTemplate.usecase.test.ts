@@ -25,63 +25,64 @@ describe('CreateWorkoutTemplateUsecase', () => {
     await usersRepo.saveUser(user);
   });
 
-  it('should create a new workout template with the given name', async () => {
-    const request = {
-      userId: vp.userId,
-      name: 'Push Day',
-    };
+  describe('Execution', () => {
+    it('should create a new workout template with the given name', async () => {
+      const request = {
+        userId: vp.userId,
+        name: 'Push Day',
+      };
 
-    const result = await usecase.execute(request);
+      const result = await usecase.execute(request);
 
-    expect(result.userId).toBe(vp.userId);
-    expect(result.name).toBe('Push Day');
-    expect(result.exercises).toEqual([]);
-    expect(result.id).toBeDefined();
+      expect(result.userId).toBe(vp.userId);
+      expect(result.name).toBe('Push Day');
+      expect(result.exercises).toEqual([]);
+      expect(result.id).toBeDefined();
+    });
+
+    it('should return a WorkoutTemplateDTO', async () => {
+      const request = {
+        userId: vp.userId,
+        name: 'Leg Day',
+      };
+
+      const result = await usecase.execute(request);
+
+      expect(result).not.toBeInstanceOf(WorkoutTemplate);
+      for (const prop of dto.workoutTemplateDTOProperties) {
+        expect(result).toHaveProperty(prop);
+      }
+    });
+
+    it('should save the workout template in the repository', async () => {
+      const request = {
+        userId: vp.userId,
+        name: 'Pull Day',
+      };
+
+      const result = await usecase.execute(request);
+
+      const savedTemplate = await workoutTemplatesRepo.getWorkoutTemplateById(
+        result.id
+      );
+      expect(savedTemplate).not.toBeNull();
+      expect(savedTemplate!.userId).toBe(vp.userId);
+      expect(savedTemplate!.name).toBe('Pull Day');
+    });
   });
 
-  it('should return a WorkoutTemplateDTO', async () => {
-    const request = {
-      userId: vp.userId,
-      name: 'Leg Day',
-    };
-
-    const result = await usecase.execute(request);
-
-    expect(result).not.toBeInstanceOf(WorkoutTemplate);
-    for (const prop of dto.workoutTemplateDTOProperties) {
-      expect(result).toHaveProperty(prop);
-    }
-  });
-
-  it('should save the workout template in the repository', async () => {
-    const request = {
-      userId: vp.userId,
-      name: 'Pull Day',
-    };
-
-    const result = await usecase.execute(request);
-
-    const savedTemplate = await workoutTemplatesRepo.getWorkoutTemplateById(
-      result.id
-    );
-    expect(savedTemplate).not.toBeNull();
-    expect(savedTemplate!.userId).toBe(vp.userId);
-    expect(savedTemplate!.name).toBe('Pull Day');
-  });
-
-  it('should throw error if user does not exist', async () => {
-    await expect(
-      usecase.execute({
+  describe('Errors', () => {
+    it('should throw error if user does not exist', async () => {
+      const request = {
         userId: 'non-existent',
         name: 'Push Day',
-      })
-    ).rejects.toThrow(NotFoundError);
+      };
 
-    await expect(
-      usecase.execute({
-        userId: 'non-existent',
-        name: 'Push Day',
-      })
-    ).rejects.toThrow(/CreateWorkoutTemplateUsecase.*User.*not.*found/);
+      await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+
+      await expect(usecase.execute(request)).rejects.toThrow(
+        /CreateWorkoutTemplateUsecase.*User.*not.*found/
+      );
+    });
   });
 });
