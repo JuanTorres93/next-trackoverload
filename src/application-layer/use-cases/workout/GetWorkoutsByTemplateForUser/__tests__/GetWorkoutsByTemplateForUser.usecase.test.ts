@@ -14,6 +14,9 @@ describe('GetWorkoutsByTemplateUsecase', () => {
   let usersRepo: MemoryUsersRepo;
   let getWorkoutsByTemplateUsecase: GetWorkoutsByTemplateForUserUsecase;
   let user: User;
+  let workout1: Workout;
+  let workout2: Workout;
+  let workout3: Workout;
 
   beforeEach(async () => {
     workoutsRepo = new MemoryWorkoutsRepo();
@@ -26,18 +29,15 @@ describe('GetWorkoutsByTemplateUsecase', () => {
     user = User.create({
       ...vp.validUserProps,
     });
-    await usersRepo.saveUser(user);
-  });
 
-  it('should return workouts filtered by template id', async () => {
-    const workout1 = Workout.create({
+    workout1 = Workout.create({
       ...vp.validWorkoutProps,
       id: '1',
       name: 'Push Day #1',
       exercises: [],
     });
 
-    const workout2 = Workout.create({
+    workout2 = Workout.create({
       ...vp.validWorkoutProps,
       id: '2',
       name: 'Pull Day #1',
@@ -45,102 +45,75 @@ describe('GetWorkoutsByTemplateUsecase', () => {
       exercises: [],
     });
 
-    const workout3 = Workout.create({
+    workout3 = Workout.create({
       ...vp.validWorkoutProps,
       id: '3',
       name: 'Push Day #2',
       exercises: [],
     });
 
+    await usersRepo.saveUser(user);
     await workoutsRepo.saveWorkout(workout1);
     await workoutsRepo.saveWorkout(workout2);
     await workoutsRepo.saveWorkout(workout3);
-
-    const workouts = await getWorkoutsByTemplateUsecase.execute({
-      templateId: 'template-1',
-      userId: vp.userId,
-    });
-
-    const workoutIds = workouts.map((w) => w.id);
-
-    expect(workouts).toHaveLength(2);
-    expect(workoutIds).toContain(workout1.id);
-    expect(workoutIds).toContain(workout3.id);
-    expect(workoutIds).not.toContain(workout2.id);
   });
 
-  it('should return array of WorkoutDTO', async () => {
-    const workout1 = Workout.create({
-      ...vp.validWorkoutProps,
-      id: '1',
-      name: 'Push Day #1',
-      exercises: [],
+  describe('Execution', () => {
+    it('should return workouts filtered by template id', async () => {
+      const workouts = await getWorkoutsByTemplateUsecase.execute({
+        templateId: 'template-1',
+        userId: vp.userId,
+      });
+
+      const workoutIds = workouts.map((w) => w.id);
+
+      expect(workouts).toHaveLength(2);
+      expect(workoutIds).toContain(workout1.id);
+      expect(workoutIds).toContain(workout3.id);
+      expect(workoutIds).not.toContain(workout2.id);
     });
 
-    const workout2 = Workout.create({
-      ...vp.validWorkoutProps,
-      id: '2',
-      name: 'Push Day #2',
-      exercises: [],
-    });
+    it('should return array of WorkoutDTO', async () => {
+      const workouts = await getWorkoutsByTemplateUsecase.execute({
+        templateId: 'template-1',
+        userId: vp.userId,
+      });
 
-    await workoutsRepo.saveWorkout(workout1);
-    await workoutsRepo.saveWorkout(workout2);
+      for (const workout of workouts) {
+        expect(workout).not.toBeInstanceOf(Workout);
 
-    const workouts = await getWorkoutsByTemplateUsecase.execute({
-      templateId: 'template-1',
-      userId: vp.userId,
-    });
-
-    for (const workout of workouts) {
-      expect(workout).not.toBeInstanceOf(Workout);
-
-      for (const prop of dto.workoutDTOProperties) {
-        expect(workout).toHaveProperty(prop);
+        for (const prop of dto.workoutDTOProperties) {
+          expect(workout).toHaveProperty(prop);
+        }
       }
-    }
-  });
-
-  it('should return empty array when no workouts exist for template', async () => {
-    const workout1 = Workout.create({
-      ...vp.validWorkoutProps,
-      id: '1',
-      name: 'Push Day #1',
-      exercises: [],
     });
 
-    await workoutsRepo.saveWorkout(workout1);
+    it('should return empty array when no workouts exist for template', async () => {
+      const workouts = await getWorkoutsByTemplateUsecase.execute({
+        templateId: 'non-existent-template',
+        userId: vp.userId,
+      });
 
-    const workouts = await getWorkoutsByTemplateUsecase.execute({
-      templateId: 'non-existent-template',
-      userId: vp.userId,
+      expect(workouts).toHaveLength(0);
     });
-
-    expect(workouts).toHaveLength(0);
   });
 
-  it('should return empty array when no workouts exist at all', async () => {
-    const workouts = await getWorkoutsByTemplateUsecase.execute({
-      templateId: 'template-1',
-      userId: vp.userId,
-    });
-
-    expect(workouts).toHaveLength(0);
-  });
-
-  it('should throw error if user does not exist', async () => {
-    await expect(
-      getWorkoutsByTemplateUsecase.execute({
+  describe('Errors', () => {
+    it('should throw error if user does not exist', async () => {
+      const request = {
         templateId: 'template-1',
         userId: 'non-existent',
-      })
-    ).rejects.toThrow(NotFoundError);
+      };
 
-    await expect(
-      getWorkoutsByTemplateUsecase.execute({
-        templateId: 'template-1',
-        userId: 'non-existent',
-      })
-    ).rejects.toThrow(/GetWorkoutsByTemplateForUserUsecase.*User.*not.*found/);
+      await expect(
+        getWorkoutsByTemplateUsecase.execute(request)
+      ).rejects.toThrow(NotFoundError);
+
+      await expect(
+        getWorkoutsByTemplateUsecase.execute(request)
+      ).rejects.toThrow(
+        /GetWorkoutsByTemplateForUserUsecase.*User.*not.*found/
+      );
+    });
   });
 });
