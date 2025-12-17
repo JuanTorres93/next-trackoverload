@@ -33,6 +33,7 @@ describe('WorkoutTemplateDTO', () => {
         name: workoutTemplate.name,
         exercises: workoutTemplate.exercises.map((line) => ({
           id: line.id,
+          templateId: line.templateId,
           exerciseId: line.exerciseId,
           sets: line.sets,
           createdAt: line.createdAt.toISOString(),

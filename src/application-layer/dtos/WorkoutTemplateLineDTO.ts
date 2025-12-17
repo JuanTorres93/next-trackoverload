@@ -2,6 +2,7 @@ import { WorkoutTemplateLine } from '@/domain/entities/workouttemplateline/Worko
 
 export type WorkoutTemplateLineDTO = {
   id: string;
+  templateId: string;
   exerciseId: string;
   sets: number;
   createdAt: string;
@@ -13,6 +14,7 @@ export function toWorkoutTemplateLineDTO(
 ): WorkoutTemplateLineDTO {
   return {
     id: workoutTemplateLine.id,
+    templateId: workoutTemplateLine.templateId,
     exerciseId: workoutTemplateLine.exerciseId,
     sets: workoutTemplateLine.sets,
     createdAt: workoutTemplateLine.createdAt.toISOString(),

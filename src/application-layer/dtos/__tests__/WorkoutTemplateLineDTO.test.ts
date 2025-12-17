@@ -30,6 +30,7 @@ describe('WorkoutTemplateLineDTO', () => {
     it('should convert WorkoutTemplateLine to WorkoutTemplateLineDTO', () => {
       expect(workoutTemplateLineDTO).toEqual({
         id: workoutTemplateLine.id,
+        templateId: workoutTemplateLine.templateId,
         exerciseId: workoutTemplateLine.exerciseId,
         sets: workoutTemplateLine.sets,
         createdAt: workoutTemplateLine.createdAt.toISOString(),

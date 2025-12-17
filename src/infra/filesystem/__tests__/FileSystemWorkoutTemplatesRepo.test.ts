@@ -25,7 +25,7 @@ describe('FileSystemWorkoutTemplatesRepo', () => {
     try {
       await fs.rm(testTemplatesDir, { recursive: true, force: true });
       await fs.rm(testTemplateLinesDir, { recursive: true, force: true });
-    } catch (error) {
+    } catch {
       // Directories might not exist
     }
   });
@@ -33,6 +33,7 @@ describe('FileSystemWorkoutTemplatesRepo', () => {
   it('should save a workout template', async () => {
     const line1 = WorkoutTemplateLine.create({
       id: 'line3',
+      templateId: vp.validWorkoutTemplateProps().id,
       exerciseId: 'ex3',
       sets: 3,
       createdAt: new Date(),
@@ -40,6 +41,7 @@ describe('FileSystemWorkoutTemplatesRepo', () => {
     });
     const line2 = WorkoutTemplateLine.create({
       id: 'line4',
+      templateId: vp.validWorkoutTemplateProps().id,
       exerciseId: 'ex4',
       sets: 5,
       createdAt: new Date(),

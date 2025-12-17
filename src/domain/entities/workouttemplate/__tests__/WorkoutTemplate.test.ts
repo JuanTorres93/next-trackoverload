@@ -46,6 +46,7 @@ describe('WorkoutTemplate', () => {
     it('should add exercise', async () => {
       const newExercise = WorkoutTemplateLine.create({
         id: 'line3',
+        templateId: workoutTemplate.id,
         exerciseId: 'ex3',
         sets: 5,
         createdAt: new Date(),
@@ -93,6 +94,7 @@ describe('WorkoutTemplate', () => {
       workoutTemplate.addExercise(
         WorkoutTemplateLine.create({
           id: 'line3',
+          templateId: workoutTemplate.id,
           exerciseId: 'ex3',
           sets: 5,
           createdAt: new Date(),
@@ -102,6 +104,7 @@ describe('WorkoutTemplate', () => {
       workoutTemplate.addExercise(
         WorkoutTemplateLine.create({
           id: 'line4',
+          templateId: workoutTemplate.id,
           exerciseId: 'ex4',
           sets: 2,
           createdAt: new Date(),
@@ -111,6 +114,7 @@ describe('WorkoutTemplate', () => {
       workoutTemplate.addExercise(
         WorkoutTemplateLine.create({
           id: 'line5',
+          templateId: workoutTemplate.id,
           exerciseId: 'ex5',
           sets: 6,
           createdAt: new Date(),
@@ -214,6 +218,7 @@ describe('WorkoutTemplate', () => {
     it('should throw error if exercise already exists', async () => {
       const newExercise = WorkoutTemplateLine.create({
         id: 'line1-dup',
+        templateId: workoutTemplate.id,
         exerciseId: workoutTemplate.exercises[0].exerciseId,
         sets: 3,
         createdAt: new Date(),

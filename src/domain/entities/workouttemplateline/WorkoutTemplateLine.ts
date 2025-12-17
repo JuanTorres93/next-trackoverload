@@ -4,6 +4,7 @@ import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 
 export type WorkoutTemplateLineCreateProps = {
   id: string;
+  templateId: string;
   exerciseId: string;
   sets: number;
   createdAt: Date;
@@ -17,6 +18,7 @@ export type WorkoutTemplateLineUpdateProps = {
 
 export type WorkoutTemplateLineProps = {
   id: Id;
+  templateId: Id;
   exerciseId: Id;
   sets: Integer;
   createdAt: Date;
@@ -31,6 +33,7 @@ export class WorkoutTemplateLine {
   static create(props: WorkoutTemplateLineCreateProps): WorkoutTemplateLine {
     const entityProps: WorkoutTemplateLineProps = {
       id: Id.create(props.id),
+      templateId: Id.create(props.templateId),
       exerciseId: Id.create(props.exerciseId),
       sets: Integer.create(props.sets, setsIntegerOptions),
       createdAt: handleCreatedAt(props.createdAt),
@@ -55,6 +58,10 @@ export class WorkoutTemplateLine {
   // Getters
   get id() {
     return this.props.id.value;
+  }
+
+  get templateId() {
+    return this.props.templateId.value;
   }
 
   get exerciseId() {

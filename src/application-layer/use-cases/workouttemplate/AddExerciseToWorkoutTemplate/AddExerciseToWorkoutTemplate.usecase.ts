@@ -58,6 +58,7 @@ export class AddExerciseToWorkoutTemplateUsecase {
 
     const workoutTemplateLine = WorkoutTemplateLine.create({
       id: uuidv4(),
+      templateId: workoutTemplate.id,
       exerciseId: request.exerciseId,
       sets: request.sets,
       createdAt: new Date(),

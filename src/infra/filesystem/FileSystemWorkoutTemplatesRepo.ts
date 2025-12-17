@@ -1,26 +1,10 @@
 import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import { WorkoutTemplateLine } from '@/domain/entities/workouttemplateline/WorkoutTemplateLine';
+import { WorkoutTemplateLineDTO } from '@/application-layer/dtos/WorkoutTemplateLineDTO';
+import { WorkoutTemplateDTO } from '@/application-layer/dtos/WorkoutTemplateDTO';
 import fs from 'fs/promises';
 import path from 'path';
-
-type WorkoutTemplateLineData = {
-  id: string;
-  exerciseId: string;
-  sets: number;
-  createdAt: string;
-  updatedAt: string;
-};
-
-type WorkoutTemplateData = {
-  id: string;
-  userId: string;
-  name: string;
-  exercises: WorkoutTemplateLineData[];
-  createdAt: string;
-  updatedAt: string;
-  deletedAt?: string;
-};
 
 export class FileSystemWorkoutTemplatesRepo implements WorkoutTemplatesRepo {
   private readonly templatesDir: string;
@@ -53,9 +37,10 @@ export class FileSystemWorkoutTemplatesRepo implements WorkoutTemplatesRepo {
 
   private serializeTemplateLine(
     line: WorkoutTemplateLine
-  ): WorkoutTemplateLineData {
+  ): WorkoutTemplateLineDTO {
     return {
       id: line.id,
+      templateId: line.templateId,
       exerciseId: line.exerciseId,
       sets: line.sets,
       createdAt: line.createdAt.toISOString(),
@@ -64,10 +49,11 @@ export class FileSystemWorkoutTemplatesRepo implements WorkoutTemplatesRepo {
   }
 
   private deserializeTemplateLine(
-    data: WorkoutTemplateLineData
+    data: WorkoutTemplateLineDTO
   ): WorkoutTemplateLine {
     return WorkoutTemplateLine.create({
       id: data.id,
+      templateId: data.templateId,
       exerciseId: data.exerciseId,
       sets: data.sets,
       createdAt: new Date(data.createdAt),
@@ -75,7 +61,7 @@ export class FileSystemWorkoutTemplatesRepo implements WorkoutTemplatesRepo {
     });
   }
 
-  private serializeTemplate(template: WorkoutTemplate): WorkoutTemplateData {
+  private serializeTemplate(template: WorkoutTemplate): WorkoutTemplateDTO {
     return {
       id: template.id,
       userId: template.userId,
@@ -83,13 +69,14 @@ export class FileSystemWorkoutTemplatesRepo implements WorkoutTemplatesRepo {
       exercises: template.exercises.map((line) =>
         this.serializeTemplateLine(line)
       ),
+      isDeleted: template.isDeleted,
       createdAt: template.createdAt.toISOString(),
       updatedAt: template.updatedAt.toISOString(),
       deletedAt: template.deletedAt?.toISOString(),
     };
   }
 
-  private deserializeTemplate(data: WorkoutTemplateData): WorkoutTemplate {
+  private deserializeTemplate(data: WorkoutTemplateDTO): WorkoutTemplate {
     return WorkoutTemplate.create({
       id: data.id,
       userId: data.userId,
@@ -128,7 +115,7 @@ export class FileSystemWorkoutTemplatesRepo implements WorkoutTemplatesRepo {
         jsonFiles.map(async (file) => {
           const filePath = path.join(this.templatesDir, file);
           const content = await fs.readFile(filePath, 'utf-8');
-          const data = JSON.parse(content) as WorkoutTemplateData;
+          const data = JSON.parse(content) as WorkoutTemplateDTO;
           return this.deserializeTemplate(data);
         })
       );
@@ -151,7 +138,7 @@ export class FileSystemWorkoutTemplatesRepo implements WorkoutTemplatesRepo {
 
     try {
       const content = await fs.readFile(filePath, 'utf-8');
-      const data = JSON.parse(content) as WorkoutTemplateData;
+      const data = JSON.parse(content) as WorkoutTemplateDTO;
       return this.deserializeTemplate(data);
     } catch {
       return null;
