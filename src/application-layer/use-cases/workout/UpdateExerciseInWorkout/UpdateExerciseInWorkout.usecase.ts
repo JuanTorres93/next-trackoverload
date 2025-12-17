@@ -39,7 +39,6 @@ export class UpdateExerciseInWorkoutUsecase {
       );
     }
 
-    // NOTE: The validation of the update properties is handled in the entity
     workout.updateExercise(request.exerciseId, {
       setNumber: request.setNumber,
       reps: request.reps,

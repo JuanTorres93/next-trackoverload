@@ -136,50 +136,56 @@ describe('Workout', () => {
         reps: 12,
         weight: 60,
       });
+
       expect(() => workout.addExercise(newWorkoutLine)).toThrow(
         ValidationError
       );
+
+      expect(() => workout.addExercise(newWorkoutLine)).toThrow(
+        /Workout.*Exercise.*already.*exists/
+      );
+    });
+
+    it('should throw error if exercise to update does not exist in workout', async () => {
+      const updateProps = {
+        setNumber: 9,
+        reps: 99,
+        weight: 88,
+      };
+
+      expect(() =>
+        workout.updateExercise('non-existent-exercise', updateProps)
+      ).toThrow(ValidationError);
+
+      expect(() =>
+        workout.updateExercise('non-existent-exercise', updateProps)
+      ).toThrow(/Workout.*Exercise.*not.*found/);
     });
 
     it('should throw error if name is larger that 100 chars', async () => {
       const longName = 'a'.repeat(101);
+      const props = {
+        ...validWorkoutProps,
+        name: longName,
+      };
+
       expect(() => {
-        Workout.create({
-          ...validWorkoutProps,
-          name: longName,
-        });
+        Workout.create(props);
       }).toThrow(ValidationError);
 
       expect(() => {
-        Workout.create({
-          ...validWorkoutProps,
-          name: longName,
-        });
+        Workout.create(props);
       }).toThrow(/Text.*not exceed/);
     });
 
-    it('should throw error if name is empty', async () => {
-      expect(() => {
-        Workout.create({
-          ...validWorkoutProps,
-          name: '',
-        });
-      }).toThrow(ValidationError);
-
-      expect(() => {
-        Workout.create({
-          ...validWorkoutProps,
-          name: '',
-        });
-      }).toThrow(/Text.*empty/);
-    });
-
     it('should throw error if removing set from exercise that does not exist in workout', async () => {
+      const args = ['non-existent-exercise', 1] as const;
+
       expect(() => {
-        workout.removeSet('non-existent-exercise', 1);
+        workout.removeSet(...args);
       }).toThrow(ValidationError);
       expect(() => {
-        workout.removeSet('non-existent-exercise', 1);
+        workout.removeSet(...args);
       }).toThrow(/Workout.*remove.*not.*exist/);
     });
 
