@@ -13,6 +13,8 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
   let usersRepo: MemoryUsersRepo;
   let usecase: GetAllWorkoutTemplatesForUserUsecase;
   let user: User;
+  let template1: WorkoutTemplate;
+  let template2: WorkoutTemplate;
 
   beforeEach(async () => {
     workoutTemplatesRepo = new MemoryWorkoutTemplatesRepo();
@@ -23,23 +25,26 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
     );
 
     user = User.create({ ...vp.validUserProps });
+
+    template1 = WorkoutTemplate.create({
+      ...vp.validWorkoutTemplateProps(),
+      id: 'user1-template1-id',
+      exercises: [],
+    });
+
+    template2 = WorkoutTemplate.create({
+      ...vp.validWorkoutTemplateProps(),
+      id: 'user1-template2-id',
+      exercises: [],
+    });
+
     await usersRepo.saveUser(user);
+    await workoutTemplatesRepo.saveWorkoutTemplate(template1);
+    await workoutTemplatesRepo.saveWorkoutTemplate(template2);
   });
 
   describe('Execution', () => {
     it('should return all workout templates for a specific user', async () => {
-      const user1Template1 = WorkoutTemplate.create({
-        ...vp.validWorkoutTemplateProps(),
-        id: 'user1-template1-id',
-        exercises: [],
-      });
-
-      const user1Template2 = WorkoutTemplate.create({
-        ...vp.validWorkoutTemplateProps(),
-        id: 'user1-template2-id',
-        exercises: [],
-      });
-
       const user2Template = WorkoutTemplate.create({
         ...vp.validWorkoutTemplateProps(),
         id: 'user2-template-id',
@@ -48,8 +53,6 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
         exercises: [],
       });
 
-      await workoutTemplatesRepo.saveWorkoutTemplate(user1Template1);
-      await workoutTemplatesRepo.saveWorkoutTemplate(user1Template2);
       await workoutTemplatesRepo.saveWorkoutTemplate(user2Template);
 
       const result = await usecase.execute({ userId: vp.userId });
@@ -63,15 +66,9 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
     });
 
     it('should return array of WorkoutTemplateDTO', async () => {
-      const template = WorkoutTemplate.create({
-        ...vp.validWorkoutTemplateProps(),
-      });
-
-      await workoutTemplatesRepo.saveWorkoutTemplate(template);
-
       const result = await usecase.execute({ userId: vp.userId });
 
-      expect(result).toHaveLength(1);
+      expect(result).toHaveLength(2);
 
       expect(result[0]).not.toBeInstanceOf(WorkoutTemplate);
       for (const prop of dto.workoutTemplateDTOProperties) {
@@ -80,31 +77,26 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
     });
 
     it('should return empty array if user has no templates', async () => {
-      const result = await usecase.execute({ userId: vp.userId });
+      const anotherUser = User.create({
+        ...vp.validUserProps,
+        id: 'another-user-id',
+        email: 'another-user@example.com',
+      });
+      await usersRepo.saveUser(anotherUser);
+
+      const result = await usecase.execute({ userId: anotherUser.id });
 
       expect(result).toEqual([]);
     });
 
     it('should not return deleted templates', async () => {
-      const template1 = WorkoutTemplate.create({
-        ...vp.validWorkoutTemplateProps(),
-      });
-
-      const template2 = WorkoutTemplate.create({
-        ...vp.validWorkoutTemplateProps(),
-        id: 'another-template-id',
-      });
-
-      await workoutTemplatesRepo.saveWorkoutTemplate(template1);
-      await workoutTemplatesRepo.saveWorkoutTemplate(template2);
-
       template1.markAsDeleted();
       await workoutTemplatesRepo.saveWorkoutTemplate(template1);
 
       const result = await usecase.execute({ userId: vp.userId });
 
       expect(result).toHaveLength(1);
-      expect(result[0].id).toBe('another-template-id');
+      expect(result[0].id).toBe(template2.id);
     });
   });
 
