@@ -43,7 +43,6 @@ export class UpdateExerciseInWorkoutTemplateUsecase {
       );
     }
 
-    // NOTE: sets is validated in the entity
     workoutTemplate.updateExercise(request.exerciseId, {
       sets: request.sets,
     });
