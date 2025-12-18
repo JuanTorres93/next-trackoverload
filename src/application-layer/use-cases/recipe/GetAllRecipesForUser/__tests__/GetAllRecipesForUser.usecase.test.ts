@@ -62,14 +62,14 @@ describe('GetAllRecipesForUserUsecase', () => {
         ingredientLines: [testIngredientLine],
       }),
     ];
+
+    for (const recipe of testRecipes) {
+      await recipesRepo.saveRecipe(recipe);
+    }
   });
 
   describe('Execution', () => {
     it('should return all recipes when they exist', async () => {
-      for (const recipe of testRecipes) {
-        await recipesRepo.saveRecipe(recipe);
-      }
-
       const result = await getAllRecipesUsecase.execute({ userId: userId1 });
 
       const recipeIds = result.map((r) => r.id);
@@ -80,10 +80,6 @@ describe('GetAllRecipesForUserUsecase', () => {
     });
 
     it('should return an array of RecipeDTO', async () => {
-      for (const recipe of testRecipes) {
-        await recipesRepo.saveRecipe(recipe);
-      }
-
       const result = await getAllRecipesUsecase.execute({ userId: userId1 });
 
       expect(result).toHaveLength(2);
@@ -98,17 +94,14 @@ describe('GetAllRecipesForUserUsecase', () => {
     });
 
     it('should return empty array when no recipes exist', async () => {
+      recipesRepo.clearForTesting();
+
       const result = await getAllRecipesUsecase.execute({ userId: userId1 });
 
       expect(result).toEqual([]);
     });
 
     it('should return only recipes for the specified user', async () => {
-      // Create recipes for user1
-      for (const recipe of testRecipes) {
-        await recipesRepo.saveRecipe(recipe);
-      }
-
       // Create a recipe for user2
       const testIngredient = Ingredient.create({
         ...vp.validIngredientProps,
@@ -142,16 +135,24 @@ describe('GetAllRecipesForUserUsecase', () => {
       expect(user2Recipes).toHaveLength(1);
       expect(user2Recipes[0].userId).toBe(userId2);
     });
+
+    it("should return empty array when trying to get another user's recipes", async () => {
+      const result = await getAllRecipesUsecase.execute({ userId: userId2 });
+
+      expect(result).toEqual([]);
+    });
   });
 
   describe('Errors', () => {
     it('should throw error if user does not exist', async () => {
-      await expect(
-        getAllRecipesUsecase.execute({ userId: 'non-existent' })
-      ).rejects.toThrow(NotFoundError);
-      await expect(
-        getAllRecipesUsecase.execute({ userId: 'non-existent' })
-      ).rejects.toThrow(/GetAllRecipesForUserUsecase.*user.*not.*found/);
+      const request = { userId: 'non-existent' };
+
+      await expect(getAllRecipesUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+      await expect(getAllRecipesUsecase.execute(request)).rejects.toThrow(
+        /GetAllRecipesForUserUsecase.*user.*not.*found/
+      );
     });
   });
 });

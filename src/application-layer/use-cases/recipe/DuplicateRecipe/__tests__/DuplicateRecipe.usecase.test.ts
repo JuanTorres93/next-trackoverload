@@ -51,12 +51,12 @@ describe('DuplicateRecipeUsecase', () => {
     originalIngredientIds = testRecipe.ingredientLines.map(
       (il) => il.ingredient.id
     );
+
+    await recipesRepo.saveRecipe(testRecipe);
   });
 
   describe('Duplicate', () => {
     it('should duplicate recipe with default name', async () => {
-      await recipesRepo.saveRecipe(testRecipe);
-
       const request = {
         recipeId: testRecipe.id,
         userId: vp.userId,
@@ -83,8 +83,6 @@ describe('DuplicateRecipeUsecase', () => {
     });
 
     it('should duplicate recipe with custom name', async () => {
-      await recipesRepo.saveRecipe(testRecipe);
-
       const request = {
         recipeId: testRecipe.id,
         newName: 'My Custom Recipe Copy',
@@ -117,7 +115,6 @@ describe('DuplicateRecipeUsecase', () => {
       });
 
       testRecipe.addIngredientLine(secondIngredientLine);
-      await recipesRepo.saveRecipe(testRecipe);
 
       const request = {
         userId: vp.userId,
@@ -141,8 +138,6 @@ describe('DuplicateRecipeUsecase', () => {
     });
 
     it('should create independent recipe copy with different id', async () => {
-      await recipesRepo.saveRecipe(testRecipe);
-
       const request = {
         recipeId: testRecipe.id,
         userId: vp.userId,
@@ -174,8 +169,6 @@ describe('DuplicateRecipeUsecase', () => {
     });
 
     it('should have different creation timestamps', async () => {
-      await recipesRepo.saveRecipe(testRecipe);
-
       // Wait a moment to ensure different timestamps
       await new Promise((resolve) => setTimeout(resolve, 1));
 
@@ -195,8 +188,6 @@ describe('DuplicateRecipeUsecase', () => {
     });
 
     it('should return RecipeDTO', async () => {
-      await recipesRepo.saveRecipe(testRecipe);
-
       const request = {
         recipeId: testRecipe.id,
         userId: vp.userId,
@@ -211,8 +202,6 @@ describe('DuplicateRecipeUsecase', () => {
     });
 
     it('should create new ingredientLines for duplicated recipe', async () => {
-      await recipesRepo.saveRecipe(testRecipe);
-
       const request = {
         recipeId: testRecipe.id,
         userId: vp.userId,
@@ -249,18 +238,39 @@ describe('DuplicateRecipeUsecase', () => {
     });
 
     it('should throw error if user does not exist', async () => {
-      await expect(
-        duplicateRecipeUsecase.execute({
-          recipeId: 'some-id',
-          userId: 'non-existent',
-        })
-      ).rejects.toThrow(NotFoundError);
-      await expect(
-        duplicateRecipeUsecase.execute({
-          recipeId: 'some-id',
-          userId: 'non-existent',
-        })
-      ).rejects.toThrow(/DuplicateRecipeUsecase.*user.*not.*found/);
+      const request = {
+        recipeId: 'some-id',
+        userId: 'non-existent',
+      };
+
+      await expect(duplicateRecipeUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+      await expect(duplicateRecipeUsecase.execute(request)).rejects.toThrow(
+        /DuplicateRecipeUsecase.*user.*not.*found/
+      );
+    });
+
+    it("should throw error when trying to duplicate another user's recipe", async () => {
+      const anotherUser = User.create({
+        ...vp.validUserProps,
+        id: 'another-user-id',
+        email: 'anotheruser@example.com',
+      });
+
+      await usersRepo.saveUser(anotherUser);
+
+      const request = {
+        recipeId: testRecipe.id,
+        userId: anotherUser.id,
+      };
+
+      await expect(duplicateRecipeUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+      await expect(duplicateRecipeUsecase.execute(request)).rejects.toThrow(
+        /DuplicateRecipeUsecase:.*Recipe.* not found/
+      );
     });
   });
 });

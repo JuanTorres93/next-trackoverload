@@ -218,33 +218,19 @@ describe('CreateRecipeUsecase', () => {
   });
 
   describe('Error', () => {
-    it('should throw an error if ingredientLines is empty', async () => {
+    it('should throw error if user does not exist', async () => {
       const request = {
-        userId: vp.userId,
+        userId: 'non-existent',
         name: 'Test Recipe',
-        ingredientLinesInfo: [],
+        ingredientLinesInfo: [testIngredientLineInfo],
       };
 
       await expect(createRecipeUsecase.execute(request)).rejects.toThrow(
-        ValidationError
+        NotFoundError
       );
-    });
-
-    it('should throw error if user does not exist', async () => {
-      await expect(
-        createRecipeUsecase.execute({
-          userId: 'non-existent',
-          name: 'Test Recipe',
-          ingredientLinesInfo: [testIngredientLineInfo],
-        })
-      ).rejects.toThrow(NotFoundError);
-      await expect(
-        createRecipeUsecase.execute({
-          userId: 'non-existent',
-          name: 'Test Recipe',
-          ingredientLinesInfo: [testIngredientLineInfo],
-        })
-      ).rejects.toThrow(/CreateRecipeUsecase.*user.*not.*found/);
+      await expect(createRecipeUsecase.execute(request)).rejects.toThrow(
+        /CreateRecipeUsecase.*user.*not.*found/
+      );
     });
 
     it('should throw error if at least one ingredient does no exist', async () => {

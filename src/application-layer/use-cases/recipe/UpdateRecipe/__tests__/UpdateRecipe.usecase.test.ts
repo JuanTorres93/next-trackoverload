@@ -41,11 +41,11 @@ describe('UpdateRecipeUsecase', () => {
       ...vp.recipePropsNoIngredientLines,
       ingredientLines: [testIngredientLine],
     });
+    await recipesRepo.saveRecipe(testRecipe);
   });
 
   describe('Execute', () => {
     it('should update recipe name successfully', async () => {
-      await recipesRepo.saveRecipe(testRecipe);
       const originalUpdatedAt = testRecipe.updatedAt;
 
       // Wait a moment to ensure different timestamps
@@ -67,8 +67,6 @@ describe('UpdateRecipeUsecase', () => {
     });
 
     it('should return RecipeDTO', async () => {
-      await recipesRepo.saveRecipe(testRecipe);
-
       const request = {
         id: testRecipe.id,
         name: 'Updated Name',
@@ -95,21 +93,24 @@ describe('UpdateRecipeUsecase', () => {
       await expect(updateRecipeUsecase.execute(request)).rejects.toThrow(
         NotFoundError
       );
+
+      await expect(updateRecipeUsecase.execute(request)).rejects.toThrow(
+        /UpdateRecipeUsecase.*Recipe.*not.*found/
+      );
     });
 
     it('should throw error if user does not exist', async () => {
-      await expect(
-        updateRecipeUsecase.execute({
-          id: 'some-id',
-          userId: 'non-existent',
-        })
-      ).rejects.toThrow(NotFoundError);
-      await expect(
-        updateRecipeUsecase.execute({
-          id: 'some-id',
-          userId: 'non-existent',
-        })
-      ).rejects.toThrow(/UpdateRecipeUsecase.*user.*not.*found/);
+      const request = {
+        id: 'some-id',
+        userId: 'non-existent',
+      };
+
+      await expect(updateRecipeUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+      await expect(updateRecipeUsecase.execute(request)).rejects.toThrow(
+        /UpdateRecipeUsecase.*user.*not.*found/
+      );
     });
 
     it("should throw error if trying to modify another user's recipe", async () => {
@@ -118,7 +119,6 @@ describe('UpdateRecipeUsecase', () => {
         id: 'another-user-id',
       });
       await usersRepo.saveUser(anotherUser);
-      await recipesRepo.saveRecipe(testRecipe);
 
       const request = {
         id: testRecipe.id,

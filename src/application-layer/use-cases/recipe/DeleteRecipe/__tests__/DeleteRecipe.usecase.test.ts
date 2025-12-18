@@ -51,11 +51,11 @@ describe('DeleteRecipeUsecase', () => {
       ...vp.recipePropsNoIngredientLines,
       ingredientLines: [testIngredientLine],
     });
+    await recipesRepo.saveRecipe(testRecipe);
   });
 
   describe('Deletion', () => {
     it('should delete recipe successfully', async () => {
-      await recipesRepo.saveRecipe(testRecipe);
       const request = { id: testRecipe.id, userId: vp.userId };
       await deleteRecipeUsecase.execute(request);
 
@@ -99,7 +99,6 @@ describe('DeleteRecipeUsecase', () => {
         ingredientLines: testRecipe.ingredientLines,
       });
 
-      await recipesRepo.saveRecipe(testRecipe);
       await recipesRepo.saveRecipe(secondRecipe);
 
       const request = { id: testRecipe.id, userId: vp.userId };
@@ -127,12 +126,32 @@ describe('DeleteRecipeUsecase', () => {
     });
 
     it('should throw error if user does not exist', async () => {
-      await expect(
-        deleteRecipeUsecase.execute({ id: 'some-id', userId: 'non-existent' })
-      ).rejects.toThrow(NotFoundError);
-      await expect(
-        deleteRecipeUsecase.execute({ id: 'some-id', userId: 'non-existent' })
-      ).rejects.toThrow(/DeleteRecipeUsecase.*user.*not.*found/);
+      const request = { id: 'some-id', userId: 'non-existent' };
+
+      await expect(deleteRecipeUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+      await expect(deleteRecipeUsecase.execute(request)).rejects.toThrow(
+        /DeleteRecipeUsecase.*user.*not.*found/
+      );
+    });
+
+    it("should throw error when trying to delete another user's recipe", async () => {
+      const anotherUser = User.create({
+        ...vp.validUserProps,
+        id: 'another-user-id',
+        email: 'anotheruser@example.com',
+      });
+      await usersRepo.saveUser(anotherUser);
+
+      const request = { id: testRecipe.id, userId: anotherUser.id };
+
+      await expect(deleteRecipeUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+      await expect(deleteRecipeUsecase.execute(request)).rejects.toThrow(
+        /DeleteRecipeUsecase.*Recipe.*not.*found/
+      );
     });
   });
 });

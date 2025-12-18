@@ -52,14 +52,14 @@ describe('GetRecipesByIdsForUserUsecase', () => {
         ingredientLines: [testIngredientLine],
       }),
     ];
+
+    for (const recipe of testRecipes) {
+      await recipesRepo.saveRecipe(recipe);
+    }
   });
 
   describe('Execution', () => {
     it('should return recipes for valid ids', async () => {
-      for (const recipe of testRecipes) {
-        await recipesRepo.saveRecipe(recipe);
-      }
-
       const request = {
         ids: [testRecipes[0].id, testRecipes[1].id],
         userId: vp.userId,
@@ -74,10 +74,6 @@ describe('GetRecipesByIdsForUserUsecase', () => {
     });
 
     it('should return an array of RecipeDTOs', async () => {
-      for (const recipe of testRecipes) {
-        await recipesRepo.saveRecipe(recipe);
-      }
-
       const request = {
         ids: [testRecipes[0].id, testRecipes[1].id],
         userId: vp.userId,
@@ -95,8 +91,6 @@ describe('GetRecipesByIdsForUserUsecase', () => {
     });
 
     it('should filter out non-existent recipes', async () => {
-      await recipesRepo.saveRecipe(testRecipes[0]);
-
       const request = {
         ids: [testRecipes[0].id, 'non-existent-id'],
         userId: vp.userId,
@@ -108,8 +102,7 @@ describe('GetRecipesByIdsForUserUsecase', () => {
       expect(result[0]).toEqual(toRecipeDTO(testRecipes[0]));
     });
 
-    it('should return empty array for all non-existent ids', async () => {
-      // NOTE: this test will change to throw ValidationError
+    it('should return empty array for non-existent ids', async () => {
       const request = {
         ids: ['non-existent-1', 'non-existent-2'],
         userId: vp.userId,
@@ -120,9 +113,7 @@ describe('GetRecipesByIdsForUserUsecase', () => {
       expect(result).toEqual([]);
     });
 
-    it('should handle duplicate ids gracefully', async () => {
-      await recipesRepo.saveRecipe(testRecipes[0]);
-
+    it('should return one result when id is duplicated', async () => {
       const request = {
         ids: [testRecipes[0].id, testRecipes[0].id],
         userId: vp.userId,
@@ -132,6 +123,23 @@ describe('GetRecipesByIdsForUserUsecase', () => {
 
       expect(result).toHaveLength(1);
       expect(result[0]).toEqual(toRecipeDTO(testRecipes[0]));
+    });
+
+    it("should return empty array when trying to get another user's recipes", async () => {
+      const anotherUser = User.create({
+        ...vp.validUserProps,
+        id: 'another-user-id',
+      });
+      await usersRepo.saveUser(anotherUser);
+
+      const request = {
+        ids: [testRecipes[0].id, testRecipes[1].id],
+        userId: anotherUser.id,
+      };
+
+      const result = await getRecipesByIdsUsecase.execute(request);
+
+      expect(result).toEqual([]);
     });
   });
 
@@ -149,18 +157,17 @@ describe('GetRecipesByIdsForUserUsecase', () => {
     });
 
     it('should throw error if user does not exist', async () => {
-      await expect(
-        getRecipesByIdsUsecase.execute({
-          ids: ['some-id'],
-          userId: 'non-existent',
-        })
-      ).rejects.toThrow(NotFoundError);
-      await expect(
-        getRecipesByIdsUsecase.execute({
-          ids: ['some-id'],
-          userId: 'non-existent',
-        })
-      ).rejects.toThrow(/GetRecipesByIdsForUserUsecase.*user.*not.*found/);
+      const request = {
+        ids: ['some-id'],
+        userId: 'non-existent',
+      };
+
+      await expect(getRecipesByIdsUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+      await expect(getRecipesByIdsUsecase.execute(request)).rejects.toThrow(
+        /GetRecipesByIdsForUserUsecase.*user.*not.*found/
+      );
     });
   });
 });

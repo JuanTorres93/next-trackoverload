@@ -61,11 +61,11 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
       ...vp.recipePropsNoIngredientLines,
       ingredientLines: [firstIngredientLine, secondIngredientLine],
     });
+    await recipesRepo.saveRecipe(testRecipe);
   });
 
   describe('Execute', () => {
     it('should remove ingredient from recipe successfully', async () => {
-      await recipesRepo.saveRecipe(testRecipe);
       const originalIngredientCount = testRecipe.ingredientLines.length;
 
       const request = {
@@ -90,8 +90,6 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
     });
 
     it('should return RecipeDTO', async () => {
-      await recipesRepo.saveRecipe(testRecipe);
-
       const request = {
         recipeId: testRecipe.id,
         ingredientId: testIngredient.id,
@@ -118,22 +116,26 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
       await expect(
         removeIngredientFromRecipeUsecase.execute(request)
       ).rejects.toThrow(NotFoundError);
+
+      await expect(
+        removeIngredientFromRecipeUsecase.execute(request)
+      ).rejects.toThrow(
+        /RemoveIngredientFromRecipeUsecase.*Recipe.*not.*found/
+      );
     });
 
     it('should throw error if user does not exist', async () => {
+      const request = {
+        recipeId: 'some-id',
+        userId: 'non-existent',
+        ingredientId: 'ingredient-id',
+      };
+
       await expect(
-        removeIngredientFromRecipeUsecase.execute({
-          recipeId: 'some-id',
-          userId: 'non-existent',
-          ingredientId: 'ingredient-id',
-        })
+        removeIngredientFromRecipeUsecase.execute(request)
       ).rejects.toThrow(NotFoundError);
       await expect(
-        removeIngredientFromRecipeUsecase.execute({
-          recipeId: 'some-id',
-          userId: 'non-existent',
-          ingredientId: 'ingredient-id',
-        })
+        removeIngredientFromRecipeUsecase.execute(request)
       ).rejects.toThrow(/RemoveIngredientFromRecipeUsecase.*user.*not.*found/);
     });
 
@@ -143,7 +145,6 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
         id: 'another-user-id',
       });
       await usersRepo.saveUser(anotherUser);
-      await recipesRepo.saveRecipe(testRecipe);
 
       const request = {
         recipeId: testRecipe.id,

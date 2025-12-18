@@ -45,12 +45,11 @@ describe('GetRecipeByIdForUserUsecase', () => {
       ...vp.recipePropsNoIngredientLines,
       ingredientLines: [testIngredientLine],
     });
+    await recipesRepo.saveRecipe(testRecipe);
   });
 
   describe('Execution', () => {
     it('should return recipe when it exists', async () => {
-      await recipesRepo.saveRecipe(testRecipe);
-
       const request = { id: testRecipe.id, userId: vp.userId };
       const result = await getRecipeByIdUsecase.execute(request);
 
@@ -58,8 +57,6 @@ describe('GetRecipeByIdForUserUsecase', () => {
     });
 
     it('should return RecipeDTO', async () => {
-      await recipesRepo.saveRecipe(testRecipe);
-
       const request = { id: testRecipe.id, userId: vp.userId };
       const result = await getRecipeByIdUsecase.execute(request);
 
@@ -75,16 +72,31 @@ describe('GetRecipeByIdForUserUsecase', () => {
 
       expect(result).toBeNull();
     });
+
+    it("should return null when trying to get another user's recipe", async () => {
+      const anotherUser = User.create({
+        ...vp.validUserProps,
+        id: 'another-user-id',
+      });
+      await usersRepo.saveUser(anotherUser);
+
+      const request = { id: testRecipe.id, userId: anotherUser.id };
+      const result = await getRecipeByIdUsecase.execute(request);
+
+      expect(result).toBeNull();
+    });
   });
 
   describe('Error', () => {
     it('should throw error if user does not exist', async () => {
-      await expect(
-        getRecipeByIdUsecase.execute({ id: 'some-id', userId: 'non-existent' })
-      ).rejects.toThrow(NotFoundError);
-      await expect(
-        getRecipeByIdUsecase.execute({ id: 'some-id', userId: 'non-existent' })
-      ).rejects.toThrow(/GetRecipeByIdForUserUsecase.*user.*not.*found/);
+      const request = { id: 'some-id', userId: 'non-existent' };
+
+      await expect(getRecipeByIdUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+      await expect(getRecipeByIdUsecase.execute(request)).rejects.toThrow(
+        /GetRecipeByIdForUserUsecase.*user.*not.*found/
+      );
     });
   });
 });
