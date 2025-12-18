@@ -1,5 +1,5 @@
 import { MealDTO, toMealDTO } from '@/application-layer/dtos/MealDTO';
-import { AuthError, NotFoundError } from '@/domain/common/errors';
+import { NotFoundError } from '@/domain/common/errors';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { MealsRepo } from '@/domain/repos/MealsRepo.port';
@@ -29,16 +29,13 @@ export class AddIngredientToMealUsecase {
       );
     }
 
-    const existingMeal = await this.mealsRepo.getMealById(request.mealId);
+    const existingMeal = await this.mealsRepo.getMealByIdForUser(
+      request.mealId,
+      request.userId
+    );
     if (!existingMeal) {
       throw new NotFoundError(
         `AddIngredientToMealUsecase: Meal with id ${request.mealId} not found`
-      );
-    }
-
-    if (existingMeal.userId !== request.userId) {
-      throw new AuthError(
-        'AddIngredientToMealUsecase: User not authorized to modify this meal'
       );
     }
 

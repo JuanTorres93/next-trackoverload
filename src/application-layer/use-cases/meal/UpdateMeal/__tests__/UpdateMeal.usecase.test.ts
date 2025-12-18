@@ -111,5 +111,28 @@ describe('UpdateMealUsecase', () => {
         /UpdateMealUsecase.*user.*not.*found/
       );
     });
+
+    it("should throw error when trying to read another user's meal", async () => {
+      const anotherUser = User.create({
+        ...vp.validUserProps,
+        id: 'another-user-id',
+        email: 'anotheruser@example.com',
+      });
+
+      await usersRepo.saveUser(anotherUser);
+
+      const request = {
+        id: meal.id,
+        userId: anotherUser.id,
+        name: 'New Name',
+      };
+
+      await expect(updateMealUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+      await expect(updateMealUsecase.execute(request)).rejects.toThrow(
+        /UpdateMealUsecase.*Meal.*not.*found/
+      );
+    });
   });
 });

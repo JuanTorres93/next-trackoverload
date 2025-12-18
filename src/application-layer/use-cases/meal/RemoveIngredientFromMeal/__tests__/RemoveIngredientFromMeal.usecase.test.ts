@@ -1,6 +1,6 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
-import { AuthError, NotFoundError } from '@/domain/common/errors';
+import { NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
@@ -56,11 +56,11 @@ describe('RemoveIngredientFromMealUsecase', () => {
       ...vp.mealPropsNoIngredientLines,
       ingredientLines: [firstIngredientLine, secondIngredientLine],
     });
+    await mealsRepo.saveMeal(testMeal);
   });
 
   describe('Removal', () => {
     it('should remove ingredient from meal successfully', async () => {
-      await mealsRepo.saveMeal(testMeal);
       const originalIngredientCount = testMeal.ingredientLines.length;
 
       const request = {
@@ -85,8 +85,6 @@ describe('RemoveIngredientFromMealUsecase', () => {
     });
 
     it('should return MealDTO', async () => {
-      await mealsRepo.saveMeal(testMeal);
-
       const request = {
         userId: vp.userId,
         mealId: testMeal.id,
@@ -103,7 +101,6 @@ describe('RemoveIngredientFromMealUsecase', () => {
     });
 
     it("should update meal's updatedAt timestamp", async () => {
-      await mealsRepo.saveMeal(testMeal);
       const originalUpdatedAt = testMeal.updatedAt;
 
       // Wait a bit to ensure timestamp difference
@@ -146,7 +143,6 @@ describe('RemoveIngredientFromMealUsecase', () => {
         id: 'other-user-id',
       });
       await usersRepo.saveUser(anotherUser);
-      await mealsRepo.saveMeal(testMeal);
 
       const request = {
         userId: 'other-user-id',
@@ -156,13 +152,11 @@ describe('RemoveIngredientFromMealUsecase', () => {
 
       await expect(
         removeIngredientFromMealUsecase.execute(request)
-      ).rejects.toThrow(AuthError);
+      ).rejects.toThrow(NotFoundError);
 
       await expect(
         removeIngredientFromMealUsecase.execute(request)
-      ).rejects.toThrow(
-        /RemoveIngredientFromMealUsecase.*Meal.*not.*found for user/
-      );
+      ).rejects.toThrow(/RemoveIngredientFromMealUsecase.*Meal.*not.*found/);
     });
 
     it('should throw error if user does not exist', async () => {

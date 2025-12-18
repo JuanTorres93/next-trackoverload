@@ -1,5 +1,5 @@
 import { MealDTO, toMealDTO } from '@/application-layer/dtos/MealDTO';
-import { AuthError, NotFoundError } from '@/domain/common/errors';
+import { NotFoundError } from '@/domain/common/errors';
 import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 
@@ -22,16 +22,13 @@ export class RemoveIngredientFromMealUsecase {
       );
     }
 
-    const existingMeal = await this.mealsRepo.getMealById(request.mealId);
+    const existingMeal = await this.mealsRepo.getMealByIdForUser(
+      request.mealId,
+      request.userId
+    );
     if (!existingMeal) {
       throw new NotFoundError(
         `RemoveIngredientFromMealUsecase: Meal with id ${request.mealId} not found`
-      );
-    }
-
-    if (existingMeal.userId !== request.userId) {
-      throw new AuthError(
-        `RemoveIngredientFromMealUsecase: Meal with id ${request.mealId} not found for user ${request.userId}`
       );
     }
 

@@ -1,6 +1,6 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
-import { AuthError, NotFoundError } from '@/domain/common/errors';
+import { NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
@@ -60,6 +60,7 @@ describe('AddIngredientToMealUsecase', () => {
       ...vp.mealPropsNoIngredientLines,
       ingredientLines: [testIngredientLine],
     });
+    await mealsRepo.saveMeal(testMeal);
 
     const newIngredient = Ingredient.create({
       ...vp.validIngredientProps,
@@ -79,7 +80,6 @@ describe('AddIngredientToMealUsecase', () => {
 
   describe('Addition', () => {
     it('should add ingredient to meal successfully', async () => {
-      await mealsRepo.saveMeal(testMeal);
       const originalIngredientCount = testMeal.ingredientLines.length;
 
       const request = {
@@ -99,7 +99,6 @@ describe('AddIngredientToMealUsecase', () => {
     });
 
     it('should save updated meal in repo', async () => {
-      await mealsRepo.saveMeal(testMeal);
       const originalIngredientCount = testMeal.ingredientLines.length;
 
       const request = {
@@ -118,8 +117,6 @@ describe('AddIngredientToMealUsecase', () => {
     });
 
     it('should return MealDTO', async () => {
-      await mealsRepo.saveMeal(testMeal);
-
       const request = {
         mealId: testMeal.id,
         userId: vp.userId,
@@ -136,7 +133,6 @@ describe('AddIngredientToMealUsecase', () => {
     });
 
     it("should update meal's updatedAt timestamp", async () => {
-      await mealsRepo.saveMeal(testMeal);
       const originalUpdatedAt = testMeal.updatedAt;
 
       // Wait a bit to ensure timestamp difference
@@ -173,13 +169,12 @@ describe('AddIngredientToMealUsecase', () => {
       );
     });
 
-    it("should not add ingredient to another user's meal", async () => {
+    it("should throw error when adding ingredient to another user's meal", async () => {
       const anotherUser = User.create({
         ...vp.validUserProps,
         id: 'another-user-id',
       });
       await usersRepo.saveUser(anotherUser);
-      await mealsRepo.saveMeal(testMeal);
 
       const request = {
         userId: 'another-user-id',
@@ -188,36 +183,31 @@ describe('AddIngredientToMealUsecase', () => {
       };
 
       await expect(addIngredientToMealUsecase.execute(request)).rejects.toThrow(
-        AuthError
+        NotFoundError
       );
 
       await expect(addIngredientToMealUsecase.execute(request)).rejects.toThrow(
-        /AddIngredientToMealUsecase.*not.*authorized/
+        /AddIngredientToMealUsecase.*Meal.*not.*found/
       );
     });
 
     it('should throw error if user does not exist', async () => {
-      await expect(
-        addIngredientToMealUsecase.execute({
-          userId: 'non-existent',
-          mealId: 'some-id',
-          ingredientId: 'some-ingredient-id',
-          quantityInGrams: 100,
-        })
-      ).rejects.toThrow(NotFoundError);
-      await expect(
-        addIngredientToMealUsecase.execute({
-          userId: 'non-existent',
-          mealId: 'some-id',
-          ingredientId: 'some-ingredient-id',
-          quantityInGrams: 100,
-        })
-      ).rejects.toThrow(/AddIngredientToMealUsecase.*user.*not.*found/);
+      const request = {
+        userId: 'non-existent',
+        mealId: 'some-id',
+        ingredientId: 'some-ingredient-id',
+        quantityInGrams: 100,
+      };
+
+      await expect(addIngredientToMealUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+      await expect(addIngredientToMealUsecase.execute(request)).rejects.toThrow(
+        /AddIngredientToMealUsecase.*user.*not.*found/
+      );
     });
 
     it('should throw NotFoundError when ingredient does not exist', async () => {
-      await mealsRepo.saveMeal(testMeal);
-
       const request = {
         mealId: testMeal.id,
         userId: vp.userId,
