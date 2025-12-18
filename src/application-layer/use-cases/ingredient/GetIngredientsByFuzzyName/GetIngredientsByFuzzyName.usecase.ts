@@ -9,6 +9,7 @@ export type GetIngredientsByFuzzyNameInput = {
   name: string;
 };
 
+// TODO make this usecase interact with service instead of repo? Give it a thought
 export class GetIngredientsByFuzzyNameUsecase {
   constructor(private ingredientsRepo: IngredientsRepo) {}
 

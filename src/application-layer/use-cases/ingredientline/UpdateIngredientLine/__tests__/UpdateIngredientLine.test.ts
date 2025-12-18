@@ -232,6 +232,26 @@ describe('UpdateIngredientLineUsecase', () => {
           /UpdateIngredientLineUsecase:.*recipe.*not found for user/i
         );
       });
+
+      it("should throw error when user tries to access another user's meal", async () => {
+        const request = {
+          userId: anotherUserId,
+          parentEntityType: 'meal' as const,
+          parentEntityId: testMeal.id,
+          ingredientLineId: testIngredientLine.id,
+          quantityInGrams: 300,
+        };
+
+        await expect(
+          updateIngredientLineUsecase.execute(request)
+        ).rejects.toThrow(AuthError);
+
+        await expect(
+          updateIngredientLineUsecase.execute(request)
+        ).rejects.toThrow(
+          /UpdateIngredientLineUsecase:.*meal.*not found for user/i
+        );
+      });
     });
   });
 
