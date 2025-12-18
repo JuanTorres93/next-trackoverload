@@ -7,7 +7,7 @@ import { Workout } from '@/domain/entities/workout/Workout';
 import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { Uuidv4IdGenerator } from '@/infra/services/Uuidv4IdGenerator';
 import { AddExerciseToWorkoutUsecase } from '../AddExerciseToWorkout.usecase';
 
 describe('AddExerciseToWorkoutUsecase', () => {
@@ -25,7 +25,8 @@ describe('AddExerciseToWorkoutUsecase', () => {
     addExerciseToWorkoutUsecase = new AddExerciseToWorkoutUsecase(
       workoutsRepo,
       exercisesRepo,
-      usersRepo
+      usersRepo,
+      new Uuidv4IdGenerator()
     );
 
     user = User.create({

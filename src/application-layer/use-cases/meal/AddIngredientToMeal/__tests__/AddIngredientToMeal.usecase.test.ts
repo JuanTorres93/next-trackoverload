@@ -8,7 +8,7 @@ import { User } from '@/domain/entities/user/User';
 import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
 import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { Uuidv4IdGenerator } from '@/infra/services/Uuidv4IdGenerator';
 import {
   AddIngredientToMealUsecase,
   AddIngredientToMealUsecaseRequest,
@@ -33,7 +33,8 @@ describe('AddIngredientToMealUsecase', () => {
     addIngredientToMealUsecase = new AddIngredientToMealUsecase(
       mealsRepo,
       ingredientsRepo,
-      usersRepo
+      usersRepo,
+      new Uuidv4IdGenerator()
     );
 
     user = User.create({

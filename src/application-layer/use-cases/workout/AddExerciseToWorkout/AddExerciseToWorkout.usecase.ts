@@ -4,7 +4,7 @@ import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
 import { ExercisesRepo } from '@/domain/repos/ExercisesRepo.port';
 import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
-import { v4 as uuidv4 } from 'uuid';
+import { IdGenerator } from '@/domain/services/IdGenerator.port';
 
 export type AddExerciseToWorkoutUsecaseRequest = {
   userId: string;
@@ -19,7 +19,8 @@ export class AddExerciseToWorkoutUsecase {
   constructor(
     private workoutsRepo: WorkoutsRepo,
     private exercisesRepo: ExercisesRepo,
-    private usersRepo: UsersRepo
+    private usersRepo: UsersRepo,
+    private idGenerator: IdGenerator
   ) {}
 
   async execute(
@@ -51,7 +52,7 @@ export class AddExerciseToWorkoutUsecase {
     }
 
     const workoutLine: WorkoutLine = WorkoutLine.create({
-      id: uuidv4(),
+      id: this.idGenerator.generateId(),
       workoutId: workout.id,
       exerciseId: request.exerciseId,
       setNumber: request.setNumber,

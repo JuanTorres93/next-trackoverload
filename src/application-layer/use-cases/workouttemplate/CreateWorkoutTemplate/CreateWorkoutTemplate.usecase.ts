@@ -6,7 +6,7 @@ import { NotFoundError } from '@/domain/common/errors';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
-import { v4 as uuidv4 } from 'uuid';
+import { IdGenerator } from '@/domain/services/IdGenerator.port';
 
 export type CreateWorkoutTemplateUsecaseRequest = {
   userId: string;
@@ -16,7 +16,8 @@ export type CreateWorkoutTemplateUsecaseRequest = {
 export class CreateWorkoutTemplateUsecase {
   constructor(
     private workoutTemplatesRepo: WorkoutTemplatesRepo,
-    private usersRepo: UsersRepo
+    private usersRepo: UsersRepo,
+    private idGenerator: IdGenerator
   ) {}
 
   async execute(
@@ -30,7 +31,7 @@ export class CreateWorkoutTemplateUsecase {
     }
 
     const newWorkoutTemplate = WorkoutTemplate.create({
-      id: uuidv4(),
+      id: this.idGenerator.generateId(),
       userId: request.userId,
       name: request.name,
       exercises: [],

@@ -2,8 +2,8 @@ import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
-import { beforeEach, describe, expect, it } from 'vitest';
 import { CreateIngredientUsecase } from '../CreateIngredient.usecase';
+import { Uuidv4IdGenerator } from '@/infra/services/Uuidv4IdGenerator';
 
 describe('CreateIngredientUsecase', () => {
   let ingredientsRepo: MemoryIngredientsRepo;
@@ -11,7 +11,10 @@ describe('CreateIngredientUsecase', () => {
 
   beforeEach(() => {
     ingredientsRepo = new MemoryIngredientsRepo();
-    createIngredientUsecase = new CreateIngredientUsecase(ingredientsRepo);
+    createIngredientUsecase = new CreateIngredientUsecase(
+      ingredientsRepo,
+      new Uuidv4IdGenerator()
+    );
   });
 
   describe('Creation', () => {

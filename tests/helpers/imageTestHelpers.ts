@@ -1,3 +1,5 @@
+import { Uuidv4IdGenerator } from '@/infra/services/Uuidv4IdGenerator';
+
 /**
  * Example test helper for using MemoryImageManager in use case tests
  *
@@ -9,7 +11,7 @@ import { MemoryImageManager } from '@/infra/memory/MemoryImageManager';
 
 // Create a test-specific instance
 export const createTestImageManager = () => {
-  return new MemoryImageManager('/test/images');
+  return new MemoryImageManager('/test/images', new Uuidv4IdGenerator());
 };
 
 // Helper to create test image buffers

@@ -6,7 +6,7 @@ import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { ImageManager } from '@/domain/services/ImageManager.port';
-import { v4 as uuidv4 } from 'uuid';
+import { IdGenerator } from '@/domain/services/IdGenerator.port';
 
 export type IngredientLineInfo = {
   ingredientId: string;
@@ -25,7 +25,8 @@ export class CreateRecipeUsecase {
     private recipesRepo: RecipesRepo,
     private ingredientsRepo: IngredientsRepo,
     private imageManager: ImageManager,
-    private usersRepo: UsersRepo
+    private usersRepo: UsersRepo,
+    private idGenerator: IdGenerator
   ) {}
 
   async execute(request: CreateRecipeUsecaseRequest): Promise<RecipeDTO> {
@@ -37,7 +38,7 @@ export class CreateRecipeUsecase {
     }
 
     const ingredientLines: IngredientLine[] = [];
-    const newRecipeId = uuidv4();
+    const newRecipeId = this.idGenerator.generateId();
 
     // Fetch all ingredients by their IDs
     const ingredientIds = request.ingredientLinesInfo.map(
@@ -68,7 +69,7 @@ export class CreateRecipeUsecase {
       )!.quantityInGrams;
 
       const ingredientLine = IngredientLine.create({
-        id: uuidv4(),
+        id: this.idGenerator.generateId(),
         parentId: newRecipeId,
         parentType: 'recipe',
         ingredient: ingredient,
@@ -85,7 +86,7 @@ export class CreateRecipeUsecase {
     if (request.imageBuffer) {
       imageMetadata = await this.imageManager.uploadImage(
         request.imageBuffer,
-        `recipe-${uuidv4()}-${Date.now()}.png`,
+        `recipe-${this.idGenerator.generateId()}-${Date.now()}.png`,
         {
           allowedMimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
           quality: 0.8,

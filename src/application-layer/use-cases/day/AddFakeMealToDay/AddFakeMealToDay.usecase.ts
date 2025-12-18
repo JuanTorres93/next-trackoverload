@@ -6,7 +6,7 @@ import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { dayIdToDayMonthYear } from '@/domain/value-objects/DayId/DayId';
-import { v4 as uuidv4 } from 'uuid';
+import { IdGenerator } from '@/domain/services/IdGenerator.port';
 
 export type AddFakeMealToDayUsecaseRequest = {
   dayId: string;
@@ -20,7 +20,8 @@ export class AddFakeMealToDayUsecase {
   constructor(
     private daysRepo: DaysRepo,
     private fakeMealsRepo: FakeMealsRepo,
-    private usersRepo: UsersRepo
+    private usersRepo: UsersRepo,
+    private idGenerator: IdGenerator
   ) {}
 
   async execute(request: AddFakeMealToDayUsecaseRequest): Promise<DayDTO> {
@@ -46,7 +47,7 @@ export class AddFakeMealToDayUsecase {
     }
 
     const fakeMeal = FakeMeal.create({
-      id: uuidv4(),
+      id: this.idGenerator.generateId(),
       userId: request.userId,
       name: request.name,
       calories: request.calories,

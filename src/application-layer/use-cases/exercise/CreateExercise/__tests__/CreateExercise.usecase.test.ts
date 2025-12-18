@@ -3,8 +3,8 @@ import * as dto from '@/../tests/dtoProperties';
 import { toExerciseDTO } from '@/application-layer/dtos/ExerciseDTO';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
 import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
-import { beforeEach, describe, expect, it } from 'vitest';
 import { CreateExerciseUsecase } from '../CreateExercise.usecase';
+import { Uuidv4IdGenerator } from '@/infra/services/Uuidv4IdGenerator';
 
 describe('CreateExerciseUsecase', () => {
   let exercisesRepo: MemoryExercisesRepo;
@@ -12,7 +12,10 @@ describe('CreateExerciseUsecase', () => {
 
   beforeEach(() => {
     exercisesRepo = new MemoryExercisesRepo();
-    createExerciseUsecase = new CreateExerciseUsecase(exercisesRepo);
+    createExerciseUsecase = new CreateExerciseUsecase(
+      exercisesRepo,
+      new Uuidv4IdGenerator()
+    );
   });
 
   describe('Creation', () => {

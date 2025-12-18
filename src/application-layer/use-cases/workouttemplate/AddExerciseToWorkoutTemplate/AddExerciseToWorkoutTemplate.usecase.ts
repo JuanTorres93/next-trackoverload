@@ -7,7 +7,7 @@ import { WorkoutTemplateLine } from '@/domain/entities/workouttemplateline/Worko
 import { ExercisesRepo } from '@/domain/repos/ExercisesRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
-import { v4 as uuidv4 } from 'uuid';
+import { IdGenerator } from '@/domain/services/IdGenerator.port';
 
 export type AddExerciseToWorkoutTemplateUsecaseRequest = {
   userId: string;
@@ -20,7 +20,8 @@ export class AddExerciseToWorkoutTemplateUsecase {
   constructor(
     private workoutTemplatesRepo: WorkoutTemplatesRepo,
     private exercisesRepo: ExercisesRepo,
-    private usersRepo: UsersRepo
+    private usersRepo: UsersRepo,
+    private idGenerator: IdGenerator
   ) {}
 
   async execute(
@@ -57,7 +58,7 @@ export class AddExerciseToWorkoutTemplateUsecase {
     }
 
     const workoutTemplateLine = WorkoutTemplateLine.create({
-      id: uuidv4(),
+      id: this.idGenerator.generateId(),
       templateId: workoutTemplate.id,
       exerciseId: request.exerciseId,
       sets: request.sets,

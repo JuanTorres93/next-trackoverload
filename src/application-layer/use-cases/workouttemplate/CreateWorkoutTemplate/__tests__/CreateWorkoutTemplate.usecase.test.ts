@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { Uuidv4IdGenerator } from '@/infra/services/Uuidv4IdGenerator';
 import { CreateWorkoutTemplateUsecase } from '../CreateWorkoutTemplate.usecase';
 import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
@@ -17,7 +17,11 @@ describe('CreateWorkoutTemplateUsecase', () => {
   beforeEach(async () => {
     workoutTemplatesRepo = new MemoryWorkoutTemplatesRepo();
     usersRepo = new MemoryUsersRepo();
-    usecase = new CreateWorkoutTemplateUsecase(workoutTemplatesRepo, usersRepo);
+    usecase = new CreateWorkoutTemplateUsecase(
+      workoutTemplatesRepo,
+      usersRepo,
+      new Uuidv4IdGenerator()
+    );
 
     user = User.create({
       ...vp.validUserProps,

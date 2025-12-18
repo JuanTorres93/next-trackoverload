@@ -4,7 +4,7 @@ import { toUserDTO, UserDTO } from '@/application-layer/dtos/UserDTO';
 import { AlreadyExistsError } from '@/domain/common/errors';
 import { User } from '@/domain/entities/user/User';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { Uuidv4IdGenerator } from '@/infra/services/Uuidv4IdGenerator';
 import { CreateUserUsecase } from '../CreateUser.usecase';
 
 describe('CreateUserUsecase', () => {
@@ -14,7 +14,10 @@ describe('CreateUserUsecase', () => {
 
   beforeEach(async () => {
     usersRepo = new MemoryUsersRepo();
-    createUserUsecase = new CreateUserUsecase(usersRepo);
+    createUserUsecase = new CreateUserUsecase(
+      usersRepo,
+      new Uuidv4IdGenerator()
+    );
     user = await createUserUsecase.execute({
       name: vp.validUserProps.name,
       email: vp.validUserProps.email,

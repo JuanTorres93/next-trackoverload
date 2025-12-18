@@ -8,7 +8,7 @@ import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { User } from '@/domain/entities/user/User';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { Uuidv4IdGenerator } from '@/infra/services/Uuidv4IdGenerator';
 import { DuplicateRecipeUsecase } from '../DuplicateRecipe.usecase';
 
 describe('DuplicateRecipeUsecase', () => {
@@ -22,7 +22,11 @@ describe('DuplicateRecipeUsecase', () => {
   beforeEach(async () => {
     recipesRepo = new MemoryRecipesRepo();
     usersRepo = new MemoryUsersRepo();
-    duplicateRecipeUsecase = new DuplicateRecipeUsecase(recipesRepo, usersRepo);
+    duplicateRecipeUsecase = new DuplicateRecipeUsecase(
+      recipesRepo,
+      usersRepo,
+      new Uuidv4IdGenerator()
+    );
 
     user = User.create({
       ...vp.validUserProps,

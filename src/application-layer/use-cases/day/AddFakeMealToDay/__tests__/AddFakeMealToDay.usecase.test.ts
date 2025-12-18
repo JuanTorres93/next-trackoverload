@@ -3,9 +3,9 @@ import { Day } from '@/domain/entities/day/Day';
 import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
 import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
-import { beforeEach, describe, expect, it } from 'vitest';
 import { AddFakeMealToDayUsecase } from '../AddFakeMealToDay.usecase';
 import { User } from '@/domain/entities/user/User';
+import { Uuidv4IdGenerator } from '@/infra/services/Uuidv4IdGenerator';
 
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
@@ -14,6 +14,7 @@ describe('AddFakeMealToDayUsecase', () => {
   let daysRepo: MemoryDaysRepo;
   let fakeMealsRepo: MemoryFakeMealsRepo;
   let usersRepo: MemoryUsersRepo;
+
   let addFakeMealToDayUsecase: AddFakeMealToDayUsecase;
   let day: Day;
   let user: User;
@@ -26,7 +27,8 @@ describe('AddFakeMealToDayUsecase', () => {
     addFakeMealToDayUsecase = new AddFakeMealToDayUsecase(
       daysRepo,
       fakeMealsRepo,
-      usersRepo
+      usersRepo,
+      new Uuidv4IdGenerator()
     );
 
     day = Day.create({

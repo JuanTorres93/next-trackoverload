@@ -5,7 +5,7 @@ import {
 import { BaseImageManager } from '@/infra/BaseImageManager';
 import sharp from 'sharp';
 import { fileTypeFromBuffer } from 'file-type';
-import { v4 as uuidv4 } from 'uuid';
+import { IdGenerator } from '@/domain/services/IdGenerator.port';
 
 interface StoredImage {
   filename: string;
@@ -16,10 +16,12 @@ interface StoredImage {
 export class MemoryImageManager extends BaseImageManager {
   private images: Map<string, StoredImage> = new Map();
   private readonly baseUrl: string;
+  private readonly idGenerator: IdGenerator;
 
-  constructor(baseUrl: string = '/memory/images') {
+  constructor(baseUrl: string = '/memory/images', idGenerator: IdGenerator) {
     super();
     this.baseUrl = baseUrl;
+    this.idGenerator = idGenerator;
   }
 
   async uploadImage(
@@ -40,7 +42,7 @@ export class MemoryImageManager extends BaseImageManager {
     const baseName = filename.includes('.')
       ? filename.substring(0, filename.lastIndexOf('.'))
       : filename;
-    const uniqueFilename = `${baseName}-${uuidv4()}${fileExtension}`;
+    const uniqueFilename = `${baseName}-${this.idGenerator.generateId()}${fileExtension}`;
 
     // 3. Procesar imagen con Sharp (similar a FileSystemImageManager)
     let processedBuffer = imageData;

@@ -7,7 +7,7 @@ import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTempla
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { Uuidv4IdGenerator } from '@/infra/services/Uuidv4IdGenerator';
 import { CreateWorkoutFromTemplateUsecase } from '../CreateWorkoutFromTemplate.usecase';
 
 describe('CreateWorkoutFromTemplateUsecase', () => {
@@ -25,7 +25,8 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
     usecase = new CreateWorkoutFromTemplateUsecase(
       workoutTemplatesRepo,
       workoutsRepo,
-      usersRepo
+      usersRepo,
+      new Uuidv4IdGenerator()
     );
 
     user = User.create({ ...vp.validUserProps });

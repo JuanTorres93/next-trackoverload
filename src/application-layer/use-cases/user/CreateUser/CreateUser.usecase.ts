@@ -3,7 +3,7 @@ import { AlreadyExistsError } from '@/domain/common/errors';
 import { User } from '@/domain/entities/user/User';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { Email } from '@/domain/value-objects/Email/Email';
-import { v4 as uuidv4 } from 'uuid';
+import { IdGenerator } from '@/domain/services/IdGenerator.port';
 
 export type CreateUserUsecaseRequest = {
   name: string;
@@ -12,7 +12,7 @@ export type CreateUserUsecaseRequest = {
 };
 
 export class CreateUserUsecase {
-  constructor(private usersRepo: UsersRepo) {}
+  constructor(private usersRepo: UsersRepo, private idGenerator: IdGenerator) {}
 
   async execute(request: CreateUserUsecaseRequest): Promise<UserDTO> {
     // Validate email
@@ -44,7 +44,7 @@ export class CreateUserUsecase {
 
     // Create new user
     const newUser = User.create({
-      id: uuidv4(),
+      id: this.idGenerator.generateId(),
       name: request.name,
       email: request.email,
       customerId: request.customerId ? request.customerId : undefined,

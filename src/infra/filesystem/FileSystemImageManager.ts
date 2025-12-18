@@ -5,21 +5,24 @@ import {
 import { BaseImageManager } from '@/infra/BaseImageManager';
 import sharp from 'sharp';
 import { fileTypeFromBuffer } from 'file-type';
-import { v4 as uuidv4 } from 'uuid';
+import { IdGenerator } from '@/domain/services/IdGenerator.port';
 import fs from 'fs/promises';
 import path from 'path';
 
 export class FileSystemImageManager extends BaseImageManager {
   private readonly uploadDir: string;
   private readonly baseUrl: string;
+  private readonly idGenerator: IdGenerator;
 
   constructor(
     uploadDir: string = './public/file_system_image_manager_images',
-    baseUrl: string = '/file_system_image_manager_images'
+    baseUrl: string = '/file_system_image_manager_images',
+    idGenerator: IdGenerator
   ) {
     super();
     this.uploadDir = uploadDir;
     this.baseUrl = baseUrl;
+    this.idGenerator = idGenerator;
   }
 
   private async ensureUploadDir(): Promise<void> {
@@ -51,7 +54,7 @@ export class FileSystemImageManager extends BaseImageManager {
     const baseName = filename.includes('.')
       ? filename.substring(0, filename.lastIndexOf('.'))
       : filename;
-    const uniqueFilename = `${baseName}-${uuidv4()}${fileExtension}`;
+    const uniqueFilename = `${baseName}-${this.idGenerator.generateId()}${fileExtension}`;
 
     // 4. Procesar imagen con Sharp si es necesario
     let processedBuffer = imageData;

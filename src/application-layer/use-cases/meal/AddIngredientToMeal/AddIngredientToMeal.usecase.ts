@@ -4,7 +4,7 @@ import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine'
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
-import { v4 as uuidv4 } from 'uuid';
+import { IdGenerator } from '@/domain/services/IdGenerator.port';
 
 export type AddIngredientToMealUsecaseRequest = {
   userId: string;
@@ -17,7 +17,8 @@ export class AddIngredientToMealUsecase {
   constructor(
     private mealsRepo: MealsRepo,
     private ingredientsRepo: IngredientsRepo,
-    private usersRepo: UsersRepo
+    private usersRepo: UsersRepo,
+    private idGenerator: IdGenerator
   ) {}
 
   async execute(request: AddIngredientToMealUsecaseRequest): Promise<MealDTO> {
@@ -51,7 +52,7 @@ export class AddIngredientToMealUsecase {
     }
 
     const newIngredientLine = IngredientLine.create({
-      id: uuidv4(),
+      id: this.idGenerator.generateId(),
       parentId: request.mealId,
       parentType: 'meal',
       ingredient: ingredient,

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { Uuidv4IdGenerator } from '@/infra/services/Uuidv4IdGenerator';
 import { MemoryImageManager } from '../MemoryImageManager';
 
 // Create a test image buffer (1x1 PNG)
@@ -17,7 +17,10 @@ describe('MemoryImageManager', () => {
   let imageManager: MemoryImageManager;
 
   beforeEach(() => {
-    imageManager = new MemoryImageManager();
+    imageManager = new MemoryImageManager(
+      '/memory/images',
+      new Uuidv4IdGenerator()
+    );
   });
 
   describe('uploadImage', () => {

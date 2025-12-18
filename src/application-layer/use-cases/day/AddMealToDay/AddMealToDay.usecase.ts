@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { IdGenerator } from '@/domain/services/IdGenerator.port';
 import { DayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
 import { NotFoundError } from '@/domain/common/errors';
 import { Day } from '@/domain/entities/day/Day';
@@ -21,7 +21,8 @@ export class AddMealToDayUsecase {
     private daysRepo: DaysRepo,
     private mealsRepo: MealsRepo,
     private usersRepo: UsersRepo,
-    private recipesRepo: RecipesRepo
+    private recipesRepo: RecipesRepo,
+    private idGenerator: IdGenerator
   ) {}
 
   async execute(request: AddMealToDayUsecaseRequest): Promise<DayDTO> {
@@ -57,11 +58,11 @@ export class AddMealToDayUsecase {
       });
     }
 
-    const newMealId = uuidv4();
+    const newMealId = this.idGenerator.generateId();
 
     const mealIngredientLines = recipe.ingredientLines.map((line) =>
       IngredientLine.create({
-        id: uuidv4(),
+        id: this.idGenerator.generateId(),
         parentId: newMealId,
         parentType: 'meal',
         ingredient: line.ingredient,

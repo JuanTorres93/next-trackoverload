@@ -4,18 +4,21 @@ import {
   ExerciseDTO,
   toExerciseDTO,
 } from '@/application-layer/dtos/ExerciseDTO';
-import { v4 as uuidv4 } from 'uuid';
+import { IdGenerator } from '@/domain/services/IdGenerator.port';
 
 export type CreateExerciseUsecaseRequest = {
   name: string;
 };
 
 export class CreateExerciseUsecase {
-  constructor(private exercisesRepo: ExercisesRepo) {}
+  constructor(
+    private exercisesRepo: ExercisesRepo,
+    private idGenerator: IdGenerator
+  ) {}
 
   async execute(request: CreateExerciseUsecaseRequest): Promise<ExerciseDTO> {
     const newExercise = Exercise.create({
-      id: uuidv4(),
+      id: this.idGenerator.generateId(),
       name: request.name,
       createdAt: new Date(),
       updatedAt: new Date(),

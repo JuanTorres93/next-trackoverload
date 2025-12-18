@@ -4,7 +4,7 @@ import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 
 import { NotFoundError } from '@/domain/common/errors';
-import { v4 as uuidv4 } from 'uuid';
+import { IdGenerator } from '@/domain/services/IdGenerator.port';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 
 export type DuplicateRecipeUsecaseRequest = {
@@ -14,7 +14,11 @@ export type DuplicateRecipeUsecaseRequest = {
 };
 
 export class DuplicateRecipeUsecase {
-  constructor(private recipesRepo: RecipesRepo, private usersRepo: UsersRepo) {}
+  constructor(
+    private recipesRepo: RecipesRepo,
+    private usersRepo: UsersRepo,
+    private idGenerator: IdGenerator
+  ) {}
 
   async execute(request: DuplicateRecipeUsecaseRequest): Promise<RecipeDTO> {
     const user = await this.usersRepo.getUserById(request.userId);
@@ -33,7 +37,7 @@ export class DuplicateRecipeUsecase {
       );
     }
 
-    const newRecipeId = uuidv4();
+    const newRecipeId = this.idGenerator.generateId();
     const newName = request.newName || `${originalRecipe.name} (Copy)`;
 
     const duplicatedIngredientLines: IngredientLine[] = [];
@@ -41,7 +45,7 @@ export class DuplicateRecipeUsecase {
     // Duplicate ingredient lines to their own instances
     for (const ingredientline of originalRecipe.ingredientLines) {
       const newIngredientLine = IngredientLine.create({
-        id: uuidv4(),
+        id: this.idGenerator.generateId(),
         parentId: newRecipeId,
         parentType: 'recipe',
         quantityInGrams: ingredientline.quantityInGrams,

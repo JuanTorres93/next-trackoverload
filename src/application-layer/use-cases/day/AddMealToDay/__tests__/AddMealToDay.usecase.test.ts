@@ -10,8 +10,8 @@ import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
 import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
-import { beforeEach, describe, expect, it } from 'vitest';
 import { AddMealToDayUsecase } from '../AddMealToDay.usecase';
+import { Uuidv4IdGenerator } from '@/infra/services/Uuidv4IdGenerator';
 
 describe('AddMealToDayUsecase', () => {
   let daysRepo: MemoryDaysRepo;
@@ -36,7 +36,8 @@ describe('AddMealToDayUsecase', () => {
       daysRepo,
       mealsRepo,
       usersRepo,
-      recipesRepo
+      recipesRepo,
+      new Uuidv4IdGenerator()
     );
     day = Day.create({
       ...vp.validDayProps(),

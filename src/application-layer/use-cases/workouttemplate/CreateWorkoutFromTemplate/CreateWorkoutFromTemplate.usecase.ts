@@ -5,7 +5,7 @@ import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
 import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
-import { v4 as uuidv4 } from 'uuid';
+import { IdGenerator } from '@/domain/services/IdGenerator.port';
 
 export type CreateWorkoutFromTemplateUsecaseRequest = {
   userId: string;
@@ -17,7 +17,8 @@ export class CreateWorkoutFromTemplateUsecase {
   constructor(
     private workoutTemplatesRepo: WorkoutTemplatesRepo,
     private workoutsRepo: WorkoutsRepo,
-    private usersRepo: UsersRepo
+    private usersRepo: UsersRepo,
+    private idGenerator: IdGenerator
   ) {}
 
   async execute(
@@ -49,14 +50,14 @@ export class CreateWorkoutFromTemplateUsecase {
         'CreateWorkoutFromTemplateUsecase: Cannot create workout from an empty template'
       );
 
-    const newWorkoutId = uuidv4();
+    const newWorkoutId = this.idGenerator.generateId();
 
     // Create a WorkoutLine for each set of each exercise in the template
     const workoutExercises = [];
     for (const templateExercise of workoutTemplate.exercises) {
       for (let setNumber = 1; setNumber <= templateExercise.sets; setNumber++) {
         const workoutLine: WorkoutLine = WorkoutLine.create({
-          id: uuidv4(),
+          id: this.idGenerator.generateId(),
           workoutId: newWorkoutId,
           exerciseId: templateExercise.exerciseId,
           setNumber,

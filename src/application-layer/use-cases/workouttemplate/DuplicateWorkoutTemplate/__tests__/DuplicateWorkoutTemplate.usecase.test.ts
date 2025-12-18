@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { Uuidv4IdGenerator } from '@/infra/services/Uuidv4IdGenerator';
 import { DuplicateWorkoutTemplateUsecase } from '../DuplicateWorkoutTemplate.usecase';
 import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
@@ -20,7 +20,8 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
     usersRepo = new MemoryUsersRepo();
     usecase = new DuplicateWorkoutTemplateUsecase(
       workoutTemplatesRepo,
-      usersRepo
+      usersRepo,
+      new Uuidv4IdGenerator()
     );
 
     user = User.create({ ...vp.validUserProps });

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { Uuidv4IdGenerator } from '@/infra/services/Uuidv4IdGenerator';
 import { FileSystemImageManager } from '../FileSystemImageManager';
 import fs from 'fs/promises';
 import path from 'path';
@@ -20,7 +20,11 @@ describe('FileSystemImageManager', () => {
   const testDir = './__test_data__/filesystem_images';
 
   beforeEach(async () => {
-    imageManager = new FileSystemImageManager(testDir, '/test-images');
+    imageManager = new FileSystemImageManager(
+      testDir,
+      '/test-images',
+      new Uuidv4IdGenerator()
+    );
   });
 
   afterEach(async () => {
@@ -283,7 +287,11 @@ describe('FileSystemImageManager', () => {
       const result = await imageManager.uploadImage(testBuffer, filename);
 
       // Create new instance pointing to same directory
-      const newManager = new FileSystemImageManager(testDir, '/test-images');
+      const newManager = new FileSystemImageManager(
+        testDir,
+        '/test-images',
+        new Uuidv4IdGenerator()
+      );
 
       // Should be able to retrieve the image
       const info = await newManager.getImageInfo(result.url);

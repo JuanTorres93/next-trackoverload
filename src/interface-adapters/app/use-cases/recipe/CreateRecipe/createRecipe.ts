@@ -3,10 +3,12 @@ import { AppIngredientsRepo } from '@/interface-adapters/app/repos/AppIngredient
 import { AppImageManager } from '@/interface-adapters/app/services/AppImageManager';
 import { AppUsersRepo } from '@/interface-adapters/app/repos/AppUsersRepo';
 import { CreateRecipeUsecase } from '@/application-layer/use-cases/recipe/CreateRecipe/CreateRecipe.usecase';
+import { AppUuidV4IdGenerator } from '@/interface-adapters/app/services/AppUuidV4IdGenerator';
 
 export const AppCreateRecipeUsecase = new CreateRecipeUsecase(
   AppRecipesRepo,
   AppIngredientsRepo,
   AppImageManager,
-  AppUsersRepo
+  AppUsersRepo,
+  AppUuidV4IdGenerator
 );

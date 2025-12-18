@@ -4,7 +4,7 @@ import {
   IngredientDTO,
   toIngredientDTO,
 } from '@/application-layer/dtos/IngredientDTO';
-import { v4 as uuidv4 } from 'uuid';
+import { IdGenerator } from '@/domain/services/IdGenerator.port';
 
 export type CreateIngredientUsecaseRequest = {
   name: string;
@@ -13,13 +13,16 @@ export type CreateIngredientUsecaseRequest = {
 };
 
 export class CreateIngredientUsecase {
-  constructor(private ingredientsRepo: IngredientsRepo) {}
+  constructor(
+    private ingredientsRepo: IngredientsRepo,
+    private idGenerator: IdGenerator
+  ) {}
 
   async execute(
     request: CreateIngredientUsecaseRequest
   ): Promise<IngredientDTO> {
     const newIngredient = Ingredient.create({
-      id: uuidv4(),
+      id: this.idGenerator.generateId(),
       name: request.name,
       calories: Number(request.calories),
       protein: Number(request.protein),

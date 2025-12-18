@@ -7,7 +7,7 @@ import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTempla
 import { WorkoutTemplateLine } from '@/domain/entities/workouttemplateline/WorkoutTemplateLine';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
-import { v4 as uuidv4 } from 'uuid';
+import { IdGenerator } from '@/domain/services/IdGenerator.port';
 
 export type DuplicateWorkoutTemplateUsecaseRequest = {
   userId: string;
@@ -18,7 +18,8 @@ export type DuplicateWorkoutTemplateUsecaseRequest = {
 export class DuplicateWorkoutTemplateUsecase {
   constructor(
     private workoutTemplatesRepo: WorkoutTemplatesRepo,
-    private usersRepo: UsersRepo
+    private usersRepo: UsersRepo,
+    private idGenerator: IdGenerator
   ) {}
 
   async execute(
@@ -48,13 +49,13 @@ export class DuplicateWorkoutTemplateUsecase {
     const newTemplateName =
       request.newTemplateName ?? `${originalTemplate.name} (Copy)`;
 
-    const newTemplateId = uuidv4();
+    const newTemplateId = this.idGenerator.generateId();
 
     // Duplicate exercises
     const duplicatedExercises: WorkoutTemplateLine[] =
       originalTemplate.exercises.map((exercise) =>
         WorkoutTemplateLine.create({
-          id: uuidv4(),
+          id: this.idGenerator.generateId(),
           templateId: newTemplateId,
           exerciseId: exercise.exerciseId,
           sets: exercise.sets,

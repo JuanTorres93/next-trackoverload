@@ -9,7 +9,7 @@ import { MemoryImageManager } from '@/infra';
 import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { Uuidv4IdGenerator } from '@/infra/services/Uuidv4IdGenerator';
 import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
 import {
   CreateRecipeUsecase,
@@ -27,16 +27,18 @@ describe('CreateRecipeUsecase', () => {
   let user: User;
 
   beforeEach(async () => {
+    const idGenerator = new Uuidv4IdGenerator();
     recipesRepo = new MemoryRecipesRepo();
     ingredientsRepo = new MemoryIngredientsRepo();
-    imageManager = new MemoryImageManager();
+    imageManager = new MemoryImageManager('/memory/images', idGenerator);
     usersRepo = new MemoryUsersRepo();
 
     createRecipeUsecase = new CreateRecipeUsecase(
       recipesRepo,
       ingredientsRepo,
       imageManager,
-      usersRepo
+      usersRepo,
+      idGenerator
     );
 
     user = User.create({
