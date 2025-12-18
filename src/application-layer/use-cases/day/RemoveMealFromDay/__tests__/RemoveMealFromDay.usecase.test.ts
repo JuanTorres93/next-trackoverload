@@ -1,4 +1,4 @@
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { NotFoundError } from '@/domain/common/errors';
 import { Day } from '@/domain/entities/day/Day';
 import { User } from '@/domain/entities/user/User';
 import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
@@ -70,6 +70,7 @@ describe('RemoveMealFromDayUsecase', () => {
 
       expect(result.mealIds).toHaveLength(0);
     });
+
     it('should not affect fake meals', async () => {
       day.addFakeMeal('fakeMeal1');
       await daysRepo.saveDay(day);
@@ -117,40 +118,57 @@ describe('RemoveMealFromDayUsecase', () => {
 
   describe('Errors', () => {
     it('should throw error if day does not exist', async () => {
-      const date = '11111001';
+      const request = {
+        date: '11111001',
+        userId: vp.userId,
+        mealId: vp.validFakeMealProps.id,
+      };
 
-      await expect(
-        removeMealFromDayUsecase.execute({
-          date,
-          userId: vp.userId,
-          mealId: vp.validFakeMealProps.id,
-        })
-      ).rejects.toThrow(ValidationError);
-      await expect(
-        removeMealFromDayUsecase.execute({
-          date,
-          userId: vp.userId,
-          mealId: vp.validFakeMealProps.id,
-        })
-      ).rejects.toThrow(/RemoveMealFromDay.*Day.*not/);
+      await expect(removeMealFromDayUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+      await expect(removeMealFromDayUsecase.execute(request)).rejects.toThrow(
+        /RemoveMealFromDay.*Day.*not/
+      );
     });
 
     it('should throw error if user does not exist', async () => {
-      await expect(
-        removeMealFromDayUsecase.execute({
-          date: day.id,
-          userId: 'non-existent',
-          mealId: vp.validFakeMealProps.id,
-        })
-      ).rejects.toThrow(NotFoundError);
+      const request = {
+        date: day.id,
+        userId: 'non-existent',
+        mealId: vp.validFakeMealProps.id,
+      };
 
-      await expect(
-        removeMealFromDayUsecase.execute({
-          date: day.id,
-          userId: 'non-existent',
-          mealId: vp.validFakeMealProps.id,
-        })
-      ).rejects.toThrow(/RemoveMealFromDay.*User.*not.*found/);
+      await expect(removeMealFromDayUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+
+      await expect(removeMealFromDayUsecase.execute(request)).rejects.toThrow(
+        /RemoveMealFromDay.*User.*not.*found/
+      );
+    });
+
+    it("should throw error when trying to remove meal another user's day", async () => {
+      const anotherUser = User.create({
+        ...vp.validUserProps,
+        id: 'another-user-id',
+        email: 'another-user@example.com',
+      });
+      await usersRepo.saveUser(anotherUser);
+
+      const request = {
+        date: day.id,
+        userId: anotherUser.id,
+        mealId: vp.mealPropsNoIngredientLines.id,
+      };
+
+      await expect(removeMealFromDayUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+
+      await expect(removeMealFromDayUsecase.execute(request)).rejects.toThrow(
+        /RemoveMealFromDay.*Day.*not/
+      );
     });
   });
 });

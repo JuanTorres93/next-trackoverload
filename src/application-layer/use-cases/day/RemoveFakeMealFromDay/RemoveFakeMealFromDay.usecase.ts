@@ -1,5 +1,5 @@
 import { DayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { NotFoundError } from '@/domain/common/errors';
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
@@ -29,8 +29,9 @@ export class RemoveFakeMealFromDayUsecase {
       request.date,
       request.userId
     );
+
     if (!day) {
-      throw new ValidationError(
+      throw new NotFoundError(
         `RemoveFakeMealFromDayUsecase: Day not found for date ${request.date} and userId ${request.userId}`
       );
     }

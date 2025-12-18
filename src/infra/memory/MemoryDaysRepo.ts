@@ -28,7 +28,7 @@ export class MemoryDaysRepo implements DaysRepo {
   }
 
   async getDayByIdAndUserId(id: string, userId: string): Promise<Day | null> {
-    const day = this.days.find((d) => d.id === id && d.userId === userId);
+    const day = this.days.find((day) => day.id === id && day.userId === userId);
     return day || null;
   }
 

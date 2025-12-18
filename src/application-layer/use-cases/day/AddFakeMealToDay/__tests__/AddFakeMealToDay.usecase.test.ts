@@ -121,25 +121,21 @@ describe('AddFakeMealToDayUsecase', () => {
 
   describe('Errors', () => {
     it('should throw error if user does not exist', async () => {
-      await expect(
-        addFakeMealToDayUsecase.execute({
-          dayId: day.id,
-          userId: 'non-existent',
-          name: vp.validFakeMealProps.name,
-          calories: vp.validFakeMealProps.calories,
-          protein: vp.validFakeMealProps.protein,
-        })
-      ).rejects.toThrow(NotFoundError);
+      const request = {
+        dayId: day.id,
+        userId: 'non-existent',
+        name: vp.validFakeMealProps.name,
+        calories: vp.validFakeMealProps.calories,
+        protein: vp.validFakeMealProps.protein,
+      };
 
-      await expect(
-        addFakeMealToDayUsecase.execute({
-          dayId: day.id,
-          userId: 'non-existent',
-          name: vp.validFakeMealProps.name,
-          calories: vp.validFakeMealProps.calories,
-          protein: vp.validFakeMealProps.protein,
-        })
-      ).rejects.toThrow(/AddFakeMealToDay.*User.*not.*found/);
+      await expect(addFakeMealToDayUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+
+      await expect(addFakeMealToDayUsecase.execute(request)).rejects.toThrow(
+        /AddFakeMealToDay.*User.*not.*found/
+      );
     });
   });
 });

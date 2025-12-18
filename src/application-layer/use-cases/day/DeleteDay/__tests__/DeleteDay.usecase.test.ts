@@ -78,5 +78,28 @@ describe('DeleteDayUsecase', () => {
         })
       ).rejects.toThrow(/DeleteDayUsecase.*User.*not.*found/);
     });
+
+    it("should throw error when trying to delete another user's Day", async () => {
+      const anotherUser = User.create({
+        ...vp.validUserProps,
+        id: 'another-user-id',
+        email: 'another-user@example.com',
+      });
+
+      await usersRepo.saveUser(anotherUser);
+
+      const request = {
+        dayId: day.id,
+        userId: anotherUser.id,
+      };
+
+      await expect(deleteDayUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+
+      await expect(deleteDayUsecase.execute(request)).rejects.toThrow(
+        /DeleteDayUsecase.*Day.*not.*found/
+      );
+    });
   });
 });

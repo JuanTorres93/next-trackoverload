@@ -1,8 +1,8 @@
 import { DayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import { NotFoundError } from '@/domain/common/errors';
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
-import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { MealsRepo } from '@/domain/repos/MealsRepo.port';
+import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 
 export type RemoveMealFromDayUsecaseRequest = {
   date: string;
@@ -30,7 +30,7 @@ export class RemoveMealFromDayUsecase {
       request.userId
     );
     if (!day) {
-      throw new ValidationError(
+      throw new NotFoundError(
         `RemoveMealFromDayUsecase: Day not found for date ${request.date} and userId ${request.userId}`
       );
     }

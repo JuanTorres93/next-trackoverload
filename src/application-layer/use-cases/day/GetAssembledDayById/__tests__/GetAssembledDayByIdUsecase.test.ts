@@ -47,7 +47,7 @@ describe('GetAssembledDayByIdUsecase', () => {
     await usersRepo.saveUser(user);
   });
 
-  describe('Found', () => {
+  describe('Execution', () => {
     it('should return AssembledDayDTO', async () => {
       const result = await usecase.execute({
         dayId: day.id,
@@ -89,35 +89,54 @@ describe('GetAssembledDayByIdUsecase', () => {
 
   describe('Errors', () => {
     it('should throw error if user does not exist', async () => {
-      await expect(
-        usecase.execute({
-          dayId: day.id,
-          userId: 'non-existent-user-id',
-        })
-      ).rejects.toThrowError(NotFoundError);
+      const request = {
+        dayId: day.id,
+        userId: 'non-existent-user-id',
+      };
 
-      await expect(
-        usecase.execute({
-          dayId: day.id,
-          userId: 'non-existent-user-id',
-        })
-      ).rejects.toThrowError(/not found/);
+      await expect(usecase.execute(request)).rejects.toThrowError(
+        NotFoundError
+      );
+
+      await expect(usecase.execute(request)).rejects.toThrowError(/not found/);
     });
 
     it('should throw NotFoundError if day does not exist', async () => {
-      await expect(
-        usecase.execute({
-          dayId: 'non-existent-day-id',
-          userId: user.id,
-        })
-      ).rejects.toThrowError(NotFoundError);
+      const request = {
+        dayId: 'non-existent-day-id',
+        userId: user.id,
+      };
 
-      await expect(
-        usecase.execute({
-          dayId: 'non-existent-day-id',
-          userId: user.id,
-        })
-      ).rejects.toThrowError(/GetAssembledDayByIdUsecase.*Day.*not found/);
+      await expect(usecase.execute(request)).rejects.toThrowError(
+        NotFoundError
+      );
+
+      await expect(usecase.execute(request)).rejects.toThrowError(
+        /GetAssembledDayByIdUsecase.*Day.*not found/
+      );
+    });
+
+    it("should throw error when trying to get another user's assembled day", async () => {
+      const anotherUser = User.create({
+        ...vp.validUserProps,
+        id: 'another-user-id',
+        email: 'another-user@example.com',
+      });
+
+      await usersRepo.saveUser(anotherUser);
+
+      const request = {
+        dayId: day.id,
+        userId: anotherUser.id,
+      };
+
+      await expect(usecase.execute(request)).rejects.toThrowError(
+        NotFoundError
+      );
+
+      await expect(usecase.execute(request)).rejects.toThrowError(
+        /GetAssembledDayByIdUsecase.*Day.*not found/
+      );
     });
   });
 });

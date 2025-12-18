@@ -32,7 +32,7 @@ describe('GetDayByIdUsecase', () => {
     await daysRepo.saveDay(day);
   });
 
-  describe('Found', () => {
+  describe('Execution', () => {
     it('should return a day if it exists', async () => {
       const result = await getDayByIdUsecase.execute({
         dayId: day.id,
@@ -114,23 +114,41 @@ describe('GetDayByIdUsecase', () => {
 
       expect(result).toBeNull();
     });
+
+    it("should return null when trying to get another user's day", async () => {
+      const anotherUser = User.create({
+        ...vp.validUserProps,
+        id: 'another-user-id',
+        email: 'another-user@example.com',
+      });
+
+      await usersRepo.saveUser(anotherUser);
+
+      const request = {
+        dayId: day.id,
+        userId: anotherUser.id,
+      };
+
+      const result = await getDayByIdUsecase.execute(request);
+
+      expect(result).toBeNull();
+    });
   });
 
   describe('Errors', () => {
     it('should throw error if user does not exist', async () => {
-      await expect(
-        getDayByIdUsecase.execute({
-          dayId: day.id,
-          userId: 'non-existent',
-        })
-      ).rejects.toThrow(NotFoundError);
+      const request = {
+        dayId: day.id,
+        userId: 'non-existent',
+      };
 
-      await expect(
-        getDayByIdUsecase.execute({
-          dayId: day.id,
-          userId: 'non-existent',
-        })
-      ).rejects.toThrow(/GetDayById.*User.*not.*found/);
+      await expect(getDayByIdUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+
+      await expect(getDayByIdUsecase.execute(request)).rejects.toThrow(
+        /GetDayById.*User.*not.*found/
+      );
     });
   });
 });
