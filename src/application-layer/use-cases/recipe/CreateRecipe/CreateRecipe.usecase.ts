@@ -1,5 +1,9 @@
 import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import {
+  NotFoundError,
+  PermissionError,
+  ValidationError,
+} from '@/domain/common/errors';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
@@ -14,7 +18,8 @@ export type IngredientLineInfo = {
 };
 
 export type CreateRecipeUsecaseRequest = {
-  userId: string;
+  actorUserId: string;
+  targetUserId: string;
   name: string;
   ingredientLinesInfo: IngredientLineInfo[];
   imageBuffer?: Buffer;
@@ -30,10 +35,16 @@ export class CreateRecipeUsecase {
   ) {}
 
   async execute(request: CreateRecipeUsecaseRequest): Promise<RecipeDTO> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    if (request.actorUserId !== request.targetUserId) {
+      throw new PermissionError(
+        'CreateRecipeUsecase: cannot create recipe for another user'
+      );
+    }
+
+    const user = await this.usersRepo.getUserById(request.targetUserId);
     if (!user) {
       throw new NotFoundError(
-        `CreateRecipeUsecase: user with id ${request.userId} not found`
+        `CreateRecipeUsecase: user with id ${request.targetUserId} not found`
       );
     }
 
@@ -96,7 +107,7 @@ export class CreateRecipeUsecase {
 
     const newRecipe = Recipe.create({
       id: newRecipeId,
-      userId: request.userId,
+      userId: request.targetUserId,
       name: request.name,
       ingredientLines: ingredientLines,
       imageUrl: imageMetadata ? imageMetadata.url : undefined,

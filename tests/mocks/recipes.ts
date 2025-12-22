@@ -11,7 +11,8 @@ export const createMockRecipes = async () => {
 
   const recipesPropsForUseCase = [
     {
-      userId: mockUser.id,
+      actorUserId: mockUser.id,
+      targetUserId: mockUser.id,
       name: 'Carrot Soup',
       ingredientLinesInfo: [
         { ingredientId: mockIngredients[0].id, quantityInGrams: 200 },
@@ -19,7 +20,8 @@ export const createMockRecipes = async () => {
       ],
     },
     {
-      userId: mockUser.id,
+      actorUserId: mockUser.id,
+      targetUserId: mockUser.id,
       name: 'Cabbage Salad',
       ingredientLinesInfo: [
         { ingredientId: mockIngredients[1].id, quantityInGrams: 150 },
@@ -27,7 +29,8 @@ export const createMockRecipes = async () => {
       ],
     },
     {
-      userId: mockUser.id,
+      actorUserId: mockUser.id,
+      targetUserId: mockUser.id,
       name: 'Celery Stir-fry',
       ingredientLinesInfo: [
         { ingredientId: mockIngredients[2].id, quantityInGrams: 250 },

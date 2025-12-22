@@ -1,7 +1,11 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
+import {
+  NotFoundError,
+  PermissionError,
+  ValidationError,
+} from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { User } from '@/domain/entities/user/User';
@@ -64,7 +68,8 @@ describe('CreateRecipeUsecase', () => {
   describe('Creation', () => {
     it('should create and save a new recipe with no image', async () => {
       const request = {
-        userId: vp.userId,
+        actorUserId: vp.userId,
+        targetUserId: vp.userId,
         name: 'Grilled Chicken',
         ingredientLinesInfo: [testIngredientLineInfo],
       };
@@ -91,7 +96,8 @@ describe('CreateRecipeUsecase', () => {
     it('should create and save a new recipe WITH image', async () => {
       const testImage = createTestImage('small');
       const request = {
-        userId: vp.userId,
+        actorUserId: vp.userId,
+        targetUserId: vp.userId,
         name: 'Grilled Chicken',
         ingredientLinesInfo: [testIngredientLineInfo],
         imageBuffer: testImage,
@@ -118,7 +124,8 @@ describe('CreateRecipeUsecase', () => {
 
     it('should save recipe ingredient lines', async () => {
       const request = {
-        userId: vp.userId,
+        actorUserId: vp.userId,
+        targetUserId: vp.userId,
         name: 'Grilled Chicken',
         ingredientLinesInfo: [testIngredientLineInfo],
       };
@@ -133,7 +140,8 @@ describe('CreateRecipeUsecase', () => {
 
     it('should calculate correct nutritional info', async () => {
       const request = {
-        userId: vp.userId,
+        actorUserId: vp.userId,
+        targetUserId: vp.userId,
         name: 'Test Recipe',
         ingredientLinesInfo: [testIngredientLineInfo],
       };
@@ -147,7 +155,8 @@ describe('CreateRecipeUsecase', () => {
 
     it('should return RecipeDTO', async () => {
       const request = {
-        userId: vp.userId,
+        actorUserId: vp.userId,
+        targetUserId: vp.userId,
         name: 'Test Recipe',
         ingredientLinesInfo: [testIngredientLineInfo],
       };
@@ -179,7 +188,8 @@ describe('CreateRecipeUsecase', () => {
       };
 
       const request = {
-        userId: vp.userId,
+        actorUserId: vp.userId,
+        targetUserId: vp.userId,
         name: 'Chicken and Rice',
         ingredientLinesInfo: [testIngredientLineInfo, testIngredientLineInfo2],
       };
@@ -204,7 +214,8 @@ describe('CreateRecipeUsecase', () => {
 
       const testImage = createTestImage('small');
       const request = {
-        userId: vp.userId,
+        actorUserId: vp.userId,
+        targetUserId: vp.userId,
         name: 'Recipe with Image',
         ingredientLinesInfo: [testIngredientLineInfo],
         imageBuffer: testImage,
@@ -220,7 +231,8 @@ describe('CreateRecipeUsecase', () => {
   describe('Error', () => {
     it('should throw error if user does not exist', async () => {
       const request = {
-        userId: 'non-existent',
+        actorUserId: 'non-existent',
+        targetUserId: 'non-existent',
         name: 'Test Recipe',
         ingredientLinesInfo: [testIngredientLineInfo],
       };
@@ -240,7 +252,8 @@ describe('CreateRecipeUsecase', () => {
       };
 
       const request = {
-        userId: vp.userId,
+        actorUserId: vp.userId,
+        targetUserId: vp.userId,
         name: 'Test Recipe',
         ingredientLinesInfo: [
           testIngredientLineInfo,
@@ -254,6 +267,22 @@ describe('CreateRecipeUsecase', () => {
 
       await expect(createRecipeUsecase.execute(request)).rejects.toThrow(
         /CreateRecipeUseCase.*Ingredient.*not found/
+      );
+    });
+
+    it('should throw error when trying to create recipe for another user', async () => {
+      const request = {
+        actorUserId: vp.userId,
+        targetUserId: 'another-user-id',
+        name: 'Test Recipe',
+        ingredientLinesInfo: [testIngredientLineInfo],
+      };
+
+      await expect(createRecipeUsecase.execute(request)).rejects.toThrow(
+        PermissionError
+      );
+      await expect(createRecipeUsecase.execute(request)).rejects.toThrow(
+        /CreateRecipeUsecase.*cannot create.*recipe.*another user/
       );
     });
   });

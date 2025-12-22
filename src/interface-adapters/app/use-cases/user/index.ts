@@ -6,7 +6,6 @@
 export { AppCreateUserUsecase } from './CreateUser/createUser';
 
 // READ Operations
-export { AppGetAllUsersUsecase } from './GetAllUsers/getAllUsers';
 export { AppGetUserByIdUsecase } from './GetUserById/getUserById';
 
 // UPDATE Operations

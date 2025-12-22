@@ -61,8 +61,10 @@ export async function createRecipe(
   }
 
   try {
+    // TODO IMPORTANT: ensure userId is the current logged in user
     const request = {
-      userId,
+      actorUserId: userId,
+      targetUserId: userId,
       name,
       ingredientLinesInfo,
       imageBuffer,
