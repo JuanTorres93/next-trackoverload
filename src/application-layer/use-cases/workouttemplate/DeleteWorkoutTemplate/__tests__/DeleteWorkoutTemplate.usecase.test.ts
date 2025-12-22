@@ -88,5 +88,21 @@ describe('DeleteWorkoutTemplateUsecase', () => {
         /DeleteWorkoutTemplateUsecase.*User.*not.*found/
       );
     });
+
+    it("should throw error when trying to delete another user's template", async () => {
+      const anotherUser = User.create({ ...vp.validUserProps, id: 'user-2' });
+      await usersRepo.saveUser(anotherUser);
+
+      const request = {
+        id: existingTemplate.id,
+        userId: anotherUser.id,
+      };
+
+      await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+
+      await expect(usecase.execute(request)).rejects.toThrow(
+        /DeleteWorkoutTemplateUsecase.*WorkoutTemplate.*not.*found/
+      );
+    });
   });
 });

@@ -98,6 +98,15 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
       expect(result).toHaveLength(1);
       expect(result[0].id).toBe(template2.id);
     });
+
+    it("should return empty array when trying to get another user's workout templates", async () => {
+      const anotherUser = User.create({ ...vp.validUserProps, id: 'user-2' });
+      await usersRepo.saveUser(anotherUser);
+
+      const result = await usecase.execute({ userId: anotherUser.id });
+
+      expect(result).toEqual([]);
+    });
   });
 
   describe('Errors', () => {

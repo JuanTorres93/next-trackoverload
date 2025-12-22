@@ -186,5 +186,21 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
         /CreateWorkoutFromTemplateUsecase.*User.*not.*found/
       );
     });
+
+    it("should throw error when trying to create workout from another user's workout template", async () => {
+      const anotherUser = User.create({ ...vp.validUserProps, id: 'user-2' });
+      await usersRepo.saveUser(anotherUser);
+
+      const request = {
+        userId: anotherUser.id,
+        workoutTemplateId: vp.validWorkoutTemplateProps().id,
+      };
+
+      await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+
+      await expect(usecase.execute(request)).rejects.toThrow(
+        /CreateWorkoutFromTemplateUsecase:.*WorkoutTemplate not found/
+      );
+    });
   });
 });

@@ -39,7 +39,7 @@ export class UpdateExerciseInWorkoutTemplateUsecase {
 
     if (!workoutTemplate || isDeleted) {
       throw new NotFoundError(
-        'UpdateExerciseInWorkoutTemplate WorkoutTemplate not found'
+        'UpdateExerciseInWorkoutTemplateUsecase: WorkoutTemplate not found'
       );
     }
 

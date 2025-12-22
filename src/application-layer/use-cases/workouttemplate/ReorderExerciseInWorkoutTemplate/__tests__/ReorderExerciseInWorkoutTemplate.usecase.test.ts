@@ -150,5 +150,22 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
         /ReorderExerciseInWorkoutTemplateUsecase.*User.*not.*found/
       );
     });
+
+    it("should throw error when trying to reorder exercise in another user's workout template", async () => {
+      const anotherUser = User.create({ ...vp.validUserProps, id: 'user-2' });
+      await usersRepo.saveUser(anotherUser);
+
+      const request = {
+        workoutTemplateId: vp.validWorkoutTemplateProps().id,
+        userId: anotherUser.id,
+        exerciseId: 'ex1',
+        newIndex: 0,
+      };
+
+      await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+      await expect(usecase.execute(request)).rejects.toThrow(
+        /ReorderExerciseInWorkoutTemplateUsecase.*WorkoutTemplate.*not.*found/
+      );
+    });
   });
 });

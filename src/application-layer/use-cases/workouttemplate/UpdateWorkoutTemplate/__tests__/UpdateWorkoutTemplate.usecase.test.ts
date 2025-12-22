@@ -29,87 +29,109 @@ describe('UpdateWorkoutTemplateUsecase', () => {
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
   });
 
-  it('should update the workout template name', async () => {
-    const request = {
-      id: vp.validWorkoutTemplateProps().id,
-      userId: vp.userId,
-      name: 'New Name',
-    };
+  describe('Execution', () => {
+    it('should update the workout template name', async () => {
+      const request = {
+        id: vp.validWorkoutTemplateProps().id,
+        userId: vp.userId,
+        name: 'New Name',
+      };
 
-    // Wait just a bit to ensure updatedAt will be different
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    const result = await usecase.execute(request);
+      // Wait just a bit to ensure updatedAt will be different
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      const result = await usecase.execute(request);
 
-    expect(result.name).toBe('New Name');
-    expect(result.id).toBe(vp.validWorkoutTemplateProps().id);
-    expect(new Date(result.createdAt)).toEqual(existingTemplate.createdAt);
-    expect(new Date(result.updatedAt)).not.toEqual(
-      vp.validWorkoutTemplateProps().updatedAt
-    );
+      expect(result.name).toBe('New Name');
+      expect(result.id).toBe(vp.validWorkoutTemplateProps().id);
+      expect(new Date(result.createdAt)).toEqual(existingTemplate.createdAt);
+      expect(new Date(result.updatedAt)).not.toEqual(
+        vp.validWorkoutTemplateProps().updatedAt
+      );
 
-    const exercisesIds = existingTemplate.exercises.map((ex) => ex.exerciseId);
-    const resultExercisesIds = result.exercises.map((ex) => ex.exerciseId);
-    expect(resultExercisesIds).toEqual(exercisesIds);
+      const exercisesIds = existingTemplate.exercises.map(
+        (ex) => ex.exerciseId
+      );
+      const resultExercisesIds = result.exercises.map((ex) => ex.exerciseId);
+      expect(resultExercisesIds).toEqual(exercisesIds);
 
-    // Verify it was saved in the repo
-    const savedTemplate = await workoutTemplatesRepo.getWorkoutTemplateById(
-      vp.validWorkoutTemplateProps().id
-    );
-    expect(savedTemplate!.name).toBe('New Name');
+      // Verify it was saved in the repo
+      const savedTemplate = await workoutTemplatesRepo.getWorkoutTemplateById(
+        vp.validWorkoutTemplateProps().id
+      );
+      expect(savedTemplate!.name).toBe('New Name');
+    });
+
+    it('should return WorkoutTemplateDTO', async () => {
+      const request = {
+        id: vp.validWorkoutTemplateProps().id,
+        userId: vp.userId,
+        name: 'Updated Name',
+      };
+
+      const result = await usecase.execute(request);
+
+      expect(result).not.toBeInstanceOf(WorkoutTemplate);
+      for (const prop of dto.workoutTemplateDTOProperties) {
+        expect(result).toHaveProperty(prop);
+      }
+    });
   });
 
-  it('should return WorkoutTemplateDTO', async () => {
-    const request = {
-      id: vp.validWorkoutTemplateProps().id,
-      userId: vp.userId,
-      name: 'Updated Name',
-    };
+  describe('Errors', () => {
+    it('should throw NotFoundError when workout template does not exist', async () => {
+      const request = {
+        id: 'non-existent',
+        name: 'New Name',
+        userId: vp.userId,
+      };
 
-    const result = await usecase.execute(request);
+      await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+      await expect(usecase.execute(request)).rejects.toThrow(
+        /UpdateWorkoutTemplate.*WorkoutTemplate.*not found/
+      );
+    });
 
-    expect(result).not.toBeInstanceOf(WorkoutTemplate);
-    for (const prop of dto.workoutTemplateDTOProperties) {
-      expect(result).toHaveProperty(prop);
-    }
-  });
+    it('should throw NotFoundError when trying to update deleted template', async () => {
+      existingTemplate.markAsDeleted();
+      await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
-  it('should throw NotFoundError when workout template does not exist', async () => {
-    const request = {
-      id: 'non-existent',
-      name: 'New Name',
-      userId: vp.userId,
-    };
+      const request = {
+        id: vp.validWorkoutTemplateProps().id,
+        name: 'Updated Name',
+        userId: vp.userId,
+      };
 
-    await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
-    await expect(usecase.execute(request)).rejects.toThrow(
-      /UpdateWorkoutTemplate.*WorkoutTemplate.*not found/
-    );
-  });
+      await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+    });
 
-  it('should throw NotFoundError when trying to update deleted template', async () => {
-    existingTemplate.markAsDeleted();
-    await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
+    it('should throw error if user does not exist', async () => {
+      const request = {
+        id: vp.validWorkoutTemplateProps().id,
+        userId: 'non-existent',
+        name: 'New Name',
+      };
 
-    const request = {
-      id: vp.validWorkoutTemplateProps().id,
-      name: 'Updated Name',
-      userId: vp.userId,
-    };
+      await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
-    await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
-  });
+      await expect(usecase.execute(request)).rejects.toThrow(
+        /UpdateWorkoutTemplateUsecase.*User.*not.*found/
+      );
+    });
 
-  it('should throw error if user does not exist', async () => {
-    const request = {
-      id: vp.validWorkoutTemplateProps().id,
-      userId: 'non-existent',
-      name: 'New Name',
-    };
+    it("should throw error when trying to update another user's workout template", async () => {
+      const anotherUser = User.create({ ...vp.validUserProps, id: 'user-2' });
+      await usersRepo.saveUser(anotherUser);
 
-    await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+      const request = {
+        id: vp.validWorkoutTemplateProps().id,
+        userId: anotherUser.id,
+        name: 'Updated Name',
+      };
 
-    await expect(usecase.execute(request)).rejects.toThrow(
-      /UpdateWorkoutTemplateUsecase.*User.*not.*found/
-    );
+      await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+      await expect(usecase.execute(request)).rejects.toThrow(
+        /UpdateWorkoutTemplateUsecase.*WorkoutTemplate.*not found/
+      );
+    });
   });
 });

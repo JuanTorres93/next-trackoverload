@@ -39,7 +39,7 @@ export class ReorderExerciseInWorkoutTemplateUsecase {
 
     if (!workoutTemplate || isDeleted) {
       throw new NotFoundError(
-        'ReorderExerciseInWorkoutTemplate WorkoutTemplate not found'
+        'ReorderExerciseInWorkoutTemplateUsecase: WorkoutTemplate not found'
       );
     }
 

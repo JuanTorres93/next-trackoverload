@@ -134,5 +134,22 @@ describe('UpdateExerciseInWorkoutTemplateUsecase', () => {
         /UpdateExerciseInWorkoutTemplateUsecase.*User.*not.*found/
       );
     });
+
+    it("should throw error when trying to update exercise in another user's workout template", async () => {
+      const anotherUser = User.create({ ...vp.validUserProps, id: 'user-2' });
+      await usersRepo.saveUser(anotherUser);
+
+      const request = {
+        workoutTemplateId: vp.validWorkoutTemplateProps().id,
+        userId: anotherUser.id,
+        exerciseId: existingTemplate.exercises[0].exerciseId,
+        sets: 5,
+      };
+
+      await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+      await expect(usecase.execute(request)).rejects.toThrow(
+        /UpdateExerciseInWorkoutTemplateUsecase.*WorkoutTemplate.*not.*found/
+      );
+    });
   });
 });
