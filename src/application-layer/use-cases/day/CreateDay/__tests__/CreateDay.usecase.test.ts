@@ -1,7 +1,7 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toDayDTO } from '@/application-layer/dtos/DayDTO';
-import { NotFoundError } from '@/domain/common/errors';
+import { NotFoundError, PermissionError } from '@/domain/common/errors';
 import { Day } from '@/domain/entities/day/Day';
 import { User } from '@/domain/entities/user/User';
 import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
@@ -33,7 +33,8 @@ describe('CreateDayUsecase', () => {
         day: vp.validDayProps().day,
         month: vp.validDayProps().month,
         year: vp.validDayProps().year,
-        userId: vp.userId,
+        actorUserId: vp.userId,
+        targetUserId: vp.userId,
       };
 
       const day = await createDayUsecase.execute(request);
@@ -55,7 +56,8 @@ describe('CreateDayUsecase', () => {
         day: vp.validDayProps().day,
         month: vp.validDayProps().month,
         year: vp.validDayProps().year,
-        userId: vp.userId,
+        actorUserId: vp.userId,
+        targetUserId: vp.userId,
       };
 
       const day = await createDayUsecase.execute(request);
@@ -73,7 +75,8 @@ describe('CreateDayUsecase', () => {
         day: vp.validDayProps().day,
         month: vp.validDayProps().month,
         year: vp.validDayProps().year,
-        userId: 'non-existent',
+        actorUserId: 'non-existent',
+        targetUserId: 'non-existent',
       };
 
       await expect(createDayUsecase.execute(request)).rejects.toThrow(
@@ -81,6 +84,23 @@ describe('CreateDayUsecase', () => {
       );
       await expect(createDayUsecase.execute(request)).rejects.toThrow(
         /CreateDayUsecase.*user.*not.*found/
+      );
+    });
+
+    it('should throw error when trying to create a day for another user', async () => {
+      const request = {
+        day: vp.validDayProps().day,
+        month: vp.validDayProps().month,
+        year: vp.validDayProps().year,
+        actorUserId: vp.userId,
+        targetUserId: 'another-user-id',
+      };
+
+      await expect(createDayUsecase.execute(request)).rejects.toThrow(
+        PermissionError
+      );
+      await expect(createDayUsecase.execute(request)).rejects.toThrow(
+        /CreateDayUsecase: cannot create day for another user/
       );
     });
   });

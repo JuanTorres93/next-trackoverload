@@ -1,11 +1,9 @@
 import { DayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
 import { NotFoundError } from '@/domain/common/errors';
-import { Day } from '@/domain/entities/day/Day';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
-import { dayIdToDayMonthYear } from '@/domain/value-objects/DayId/DayId';
 import { IdGenerator } from '@/domain/services/IdGenerator.port';
 
 export type AddFakeMealToDayUsecaseRequest = {
@@ -32,19 +30,15 @@ export class AddFakeMealToDayUsecase {
       );
     }
 
-    let day = await this.daysRepo.getDayByIdAndUserId(
+    const day = await this.daysRepo.getDayByIdAndUserId(
       request.dayId,
       request.userId
     );
 
-    if (!day) {
-      day = Day.create({
-        ...dayIdToDayMonthYear(request.dayId),
-        userId: request.userId,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
-    }
+    if (!day)
+      throw new NotFoundError(
+        `AddFakeMealToDayUsecase: Day with id ${request.dayId} for user with id ${request.userId} not found`
+      );
 
     const fakeMeal = FakeMeal.create({
       id: this.idGenerator.generateId(),
