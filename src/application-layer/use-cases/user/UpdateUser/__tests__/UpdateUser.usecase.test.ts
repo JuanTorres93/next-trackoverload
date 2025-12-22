@@ -1,6 +1,6 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
-import { NotFoundError } from '@/domain/common/errors';
+import { NotFoundError, PermissionError } from '@/domain/common/errors';
 import { User } from '@/domain/entities/user/User';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -25,7 +25,8 @@ describe('UpdateUserUsecase', () => {
       await usersRepo.saveUser(user);
 
       const result = await updateUserUsecase.execute({
-        id: vp.userId,
+        actorUserId: vp.userId,
+        targetUserId: vp.userId,
         patch: { name: 'New Name' },
       });
 
@@ -43,7 +44,8 @@ describe('UpdateUserUsecase', () => {
       await usersRepo.saveUser(user);
 
       const result = await updateUserUsecase.execute({
-        id: vp.userId,
+        actorUserId: vp.userId,
+        targetUserId: vp.userId,
         patch: { name: 'New Name' },
       });
 
@@ -62,7 +64,8 @@ describe('UpdateUserUsecase', () => {
       await usersRepo.saveUser(user);
 
       await updateUserUsecase.execute({
-        id: vp.userId,
+        actorUserId: vp.userId,
+        targetUserId: vp.userId,
         patch: { name: 'Updated Name' },
       });
 
@@ -74,7 +77,11 @@ describe('UpdateUserUsecase', () => {
 
   describe('Errors', () => {
     it('should throw NotFoundError when user does not exist', async () => {
-      const request = { id: 'non-existent', patch: { name: 'Test' } };
+      const request = {
+        actorUserId: 'non-existent',
+        targetUserId: 'non-existent',
+        patch: { name: 'Test' },
+      };
 
       await expect(updateUserUsecase.execute(request)).rejects.toThrow(
         NotFoundError
@@ -82,6 +89,22 @@ describe('UpdateUserUsecase', () => {
 
       await expect(updateUserUsecase.execute(request)).rejects.toThrow(
         /UpdateUserUsecase.*User.*not found/
+      );
+    });
+
+    it('should throw error if trying to update another user', async () => {
+      const request = {
+        actorUserId: 'actor-id',
+        targetUserId: 'target-id',
+        patch: { name: 'Test' },
+      };
+
+      await expect(updateUserUsecase.execute(request)).rejects.toThrow(
+        PermissionError
+      );
+
+      await expect(updateUserUsecase.execute(request)).rejects.toThrow(
+        /UpdateUserUsecase.*Access denied/
       );
     });
   });

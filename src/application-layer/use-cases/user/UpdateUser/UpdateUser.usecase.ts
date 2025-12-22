@@ -1,10 +1,11 @@
 import { UserDTO, toUserDTO } from '@/application-layer/dtos/UserDTO';
-import { NotFoundError } from '@/domain/common/errors';
+import { NotFoundError, PermissionError } from '@/domain/common/errors';
 import { UserUpdateProps } from '@/domain/entities/user/User';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 
 export type UpdateUserUsecaseRequest = {
-  id: string;
+  actorUserId: string;
+  targetUserId: string;
   patch?: UserUpdateProps;
 };
 
@@ -12,7 +13,13 @@ export class UpdateUserUsecase {
   constructor(private usersRepo: UsersRepo) {}
 
   async execute(request: UpdateUserUsecaseRequest): Promise<UserDTO> {
-    const existingUser = await this.usersRepo.getUserById(request.id);
+    if (request.actorUserId !== request.targetUserId) {
+      throw new PermissionError(
+        'UpdateUserUsecase: Access denied to update this user'
+      );
+    }
+
+    const existingUser = await this.usersRepo.getUserById(request.targetUserId);
 
     if (!existingUser) {
       throw new NotFoundError('UpdateUserUsecase: User not found');

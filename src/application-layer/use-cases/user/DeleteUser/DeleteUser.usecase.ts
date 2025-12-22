@@ -1,4 +1,4 @@
-import { NotFoundError } from '@/domain/common/errors';
+import { NotFoundError, PermissionError } from '@/domain/common/errors';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
@@ -8,7 +8,8 @@ import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
 import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
 
 export type DeleteUserUsecaseRequest = {
-  id: string;
+  actorUserId: string;
+  targetUserId: string;
 };
 
 export class DeleteUserUsecase {
@@ -23,21 +24,27 @@ export class DeleteUserUsecase {
   ) {}
 
   async execute(request: DeleteUserUsecaseRequest): Promise<void> {
-    const user = await this.usersRepo.getUserById(request.id);
+    if (request.actorUserId !== request.targetUserId) {
+      throw new PermissionError(
+        'DeleteUserUsecase: cannot delete another user'
+      );
+    }
+
+    const user = await this.usersRepo.getUserById(request.targetUserId);
 
     if (!user) {
       throw new NotFoundError('DeleteUserUsecase: User not found');
     }
 
-    await this.fakeMealsRepo.deleteAllFakeMealsForUser(request.id);
-    await this.mealsRepo.deleteAllMealsForUser(request.id);
-    await this.recipesRepo.deleteAllRecipesForUser(request.id);
-    await this.workoutsRepo.deleteAllWorkoutsForUser(request.id);
+    await this.fakeMealsRepo.deleteAllFakeMealsForUser(request.targetUserId);
+    await this.mealsRepo.deleteAllMealsForUser(request.targetUserId);
+    await this.recipesRepo.deleteAllRecipesForUser(request.targetUserId);
+    await this.workoutsRepo.deleteAllWorkoutsForUser(request.targetUserId);
     await this.workoutTemplatesRepo.deleteAllWorkoutTemplatesForUser(
-      request.id
+      request.targetUserId
     );
-    await this.daysRepo.deleteAllDaysForUser(request.id);
+    await this.daysRepo.deleteAllDaysForUser(request.targetUserId);
 
-    await this.usersRepo.deleteUser(request.id);
+    await this.usersRepo.deleteUser(request.targetUserId);
   }
 }

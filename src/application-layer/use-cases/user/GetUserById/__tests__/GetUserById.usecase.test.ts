@@ -5,6 +5,7 @@ import { User } from '@/domain/entities/user/User';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetUserByIdUsecase } from '../GetUserById.usecase';
+import { PermissionError } from '@/domain/common/errors';
 
 describe('GetUserByIdUsecase', () => {
   let usersRepo: MemoryUsersRepo;
@@ -24,7 +25,8 @@ describe('GetUserByIdUsecase', () => {
       await usersRepo.saveUser(user);
 
       const result = await getUserByIdUsecase.execute({
-        id: vp.validUserProps.id,
+        actorUserId: vp.validUserProps.id,
+        targetUserId: vp.validUserProps.id,
       });
 
       expect(result).toEqual(toUserDTO(user));
@@ -38,7 +40,8 @@ describe('GetUserByIdUsecase', () => {
       await usersRepo.saveUser(user);
 
       const result = await getUserByIdUsecase.execute({
-        id: vp.validUserProps.id,
+        actorUserId: vp.validUserProps.id,
+        targetUserId: vp.validUserProps.id,
       });
 
       for (const prop of dto.userDTOProperties) {
@@ -48,9 +51,29 @@ describe('GetUserByIdUsecase', () => {
     });
 
     it('should return null when user not found', async () => {
-      const result = await getUserByIdUsecase.execute({ id: 'non-existent' });
+      const result = await getUserByIdUsecase.execute({
+        actorUserId: 'non-existent',
+        targetUserId: 'non-existent',
+      });
 
       expect(result).toBeNull();
+    });
+  });
+
+  describe('Errors', () => {
+    it('should throw error if trying to get another user', async () => {
+      const request = {
+        actorUserId: 'actor-id',
+        targetUserId: 'target-id',
+      };
+
+      await expect(() =>
+        getUserByIdUsecase.execute(request)
+      ).rejects.toThrowError(PermissionError);
+
+      await expect(() =>
+        getUserByIdUsecase.execute(request)
+      ).rejects.toThrowError(/GetUserByIdUsecase.*Access denied/);
     });
   });
 });

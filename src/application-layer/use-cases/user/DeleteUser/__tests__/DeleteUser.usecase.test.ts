@@ -1,21 +1,21 @@
 import * as vp from '@/../tests/createProps';
-import { NotFoundError } from '@/domain/common/errors';
+import { NotFoundError, PermissionError } from '@/domain/common/errors';
 
 // Import entities
-import { User } from '@/domain/entities/user/User';
+import { Day } from '@/domain/entities/day/Day';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { User } from '@/domain/entities/user/User';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
-import { Day } from '@/domain/entities/day/Day';
 
 // Import in-memory repositories
-import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
 import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
 import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
+import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
 import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
 
@@ -105,7 +105,10 @@ describe('DeleteUserUsecase', () => {
       const existingUser = await usersRepo.getUserById(vp.userId);
       expect(existingUser).not.toBeNull();
 
-      await deleteUserUsecase.execute({ id: vp.userId });
+      await deleteUserUsecase.execute({
+        actorUserId: vp.userId,
+        targetUserId: vp.userId,
+      });
 
       // Verify user was deleted
       const deletedUser = await usersRepo.getUserById(vp.userId);
@@ -119,7 +122,10 @@ describe('DeleteUserUsecase', () => {
         );
         expect(fakeMealsBefore.length).toBeGreaterThan(0);
 
-        await deleteUserUsecase.execute({ id: vp.userId });
+        await deleteUserUsecase.execute({
+          actorUserId: vp.userId,
+          targetUserId: vp.userId,
+        });
 
         const fakeMealsAfter = await fakeMealsRepo.getAllFakeMealsByUserId(
           vp.userId
@@ -131,7 +137,10 @@ describe('DeleteUserUsecase', () => {
         const mealsBefore = await mealsRepo.getAllMealsForUser(vp.userId);
         expect(mealsBefore.length).toBeGreaterThan(0);
 
-        await deleteUserUsecase.execute({ id: vp.userId });
+        await deleteUserUsecase.execute({
+          actorUserId: vp.userId,
+          targetUserId: vp.userId,
+        });
 
         const mealsAfter = await mealsRepo.getAllMealsForUser(vp.userId);
         expect(mealsAfter.length).toBe(0);
@@ -143,7 +152,10 @@ describe('DeleteUserUsecase', () => {
         );
         expect(recipesBefore.length).toBeGreaterThan(0);
 
-        await deleteUserUsecase.execute({ id: vp.userId });
+        await deleteUserUsecase.execute({
+          actorUserId: vp.userId,
+          targetUserId: vp.userId,
+        });
 
         const recipesAfter = await recipesRepo.getAllRecipesByUserId(vp.userId);
         expect(recipesAfter.length).toBe(0);
@@ -155,7 +167,10 @@ describe('DeleteUserUsecase', () => {
         );
         expect(workoutsBefore.length).toBeGreaterThan(0);
 
-        await deleteUserUsecase.execute({ id: vp.userId });
+        await deleteUserUsecase.execute({
+          actorUserId: vp.userId,
+          targetUserId: vp.userId,
+        });
 
         const workoutsAfter = await workoutsRepo.getAllWorkoutsByUserId(
           vp.userId
@@ -168,7 +183,10 @@ describe('DeleteUserUsecase', () => {
           await workoutTemplatesRepo.getAllWorkoutTemplatesByUserId(vp.userId);
         expect(workoutTemplatesBefore.length).toBeGreaterThan(0);
 
-        await deleteUserUsecase.execute({ id: vp.userId });
+        await deleteUserUsecase.execute({
+          actorUserId: vp.userId,
+          targetUserId: vp.userId,
+        });
 
         const workoutTemplatesAfter =
           await workoutTemplatesRepo.getAllWorkoutTemplatesByUserId(vp.userId);
@@ -179,7 +197,10 @@ describe('DeleteUserUsecase', () => {
         const daysBefore = await daysRepo.getAllDaysByUserId(vp.userId);
         expect(daysBefore.length).toBeGreaterThan(0);
 
-        await deleteUserUsecase.execute({ id: vp.userId });
+        await deleteUserUsecase.execute({
+          actorUserId: vp.userId,
+          targetUserId: vp.userId,
+        });
 
         const daysAfter = await daysRepo.getAllDaysByUserId(vp.userId);
         expect(daysAfter.length).toBe(0);
@@ -189,7 +210,10 @@ describe('DeleteUserUsecase', () => {
 
   describe('Errors', () => {
     it('should throw NotFoundError when user does not exist', async () => {
-      const request = { id: 'non-existent' };
+      const request = {
+        actorUserId: 'non-existent',
+        targetUserId: 'non-existent',
+      };
 
       await expect(deleteUserUsecase.execute(request)).rejects.toThrow(
         NotFoundError
@@ -197,6 +221,28 @@ describe('DeleteUserUsecase', () => {
 
       await expect(deleteUserUsecase.execute(request)).rejects.toThrow(
         /DeleteUserUsecase.*User.*not found/
+      );
+    });
+
+    it('should throw error if a user is trying to delete another user', async () => {
+      const anotherUser = User.create({
+        ...vp.validUserProps,
+        id: 'another-user-id',
+        name: 'Another User',
+      });
+      await usersRepo.saveUser(anotherUser);
+
+      const request = {
+        actorUserId: anotherUser.id,
+        targetUserId: vp.userId,
+      };
+
+      await expect(deleteUserUsecase.execute(request)).rejects.toThrow(
+        PermissionError
+      );
+
+      await expect(deleteUserUsecase.execute(request)).rejects.toThrow(
+        /DeleteUserUsecase.*delete.*another.*user/
       );
     });
   });
