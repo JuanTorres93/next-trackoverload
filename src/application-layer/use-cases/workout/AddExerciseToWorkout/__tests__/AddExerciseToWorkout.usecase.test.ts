@@ -192,5 +192,32 @@ describe('AddExerciseToWorkoutUsecase', () => {
         addExerciseToWorkoutUsecase.execute(request)
       ).rejects.toThrow(/AddExerciseToWorkoutUsecase.*user.*not.*found/);
     });
+
+    it("should throw error when trying to add exercise to another user's workout", async () => {
+      const anotherUser = User.create({
+        ...vp.validUserProps,
+        id: 'another-user-id',
+        email: 'another-user@example.com',
+      });
+
+      await usersRepo.saveUser(anotherUser);
+
+      const request = {
+        userId: anotherUser.id,
+        workoutId: vp.validWorkoutProps.id,
+        exerciseId: vp.validExerciseProps.id,
+        setNumber: 1,
+        reps: 10,
+        weight: 0,
+      };
+
+      await expect(
+        addExerciseToWorkoutUsecase.execute(request)
+      ).rejects.toThrow(NotFoundError);
+
+      await expect(
+        addExerciseToWorkoutUsecase.execute(request)
+      ).rejects.toThrow(/AddExerciseToWorkoutUsecase.*Workout.*not found/);
+    });
   });
 });

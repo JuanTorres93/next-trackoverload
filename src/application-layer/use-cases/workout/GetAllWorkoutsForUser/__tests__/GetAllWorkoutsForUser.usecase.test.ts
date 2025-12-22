@@ -91,21 +91,38 @@ describe('GetAllWorkoutsUsecase', () => {
       });
       expect(workouts).toHaveLength(0);
     });
+
+    it('should return empty array when trying to get workouts from another user', async () => {
+      const anotherUser = User.create({
+        ...vp.validUserProps,
+        id: 'another-user-id',
+        email: 'another-user@example.com',
+      });
+
+      await usersRepo.saveUser(anotherUser);
+
+      const request = {
+        userId: anotherUser.id,
+      };
+
+      const workouts = await getAllWorkoutsUsecase.execute(request);
+      expect(workouts).toHaveLength(0);
+    });
   });
 
   describe('Errors', () => {
     it('should throw error if user does not exist', async () => {
-      await expect(
-        getAllWorkoutsUsecase.execute({
-          userId: 'non-existent',
-        })
-      ).rejects.toThrow(NotFoundError);
+      const request = {
+        userId: 'non-existent',
+      };
 
-      await expect(
-        getAllWorkoutsUsecase.execute({
-          userId: 'non-existent',
-        })
-      ).rejects.toThrow(/GetAllWorkoutsForUserUsecase.*User.*not.*found/);
+      await expect(getAllWorkoutsUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+
+      await expect(getAllWorkoutsUsecase.execute(request)).rejects.toThrow(
+        /GetAllWorkoutsForUserUsecase.*User.*not.*found/
+      );
     });
   });
 });

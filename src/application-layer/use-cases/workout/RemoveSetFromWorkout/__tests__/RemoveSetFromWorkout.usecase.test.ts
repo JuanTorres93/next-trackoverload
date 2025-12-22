@@ -190,5 +190,28 @@ describe('RemoveSetFromWorkoutUsecase', () => {
         removeSetFromWorkoutUsecase.execute(request)
       ).rejects.toThrow(/RemoveSetFromWorkoutUsecase.*User.*not.*found/);
     });
+
+    it("should throw error when trying to remove a set from another user's workout", async () => {
+      const anotherUser = User.create({
+        ...vp.validUserProps,
+        id: 'another-user-id',
+      });
+      await usersRepo.saveUser(anotherUser);
+
+      const request = {
+        userId: anotherUser.id,
+        workoutId: workout.id,
+        exerciseId: 'exercise-1',
+        setNumber: 1,
+      };
+
+      await expect(
+        removeSetFromWorkoutUsecase.execute(request)
+      ).rejects.toThrow(NotFoundError);
+
+      await expect(
+        removeSetFromWorkoutUsecase.execute(request)
+      ).rejects.toThrow(/RemoveSetFromWorkoutUsecase.*Workout.*not.*found/);
+    });
   });
 });

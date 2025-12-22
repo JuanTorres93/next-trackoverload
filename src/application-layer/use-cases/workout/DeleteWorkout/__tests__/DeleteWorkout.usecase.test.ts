@@ -82,5 +82,28 @@ describe('DeleteWorkoutUsecase', () => {
         /DeleteWorkoutUsecase.*user.*not.*found/
       );
     });
+
+    it("should throw error when trying to remove another user's workout", async () => {
+      const anotherUser = User.create({
+        ...vp.validUserProps,
+        id: 'another-user-id',
+        email: 'another-user@example.com',
+      });
+
+      await usersRepo.saveUser(anotherUser);
+
+      const request = {
+        id: vp.validWorkoutProps.id,
+        userId: anotherUser.id,
+      };
+
+      await expect(deleteWorkoutUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+
+      await expect(deleteWorkoutUsecase.execute(request)).rejects.toThrow(
+        /DeleteWorkoutUsecase.*Workout.*not found/
+      );
+    });
   });
 });

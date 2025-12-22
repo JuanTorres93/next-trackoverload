@@ -41,126 +41,154 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
     await workoutsRepo.saveWorkout(workout);
   });
 
-  it('should update exercise reps in workout', async () => {
-    const updatedWorkout = await updateExerciseInWorkoutUsecase.execute({
-      userId: vp.userId,
-      workoutId: vp.validWorkoutProps.id,
-      exerciseId: workoutLine.exerciseId,
-      reps: 15,
+  describe('Execution', () => {
+    it('should update exercise reps in workout', async () => {
+      const updatedWorkout = await updateExerciseInWorkoutUsecase.execute({
+        userId: vp.userId,
+        workoutId: vp.validWorkoutProps.id,
+        exerciseId: workoutLine.exerciseId,
+        reps: 15,
+      });
+
+      expect(updatedWorkout.exercises[0].reps).toBe(15);
+      expect(updatedWorkout.exercises[0].reps).not.toBe(
+        vp.validWorkoutLineProps.reps
+      );
+      expect(updatedWorkout.exercises[0].setNumber).toBe(
+        vp.validWorkoutLineProps.setNumber
+      );
+      expect(updatedWorkout.exercises[0].weight).toBe(
+        vp.validWorkoutLineProps.weight
+      );
     });
 
-    expect(updatedWorkout.exercises[0].reps).toBe(15);
-    expect(updatedWorkout.exercises[0].reps).not.toBe(
-      vp.validWorkoutLineProps.reps
-    );
-    expect(updatedWorkout.exercises[0].setNumber).toBe(
-      vp.validWorkoutLineProps.setNumber
-    );
-    expect(updatedWorkout.exercises[0].weight).toBe(
-      vp.validWorkoutLineProps.weight
-    );
-  });
+    it('should return WorkoutDTO', async () => {
+      const updatedWorkout = await updateExerciseInWorkoutUsecase.execute({
+        userId: vp.userId,
+        workoutId: vp.validWorkoutProps.id,
+        exerciseId: vp.validWorkoutLineProps.exerciseId,
+        reps: 15,
+      });
 
-  it('should return WorkoutDTO', async () => {
-    const updatedWorkout = await updateExerciseInWorkoutUsecase.execute({
-      userId: vp.userId,
-      workoutId: vp.validWorkoutProps.id,
-      exerciseId: vp.validWorkoutLineProps.exerciseId,
-      reps: 15,
+      expect(updatedWorkout).not.toBeInstanceOf(Workout);
+      for (const prop of dto.workoutDTOProperties) {
+        expect(updatedWorkout).toHaveProperty(prop);
+      }
     });
 
-    expect(updatedWorkout).not.toBeInstanceOf(Workout);
-    for (const prop of dto.workoutDTOProperties) {
-      expect(updatedWorkout).toHaveProperty(prop);
-    }
-  });
+    it('should update exercise weight in workout', async () => {
+      const updatedWorkout = await updateExerciseInWorkoutUsecase.execute({
+        userId: vp.userId,
+        workoutId: vp.validWorkoutProps.id,
+        exerciseId: vp.validWorkoutLineProps.exerciseId,
+        weight: 25.5,
+      });
 
-  it('should update exercise weight in workout', async () => {
-    const updatedWorkout = await updateExerciseInWorkoutUsecase.execute({
-      userId: vp.userId,
-      workoutId: vp.validWorkoutProps.id,
-      exerciseId: vp.validWorkoutLineProps.exerciseId,
-      weight: 25.5,
+      expect(updatedWorkout.exercises[0].weight).toBe(25.5);
+      expect(updatedWorkout.exercises[0].weight).not.toBe(
+        vp.validWorkoutLineProps.weight
+      );
+      expect(updatedWorkout.exercises[0].reps).toBe(
+        vp.validWorkoutLineProps.reps
+      );
+      expect(updatedWorkout.exercises[0].setNumber).toBe(
+        vp.validWorkoutLineProps.setNumber
+      );
     });
 
-    expect(updatedWorkout.exercises[0].weight).toBe(25.5);
-    expect(updatedWorkout.exercises[0].weight).not.toBe(
-      vp.validWorkoutLineProps.weight
-    );
-    expect(updatedWorkout.exercises[0].reps).toBe(
-      vp.validWorkoutLineProps.reps
-    );
-    expect(updatedWorkout.exercises[0].setNumber).toBe(
-      vp.validWorkoutLineProps.setNumber
-    );
-  });
+    it('should update exercise set number in workout', async () => {
+      const updatedWorkout = await updateExerciseInWorkoutUsecase.execute({
+        userId: vp.userId,
+        workoutId: vp.validWorkoutProps.id,
+        exerciseId: vp.validWorkoutLineProps.exerciseId,
+        setNumber: 2,
+      });
 
-  it('should update exercise set number in workout', async () => {
-    const updatedWorkout = await updateExerciseInWorkoutUsecase.execute({
-      userId: vp.userId,
-      workoutId: vp.validWorkoutProps.id,
-      exerciseId: vp.validWorkoutLineProps.exerciseId,
-      setNumber: 2,
+      expect(updatedWorkout.exercises[0].setNumber).toBe(2);
+      expect(updatedWorkout.exercises[0].setNumber).not.toBe(
+        vp.validWorkoutLineProps.setNumber
+      );
+      expect(updatedWorkout.exercises[0].reps).toBe(
+        vp.validWorkoutLineProps.reps
+      );
+      expect(updatedWorkout.exercises[0].weight).toBe(
+        vp.validWorkoutLineProps.weight
+      );
     });
 
-    expect(updatedWorkout.exercises[0].setNumber).toBe(2);
-    expect(updatedWorkout.exercises[0].setNumber).not.toBe(
-      vp.validWorkoutLineProps.setNumber
-    );
-    expect(updatedWorkout.exercises[0].reps).toBe(
-      vp.validWorkoutLineProps.reps
-    );
-    expect(updatedWorkout.exercises[0].weight).toBe(
-      vp.validWorkoutLineProps.weight
-    );
+    it('should update multiple properties at once', async () => {
+      const updatedWorkout = await updateExerciseInWorkoutUsecase.execute({
+        userId: vp.userId,
+        workoutId: vp.validWorkoutProps.id,
+        exerciseId: vp.validWorkoutLineProps.exerciseId,
+        setNumber: 3,
+        reps: 12,
+        weight: 30,
+      });
+
+      expect(updatedWorkout.exercises[0].setNumber).toBe(3);
+      expect(updatedWorkout.exercises[0].reps).toBe(12);
+      expect(updatedWorkout.exercises[0].weight).toBe(30);
+    });
   });
 
-  it('should update multiple properties at once', async () => {
-    const updatedWorkout = await updateExerciseInWorkoutUsecase.execute({
-      userId: vp.userId,
-      workoutId: vp.validWorkoutProps.id,
-      exerciseId: vp.validWorkoutLineProps.exerciseId,
-      setNumber: 3,
-      reps: 12,
-      weight: 30,
+  describe('Errors', () => {
+    it('should throw NotFoundError when workout does not exist', async () => {
+      const request = {
+        userId: vp.userId,
+        workoutId: 'non-existent',
+        exerciseId: vp.validWorkoutLineProps.exerciseId,
+        reps: 15,
+      };
+
+      await expect(
+        updateExerciseInWorkoutUsecase.execute(request)
+      ).rejects.toThrow(NotFoundError);
+
+      await expect(
+        updateExerciseInWorkoutUsecase.execute(request)
+      ).rejects.toThrow(/UpdateExerciseInWorkoutUsecase.*Workout.*not.*found/);
     });
 
-    expect(updatedWorkout.exercises[0].setNumber).toBe(3);
-    expect(updatedWorkout.exercises[0].reps).toBe(12);
-    expect(updatedWorkout.exercises[0].weight).toBe(30);
-  });
+    it('should throw error if user does not exist', async () => {
+      const request = {
+        userId: 'non-existent',
+        workoutId: vp.validWorkoutProps.id,
+        exerciseId: vp.validWorkoutLineProps.exerciseId,
+        reps: 15,
+      };
 
-  it('should throw NotFoundError when workout does not exist', async () => {
-    const request = {
-      userId: vp.userId,
-      workoutId: 'non-existent',
-      exerciseId: vp.validWorkoutLineProps.exerciseId,
-      reps: 15,
-    };
+      await expect(
+        updateExerciseInWorkoutUsecase.execute(request)
+      ).rejects.toThrow(NotFoundError);
 
-    await expect(
-      updateExerciseInWorkoutUsecase.execute(request)
-    ).rejects.toThrow(NotFoundError);
+      await expect(
+        updateExerciseInWorkoutUsecase.execute(request)
+      ).rejects.toThrow(/UpdateExerciseInWorkoutUsecase.*User.*not.*found/);
+    });
 
-    await expect(
-      updateExerciseInWorkoutUsecase.execute(request)
-    ).rejects.toThrow(/UpdateExerciseInWorkoutUsecase.*Workout.*not.*found/);
-  });
+    it("should throw error when trying to update exercise in another user's workout", async () => {
+      const anotherUser = User.create({
+        ...vp.validUserProps,
+        id: 'another-user-id',
+      });
 
-  it('should throw error if user does not exist', async () => {
-    const request = {
-      userId: 'non-existent',
-      workoutId: vp.validWorkoutProps.id,
-      exerciseId: vp.validWorkoutLineProps.exerciseId,
-      reps: 15,
-    };
+      await usersRepo.saveUser(anotherUser);
 
-    await expect(
-      updateExerciseInWorkoutUsecase.execute(request)
-    ).rejects.toThrow(NotFoundError);
+      const request = {
+        userId: anotherUser.id,
+        workoutId: vp.validWorkoutProps.id,
+        exerciseId: vp.validWorkoutLineProps.exerciseId,
+        reps: 20,
+      };
 
-    await expect(
-      updateExerciseInWorkoutUsecase.execute(request)
-    ).rejects.toThrow(/UpdateExerciseInWorkoutUsecase.*User.*not.*found/);
+      await expect(
+        updateExerciseInWorkoutUsecase.execute(request)
+      ).rejects.toThrow(NotFoundError);
+
+      await expect(
+        updateExerciseInWorkoutUsecase.execute(request)
+      ).rejects.toThrow(/UpdateExerciseInWorkoutUsecase.*Workout.*not.*found/);
+    });
   });
 });

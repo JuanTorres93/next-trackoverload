@@ -102,5 +102,28 @@ describe('UpdateWorkoutUsecase', () => {
         /UpdateWorkoutUsecase.*User.*not.*found/
       );
     });
+
+    it("should throw error when trying to update another user's workout", async () => {
+      const anotherUser = User.create({
+        ...vp.validUserProps,
+        id: 'another-user-id',
+      });
+
+      await usersRepo.saveUser(anotherUser);
+
+      const request = {
+        id: vp.validWorkoutProps.id,
+        userId: anotherUser.id,
+        name: 'New Name',
+      };
+
+      await expect(updateWorkoutUsecase.execute(request)).rejects.toThrow(
+        NotFoundError
+      );
+
+      await expect(updateWorkoutUsecase.execute(request)).rejects.toThrow(
+        /UpdateWorkoutUsecase.*Workout.*not.*found/
+      );
+    });
   });
 });

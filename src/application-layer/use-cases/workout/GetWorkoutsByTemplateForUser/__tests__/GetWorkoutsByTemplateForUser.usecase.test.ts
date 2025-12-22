@@ -96,6 +96,22 @@ describe('GetWorkoutsByTemplateUsecase', () => {
 
       expect(workouts).toHaveLength(0);
     });
+
+    it('should return empty array when trying to get workouts from another user', async () => {
+      const anotherUser = User.create({
+        ...vp.validUserProps,
+        id: 'user-2',
+      });
+
+      await usersRepo.saveUser(anotherUser);
+
+      const workouts = await getWorkoutsByTemplateUsecase.execute({
+        templateId: 'template-1',
+        userId: anotherUser.id,
+      });
+
+      expect(workouts).toHaveLength(0);
+    });
   });
 
   describe('Errors', () => {

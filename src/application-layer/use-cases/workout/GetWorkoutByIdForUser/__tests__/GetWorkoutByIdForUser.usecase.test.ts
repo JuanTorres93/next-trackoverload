@@ -75,6 +75,28 @@ describe('GetWorkoutByIdUsecase', () => {
 
       expect(result).toBeNull();
     });
+
+    it('should return null when trying to get workout from another user', async () => {
+      const anotherUser = User.create({
+        ...vp.validUserProps,
+        id: 'another-user-id',
+      });
+      await usersRepo.saveUser(anotherUser);
+
+      const workout = Workout.create({
+        ...vp.validWorkoutProps,
+        exercises: [],
+      });
+
+      await workoutsRepo.saveWorkout(workout);
+
+      const result = await getWorkoutByIdUsecase.execute({
+        id: vp.validWorkoutProps.id,
+        userId: anotherUser.id,
+      });
+
+      expect(result).toBeNull();
+    });
   });
 
   describe('Errors', () => {
