@@ -177,6 +177,13 @@ export const validIngredientProps = {
   updatedAt: new Date(),
 };
 
+export const validExternalIngredientRefProps = {
+  externalId: 'ext-ing-1',
+  source: 'OpenFoodFacts',
+  ingredientId: 'ing1',
+  createdAt: new Date(),
+};
+
 export const ingredientLineRecipePropsNoIngredient = {
   id: 'line1',
   parentId: 'recipe1',
