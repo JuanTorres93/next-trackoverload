@@ -1,9 +1,12 @@
 import { WorkoutDTO, toWorkoutDTO } from '@/application-layer/dtos/WorkoutDTO';
-import { NotFoundError } from '@/domain/common/errors';
+import { NotFoundError, PermissionError } from '@/domain/common/errors';
 import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 
-export type GetAllWorkoutsForUserRequest = { userId: string };
+export type GetAllWorkoutsForUserRequest = {
+  actorUserId: string;
+  targetUserId: string;
+};
 
 export class GetAllWorkoutsForUserUsecase {
   constructor(
@@ -12,15 +15,21 @@ export class GetAllWorkoutsForUserUsecase {
   ) {}
 
   async execute(request: GetAllWorkoutsForUserRequest): Promise<WorkoutDTO[]> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    if (request.actorUserId !== request.targetUserId) {
+      throw new PermissionError(
+        `GetAllWorkoutsForUserUsecase: cannot get workouts for another user`
+      );
+    }
+
+    const user = await this.usersRepo.getUserById(request.targetUserId);
     if (!user) {
       throw new NotFoundError(
-        `GetAllWorkoutsForUserUsecase: User with id ${request.userId} not found`
+        `GetAllWorkoutsForUserUsecase: User with id ${request.targetUserId} not found`
       );
     }
 
     const workouts = await this.workoutsRepo.getAllWorkoutsByUserId(
-      request.userId
+      request.targetUserId
     );
 
     return workouts.map(toWorkoutDTO);

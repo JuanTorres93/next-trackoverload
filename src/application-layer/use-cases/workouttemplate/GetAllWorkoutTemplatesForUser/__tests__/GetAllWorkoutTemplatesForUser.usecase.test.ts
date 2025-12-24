@@ -4,7 +4,7 @@ import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTempla
 import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { User } from '@/domain/entities/user/User';
-import { NotFoundError } from '@/domain/common/errors';
+import { NotFoundError, PermissionError } from '@/domain/common/errors';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetAllWorkoutTemplatesForUserUsecase } from '../GetAllWorkoutTemplatesForUser.usecase';
 
@@ -55,7 +55,10 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
 
       await workoutTemplatesRepo.saveWorkoutTemplate(user2Template);
 
-      const result = await usecase.execute({ userId: vp.userId });
+      const result = await usecase.execute({
+        actorUserId: vp.userId,
+        targetUserId: vp.userId,
+      });
 
       expect(result).toHaveLength(2);
       expect(result.map((t) => t.id)).toEqual([
@@ -66,7 +69,10 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
     });
 
     it('should return array of WorkoutTemplateDTO', async () => {
-      const result = await usecase.execute({ userId: vp.userId });
+      const result = await usecase.execute({
+        actorUserId: vp.userId,
+        targetUserId: vp.userId,
+      });
 
       expect(result).toHaveLength(2);
 
@@ -84,7 +90,10 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
       });
       await usersRepo.saveUser(anotherUser);
 
-      const result = await usecase.execute({ userId: anotherUser.id });
+      const result = await usecase.execute({
+        actorUserId: anotherUser.id,
+        targetUserId: anotherUser.id,
+      });
 
       expect(result).toEqual([]);
     });
@@ -93,36 +102,46 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
       template1.markAsDeleted();
       await workoutTemplatesRepo.saveWorkoutTemplate(template1);
 
-      const result = await usecase.execute({ userId: vp.userId });
-
+      const result = await usecase.execute({
+        actorUserId: vp.userId,
+        targetUserId: vp.userId,
+      });
       expect(result).toHaveLength(1);
       expect(result[0].id).toBe(template2.id);
-    });
-
-    it("should return empty array when trying to get another user's workout templates", async () => {
-      const anotherUser = User.create({ ...vp.validUserProps, id: 'user-2' });
-      await usersRepo.saveUser(anotherUser);
-
-      const result = await usecase.execute({ userId: anotherUser.id });
-
-      expect(result).toEqual([]);
     });
   });
 
   describe('Errors', () => {
     it('should throw error if user does not exist', async () => {
-      await expect(
-        usecase.execute({
-          userId: 'non-existent',
-        })
-      ).rejects.toThrow(NotFoundError);
+      const request = {
+        actorUserId: 'non-existent',
+        targetUserId: 'non-existent',
+      };
 
-      await expect(
-        usecase.execute({
-          userId: 'non-existent',
-        })
-      ).rejects.toThrow(
+      await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+
+      await expect(usecase.execute(request)).rejects.toThrow(
         /GetAllWorkoutTemplatesForUserUsecase.*User.*not.*found/
+      );
+    });
+
+    it('should throw error when trying to get another users workout templates', async () => {
+      const anotherUser = User.create({
+        ...vp.validUserProps,
+        id: 'another-user-id',
+      });
+
+      await usersRepo.saveUser(anotherUser);
+
+      const request = {
+        actorUserId: vp.userId,
+        targetUserId: anotherUser.id,
+      };
+
+      await expect(usecase.execute(request)).rejects.toThrow(PermissionError);
+
+      await expect(usecase.execute(request)).rejects.toThrow(
+        /GetAllWorkoutTemplatesForUserUsecase.*cannot.*get.*workout templates.*another user/
       );
     });
   });

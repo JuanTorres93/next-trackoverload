@@ -11,7 +11,8 @@ export const metadata = {
 
 export default async function RecipesPage() {
   const recipes: RecipeDTO[] = await AppGetAllRecipesForUserUsecase.execute({
-    userId: 'dev-user',
+    actorUserId: 'dev-user',
+    targetUserId: 'dev-user',
   }); // TODO IMPORTANT get user id from session
 
   return (

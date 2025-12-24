@@ -1,6 +1,6 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
-import { NotFoundError } from '@/domain/common/errors';
+import { NotFoundError, PermissionError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
@@ -70,7 +70,10 @@ describe('GetAllRecipesForUserUsecase', () => {
 
   describe('Execution', () => {
     it('should return all recipes when they exist', async () => {
-      const result = await getAllRecipesUsecase.execute({ userId: userId1 });
+      const result = await getAllRecipesUsecase.execute({
+        actorUserId: userId1,
+        targetUserId: userId1,
+      });
 
       const recipeIds = result.map((r) => r.id);
 
@@ -80,7 +83,10 @@ describe('GetAllRecipesForUserUsecase', () => {
     });
 
     it('should return an array of RecipeDTO', async () => {
-      const result = await getAllRecipesUsecase.execute({ userId: userId1 });
+      const result = await getAllRecipesUsecase.execute({
+        actorUserId: userId1,
+        targetUserId: userId1,
+      });
 
       expect(result).toHaveLength(2);
 
@@ -96,7 +102,10 @@ describe('GetAllRecipesForUserUsecase', () => {
     it('should return empty array when no recipes exist', async () => {
       recipesRepo.clearForTesting();
 
-      const result = await getAllRecipesUsecase.execute({ userId: userId1 });
+      const result = await getAllRecipesUsecase.execute({
+        actorUserId: userId1,
+        targetUserId: userId1,
+      });
 
       expect(result).toEqual([]);
     });
@@ -123,21 +132,26 @@ describe('GetAllRecipesForUserUsecase', () => {
 
       // Get recipes for user1
       const user1Recipes = await getAllRecipesUsecase.execute({
-        userId: userId1,
+        actorUserId: userId1,
+        targetUserId: userId1,
       });
       expect(user1Recipes).toHaveLength(2);
       expect(user1Recipes.every((r) => r.userId === userId1)).toBe(true);
 
       // Get recipes for user2
       const user2Recipes = await getAllRecipesUsecase.execute({
-        userId: userId2,
+        actorUserId: userId2,
+        targetUserId: userId2,
       });
       expect(user2Recipes).toHaveLength(1);
       expect(user2Recipes[0].userId).toBe(userId2);
     });
 
     it("should return empty array when trying to get another user's recipes", async () => {
-      const result = await getAllRecipesUsecase.execute({ userId: userId2 });
+      const result = await getAllRecipesUsecase.execute({
+        actorUserId: userId2,
+        targetUserId: userId2,
+      });
 
       expect(result).toEqual([]);
     });
@@ -145,13 +159,31 @@ describe('GetAllRecipesForUserUsecase', () => {
 
   describe('Errors', () => {
     it('should throw error if user does not exist', async () => {
-      const request = { userId: 'non-existent' };
+      const request = {
+        actorUserId: 'non-existent',
+        targetUserId: 'non-existent',
+      };
 
       await expect(getAllRecipesUsecase.execute(request)).rejects.toThrow(
         NotFoundError
       );
       await expect(getAllRecipesUsecase.execute(request)).rejects.toThrow(
         /GetAllRecipesForUserUsecase.*user.*not.*found/
+      );
+    });
+
+    it('should throw error when trying to get another users recipes', async () => {
+      const request = {
+        actorUserId: userId1,
+        targetUserId: userId2,
+      };
+
+      await expect(getAllRecipesUsecase.execute(request)).rejects.toThrow(
+        PermissionError
+      );
+
+      await expect(getAllRecipesUsecase.execute(request)).rejects.toThrow(
+        /GetAllRecipesForUserUsecase.*cannot.*get.*recipes.*another user/
       );
     });
   });

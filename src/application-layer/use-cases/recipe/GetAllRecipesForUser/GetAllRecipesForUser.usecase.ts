@@ -1,10 +1,11 @@
 import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
-import { NotFoundError } from '@/domain/common/errors';
+import { NotFoundError, PermissionError } from '@/domain/common/errors';
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 
 export type GetAllRecipesForUserUsecaseRequest = {
-  userId: string;
+  actorUserId: string;
+  targetUserId: string;
 };
 
 export class GetAllRecipesForUserUsecase {
@@ -13,14 +14,20 @@ export class GetAllRecipesForUserUsecase {
   async execute(
     request: GetAllRecipesForUserUsecaseRequest
   ): Promise<RecipeDTO[]> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    if (request.actorUserId !== request.targetUserId) {
+      throw new PermissionError(
+        `GetAllRecipesForUserUsecase: cannot get recipes for another user`
+      );
+    }
+
+    const user = await this.usersRepo.getUserById(request.targetUserId);
     if (!user) {
       throw new NotFoundError(
-        `GetAllRecipesForUserUsecase: user with id ${request.userId} not found`
+        `GetAllRecipesForUserUsecase: user with id ${request.targetUserId} not found`
       );
     }
     const recipes = await this.recipesRepo.getAllRecipesByUserId(
-      request.userId
+      request.targetUserId
     );
 
     return recipes.map(toRecipeDTO) || [];
