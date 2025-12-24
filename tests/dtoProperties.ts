@@ -2,6 +2,7 @@ import { getGetters } from '@/application-layer/dtos/__tests__/_getGettersUtil';
 import * as vp from '@/../tests/createProps';
 
 import { Exercise } from '@/domain/entities/exercise/Exercise';
+import { ExternalIngredientRef } from '@/domain/entities/externalingredientref/ExternalIngredientRef';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
@@ -25,6 +26,14 @@ const sampleIngredient = Ingredient.create({
   ...vp.validIngredientProps,
 });
 export const ingredientDTOProperties = getGetters(sampleIngredient);
+
+// ExternalIngredientRef DTO
+const sampleExternalIngredientRef = ExternalIngredientRef.create({
+  ...vp.validExternalIngredientRefProps,
+});
+export const externalIngredientRefDTOProperties = getGetters(
+  sampleExternalIngredientRef
+);
 
 // IngredientLine DTO
 const sampleIngredientLine = IngredientLine.create({

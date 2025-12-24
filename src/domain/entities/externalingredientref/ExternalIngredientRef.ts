@@ -1,15 +1,11 @@
 import { Id } from '@/domain/value-objects/Id/Id';
-import { Text } from '@/domain/value-objects/Text/Text';
 import { ExternalIngredientRefSource } from '@/domain/value-objects/ExternalIngredientRefSource/ExternalIngredientRefSource';
 import { handleCreatedAt } from '../../common/utils';
-
-// TODO IMPORTANT CREATE DTO
 
 export type ExternalIngredientRefCreateProps = {
   externalId: string;
   source: string;
   ingredientId: string;
-  imageUrl?: string;
   createdAt: Date;
 };
 
@@ -17,7 +13,6 @@ export type ExternalIngredientRefProps = {
   externalId: Id;
   source: ExternalIngredientRefSource;
   ingredientId: Id;
-  imageUrl?: Text;
   createdAt: Date;
 };
 
@@ -47,10 +42,6 @@ export class ExternalIngredientRef {
 
   get ingredientId() {
     return this.props.ingredientId.value;
-  }
-
-  get imageUrl() {
-    return this.props.imageUrl?.value || undefined;
   }
 
   get createdAt() {
