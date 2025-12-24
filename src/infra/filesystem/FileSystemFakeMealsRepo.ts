@@ -7,11 +7,12 @@ import {
 } from '@/application-layer/dtos/FakeMealDTO';
 import fs from 'fs/promises';
 import path from 'path';
+import { FS_DATA_DIR } from './common';
 
 export class FileSystemFakeMealsRepo implements FakeMealsRepo {
   private readonly dataDir: string;
 
-  constructor(baseDir: string = './data/fakemeals') {
+  constructor(baseDir: string = path.join(FS_DATA_DIR, 'fakemeals')) {
     this.dataDir = baseDir;
   }
 

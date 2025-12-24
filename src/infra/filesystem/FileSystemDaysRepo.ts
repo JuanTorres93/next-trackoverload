@@ -3,11 +3,12 @@ import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { DayDTO, toDayDTO, fromDayDTO } from '@/application-layer/dtos/DayDTO';
 import fs from 'fs/promises';
 import path from 'path';
+import { FS_DATA_DIR } from './common';
 
 export class FileSystemDaysRepo implements DaysRepo {
   private readonly daysDir: string;
 
-  constructor(baseDir: string = './data/days') {
+  constructor(baseDir: string = path.join(FS_DATA_DIR, 'days')) {
     this.daysDir = baseDir;
   }
 

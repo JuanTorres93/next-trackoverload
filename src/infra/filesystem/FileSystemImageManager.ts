@@ -8,6 +8,7 @@ import { fileTypeFromBuffer } from 'file-type';
 import { IdGenerator } from '@/domain/services/IdGenerator.port';
 import fs from 'fs/promises';
 import path from 'path';
+import { FS_DATA_DIR } from './common';
 
 export class FileSystemImageManager extends BaseImageManager {
   private readonly uploadDir: string;
@@ -15,7 +16,10 @@ export class FileSystemImageManager extends BaseImageManager {
   private readonly idGenerator: IdGenerator;
 
   constructor(
-    uploadDir: string = './public/file_system_image_manager_images',
+    uploadDir: string = path.join(
+      FS_DATA_DIR,
+      'file_system_image_manager_images'
+    ),
     baseUrl: string = '/file_system_image_manager_images',
     idGenerator: IdGenerator
   ) {

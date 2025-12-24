@@ -5,14 +5,18 @@ import { WorkoutTemplateLineDTO } from '@/application-layer/dtos/WorkoutTemplate
 import { WorkoutTemplateDTO } from '@/application-layer/dtos/WorkoutTemplateDTO';
 import fs from 'fs/promises';
 import path from 'path';
+import { FS_DATA_DIR } from './common';
 
 export class FileSystemWorkoutTemplatesRepo implements WorkoutTemplatesRepo {
   private readonly templatesDir: string;
   private readonly templateLinesDir: string;
 
   constructor(
-    templatesBaseDir: string = './data/workouttemplates',
-    templateLinesBaseDir: string = './data/workouttemplatelines'
+    templatesBaseDir: string = path.join(FS_DATA_DIR, 'workouttemplates'),
+    templateLinesBaseDir: string = path.join(
+      FS_DATA_DIR,
+      'workouttemplatelines'
+    )
   ) {
     this.templatesDir = templatesBaseDir;
     this.templateLinesDir = templateLinesBaseDir;

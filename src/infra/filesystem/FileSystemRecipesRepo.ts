@@ -8,14 +8,15 @@ import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import fs from 'fs/promises';
 import path from 'path';
+import { FS_DATA_DIR } from './common';
 
 export class FileSystemRecipesRepo implements RecipesRepo {
   private readonly recipesDir: string;
   private readonly ingredientLinesDir: string;
 
   constructor(
-    recipesBaseDir: string = './data/recipes',
-    ingredientLinesBaseDir: string = './data/ingredientlines'
+    recipesBaseDir: string = path.join(FS_DATA_DIR, 'recipes'),
+    ingredientLinesBaseDir: string = path.join(FS_DATA_DIR, 'ingredientlines')
   ) {
     this.recipesDir = recipesBaseDir;
     this.ingredientLinesDir = ingredientLinesBaseDir;

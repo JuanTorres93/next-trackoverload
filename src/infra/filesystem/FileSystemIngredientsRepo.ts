@@ -7,11 +7,12 @@ import {
 } from '@/application-layer/dtos/IngredientDTO';
 import fs from 'fs/promises';
 import path from 'path';
+import { FS_DATA_DIR } from './common';
 
 export class FileSystemIngredientsRepo implements IngredientsRepo {
   private readonly dataDir: string;
 
-  constructor(baseDir: string = './data/ingredients') {
+  constructor(baseDir: string = path.join(FS_DATA_DIR, 'ingredients')) {
     this.dataDir = baseDir;
   }
 

@@ -3,11 +3,12 @@ import { User } from '@/domain/entities/user/User';
 import { UserDTO } from '@/application-layer/dtos/UserDTO';
 import fs from 'fs/promises';
 import path from 'path';
+import { FS_DATA_DIR } from './common';
 
 export class FileSystemUsersRepo implements UsersRepo {
   private readonly dataDir: string;
 
-  constructor(baseDir: string = './data/users') {
+  constructor(baseDir: string = path.join(FS_DATA_DIR, 'users')) {
     this.dataDir = baseDir;
   }
 

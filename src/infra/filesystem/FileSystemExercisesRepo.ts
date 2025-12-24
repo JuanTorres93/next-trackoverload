@@ -2,6 +2,7 @@ import { ExercisesRepo } from '@/domain/repos/ExercisesRepo.port';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
 import fs from 'fs/promises';
 import path from 'path';
+import { FS_DATA_DIR } from './common';
 
 type ExerciseData = {
   id: string;
@@ -13,7 +14,7 @@ type ExerciseData = {
 export class FileSystemExercisesRepo implements ExercisesRepo {
   private readonly dataDir: string;
 
-  constructor(baseDir: string = './data/exercises') {
+  constructor(baseDir: string = path.join(FS_DATA_DIR, 'exercises')) {
     this.dataDir = baseDir;
   }
 

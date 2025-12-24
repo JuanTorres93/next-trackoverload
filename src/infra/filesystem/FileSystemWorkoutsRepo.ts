@@ -3,6 +3,7 @@ import { Workout } from '@/domain/entities/workout/Workout';
 import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
 import fs from 'fs/promises';
 import path from 'path';
+import { FS_DATA_DIR } from './common';
 
 type WorkoutLineData = {
   id: string;
@@ -30,8 +31,8 @@ export class FileSystemWorkoutsRepo implements WorkoutsRepo {
   private readonly workoutLinesDir: string;
 
   constructor(
-    workoutsBaseDir: string = './data/workouts',
-    workoutLinesBaseDir: string = './data/workoutlines'
+    workoutsBaseDir: string = path.join(FS_DATA_DIR, 'workouts'),
+    workoutLinesBaseDir: string = path.join(FS_DATA_DIR, 'workoutlines')
   ) {
     this.workoutsDir = workoutsBaseDir;
     this.workoutLinesDir = workoutLinesBaseDir;
