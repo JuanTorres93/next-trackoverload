@@ -2,7 +2,7 @@ import { Uuidv4IdGenerator } from '@/infra/services/Uuidv4IdGenerator';
 import { CreateWorkoutTemplateUsecase } from '../CreateWorkoutTemplate.usecase';
 import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
-import { NotFoundError } from '@/domain/common/errors';
+import { NotFoundError, PermissionError } from '@/domain/common/errors';
 import { User } from '@/domain/entities/user/User';
 import * as dto from '@/../tests/dtoProperties';
 import * as vp from '@/../tests/createProps';
@@ -32,7 +32,8 @@ describe('CreateWorkoutTemplateUsecase', () => {
   describe('Execution', () => {
     it('should create a new workout template with the given name', async () => {
       const request = {
-        userId: vp.userId,
+        actorUserId: vp.userId,
+        targetUserId: vp.userId,
         name: 'Push Day',
       };
 
@@ -46,7 +47,8 @@ describe('CreateWorkoutTemplateUsecase', () => {
 
     it('should return a WorkoutTemplateDTO', async () => {
       const request = {
-        userId: vp.userId,
+        actorUserId: vp.userId,
+        targetUserId: vp.userId,
         name: 'Leg Day',
       };
 
@@ -60,7 +62,8 @@ describe('CreateWorkoutTemplateUsecase', () => {
 
     it('should save the workout template in the repository', async () => {
       const request = {
-        userId: vp.userId,
+        actorUserId: vp.userId,
+        targetUserId: vp.userId,
         name: 'Pull Day',
       };
 
@@ -78,7 +81,8 @@ describe('CreateWorkoutTemplateUsecase', () => {
   describe('Errors', () => {
     it('should throw error if user does not exist', async () => {
       const request = {
-        userId: 'non-existent',
+        actorUserId: 'non-existent',
+        targetUserId: 'non-existent',
         name: 'Push Day',
       };
 
@@ -86,6 +90,20 @@ describe('CreateWorkoutTemplateUsecase', () => {
 
       await expect(usecase.execute(request)).rejects.toThrow(
         /CreateWorkoutTemplateUsecase.*User.*not.*found/
+      );
+    });
+
+    it('should throw error when trying to create a workout template for another user', async () => {
+      const request = {
+        actorUserId: vp.userId,
+        targetUserId: 'another-user-id',
+        name: 'Core Day',
+      };
+
+      await expect(usecase.execute(request)).rejects.toThrow(PermissionError);
+
+      await expect(usecase.execute(request)).rejects.toThrow(
+        /CreateWorkoutTemplateUsecase.*cannot create.*template for.*another user/
       );
     });
   });

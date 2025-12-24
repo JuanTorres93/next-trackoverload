@@ -2,14 +2,15 @@ import {
   WorkoutTemplateDTO,
   toWorkoutTemplateDTO,
 } from '@/application-layer/dtos/WorkoutTemplateDTO';
-import { NotFoundError } from '@/domain/common/errors';
+import { NotFoundError, PermissionError } from '@/domain/common/errors';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
 import { IdGenerator } from '@/domain/services/IdGenerator.port';
 
 export type CreateWorkoutTemplateUsecaseRequest = {
-  userId: string;
+  actorUserId: string;
+  targetUserId: string;
   name: string;
 };
 
@@ -23,16 +24,22 @@ export class CreateWorkoutTemplateUsecase {
   async execute(
     request: CreateWorkoutTemplateUsecaseRequest
   ): Promise<WorkoutTemplateDTO> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    if (request.actorUserId !== request.targetUserId) {
+      throw new PermissionError(
+        'CreateWorkoutTemplateUsecase: cannot create workout template for another user'
+      );
+    }
+
+    const user = await this.usersRepo.getUserById(request.targetUserId);
     if (!user) {
       throw new NotFoundError(
-        `CreateWorkoutTemplateUsecase: User with id ${request.userId} not found`
+        `CreateWorkoutTemplateUsecase: User with id ${request.targetUserId} not found`
       );
     }
 
     const newWorkoutTemplate = WorkoutTemplate.create({
       id: this.idGenerator.generateId(),
-      userId: request.userId,
+      userId: request.targetUserId,
       name: request.name,
       exercises: [],
       createdAt: new Date(),
