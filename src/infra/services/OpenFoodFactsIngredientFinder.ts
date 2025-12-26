@@ -1,6 +1,19 @@
-import { IngredientDTO } from '@/application-layer/dtos/IngredientDTO';
 import { InfrastructureError } from '@/domain/common/errors';
-import { IngredientFinder } from '@/domain/services/IngredientFinder.port';
+import {
+  IngredientFinder,
+  IngredientFinderDTO,
+} from '@/domain/services/IngredientFinder.port';
+
+type OpenFoodFactProduct = {
+  _id: string;
+  product_name: string;
+  nutriments: {
+    'energy-kcal_100g': number;
+    proteins_100g: number;
+  };
+  image_thumb_url?: string;
+  image_front_url?: string;
+};
 
 // DOCS: https://openfoodfacts.github.io/openfoodfacts-server/api/
 const READ_RATE_LIMITS = {
@@ -39,41 +52,45 @@ if (process.env.NODE_ENV === 'production')
 
 if (!authHeader) {
   throw new InfrastructureError(
-    'OpenFoodFactsIngredientFinder: Missing Authorization header configuration.'
+    'OpenFoodFactsIngredientFinder: Missing Authorization header configuration. Is NODE_ENV set correctly?'
   );
 }
 
 export class OpenFoodFactsIngredientFinder implements IngredientFinder {
-  async findIngredientsByFuzzyName() {
-    const response = await fetch(
-      `${BASE_URL}/cgi/search.pl?search_terms=banania&search_simple=1&action=process&json=1`,
-      {
-        method: 'GET',
-        headers: { ...authHeader! },
-      }
-    );
+  // TODO NEXT: Write integration tests for this service
+  // TODO IMPORTANT: Implement rate limiting according to READ_RATE_LIMITS
+  async findIngredientsByFuzzyName(name: string) {
+    const url = `${BASE_URL}/cgi/search.pl?search_terms=${encodeURIComponent(
+      name
+    )}&search_simple=1&action=process&json=1`;
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: { ...authHeader! },
+    });
     const json = await response.json();
 
-    const keys = Object.keys(json);
+    const ingredients: IngredientFinderDTO[] = json.products.map(
+      (product: OpenFoodFactProduct) => {
+        // DOC: Go to this data page for a sample product and see all available fields: https://world.openfoodfacts.org/cgi/search.pl?search_terms=banania&search_simple=1&action=process&json=1
+        return {
+          externalId: product._id,
+          source: 'openfoodfacts',
+          name: product.product_name,
+          nutritionaInfoPer100g: {
+            calories: product.nutriments['energy-kcal_100g'],
+            protein: product.nutriments['proteins_100g'],
+          },
+          imageUrl: product.image_thumb_url || product.image_front_url,
+        };
+      }
+    );
 
-    // TODO DELETE THESE DEBUG LOGS
-    console.log('keys');
-    console.log(keys);
-
-    // TODO DELETE THESE DEBUG LOGS
-    console.log('json');
-    console.log(json[keys[0]]);
-
-    // TODO DELETE THESE DEBUG LOGS
-    console.log('Object(json)');
-    console.log(Object.keys(json).length);
-    return [];
+    return ingredients || [];
   }
 
   async findIngredientsByBarcode() {
+    // TODO IMPLEMTENT
     return [];
   }
 }
-
-const testClass = new OpenFoodFactsIngredientFinder();
-testClass.findIngredientsByFuzzyName();
