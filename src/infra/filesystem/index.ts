@@ -1,5 +1,6 @@
 export { FileSystemDaysRepo } from './FileSystemDaysRepo';
 export { FileSystemExercisesRepo } from './FileSystemExercisesRepo';
+export { FileSystemExternalIngredientsRefRepo } from './FileSystemExternalIngredientsRefRepo';
 export { FileSystemFakeMealsRepo } from './FileSystemFakeMealsRepo';
 export { FileSystemIngredientsRepo } from './FileSystemIngredientsRepo';
 export { FileSystemMealsRepo } from './FileSystemMealsRepo';
