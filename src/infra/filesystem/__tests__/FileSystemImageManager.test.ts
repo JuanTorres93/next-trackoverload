@@ -1,4 +1,4 @@
-import { Uuidv4IdGenerator } from '@/infra/services/Uuidv4IdGenerator';
+import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator';
 import { FileSystemImageManager } from '../FileSystemImageManager';
 import fs from 'fs/promises';
 import path from 'path';

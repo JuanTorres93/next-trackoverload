@@ -7,7 +7,7 @@ import { User } from '@/domain/entities/user/User';
 import { MemoryImageManager } from '@/infra';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
-import { Uuidv4IdGenerator } from '@/infra/services/Uuidv4IdGenerator';
+import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator';
 import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
 import { DeleteRecipeUsecase } from '../DeleteRecipe.usecase';
 

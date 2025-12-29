@@ -1,4 +1,4 @@
-import { Uuidv4IdGenerator } from '@/infra/services/Uuidv4IdGenerator';
+import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator';
 
 /**
  * Example test helper for using MemoryImageManager in use case tests

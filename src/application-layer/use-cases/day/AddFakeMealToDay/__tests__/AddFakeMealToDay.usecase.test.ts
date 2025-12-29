@@ -5,7 +5,7 @@ import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { AddFakeMealToDayUsecase } from '../AddFakeMealToDay.usecase';
 import { User } from '@/domain/entities/user/User';
-import { Uuidv4IdGenerator } from '@/infra/services/Uuidv4IdGenerator';
+import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator';
 
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';

@@ -1,4 +1,4 @@
-import { Uuidv4IdGenerator } from '@/infra/services/Uuidv4IdGenerator';
+import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator';
 import { MemoryImageManager } from '../MemoryImageManager';
 
 // Create a test image buffer (1x1 PNG)

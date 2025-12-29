@@ -4,7 +4,7 @@ import { toExerciseDTO } from '@/application-layer/dtos/ExerciseDTO';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
 import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
 import { CreateExerciseUsecase } from '../CreateExercise.usecase';
-import { Uuidv4IdGenerator } from '@/infra/services/Uuidv4IdGenerator';
+import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator';
 
 describe('CreateExerciseUsecase', () => {
   let exercisesRepo: MemoryExercisesRepo;
