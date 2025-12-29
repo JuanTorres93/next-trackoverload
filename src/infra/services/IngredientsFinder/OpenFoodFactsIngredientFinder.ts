@@ -3,6 +3,8 @@ import {
   IngredientFinder,
   IngredientFinderDTO,
 } from '@/domain/services/IngredientFinder.port';
+import { RateLimiter } from '@/domain/services/RateLimiter.port';
+import { MemoryTokenBucketRateLimiter } from '../RateLimiter/MemoryTokenBucketRateLimiter';
 
 type OpenFoodFactProduct = {
   _id: string;
@@ -57,9 +59,23 @@ if (!authHeader) {
 }
 
 export class OpenFoodFactsIngredientFinder implements IngredientFinder {
+  private searchRateLimiter: RateLimiter;
+
+  constructor() {
+    this.searchRateLimiter = new MemoryTokenBucketRateLimiter(
+      READ_RATE_LIMITS.searchQueries.requests,
+      READ_RATE_LIMITS.searchQueries.perMinutes
+    );
+  }
+
   // TODO NEXT: Write integration tests for this service
-  // TODO IMPORTANT: Implement rate limiting according to READ_RATE_LIMITS
   async findIngredientsByFuzzyName(name: string) {
+    if (await this.searchRateLimiter.isRateLimited()) {
+      throw new InfrastructureError(
+        'OpenFoodFactsIngredientFinder: Rate limit exceeded for search queries'
+      );
+    }
+
     const url = `${BASE_URL}/cgi/search.pl?search_terms=${encodeURIComponent(
       name
     )}&search_simple=1&action=process&json=1`;
@@ -68,6 +84,15 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
       method: 'GET',
       headers: { ...authHeader! },
     });
+
+    this.searchRateLimiter.recordRequest();
+
+    if (!response.ok) {
+      throw new InfrastructureError(
+        `OpenFoodFactsIngredientFinder: Failed to fetch ingredients by name "${name}". Status: ${response.status}`
+      );
+    }
+
     const json = await response.json();
 
     const ingredients: IngredientFinderDTO[] = json.products.map(
@@ -77,7 +102,7 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
           externalId: product._id,
           source: 'openfoodfacts',
           name: product.product_name,
-          nutritionaInfoPer100g: {
+          nutritionalInfoPer100g: {
             calories: product.nutriments['energy-kcal_100g'],
             protein: product.nutriments['proteins_100g'],
           },
