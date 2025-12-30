@@ -48,6 +48,22 @@ export class FileSystemExternalIngredientsRefRepo
     }
   }
 
+  async getByExternalIdsAndSource(
+    externalIds: string[],
+    source: string
+  ): Promise<ExternalIngredientRef[]> {
+    const results: ExternalIngredientRef[] = [];
+
+    for (const externalId of externalIds) {
+      const ref = await this.getByExternalIdAndSource(externalId, source);
+      if (ref) {
+        results.push(ref);
+      }
+    }
+
+    return results;
+  }
+
   async save(externalIngredientRef: ExternalIngredientRef): Promise<void> {
     await this.ensureDataDir();
     const data = toExternalIngredientRefDTO(externalIngredientRef);

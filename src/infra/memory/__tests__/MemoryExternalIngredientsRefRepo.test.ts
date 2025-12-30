@@ -73,6 +73,74 @@ describe('MemoryExternalIngredientsRefRepo', () => {
     });
   });
 
+  describe('getByExternalIdsAndSource', () => {
+    it('should retrieve multiple external ingredient refs by externalIds and source', async () => {
+      const ref2 = ExternalIngredientRef.create({
+        ...vp.validExternalIngredientRefProps,
+        externalId: 'ext-id-2',
+        ingredientId: 'ing-id-2',
+      });
+      const ref3 = ExternalIngredientRef.create({
+        ...vp.validExternalIngredientRefProps,
+        externalId: 'ext-id-3',
+        ingredientId: 'ing-id-3',
+      });
+      await repo.save(ref2);
+      await repo.save(ref3);
+
+      const fetched = await repo.getByExternalIdsAndSource(
+        [vp.validExternalIngredientRefProps.externalId, 'ext-id-2', 'ext-id-3'],
+        vp.validExternalIngredientRefProps.source
+      );
+
+      expect(fetched.length).toBe(3);
+      expect(fetched.map((r) => r.externalId)).toContain(
+        vp.validExternalIngredientRefProps.externalId
+      );
+      expect(fetched.map((r) => r.externalId)).toContain('ext-id-2');
+      expect(fetched.map((r) => r.externalId)).toContain('ext-id-3');
+    });
+
+    it('should return empty array when no external ingredient refs match', async () => {
+      const fetched = await repo.getByExternalIdsAndSource(
+        ['non-existent-1', 'non-existent-2'],
+        vp.validExternalIngredientRefProps.source
+      );
+
+      expect(fetched).toEqual([]);
+    });
+
+    it('should return only matching refs when some externalIds do not exist', async () => {
+      const fetched = await repo.getByExternalIdsAndSource(
+        [vp.validExternalIngredientRefProps.externalId, 'non-existent-id'],
+        vp.validExternalIngredientRefProps.source
+      );
+
+      expect(fetched.length).toBe(1);
+      expect(fetched[0].externalId).toBe(
+        vp.validExternalIngredientRefProps.externalId
+      );
+    });
+
+    it('should return empty array when source does not match', async () => {
+      const fetched = await repo.getByExternalIdsAndSource(
+        [vp.validExternalIngredientRefProps.externalId],
+        'DifferentSource'
+      );
+
+      expect(fetched).toEqual([]);
+    });
+
+    it('should return empty array for empty externalIds array', async () => {
+      const fetched = await repo.getByExternalIdsAndSource(
+        [],
+        vp.validExternalIngredientRefProps.source
+      );
+
+      expect(fetched).toEqual([]);
+    });
+  });
+
   describe('delete', () => {
     it('should delete an external ingredient ref by externalId', async () => {
       await repo.delete(vp.validExternalIngredientRefProps.externalId);

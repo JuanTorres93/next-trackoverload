@@ -5,6 +5,10 @@ export interface ExternalIngredientsRefRepo {
     externalId: string,
     source: string
   ): Promise<ExternalIngredientRef | null>;
+  getByExternalIdsAndSource(
+    externalIds: string[],
+    source: string
+  ): Promise<ExternalIngredientRef[]>;
   save(externalIngredientRef: ExternalIngredientRef): Promise<void>;
   delete(externalId: string): Promise<void>;
 }

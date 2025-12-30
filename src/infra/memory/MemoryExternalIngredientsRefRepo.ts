@@ -16,6 +16,15 @@ export class MemoryExternalIngredientsRefRepo
     return found || null;
   }
 
+  async getByExternalIdsAndSource(
+    externalIds: string[],
+    source: string
+  ): Promise<ExternalIngredientRef[]> {
+    return this.repoStorage.filter(
+      (r) => externalIds.includes(r.externalId) && r.source === source
+    );
+  }
+
   async save(externalIngredientRef: ExternalIngredientRef): Promise<void> {
     const existingIndex = this.repoStorage.findIndex(
       (r) =>
