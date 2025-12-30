@@ -95,7 +95,19 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
 
     const json = await response.json();
 
-    const ingredients: IngredientFinderDTO[] = json.products.map(
+    const filteredProducts = json.products
+      // Has nutriments
+      .filter(
+        (product: OpenFoodFactProduct) =>
+          product.nutriments && Object.keys(product.nutriments).length > 0
+      )
+      // Has name
+      .filter(
+        (product: OpenFoodFactProduct) =>
+          product.product_name && product.product_name.trim().length > 0
+      );
+
+    const ingredients: IngredientFinderDTO[] = filteredProducts.map(
       (product: OpenFoodFactProduct) => {
         // DOC: Go to this data page for a sample product and see all available fields: https://world.openfoodfacts.org/cgi/search.pl?search_terms=banania&search_simple=1&action=process&json=1
         return {
@@ -103,8 +115,8 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
           source: 'openfoodfacts',
           name: product.product_name,
           nutritionalInfoPer100g: {
-            calories: product.nutriments['energy-kcal_100g'],
-            protein: product.nutriments['proteins_100g'],
+            calories: product.nutriments['energy-kcal_100g'] || 0,
+            protein: product.nutriments['proteins_100g'] || 0,
           },
           imageUrl: product.image_thumb_url || product.image_front_url,
         };

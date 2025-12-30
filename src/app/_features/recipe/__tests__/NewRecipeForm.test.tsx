@@ -2,7 +2,10 @@ import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { AppRecipesRepo } from '@/interface-adapters/app/repos/AppRecipesRepo';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createMockIngredients } from '../../../../../tests/mocks/ingredients';
+import {
+  createMockIngredients,
+  mockIngredientsForIngredientFinder,
+} from '../../../../../tests/mocks/ingredients';
 import { createServer } from '../../../../../tests/mocks/server';
 import { createMockUser } from '../../../../../tests/mocks/user';
 
@@ -13,7 +16,7 @@ import '@/../tests/mocks/nextjs';
 
 import NewRecipeForm from '../NewRecipeForm';
 
-const mockIngredients = await createMockIngredients();
+await createMockIngredients();
 await createMockUser();
 
 createServer([
@@ -22,7 +25,7 @@ createServer([
     method: 'get',
     response: ({ params }) => {
       const term = params.term as string;
-      const ingredients = mockIngredients;
+      const ingredients = mockIngredientsForIngredientFinder;
 
       const filteredIngredients = ingredients.filter((ingredient) =>
         ingredient.name.toLowerCase().includes(term.toLowerCase())
@@ -37,8 +40,10 @@ async function setup() {
   render(<NewRecipeForm />);
 
   const searchBar = screen.getByPlaceholderText(/ingred/i);
+  const searchButton = screen.getByTestId('search-ingredient-button');
 
   await userEvent.type(searchBar, 'c');
+  await userEvent.click(searchButton);
 
   const ingredientList = await screen.findByTestId('ingredient-list');
 

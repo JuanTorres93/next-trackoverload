@@ -1,5 +1,5 @@
 import type { NextRequest } from 'next/server';
-import { AppGetIngredientsByFuzzyNameUsecase } from '@/interface-adapters/app/use-cases/ingredient';
+import { AppIngredientFinder } from '@/interface-adapters/app/services/AppIngredientFinder';
 
 export async function GET(
   _req: NextRequest,
@@ -16,11 +16,19 @@ export async function GET(
       );
     }
 
-    const ingredients = await AppGetIngredientsByFuzzyNameUsecase.execute({
-      name: term,
-    });
+    const ingredients = await AppIngredientFinder.findIngredientsByFuzzyName(
+      term
+    );
 
-    return Response.json(ingredients, { status: 200 });
+    // User can decide not to use an ingredient. So id is faked until it is actually used.
+    const fakeIngredients = ingredients.map((ingredient, index) => ({
+      ...ingredient,
+      id: `fake-id-${index}-${ingredient.externalId}`,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }));
+
+    return Response.json(fakeIngredients, { status: 200 });
   } catch (error) {
     console.log(
       'app/api/ingredient/fuzzy/[name]/GET: Error fetching ingredients:',

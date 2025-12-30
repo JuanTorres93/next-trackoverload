@@ -20,6 +20,18 @@ const ingredientPropsForUseCase = [
   },
 ];
 
+export const mockIngredientsForIngredientFinder = ingredientPropsForUseCase.map(
+  (props, index) => ({
+    id: `ingredient-${index + 1}`,
+    name: props.name,
+    nutritionalInfoPer100g: {
+      calories: props.calories,
+      protein: props.protein,
+    },
+    imageUrl: undefined,
+  })
+);
+
 export const createMockIngredients = async () => {
   const createdIngredients = [];
 

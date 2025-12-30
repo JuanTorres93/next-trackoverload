@@ -7,7 +7,7 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest run --exclude '**/*.ratelimit.test.ts'",
+    "test": "vitest run -w --exclude '**/*.ratelimit.test.ts'",
     "test:all": "vitest",
     "test:ui": "vitest --ui",
     "test:watch": "vitest watch"

@@ -14,6 +14,8 @@ import IngredientSearch, {
   handleIngredientSelection,
 } from './IngredientSearch';
 
+// TODO NEXT: Modificar el caso de uso de crear receta para gestionar los ingredientes de la nueva forma
+
 function NewRecipeForm() {
   // Form state and action
   const { formRef, pending, startTransition, formState, formAction } =

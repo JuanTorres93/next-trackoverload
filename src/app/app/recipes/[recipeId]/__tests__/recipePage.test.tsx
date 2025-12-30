@@ -1,4 +1,4 @@
-import { createMockIngredients } from '@/../tests/mocks/ingredients';
+import { mockIngredientsForIngredientFinder } from '@/../tests/mocks/ingredients';
 import { createMockRecipes } from '@/../tests/mocks/recipes';
 import { createServer } from '@/../tests/mocks/server';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
@@ -16,7 +16,6 @@ import RecipePage from '../page';
 const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
 const usersRepo = AppUsersRepo as MemoryUsersRepo;
 let mockRecipes: RecipeDTO[] = [];
-const mockIngredients = await createMockIngredients();
 
 createServer([
   {
@@ -24,7 +23,7 @@ createServer([
     method: 'get',
     response: ({ params }) => {
       const term = params.term as string;
-      const ingredients = mockIngredients;
+      const ingredients = mockIngredientsForIngredientFinder;
 
       const filteredIngredients = ingredients.filter((ingredient) =>
         ingredient.name.toLowerCase().includes(term.toLowerCase())

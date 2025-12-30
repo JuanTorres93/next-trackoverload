@@ -1,15 +1,14 @@
 'use client';
-import { useEffect, useState } from 'react';
 import Input from '@/app/_ui/Input';
 import VerticalList from '@/app/_ui/VerticalList';
-import IngredientItemMini from '../ingredient/IngredientItemMini';
-import { IngredientDTO } from '@/application-layer/dtos/IngredientDTO';
-import { useDebounce } from '@/app/hooks/useDebounce';
-import { createInMemoryRecipeIngredientLine } from './utils';
-import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
-import IngredientLineItem from '../ingredient/IngredientLineItem';
-import { useOutsideClick } from '@/app/hooks/useOutsideClick';
 import { formatToInteger } from '@/app/_utils/format/formatToInteger';
+import { useOutsideClick } from '@/app/hooks/useOutsideClick';
+import { IngredientDTO } from '@/application-layer/dtos/IngredientDTO';
+import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
+import { useState } from 'react';
+import IngredientItemMini from '../ingredient/IngredientItemMini';
+import IngredientLineItem from '../ingredient/IngredientLineItem';
+import { createInMemoryRecipeIngredientLine } from './utils';
 
 function IngredientSearch({
   onSelectFoundIngredient,
@@ -27,7 +26,6 @@ function IngredientSearch({
   >(new Set());
   const listRef = useOutsideClick<HTMLDivElement>(handleHideList);
 
-  // IMPORTANT NOTE: Don't use this function directly to avoid excessive calls. Use debounced version below instead.
   async function fetchIngredients(term: string = ''): Promise<void> {
     // Use case is used behind the scenes in the API route. It can't be called directly from the client.
     if (!term.trim()) {
@@ -44,12 +42,13 @@ function IngredientSearch({
     }
   }
 
-  const debouncedFetchIngredients = useDebounce(fetchIngredients, 200);
+  // const debouncedFetchIngredients = useDebounce(fetchIngredients, 200);
 
   // Fetch ingredients when search term changes
-  useEffect(() => {
-    debouncedFetchIngredients(ingredientSearchTerm);
-  }, [ingredientSearchTerm, debouncedFetchIngredients]);
+  // IMPORTANT: Do not use with current OpenFoodFacts API due to rate limiting issues.
+  //useEffect(() => {
+  //  // debouncedFetchIngredients(ingredientSearchTerm);
+  //}, [ingredientSearchTerm, debouncedFetchIngredients]);
 
   function selectIngredient(ingredient: IngredientDTO) {
     const wasSelected = selectedIngredientIds.has(ingredient.id);
@@ -93,6 +92,14 @@ function IngredientSearch({
         onClick={handleShowList}
         placeholder="Buscar ingredientes..."
       />
+
+      {/* TODO design a nice button */}
+      <button
+        onClick={() => fetchIngredients(ingredientSearchTerm)}
+        data-testid="search-ingredient-button"
+      >
+        Buscar
+      </button>
 
       {/* Found results */}
       {showList && foundIngredients.length > 0 && ingredientSearchTerm && (
@@ -167,16 +174,18 @@ function IngredientList({
           {ingredientLines.length === 1 ? '' : 's'}
         </>
       )}
-      {ingredientLines.map((ingredientLine) => (
-        <IngredientLineItem
-          key={ingredientLine.id}
-          ingredientLine={ingredientLine}
-          onQuantityChange={handleIngredientLineQuantityChange(
-            ingredientLine.id
-          )}
-          onRemove={() => handleIngredientLineRemove(ingredientLine.id)}
-        />
-      ))}
+      {ingredientLines.map((ingredientLine) => {
+        return (
+          <IngredientLineItem
+            key={ingredientLine.id}
+            ingredientLine={ingredientLine}
+            onQuantityChange={handleIngredientLineQuantityChange(
+              ingredientLine.id
+            )}
+            onRemove={() => handleIngredientLineRemove(ingredientLine.id)}
+          />
+        );
+      })}
     </div>
   );
 }
