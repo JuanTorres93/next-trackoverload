@@ -15,6 +15,7 @@ const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
 import '@/../tests/mocks/nextjs';
 
 import NewRecipeForm from '../NewRecipeForm';
+import { IngredientFinderResult } from '@/domain/services/IngredientFinder.port';
 
 await createMockIngredients();
 await createMockUser();
@@ -25,10 +26,11 @@ createServer([
     method: 'get',
     response: ({ params }) => {
       const term = params.term as string;
-      const ingredients = mockIngredientsForIngredientFinder;
+      const results = mockIngredientsForIngredientFinder;
 
-      const filteredIngredients = ingredients.filter((ingredient) =>
-        ingredient.name.toLowerCase().includes(term.toLowerCase())
+      const filteredIngredients: IngredientFinderResult[] = results.filter(
+        (result) =>
+          result.ingredient.name.toLowerCase().includes(term.toLowerCase())
       );
 
       return filteredIngredients;

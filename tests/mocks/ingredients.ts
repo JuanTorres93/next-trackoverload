@@ -21,15 +21,22 @@ const ingredientPropsForUseCase = [
 ];
 
 export const mockIngredientsForIngredientFinder = ingredientPropsForUseCase.map(
-  (props, index) => ({
-    id: `ingredient-${index + 1}`,
-    name: props.name,
-    nutritionalInfoPer100g: {
-      calories: props.calories,
-      protein: props.protein,
-    },
-    imageUrl: undefined,
-  })
+  (props, index) => {
+    return {
+      ingredient: {
+        name: props.name,
+        nutritionalInfoPer100g: {
+          calories: props.calories,
+          protein: props.protein,
+        },
+        imageUrl: undefined,
+      },
+      externalRef: {
+        externalId: `external-id-${index + 1}`,
+        source: 'openfoodfacts',
+      },
+    };
+  }
 );
 
 export const createMockIngredients = async () => {

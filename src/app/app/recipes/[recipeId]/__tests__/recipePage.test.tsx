@@ -26,7 +26,7 @@ createServer([
       const ingredients = mockIngredientsForIngredientFinder;
 
       const filteredIngredients = ingredients.filter((ingredient) =>
-        ingredient.name.toLowerCase().includes(term.toLowerCase())
+        ingredient.ingredient.name.toLowerCase().includes(term.toLowerCase())
       );
 
       return filteredIngredients;

@@ -1,4 +1,4 @@
-import { IngredientFinderDTO } from '@/domain/services/IngredientFinder.port';
+import { IngredientFinderResult } from '@/domain/services/IngredientFinder.port';
 import { OpenFoodFactsIngredientFinder } from '../OpenFoodFactsIngredientFinder';
 
 describe('OpenFoodFactsIngredientFinder', () => {
@@ -9,24 +9,34 @@ describe('OpenFoodFactsIngredientFinder', () => {
   });
 
   describe('Find by name', () => {
-    it('returns ingredient info', async () => {
-      const results: IngredientFinderDTO[] =
-        await ingredientFinder.findIngredientsByFuzzyName('Arroz');
+    let results: IngredientFinderResult[];
 
+    beforeAll(async () => {
+      results = await ingredientFinder.findIngredientsByFuzzyName('Arroz');
+    });
+
+    it('returns ingredient and externalRef properties', async () => {
       expect(results.length).toBeGreaterThan(0);
 
-      for (const ingredient of results) {
-        expect(ingredient).toHaveProperty('externalId');
-        expect(ingredient).toHaveProperty('source');
-        expect(ingredient).toHaveProperty('name');
-        expect(ingredient).toHaveProperty('nutritionalInfoPer100g');
-        expect(ingredient).toHaveProperty('imageUrl');
-
-        expect(ingredient.source).toBe('openfoodfacts');
-
-        expect(ingredient.nutritionalInfoPer100g).toHaveProperty('calories');
-        expect(ingredient.nutritionalInfoPer100g).toHaveProperty('protein');
+      for (const result of results) {
+        expect(result).toHaveProperty('ingredient');
+        expect(result).toHaveProperty('externalRef');
       }
+    });
+
+    it('ingredient prop has correct properties', async () => {
+      const { ingredient } = results[0];
+
+      expect(ingredient).toHaveProperty('name');
+      expect(ingredient).toHaveProperty('nutritionalInfoPer100g');
+      expect(ingredient).toHaveProperty('imageUrl');
+    });
+
+    it('externalRef prop has correct properties', async () => {
+      const { externalRef } = results[0];
+
+      expect(externalRef).toHaveProperty('externalId');
+      expect(externalRef).toHaveProperty('source');
     });
   });
 

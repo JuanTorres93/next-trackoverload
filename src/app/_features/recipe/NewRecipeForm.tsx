@@ -1,5 +1,4 @@
 'use client';
-import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
 
 import ImagePicker from '@/app/_ui/ImagePicker';
 import Form from '@/app/_ui/NewResourceForm';
@@ -12,9 +11,8 @@ import { useState } from 'react';
 import { createRecipe } from './actions';
 import IngredientSearch, {
   handleIngredientSelection,
+  IngredientLineWithExternalRef,
 } from './IngredientSearch';
-
-// TODO NEXT: Modificar el caso de uso de crear receta para gestionar los ingredientes de la nueva forma
 
 function NewRecipeForm() {
   // Form state and action
@@ -25,10 +23,9 @@ function NewRecipeForm() {
   const defaultRecipeName = 'Nueva receta';
   const [recipeName, setRecipeName] = useState(defaultRecipeName);
 
-  const defaultIngredientLines: IngredientLineDTO[] = [];
-  const [ingredientLines, setIngredientLines] = useState<IngredientLineDTO[]>(
-    defaultIngredientLines
-  );
+  const defaultIngredientLines: IngredientLineWithExternalRef[] = [];
+  const [ingredientLinesWithExternalRefs, setIngredientLinesWithExternalRefs] =
+    useState<IngredientLineWithExternalRef[]>(defaultIngredientLines);
 
   const defaultSelectedImage: File | null = null;
   const [selectedImage, setSelectedImage] = useState<File | null>(
@@ -36,21 +33,35 @@ function NewRecipeForm() {
   );
 
   const totalCalories = formatToInteger(
-    ingredientLines.reduce((sum, il) => sum + il.calories, 0)
+    ingredientLinesWithExternalRefs.reduce(
+      (sum, ingLineWithExternalRef) =>
+        sum + ingLineWithExternalRef.ingredientLine.calories,
+      0
+    )
   );
 
   const totalProtein = formatToInteger(
-    ingredientLines.reduce((sum, il) => sum + il.protein, 0)
+    ingredientLinesWithExternalRefs.reduce(
+      (sum, ingLineWithExternalRef) =>
+        sum + ingLineWithExternalRef.ingredientLine.protein,
+      0
+    )
   );
 
   const invalidForm =
-    ingredientLines.length === 0 ||
+    ingredientLinesWithExternalRefs.length === 0 ||
     recipeName.trim() === '' ||
-    ingredientLines.some((il) => il.quantityInGrams <= 0);
+    ingredientLinesWithExternalRefs.some(
+      (ingLineWithExternalRef) =>
+        ingLineWithExternalRef.ingredientLine.quantityInGrams <= 0
+    );
 
   useResetOnSuccess(formRef, formState, pending, [
     { setter: setRecipeName, initialValue: defaultRecipeName },
-    { setter: setIngredientLines, initialValue: defaultIngredientLines },
+    {
+      setter: setIngredientLinesWithExternalRefs,
+      initialValue: defaultIngredientLines,
+    },
     { setter: setSelectedImage, initialValue: defaultSelectedImage },
   ]);
 
@@ -72,12 +83,25 @@ function NewRecipeForm() {
       formData.append('image', selectedImage);
     }
 
-    const ingredientLinesInfo: IngredientLineInfo[] = ingredientLines.map(
-      (il) => ({
-        ingredientId: il.ingredient.id,
-        quantityInGrams: il.quantityInGrams,
-      })
-    );
+    const ingredientLinesInfo: IngredientLineInfo[] =
+      ingredientLinesWithExternalRefs.map(
+        (info: IngredientLineWithExternalRef) => {
+          const ingredientLine = info.ingredientLine;
+          const externalRef = info.ingredientExternalRef;
+
+          return {
+            externalIngredientId: externalRef.externalId,
+            source: externalRef.source,
+            name: ingredientLine.ingredient.name,
+            caloriesPer100g:
+              ingredientLine.ingredient.nutritionalInfoPer100g.calories,
+            proteinPer100g:
+              ingredientLine.ingredient.nutritionalInfoPer100g.protein,
+            imageUrl: ingredientLine.ingredient.imageUrl,
+            quantityInGrams: ingredientLine.quantityInGrams,
+          };
+        }
+      );
 
     formData.append('ingredientLinesInfo', JSON.stringify(ingredientLinesInfo));
 
@@ -132,11 +156,11 @@ function NewRecipeForm() {
 
       <Form.FormRow label="">
         <IngredientSearch
-          onSelectFoundIngredient={(ingredient, isSelected) =>
+          onSelectFoundIngredient={(ingredientFinderResult, isSelected) =>
             handleIngredientSelection(
-              ingredient,
+              ingredientFinderResult,
               isSelected,
-              setIngredientLines
+              setIngredientLinesWithExternalRefs
             )
           }
         />
@@ -144,13 +168,15 @@ function NewRecipeForm() {
 
       <Form.FormRow label="" error={formState?.errors.ingredientLines}>
         <IngredientSearch.IngredientList
-          ingredientLines={ingredientLines}
-          setIngredientLines={setIngredientLines}
+          ingredientLinesWithExternalRefs={ingredientLinesWithExternalRefs}
+          setIngredientLinesWithExternalRefs={
+            setIngredientLinesWithExternalRefs
+          }
         />
       </Form.FormRow>
 
       {/* Summary */}
-      {ingredientLines.length > 0 && (
+      {ingredientLinesWithExternalRefs.length > 0 && (
         <Form.FormRow label="">
           <div className="grid p-3 rounded-lg grid-cols-2 mt-4 bg-neutral-500 **:text-zinc-50 ">
             <NutritionalInfoValue

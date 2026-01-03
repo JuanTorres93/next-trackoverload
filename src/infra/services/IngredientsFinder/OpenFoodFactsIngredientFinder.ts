@@ -1,7 +1,7 @@
 import { InfrastructureError } from '@/domain/common/errors';
 import {
   IngredientFinder,
-  IngredientFinderDTO,
+  IngredientFinderResult,
 } from '@/domain/services/IngredientFinder.port';
 import { RateLimiter } from '@/domain/services/RateLimiter.port';
 import { MemoryTokenBucketRateLimiter } from '../RateLimiter/MemoryTokenBucketRateLimiter';
@@ -68,7 +68,6 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
     );
   }
 
-  // TODO NEXT: Write integration tests for this service
   async findIngredientsByFuzzyName(name: string) {
     if (await this.searchRateLimiter.isRateLimited()) {
       throw new InfrastructureError(
@@ -107,18 +106,27 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
           product.product_name && product.product_name.trim().length > 0
       );
 
-    const ingredients: IngredientFinderDTO[] = filteredProducts.map(
+    const ingredients: IngredientFinderResult[] = filteredProducts.map(
       (product: OpenFoodFactProduct) => {
         // DOC: Go to this data page for a sample product and see all available fields: https://world.openfoodfacts.org/cgi/search.pl?search_terms=banania&search_simple=1&action=process&json=1
-        return {
-          externalId: product._id,
-          source: 'openfoodfacts',
+
+        const ingredient = {
           name: product.product_name,
           nutritionalInfoPer100g: {
             calories: product.nutriments['energy-kcal_100g'] || 0,
             protein: product.nutriments['proteins_100g'] || 0,
           },
           imageUrl: product.image_thumb_url || product.image_front_url,
+        };
+
+        const externalRef = {
+          externalId: product._id,
+          source: 'openfoodfacts',
+        };
+
+        return {
+          ingredient,
+          externalRef,
         };
       }
     );

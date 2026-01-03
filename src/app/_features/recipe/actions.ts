@@ -12,6 +12,7 @@ import { FormState } from '@/app/_types/FormState';
 import { initialFormState } from '@/app/_utils/form/forms';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { IngredientLineInfo } from '@/application-layer/use-cases/recipe/CreateRecipe/CreateRecipe.usecase';
 
 export async function createRecipe(
   initialState: FormState, // Unsed, but needed for useActionState
@@ -39,8 +40,7 @@ export async function createRecipe(
     }
   }
 
-  let ingredientLinesInfo: { ingredientId: string; quantityInGrams: number }[] =
-    [];
+  let ingredientLinesInfo: IngredientLineInfo[] = [];
 
   try {
     ingredientLinesInfo = JSON.parse(ingredientLinesInfoStr);

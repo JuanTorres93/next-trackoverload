@@ -3,8 +3,8 @@ import Input from '@/app/_ui/Input';
 import VerticalList from '@/app/_ui/VerticalList';
 import { formatToInteger } from '@/app/_utils/format/formatToInteger';
 import { useOutsideClick } from '@/app/hooks/useOutsideClick';
-import { IngredientDTO } from '@/application-layer/dtos/IngredientDTO';
 import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
+import { IngredientFinderResult } from '@/domain/services/IngredientFinder.port';
 import { useState } from 'react';
 import IngredientItemMini from '../ingredient/IngredientItemMini';
 import IngredientLineItem from '../ingredient/IngredientLineItem';
@@ -14,31 +14,36 @@ function IngredientSearch({
   onSelectFoundIngredient,
 }: {
   onSelectFoundIngredient?: (
-    ingredient: IngredientDTO,
+    ingredientFinderResult: IngredientFinderResult,
     isSelected: boolean
   ) => void;
 }) {
   const [showList, setShowList] = useState(false);
   const [ingredientSearchTerm, setIngredientSearchTerm] = useState('');
-  const [foundIngredients, setFoundIngredients] = useState<IngredientDTO[]>([]);
-  const [selectedIngredientIds, setSelectedIngredientIds] = useState<
-    Set<string>
-  >(new Set());
+  const [foundIngredientsResults, setFoundIngredientsResults] = useState<
+    IngredientFinderResult[]
+  >([]);
+  const [selectedExternalIngredientIds, setSelectedExternalIngredientIds] =
+    useState<Set<string>>(new Set());
   const listRef = useOutsideClick<HTMLDivElement>(handleHideList);
 
   async function fetchIngredients(term: string = ''): Promise<void> {
     // Use case is used behind the scenes in the API route. It can't be called directly from the client.
     if (!term.trim()) {
-      setFoundIngredients([]);
+      setFoundIngredientsResults([]);
       return;
     }
-    const fetchedIngredients = await fetch(`/api/ingredient/fuzzy/${term}`);
+    const fetchedIngredientsResult: Response = await fetch(
+      `/api/ingredient/fuzzy/${term}`
+    );
 
     try {
-      const data = await fetchedIngredients.json();
-      setFoundIngredients(data);
+      const data: IngredientFinderResult[] =
+        await fetchedIngredientsResult.json();
+
+      setFoundIngredientsResults(data);
     } catch {
-      setFoundIngredients([]);
+      setFoundIngredientsResults([]);
     }
   }
 
@@ -50,26 +55,30 @@ function IngredientSearch({
   //  // debouncedFetchIngredients(ingredientSearchTerm);
   //}, [ingredientSearchTerm, debouncedFetchIngredients]);
 
-  function selectIngredient(ingredient: IngredientDTO) {
-    const wasSelected = selectedIngredientIds.has(ingredient.id);
+  function selectIngredientFinderResult(
+    ingredientFinderResult: IngredientFinderResult
+  ) {
+    const wasSelected = selectedExternalIngredientIds.has(
+      ingredientFinderResult.externalRef.externalId
+    );
 
-    setSelectedIngredientIds((prev) => {
+    setSelectedExternalIngredientIds((prev) => {
       const newSet = new Set(prev);
-      if (newSet.has(ingredient.id)) {
-        newSet.delete(ingredient.id);
+      if (newSet.has(ingredientFinderResult.externalRef.externalId)) {
+        newSet.delete(ingredientFinderResult.externalRef.externalId);
       } else {
-        newSet.add(ingredient.id);
+        newSet.add(ingredientFinderResult.externalRef.externalId);
       }
       return newSet;
     });
 
     if (onSelectFoundIngredient) {
-      onSelectFoundIngredient(ingredient, !wasSelected);
+      onSelectFoundIngredient(ingredientFinderResult, !wasSelected);
     }
   }
 
-  function isSelected(ingredientId: string) {
-    return selectedIngredientIds.has(ingredientId);
+  function isSelected(externalIngredientId: string) {
+    return selectedExternalIngredientIds.has(externalIngredientId);
   }
 
   function handleShowList() {
@@ -102,41 +111,61 @@ function IngredientSearch({
       </button>
 
       {/* Found results */}
-      {showList && foundIngredients.length > 0 && ingredientSearchTerm && (
-        <VerticalList
-          data-testid="ingredient-list"
-          ref={listRef}
-          className="mx-auto max-w-80"
-        >
-          {foundIngredients.map((ingredient) => (
-            <IngredientItemMini
-              key={ingredient.id}
-              ingredient={ingredient}
-              isSelected={isSelected(ingredient.id)}
-              onClick={() => selectIngredient(ingredient)}
-            />
-          ))}
-        </VerticalList>
-      )}
+      {showList &&
+        foundIngredientsResults.length > 0 &&
+        ingredientSearchTerm && (
+          <VerticalList
+            data-testid="ingredient-list"
+            ref={listRef}
+            className="mx-auto max-w-80"
+          >
+            {foundIngredientsResults.map((foundIngredient) => {
+              const fakeIngredient = {
+                ...foundIngredient.ingredient,
+                id: `fake-id-${foundIngredient.externalRef.externalId}`,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+              };
+
+              return (
+                <IngredientItemMini
+                  key={foundIngredient.externalRef.externalId}
+                  ingredient={fakeIngredient}
+                  isSelected={isSelected(
+                    foundIngredient.externalRef.externalId
+                  )}
+                  onClick={() => selectIngredientFinderResult(foundIngredient)}
+                />
+              );
+            })}
+          </VerticalList>
+        )}
     </div>
   );
 }
 
 function IngredientList({
-  ingredientLines,
-  setIngredientLines,
+  ingredientLinesWithExternalRefs,
+  setIngredientLinesWithExternalRefs,
   showIngredientLabel = true,
 }: {
-  ingredientLines: IngredientLineDTO[];
-  setIngredientLines: React.Dispatch<React.SetStateAction<IngredientLineDTO[]>>;
+  ingredientLinesWithExternalRefs: IngredientLineWithExternalRef[];
+  setIngredientLinesWithExternalRefs: React.Dispatch<
+    React.SetStateAction<IngredientLineWithExternalRef[]>
+  >;
   showIngredientLabel?: boolean;
 }) {
   function handleIngredientLineQuantityChange(ingredientLineId: string) {
     return (newQuantity: number) => {
-      const ingredientLine = ingredientLines.find(
-        (il) => il.id === ingredientLineId
-      );
-      if (!ingredientLine) return;
+      const ingredientLineWithExternalRef =
+        ingredientLinesWithExternalRefs.find(
+          (ingLineWithExternalRef) =>
+            ingLineWithExternalRef.ingredientLine.id === ingredientLineId
+        );
+
+      if (!ingredientLineWithExternalRef) return;
+
+      const ingredientLine = ingredientLineWithExternalRef.ingredientLine;
 
       const quantityInGrams = newQuantity;
       const calories = formatToInteger(
@@ -150,19 +179,32 @@ function IngredientList({
           100
       );
 
-      setIngredientLines((prev) =>
-        prev.map((il) =>
-          il.id === ingredientLineId
-            ? { ...il, quantityInGrams, calories, protein }
-            : il
+      const updatedIngredientLine: IngredientLineDTO = {
+        ...ingredientLine,
+        quantityInGrams,
+        calories,
+        protein,
+      };
+
+      setIngredientLinesWithExternalRefs((prev) =>
+        prev.map((ingLineWithExternalRef) =>
+          ingLineWithExternalRef.ingredientLine.id === ingredientLineId
+            ? {
+                ...ingLineWithExternalRef,
+                ingredientLine: updatedIngredientLine,
+              }
+            : ingLineWithExternalRef
         )
       );
     };
   }
 
   function handleIngredientLineRemove(ingredientLineId: string) {
-    setIngredientLines((prev) =>
-      prev.filter((il) => il.id !== ingredientLineId)
+    setIngredientLinesWithExternalRefs((prev) =>
+      prev.filter(
+        (ingLineWithExternalRef) =>
+          ingLineWithExternalRef.ingredientLine.id !== ingredientLineId
+      )
     );
   }
 
@@ -170,19 +212,27 @@ function IngredientList({
     <div data-testid="ingredient-line-list" className="flex flex-col gap-4">
       {showIngredientLabel && (
         <>
-          {ingredientLines.length ? ingredientLines.length : ''} Ingrediente
-          {ingredientLines.length === 1 ? '' : 's'}
+          {ingredientLinesWithExternalRefs.length
+            ? ingredientLinesWithExternalRefs.length
+            : ''}{' '}
+          Ingrediente
+          {ingredientLinesWithExternalRefs.length === 1 ? '' : 's'}
         </>
       )}
-      {ingredientLines.map((ingredientLine) => {
+
+      {ingredientLinesWithExternalRefs.map((ingredientLineWithExternalRef) => {
         return (
           <IngredientLineItem
-            key={ingredientLine.id}
-            ingredientLine={ingredientLine}
+            key={ingredientLineWithExternalRef.ingredientLine.id}
+            ingredientLine={ingredientLineWithExternalRef.ingredientLine}
             onQuantityChange={handleIngredientLineQuantityChange(
-              ingredientLine.id
+              ingredientLineWithExternalRef.ingredientLine.id
             )}
-            onRemove={() => handleIngredientLineRemove(ingredientLine.id)}
+            onRemove={() =>
+              handleIngredientLineRemove(
+                ingredientLineWithExternalRef.ingredientLine.id
+              )
+            }
           />
         );
       })}
@@ -196,30 +246,41 @@ export default IngredientSearch;
 
 // Export the most common handler to be used in NewRecipeForm
 // NOTE: it requires the setIngredientLines state setter to be passed from the parent component
-// Can be used like this, where ingredient and isSelected are provided by IngredientSearch component and setIngredientLines is from the parent component:
+export type IngredientLineWithExternalRef = {
+  ingredientLine: IngredientLineDTO;
+  ingredientExternalRef: IngredientFinderResult['externalRef'];
+};
 
-//     <IngredientSearch
-//       onSelectFoundIngredient={(ingredient, isSelected) =>
-//         handleIngredientSelection(
-//           ingredient,
-//           isSelected,
-//           setIngredientLines
-//         )
-//       }
-//     />
 export function handleIngredientSelection(
-  ingredient: IngredientDTO,
+  ingredientFinderResult: IngredientFinderResult,
   isSelected: boolean,
-  setIngredientLines: React.Dispatch<React.SetStateAction<IngredientLineDTO[]>>
+  setIngredientLinesInfo: React.Dispatch<
+    React.SetStateAction<IngredientLineWithExternalRef[]>
+  >
 ) {
   if (isSelected) {
-    const newIngredientLine: IngredientLineDTO =
-      createInMemoryRecipeIngredientLine(ingredient);
+    const {
+      ingredientLine: newIngredientLine,
+      ingredientExternalRef,
+    }: {
+      ingredientLine: IngredientLineDTO;
+      ingredientExternalRef: IngredientFinderResult['externalRef'];
+    } = createInMemoryRecipeIngredientLine(ingredientFinderResult);
 
-    setIngredientLines((prev) => [...prev, newIngredientLine]);
+    const ingredientLineInfo: IngredientLineWithExternalRef = {
+      ingredientLine: newIngredientLine,
+      ingredientExternalRef: ingredientExternalRef,
+    };
+
+    setIngredientLinesInfo((prev) => [...prev, ingredientLineInfo]);
   } else {
-    setIngredientLines((prev) =>
-      prev.filter((il) => il.ingredient.id !== ingredient.id)
+    setIngredientLinesInfo((prev) =>
+      prev.filter(
+        (ingLineInfo) =>
+          !ingLineInfo.ingredientLine.ingredient.id.endsWith(
+            ingredientFinderResult.externalRef.externalId
+          )
+      )
     );
   }
 }

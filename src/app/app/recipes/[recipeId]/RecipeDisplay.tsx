@@ -1,23 +1,23 @@
 'use client';
 
-import { HiOutlineDuplicate, HiOutlineTrash } from 'react-icons/hi';
-import IngredientLineItem from '@/app/_features/ingredient/IngredientLineItem';
-import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
-import { removeIngredientFromRecipe } from '@/app/_features/recipe/actions';
 import { updateIngredientLineQuantity } from '@/app/_features/ingredient/actions';
+import IngredientLineItem from '@/app/_features/ingredient/IngredientLineItem';
 import {
-  duplicateRecipe,
-  deleteRecipe,
   addIngredientToRecipe,
+  deleteRecipe,
+  duplicateRecipe,
+  removeIngredientFromRecipe,
 } from '@/app/_features/recipe/actions';
+import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
+import { HiOutlineDuplicate, HiOutlineTrash } from 'react-icons/hi';
 
-import { useDebounce } from '@/app/hooks/useDebounce';
 import IngredientSearch, {
   handleIngredientSelection,
+  IngredientLineWithExternalRef,
 } from '@/app/_features/recipe/IngredientSearch';
-import { useState } from 'react';
-import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
 import ButtonNew from '@/app/_ui/ButtonNew';
+import { useDebounce } from '@/app/hooks/useDebounce';
+import { useState } from 'react';
 
 interface RecipeDisplayProps {
   recipe: RecipeDTO;
@@ -27,9 +27,10 @@ interface RecipeDisplayProps {
 
 export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
   // TODO Filter ingredients that are already in the recipe
-  const [newIngredientLines, setNewIngredientLines] = useState<
-    IngredientLineDTO[]
-  >([]);
+  const [
+    newIngredientLinesWithExternalRefs,
+    setNewIngredientLinesWithExternalRefs,
+  ] = useState<IngredientLineWithExternalRef[]>([]);
 
   const debouncedUpdateQuantity = useDebounce(handleQuantityChange, 250);
 
@@ -51,6 +52,10 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
     // TODO handle loading state
     e.preventDefault();
 
+    const newIngredientLines = newIngredientLinesWithExternalRefs.map(
+      (ingLineWithExternalRef) => ingLineWithExternalRef.ingredientLine
+    );
+
     for (const line of newIngredientLines) {
       addIngredientToRecipe(
         recipe.id,
@@ -59,7 +64,7 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
       );
     }
 
-    setNewIngredientLines([]);
+    setNewIngredientLinesWithExternalRefs([]);
   }
 
   return (
@@ -100,20 +105,24 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
             handleIngredientSelection(
               ingredient,
               isSelected,
-              setNewIngredientLines
+              setNewIngredientLinesWithExternalRefs
             )
           }
         />
 
         <IngredientSearch.IngredientList
-          ingredientLines={newIngredientLines}
-          setIngredientLines={setNewIngredientLines}
-          showIngredientLabel={newIngredientLines.length > 0}
+          ingredientLinesWithExternalRefs={newIngredientLinesWithExternalRefs}
+          setIngredientLinesWithExternalRefs={
+            setNewIngredientLinesWithExternalRefs
+          }
+          showIngredientLabel={newIngredientLinesWithExternalRefs.length > 0}
         />
 
         <ButtonNew
           type="submit"
-          className={`${newIngredientLines.length <= 0 ? 'hidden' : ''}`}
+          className={`${
+            newIngredientLinesWithExternalRefs.length <= 0 ? 'hidden' : ''
+          }`}
           onClick={handleAddIngredients}
         >
           Añadir

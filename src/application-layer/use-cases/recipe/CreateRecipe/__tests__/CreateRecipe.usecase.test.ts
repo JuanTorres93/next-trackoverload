@@ -1,15 +1,12 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
-import {
-  NotFoundError,
-  PermissionError,
-  ValidationError,
-} from '@/domain/common/errors';
+import { NotFoundError, PermissionError } from '@/domain/common/errors';
+import { ExternalIngredientRef } from '@/domain/entities/externalingredientref/ExternalIngredientRef';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { User } from '@/domain/entities/user/User';
-import { MemoryImageManager } from '@/infra';
+import { MemoryExternalIngredientsRefRepo, MemoryImageManager } from '@/infra';
 import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
@@ -23,10 +20,11 @@ import {
 describe('CreateRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
   let ingredientsRepo: MemoryIngredientsRepo;
+  let externalIngredientsRefRepo: MemoryExternalIngredientsRefRepo;
   let imageManager: MemoryImageManager;
   let usersRepo: MemoryUsersRepo;
   let createRecipeUsecase: CreateRecipeUsecase;
-  let testIngredient: Ingredient;
+  let testExternalIngredientRef: ExternalIngredientRef;
   let testIngredientLineInfo: IngredientLineInfo;
   let user: User;
 
@@ -34,6 +32,7 @@ describe('CreateRecipeUsecase', () => {
     const idGenerator = new Uuidv4IdGenerator();
     recipesRepo = new MemoryRecipesRepo();
     ingredientsRepo = new MemoryIngredientsRepo();
+    externalIngredientsRefRepo = new MemoryExternalIngredientsRefRepo();
     imageManager = new MemoryImageManager('/memory/images', idGenerator);
     usersRepo = new MemoryUsersRepo();
 
@@ -42,7 +41,8 @@ describe('CreateRecipeUsecase', () => {
       ingredientsRepo,
       imageManager,
       usersRepo,
-      idGenerator
+      idGenerator,
+      externalIngredientsRefRepo
     );
 
     user = User.create({
@@ -51,16 +51,16 @@ describe('CreateRecipeUsecase', () => {
 
     await usersRepo.saveUser(user);
 
-    testIngredient = Ingredient.create({
-      ...vp.validIngredientProps,
-      calories: 165,
-      protein: 31,
+    testExternalIngredientRef = ExternalIngredientRef.create({
+      ...vp.validExternalIngredientRefProps,
     });
 
-    ingredientsRepo.saveIngredient(testIngredient);
-
     testIngredientLineInfo = {
-      ingredientId: testIngredient.id,
+      externalIngredientId: testExternalIngredientRef.externalId,
+      source: testExternalIngredientRef.source,
+      name: 'Chicken Breast',
+      caloriesPer100g: 165,
+      proteinPer100g: 31,
       quantityInGrams: 200,
     };
   });
@@ -81,11 +81,6 @@ describe('CreateRecipeUsecase', () => {
       expect(recipe.name).toBe(request.name);
       expect(recipe.imageUrl).not.toBeDefined();
       expect(recipe.ingredientLines).toHaveLength(1);
-      expect(recipe.ingredientLines[0].ingredient.id).toEqual(
-        testIngredientLineInfo.ingredientId
-      );
-      expect(recipe).toHaveProperty('createdAt');
-      expect(recipe).toHaveProperty('updatedAt');
 
       const savedRecipe = await recipesRepo.getRecipeById(recipe.id);
 
@@ -110,9 +105,6 @@ describe('CreateRecipeUsecase', () => {
       expect(recipe.name).toBe(request.name);
       expect(recipe.imageUrl).toBeDefined();
       expect(recipe.ingredientLines).toHaveLength(1);
-      expect(recipe.ingredientLines[0].ingredient.id).toEqual(
-        testIngredientLineInfo.ingredientId
-      );
       expect(recipe).toHaveProperty('createdAt');
       expect(recipe).toHaveProperty('updatedAt');
 
@@ -120,6 +112,54 @@ describe('CreateRecipeUsecase', () => {
 
       // @ts-expect-error savedRecipe won't be null here
       expect(toRecipeDTO(savedRecipe)).toEqual(recipe);
+    });
+
+    it('should create recipe if ingredient already exists', async () => {
+      const anotherExternalIngredientRef = ExternalIngredientRef.create({
+        ...vp.validExternalIngredientRefProps,
+        externalId: 'existing-external-ing-456',
+        ingredientId: 'existing-ingredient-id',
+      });
+
+      await externalIngredientsRefRepo.save(anotherExternalIngredientRef);
+
+      const testIngredient = Ingredient.create({
+        ...vp.validIngredientProps,
+        id: 'existing-ingredient-id',
+        name: 'Chicken Breast',
+        calories: 165,
+        protein: 31,
+      });
+
+      await ingredientsRepo.saveIngredient(testIngredient);
+
+      const ingredientsLineInfo: IngredientLineInfo = {
+        externalIngredientId: anotherExternalIngredientRef.externalId,
+        source: anotherExternalIngredientRef.source,
+        name: 'Chicken Breast',
+        caloriesPer100g: 165,
+        proteinPer100g: 31,
+        quantityInGrams: 250,
+      };
+
+      const ingredientsBefore = ingredientsRepo.countForTesting();
+
+      const request = {
+        actorUserId: vp.userId,
+        targetUserId: vp.userId,
+        name: 'Grilled Chicken',
+        ingredientLinesInfo: [ingredientsLineInfo],
+      };
+
+      const recipe = await createRecipeUsecase.execute(request);
+
+      const ingredientsAfter = ingredientsRepo.countForTesting();
+
+      expect(ingredientsAfter).toBe(ingredientsBefore); // No new ingredient created
+
+      expect(recipe).toHaveProperty('id');
+      expect(recipe.userId).toBe(vp.userId);
+      expect(recipe.name).toBe(request.name);
     });
 
     it('should save recipe ingredient lines', async () => {
@@ -183,7 +223,11 @@ describe('CreateRecipeUsecase', () => {
       await ingredientsRepo.saveIngredient(testIngredient2);
 
       const testIngredientLineInfo2 = {
-        ingredientId: testIngredient2.id,
+        externalIngredientId: 'ingredient-2',
+        source: testExternalIngredientRef.source,
+        name: 'Rice',
+        caloriesPer100g: 130,
+        proteinPer100g: 2.7,
         quantityInGrams: 100,
       };
 
@@ -226,6 +270,88 @@ describe('CreateRecipeUsecase', () => {
       const finalImageCount = imageManager.getImageCount();
       expect(finalImageCount).toBe(1);
     });
+
+    it("should create external ingredient ref if it didn't exist", async () => {
+      const newExternalIngredientId = 'new-external-ing-123';
+
+      const newIngredientLineInfo: IngredientLineInfo = {
+        externalIngredientId: newExternalIngredientId,
+        source: 'openfoodfacts',
+        name: 'New Ingredient',
+        caloriesPer100g: 50,
+        proteinPer100g: 5,
+        quantityInGrams: 100,
+      };
+
+      const request = {
+        actorUserId: vp.userId,
+        targetUserId: vp.userId,
+        name: 'Recipe with New External Ingredient',
+        ingredientLinesInfo: [newIngredientLineInfo],
+      };
+
+      const initialExternalIngredientRefs =
+        externalIngredientsRefRepo.countForTesting();
+
+      await createRecipeUsecase.execute(request);
+
+      const fetchedRef =
+        await externalIngredientsRefRepo.getByExternalIdAndSource(
+          newExternalIngredientId,
+          newIngredientLineInfo.source
+        );
+
+      const finalExternalIngredientRefs =
+        externalIngredientsRefRepo.countForTesting();
+
+      expect(finalExternalIngredientRefs).toBe(
+        initialExternalIngredientRefs + 1
+      );
+
+      expect(fetchedRef!.externalId).toBe(newExternalIngredientId);
+      expect(fetchedRef!.ingredientId).toBeDefined();
+    });
+
+    it("should create ingredient if it didn't exist", async () => {
+      const newExternalIngredientId = 'another-new-external-ing-456';
+
+      const newIngredientLineInfo: IngredientLineInfo = {
+        externalIngredientId: newExternalIngredientId,
+        source: 'openfoodfacts',
+        name: 'Another New Ingredient',
+        caloriesPer100g: 80,
+        proteinPer100g: 8,
+        quantityInGrams: 150,
+      };
+
+      const request = {
+        actorUserId: vp.userId,
+        targetUserId: vp.userId,
+        name: 'Recipe with New Ingredient',
+        ingredientLinesInfo: [newIngredientLineInfo],
+      };
+
+      const initialIngredientCount = ingredientsRepo.countForTesting();
+
+      await createRecipeUsecase.execute(request);
+
+      const finalIngredientCount = ingredientsRepo.countForTesting();
+
+      expect(finalIngredientCount).toBe(initialIngredientCount + 1);
+
+      const newIngredientId =
+        (await externalIngredientsRefRepo.getByExternalIdAndSource(
+          newExternalIngredientId,
+          newIngredientLineInfo.source
+        ))!.ingredientId;
+
+      const fetchedIngredient = await ingredientsRepo.getIngredientById(
+        newIngredientId
+      );
+
+      expect(fetchedIngredient).toBeDefined();
+      expect(fetchedIngredient!.name).toBe(newIngredientLineInfo.name);
+    });
   });
 
   describe('Error', () => {
@@ -242,31 +368,6 @@ describe('CreateRecipeUsecase', () => {
       );
       await expect(createRecipeUsecase.execute(request)).rejects.toThrow(
         /CreateRecipeUsecase.*user.*not.*found/
-      );
-    });
-
-    it('should throw error if at least one ingredient does no exist', async () => {
-      const invalidIngredientLineInfo = {
-        ingredientId: 'non-existent-ingredient',
-        quantityInGrams: 100,
-      };
-
-      const request = {
-        actorUserId: vp.userId,
-        targetUserId: vp.userId,
-        name: 'Test Recipe',
-        ingredientLinesInfo: [
-          testIngredientLineInfo,
-          invalidIngredientLineInfo,
-        ],
-      };
-
-      await expect(createRecipeUsecase.execute(request)).rejects.toThrow(
-        ValidationError
-      );
-
-      await expect(createRecipeUsecase.execute(request)).rejects.toThrow(
-        /CreateRecipeUseCase.*Ingredient.*not found/
       );
     });
 
