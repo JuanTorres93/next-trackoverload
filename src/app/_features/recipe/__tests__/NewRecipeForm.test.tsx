@@ -67,9 +67,8 @@ describe('NewRecipeForm', () => {
   });
 
   it('does not show ingredient lines if not selected', async () => {
-    const { ingredientLineList } = await setup();
-
-    expect(ingredientLineList.children.length).toBe(0);
+    const caloriesInfo = screen.queryByText(/calorías/i);
+    expect(caloriesInfo).not.toBeInTheDocument();
   });
 
   it('adds ingredient line on selection', async () => {
@@ -79,6 +78,10 @@ describe('NewRecipeForm', () => {
     await userEvent.click(firstIngredient);
 
     expect(ingredientLineList.children.length).toBe(1);
+
+    const caloriesInfo = await screen.findAllByText(/calorías/i);
+    // There are two entries: one in the ingredient line and one in the summary
+    expect(caloriesInfo.length).toBe(2);
   });
 
   it('adds multiple ingredient lines on selection', async () => {
@@ -93,13 +96,18 @@ describe('NewRecipeForm', () => {
   });
 
   it('removes already added ingredient lines on selection', async () => {
-    const { ingredientList, ingredientLineList } = await setup();
+    const { ingredientList } = await setup();
 
     const firstIngredient = ingredientList.children[0];
     await userEvent.click(firstIngredient);
+
+    const caloriesAfterSelection = await screen.findAllByText(/calorías/i);
+    expect(caloriesAfterSelection.length).toBe(2);
+
     await userEvent.click(firstIngredient);
 
-    expect(ingredientLineList.children.length).toBe(0);
+    const caloriesAfterDeselection = screen.queryByText(/calorías/i);
+    expect(caloriesAfterDeselection).not.toBeInTheDocument();
   });
 
   it('shows nutritional info summary when ingredients are added', async () => {
