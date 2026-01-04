@@ -9,6 +9,7 @@ import { useState } from 'react';
 import IngredientItemMini from '../ingredient/IngredientItemMini';
 import IngredientLineItem from '../ingredient/IngredientLineItem';
 import { createInMemoryRecipeIngredientLine } from './utils';
+import ButtonSearch from '@/app/_ui/ButtonSearch';
 
 function IngredientSearch({
   onSelectFoundIngredient,
@@ -102,13 +103,10 @@ function IngredientSearch({
         placeholder="Buscar ingredientes..."
       />
 
-      {/* TODO design a nice button */}
-      <button
+      <ButtonSearch
         onClick={() => fetchIngredients(ingredientSearchTerm)}
         data-testid="search-ingredient-button"
-      >
-        Buscar
-      </button>
+      />
 
       {/* Found results */}
       {showList &&
@@ -236,6 +234,10 @@ function IngredientList({
           />
         );
       })}
+
+      {ingredientLinesWithExternalRefs.length === 0 && (
+        <div className="text-sm">No hay ingredientes seleccionados.</div>
+      )}
     </div>
   );
 }
