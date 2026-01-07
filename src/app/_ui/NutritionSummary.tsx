@@ -29,7 +29,7 @@ function NutritionSummary({
     : line.ingredientLines.reduce((sum, il) => sum + il.quantityInGrams, 0);
 
   return (
-    <div className="grid grid-rows-[1fr_auto] h-full max-h-32 max-w-96 overflow-hidden rounded-xl  ">
+    <div className="grid grid-rows-[1fr_auto] h-full max-h-48 overflow-hidden rounded-xl  ">
       <div className="grid grid-cols-[40px_1fr_5rem_min-content] p-2  gap-4 items-center bg-neutral-100">
         <div className="relative h-12 overflow-hidden rounded-md aspect-square">
           <Image

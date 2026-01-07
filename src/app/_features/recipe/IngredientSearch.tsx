@@ -10,8 +10,7 @@ import IngredientItemMini from '../ingredient/IngredientItemMini';
 import IngredientLineItem from '../ingredient/IngredientLineItem';
 import { createInMemoryRecipeIngredientLine } from './utils';
 import ButtonSearch from '@/app/_ui/ButtonSearch';
-
-//TODO NEXT: Estados de carga
+import Spinner from '@/app/_ui/Spinner';
 
 type IngredientSearchContextType = {
   showFoundIngredients: boolean;
@@ -129,6 +128,7 @@ function Search() {
     ingredientSearchTerm,
     setIngredientSearchTerm,
     fetchIngredients,
+    isLoading,
   } = useIngredientSearchContext();
 
   return (
@@ -139,12 +139,14 @@ function Search() {
           setIngredientSearchTerm(e.target.value);
           handleShowList();
         }}
+        disabled={isLoading}
         onClick={handleShowList}
         placeholder="Buscar ingredientes..."
       />
 
       <ButtonSearch
         onClick={() => fetchIngredients(ingredientSearchTerm)}
+        disabled={isLoading}
         data-testid="search-ingredient-button"
       />
     </div>
@@ -166,6 +168,7 @@ function FoundIngredientsList({
     isSelected,
     selectedExternalIngredientIds,
     setSelectedExternalIngredientIds,
+    isLoading,
   } = useIngredientSearchContext();
 
   function selectIngredientFinderResult(
@@ -192,7 +195,14 @@ function FoundIngredientsList({
 
   return (
     <>
-      {showFoundIngredients &&
+      {isLoading && (
+        <div className="flex justify-center my-4">
+          <Spinner />
+        </div>
+      )}
+
+      {!isLoading &&
+        showFoundIngredients &&
         foundIngredientsResults.length > 0 &&
         ingredientSearchTerm && (
           <VerticalList
@@ -289,7 +299,10 @@ function SelectedIngredientsList({
   }
 
   return (
-    <div data-testid="ingredient-line-list" className="flex flex-col gap-4">
+    <div
+      data-testid="ingredient-line-list"
+      className="flex flex-col gap-4 stretch max-w-[30rem]"
+    >
       {showIngredientLabel && (
         <>
           {ingredientLinesWithExternalRefs.length
