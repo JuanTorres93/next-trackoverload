@@ -52,15 +52,20 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
     // TODO handle loading state
     e.preventDefault();
 
-    const newIngredientLines = newIngredientLinesWithExternalRefs.map(
-      (ingLineWithExternalRef) => ingLineWithExternalRef.ingredientLine
-    );
+    for (const line of newIngredientLinesWithExternalRefs) {
+      const externalRef = line.ingredientExternalRef;
 
-    for (const line of newIngredientLines) {
+      const ingredientLine = line.ingredientLine;
+
       addIngredientToRecipe(
         recipe.id,
-        line.ingredient.id,
-        line.quantityInGrams
+        externalRef.externalId,
+        externalRef.source,
+        ingredientLine.ingredient.name,
+        ingredientLine.ingredient.nutritionalInfoPer100g.calories,
+        ingredientLine.ingredient.nutritionalInfoPer100g.protein,
+        ingredientLine.ingredient.imageUrl,
+        ingredientLine.quantityInGrams
       );
     }
 

@@ -5,7 +5,7 @@ import Form from '@/app/_ui/NewResourceForm';
 import NutritionalInfoValue from '@/app/_ui/NutritionalInfoValue';
 import { useFormSetup, useResetOnSuccess } from '@/app/_utils/form/hooks';
 import { formatToInteger } from '@/app/_utils/format/formatToInteger';
-import { IngredientLineInfo } from '@/application-layer/use-cases/recipe/CreateRecipe/CreateRecipe.usecase';
+import { IngredientLineInfo } from '@/application-layer/use-cases/recipe/common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
 import Image from 'next/image';
 import { useState } from 'react';
 import { createRecipe } from './actions';

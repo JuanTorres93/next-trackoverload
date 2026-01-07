@@ -12,10 +12,8 @@ import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator';
 import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
-import {
-  CreateRecipeUsecase,
-  IngredientLineInfo,
-} from '../CreateRecipe.usecase';
+import { CreateRecipeUsecase } from '../CreateRecipe.usecase';
+import { IngredientLineInfo } from '../../common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
 
 describe('CreateRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;

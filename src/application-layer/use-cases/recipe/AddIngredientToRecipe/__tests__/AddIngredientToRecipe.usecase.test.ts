@@ -8,14 +8,22 @@ import { User } from '@/domain/entities/user/User';
 import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
 import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
+import { MemoryExternalIngredientsRefRepo } from '@/infra';
+import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator';
+
 import { AddIngredientToRecipeUsecase } from '../AddIngredientToRecipe.usecase';
+import { ExternalIngredientRef } from '@/domain/entities/externalingredientref/ExternalIngredientRef';
 
 describe('AddIngredientToRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
   let ingredientsRepo: MemoryIngredientsRepo;
   let usersRepo: MemoryUsersRepo;
+  let externalIngredientsRefRepo: MemoryExternalIngredientsRefRepo;
+  let idGenerator: Uuidv4IdGenerator;
+
   let addIngredientToRecipeUsecase: AddIngredientToRecipeUsecase;
   let testRecipe: Recipe;
+  let newExternalIngredientRef: ExternalIngredientRef;
   let newIngredient: Ingredient;
   let user: User;
 
@@ -23,10 +31,14 @@ describe('AddIngredientToRecipeUsecase', () => {
     recipesRepo = new MemoryRecipesRepo();
     ingredientsRepo = new MemoryIngredientsRepo();
     usersRepo = new MemoryUsersRepo();
+    externalIngredientsRefRepo = new MemoryExternalIngredientsRefRepo();
+    idGenerator = new Uuidv4IdGenerator();
     addIngredientToRecipeUsecase = new AddIngredientToRecipeUsecase(
       recipesRepo,
       ingredientsRepo,
-      usersRepo
+      usersRepo,
+      externalIngredientsRefRepo,
+      idGenerator
     );
 
     user = User.create({
@@ -35,6 +47,7 @@ describe('AddIngredientToRecipeUsecase', () => {
 
     await usersRepo.saveUser(user);
 
+    // Create ingredient for initial recipe
     const testIngredient = Ingredient.create({
       ...vp.validIngredientProps,
     });
@@ -52,6 +65,13 @@ describe('AddIngredientToRecipeUsecase', () => {
     });
     await recipesRepo.saveRecipe(testRecipe);
 
+    // Create ingredient for adding to recipe
+    newExternalIngredientRef = ExternalIngredientRef.create({
+      ...vp.validExternalIngredientRefProps,
+      ingredientId: 'new-ingredient-id',
+    });
+    await externalIngredientsRefRepo.save(newExternalIngredientRef);
+
     newIngredient = Ingredient.create({
       ...vp.validIngredientProps,
       id: 'new-ingredient-id',
@@ -66,24 +86,28 @@ describe('AddIngredientToRecipeUsecase', () => {
       const request = {
         recipeId: testRecipe.id,
         userId: vp.userId,
-        ingredientId: newIngredient.id,
+        externalIngredientId: newExternalIngredientRef.externalId,
+        source: vp.validExternalIngredientRefProps.source,
+        name: vp.validIngredientProps.name,
+        caloriesPer100g: vp.validIngredientProps.calories,
+        proteinPer100g: vp.validIngredientProps.protein,
         quantityInGrams: 150,
       };
 
       const result = await addIngredientToRecipeUsecase.execute(request);
 
       expect(result.ingredientLines).toHaveLength(originalIngredientCount + 1);
-
-      const ingredientLineIds = result.ingredientLines.map((line) => line.id);
-
-      expect(ingredientLineIds).toContain(newIngredient.id);
     });
 
     it('should return RecipeDTO', async () => {
       const request = {
         recipeId: testRecipe.id,
         userId: vp.userId,
-        ingredientId: newIngredient.id,
+        externalIngredientId: newExternalIngredientRef.externalId,
+        source: vp.validExternalIngredientRefProps.source,
+        name: vp.validIngredientProps.name,
+        caloriesPer100g: vp.validIngredientProps.calories,
+        proteinPer100g: vp.validIngredientProps.protein,
         quantityInGrams: 150,
       };
 
@@ -104,7 +128,11 @@ describe('AddIngredientToRecipeUsecase', () => {
       const request = {
         userId: vp.userId,
         recipeId: testRecipe.id,
-        ingredientId: newIngredient.id,
+        externalIngredientId: newExternalIngredientRef.externalId,
+        source: vp.validExternalIngredientRefProps.source,
+        name: vp.validIngredientProps.name,
+        caloriesPer100g: vp.validIngredientProps.calories,
+        proteinPer100g: vp.validIngredientProps.protein,
         quantityInGrams: 150,
       };
 
@@ -116,12 +144,64 @@ describe('AddIngredientToRecipeUsecase', () => {
     });
   });
 
+  describe('Side effects', () => {
+    it('should create new external ingredient if it did not exist', async () => {
+      const request = {
+        recipeId: testRecipe.id,
+        userId: vp.userId,
+        externalIngredientId: 'non-existent-external-ingredient-id',
+        source: vp.validExternalIngredientRefProps.source,
+        name: vp.validIngredientProps.name,
+        caloriesPer100g: vp.validIngredientProps.calories,
+        proteinPer100g: vp.validIngredientProps.protein,
+        quantityInGrams: 200,
+      };
+
+      const existingExternalIngredientBefore =
+        externalIngredientsRefRepo.countForTesting();
+
+      await addIngredientToRecipeUsecase.execute(request);
+
+      const existingExternalIngredientAfter =
+        externalIngredientsRefRepo.countForTesting();
+
+      expect(existingExternalIngredientAfter).toBe(
+        existingExternalIngredientBefore + 1
+      );
+    });
+
+    it('should create new ingredient if it did not exist', async () => {
+      const request = {
+        recipeId: testRecipe.id,
+        userId: vp.userId,
+        externalIngredientId: 'non-existent-new-external-ingredient-id',
+        source: vp.validExternalIngredientRefProps.source,
+        name: 'Brand New Ingredient',
+        caloriesPer100g: 50,
+        proteinPer100g: 5,
+        quantityInGrams: 300,
+      };
+
+      const existingIngredientsBefore = ingredientsRepo.countForTesting();
+
+      await addIngredientToRecipeUsecase.execute(request);
+
+      const existingIngredientsAfter = ingredientsRepo.countForTesting();
+
+      expect(existingIngredientsAfter).toBe(existingIngredientsBefore + 1);
+    });
+  });
+
   describe('Errors', () => {
     it('should throw NotFoundError when recipe does not exist', async () => {
       const request = {
         recipeId: 'non-existent-id',
         userId: vp.userId,
-        ingredientId: newIngredient.id,
+        externalIngredientId: newExternalIngredientRef.externalId,
+        name: vp.validIngredientProps.name,
+        source: vp.validExternalIngredientRefProps.source,
+        caloriesPer100g: vp.validIngredientProps.calories,
+        proteinPer100g: vp.validIngredientProps.protein,
         quantityInGrams: 150,
       };
 
@@ -134,28 +214,15 @@ describe('AddIngredientToRecipeUsecase', () => {
       ).rejects.toThrow(/AddIngredientToRecipeUsecase.*Recipe.*not.*found/);
     });
 
-    it('should throw error for not found ingredient', async () => {
-      const request = {
-        recipeId: testRecipe.id,
-        userId: vp.userId,
-        ingredientId: 'non-existent-ingredient-id',
-        quantityInGrams: 150,
-      };
-
-      await expect(
-        addIngredientToRecipeUsecase.execute(request)
-      ).rejects.toThrow(NotFoundError);
-
-      await expect(
-        addIngredientToRecipeUsecase.execute(request)
-      ).rejects.toThrow(/AddIngredientToRecipeUsecase.*Ingredient.*not.*found/);
-    });
-
     it('should throw error if user does not exist', async () => {
       const request = {
         recipeId: 'some-id',
         userId: 'non-existent',
-        ingredientId: 'some-ingredient-id',
+        externalIngredientId: newExternalIngredientRef.externalId,
+        source: vp.validExternalIngredientRefProps.source,
+        name: vp.validIngredientProps.name,
+        caloriesPer100g: vp.validIngredientProps.calories,
+        proteinPer100g: vp.validIngredientProps.protein,
         quantityInGrams: 100,
       };
 
@@ -177,7 +244,11 @@ describe('AddIngredientToRecipeUsecase', () => {
       const request = {
         recipeId: testRecipe.id,
         userId: anotherUser.id,
-        ingredientId: newIngredient.id,
+        externalIngredientId: newExternalIngredientRef.externalId,
+        source: vp.validExternalIngredientRefProps.source,
+        name: vp.validIngredientProps.name,
+        caloriesPer100g: vp.validIngredientProps.calories,
+        proteinPer100g: vp.validIngredientProps.protein,
         quantityInGrams: 150,
       };
 

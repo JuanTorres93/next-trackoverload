@@ -12,7 +12,7 @@ import { FormState } from '@/app/_types/FormState';
 import { initialFormState } from '@/app/_utils/form/forms';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { IngredientLineInfo } from '@/application-layer/use-cases/recipe/CreateRecipe/CreateRecipe.usecase';
+import { IngredientLineInfo } from '@/application-layer/use-cases/recipe/common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
 
 export async function createRecipe(
   initialState: FormState, // Unsed, but needed for useActionState
@@ -130,13 +130,23 @@ export async function renameRecipe(recipeId: string, newName: string) {
 
 export async function addIngredientToRecipe(
   recipeId: string,
-  ingredientId: string,
+  externalIngredientId: string,
+  source: string,
+  name: string,
+  caloriesPer100g: number,
+  proteinPer100g: number,
+  imageUrl: string | undefined,
   quantityInGrams: number
 ) {
   await AppAddIngredientToRecipeUsecase.execute({
     userId: 'dev-user', // TODO get current user id
     recipeId,
-    ingredientId,
+    externalIngredientId: externalIngredientId,
+    source: source,
+    name: name,
+    caloriesPer100g: caloriesPer100g,
+    proteinPer100g: proteinPer100g,
+    imageUrl: imageUrl,
     quantityInGrams,
   });
 

@@ -1,7 +1,5 @@
 import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { NotFoundError, PermissionError } from '@/domain/common/errors';
-import { ExternalIngredientRef } from '@/domain/entities/externalingredientref/ExternalIngredientRef';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { ExternalIngredientsRefRepo } from '@/domain/repos/ExternalIngredientsRefRepo.port';
@@ -10,16 +8,10 @@ import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { IdGenerator } from '@/domain/services/IdGenerator.port';
 import { ImageManager } from '@/domain/services/ImageManager.port';
-
-export type IngredientLineInfo = {
-  externalIngredientId: string;
-  source: string;
-  name: string;
-  caloriesPer100g: number;
-  proteinPer100g: number;
-  imageUrl?: string;
-  quantityInGrams: number;
-};
+import {
+  IngredientLineInfo,
+  createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo,
+} from '../common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
 
 export type CreateRecipeUsecaseRequest = {
   actorUserId: string;
@@ -53,99 +45,17 @@ export class CreateRecipeUsecase {
       );
     }
 
-    // Check if external ingredients exists in repos
-    const externalIngredientIds = request.ingredientLinesInfo.map(
-      (info) => info.externalIngredientId
+    const {
+      createdIngredients: missingIngredients,
+      createdExternalIngredients: missingExternalIngredients,
+      allIngredients: allIngredientsInRecipe,
+      quantitiesMapByExternalId,
+    } = await createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo(
+      request.ingredientLinesInfo,
+      this.ingredientsRepo,
+      this.externalIngredientsRefRepo,
+      this.idGenerator
     );
-
-    const fetchedExternalIngredients: ExternalIngredientRef[] =
-      await this.externalIngredientsRefRepo.getByExternalIdsAndSource(
-        externalIngredientIds,
-        request.ingredientLinesInfo[0].source
-      );
-
-    // Get existing ingredients
-    const existingIngredients = await this.ingredientsRepo.getIngredientsByIds(
-      fetchedExternalIngredients.map((ref) => ref.ingredientId)
-    );
-
-    // If any ingredient is missing, create it along with its ExternalIngredientRef
-    const missingExternalIngredients: Record<string, ExternalIngredientRef> =
-      {};
-    const missingIngredients: Record<string, Ingredient> = {};
-
-    if (externalIngredientIds.length !== fetchedExternalIngredients.length) {
-      for (const lineInfo of request.ingredientLinesInfo) {
-        const exists = fetchedExternalIngredients.find(
-          (ing) =>
-            ing.externalId === lineInfo.externalIngredientId &&
-            ing.source === lineInfo.source
-        );
-
-        if (exists) continue;
-
-        // Create new ExternalIngredientRef
-        const newIngredientId = this.idGenerator.generateId();
-
-        missingExternalIngredients[lineInfo.externalIngredientId] =
-          ExternalIngredientRef.create({
-            externalId: lineInfo.externalIngredientId,
-            source: lineInfo.source,
-            ingredientId: newIngredientId,
-            createdAt: new Date(),
-          });
-
-        // Create new Ingredient
-        missingIngredients[lineInfo.externalIngredientId] = Ingredient.create({
-          id: newIngredientId,
-          name: lineInfo.name,
-          calories: lineInfo.caloriesPer100g,
-          protein: lineInfo.proteinPer100g,
-          imageUrl: lineInfo.imageUrl,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        });
-      }
-    }
-
-    // Get quantities for each ingredient line
-    const quantitiesMapByExternalId: Record<
-      string,
-      { ingredientId: string; quantityInGrams: number }
-    > = {};
-
-    // Existing ingredients
-    for (const existingExternalIngredient of fetchedExternalIngredients) {
-      const lineInfo = request.ingredientLinesInfo.find(
-        (info) =>
-          info.externalIngredientId === existingExternalIngredient.externalId
-      );
-
-      quantitiesMapByExternalId[existingExternalIngredient.externalId] = {
-        ingredientId: existingExternalIngredient.ingredientId,
-        quantityInGrams: lineInfo!.quantityInGrams,
-      };
-    }
-
-    // Just created ingredients
-    for (const missingExtIngredientId of Object.keys(
-      missingExternalIngredients
-    )) {
-      const lineInfo = request.ingredientLinesInfo.find(
-        (info) => info.externalIngredientId === missingExtIngredientId
-      );
-
-      quantitiesMapByExternalId[missingExtIngredientId] = {
-        ingredientId:
-          missingExternalIngredients[missingExtIngredientId].ingredientId,
-        quantityInGrams: lineInfo!.quantityInGrams,
-      };
-    }
-
-    const allIngredientsInRecipe = [
-      ...existingIngredients,
-      ...Object.values(missingIngredients),
-    ];
 
     const ingredientLines: IngredientLine[] = [];
     const newRecipeId = this.idGenerator.generateId();

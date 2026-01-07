@@ -180,7 +180,7 @@ export const validIngredientProps = {
 export const validExternalIngredientRefProps = {
   externalId: 'ext-ing-1',
   source: 'openfoodfacts',
-  ingredientId: 'ing1',
+  ingredientId: validIngredientProps.id,
   createdAt: new Date(),
 };
 
