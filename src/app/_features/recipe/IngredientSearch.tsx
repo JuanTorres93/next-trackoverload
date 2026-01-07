@@ -5,28 +5,66 @@ import { formatToInteger } from '@/app/_utils/format/formatToInteger';
 import { useOutsideClick } from '@/app/hooks/useOutsideClick';
 import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
 import { IngredientFinderResult } from '@/domain/services/IngredientFinder.port';
-import { useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import IngredientItemMini from '../ingredient/IngredientItemMini';
 import IngredientLineItem from '../ingredient/IngredientLineItem';
 import { createInMemoryRecipeIngredientLine } from './utils';
 import ButtonSearch from '@/app/_ui/ButtonSearch';
 
-function IngredientSearch({
-  onSelectFoundIngredient,
-}: {
-  onSelectFoundIngredient?: (
-    ingredientFinderResult: IngredientFinderResult,
-    isSelected: boolean
-  ) => void;
-}) {
-  const [showList, setShowList] = useState(false);
+//TODO NEXT: Estados de carga
+
+type IngredientSearchContextType = {
+  showFoundIngredients: boolean;
+  ingredientSearchTerm: string;
+  setIngredientSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+  foundIngredientsResults: IngredientFinderResult[];
+  setFoundIngredientsResults: React.Dispatch<
+    React.SetStateAction<IngredientFinderResult[]>
+  >;
+  selectedExternalIngredientIds: Set<string>;
+  setSelectedExternalIngredientIds: React.Dispatch<
+    React.SetStateAction<Set<string>>
+  >;
+  handleShowList: () => void;
+  handleHideList: () => void;
+  fetchIngredients: (term?: string) => Promise<void>;
+  isSelected: (externalIngredientId: string) => boolean;
+  isLoading: boolean;
+};
+
+const IngredientSearchContext =
+  createContext<IngredientSearchContextType | null>(null);
+
+function useIngredientSearchContext() {
+  const value = useContext(IngredientSearchContext);
+
+  if (value === undefined || value === null) {
+    throw new Error(
+      'useIngredientSearch must be used within a IngredientSearchProvider'
+    );
+  }
+
+  return value;
+}
+
+function IngredientSearch({ children }: { children: React.ReactNode }) {
+  const [showFoundIngredients, setShowList] = useState(false);
   const [ingredientSearchTerm, setIngredientSearchTerm] = useState('');
   const [foundIngredientsResults, setFoundIngredientsResults] = useState<
     IngredientFinderResult[]
   >([]);
   const [selectedExternalIngredientIds, setSelectedExternalIngredientIds] =
     useState<Set<string>>(new Set());
-  const listRef = useOutsideClick<HTMLDivElement>(handleHideList);
+  const outsideClickRef = useOutsideClick<HTMLDivElement>(handleHideList);
+  const [isLoading, setIsLoading] = useState(false);
+
+  function handleShowList() {
+    if (!showFoundIngredients) setShowList(true);
+  }
+
+  function handleHideList() {
+    if (showFoundIngredients) setShowList(false);
+  }
 
   async function fetchIngredients(term: string = ''): Promise<void> {
     // Use case is used behind the scenes in the API route. It can't be called directly from the client.
@@ -34,6 +72,8 @@ function IngredientSearch({
       setFoundIngredientsResults([]);
       return;
     }
+    setIsLoading(true);
+
     const fetchedIngredientsResult: Response = await fetch(
       `/api/ingredient/fuzzy/${term}`
     );
@@ -43,6 +83,7 @@ function IngredientSearch({
         await fetchedIngredientsResult.json();
 
       setFoundIngredientsResults(data);
+      setIsLoading(false);
     } catch {
       setFoundIngredientsResults([]);
     }
@@ -55,6 +96,77 @@ function IngredientSearch({
   //useEffect(() => {
   //  // debouncedFetchIngredients(ingredientSearchTerm);
   //}, [ingredientSearchTerm, debouncedFetchIngredients]);
+
+  function isSelected(externalIngredientId: string) {
+    return selectedExternalIngredientIds.has(externalIngredientId);
+  }
+
+  const contextValue = {
+    showFoundIngredients,
+    ingredientSearchTerm,
+    setIngredientSearchTerm,
+    foundIngredientsResults,
+    setFoundIngredientsResults,
+    selectedExternalIngredientIds,
+    setSelectedExternalIngredientIds,
+    handleShowList,
+    handleHideList,
+    fetchIngredients,
+    isSelected,
+    isLoading,
+  };
+
+  return (
+    <IngredientSearchContext.Provider value={contextValue}>
+      <div ref={outsideClickRef}>{children}</div>
+    </IngredientSearchContext.Provider>
+  );
+}
+
+function Search() {
+  const {
+    handleShowList,
+    ingredientSearchTerm,
+    setIngredientSearchTerm,
+    fetchIngredients,
+  } = useIngredientSearchContext();
+
+  return (
+    <div className="flex gap-4">
+      <Input
+        value={ingredientSearchTerm}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          setIngredientSearchTerm(e.target.value);
+          handleShowList();
+        }}
+        onClick={handleShowList}
+        placeholder="Buscar ingredientes..."
+      />
+
+      <ButtonSearch
+        onClick={() => fetchIngredients(ingredientSearchTerm)}
+        data-testid="search-ingredient-button"
+      />
+    </div>
+  );
+}
+
+function FoundIngredientsList({
+  onSelectFoundIngredient,
+}: {
+  onSelectFoundIngredient?: (
+    ingredientFinderResult: IngredientFinderResult,
+    isSelected: boolean
+  ) => void;
+}) {
+  const {
+    showFoundIngredients,
+    ingredientSearchTerm,
+    foundIngredientsResults,
+    isSelected,
+    selectedExternalIngredientIds,
+    setSelectedExternalIngredientIds,
+  } = useIngredientSearchContext();
 
   function selectIngredientFinderResult(
     ingredientFinderResult: IngredientFinderResult
@@ -78,43 +190,13 @@ function IngredientSearch({
     }
   }
 
-  function isSelected(externalIngredientId: string) {
-    return selectedExternalIngredientIds.has(externalIngredientId);
-  }
-
-  function handleShowList() {
-    if (!showList) setShowList(true);
-  }
-
-  function handleHideList() {
-    if (showList) setShowList(false);
-  }
-
   return (
-    <div className="flex flex-col items-center gap-4">
-      {/* Search bar */}
-      <Input
-        value={ingredientSearchTerm}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          setIngredientSearchTerm(e.target.value);
-          handleShowList();
-        }}
-        onClick={handleShowList}
-        placeholder="Buscar ingredientes..."
-      />
-
-      <ButtonSearch
-        onClick={() => fetchIngredients(ingredientSearchTerm)}
-        data-testid="search-ingredient-button"
-      />
-
-      {/* Found results */}
-      {showList &&
+    <>
+      {showFoundIngredients &&
         foundIngredientsResults.length > 0 &&
         ingredientSearchTerm && (
           <VerticalList
             data-testid="ingredient-list"
-            ref={listRef}
             className="mx-auto max-w-80"
           >
             {foundIngredientsResults.map((foundIngredient) => {
@@ -138,11 +220,11 @@ function IngredientSearch({
             })}
           </VerticalList>
         )}
-    </div>
+    </>
   );
 }
 
-function IngredientList({
+function SelectedIngredientsList({
   ingredientLinesWithExternalRefs,
   setIngredientLinesWithExternalRefs,
   showIngredientLabel = true,
@@ -242,7 +324,9 @@ function IngredientList({
   );
 }
 
-IngredientSearch.IngredientList = IngredientList;
+IngredientSearch.Search = Search;
+IngredientSearch.FoundIngredientsList = FoundIngredientsList;
+IngredientSearch.SelectedIngredientsList = SelectedIngredientsList;
 
 export default IngredientSearch;
 

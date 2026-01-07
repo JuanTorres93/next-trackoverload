@@ -100,23 +100,27 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
 
       <form className="flex flex-col gap-4">
         <h3>Añadir ingredientes</h3>
-        <IngredientSearch
-          onSelectFoundIngredient={(ingredient, isSelected) =>
-            handleIngredientSelection(
-              ingredient,
-              isSelected,
-              setNewIngredientLinesWithExternalRefs
-            )
-          }
-        />
+        <IngredientSearch>
+          <IngredientSearch.Search />
 
-        <IngredientSearch.IngredientList
-          ingredientLinesWithExternalRefs={newIngredientLinesWithExternalRefs}
-          setIngredientLinesWithExternalRefs={
-            setNewIngredientLinesWithExternalRefs
-          }
-          showIngredientLabel={newIngredientLinesWithExternalRefs.length > 0}
-        />
+          <IngredientSearch.FoundIngredientsList
+            onSelectFoundIngredient={(ingredientFinderResult, isSelected) =>
+              handleIngredientSelection(
+                ingredientFinderResult,
+                isSelected,
+                setNewIngredientLinesWithExternalRefs
+              )
+            }
+          />
+
+          <IngredientSearch.SelectedIngredientsList
+            ingredientLinesWithExternalRefs={newIngredientLinesWithExternalRefs}
+            setIngredientLinesWithExternalRefs={
+              setNewIngredientLinesWithExternalRefs
+            }
+            showIngredientLabel={newIngredientLinesWithExternalRefs.length > 0}
+          />
+        </IngredientSearch>
 
         <ButtonNew
           type="submit"

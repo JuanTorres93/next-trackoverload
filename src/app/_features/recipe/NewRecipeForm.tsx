@@ -154,26 +154,30 @@ function NewRecipeForm() {
         />
       </div>
 
-      <Form.FormRow label="">
-        <IngredientSearch
-          onSelectFoundIngredient={(ingredientFinderResult, isSelected) =>
-            handleIngredientSelection(
-              ingredientFinderResult,
-              isSelected,
-              setIngredientLinesWithExternalRefs
-            )
-          }
-        />
-      </Form.FormRow>
+      <IngredientSearch>
+        <Form.FormRow label="">
+          <IngredientSearch.Search />
 
-      <Form.FormRow label="" error={formState?.errors.ingredientLines}>
-        <IngredientSearch.IngredientList
-          ingredientLinesWithExternalRefs={ingredientLinesWithExternalRefs}
-          setIngredientLinesWithExternalRefs={
-            setIngredientLinesWithExternalRefs
-          }
-        />
-      </Form.FormRow>
+          <IngredientSearch.FoundIngredientsList
+            onSelectFoundIngredient={(ingredientFinderResult, isSelected) =>
+              handleIngredientSelection(
+                ingredientFinderResult,
+                isSelected,
+                setIngredientLinesWithExternalRefs
+              )
+            }
+          />
+        </Form.FormRow>
+
+        <Form.FormRow label="" error={formState?.errors.ingredientLines}>
+          <IngredientSearch.SelectedIngredientsList
+            ingredientLinesWithExternalRefs={ingredientLinesWithExternalRefs}
+            setIngredientLinesWithExternalRefs={
+              setIngredientLinesWithExternalRefs
+            }
+          />
+        </Form.FormRow>
+      </IngredientSearch>
 
       {/* Summary */}
       {ingredientLinesWithExternalRefs.length > 0 && (
