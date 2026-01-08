@@ -304,7 +304,28 @@ describe('RecipePage', () => {
       });
     });
 
-    // TODO NEXT test update recipe name
+    it('updates recipe name', async () => {
+      const { renderedRecipe } = await setup();
+
+      const titleInput = (await screen.findByDisplayValue(
+        renderedRecipe.name
+      )) as HTMLInputElement;
+
+      const newTitle = 'Updated Recipe Title';
+
+      await userEvent.clear(titleInput);
+      await userEvent.type(titleInput, newTitle);
+
+      await waitFor(async () => {
+        const updatedRecipe = await recipesRepo.getRecipeById(
+          renderedRecipe.id
+        );
+
+        expect(updatedRecipe).not.toBeNull();
+        expect(updatedRecipe!.name).toBe(newTitle);
+      });
+    });
+
     // TODO NEXT test and implement update recipe image
   });
 });
