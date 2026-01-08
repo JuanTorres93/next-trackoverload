@@ -89,11 +89,7 @@ export class CreateRecipeUsecase {
     if (request.imageBuffer) {
       imageMetadata = await this.imageManager.uploadImage(
         request.imageBuffer,
-        `recipe-${this.idGenerator.generateId()}-${Date.now()}.png`,
-        {
-          allowedMimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
-          quality: 0.8,
-        }
+        `recipe-${this.idGenerator.generateId()}-${Date.now()}.png`
       );
     }
 

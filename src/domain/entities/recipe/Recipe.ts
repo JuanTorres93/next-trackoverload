@@ -76,6 +76,11 @@ export class Recipe implements Protein, Calories {
     this.props.updatedAt = new Date();
   }
 
+  updateImageUrl(imageUrl: string): void {
+    this.props.imageUrl = Text.create(imageUrl);
+    this.props.updatedAt = new Date();
+  }
+
   addIngredientLine(ingredientLine: IngredientLine): void {
     if (!(ingredientLine instanceof IngredientLine)) {
       throw new ValidationError('Recipe: Invalid ingredient line');

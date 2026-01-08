@@ -87,6 +87,13 @@ describe('Recipe', () => {
       expect(recipe.name).toBe('New Cake');
     });
 
+    it('should update its imageURL', async () => {
+      expect(recipe.imageUrl).toBeUndefined();
+      const newImageUrl = 'http://example.com/new-image.png';
+      recipe.updateImageUrl(newImageUrl);
+      expect(recipe.imageUrl).toBe(newImageUrl);
+    });
+
     it('should add a new ingredient line', async () => {
       expect(recipe.ingredientLines.length).toBe(1);
       const anotherIngredientLine = IngredientLine.create({

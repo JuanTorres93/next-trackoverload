@@ -69,8 +69,7 @@ describe('DeleteRecipeUsecase', () => {
       const testImage = createTestImage();
       const uploadedImage = await memoryImageManager.uploadImage(
         testImage,
-        'test-recipe-image.png',
-        { allowedMimeTypes: ['image/png'], quality: 0.8 }
+        'test-recipe-image.png'
       );
 
       const recipe = Recipe.create({

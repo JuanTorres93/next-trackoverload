@@ -1,29 +1,67 @@
 import {
   ImageManager,
   ImageMetadata,
-  UploadImageOptions,
+  ProcessImageOptions,
 } from '@/domain/services/ImageManager.port';
 import sharp from 'sharp';
-import { fileTypeFromBuffer } from 'file-type';
+import { fileTypeFromBuffer, FileTypeResult } from 'file-type';
+
+export const DEFAULT_PROCESS_OPTIONS: ProcessImageOptions = {
+  maxSizeMB: 5,
+  allowedMimeTypes: ['image/png', 'image/jpeg', 'image/jpg'],
+  quality: 0.8,
+};
 
 export abstract class BaseImageManager implements ImageManager {
   // Abstract methods to be implemented by subclasses
   abstract uploadImage(
     imageData: Buffer,
     filename: string,
-    options?: UploadImageOptions
+    options?: ProcessImageOptions
   ): Promise<ImageMetadata>;
 
   abstract deleteImage(imageUrl: string): Promise<void>;
 
   abstract getImageInfo(imageUrl: string): Promise<ImageMetadata | null>;
 
+  // Shared process method
+  async processImage(
+    imageData: Buffer,
+    options?: ProcessImageOptions
+  ): Promise<Buffer> {
+    let processedBuffer = imageData;
+
+    if (options?.quality && options.quality < 1) {
+      let processedImage = sharp(imageData);
+
+      const metadata = await processedImage.metadata();
+
+      if (metadata.format === 'jpeg') {
+        processedImage = processedImage.jpeg({
+          quality: Math.round(options.quality * 100),
+        });
+      } else if (metadata.format === 'png') {
+        processedImage = processedImage.png({
+          quality: Math.round(options.quality * 100),
+        });
+      } else if (metadata.format === 'webp') {
+        processedImage = processedImage.webp({
+          quality: Math.round(options.quality * 100),
+        });
+      }
+
+      processedBuffer = await processedImage.toBuffer();
+    }
+
+    return processedBuffer;
+  }
+
   // Shared validation method
   async validateImage(
-    imageData: Buffer,
-    options?: UploadImageOptions
+    imageData: Buffer
   ): Promise<{ valid: boolean; errors: string[] }> {
     const errors: string[] = [];
+    const options = { ...DEFAULT_PROCESS_OPTIONS };
 
     try {
       // 1. Check if it's a valid buffer
@@ -82,5 +120,19 @@ export abstract class BaseImageManager implements ImageManager {
     }
 
     return { valid: errors.length === 0, errors };
+  }
+
+  protected async _getMetadata(imageData: Buffer): Promise<{
+    sharpMetadata: sharp.Metadata;
+    fileType: FileTypeResult | undefined;
+  }> {
+    const sharpMetadata = await sharp(imageData).metadata();
+    const uint8Array = new Uint8Array(imageData);
+    const fileType = await fileTypeFromBuffer(uint8Array);
+
+    return {
+      sharpMetadata,
+      fileType,
+    };
   }
 }

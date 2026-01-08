@@ -45,13 +45,8 @@ describe('MemoryImageManager', () => {
     it('should apply quality compression', async () => {
       const testBuffer = createTestPngBuffer();
       const filename = 'test-compressed.png';
-      const options = { quality: 0.5 };
 
-      const result = await imageManager.uploadImage(
-        testBuffer,
-        filename,
-        options
-      );
+      const result = await imageManager.uploadImage(testBuffer, filename);
 
       expect(result).toBeDefined();
       expect(result.mimeType).toBe('image/png');
@@ -190,17 +185,6 @@ describe('MemoryImageManager', () => {
 
       expect(result.valid).toBe(true);
       expect(result.errors).toEqual([]);
-    });
-
-    it('should respect MIME type restrictions', async () => {
-      const testBuffer = createTestPngBuffer();
-      const options = { allowedMimeTypes: ['image/jpeg'] };
-
-      await expect(
-        imageManager.uploadImage(testBuffer, 'test.png', options)
-      ).rejects.toThrow('Invalid image');
-
-      expect(imageManager.getImageCount()).toBe(0);
     });
   });
 });

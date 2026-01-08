@@ -1,11 +1,9 @@
-import {
-  ImageMetadata,
-  UploadImageOptions,
-} from '@/domain/services/ImageManager.port';
-import { BaseImageManager } from '@/infra/BaseImageManager';
-import sharp from 'sharp';
-import { fileTypeFromBuffer } from 'file-type';
 import { IdGenerator } from '@/domain/services/IdGenerator.port';
+import { ImageMetadata } from '@/domain/services/ImageManager.port';
+import {
+  BaseImageManager,
+  DEFAULT_PROCESS_OPTIONS,
+} from '@/infra/BaseImageManager';
 import fs from 'fs/promises';
 import path from 'path';
 import { FS_DATA_DIR } from './common';
@@ -39,11 +37,10 @@ export class FileSystemImageManager extends BaseImageManager {
 
   async uploadImage(
     imageData: Buffer,
-    filename: string,
-    options?: UploadImageOptions
+    filename: string
   ): Promise<ImageMetadata> {
-    // 1. Validar imagen usando el método heredado
-    const validation = await this.validateImage(imageData, options);
+    // 1. Validate image
+    const validation = await this.validateImage(imageData);
     if (!validation.valid) {
       throw new Error(`Invalid image: ${validation.errors.join(', ')}`);
     }
@@ -51,7 +48,7 @@ export class FileSystemImageManager extends BaseImageManager {
     // 2. Asegurar que el directorio existe
     await this.ensureUploadDir();
 
-    // 3. Generar nombre único
+    // 3. Create unique filename
     const fileExtension = filename.includes('.')
       ? filename.substring(filename.lastIndexOf('.'))
       : '.png';
@@ -60,40 +57,22 @@ export class FileSystemImageManager extends BaseImageManager {
       : filename;
     const uniqueFilename = `${baseName}-${this.idGenerator.generateId()}${fileExtension}`;
 
-    // 4. Procesar imagen con Sharp si es necesario
-    let processedBuffer = imageData;
+    // 4. Process image
+    const processedBuffer = await this.processImage(
+      imageData,
+      DEFAULT_PROCESS_OPTIONS
+    );
 
-    if (options?.quality && options.quality < 1) {
-      let processedImage = sharp(imageData);
+    // 5. Get metadata
+    const { sharpMetadata, fileType } = await this._getMetadata(
+      processedBuffer
+    );
 
-      const metadata = await processedImage.metadata();
-      if (metadata.format === 'jpeg') {
-        processedImage = processedImage.jpeg({
-          quality: Math.round(options.quality * 100),
-        });
-      } else if (metadata.format === 'png') {
-        processedImage = processedImage.png({
-          quality: Math.round(options.quality * 100),
-        });
-      } else if (metadata.format === 'webp') {
-        processedImage = processedImage.webp({
-          quality: Math.round(options.quality * 100),
-        });
-      }
-
-      processedBuffer = await processedImage.toBuffer();
-    }
-
-    // 5. Obtener metadatos
-    const sharpMetadata = await sharp(processedBuffer).metadata();
-    const uint8Array = new Uint8Array(processedBuffer);
-    const fileType = await fileTypeFromBuffer(uint8Array);
-
-    // 6. Guardar archivo en disco
+    // 6. Save file to disk
     const filePath = path.join(this.uploadDir, uniqueFilename);
     await fs.writeFile(filePath, processedBuffer);
 
-    // 7. Crear metadata del resultado
+    // 7. Create metadata for the result
     const imageMetadata: ImageMetadata = {
       url: `${this.baseUrl}/${uniqueFilename}`,
       filename: uniqueFilename,
@@ -135,9 +114,8 @@ export class FileSystemImageManager extends BaseImageManager {
 
       // Read file and get metadata
       const fileData = await fs.readFile(filePath);
-      const sharpMetadata = await sharp(fileData).metadata();
-      const uint8Array = new Uint8Array(fileData);
-      const fileType = await fileTypeFromBuffer(uint8Array);
+
+      const { sharpMetadata, fileType } = await this._getMetadata(fileData);
 
       return {
         url: `${this.baseUrl}/${filename}`,

@@ -1,4 +1,4 @@
-export type UploadImageOptions = {
+export type ProcessImageOptions = {
   maxSizeMB?: number;
   allowedMimeTypes?: string[];
   quality?: number; // For compression (0-1)
@@ -14,11 +14,12 @@ export type ImageMetadata = {
 };
 
 export interface ImageManager {
-  uploadImage(
+  uploadImage(imageData: Buffer, filename: string): Promise<ImageMetadata>;
+
+  processImage(
     imageData: Buffer,
-    filename: string,
-    options?: UploadImageOptions
-  ): Promise<ImageMetadata>;
+    options?: ProcessImageOptions
+  ): Promise<Buffer>;
 
   deleteImage(imageUrl: string): Promise<void>;
 
@@ -26,6 +27,6 @@ export interface ImageManager {
 
   validateImage(
     imageData: Buffer,
-    options?: UploadImageOptions
+    options?: ProcessImageOptions
   ): Promise<{ valid: boolean; errors: string[] }>;
 }
