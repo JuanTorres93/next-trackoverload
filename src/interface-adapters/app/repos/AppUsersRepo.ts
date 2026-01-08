@@ -1,5 +1,5 @@
-import { FileSystemUsersRepo } from '@/infra/filesystem';
-import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
+import { FileSystemUsersRepo } from '@/infra/repos/filesystem';
+import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 
 let AppUsersRepo: FileSystemUsersRepo | MemoryUsersRepo;
 

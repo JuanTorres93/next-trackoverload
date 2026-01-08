@@ -1,7 +1,7 @@
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator';
 import { DuplicateWorkoutTemplateUsecase } from '../DuplicateWorkoutTemplate.usecase';
-import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
-import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
+import { MemoryWorkoutTemplatesRepo } from '@/infra/repos/memory/MemoryWorkoutTemplatesRepo';
+import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import { User } from '@/domain/entities/user/User';
 import { NotFoundError } from '@/domain/common/errors';

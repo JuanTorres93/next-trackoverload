@@ -11,13 +11,13 @@ import { Workout } from '@/domain/entities/workout/Workout';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 
 // Import in-memory repositories
-import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
-import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
-import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
-import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
-import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
-import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
-import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
+import { MemoryDaysRepo } from '@/infra/repos/memory/MemoryDaysRepo';
+import { MemoryFakeMealsRepo } from '@/infra/repos/memory/MemoryFakeMealsRepo';
+import { MemoryMealsRepo } from '@/infra/repos/memory/MemoryMealsRepo';
+import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
+import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
+import { MemoryWorkoutsRepo } from '@/infra/repos/memory/MemoryWorkoutsRepo';
+import { MemoryWorkoutTemplatesRepo } from '@/infra/repos/memory/MemoryWorkoutTemplatesRepo';
 
 // Import use case
 import { DeleteUserUsecase } from '../DeleteUser.usecase';

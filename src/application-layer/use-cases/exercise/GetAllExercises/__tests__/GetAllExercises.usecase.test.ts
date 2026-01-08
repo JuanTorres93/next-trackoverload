@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetAllExercisesUsecase } from '../GetAllExercises.usecase';
-import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
+import { MemoryExercisesRepo } from '@/infra/repos/memory/MemoryExercisesRepo';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';

@@ -1,5 +1,5 @@
-import { FileSystemWorkoutTemplatesRepo } from '@/infra/filesystem';
-import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
+import { FileSystemWorkoutTemplatesRepo } from '@/infra/repos/filesystem';
+import { MemoryWorkoutTemplatesRepo } from '@/infra/repos/memory/MemoryWorkoutTemplatesRepo';
 
 let AppWorkoutsTemplatesRepo:
   | FileSystemWorkoutTemplatesRepo

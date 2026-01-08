@@ -1,5 +1,5 @@
-import { FileSystemDaysRepo } from '@/infra/filesystem';
-import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
+import { FileSystemDaysRepo } from '@/infra/repos/filesystem';
+import { MemoryDaysRepo } from '@/infra/repos/memory/MemoryDaysRepo';
 
 let AppDaysRepo: FileSystemDaysRepo | MemoryDaysRepo;
 

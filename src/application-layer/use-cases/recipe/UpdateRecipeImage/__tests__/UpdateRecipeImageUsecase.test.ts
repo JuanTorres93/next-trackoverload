@@ -1,7 +1,7 @@
 import { NotFoundError } from '@/domain/common/errors';
 import { UpdateRecipeImageUsecase } from '../UpdateRecipeImageUsecase';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
-import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
+import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 import { MemoryImageManager } from '@/infra';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator';
 import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';

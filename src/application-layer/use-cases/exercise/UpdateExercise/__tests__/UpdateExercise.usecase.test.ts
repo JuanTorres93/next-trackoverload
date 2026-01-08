@@ -1,7 +1,7 @@
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError } from '@/domain/common/errors';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
-import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
+import { MemoryExercisesRepo } from '@/infra/repos/memory/MemoryExercisesRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { UpdateExerciseUsecase } from '../UpdateExercise.usecase';
 

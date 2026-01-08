@@ -3,8 +3,8 @@ import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError } from '@/domain/common/errors';
 import { User } from '@/domain/entities/user/User';
 import { Workout } from '@/domain/entities/workout/Workout';
-import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
-import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
+import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
+import { MemoryWorkoutsRepo } from '@/infra/repos/memory/MemoryWorkoutsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { UpdateWorkoutUsecase } from '../UpdateWorkout.usecase';
 

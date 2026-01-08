@@ -2,10 +2,10 @@ import { mockIngredientsForIngredientFinder } from '@/../tests/mocks/ingredients
 import { createMockRecipes } from '@/../tests/mocks/recipes';
 import { createServer } from '@/../tests/mocks/server';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
-import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
+import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 import { AppRecipesRepo } from '@/interface-adapters/app/repos/AppRecipesRepo';
 import { AppUsersRepo } from '@/interface-adapters/app/repos/AppUsersRepo';
-import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
+import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 

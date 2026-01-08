@@ -4,8 +4,8 @@ import { NotFoundError } from '@/domain/common/errors';
 import { User } from '@/domain/entities/user/User';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
-import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
-import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
+import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
+import { MemoryWorkoutsRepo } from '@/infra/repos/memory/MemoryWorkoutsRepo';
 import { UpdateExerciseInWorkoutUsecase } from '../UpdateExerciseInWorkout.usecase';
 
 describe('UpdateExerciseInWorkoutUsecase', () => {

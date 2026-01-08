@@ -1,7 +1,7 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
+import { MemoryIngredientsRepo } from '@/infra/repos/memory/MemoryIngredientsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetAllIngredientsUsecase } from '../GetAllIngredients.usecase';
 

@@ -1,8 +1,8 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
-import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
-import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
+import { MemoryWorkoutTemplatesRepo } from '@/infra/repos/memory/MemoryWorkoutTemplatesRepo';
+import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { User } from '@/domain/entities/user/User';
 import { NotFoundError } from '@/domain/common/errors';
 import { beforeEach, describe, expect, it } from 'vitest';

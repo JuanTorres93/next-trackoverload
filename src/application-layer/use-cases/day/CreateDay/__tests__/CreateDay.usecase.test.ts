@@ -4,8 +4,8 @@ import { toDayDTO } from '@/application-layer/dtos/DayDTO';
 import { NotFoundError, PermissionError } from '@/domain/common/errors';
 import { Day } from '@/domain/entities/day/Day';
 import { User } from '@/domain/entities/user/User';
-import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
-import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
+import { MemoryDaysRepo } from '@/infra/repos/memory/MemoryDaysRepo';
+import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { CreateDayUsecase } from '../CreateDay.usecase';
 

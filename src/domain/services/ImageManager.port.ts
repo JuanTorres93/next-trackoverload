@@ -14,7 +14,11 @@ export type ImageMetadata = {
 };
 
 export interface ImageManager {
-  uploadImage(imageData: Buffer, filename: string): Promise<ImageMetadata>;
+  uploadImage(
+    imageData: Buffer,
+    url: string,
+    replaceIfExists: boolean
+  ): Promise<ImageMetadata>;
 
   processImage(
     imageData: Buffer,

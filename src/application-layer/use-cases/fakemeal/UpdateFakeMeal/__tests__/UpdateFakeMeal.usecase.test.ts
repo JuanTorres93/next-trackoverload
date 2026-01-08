@@ -3,8 +3,8 @@ import * as dto from '@/../tests/dtoProperties';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { User } from '@/domain/entities/user/User';
 import { NotFoundError } from '@/domain/common/errors';
-import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
-import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
+import { MemoryFakeMealsRepo } from '@/infra/repos/memory/MemoryFakeMealsRepo';
+import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { UpdateFakeMealUsecase } from '../UpdateFakeMeal.usecase';
 

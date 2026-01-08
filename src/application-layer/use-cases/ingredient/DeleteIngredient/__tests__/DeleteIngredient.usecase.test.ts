@@ -1,7 +1,7 @@
 import * as vp from '@/../tests/createProps';
 import { NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
+import { MemoryIngredientsRepo } from '@/infra/repos/memory/MemoryIngredientsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { DeleteIngredientUsecase } from '../DeleteIngredient.usecase';
 

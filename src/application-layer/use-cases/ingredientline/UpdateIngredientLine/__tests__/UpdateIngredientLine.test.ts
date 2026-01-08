@@ -5,10 +5,10 @@ import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
-import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
-import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
-import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
-import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
+import { MemoryIngredientsRepo } from '@/infra/repos/memory/MemoryIngredientsRepo';
+import { MemoryMealsRepo } from '@/infra/repos/memory/MemoryMealsRepo';
+import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
+import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { User } from '@/domain/entities/user/User';
 import { UpdateIngredientLineUsecase } from '../UpdateIngredientLine.usecase';
 

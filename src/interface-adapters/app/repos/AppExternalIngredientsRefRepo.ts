@@ -1,5 +1,5 @@
-import { FileSystemExternalIngredientsRefRepo } from '@/infra/filesystem/FileSystemExternalIngredientsRefRepo';
-import { MemoryExternalIngredientsRefRepo } from '@/infra/memory/MemoryExternalIngredientsRefRepo';
+import { FileSystemExternalIngredientsRefRepo } from '@/infra/repos/filesystem/FileSystemExternalIngredientsRefRepo';
+import { MemoryExternalIngredientsRefRepo } from '@/infra/repos/memory/MemoryExternalIngredientsRefRepo';
 
 let AppExternalIngredientsRefRepo:
   | FileSystemExternalIngredientsRefRepo

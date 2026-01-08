@@ -2,7 +2,7 @@ import { screen, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { AppRecipesRepo } from '@/interface-adapters/app/repos/AppRecipesRepo';
 import { createMockRecipes } from '../../../../../tests/mocks/recipes';
-import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
+import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 
 const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
 

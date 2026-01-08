@@ -1,4 +1,4 @@
-import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
+import { MemoryIngredientsRepo } from '@/infra/repos/memory/MemoryIngredientsRepo';
 import { AppIngredientsRepo } from '@/interface-adapters/app/repos/AppIngredientsRepo';
 import { AppCreateIngredientUsecase } from '@/interface-adapters/app/use-cases/ingredient';
 

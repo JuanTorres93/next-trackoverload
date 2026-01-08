@@ -3,7 +3,7 @@ import * as dto from '@/../tests/dtoProperties';
 import { toUserDTO, UserDTO } from '@/application-layer/dtos/UserDTO';
 import { AlreadyExistsError } from '@/domain/common/errors';
 import { User } from '@/domain/entities/user/User';
-import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
+import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator';
 import { CreateUserUsecase } from '../CreateUser.usecase';
 

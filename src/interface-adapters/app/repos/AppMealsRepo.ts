@@ -1,5 +1,5 @@
-import { FileSystemMealsRepo } from '@/infra/filesystem';
-import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
+import { FileSystemMealsRepo } from '@/infra/repos/filesystem';
+import { MemoryMealsRepo } from '@/infra/repos/memory/MemoryMealsRepo';
 
 let AppMealsRepo: FileSystemMealsRepo | MemoryMealsRepo;
 

@@ -1,4 +1,4 @@
-import { FileSystemImageManager } from '@/infra/filesystem';
+import { FileSystemImageManager } from '@/infra/repos/filesystem';
 import { AppUuidV4IdGenerator } from '@/interface-adapters/app/services/AppUuidV4IdGenerator';
 
 export const AppImageManager = new FileSystemImageManager(

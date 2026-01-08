@@ -2,7 +2,7 @@
 export { BaseImageManager } from './BaseImageManager';
 
 // Filesystem implementations
-export * from './filesystem';
+export * from './repos/filesystem';
 
 // Memory implementations
-export * from './memory';
+export * from './repos/memory';

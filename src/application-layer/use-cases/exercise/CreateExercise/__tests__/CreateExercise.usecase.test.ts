@@ -2,7 +2,7 @@ import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toExerciseDTO } from '@/application-layer/dtos/ExerciseDTO';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
-import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
+import { MemoryExercisesRepo } from '@/infra/repos/memory/MemoryExercisesRepo';
 import { CreateExerciseUsecase } from '../CreateExercise.usecase';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator';
 

@@ -1,15 +1,15 @@
 import { NotFoundError } from '@/domain/common/errors';
 import { Day } from '@/domain/entities/day/Day';
 import { User } from '@/domain/entities/user/User';
-import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
-import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
+import { MemoryDaysRepo } from '@/infra/repos/memory/MemoryDaysRepo';
+import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { RemoveFakeMealFromDayUsecase } from '../RemoveFakeMealFromDay.usecase';
 
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
+import { MemoryFakeMealsRepo } from '@/infra/repos/memory/MemoryFakeMealsRepo';
 
 describe('RemoveMealFromDayUsecase', () => {
   let daysRepo: MemoryDaysRepo;

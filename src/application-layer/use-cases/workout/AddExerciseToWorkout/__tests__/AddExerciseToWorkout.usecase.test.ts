@@ -4,9 +4,9 @@ import { NotFoundError } from '@/domain/common/errors';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
 import { User } from '@/domain/entities/user/User';
 import { Workout } from '@/domain/entities/workout/Workout';
-import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
-import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
-import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
+import { MemoryExercisesRepo } from '@/infra/repos/memory/MemoryExercisesRepo';
+import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
+import { MemoryWorkoutsRepo } from '@/infra/repos/memory/MemoryWorkoutsRepo';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator';
 import { AddExerciseToWorkoutUsecase } from '../AddExerciseToWorkout.usecase';
 

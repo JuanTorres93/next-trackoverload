@@ -1,9 +1,9 @@
 import { NotFoundError } from '@/domain/common/errors';
 import { Day } from '@/domain/entities/day/Day';
 import { User } from '@/domain/entities/user/User';
-import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
-import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
-import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
+import { MemoryDaysRepo } from '@/infra/repos/memory/MemoryDaysRepo';
+import { MemoryMealsRepo } from '@/infra/repos/memory/MemoryMealsRepo';
+import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { RemoveMealFromDayUsecase } from '../RemoveMealFromDay.usecase';
 

@@ -1,5 +1,5 @@
-import { FileSystemIngredientsRepo } from '@/infra/filesystem';
-import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
+import { FileSystemIngredientsRepo } from '@/infra/repos/filesystem';
+import { MemoryIngredientsRepo } from '@/infra/repos/memory/MemoryIngredientsRepo';
 
 let AppIngredientsRepo: FileSystemIngredientsRepo | MemoryIngredientsRepo;
 

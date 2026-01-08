@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { DeleteExerciseUsecase } from '../DeleteExercise.usecase';
-import { MemoryExercisesRepo } from '@/infra/memory/MemoryExercisesRepo';
+import { MemoryExercisesRepo } from '@/infra/repos/memory/MemoryExercisesRepo';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
 import { NotFoundError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';

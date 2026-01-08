@@ -7,7 +7,7 @@ import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerato
  * for faster, isolated tests that don't touch the file system.
  */
 
-import { MemoryImageManager } from '@/infra/memory/MemoryImageManager';
+import { MemoryImageManager } from '@/infra/repos/memory/MemoryImageManager';
 
 // Create a test-specific instance
 export const createTestImageManager = () => {

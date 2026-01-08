@@ -5,9 +5,9 @@ import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { User } from '@/domain/entities/user/User';
-import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
-import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
-import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
+import { MemoryIngredientsRepo } from '@/infra/repos/memory/MemoryIngredientsRepo';
+import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
+import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { MemoryExternalIngredientsRefRepo } from '@/infra';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator';
 

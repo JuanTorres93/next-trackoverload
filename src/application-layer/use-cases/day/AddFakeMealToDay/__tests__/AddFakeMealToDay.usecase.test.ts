@@ -1,8 +1,8 @@
 import { NotFoundError } from '@/domain/common/errors';
 import { Day } from '@/domain/entities/day/Day';
-import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
-import { MemoryFakeMealsRepo } from '@/infra/memory/MemoryFakeMealsRepo';
-import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
+import { MemoryDaysRepo } from '@/infra/repos/memory/MemoryDaysRepo';
+import { MemoryFakeMealsRepo } from '@/infra/repos/memory/MemoryFakeMealsRepo';
+import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { AddFakeMealToDayUsecase } from '../AddFakeMealToDay.usecase';
 import { User } from '@/domain/entities/user/User';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator';

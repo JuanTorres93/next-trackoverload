@@ -1,4 +1,4 @@
-import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
+import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 import { AppRecipesRepo } from '@/interface-adapters/app/repos/AppRecipesRepo';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';

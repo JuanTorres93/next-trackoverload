@@ -1,7 +1,7 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { MemoryIngredientsRepo } from '@/infra/memory/MemoryIngredientsRepo';
+import { MemoryIngredientsRepo } from '@/infra/repos/memory/MemoryIngredientsRepo';
 import { CreateIngredientUsecase } from '../CreateIngredient.usecase';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator';
 

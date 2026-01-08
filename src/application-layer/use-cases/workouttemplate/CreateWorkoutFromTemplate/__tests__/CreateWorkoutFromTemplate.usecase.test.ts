@@ -4,9 +4,9 @@ import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { User } from '@/domain/entities/user/User';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
-import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
-import { MemoryWorkoutTemplatesRepo } from '@/infra/memory/MemoryWorkoutTemplatesRepo';
-import { MemoryWorkoutsRepo } from '@/infra/memory/MemoryWorkoutsRepo';
+import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
+import { MemoryWorkoutTemplatesRepo } from '@/infra/repos/memory/MemoryWorkoutTemplatesRepo';
+import { MemoryWorkoutsRepo } from '@/infra/repos/memory/MemoryWorkoutsRepo';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator';
 import { CreateWorkoutFromTemplateUsecase } from '../CreateWorkoutFromTemplate.usecase';
 

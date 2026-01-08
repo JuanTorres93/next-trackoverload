@@ -2,7 +2,7 @@ import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError, PermissionError } from '@/domain/common/errors';
 import { User } from '@/domain/entities/user/User';
-import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
+import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { UpdateUserUsecase } from '../UpdateUser.usecase';
 

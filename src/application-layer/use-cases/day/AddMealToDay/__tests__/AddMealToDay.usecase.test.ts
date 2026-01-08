@@ -6,10 +6,10 @@ import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { User } from '@/domain/entities/user/User';
-import { MemoryDaysRepo } from '@/infra/memory/MemoryDaysRepo';
-import { MemoryMealsRepo } from '@/infra/memory/MemoryMealsRepo';
-import { MemoryRecipesRepo } from '@/infra/memory/MemoryRecipesRepo';
-import { MemoryUsersRepo } from '@/infra/memory/MemoryUsersRepo';
+import { MemoryDaysRepo } from '@/infra/repos/memory/MemoryDaysRepo';
+import { MemoryMealsRepo } from '@/infra/repos/memory/MemoryMealsRepo';
+import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
+import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { AddMealToDayUsecase } from '../AddMealToDay.usecase';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator';
 
