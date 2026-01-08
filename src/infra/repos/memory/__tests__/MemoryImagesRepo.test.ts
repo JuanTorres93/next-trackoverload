@@ -17,8 +17,6 @@ describe('MemoryImagesRepo', () => {
         filename: 'image.jpg',
         mimeType: 'image/jpeg',
         sizeBytes: imageBuffer.length,
-        width: 800,
-        height: 600,
       },
     };
   });
@@ -47,5 +45,22 @@ describe('MemoryImagesRepo', () => {
     const retrievedImage = await imagesRepo.getByUrl(testImage.metadata.url);
 
     expect(retrievedImage).toEqual(testImage.metadata);
+  });
+
+  it('should assign url', async () => {
+    const newImageBuffer = createTestImage();
+    const newImage: ImageType = {
+      buffer: newImageBuffer,
+      metadata: {
+        url: '',
+        filename: 'new_image.jpg',
+        mimeType: 'image/jpeg',
+        sizeBytes: newImageBuffer.length,
+      },
+    };
+
+    const savedMetadata = await imagesRepo.save(newImage);
+
+    expect(savedMetadata.url).not.toBe('');
   });
 });

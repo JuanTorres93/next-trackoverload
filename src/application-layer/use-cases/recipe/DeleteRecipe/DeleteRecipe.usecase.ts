@@ -1,6 +1,6 @@
+import { ImagesRepo } from '@/domain/repos/ImagesRepo.port';
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
-import { ImageManager } from '@/domain/services/ImageManager.port';
 
 import { NotFoundError } from '@/domain/common/errors';
 
@@ -12,7 +12,7 @@ export type DeleteRecipeUsecaseRequest = {
 export class DeleteRecipeUsecase {
   constructor(
     private recipesRepo: RecipesRepo,
-    private imageManager: ImageManager,
+    private imagesRepo: ImagesRepo,
     private usersRepo: UsersRepo
   ) {}
 
@@ -36,7 +36,7 @@ export class DeleteRecipeUsecase {
 
     // Remove associated image if exists
     if (existingRecipe.imageUrl) {
-      await this.imageManager.deleteImage(existingRecipe.imageUrl);
+      await this.imagesRepo.deleteByUrl(existingRecipe.imageUrl);
     }
 
     await this.recipesRepo.deleteRecipe(request.id);

@@ -1,19 +1,3 @@
-import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator';
-
-/**
- * Example test helper for using MemoryImageManager in use case tests
- *
- * This shows how to use MemoryImageManager instead of FileSystemImageManager
- * for faster, isolated tests that don't touch the file system.
- */
-
-import { MemoryImageManager } from '@/infra/repos/memory/MemoryImageManager';
-
-// Create a test-specific instance
-export const createTestImageManager = () => {
-  return new MemoryImageManager('/test/images', new Uuidv4IdGenerator());
-};
-
 // Helper to create test image buffers
 export const createTestImage = (size: 'small' | 'large' = 'small'): Buffer => {
   // Small 1x1 PNG
@@ -32,25 +16,3 @@ export const createTestImage = (size: 'small' | 'large' = 'small'): Buffer => {
   const smallImage = createTestImage('small');
   return Buffer.concat(Array(1000).fill(smallImage));
 };
-
-// Example usage in a test:
-//
-// describe('CreateRecipeUsecase', () => {
-//   let imageManager: MemoryImageManager;
-//
-//   beforeEach(() => {
-//     imageManager = createTestImageManager();
-//   });
-//
-//   afterEach(() => {
-//     imageManager.clear(); // Clean up
-//   });
-//
-//   it('should create recipe with image', async () => {
-//     const testImage = createTestImage('small');
-//     const uploadedImage = await imageManager.uploadImage(testImage, 'recipe.png');
-//
-//     // Use uploadedImage.url in your recipe creation test
-//     // ...
-//   });
-// });

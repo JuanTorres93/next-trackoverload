@@ -7,7 +7,8 @@ import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { IdGenerator } from '@/domain/services/IdGenerator.port';
-import { ImageManager } from '@/domain/services/ImageManager.port';
+import { ImagesRepo, ImageType } from '@/domain/repos/ImagesRepo.port';
+import { ImageProcessor } from '@/domain/services/ImageProcessor.port';
 import {
   IngredientLineInfo,
   createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo,
@@ -25,10 +26,11 @@ export class CreateRecipeUsecase {
   constructor(
     private recipesRepo: RecipesRepo,
     private ingredientsRepo: IngredientsRepo,
-    private imageManager: ImageManager,
+    private imagesRepo: ImagesRepo,
     private usersRepo: UsersRepo,
     private idGenerator: IdGenerator,
-    private externalIngredientsRefRepo: ExternalIngredientsRefRepo
+    private externalIngredientsRefRepo: ExternalIngredientsRefRepo,
+    private imageProcessor: ImageProcessor
   ) {}
 
   async execute(request: CreateRecipeUsecaseRequest): Promise<RecipeDTO> {
@@ -87,10 +89,22 @@ export class CreateRecipeUsecase {
     // Upload image if provided
     let imageMetadata;
     if (request.imageBuffer) {
-      imageMetadata = await this.imageManager.uploadImage(
+      const processedImageBuffer = await this.imageProcessor.compress(
         request.imageBuffer,
-        `recipe-${this.idGenerator.generateId()}-${Date.now()}.png`
+        50
       );
+
+      const metadata: ImageType['metadata'] = {
+        url: '', // to be filled by ImagesRepo
+        filename: `recipe_${newRecipeId}.jpg`,
+        mimeType: 'image/jpeg',
+        sizeBytes: processedImageBuffer.length,
+      };
+
+      imageMetadata = await this.imagesRepo.save({
+        buffer: processedImageBuffer,
+        metadata,
+      });
     }
 
     const newRecipe = Recipe.create({

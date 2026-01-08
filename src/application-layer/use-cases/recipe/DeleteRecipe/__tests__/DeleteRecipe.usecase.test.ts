@@ -4,16 +4,16 @@ import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { User } from '@/domain/entities/user/User';
-import { MemoryImageManager } from '@/infra';
+import { ImageType } from '@/domain/repos/ImagesRepo.port';
+import { MemoryImagesRepo } from '@/infra/repos/memory/MemoryImagesRepo';
 import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
-import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator';
 import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
 import { DeleteRecipeUsecase } from '../DeleteRecipe.usecase';
 
 describe('DeleteRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
-  let memoryImageManager: MemoryImageManager;
+  let memoryImagesRepo: MemoryImagesRepo;
   let usersRepo: MemoryUsersRepo;
   let deleteRecipeUsecase: DeleteRecipeUsecase;
   let testRecipe: Recipe;
@@ -21,14 +21,11 @@ describe('DeleteRecipeUsecase', () => {
 
   beforeEach(async () => {
     recipesRepo = new MemoryRecipesRepo();
-    memoryImageManager = new MemoryImageManager(
-      '/memory/images/',
-      new Uuidv4IdGenerator()
-    );
+    memoryImagesRepo = new MemoryImagesRepo();
     usersRepo = new MemoryUsersRepo();
     deleteRecipeUsecase = new DeleteRecipeUsecase(
       recipesRepo,
-      memoryImageManager,
+      memoryImagesRepo,
       usersRepo
     );
 
@@ -67,10 +64,17 @@ describe('DeleteRecipeUsecase', () => {
   describe('Side effects', () => {
     it('should delete recipe image if exists', async () => {
       const testImage = createTestImage();
-      const uploadedImage = await memoryImageManager.uploadImage(
-        testImage,
-        'test-recipe-image.png'
-      );
+      const metadata: ImageType['metadata'] = {
+        url: 'http://example.com/test-image.png',
+        filename: 'test-image.png',
+        mimeType: 'image/png',
+        sizeBytes: testImage.length,
+      };
+
+      const uploadedImage = await memoryImagesRepo.save({
+        buffer: testImage,
+        metadata,
+      });
 
       const recipe = Recipe.create({
         ...vp.recipePropsNoIngredientLines,
@@ -79,7 +83,7 @@ describe('DeleteRecipeUsecase', () => {
       });
 
       expect(recipe.imageUrl).toBeDefined();
-      const currentImages = memoryImageManager.getImageCount();
+      const currentImages = memoryImagesRepo.countForTesting();
       expect(currentImages).toBe(1);
 
       await recipesRepo.saveRecipe(recipe);
@@ -87,7 +91,7 @@ describe('DeleteRecipeUsecase', () => {
       const request = { id: recipe.id, userId: vp.userId };
       await deleteRecipeUsecase.execute(request);
 
-      const afterDeleteImages = memoryImageManager.getImageCount();
+      const afterDeleteImages = memoryImagesRepo.countForTesting();
       expect(afterDeleteImages).toBe(0);
     });
 

@@ -6,7 +6,9 @@ import { ExternalIngredientRef } from '@/domain/entities/externalingredientref/E
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { User } from '@/domain/entities/user/User';
-import { MemoryExternalIngredientsRefRepo, MemoryImageManager } from '@/infra';
+import { MemoryExternalIngredientsRefRepo } from '@/infra';
+import { MemoryImagesRepo } from '@/infra/repos/memory/MemoryImagesRepo';
+import { SharpImageProcessor } from '@/infra/services/ImageProcessor/SharpImageProcessor';
 import { MemoryIngredientsRepo } from '@/infra/repos/memory/MemoryIngredientsRepo';
 import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
@@ -19,7 +21,8 @@ describe('CreateRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
   let ingredientsRepo: MemoryIngredientsRepo;
   let externalIngredientsRefRepo: MemoryExternalIngredientsRefRepo;
-  let imageManager: MemoryImageManager;
+  let imagesRepo: MemoryImagesRepo;
+  let imageProcessor: SharpImageProcessor;
   let usersRepo: MemoryUsersRepo;
   let createRecipeUsecase: CreateRecipeUsecase;
   let testExternalIngredientRef: ExternalIngredientRef;
@@ -31,16 +34,18 @@ describe('CreateRecipeUsecase', () => {
     recipesRepo = new MemoryRecipesRepo();
     ingredientsRepo = new MemoryIngredientsRepo();
     externalIngredientsRefRepo = new MemoryExternalIngredientsRefRepo();
-    imageManager = new MemoryImageManager('/memory/images', idGenerator);
+    imagesRepo = new MemoryImagesRepo();
+    imageProcessor = new SharpImageProcessor();
     usersRepo = new MemoryUsersRepo();
 
     createRecipeUsecase = new CreateRecipeUsecase(
       recipesRepo,
       ingredientsRepo,
-      imageManager,
+      imagesRepo,
       usersRepo,
       idGenerator,
-      externalIngredientsRefRepo
+      externalIngredientsRefRepo,
+      imageProcessor
     );
 
     user = User.create({
@@ -250,7 +255,7 @@ describe('CreateRecipeUsecase', () => {
 
   describe('Side effects', () => {
     it('should store an image', async () => {
-      const initialImageCount = imageManager.getImageCount();
+      const initialImageCount = imagesRepo.countForTesting();
 
       expect(initialImageCount).toBe(0);
 
@@ -265,7 +270,7 @@ describe('CreateRecipeUsecase', () => {
 
       await createRecipeUsecase.execute(request);
 
-      const finalImageCount = imageManager.getImageCount();
+      const finalImageCount = imagesRepo.countForTesting();
       expect(finalImageCount).toBe(1);
     });
 

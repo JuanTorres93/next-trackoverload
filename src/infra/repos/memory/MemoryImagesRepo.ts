@@ -4,6 +4,8 @@ export class MemoryImagesRepo implements ImagesRepo {
   private images: ImageType[] = [];
 
   async save(image: ImageType): Promise<ImageType['metadata']> {
+    const url = `memory://image/${this.images.length + 1}`;
+    image.metadata.url = url;
     this.images.push(image);
     return image.metadata;
   }

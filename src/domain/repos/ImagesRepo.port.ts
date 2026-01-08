@@ -5,8 +5,6 @@ export type ImageType = {
     filename: string;
     mimeType: string;
     sizeBytes: number;
-    width?: number;
-    height?: number;
   };
 };
 
