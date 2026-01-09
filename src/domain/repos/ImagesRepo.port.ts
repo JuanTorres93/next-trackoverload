@@ -9,6 +9,9 @@ export type ImageType = {
 };
 
 export interface ImagesRepo {
+  // This method is intended to be used from the use case
+  generateUrl(filename: string): string;
+
   save(image: ImageType): Promise<ImageType['metadata']>;
 
   deleteByUrl(imageUrl: string): Promise<void>;

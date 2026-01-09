@@ -1,4 +1,4 @@
-import { ImageType } from '@/domain/repos/ImagesRepo.port';
+import { ImagesRepo, ImageType } from '@/domain/repos/ImagesRepo.port';
 import { ImageProcessor } from '@/domain/services/ImageProcessor.port';
 import {
   MAX_MB,
@@ -8,6 +8,7 @@ import {
 export async function processRecipeImageBufferForUploading(
   imageBuffer: Buffer,
   imageProcessor: ImageProcessor,
+  imagesRepo: ImagesRepo,
   recipeId: string
 ): Promise<ImageType> {
   const resizedImageBuffer = await imageProcessor.resizeToSquare(
@@ -19,9 +20,12 @@ export async function processRecipeImageBufferForUploading(
     MAX_MB
   );
 
+  const filename = `recipe_${recipeId}_${Date.now()}.jpg`;
+  const url = imagesRepo.generateUrl(filename);
+
   const metadata: ImageType['metadata'] = {
-    url: '', // to be filled by ImagesRepo
-    filename: `recipe_${recipeId}.jpg`,
+    url,
+    filename,
     mimeType: 'image/jpeg',
     sizeBytes: processedImageBuffer.length,
   };

@@ -16,6 +16,10 @@ export class FileSystemImagesRepo implements ImagesRepo {
     this.baseUrl = baseUrl;
   }
 
+  generateUrl(filename: string): string {
+    return `${this.baseUrl}/${filename}`;
+  }
+
   private async ensureImagesDir(): Promise<void> {
     try {
       await fs.mkdir(this.imagesDir, { recursive: true });
@@ -29,7 +33,7 @@ export class FileSystemImagesRepo implements ImagesRepo {
 
     const filename = image.metadata.filename;
     const filePath = path.join(this.imagesDir, filename);
-    const url = `${this.baseUrl}/${filename}`;
+    const url = this.generateUrl(filename);
 
     // Save image buffer to disk
     await fs.writeFile(filePath, image.buffer);

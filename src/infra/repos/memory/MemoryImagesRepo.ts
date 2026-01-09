@@ -3,9 +3,11 @@ import { ImagesRepo, ImageType } from '@/domain/repos/ImagesRepo.port';
 export class MemoryImagesRepo implements ImagesRepo {
   private images: ImageType[] = [];
 
+  generateUrl(filename: string): string {
+    return `memory://image/${filename}-${Date.now()}`;
+  }
+
   async save(image: ImageType): Promise<ImageType['metadata']> {
-    const url = `memory://image/${this.images.length + 1}`;
-    image.metadata.url = url;
     this.images.push(image);
     return image.metadata;
   }

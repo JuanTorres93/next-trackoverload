@@ -46,21 +46,4 @@ describe('MemoryImagesRepo', () => {
 
     expect(retrievedImage).toEqual(testImage.metadata);
   });
-
-  it('should assign url', async () => {
-    const newImageBuffer = await createTestImage();
-    const newImage: ImageType = {
-      buffer: newImageBuffer,
-      metadata: {
-        url: '',
-        filename: 'new_image.jpg',
-        mimeType: 'image/jpeg',
-        sizeBytes: newImageBuffer.length,
-      },
-    };
-
-    const savedMetadata = await imagesRepo.save(newImage);
-
-    expect(savedMetadata.url).not.toBe('');
-  });
 });

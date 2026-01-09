@@ -70,7 +70,8 @@ describe('UpdateRecipeImageUsecase', () => {
       expect(result!.imageUrl).toBeDefined();
     });
 
-    it('should keep same url for different images', async () => {
+    it('should not keep same url for different images', async () => {
+      // If url was the same, browser would cache old image and not show inmediately the new one
       const result1 = await usecase.execute({
         recipeId: recipe.id,
         userId: vp.userId,
@@ -88,30 +89,44 @@ describe('UpdateRecipeImageUsecase', () => {
       const secondImageUrl = result2!.imageUrl;
 
       expect(secondImageUrl).toBeDefined();
-      expect(secondImageUrl).toBe(firstImageUrl);
+      expect(secondImageUrl).not.toBe(firstImageUrl);
     });
 
     it('should replace existing image', async () => {
       // First upload
-      const firstResult = await usecase.execute({
+      await usecase.execute({
         recipeId: recipe.id,
         userId: vp.userId,
         imageData: testImageBuffer,
       });
 
-      const firstImageUrl = firstResult!.imageUrl;
+      const firstRecipeWithImage = await recipesRepo.getRecipeByIdAndUserId(
+        recipe.id,
+        vp.userId
+      );
+      const firstUrl = firstRecipeWithImage!.imageUrl;
+
+      // Wait a bit to ensure different timestamp for URL generation
+      await new Promise((resolve) => setTimeout(resolve, 10));
 
       // Second upload
-      const secondResult = await usecase.execute({
+      await usecase.execute({
         recipeId: recipe.id,
         userId: vp.userId,
         imageData: testImageBuffer,
       });
 
-      const secondImageUrl = secondResult!.imageUrl;
+      const secondRecipeWithImage = await recipesRepo.getRecipeByIdAndUserId(
+        recipe.id,
+        vp.userId
+      );
+      const secundUrl = secondRecipeWithImage!.imageUrl;
 
-      expect(secondImageUrl).toBeDefined();
-      expect(secondImageUrl).toBe(firstImageUrl);
+      expect(firstUrl).toBeDefined();
+
+      expect(secundUrl).toBeDefined();
+
+      expect(secundUrl).not.toBe(firstUrl);
     });
   });
 
@@ -134,13 +149,34 @@ describe('UpdateRecipeImageUsecase', () => {
 
   describe('Errors', () => {
     it('should throw NotFoundError if recipe does not exist', async () => {
-      await expect(
-        usecase.execute({
-          recipeId: 'non-existent-recipe-id',
-          userId: vp.userId,
-          imageData: testImageBuffer,
-        })
-      ).rejects.toThrowError(NotFoundError);
+      const request = {
+        recipeId: 'non-existent-recipe-id',
+        userId: vp.userId,
+        imageData: testImageBuffer,
+      };
+
+      await expect(usecase.execute(request)).rejects.toThrowError(
+        NotFoundError
+      );
+
+      await expect(usecase.execute(request)).rejects.toThrowError(
+        /UpdateRecipeImageUsecase: Recipe.*not found/
+      );
+    });
+
+    it("should throw error if trying to update image in another user's recipe", async () => {
+      const request = {
+        recipeId: recipe.id,
+        userId: 'another-user-id',
+        imageData: testImageBuffer,
+      };
+
+      await expect(usecase.execute(request)).rejects.toThrowError(
+        NotFoundError
+      );
+      await expect(usecase.execute(request)).rejects.toThrowError(
+        /UpdateRecipeImageUsecase: Recipe.*not found/
+      );
     });
   });
 });

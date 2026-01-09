@@ -93,6 +93,7 @@ export class CreateRecipeUsecase {
       const imageType = await processRecipeImageBufferForUploading(
         request.imageBuffer,
         this.imageProcessor,
+        this.imagesRepo,
         newRecipeId
       );
 

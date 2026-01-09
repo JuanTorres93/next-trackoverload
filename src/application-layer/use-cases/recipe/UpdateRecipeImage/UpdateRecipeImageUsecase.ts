@@ -46,6 +46,7 @@ export class UpdateRecipeImageUsecase {
     const imageType: ImageType = await processRecipeImageBufferForUploading(
       request.imageData,
       this.imageProcessor,
+      this.imagesRepo,
       recipe.id
     );
 
