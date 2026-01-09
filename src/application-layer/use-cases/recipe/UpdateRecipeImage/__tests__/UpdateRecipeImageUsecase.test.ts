@@ -2,6 +2,7 @@ import { NotFoundError } from '@/domain/common/errors';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { MemoryImagesRepo } from '@/infra/repos/memory/MemoryImagesRepo';
 import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
+import { SharpImageProcessor } from '@/infra/services/ImageProcessor/SharpImageProcessor/SharpImageProcessor';
 import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
 import { UpdateRecipeImageUsecase } from '../UpdateRecipeImageUsecase';
 
@@ -11,6 +12,8 @@ import * as dto from '@/../tests/dtoProperties';
 describe('UpdateRecipeImageUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
   let imagesRepo: MemoryImagesRepo;
+  let imageProcessor: SharpImageProcessor;
+
   let usecase: UpdateRecipeImageUsecase;
 
   let recipe: Recipe;
@@ -23,7 +26,13 @@ describe('UpdateRecipeImageUsecase', () => {
   beforeEach(async () => {
     recipesRepo = new MemoryRecipesRepo();
     imagesRepo = new MemoryImagesRepo();
-    usecase = new UpdateRecipeImageUsecase(recipesRepo, imagesRepo);
+    imageProcessor = new SharpImageProcessor();
+
+    usecase = new UpdateRecipeImageUsecase(
+      recipesRepo,
+      imagesRepo,
+      imageProcessor
+    );
 
     recipe = Recipe.create({
       ...vp.validRecipePropsWithIngredientLines(),

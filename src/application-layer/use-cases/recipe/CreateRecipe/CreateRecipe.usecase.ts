@@ -3,20 +3,17 @@ import { NotFoundError, PermissionError } from '@/domain/common/errors';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { ExternalIngredientsRefRepo } from '@/domain/repos/ExternalIngredientsRefRepo.port';
+import { ImagesRepo } from '@/domain/repos/ImagesRepo.port';
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { IdGenerator } from '@/domain/services/IdGenerator.port';
-import { ImagesRepo, ImageType } from '@/domain/repos/ImagesRepo.port';
 import { ImageProcessor } from '@/domain/services/ImageProcessor.port';
 import {
-  IngredientLineInfo,
   createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo,
+  IngredientLineInfo,
 } from '../common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
-import {
-  MAX_MB,
-  SQUARE_IMAGE_SIZE_PIXELS,
-} from '@/infra/services/ImageProcessor/common';
+import { processRecipeImageBufferForUploading } from '../common/processImageBufferForUploading';
 
 export type CreateRecipeUsecaseRequest = {
   actorUserId: string;
@@ -93,26 +90,13 @@ export class CreateRecipeUsecase {
     // Upload image if provided
     let imageMetadata;
     if (request.imageBuffer) {
-      const resizedImageBuffer = await this.imageProcessor.resizeToSquare(
+      const imageType = await processRecipeImageBufferForUploading(
         request.imageBuffer,
-        SQUARE_IMAGE_SIZE_PIXELS
-      );
-      const processedImageBuffer = await this.imageProcessor.compressToMaxMB(
-        resizedImageBuffer,
-        MAX_MB
+        this.imageProcessor,
+        newRecipeId
       );
 
-      const metadata: ImageType['metadata'] = {
-        url: '', // to be filled by ImagesRepo
-        filename: `recipe_${newRecipeId}.jpg`,
-        mimeType: 'image/jpeg',
-        sizeBytes: processedImageBuffer.length,
-      };
-
-      imageMetadata = await this.imagesRepo.save({
-        buffer: processedImageBuffer,
-        metadata,
-      });
+      imageMetadata = await this.imagesRepo.save(imageType);
     }
 
     const newRecipe = Recipe.create({
