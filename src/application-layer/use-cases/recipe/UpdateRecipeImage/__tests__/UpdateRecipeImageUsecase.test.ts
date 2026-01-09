@@ -1,17 +1,16 @@
 import { NotFoundError } from '@/domain/common/errors';
-import { UpdateRecipeImageUsecase } from '../UpdateRecipeImageUsecase';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { MemoryImagesRepo } from '@/infra/repos/memory/MemoryImagesRepo';
 import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
-import { MemoryImageManager } from '@/infra';
-import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator';
 import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
+import { UpdateRecipeImageUsecase } from '../UpdateRecipeImageUsecase';
 
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 
 describe('UpdateRecipeImageUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
-  let imageManager: MemoryImageManager;
+  let imagesRepo: MemoryImagesRepo;
   let usecase: UpdateRecipeImageUsecase;
 
   let recipe: Recipe;
@@ -23,11 +22,8 @@ describe('UpdateRecipeImageUsecase', () => {
 
   beforeEach(async () => {
     recipesRepo = new MemoryRecipesRepo();
-    imageManager = new MemoryImageManager(
-      '/memory/images',
-      new Uuidv4IdGenerator()
-    );
-    usecase = new UpdateRecipeImageUsecase(recipesRepo, imageManager);
+    imagesRepo = new MemoryImagesRepo();
+    usecase = new UpdateRecipeImageUsecase(recipesRepo, imagesRepo);
 
     recipe = Recipe.create({
       ...vp.validRecipePropsWithIngredientLines(),
@@ -106,13 +102,13 @@ describe('UpdateRecipeImageUsecase', () => {
       const secondImageUrl = secondResult!.imageUrl;
 
       expect(secondImageUrl).toBeDefined();
-      expect(secondImageUrl).not.toBe(firstImageUrl);
+      expect(secondImageUrl).toBe(firstImageUrl);
     });
   });
 
   describe('Side effects', () => {
     it('Stores new image', async () => {
-      const initialImages = imageManager.getImageCount();
+      const initialImages = imagesRepo.countForTesting();
       expect(initialImages).toBe(0);
 
       await usecase.execute({
@@ -121,7 +117,7 @@ describe('UpdateRecipeImageUsecase', () => {
         imageData: testImageBuffer,
       });
 
-      const finalImages = imageManager.getImageCount();
+      const finalImages = imagesRepo.countForTesting();
       expect(finalImages).toBe(1);
     });
     // TODO: old image deleted

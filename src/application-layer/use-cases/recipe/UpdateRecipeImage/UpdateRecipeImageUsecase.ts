@@ -1,7 +1,7 @@
 import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { NotFoundError } from '@/domain/common/errors';
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
-import { ImageManager } from '@/domain/services/ImageManager.port';
+import { ImagesRepo, ImageType } from '@/domain/repos/ImagesRepo.port';
 
 export type UpdateRecipeImageUsecaseRequest = {
   recipeId: string;
@@ -12,7 +12,7 @@ export type UpdateRecipeImageUsecaseRequest = {
 export class UpdateRecipeImageUsecase {
   constructor(
     private recipesRepo: RecipesRepo,
-    private imageManager: ImageManager
+    private imagesRepo: ImagesRepo
   ) {}
 
   async execute(
@@ -32,7 +32,7 @@ export class UpdateRecipeImageUsecase {
     // Get image
     const currentImageUrl = recipe.imageUrl;
 
-    const oldImage = await this.imageManager.getImageInfo(currentImageUrl!);
+    const oldImage = await this.imagesRepo.getByUrl(currentImageUrl!);
 
     const imageFileName = oldImage
       ? oldImage.filename
@@ -40,14 +40,21 @@ export class UpdateRecipeImageUsecase {
 
     // Delete old image if exists
     if (oldImage) {
-      await this.imageManager.deleteImage(currentImageUrl!);
+      await this.imagesRepo.deleteByUrl(currentImageUrl!);
     }
 
     // Upload new image
-    const newImageMetadata = await this.imageManager.uploadImage(
-      request.imageData,
-      imageFileName
-    );
+    const metadata: ImageType['metadata'] = {
+      url: '', // Will be set by repo
+      filename: imageFileName,
+      mimeType: 'image/png',
+      sizeBytes: request.imageData.length,
+    };
+
+    const newImageMetadata = await this.imagesRepo.save({
+      buffer: request.imageData,
+      metadata,
+    });
 
     // Update recipe with new image URL
     recipe.updateImageUrl(newImageMetadata.url);

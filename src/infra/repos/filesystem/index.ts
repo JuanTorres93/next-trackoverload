@@ -8,4 +8,4 @@ export { FileSystemRecipesRepo } from './FileSystemRecipesRepo';
 export { FileSystemUsersRepo } from './FileSystemUsersRepo';
 export { FileSystemWorkoutsRepo } from './FileSystemWorkoutsRepo';
 export { FileSystemWorkoutTemplatesRepo } from './FileSystemWorkoutTemplatesRepo';
-export { FileSystemImageManager } from './FileSystemImageManager';
+export { FileSystemImagesRepo } from './FileSystemImagesRepo';

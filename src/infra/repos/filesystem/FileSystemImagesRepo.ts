@@ -1,15 +1,16 @@
 import { ImagesRepo, ImageType } from '@/domain/repos/ImagesRepo.port';
 import fs from 'fs/promises';
 import path from 'path';
-import { FS_DATA_DIR } from './common';
+
+const PUBLIC_DIR = '@/../public';
 
 export class FileSystemImagesRepo implements ImagesRepo {
   private readonly imagesDir: string;
   private readonly baseUrl: string;
 
   constructor(
-    imagesDir: string = path.join(FS_DATA_DIR, 'images'),
-    baseUrl: string = '/images'
+    imagesDir: string = path.join(PUBLIC_DIR, 'file_system_image_repo'),
+    baseUrl: string = '/file_system_image_repo'
   ) {
     this.imagesDir = imagesDir;
     this.baseUrl = baseUrl;
