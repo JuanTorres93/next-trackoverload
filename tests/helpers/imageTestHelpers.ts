@@ -1,18 +1,45 @@
-// Helper to create test image buffers
-export const createTestImage = (size: 'small' | 'large' = 'small'): Buffer => {
-  // Small 1x1 PNG
+import sharp from 'sharp';
+
+export const createTestImage = async (
+  size: 'small' | 'large' = 'small'
+): Promise<Buffer> => {
   if (size === 'small') {
-    return Buffer.from([
-      0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
-      0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
-      0x08, 0x06, 0x00, 0x00, 0x00, 0x1f, 0x15, 0xc4, 0x89, 0x00, 0x00, 0x00,
-      0x0a, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9c, 0x63, 0x00, 0x01, 0x00, 0x00,
-      0x05, 0x00, 0x01, 0x0d, 0x0a, 0x2d, 0xb4, 0x00, 0x00, 0x00, 0x00, 0x49,
-      0x45, 0x4e, 0x44, 0xae, 0x42, 0x60, 0x82,
-    ]);
+    // Generate a 10x10 PNG image
+    return sharp({
+      create: {
+        width: 10,
+        height: 10,
+        channels: 4,
+        background: { r: 255, g: 0, b: 0, alpha: 1 },
+      },
+    })
+      .png()
+      .toBuffer();
   }
 
-  // Larger image (repeat the small one multiple times for testing size limits)
-  const smallImage = createTestImage('small');
-  return Buffer.concat(Array(1000).fill(smallImage));
+  // Generate a larger 1000x1000 PNG image for size limit testing
+  return sharp({
+    create: {
+      width: 1000,
+      height: 1000,
+      channels: 4,
+      background: { r: 0, g: 0, b: 255, alpha: 1 },
+    },
+  })
+    .png()
+    .toBuffer();
+};
+
+export const createNonSquareTestImage = async (): Promise<Buffer> => {
+  // Generate a 200x100 PNG image (2:1 ratio)
+  return sharp({
+    create: {
+      width: 200,
+      height: 100,
+      channels: 4,
+      background: { r: 0, g: 255, b: 0, alpha: 1 },
+    },
+  })
+    .png()
+    .toBuffer();
 };

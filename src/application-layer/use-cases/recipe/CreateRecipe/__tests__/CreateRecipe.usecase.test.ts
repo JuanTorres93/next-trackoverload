@@ -92,7 +92,7 @@ describe('CreateRecipeUsecase', () => {
     });
 
     it('should create and save a new recipe WITH image', async () => {
-      const testImage = createTestImage('small');
+      const testImage = await createTestImage('small');
       const request = {
         actorUserId: vp.userId,
         targetUserId: vp.userId,
@@ -259,7 +259,7 @@ describe('CreateRecipeUsecase', () => {
 
       expect(initialImageCount).toBe(0);
 
-      const testImage = createTestImage('small');
+      const testImage = await createTestImage('small');
       const request = {
         actorUserId: vp.userId,
         targetUserId: vp.userId,

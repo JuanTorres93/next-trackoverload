@@ -6,10 +6,10 @@ describe('MemoryImagesRepo', () => {
   let imagesRepo: MemoryImagesRepo;
   let testImage: ImageType;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     imagesRepo = new MemoryImagesRepo();
 
-    const imageBuffer = createTestImage();
+    const imageBuffer = await createTestImage();
     testImage = {
       buffer: imageBuffer,
       metadata: {
@@ -48,7 +48,7 @@ describe('MemoryImagesRepo', () => {
   });
 
   it('should assign url', async () => {
-    const newImageBuffer = createTestImage();
+    const newImageBuffer = await createTestImage();
     const newImage: ImageType = {
       buffer: newImageBuffer,
       metadata: {

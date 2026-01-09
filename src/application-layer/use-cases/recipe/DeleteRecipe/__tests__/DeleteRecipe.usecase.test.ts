@@ -63,7 +63,7 @@ describe('DeleteRecipeUsecase', () => {
 
   describe('Side effects', () => {
     it('should delete recipe image if exists', async () => {
-      const testImage = createTestImage();
+      const testImage = await createTestImage();
       const metadata: ImageType['metadata'] = {
         url: 'http://example.com/test-image.png',
         filename: 'test-image.png',

@@ -13,6 +13,10 @@ import {
   IngredientLineInfo,
   createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo,
 } from '../common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
+import {
+  MAX_MB,
+  SQUARE_IMAGE_SIZE_PIXELS,
+} from '@/infra/services/ImageProcessor/common';
 
 export type CreateRecipeUsecaseRequest = {
   actorUserId: string;
@@ -89,9 +93,13 @@ export class CreateRecipeUsecase {
     // Upload image if provided
     let imageMetadata;
     if (request.imageBuffer) {
-      const processedImageBuffer = await this.imageProcessor.compress(
+      const resizedImageBuffer = await this.imageProcessor.resizeToSquare(
         request.imageBuffer,
-        50
+        SQUARE_IMAGE_SIZE_PIXELS
+      );
+      const processedImageBuffer = await this.imageProcessor.compressToMaxMB(
+        resizedImageBuffer,
+        MAX_MB
       );
 
       const metadata: ImageType['metadata'] = {

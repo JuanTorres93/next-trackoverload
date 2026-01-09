@@ -15,7 +15,7 @@ describe('FileSystemImagesRepo', () => {
     testDir = path.join(os.tmpdir(), `images-repo-test-${Date.now()}`);
     imagesRepo = new FileSystemImagesRepo(testDir, '/test-images');
 
-    const imageBuffer = createTestImage();
+    const imageBuffer = await createTestImage();
     testImage = {
       buffer: imageBuffer,
       metadata: {
@@ -69,7 +69,7 @@ describe('FileSystemImagesRepo', () => {
   });
 
   it('should assign url', async () => {
-    const newImageBuffer = createTestImage();
+    const newImageBuffer = await createTestImage();
     const newImage: ImageType = {
       buffer: newImageBuffer,
       metadata: {

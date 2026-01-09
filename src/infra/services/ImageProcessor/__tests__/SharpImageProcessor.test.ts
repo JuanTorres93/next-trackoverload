@@ -1,4 +1,8 @@
-import { createTestImage } from '../../../../../tests/helpers/imageTestHelpers';
+import sharp from 'sharp';
+import {
+  createNonSquareTestImage,
+  createTestImage,
+} from '../../../../../tests/helpers/imageTestHelpers';
 import { SharpImageProcessor } from '../SharpImageProcessor';
 
 describe('SharpImageProcessor', () => {
@@ -6,23 +10,46 @@ describe('SharpImageProcessor', () => {
   let validImageBuffer: Buffer;
   let invalidImageBuffer: Buffer;
 
-  beforeAll(() => {
+  beforeAll(async () => {
     imageProcessor = new SharpImageProcessor();
 
-    validImageBuffer = createTestImage('large');
+    validImageBuffer = await createTestImage('large');
     invalidImageBuffer = Buffer.from('this is not a valid image');
   });
 
   describe('compress', () => {
     it('should compress a valid image buffer', async () => {
-      const quality = 5;
-      const compressedBuffer = await imageProcessor.compress(
+      const intialSizeInMB = validImageBuffer.length / (1024 * 1024);
+
+      const targetSizeInMB = intialSizeInMB / 2;
+      const targetSizeInBytes = targetSizeInMB * 1024 * 1024;
+
+      expect(validImageBuffer.length).toBeGreaterThan(targetSizeInBytes);
+
+      const compressedBuffer = await imageProcessor.compressToMaxMB(
         validImageBuffer,
-        quality
+        targetSizeInMB
       );
 
-      expect(compressedBuffer).toBeInstanceOf(Buffer);
-      expect(compressedBuffer.length).toBeLessThan(validImageBuffer.length);
+      expect(compressedBuffer.length).toBeLessThanOrEqual(targetSizeInBytes);
+    });
+  });
+
+  describe('resizeToSquare', () => {
+    it('should resize a valid image buffer to a square of specified size', async () => {
+      const nonSquareImageBuffer = await createNonSquareTestImage();
+
+      const sizeInPixels = 50;
+
+      const resizedBuffer = await imageProcessor.resizeToSquare(
+        nonSquareImageBuffer,
+        sizeInPixels
+      );
+
+      const metadata = await sharp(resizedBuffer).metadata();
+
+      expect(metadata.width).toBe(sizeInPixels);
+      expect(metadata.height).toBe(sizeInPixels);
     });
   });
 

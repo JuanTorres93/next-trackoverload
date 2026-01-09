@@ -17,7 +17,7 @@ describe('UpdateRecipeImageUsecase', () => {
   let testImageBuffer: Buffer;
 
   beforeAll(async () => {
-    testImageBuffer = createTestImage('small');
+    testImageBuffer = await createTestImage('small');
   });
 
   beforeEach(async () => {
@@ -73,7 +73,7 @@ describe('UpdateRecipeImageUsecase', () => {
       const result2 = await usecase.execute({
         recipeId: recipe.id,
         userId: vp.userId,
-        imageData: createTestImage('small'),
+        imageData: await createTestImage('small'),
       });
 
       const secondImageUrl = result2!.imageUrl;
