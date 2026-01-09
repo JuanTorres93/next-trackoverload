@@ -2,7 +2,7 @@ import sharp from 'sharp';
 import {
   createNonSquareTestImage,
   createTestImage,
-} from '../../../../../tests/helpers/imageTestHelpers';
+} from '../../../../../../tests/helpers/imageTestHelpers';
 import { SharpImageProcessor } from '../SharpImageProcessor';
 
 describe('SharpImageProcessor', () => {

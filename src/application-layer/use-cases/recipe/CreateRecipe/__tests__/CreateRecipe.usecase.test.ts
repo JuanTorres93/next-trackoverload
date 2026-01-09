@@ -8,7 +8,7 @@ import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { User } from '@/domain/entities/user/User';
 import { MemoryExternalIngredientsRefRepo } from '@/infra';
 import { MemoryImagesRepo } from '@/infra/repos/memory/MemoryImagesRepo';
-import { SharpImageProcessor } from '@/infra/services/ImageProcessor/SharpImageProcessor';
+import { SharpImageProcessor } from '@/infra/services/ImageProcessor/SharpImageProcessor/SharpImageProcessor';
 import { MemoryIngredientsRepo } from '@/infra/repos/memory/MemoryIngredientsRepo';
 import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
