@@ -1,10 +1,10 @@
-import { AppGetRecipeByIdForUserUsecase } from '@/interface-adapters/app/use-cases/recipe';
-import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
-import PageWrapper from '@/app/_ui/PageWrapper';
-import RecipeDisplay from './RecipeDisplay';
-import Image from 'next/image';
 import NutritionalInfoValue from '@/app/_ui/NutritionalInfoValue';
+import PageWrapper from '@/app/_ui/PageWrapper';
 import { formatToInteger } from '@/app/_utils/format/formatToInteger';
+import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
+import { AppGetRecipeByIdForUserUsecase } from '@/interface-adapters/app/use-cases/recipe';
+import RecipeDisplay from './RecipeDisplay';
+import UpdateRecipeImage from './UpdateRecipeImage';
 import UpdateRecipeTitle from './UpdateRecipeTitle';
 
 export async function generateMetadata({
@@ -49,13 +49,7 @@ export default async function RecipePage({
     <PageWrapper>
       <div className="flex flex-col gap-20">
         <header className="grid items-center w-full rounded-2xl gap-8 p-2 pr-6 grid-cols-[max-content_minmax(1rem,1fr)] grid-rows-[max-content_min-content] bg-green-800 text-zinc-100">
-          <Image
-            src={recipe.imageUrl || '/recipe-no-picture.png'}
-            alt={recipe.name}
-            width={300}
-            height={200}
-            className="row-span-2 rounded-2xl"
-          />
+          <UpdateRecipeImage recipe={recipe} className="row-span-2 " />
 
           <UpdateRecipeTitle originalTitle={recipe.name} recipeId={recipe.id} />
 

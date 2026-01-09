@@ -6,6 +6,7 @@ import {
   AppDuplicateRecipeUsecase,
   AppRemoveIngredientFromRecipeUsecase,
   AppUpdateRecipeUsecase,
+  AppUpdateRecipeImageUsecase,
 } from '@/interface-adapters/app/use-cases/recipe';
 
 import { FormState } from '@/app/_types/FormState';
@@ -126,6 +127,26 @@ export async function renameRecipe(recipeId: string, newName: string) {
 
   revalidatePath('/app/recipes');
   revalidatePath(`/app/recipes/${updatedRecipe.id}`);
+}
+
+export async function updateRecipeImage(
+  recipeId: string,
+  imageFile: File | null
+) {
+  if (!imageFile) return;
+  if (imageFile.size <= 0) return;
+
+  const arrayBuffer = await imageFile.arrayBuffer();
+  const imageBuffer: Buffer = Buffer.from(arrayBuffer);
+
+  await AppUpdateRecipeImageUsecase.execute({
+    userId: 'dev-user', // TODO get current user id
+    recipeId,
+    imageData: imageBuffer,
+  });
+
+  revalidatePath(`/app/recipes`);
+  revalidatePath(`/app/recipes/${recipeId}`);
 }
 
 export async function addIngredientToRecipe(

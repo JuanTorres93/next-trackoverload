@@ -12,6 +12,7 @@ import userEvent from '@testing-library/user-event';
 // Mock before importing the component that uses next/cache
 import '@/../tests/mocks/nextjs';
 import RecipePage from '../page';
+import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
 
 const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
 const usersRepo = AppUsersRepo as MemoryUsersRepo;
@@ -326,6 +327,43 @@ describe('RecipePage', () => {
       });
     });
 
-    // TODO NEXT test and implement update recipe image
+    it('updates recipe image when no previous image existed', async () => {
+      const { renderedRecipe } = await setup();
+
+      const updateImageInput = screen.getByTestId(
+        'edit-recipe-image-button'
+      ) as HTMLInputElement;
+
+      const testImage = await createTestImage('small');
+
+      const testImageFile = new File(
+        [new Uint8Array(testImage)],
+        'test-image.png',
+        {
+          type: 'image/png',
+        }
+      );
+
+      // Mock arrayBuffer method for Node.js environment
+      testImageFile.arrayBuffer = async () => {
+        const uint8Array = new Uint8Array(testImage);
+        return uint8Array.buffer as ArrayBuffer;
+      };
+
+      expect(renderedRecipe.imageUrl).toBeUndefined();
+
+      await userEvent.upload(updateImageInput, testImageFile);
+
+      await waitFor(async () => {
+        const updatedRecipe = await recipesRepo.getRecipeById(
+          renderedRecipe.id
+        );
+
+        expect(updatedRecipe).not.toBeNull();
+        expect(updatedRecipe!.imageUrl).toBeDefined();
+      });
+    });
+
+    // TODO test updating recipe image when previous image existed
   });
 });

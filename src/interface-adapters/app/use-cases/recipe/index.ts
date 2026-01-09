@@ -15,6 +15,7 @@ export { AppGetRecipesByIdsForUserUsecase } from './GetRecipesByIdsForUser/getRe
 export { AppUpdateRecipeUsecase } from './UpdateRecipe/updateRecipe';
 export { AppAddIngredientToRecipeUsecase } from './AddIngredientToRecipe/addIngredientToRecipe';
 export { AppRemoveIngredientFromRecipeUsecase } from './RemoveIngredientFromRecipe/removeIngredientFromRecipe';
+export { AppUpdateRecipeImageUsecase } from './UpdateRecipeImage/updateRecipeImage';
 
 // DELETE Operations
 export { AppDeleteRecipeUsecase } from './DeleteRecipe/deleteRecipe';
