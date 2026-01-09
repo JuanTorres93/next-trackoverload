@@ -12,7 +12,7 @@ import { SharpImageProcessor } from '@/infra/services/ImageProcessor/SharpImageP
 import { MemoryIngredientsRepo } from '@/infra/repos/memory/MemoryIngredientsRepo';
 import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
-import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator';
+import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
 import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
 import { CreateRecipeUsecase } from '../CreateRecipe.usecase';
 import { IngredientLineInfo } from '../../common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';

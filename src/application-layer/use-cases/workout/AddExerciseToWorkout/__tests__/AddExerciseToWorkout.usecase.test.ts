@@ -7,7 +7,7 @@ import { Workout } from '@/domain/entities/workout/Workout';
 import { MemoryExercisesRepo } from '@/infra/repos/memory/MemoryExercisesRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { MemoryWorkoutsRepo } from '@/infra/repos/memory/MemoryWorkoutsRepo';
-import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator';
+import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
 import { AddExerciseToWorkoutUsecase } from '../AddExerciseToWorkout.usecase';
 
 describe('AddExerciseToWorkoutUsecase', () => {

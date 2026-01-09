@@ -11,7 +11,7 @@ import { MemoryMealsRepo } from '@/infra/repos/memory/MemoryMealsRepo';
 import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { AddMealToDayUsecase } from '../AddMealToDay.usecase';
-import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator';
+import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
 
 describe('AddMealToDayUsecase', () => {
   let daysRepo: MemoryDaysRepo;

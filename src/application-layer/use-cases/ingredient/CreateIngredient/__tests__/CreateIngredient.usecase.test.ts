@@ -3,7 +3,7 @@ import * as dto from '@/../tests/dtoProperties';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { MemoryIngredientsRepo } from '@/infra/repos/memory/MemoryIngredientsRepo';
 import { CreateIngredientUsecase } from '../CreateIngredient.usecase';
-import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator';
+import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
 
 describe('CreateIngredientUsecase', () => {
   let ingredientsRepo: MemoryIngredientsRepo;

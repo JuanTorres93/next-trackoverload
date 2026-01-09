@@ -8,7 +8,7 @@ import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { User } from '@/domain/entities/user/User';
 import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
-import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator';
+import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
 import { DuplicateRecipeUsecase } from '../DuplicateRecipe.usecase';
 
 describe('DuplicateRecipeUsecase', () => {

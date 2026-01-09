@@ -8,7 +8,7 @@ import { User } from '@/domain/entities/user/User';
 import { MemoryIngredientsRepo } from '@/infra/repos/memory/MemoryIngredientsRepo';
 import { MemoryMealsRepo } from '@/infra/repos/memory/MemoryMealsRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
-import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator';
+import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
 import {
   AddIngredientToMealUsecase,
   AddIngredientToMealUsecaseRequest,

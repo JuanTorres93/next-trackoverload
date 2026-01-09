@@ -7,7 +7,7 @@ import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTempla
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { MemoryWorkoutTemplatesRepo } from '@/infra/repos/memory/MemoryWorkoutTemplatesRepo';
 import { MemoryWorkoutsRepo } from '@/infra/repos/memory/MemoryWorkoutsRepo';
-import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator';
+import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
 import { CreateWorkoutFromTemplateUsecase } from '../CreateWorkoutFromTemplate.usecase';
 
 describe('CreateWorkoutFromTemplateUsecase', () => {
