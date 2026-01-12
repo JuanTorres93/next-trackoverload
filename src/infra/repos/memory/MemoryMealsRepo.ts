@@ -36,6 +36,15 @@ export class MemoryMealsRepo implements MealsRepo {
     return meal || null;
   }
 
+  async getMealsByRecipeIdAndUserId(
+    recipeId: string,
+    userId: string
+  ): Promise<Meal[]> {
+    return this.meals.filter(
+      (meal) => meal.createdFromRecipeId === recipeId && meal.userId === userId
+    );
+  }
+
   async deleteMeal(id: string): Promise<void> {
     const index = this.meals.findIndex((m) => m.id === id);
     // NOTE: Throw error in use case in order not to have false positives in tests

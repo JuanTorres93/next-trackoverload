@@ -110,6 +110,16 @@ export class FileSystemMealsRepo implements MealsRepo {
     return null;
   }
 
+  async getMealsByRecipeIdAndUserId(
+    recipeId: string,
+    userId: string
+  ): Promise<Meal[]> {
+    const allMeals = await this.getAllMeals();
+    return allMeals.filter(
+      (meal) => meal.createdFromRecipeId === recipeId && meal.userId === userId
+    );
+  }
+
   async deleteMeal(id: string): Promise<void> {
     const filePath = this.getMealFilePath(id);
 

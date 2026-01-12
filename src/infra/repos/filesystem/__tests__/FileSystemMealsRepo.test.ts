@@ -177,6 +177,64 @@ describe('FileSystemMealsRepo', () => {
     expect(fetchedMeal?.name).toBe('Grilled Chicken');
   });
 
+  it('should retrieve meals by recipeId and userId', async () => {
+    const ingredientLine2 = IngredientLine.create({
+      ...vp.ingredientLineRecipePropsNoIngredient,
+      id: 'line-2',
+      ingredient,
+      quantityInGrams: 200,
+    });
+    const meal2 = Meal.create({
+      ...vp.mealPropsNoIngredientLines,
+      id: 'meal-2',
+      name: 'Chicken Salad',
+      ingredientLines: [ingredientLine2],
+      createdFromRecipeId: vp.mealPropsNoIngredientLines.createdFromRecipeId,
+    });
+    const ingredientLine3 = IngredientLine.create({
+      ...vp.ingredientLineRecipePropsNoIngredient,
+      id: 'line-3',
+      ingredient,
+      quantityInGrams: 100,
+    });
+    const meal3 = Meal.create({
+      ...vp.mealPropsNoIngredientLines,
+      id: 'meal-3',
+      name: 'Turkey Sandwich',
+      ingredientLines: [ingredientLine3],
+      createdFromRecipeId: 'different-recipe-id',
+    });
+    await repo.saveMeal(meal2);
+    await repo.saveMeal(meal3);
+
+    const fetchedMeals = await repo.getMealsByRecipeIdAndUserId(
+      vp.mealPropsNoIngredientLines.createdFromRecipeId,
+      vp.userId
+    );
+    expect(fetchedMeals.length).toBe(2);
+    expect(fetchedMeals.map((m) => m.id)).toContain(
+      vp.mealPropsNoIngredientLines.id
+    );
+    expect(fetchedMeals.map((m) => m.id)).toContain('meal-2');
+    expect(fetchedMeals.map((m) => m.id)).not.toContain('meal-3');
+  });
+
+  it('should return empty array when no meals match recipeId and userId', async () => {
+    const fetchedMeals = await repo.getMealsByRecipeIdAndUserId(
+      'non-existent-recipe-id',
+      vp.userId
+    );
+    expect(fetchedMeals.length).toBe(0);
+  });
+
+  it('should return empty array when recipeId matches but userId does not', async () => {
+    const fetchedMeals = await repo.getMealsByRecipeIdAndUserId(
+      vp.mealPropsNoIngredientLines.createdFromRecipeId,
+      'different-user-id'
+    );
+    expect(fetchedMeals.length).toBe(0);
+  });
+
   it('should return null for non-existent meal ID', async () => {
     const fetchedMeal = await repo.getMealById('non-existent-id');
     expect(fetchedMeal).toBeNull();
