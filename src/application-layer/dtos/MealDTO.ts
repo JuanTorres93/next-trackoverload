@@ -12,6 +12,7 @@ export type MealDTO = {
   ingredientLines: IngredientLineDTO[];
   calories: number;
   protein: number;
+  imageUrl?: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -24,6 +25,7 @@ export function toMealDTO(meal: Meal): MealDTO {
     ingredientLines: meal.ingredientLines.map(toIngredientLineDTO),
     calories: meal.calories,
     protein: meal.protein,
+    imageUrl: meal.imageUrl,
     createdAt: meal.createdAt.toISOString(),
     updatedAt: meal.updatedAt.toISOString(),
   };
@@ -35,6 +37,7 @@ export function fromMealDTO(dto: MealDTO): Meal {
     userId: dto.userId,
     name: dto.name,
     ingredientLines: dto.ingredientLines.map(fromIngredientLineDTO),
+    imageUrl: dto.imageUrl,
     createdAt: new Date(dto.createdAt),
     updatedAt: new Date(dto.updatedAt),
   });

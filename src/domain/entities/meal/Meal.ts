@@ -12,6 +12,7 @@ export type MealCreateProps = {
   userId: string;
   name: string;
   ingredientLines: IngredientLine[];
+  imageUrl?: string;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -25,6 +26,7 @@ export type MealProps = {
   userId: Id;
   name: Text;
   ingredientLines: IngredientLine[];
+  imageUrl?: Text;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -50,6 +52,7 @@ export class Meal implements Calories, Protein {
       userId: Id.create(props.userId),
       name: Text.create(props.name, nameTextOptions),
       ingredientLines: props.ingredientLines,
+      imageUrl: props.imageUrl ? Text.create(props.imageUrl) : undefined,
       createdAt: handleCreatedAt(props.createdAt),
       updatedAt: handleUpdatedAt(props.updatedAt),
     };
@@ -146,6 +149,10 @@ export class Meal implements Calories, Protein {
 
   get ingredientLines() {
     return [...this.props.ingredientLines];
+  }
+
+  get imageUrl() {
+    return this.props.imageUrl?.value || undefined;
   }
 
   get createdAt() {
