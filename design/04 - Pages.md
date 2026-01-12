@@ -8,7 +8,7 @@
 
 - [x] /recipes
 - [x] /recipes/new
-- [ ] /recipes/:recipeId
+- [x] /recipes/:recipeId
 
 # Meals
 
