@@ -71,6 +71,7 @@ export class AddMealToDayUsecase {
       id: newMealId,
       userId: request.userId,
       name: recipe.name,
+      createdFromRecipeId: recipe.id,
       ingredientLines: mealIngredientLines,
       createdAt: new Date(),
       updatedAt: new Date(),

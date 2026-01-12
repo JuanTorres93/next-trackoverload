@@ -48,12 +48,8 @@ export function validRecipePropsWithIngredientLines() {
   });
 
   return {
-    id: 'recipe1',
-    userId: userId,
-    name: 'Test Recipe',
+    ...recipePropsNoIngredientLines,
     ingredientLines: [ingredientLine1, ingredientLine2],
-    createdAt: new Date(),
-    updatedAt: new Date(),
   };
 }
 
@@ -197,6 +193,7 @@ export const mealPropsNoIngredientLines = {
   id: 'meal1',
   userId: userId,
   name: 'Chicken Meal',
+  createdFromRecipeId: recipePropsNoIngredientLines.id,
   createdAt: new Date(),
   updatedAt: new Date(),
 };
@@ -210,12 +207,8 @@ export function validMealWithIngredientLines() {
   });
 
   return {
-    id: 'meal1',
-    userId: userId,
-    name: 'Chicken Meal',
+    ...mealPropsNoIngredientLines,
     ingredientLines: [ingredientLine1],
-    createdAt: new Date(),
-    updatedAt: new Date(),
   };
 }
 

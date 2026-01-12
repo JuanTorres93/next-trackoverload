@@ -41,6 +41,8 @@ describe('MealDTO', () => {
         id: meal.id,
         userId: meal.userId,
         name: meal.name,
+        createdFromRecipeId: meal.createdFromRecipeId,
+        imageUrl: meal.imageUrl,
         ingredientLines: meal.ingredientLines.map((line) => ({
           id: line.id,
           parentId: line.parentId,
