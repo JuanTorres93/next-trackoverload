@@ -1,3 +1,4 @@
+import { ImageType } from '@/domain/repos/ImagesRepo.port';
 import sharp from 'sharp';
 
 export const createTestImage = async (
@@ -42,4 +43,13 @@ export const createNonSquareTestImage = async (): Promise<Buffer> => {
   })
     .png()
     .toBuffer();
+};
+
+export const createFakeMetadata = (): ImageType['metadata'] => {
+  return {
+    url: 'http://example.com/test-image.png',
+    filename: 'test-image.png',
+    mimeType: 'image/png',
+    sizeBytes: 2048,
+  };
 };

@@ -25,6 +25,31 @@ export class MemoryImagesRepo implements ImagesRepo {
     }
   }
 
+  async duplicateByUrl(
+    imageUrl: string,
+    newFilename: string,
+    newUrl: string
+  ): Promise<ImageType['metadata']> {
+    const foundImage = this.images.find((img) => img.metadata.url === imageUrl);
+
+    if (!foundImage) {
+      throw new Error(`Image with URL ${imageUrl} not found`);
+    }
+
+    // Create duplicate image
+    const duplicatedImage: ImageType = {
+      buffer: Buffer.from(foundImage.buffer),
+      metadata: {
+        ...foundImage.metadata,
+        url: newUrl,
+        filename: newFilename,
+      },
+    };
+
+    this.images.push(duplicatedImage);
+    return duplicatedImage.metadata;
+  }
+
   // IMPORTANT NOTE: Helper method for testing - not part of the interface
   clearForTesting(): void {
     this.images = [];

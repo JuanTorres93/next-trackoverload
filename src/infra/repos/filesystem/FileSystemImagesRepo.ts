@@ -89,6 +89,45 @@ export class FileSystemImagesRepo implements ImagesRepo {
     }
   }
 
+  async duplicateByUrl(
+    imageUrl: string,
+    newFilename: string,
+    newUrl: string
+  ): Promise<ImageType['metadata']> {
+    const filename = this.extractFilenameFromUrl(imageUrl);
+    if (!filename) {
+      throw new Error(`Invalid image URL: ${imageUrl}`);
+    }
+
+    const filePath = path.join(this.imagesDir, filename);
+    const metadataPath = path.join(this.imagesDir, `${filename}.metadata.json`);
+
+    try {
+      // Read original image buffer and metadata
+      const buffer = await fs.readFile(filePath);
+      const metadataContent = await fs.readFile(metadataPath, 'utf-8');
+      const originalMetadata = JSON.parse(metadataContent);
+
+      // Save duplicated image
+      const duplicatedImage: ImageType = {
+        buffer: Buffer.from(buffer),
+        metadata: {
+          ...originalMetadata,
+          filename: newFilename,
+          url: newUrl,
+        },
+      };
+
+      return await this.save(duplicatedImage);
+    } catch (error) {
+      throw new Error(
+        `Failed to duplicate image ${imageUrl}: ${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`
+      );
+    }
+  }
+
   private extractFilenameFromUrl(imageUrl: string): string | null {
     if (imageUrl.startsWith(this.baseUrl)) {
       return imageUrl.replace(`${this.baseUrl}/`, '');

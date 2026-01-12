@@ -14,6 +14,13 @@ export interface ImagesRepo {
 
   save(image: ImageType): Promise<ImageType['metadata']>;
 
+  // newUrl is intended to be provided by the use case by having called generateUrl beforehand
+  duplicateByUrl(
+    imageUrl: string,
+    newFilename: string,
+    newUrl: string
+  ): Promise<ImageType['metadata']>;
+
   deleteByUrl(imageUrl: string): Promise<void>;
 
   getByUrl(imageUrl: string): Promise<ImageType['metadata'] | null>;
