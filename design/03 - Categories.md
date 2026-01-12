@@ -1,11 +1,11 @@
 # Ingredientes
 
 - [x] Repositorio común de ingredientes
-- [ ] Repositorio privado de ingredientes
-- [ ] Guardar info ingredientes
+- [ ] ¿Repositorio privado de ingredientes?
+- [x] Guardar info ingredientes
 - [ ] Editar info ingredientes sin afectar a comidas pasadas
 - [ ] Ver info ingredientes
-- [ ] Borrar ingredientes sin afectar a comidas pasadas
+- [ ] Borrar ingredientes sin afectar a comidas pasadas. ¿Mejor no borrar ingredientes?
 - [x] Sólo info necesaria: calorías y proteínas
 
 # Recetas
