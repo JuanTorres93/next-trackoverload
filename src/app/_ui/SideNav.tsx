@@ -41,7 +41,7 @@ function SideNav() {
 
   const links = [
     { href: '/app', label: 'Inicio', icon: <HiHome /> },
-    { href: '/app/ingredients', label: 'Ingredientes', icon: <HiBeaker /> },
+    // { href: '/app/ingredients', label: 'Ingredientes', icon: <HiBeaker /> },
     { href: '/app/recipes', label: 'Recetas', icon: <HiBookOpen /> },
     { href: '/app/meals', label: 'Comidas', icon: <HiCalendarDays /> },
     { href: '/app/templates', label: 'Plantillas', icon: <HiSquares2X2 /> },
@@ -57,7 +57,7 @@ function SideNav() {
 
   return (
     <nav>
-      <ul className="flex flex-col gap-1 p-4 w-full">
+      <ul className="flex flex-col w-full gap-1 p-4">
         {/* TODO: PONER EL LOGO Arriba de la navbar */}
 
         {links.map((link) => (

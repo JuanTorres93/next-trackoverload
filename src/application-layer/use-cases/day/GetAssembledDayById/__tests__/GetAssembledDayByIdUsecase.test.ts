@@ -85,6 +85,31 @@ describe('GetAssembledDayByIdUsecase', () => {
       expect(result!.fakeMeals[0].id).toBe(fakeMeal.id);
       expect(result!.fakeMeals[0].name).toBe(fakeMeal.name);
     });
+
+    it('should return null if day does not exist', async () => {
+      const result = await usecase.execute({
+        dayId: 'non-existent-day-id',
+        userId: user.id,
+      });
+
+      expect(result).toBeNull();
+    });
+
+    it('should return null if day exists but belongs to another user', async () => {
+      const anotherUser = User.create({
+        ...vp.validUserProps,
+        id: 'another-user-id',
+      });
+
+      await usersRepo.saveUser(anotherUser);
+
+      const result = await usecase.execute({
+        dayId: day.id,
+        userId: anotherUser.id,
+      });
+
+      expect(result).toBeNull();
+    });
   });
 
   describe('Errors', () => {
@@ -97,45 +122,8 @@ describe('GetAssembledDayByIdUsecase', () => {
       await expect(usecase.execute(request)).rejects.toThrowError(
         NotFoundError
       );
-
-      await expect(usecase.execute(request)).rejects.toThrowError(/not found/);
-    });
-
-    it('should throw NotFoundError if day does not exist', async () => {
-      const request = {
-        dayId: 'non-existent-day-id',
-        userId: user.id,
-      };
-
       await expect(usecase.execute(request)).rejects.toThrowError(
-        NotFoundError
-      );
-
-      await expect(usecase.execute(request)).rejects.toThrowError(
-        /GetAssembledDayByIdUsecase.*Day.*not found/
-      );
-    });
-
-    it("should throw error when trying to get another user's assembled day", async () => {
-      const anotherUser = User.create({
-        ...vp.validUserProps,
-        id: 'another-user-id',
-        email: 'another-user@example.com',
-      });
-
-      await usersRepo.saveUser(anotherUser);
-
-      const request = {
-        dayId: day.id,
-        userId: anotherUser.id,
-      };
-
-      await expect(usecase.execute(request)).rejects.toThrowError(
-        NotFoundError
-      );
-
-      await expect(usecase.execute(request)).rejects.toThrowError(
-        /GetAssembledDayByIdUsecase.*Day.*not found/
+        /GetAssembledDayByIdUsecase.*User.*not found/
       );
     });
   });

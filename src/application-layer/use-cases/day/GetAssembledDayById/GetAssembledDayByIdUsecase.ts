@@ -38,9 +38,7 @@ export class GetAssembledDayByIdUsecase {
       request.userId
     );
     if (!day) {
-      throw new NotFoundError(
-        `GetAssembledDayByIdUsecase: Day with id ${request.dayId} not found`
-      );
+      return null;
     }
 
     const dayDTO = toDayDTO(day);
