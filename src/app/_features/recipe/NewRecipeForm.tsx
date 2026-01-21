@@ -1,8 +1,8 @@
 'use client';
 
 import ButtonNew from '@/app/_ui/ButtonNew';
+import FormRow from '@/app/_ui/form/FormRow';
 import ImagePicker from '@/app/_ui/ImagePicker';
-import Form from '@/app/_ui/NewResourceForm';
 import NutritionalInfoValue from '@/app/_ui/NutritionalInfoValue';
 import { formatToInteger } from '@/app/_utils/format/formatToInteger';
 import { CreateIngredientLineData } from '@/application-layer/use-cases/recipe/common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
@@ -13,6 +13,8 @@ import IngredientSearch, {
   handleIngredientSelection,
   IngredientLineWithExternalRef,
 } from './IngredientSearch';
+
+// TODO NEXT: Fix image upload
 
 export type NewRecipeFormState = {
   name: string;
@@ -169,7 +171,7 @@ function NewRecipeForm() {
       </div>
 
       <IngredientSearch>
-        <Form.FormRow label="">
+        <FormRow>
           <IngredientSearch.Search />
 
           <IngredientSearch.FoundIngredientsList
@@ -181,12 +183,9 @@ function NewRecipeForm() {
               )
             }
           />
-        </Form.FormRow>
+        </FormRow>
 
-        <Form.FormRow
-          label=""
-          error={formErrors?.ingredientLinesWithExternalRefs}
-        >
+        <FormRow>
           <IngredientSearch.SelectedIngredientsList
             ingredientLinesWithExternalRefs={
               formState.ingredientLinesWithExternalRefs
@@ -195,12 +194,12 @@ function NewRecipeForm() {
               setIngredientLinesWithExternalRefsIngredientComponent
             }
           />
-        </Form.FormRow>
+        </FormRow>
       </IngredientSearch>
 
       {/* Summary */}
       {formState.ingredientLinesWithExternalRefs.length > 0 && (
-        <Form.FormRow label="">
+        <FormRow>
           <div className="grid p-3 rounded-lg grid-cols-2 mt-4 bg-neutral-500 **:text-zinc-50 ">
             <NutritionalInfoValue
               number={totalCalories}
@@ -211,10 +210,12 @@ function NewRecipeForm() {
               label="Proteínas totales"
             />
           </div>
-        </Form.FormRow>
+        </FormRow>
       )}
 
-      <ButtonNew disabled={invalidForm}>Crear receta</ButtonNew>
+      <FormRow>
+        <ButtonNew disabled={invalidForm}>Crear receta</ButtonNew>
+      </FormRow>
     </form>
   );
 }
