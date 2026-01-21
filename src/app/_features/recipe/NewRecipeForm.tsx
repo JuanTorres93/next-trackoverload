@@ -14,8 +14,6 @@ import IngredientSearch, {
   IngredientLineWithExternalRef,
 } from './IngredientSearch';
 
-// TODO NEXT: Fix image upload
-
 export type NewRecipeFormState = {
   name: string;
   ingredientLinesWithExternalRefs: IngredientLineWithExternalRef[];

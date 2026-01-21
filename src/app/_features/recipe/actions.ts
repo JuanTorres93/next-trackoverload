@@ -24,12 +24,10 @@ export async function createRecipe({
   ingredientLinesInfo: CreateIngredientLineData[];
   image?: File;
 }) {
-  // extract image if exists
-  const imageFile = image;
   let imageBuffer: Buffer | undefined;
 
-  if (imageFile && imageFile.size > 0) {
-    const arrayBuffer = await imageFile.arrayBuffer();
+  if (image && image.size > 0) {
+    const arrayBuffer = await image.arrayBuffer();
     imageBuffer = Buffer.from(arrayBuffer);
   }
 

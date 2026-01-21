@@ -14,5 +14,5 @@ export const AppCreateRecipeUsecase = new CreateRecipeUsecase(
   AppUsersRepo,
   AppUuidV4IdGenerator,
   AppExternalIngredientsRefRepo,
-  AppImageProcessor
+  AppImageProcessor,
 );
