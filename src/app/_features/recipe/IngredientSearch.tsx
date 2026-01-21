@@ -39,7 +39,7 @@ function useIngredientSearchContext() {
 
   if (value === undefined || value === null) {
     throw new Error(
-      'useIngredientSearch must be used within a IngredientSearchProvider'
+      'useIngredientSearch must be used within a IngredientSearchProvider',
     );
   }
 
@@ -74,7 +74,7 @@ function IngredientSearch({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
 
     const fetchedIngredientsResult: Response = await fetch(
-      `/api/ingredient/fuzzy/${term}`
+      `/api/ingredient/fuzzy/${term}`,
     );
 
     try {
@@ -158,7 +158,7 @@ function FoundIngredientsList({
 }: {
   onSelectFoundIngredient?: (
     ingredientFinderResult: IngredientFinderResult,
-    isSelected: boolean
+    isSelected: boolean,
   ) => void;
 }) {
   const {
@@ -172,10 +172,10 @@ function FoundIngredientsList({
   } = useIngredientSearchContext();
 
   function selectIngredientFinderResult(
-    ingredientFinderResult: IngredientFinderResult
+    ingredientFinderResult: IngredientFinderResult,
   ) {
     const wasSelected = selectedExternalIngredientIds.has(
-      ingredientFinderResult.externalRef.externalId
+      ingredientFinderResult.externalRef.externalId,
     );
 
     setSelectedExternalIngredientIds((prev) => {
@@ -222,7 +222,7 @@ function FoundIngredientsList({
                   key={foundIngredient.externalRef.externalId}
                   ingredient={fakeIngredient}
                   isSelected={isSelected(
-                    foundIngredient.externalRef.externalId
+                    foundIngredient.externalRef.externalId,
                   )}
                   onClick={() => selectIngredientFinderResult(foundIngredient)}
                 />
@@ -250,7 +250,7 @@ function SelectedIngredientsList({
       const ingredientLineWithExternalRef =
         ingredientLinesWithExternalRefs.find(
           (ingLineWithExternalRef) =>
-            ingLineWithExternalRef.ingredientLine.id === ingredientLineId
+            ingLineWithExternalRef.ingredientLine.id === ingredientLineId,
         );
 
       if (!ingredientLineWithExternalRef) return;
@@ -261,12 +261,12 @@ function SelectedIngredientsList({
       const calories = formatToInteger(
         (ingredientLine.ingredient.nutritionalInfoPer100g.calories *
           quantityInGrams) /
-          100
+          100,
       );
       const protein = formatToInteger(
         (ingredientLine.ingredient.nutritionalInfoPer100g.protein *
           quantityInGrams) /
-          100
+          100,
       );
 
       const updatedIngredientLine: IngredientLineDTO = {
@@ -283,8 +283,8 @@ function SelectedIngredientsList({
                 ...ingLineWithExternalRef,
                 ingredientLine: updatedIngredientLine,
               }
-            : ingLineWithExternalRef
-        )
+            : ingLineWithExternalRef,
+        ),
       );
     };
   }
@@ -293,42 +293,46 @@ function SelectedIngredientsList({
     setIngredientLinesWithExternalRefs((prev) =>
       prev.filter(
         (ingLineWithExternalRef) =>
-          ingLineWithExternalRef.ingredientLine.id !== ingredientLineId
-      )
+          ingLineWithExternalRef.ingredientLine.id !== ingredientLineId,
+      ),
     );
   }
 
   return (
-    <div
-      data-testid="ingredient-line-list"
-      className="flex flex-col gap-4 stretch max-w-[30rem]"
-    >
+    <div className="stretch max-w-[30rem] max-h-150">
       {showIngredientLabel && (
-        <>
+        <span className="mb-40">
           {ingredientLinesWithExternalRefs.length
             ? ingredientLinesWithExternalRefs.length
             : ''}{' '}
           Ingrediente
           {ingredientLinesWithExternalRefs.length === 1 ? '' : 's'}
-        </>
+        </span>
       )}
 
-      {ingredientLinesWithExternalRefs.map((ingredientLineWithExternalRef) => {
-        return (
-          <IngredientLineItem
-            key={ingredientLineWithExternalRef.ingredientLine.id}
-            ingredientLine={ingredientLineWithExternalRef.ingredientLine}
-            onQuantityChange={handleIngredientLineQuantityChange(
-              ingredientLineWithExternalRef.ingredientLine.id
-            )}
-            onRemove={() =>
-              handleIngredientLineRemove(
-                ingredientLineWithExternalRef.ingredientLine.id
-              )
-            }
-          />
-        );
-      })}
+      <div
+        data-testid="ingredient-line-list"
+        className="grid auto-rows-min gap-4 stretch max-w-[30rem] max-h-150 overflow-y-scroll"
+      >
+        {ingredientLinesWithExternalRefs.map(
+          (ingredientLineWithExternalRef) => {
+            return (
+              <IngredientLineItem
+                key={ingredientLineWithExternalRef.ingredientLine.id}
+                ingredientLine={ingredientLineWithExternalRef.ingredientLine}
+                onQuantityChange={handleIngredientLineQuantityChange(
+                  ingredientLineWithExternalRef.ingredientLine.id,
+                )}
+                onRemove={() =>
+                  handleIngredientLineRemove(
+                    ingredientLineWithExternalRef.ingredientLine.id,
+                  )
+                }
+              />
+            );
+          },
+        )}
+      </div>
 
       {ingredientLinesWithExternalRefs.length === 0 && (
         <div className="text-sm">No hay ingredientes seleccionados.</div>
@@ -355,7 +359,7 @@ export function handleIngredientSelection(
   isSelected: boolean,
   setIngredientLinesInfo: React.Dispatch<
     React.SetStateAction<IngredientLineWithExternalRef[]>
-  >
+  >,
 ) {
   if (isSelected) {
     const {
@@ -377,9 +381,9 @@ export function handleIngredientSelection(
       prev.filter(
         (ingLineInfo) =>
           !ingLineInfo.ingredientLine.ingredient.id.endsWith(
-            ingredientFinderResult.externalRef.externalId
-          )
-      )
+            ingredientFinderResult.externalRef.externalId,
+          ),
+      ),
     );
   }
 }
