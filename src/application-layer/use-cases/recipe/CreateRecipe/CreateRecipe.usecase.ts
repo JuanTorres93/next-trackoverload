@@ -11,7 +11,7 @@ import { IdGenerator } from '@/domain/services/IdGenerator.port';
 import { ImageProcessor } from '@/domain/services/ImageProcessor.port';
 import {
   createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo,
-  IngredientLineInfo,
+  CreateIngredientLineData,
 } from '../common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
 import { processRecipeImageBufferForUploading } from '../common/processImageBufferForUploading';
 
@@ -19,7 +19,7 @@ export type CreateRecipeUsecaseRequest = {
   actorUserId: string;
   targetUserId: string;
   name: string;
-  ingredientLinesInfo: IngredientLineInfo[];
+  ingredientLinesInfo: CreateIngredientLineData[];
   imageBuffer?: Buffer;
 };
 
@@ -31,20 +31,20 @@ export class CreateRecipeUsecase {
     private usersRepo: UsersRepo,
     private idGenerator: IdGenerator,
     private externalIngredientsRefRepo: ExternalIngredientsRefRepo,
-    private imageProcessor: ImageProcessor
+    private imageProcessor: ImageProcessor,
   ) {}
 
   async execute(request: CreateRecipeUsecaseRequest): Promise<RecipeDTO> {
     if (request.actorUserId !== request.targetUserId) {
       throw new PermissionError(
-        'CreateRecipeUsecase: cannot create recipe for another user'
+        'CreateRecipeUsecase: cannot create recipe for another user',
       );
     }
 
     const user = await this.usersRepo.getUserById(request.targetUserId);
     if (!user) {
       throw new NotFoundError(
-        `CreateRecipeUsecase: user with id ${request.targetUserId} not found`
+        `CreateRecipeUsecase: user with id ${request.targetUserId} not found`,
       );
     }
 
@@ -57,7 +57,7 @@ export class CreateRecipeUsecase {
       request.ingredientLinesInfo,
       this.ingredientsRepo,
       this.externalIngredientsRefRepo,
-      this.idGenerator
+      this.idGenerator,
     );
 
     const ingredientLines: IngredientLine[] = [];
@@ -70,7 +70,7 @@ export class CreateRecipeUsecase {
         quantitiesMapByExternalId[
           Object.keys(quantitiesMapByExternalId).find(
             (extId) =>
-              quantitiesMapByExternalId[extId].ingredientId === ingredient.id
+              quantitiesMapByExternalId[extId].ingredientId === ingredient.id,
           )!
         ].quantityInGrams;
 
@@ -94,7 +94,7 @@ export class CreateRecipeUsecase {
         request.imageBuffer,
         this.imageProcessor,
         this.imagesRepo,
-        newRecipeId
+        newRecipeId,
       );
 
       imageMetadata = await this.imagesRepo.save(imageType);

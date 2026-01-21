@@ -30,7 +30,7 @@ createServer([
 
       const filteredIngredients: IngredientFinderResult[] = results.filter(
         (result) =>
-          result.ingredient.name.toLowerCase().includes(term.toLowerCase())
+          result.ingredient.name.toLowerCase().includes(term.toLowerCase()),
       );
 
       return filteredIngredients;
@@ -152,7 +152,7 @@ describe('NewRecipeForm', () => {
     await userEvent.click(firstIngredient);
 
     const quantityInput = within(
-      ingredientLineList.children[0] as HTMLElement
+      ingredientLineList.children[0] as HTMLElement,
     ).getByRole('spinbutton');
 
     await userEvent.clear(quantityInput);
@@ -173,7 +173,7 @@ describe('NewRecipeForm', () => {
     await userEvent.click(firstIngredient);
 
     const quantityInput = within(
-      ingredientLineList.children[0] as HTMLElement
+      ingredientLineList.children[0] as HTMLElement,
     ).getByRole('spinbutton');
 
     expect((quantityInput as HTMLInputElement).value).toBe('100');
@@ -186,7 +186,7 @@ describe('NewRecipeForm', () => {
     await userEvent.click(firstIngredient);
 
     const quantityInput = within(
-      ingredientLineList.children[0] as HTMLElement
+      ingredientLineList.children[0] as HTMLElement,
     ).getByRole('spinbutton');
 
     await userEvent.clear(quantityInput);

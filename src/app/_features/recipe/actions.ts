@@ -5,64 +5,35 @@ import {
   AppDeleteRecipeUsecase,
   AppDuplicateRecipeUsecase,
   AppRemoveIngredientFromRecipeUsecase,
-  AppUpdateRecipeUsecase,
   AppUpdateRecipeImageUsecase,
+  AppUpdateRecipeUsecase,
 } from '@/interface-adapters/app/use-cases/recipe';
 
-import { FormState } from '@/app/_types/FormState';
-import { initialFormState } from '@/app/_utils/form/forms';
+import { CreateIngredientLineData } from '@/application-layer/use-cases/recipe/common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { IngredientLineInfo } from '@/application-layer/use-cases/recipe/common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
 
-export async function createRecipe(
-  initialState: FormState, // Unsed, but needed for useActionState
-  formData: FormData
-) {
-  const finalFormState: FormState = initialFormState();
-
-  const userId = String(formData.get('userId') || '').trim();
-  const name = String(formData.get('name') || '').trim();
-  const ingredientLinesInfoStr = String(
-    formData.get('ingredientLinesInfo') || '[]'
-  );
-
+export async function createRecipe({
+  userId,
+  name,
+  ingredientLinesInfo,
+  image,
+}: {
+  userId: string;
+  name: string;
+  ingredientLinesInfo: CreateIngredientLineData[];
+  image?: File;
+}) {
   // extract image if exists
-  const imageFile = formData.get('image') as File | null;
+  const imageFile = image;
   let imageBuffer: Buffer | undefined;
 
   if (imageFile && imageFile.size > 0) {
-    try {
-      const arrayBuffer = await imageFile.arrayBuffer();
-      imageBuffer = Buffer.from(arrayBuffer);
-    } catch {
-      finalFormState.message = 'Error al procesar la imagen';
-      return finalFormState;
-    }
-  }
-
-  let ingredientLinesInfo: IngredientLineInfo[] = [];
-
-  try {
-    ingredientLinesInfo = JSON.parse(ingredientLinesInfoStr);
-  } catch {
-    // TODO mejor mensaje de error
-    finalFormState.message = 'Error al leer las líneas de ingredientes';
-    return finalFormState;
-  }
-
-  const errors: Record<string, string> = {};
-  if (ingredientLinesInfo.length === 0)
-    errors.ingredientLines = 'Se requiere al menos un ingrediente';
-
-  if (Object.keys(errors).length > 0) {
-    finalFormState.errors = errors;
-    finalFormState.message = 'Revisa los campos';
-    return finalFormState;
+    const arrayBuffer = await imageFile.arrayBuffer();
+    imageBuffer = Buffer.from(arrayBuffer);
   }
 
   try {
-    // TODO IMPORTANT: ensure userId is the current logged in user
     const request = {
       actorUserId: userId,
       targetUserId: userId,
@@ -72,13 +43,9 @@ export async function createRecipe(
     };
     await AppCreateRecipeUsecase.execute(request);
   } catch {
-    finalFormState.message = 'Error al crear la receta';
-    return finalFormState;
+    // TODO handle error properly
+    return;
   }
-
-  finalFormState.ok = true;
-  finalFormState.message = 'Receta creada';
-  // return finalFormState;
 
   redirect('/app/recipes');
 }
@@ -95,7 +62,7 @@ export async function deleteRecipe(recipeId: string) {
 
 export async function removeIngredientFromRecipe(
   recipeId: string,
-  ingredientId: string
+  ingredientId: string,
 ) {
   await AppRemoveIngredientFromRecipeUsecase.execute({
     recipeId,
@@ -131,7 +98,7 @@ export async function renameRecipe(recipeId: string, newName: string) {
 
 export async function updateRecipeImage(
   recipeId: string,
-  imageFile: File | null
+  imageFile: File | null,
 ) {
   if (!imageFile) return;
   if (imageFile.size <= 0) return;
@@ -157,7 +124,7 @@ export async function addIngredientToRecipe(
   caloriesPer100g: number,
   proteinPer100g: number,
   imageUrl: string | undefined,
-  quantityInGrams: number
+  quantityInGrams: number,
 ) {
   await AppAddIngredientToRecipeUsecase.execute({
     userId: 'dev-user', // TODO get current user id

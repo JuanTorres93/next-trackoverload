@@ -4,7 +4,7 @@ import { ExternalIngredientsRefRepo } from '@/domain/repos/ExternalIngredientsRe
 import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { IdGenerator } from '@/domain/services/IdGenerator.port';
 
-export type IngredientLineInfo = {
+export type CreateIngredientLineData = {
   externalIngredientId: string;
   source: string;
   name: string;
@@ -15,25 +15,25 @@ export type IngredientLineInfo = {
 };
 
 export async function createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo(
-  ingredientLinesInfo: IngredientLineInfo[],
+  ingredientLinesInfo: CreateIngredientLineData[],
   ingredientsRepo: IngredientsRepo,
   externalIngredientsRefRepo: ExternalIngredientsRefRepo,
-  idGenerator: IdGenerator
+  idGenerator: IdGenerator,
 ) {
   // Check if ingredient
   const externalIngredientIds = ingredientLinesInfo.map(
-    (info) => info.externalIngredientId
+    (info) => info.externalIngredientId,
   );
 
   const fetchedExternalIngredients: ExternalIngredientRef[] =
     await externalIngredientsRefRepo.getByExternalIdsAndSource(
       externalIngredientIds,
-      ingredientLinesInfo[0].source
+      ingredientLinesInfo[0].source,
     );
 
   // Get existing ingredients
   const existingIngredients = await ingredientsRepo.getIngredientsByIds(
-    fetchedExternalIngredients.map((ref) => ref.ingredientId)
+    fetchedExternalIngredients.map((ref) => ref.ingredientId),
   );
 
   // If any ingredient is missing, create it along with its ExternalIngredientRef
@@ -45,7 +45,7 @@ export async function createIngredientsAndExternalIngredientsForIngredientLineNo
       const exists = fetchedExternalIngredients.find(
         (ing) =>
           ing.externalId === lineInfo.externalIngredientId &&
-          ing.source === lineInfo.source
+          ing.source === lineInfo.source,
       );
 
       if (exists) continue;
@@ -84,7 +84,7 @@ export async function createIngredientsAndExternalIngredientsForIngredientLineNo
   for (const existingExternalIngredient of fetchedExternalIngredients) {
     const lineInfo = ingredientLinesInfo.find(
       (info) =>
-        info.externalIngredientId === existingExternalIngredient.externalId
+        info.externalIngredientId === existingExternalIngredient.externalId,
     );
 
     quantitiesMapByExternalId[existingExternalIngredient.externalId] = {
@@ -95,10 +95,10 @@ export async function createIngredientsAndExternalIngredientsForIngredientLineNo
 
   // Just created ingredients
   for (const missingExtIngredientId of Object.keys(
-    createdExternalIngredients
+    createdExternalIngredients,
   )) {
     const lineInfo = ingredientLinesInfo.find(
-      (info) => info.externalIngredientId === missingExtIngredientId
+      (info) => info.externalIngredientId === missingExtIngredientId,
     );
 
     quantitiesMapByExternalId[missingExtIngredientId] = {

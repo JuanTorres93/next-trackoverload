@@ -15,7 +15,7 @@ import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
 import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
 import { CreateRecipeUsecase } from '../CreateRecipe.usecase';
-import { IngredientLineInfo } from '../../common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
+import { CreateIngredientLineData } from '../../common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
 
 describe('CreateRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
@@ -26,7 +26,7 @@ describe('CreateRecipeUsecase', () => {
   let usersRepo: MemoryUsersRepo;
   let createRecipeUsecase: CreateRecipeUsecase;
   let testExternalIngredientRef: ExternalIngredientRef;
-  let testIngredientLineInfo: IngredientLineInfo;
+  let testIngredientLineInfo: CreateIngredientLineData;
   let user: User;
 
   beforeEach(async () => {
@@ -45,7 +45,7 @@ describe('CreateRecipeUsecase', () => {
       usersRepo,
       idGenerator,
       externalIngredientsRefRepo,
-      imageProcessor
+      imageProcessor,
     );
 
     user = User.create({
@@ -136,7 +136,7 @@ describe('CreateRecipeUsecase', () => {
 
       await ingredientsRepo.saveIngredient(testIngredient);
 
-      const ingredientsLineInfo: IngredientLineInfo = {
+      const ingredientsLineInfo: CreateIngredientLineData = {
         externalIngredientId: anotherExternalIngredientRef.externalId,
         source: anotherExternalIngredientRef.source,
         name: 'Chicken Breast',
@@ -277,7 +277,7 @@ describe('CreateRecipeUsecase', () => {
     it("should create external ingredient ref if it didn't exist", async () => {
       const newExternalIngredientId = 'new-external-ing-123';
 
-      const newIngredientLineInfo: IngredientLineInfo = {
+      const newIngredientLineInfo: CreateIngredientLineData = {
         externalIngredientId: newExternalIngredientId,
         source: 'openfoodfacts',
         name: 'New Ingredient',
@@ -301,14 +301,14 @@ describe('CreateRecipeUsecase', () => {
       const fetchedRef =
         await externalIngredientsRefRepo.getByExternalIdAndSource(
           newExternalIngredientId,
-          newIngredientLineInfo.source
+          newIngredientLineInfo.source,
         );
 
       const finalExternalIngredientRefs =
         externalIngredientsRefRepo.countForTesting();
 
       expect(finalExternalIngredientRefs).toBe(
-        initialExternalIngredientRefs + 1
+        initialExternalIngredientRefs + 1,
       );
 
       expect(fetchedRef!.externalId).toBe(newExternalIngredientId);
@@ -318,7 +318,7 @@ describe('CreateRecipeUsecase', () => {
     it("should create ingredient if it didn't exist", async () => {
       const newExternalIngredientId = 'another-new-external-ing-456';
 
-      const newIngredientLineInfo: IngredientLineInfo = {
+      const newIngredientLineInfo: CreateIngredientLineData = {
         externalIngredientId: newExternalIngredientId,
         source: 'openfoodfacts',
         name: 'Another New Ingredient',
@@ -345,12 +345,11 @@ describe('CreateRecipeUsecase', () => {
       const newIngredientId =
         (await externalIngredientsRefRepo.getByExternalIdAndSource(
           newExternalIngredientId,
-          newIngredientLineInfo.source
+          newIngredientLineInfo.source,
         ))!.ingredientId;
 
-      const fetchedIngredient = await ingredientsRepo.getIngredientById(
-        newIngredientId
-      );
+      const fetchedIngredient =
+        await ingredientsRepo.getIngredientById(newIngredientId);
 
       expect(fetchedIngredient).toBeDefined();
       expect(fetchedIngredient!.name).toBe(newIngredientLineInfo.name);
@@ -367,10 +366,10 @@ describe('CreateRecipeUsecase', () => {
       };
 
       await expect(createRecipeUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
       await expect(createRecipeUsecase.execute(request)).rejects.toThrow(
-        /CreateRecipeUsecase.*user.*not.*found/
+        /CreateRecipeUsecase.*user.*not.*found/,
       );
     });
 
@@ -383,10 +382,10 @@ describe('CreateRecipeUsecase', () => {
       };
 
       await expect(createRecipeUsecase.execute(request)).rejects.toThrow(
-        PermissionError
+        PermissionError,
       );
       await expect(createRecipeUsecase.execute(request)).rejects.toThrow(
-        /CreateRecipeUsecase.*cannot create.*recipe.*another user/
+        /CreateRecipeUsecase.*cannot create.*recipe.*another user/,
       );
     });
   });

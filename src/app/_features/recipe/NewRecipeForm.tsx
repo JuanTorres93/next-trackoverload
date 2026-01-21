@@ -1,11 +1,11 @@
 'use client';
 
+import ButtonNew from '@/app/_ui/ButtonNew';
 import ImagePicker from '@/app/_ui/ImagePicker';
 import Form from '@/app/_ui/NewResourceForm';
 import NutritionalInfoValue from '@/app/_ui/NutritionalInfoValue';
-import { useFormSetup } from '@/app/_utils/form/hooks';
 import { formatToInteger } from '@/app/_utils/format/formatToInteger';
-import { IngredientLineInfo } from '@/application-layer/use-cases/recipe/common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
+import { CreateIngredientLineData } from '@/application-layer/use-cases/recipe/common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { createRecipe } from './actions';
@@ -17,7 +17,7 @@ import IngredientSearch, {
 export type NewRecipeFormState = {
   name: string;
   ingredientLinesWithExternalRefs: IngredientLineWithExternalRef[];
-  imageBuffer: File | null;
+  imageBuffer: File | undefined;
 };
 
 type FormErrors = Record<keyof NewRecipeFormState, string>;
@@ -25,18 +25,16 @@ type FormErrors = Record<keyof NewRecipeFormState, string>;
 const INITIAL_FORM_STATE: NewRecipeFormState = {
   name: 'Nueva receta',
   ingredientLinesWithExternalRefs: [],
-  imageBuffer: null,
+  imageBuffer: undefined,
 };
 
 function NewRecipeForm() {
-  // Form state and action
-  const { formRef, pending, startTransition, formState, formAction } =
-    useFormSetup(createRecipe);
-
-  const [formStateRefactoring, setFormStateRefactoring] =
+  const [formState, setFormState] =
     useState<NewRecipeFormState>(INITIAL_FORM_STATE);
   const [formErrors, setFormErrors] = useState<FormErrors>({} as FormErrors);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  // Separate state needed due to implementation of IngredientSearch component
   const [
     ingredientLinesWithExternalRefsIngredientComponent,
     setIngredientLinesWithExternalRefsIngredientComponent,
@@ -44,8 +42,9 @@ function NewRecipeForm() {
     ...INITIAL_FORM_STATE.ingredientLinesWithExternalRefs,
   ]);
 
+  // Sync ingredient lines with form state
   useEffect(() => {
-    setFormStateRefactoring((prev) => ({
+    setFormState((prev) => ({
       ...prev,
       ingredientLinesWithExternalRefs:
         ingredientLinesWithExternalRefsIngredientComponent,
@@ -53,22 +52,23 @@ function NewRecipeForm() {
   }, [ingredientLinesWithExternalRefsIngredientComponent]);
 
   const invalidForm =
-    formStateRefactoring.ingredientLinesWithExternalRefs.length === 0 ||
-    formStateRefactoring.name.trim() === '' ||
-    formStateRefactoring.ingredientLinesWithExternalRefs.some(
+    formState.ingredientLinesWithExternalRefs.length === 0 ||
+    formState.name.trim() === '' ||
+    formState.ingredientLinesWithExternalRefs.some(
       (ingLineWithExternalRef) =>
         ingLineWithExternalRef.ingredientLine.quantityInGrams <= 0,
-    );
+    ) ||
+    isLoading;
 
   function setField<FormKey extends keyof NewRecipeFormState>(
     key: FormKey,
     value: NewRecipeFormState[FormKey],
   ) {
-    setFormStateRefactoring((prev) => ({ ...prev, [key]: value }));
+    setFormState((prev) => ({ ...prev, [key]: value }));
   }
 
   const totalCalories = formatToInteger(
-    formStateRefactoring.ingredientLinesWithExternalRefs.reduce(
+    formState.ingredientLinesWithExternalRefs.reduce(
       (sum, ingLineWithExternalRef) =>
         sum + ingLineWithExternalRef.ingredientLine.calories,
       0,
@@ -76,7 +76,7 @@ function NewRecipeForm() {
   );
 
   const totalProtein = formatToInteger(
-    formStateRefactoring.ingredientLinesWithExternalRefs.reduce(
+    formState.ingredientLinesWithExternalRefs.reduce(
       (sum, ingLineWithExternalRef) =>
         sum + ingLineWithExternalRef.ingredientLine.protein,
       0,
@@ -84,7 +84,7 @@ function NewRecipeForm() {
   );
 
   function handleResetForm() {
-    setFormStateRefactoring(INITIAL_FORM_STATE);
+    setFormState(INITIAL_FORM_STATE);
     setFormErrors({} as FormErrors);
   }
 
@@ -96,18 +96,9 @@ function NewRecipeForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData();
 
-    formData.append('userId', 'dev-user'); // TODO IMPORTANT: Replace with actual user ID
-    formData.append('name', formStateRefactoring.name);
-
-    // append image file if exists
-    if (formStateRefactoring.imageBuffer) {
-      formData.append('image', formStateRefactoring.imageBuffer);
-    }
-
-    const ingredientLinesInfo: IngredientLineInfo[] =
-      formStateRefactoring.ingredientLinesWithExternalRefs.map(
+    const ingredientLinesInfo: CreateIngredientLineData[] =
+      formState.ingredientLinesWithExternalRefs.map(
         (info: IngredientLineWithExternalRef) => {
           const ingredientLine = info.ingredientLine;
           const externalRef = info.ingredientExternalRef;
@@ -126,26 +117,26 @@ function NewRecipeForm() {
         },
       );
 
-    formData.append('ingredientLinesInfo', JSON.stringify(ingredientLinesInfo));
-
-    startTransition(() => {
-      formAction(formData);
-    });
+    try {
+      await createRecipe({
+        userId: 'dev-user', // TODO IMPORTANT: Replace with actual user ID
+        name: formState.name,
+        image: formState.imageBuffer,
+        ingredientLinesInfo: ingredientLinesInfo,
+      });
+      handleResetForm();
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <Form
-      ref={formRef}
-      isPending={pending}
-      disableSubmit={invalidForm}
-      onSubmit={handleSubmit}
-      submitText="Crear receta"
-    >
+    <form onSubmit={handleSubmit}>
       <div className="relative flex flex-col items-center justify-center w-64 mx-auto mb-2 overflow-hidden text-zinc-100 rounded-2xl aspect-square">
         <textarea
           className="z-10 resize-none text-center text-3xl  font-extrabold w-[90%] outline-none overflow-x-hidden max-h-[90%]"
           spellCheck={false}
-          value={formStateRefactoring.name}
+          value={formState.name}
           onChange={(e) => setField('name', e.target.value)}
           placeholder="Nombre receta"
           onInput={(e) => {
@@ -156,8 +147,8 @@ function NewRecipeForm() {
         ></textarea>
         <Image
           src={
-            formStateRefactoring.imageBuffer
-              ? URL.createObjectURL(formStateRefactoring.imageBuffer)
+            formState.imageBuffer
+              ? URL.createObjectURL(formState.imageBuffer)
               : '/recipe-no-picture.png'
           }
           alt="Imagen de la receta"
@@ -192,10 +183,13 @@ function NewRecipeForm() {
           />
         </Form.FormRow>
 
-        <Form.FormRow label="" error={formState?.errors.ingredientLines}>
+        <Form.FormRow
+          label=""
+          error={formErrors?.ingredientLinesWithExternalRefs}
+        >
           <IngredientSearch.SelectedIngredientsList
             ingredientLinesWithExternalRefs={
-              formStateRefactoring.ingredientLinesWithExternalRefs
+              formState.ingredientLinesWithExternalRefs
             }
             setIngredientLinesWithExternalRefs={
               setIngredientLinesWithExternalRefsIngredientComponent
@@ -205,7 +199,7 @@ function NewRecipeForm() {
       </IngredientSearch>
 
       {/* Summary */}
-      {formStateRefactoring.ingredientLinesWithExternalRefs.length > 0 && (
+      {formState.ingredientLinesWithExternalRefs.length > 0 && (
         <Form.FormRow label="">
           <div className="grid p-3 rounded-lg grid-cols-2 mt-4 bg-neutral-500 **:text-zinc-50 ">
             <NutritionalInfoValue
@@ -219,7 +213,9 @@ function NewRecipeForm() {
           </div>
         </Form.FormRow>
       )}
-    </Form>
+
+      <ButtonNew disabled={invalidForm}>Crear receta</ButtonNew>
+    </form>
   );
 }
 
