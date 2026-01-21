@@ -14,23 +14,41 @@ import IngredientSearch, {
   IngredientLineWithExternalRef,
 } from './IngredientSearch';
 
+export type NewRecipeFormState = {
+  name: string;
+  ingredientLinesWithExternalRefs: IngredientLineWithExternalRef[];
+  imageBuffer: File| null;
+};
+
+type FormErrors = Record<keyof NewRecipeFormState, string>;
+
+const INITIAL_FORM_STATE: NewRecipeFormState = {
+  name: 'Nueva receta',
+  ingredientLinesWithExternalRefs: [],
+  imageBuffer: null,
+};
+
 function NewRecipeForm() {
   // Form state and action
   const { formRef, pending, startTransition, formState, formAction } =
     useFormSetup(createRecipe);
 
-  // Business logic state
-  const defaultRecipeName = 'Nueva receta';
-  const [recipeName, setRecipeName] = useState(defaultRecipeName);
+  const [formStateRefactoring, setFormStateRefactoring] = useState<NewRecipeFormState>(INITIAL_FORM_STATE);
+  const [formErrors, setFormErrors] = useState<FormErrors>({} as FormErrors);
 
-  const defaultIngredientLines: IngredientLineWithExternalRef[] = [];
+  const canSubmit = formStateRefactoring.name.trim() !== '' && formStateRefactoring.ingredientLinesWithExternalRefs.length > 0;
+
+  function setField<FormKey extends keyof NewRecipeFormState>(
+    key: FormKey,
+    value: NewRecipeFormState[FormKey],
+  ) {
+    setFormStateRefactoring((prev) => ({ ...prev, [key]: value }));
+  }
+
+
   const [ingredientLinesWithExternalRefs, setIngredientLinesWithExternalRefs] =
-    useState<IngredientLineWithExternalRef[]>(defaultIngredientLines);
+    useState<IngredientLineWithExternalRef[]>([...INITIAL_FORM_STATE.ingredientLinesWithExternalRefs]);
 
-  const defaultSelectedImage: File | null = null;
-  const [selectedImage, setSelectedImage] = useState<File | null>(
-    defaultSelectedImage
-  );
 
   const totalCalories = formatToInteger(
     ingredientLinesWithExternalRefs.reduce(
@@ -50,24 +68,22 @@ function NewRecipeForm() {
 
   const invalidForm =
     ingredientLinesWithExternalRefs.length === 0 ||
-    recipeName.trim() === '' ||
+    formStateRefactoring.name.trim() === '' ||
     ingredientLinesWithExternalRefs.some(
       (ingLineWithExternalRef) =>
         ingLineWithExternalRef.ingredientLine.quantityInGrams <= 0
     );
 
-  useResetOnSuccess(formRef, formState, pending, [
-    { setter: setRecipeName, initialValue: defaultRecipeName },
-    {
-      setter: setIngredientLinesWithExternalRefs,
-      initialValue: defaultIngredientLines,
-    },
-    { setter: setSelectedImage, initialValue: defaultSelectedImage },
-  ]);
+
+
+  function handleResetForm() {
+    setFormStateRefactoring(INITIAL_FORM_STATE);
+    setFormErrors({} as FormErrors);
+  }
 
   function handleImageSelection(files: File[]) {
     if (files.length > 0) {
-      setSelectedImage(files[0]);
+      setField('imageBuffer', files[0]);
     }
   }
 
@@ -76,11 +92,11 @@ function NewRecipeForm() {
     const formData = new FormData();
 
     formData.append('userId', 'dev-user'); // TODO IMPORTANT: Replace with actual user ID
-    formData.append('name', recipeName);
+    formData.append('name', formStateRefactoring.name);
 
     // append image file if exists
-    if (selectedImage) {
-      formData.append('image', selectedImage);
+    if (formStateRefactoring.imageBuffer) {
+      formData.append('image', formStateRefactoring.imageBuffer);
     }
 
     const ingredientLinesInfo: IngredientLineInfo[] =
@@ -122,8 +138,8 @@ function NewRecipeForm() {
         <textarea
           className="z-10 resize-none text-center text-3xl  font-extrabold w-[90%] outline-none overflow-x-hidden max-h-[90%]"
           spellCheck={false}
-          value={recipeName}
-          onChange={(e) => setRecipeName(e.target.value)}
+          value={formStateRefactoring.name}
+          onChange={(e) => setField('name', e.target.value)}
           placeholder="Nombre receta"
           onInput={(e) => {
             e.currentTarget.style.height = 'auto';
@@ -133,8 +149,8 @@ function NewRecipeForm() {
         ></textarea>
         <Image
           src={
-            selectedImage
-              ? URL.createObjectURL(selectedImage)
+            formStateRefactoring.imageBuffer
+              ? URL.createObjectURL(formStateRefactoring.imageBuffer)
               : '/recipe-no-picture.png'
           }
           alt="Imagen de la receta"
