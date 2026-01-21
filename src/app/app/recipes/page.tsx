@@ -25,7 +25,7 @@ export default async function RecipesPage() {
       ) : (
         <div
           data-testid="recipes-container"
-          className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+          className="grid grid-cols-[repeat(auto-fit,minmax(15rem,2rem))] gap-4"
         >
           {recipes.map((recipe) => (
             <RecipeCard key={recipe.id} recipe={recipe} />
