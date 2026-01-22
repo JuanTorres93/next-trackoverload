@@ -1,6 +1,7 @@
 'use client';
+import ButtonSearch from '@/app/_ui/ButtonSearch';
 import Input from '@/app/_ui/Input';
-import VerticalList from '@/app/_ui/VerticalList';
+import Spinner from '@/app/_ui/Spinner';
 import { formatToInteger } from '@/app/_utils/format/formatToInteger';
 import { useOutsideClick } from '@/app/hooks/useOutsideClick';
 import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
@@ -9,8 +10,7 @@ import { createContext, useContext, useState } from 'react';
 import IngredientItemMini from '../ingredient/IngredientItemMini';
 import IngredientLineItem from '../ingredient/IngredientLineItem';
 import { createInMemoryRecipeIngredientLine } from './utils';
-import ButtonSearch from '@/app/_ui/ButtonSearch';
-import Spinner from '@/app/_ui/Spinner';
+
 
 type IngredientSearchContextType = {
   showFoundIngredients: boolean;
@@ -88,13 +88,6 @@ function IngredientSearch({ children }: { children: React.ReactNode }) {
     }
   }
 
-  // const debouncedFetchIngredients = useDebounce(fetchIngredients, 200);
-
-  // Fetch ingredients when search term changes
-  // IMPORTANT: Do not use with current OpenFoodFacts API due to rate limiting issues.
-  //useEffect(() => {
-  //  // debouncedFetchIngredients(ingredientSearchTerm);
-  //}, [ingredientSearchTerm, debouncedFetchIngredients]);
 
   function isSelected(externalIngredientId: string) {
     return selectedExternalIngredientIds.has(externalIngredientId);
@@ -122,7 +115,7 @@ function IngredientSearch({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Search() {
+function Search({className}: {className?: string}) {
   const {
     handleShowList,
     ingredientSearchTerm,
@@ -132,7 +125,7 @@ function Search() {
   } = useIngredientSearchContext();
 
   return (
-    <div className="flex gap-4">
+    <div className={`grid grid-cols-[1fr_min-content] gap-4  ${className}`}>
       <Input
         value={ingredientSearchTerm}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -155,11 +148,15 @@ function Search() {
 
 function FoundIngredientsList({
   onSelectFoundIngredient,
+  className,
+  containerClassName,
 }: {
   onSelectFoundIngredient?: (
     ingredientFinderResult: IngredientFinderResult,
     isSelected: boolean,
   ) => void;
+  className?: string;
+  containerClassName?: string;
 }) {
   const {
     showFoundIngredients,
@@ -194,7 +191,7 @@ function FoundIngredientsList({
   }
 
   return (
-    <>
+    <div className={containerClassName}>
       {isLoading && (
         <div className="flex justify-center my-4">
           <Spinner />
@@ -205,9 +202,9 @@ function FoundIngredientsList({
         showFoundIngredients &&
         foundIngredientsResults.length > 0 &&
         ingredientSearchTerm && (
-          <VerticalList
+          <div
             data-testid="ingredient-list"
-            className="mx-auto max-w-80"
+            className={`flex flex-col space-y-2 overflow-y-scroll overflow-x-hidden py-2 pl-2 pr-4 max-h-57 ${className}`}
           >
             {foundIngredientsResults.map((foundIngredient) => {
               const fakeIngredient = {
@@ -228,21 +225,25 @@ function FoundIngredientsList({
                 />
               );
             })}
-          </VerticalList>
+          </div>
         )}
-    </>
+    </div>
   );
 }
 
 function SelectedIngredientsList({
   ingredientLinesWithExternalRefs,
   setIngredientLinesWithExternalRefs,
+  className,
+  containerClassName,
   showIngredientLabel = true,
 }: {
   ingredientLinesWithExternalRefs: IngredientLineWithExternalRef[];
   setIngredientLinesWithExternalRefs: React.Dispatch<
     React.SetStateAction<IngredientLineWithExternalRef[]>
   >;
+  className?: string;
+  containerClassName?: string;
   showIngredientLabel?: boolean;
 }) {
   function handleIngredientLineQuantityChange(ingredientLineId: string) {
@@ -299,20 +300,20 @@ function SelectedIngredientsList({
   }
 
   return (
-    <div className="stretch max-w-[30rem] max-h-150">
+    <div className={`${containerClassName}`}>
       {showIngredientLabel && (
-        <span className="mb-40">
+        <span className="block mb-6 text-center text-zinc-700">
           {ingredientLinesWithExternalRefs.length
             ? ingredientLinesWithExternalRefs.length
             : ''}{' '}
-          Ingrediente
+          ingrediente
           {ingredientLinesWithExternalRefs.length === 1 ? '' : 's'}
         </span>
       )}
 
       <div
         data-testid="ingredient-line-list"
-        className="grid auto-rows-min gap-4 stretch max-w-[30rem] max-h-150 overflow-y-scroll"
+        className={`grid auto-rows-min gap-4 max-h-150 overflow-y-scroll ${className}`}
       >
         {ingredientLinesWithExternalRefs.map(
           (ingredientLineWithExternalRef) => {

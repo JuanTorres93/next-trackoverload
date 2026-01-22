@@ -131,59 +131,65 @@ function NewRecipeForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="relative flex flex-col items-center justify-center w-64 mx-auto mb-2 overflow-hidden text-zinc-100 rounded-2xl aspect-square">
-        <textarea
-          className="z-10 resize-none text-center text-3xl  font-extrabold w-[90%] outline-none overflow-x-hidden max-h-[90%]"
-          spellCheck={false}
-          value={formState.name}
-          onChange={(e) => setField('name', e.target.value)}
-          placeholder="Nombre receta"
-          onInput={(e) => {
-            e.currentTarget.style.height = 'auto';
-            e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;
-          }}
-          required
-        ></textarea>
-        <Image
-          src={
-            formState.imageBuffer
-              ? URL.createObjectURL(formState.imageBuffer)
-              : '/recipe-no-picture.png'
-          }
-          alt="Imagen de la receta"
-          fill
-          // className="object-contain"
-          className="object-cover"
-        />
+    <IngredientSearch>
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">
+        <FormRow className="grid items-start justify-center grid-cols-2 gap-8">
+          <div
+            id="image-and-name-container"
+            className="relative flex flex-col items-center justify-center p-4 mx-auto mb-2 overflow-hidden w-80 text-zinc-100 rounded-2xl aspect-square"
+          >
+            <textarea
+              className="z-10 resize-none text-center text-3xl  font-extrabold w-[90%] outline-none overflow-x-hidden max-h-[90%]"
+              spellCheck={false}
+              value={formState.name}
+              onChange={(e) => setField('name', e.target.value)}
+              placeholder="Nombre receta"
+              onInput={(e) => {
+                e.currentTarget.style.height = 'auto';
+                e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;
+              }}
+              required
+            ></textarea>
+            <Image
+              src={
+                formState.imageBuffer
+                  ? URL.createObjectURL(formState.imageBuffer)
+                  : '/recipe-no-picture.png'
+              }
+              alt="Imagen de la receta"
+              fill
+              // className="object-contain"
+              className="object-cover"
+            />
 
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-gray-600/60" />
+            {/* Overlay */}
+            <div className="absolute inset-0 bg-gray-600/60" />
 
-        <ImagePicker
-          onFiles={handleImageSelection}
-          maxSizeMB={2}
-          borderTailwindColor="gray"
-          accept="image/jpeg,image/png,image/webp"
-        />
-      </div>
+            <ImagePicker
+              onFiles={handleImageSelection}
+              maxSizeMB={2}
+              borderTailwindColor="gray"
+              accept="image/jpeg,image/png,image/webp"
+            />
+          </div>
 
-      <IngredientSearch>
-        <FormRow>
-          <IngredientSearch.Search />
+          <FormRow className="flex-col items-center gap-6">
+            <IngredientSearch.Search className='w-full max-w-120'/>
 
-          <IngredientSearch.FoundIngredientsList
-            onSelectFoundIngredient={(ingredientFinderResult, isSelected) =>
-              handleIngredientSelection(
-                ingredientFinderResult,
-                isSelected,
-                setIngredientLinesWithExternalRefsIngredientComponent,
-              )
-            }
-          />
+            <IngredientSearch.FoundIngredientsList
+              containerClassName='max-w-120'
+              onSelectFoundIngredient={(ingredientFinderResult, isSelected) =>
+                handleIngredientSelection(
+                  ingredientFinderResult,
+                  isSelected,
+                  setIngredientLinesWithExternalRefsIngredientComponent,
+                )
+              }
+            />
+          </FormRow>
         </FormRow>
 
-        <FormRow>
+        <FormRow className='flex-col items-center justify-center mx-auto max-w-150'>
           <IngredientSearch.SelectedIngredientsList
             ingredientLinesWithExternalRefs={
               formState.ingredientLinesWithExternalRefs
@@ -192,29 +198,27 @@ function NewRecipeForm() {
               setIngredientLinesWithExternalRefsIngredientComponent
             }
           />
-        </FormRow>
-      </IngredientSearch>
 
-      {/* Summary */}
-      {formState.ingredientLinesWithExternalRefs.length > 0 && (
-        <FormRow>
-          <div className="grid p-3 rounded-lg grid-cols-2 mt-4 bg-neutral-500 **:text-zinc-50 ">
-            <NutritionalInfoValue
-              number={totalCalories}
-              label="Calorías totales"
-            />
-            <NutritionalInfoValue
-              number={totalProtein}
-              label="Proteínas totales"
-            />
-          </div>
-        </FormRow>
-      )}
+        {/* Summary */}
+        {formState.ingredientLinesWithExternalRefs.length > 0 && (
+            <div className="grid p-3 rounded-lg grid-cols-2 mt-4 w-full bg-neutral-500 **:text-zinc-50 ">
+              <NutritionalInfoValue
+                number={totalCalories}
+                label="Calorías totales"
+              />
+              <NutritionalInfoValue
+                number={totalProtein}
+                label="Proteínas totales"
+              />
+            </div>
+        )}
 
-      <FormRow>
-        <ButtonNew disabled={invalidForm}>Crear receta</ButtonNew>
-      </FormRow>
-    </form>
+          <ButtonNew
+            className='w-full mt-6'
+          disabled={invalidForm}>Crear receta</ButtonNew>
+        </FormRow>
+      </form>
+    </IngredientSearch>
   );
 }
 
