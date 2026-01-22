@@ -23,7 +23,6 @@ interface RecipeDisplayProps {
   recipe: RecipeDTO;
 }
 
-// TODO add functionality to change recipe image
 
 export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
   // TODO Filter ingredients that are already in the recipe
@@ -109,6 +108,7 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
           <IngredientSearch.Search />
 
           <IngredientSearch.FoundIngredientsList
+          className='my-4'
             onSelectFoundIngredient={(ingredientFinderResult, isSelected) =>
               handleIngredientSelection(
                 ingredientFinderResult,
@@ -119,6 +119,8 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
           />
 
           <IngredientSearch.SelectedIngredientsList
+          containerClassName='mt-8'
+          className='max-h-80!'
             ingredientLinesWithExternalRefs={newIngredientLinesWithExternalRefs}
             setIngredientLinesWithExternalRefs={
               setNewIngredientLinesWithExternalRefs
