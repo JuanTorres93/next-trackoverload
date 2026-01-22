@@ -23,7 +23,6 @@ interface RecipeDisplayProps {
   recipe: RecipeDTO;
 }
 
-
 export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
   // TODO Filter ingredients that are already in the recipe
   const [
@@ -64,7 +63,7 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
         ingredientLine.ingredient.nutritionalInfoPer100g.calories,
         ingredientLine.ingredient.nutritionalInfoPer100g.protein,
         ingredientLine.ingredient.imageUrl,
-        ingredientLine.quantityInGrams
+        ingredientLine.quantityInGrams,
       );
     }
 
@@ -108,19 +107,19 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
           <IngredientSearch.Search />
 
           <IngredientSearch.FoundIngredientsList
-          className='my-4'
+            className="my-4"
             onSelectFoundIngredient={(ingredientFinderResult, isSelected) =>
               handleIngredientSelection(
                 ingredientFinderResult,
                 isSelected,
-                setNewIngredientLinesWithExternalRefs
+                setNewIngredientLinesWithExternalRefs,
               )
             }
           />
 
           <IngredientSearch.SelectedIngredientsList
-          containerClassName='mt-8'
-          className='max-h-80!'
+            containerClassName="mt-8"
+            className="max-h-80!"
             ingredientLinesWithExternalRefs={newIngredientLinesWithExternalRefs}
             setIngredientLinesWithExternalRefs={
               setNewIngredientLinesWithExternalRefs

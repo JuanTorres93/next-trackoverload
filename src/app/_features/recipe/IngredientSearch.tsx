@@ -11,7 +11,6 @@ import IngredientItemMini from '../ingredient/IngredientItemMini';
 import IngredientLineItem from '../ingredient/IngredientLineItem';
 import { createInMemoryRecipeIngredientLine } from './utils';
 
-
 type IngredientSearchContextType = {
   showFoundIngredients: boolean;
   ingredientSearchTerm: string;
@@ -88,7 +87,6 @@ function IngredientSearch({ children }: { children: React.ReactNode }) {
     }
   }
 
-
   function isSelected(externalIngredientId: string) {
     return selectedExternalIngredientIds.has(externalIngredientId);
   }
@@ -115,7 +113,7 @@ function IngredientSearch({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Search({className}: {className?: string}) {
+function Search({ className }: { className?: string }) {
   const {
     handleShowList,
     ingredientSearchTerm,
@@ -246,6 +244,8 @@ function SelectedIngredientsList({
   containerClassName?: string;
   showIngredientLabel?: boolean;
 }) {
+  const numberOfSelectedIngredients = ingredientLinesWithExternalRefs.length;
+
   function handleIngredientLineQuantityChange(ingredientLineId: string) {
     return (newQuantity: number) => {
       const ingredientLineWithExternalRef =
@@ -301,13 +301,11 @@ function SelectedIngredientsList({
 
   return (
     <div className={`${containerClassName}`}>
-      {showIngredientLabel && (
+      {showIngredientLabel && numberOfSelectedIngredients > 0 && (
         <span className="block mb-6 text-center text-zinc-700">
-          {ingredientLinesWithExternalRefs.length
-            ? ingredientLinesWithExternalRefs.length
-            : ''}{' '}
+          {numberOfSelectedIngredients ? numberOfSelectedIngredients : ''}{' '}
           ingrediente
-          {ingredientLinesWithExternalRefs.length === 1 ? '' : 's'}
+          {numberOfSelectedIngredients === 1 ? '' : 's'}
         </span>
       )}
 
