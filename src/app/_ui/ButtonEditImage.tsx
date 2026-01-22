@@ -10,7 +10,7 @@ function ButtonEditImage({
     <div {...props}>
       <label
         htmlFor="edit-recipe-image-button"
-        className="flex items-center justify-center gap-2 p-3 transition bg-green-700 rounded-full shadow-md cursor-pointer select-none opacity-70 text-neutral-50 hover:bg-green-600 disabled:text-zinc-400 disabled:border-zinc-400 disabled:bg-zinc-100 disabled:cursor-not-allowed"
+        className="flex items-center justify-center gap-2 p-3 transition rounded-full shadow-md cursor-pointer select-none bg-primary-shade opacity-70 text-neutral-50 hover:bg-primary-light disabled:text-zinc-400 disabled:border-zinc-400 disabled:bg-zinc-100 disabled:cursor-not-allowed"
       >
         <HiMiniPencilSquare className="text-3xl " />
       </label>

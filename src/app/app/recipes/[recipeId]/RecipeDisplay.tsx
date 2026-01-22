@@ -91,12 +91,12 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
       <div className="flex justify-end gap-4 text-4xl">
         <HiOutlineDuplicate
           data-testid="duplicate-recipe-button"
-          className="transition cursor-pointer hover:text-green-600"
+          className="transition cursor-pointer hover:text-primary-light"
           onClick={() => duplicateRecipe(recipe.id)}
         />
         <HiOutlineTrash
           data-testid="delete-recipe-button"
-          className="transition cursor-pointer hover:text-red-600"
+          className="transition cursor-pointer hover:text-error"
           onClick={() => deleteRecipe(recipe.id)}
         />
       </div>

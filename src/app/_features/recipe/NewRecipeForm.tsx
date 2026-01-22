@@ -174,10 +174,10 @@ function NewRecipeForm() {
           </div>
 
           <FormRow className="flex-col items-center gap-6">
-            <IngredientSearch.Search className='w-full max-w-120'/>
+            <IngredientSearch.Search className="w-full max-w-120" />
 
             <IngredientSearch.FoundIngredientsList
-              containerClassName='max-w-120'
+              containerClassName="max-w-120"
               onSelectFoundIngredient={(ingredientFinderResult, isSelected) =>
                 handleIngredientSelection(
                   ingredientFinderResult,
@@ -189,7 +189,7 @@ function NewRecipeForm() {
           </FormRow>
         </FormRow>
 
-        <FormRow className='flex-col items-center justify-center mx-auto max-w-150'>
+        <FormRow className="flex-col items-center justify-center mx-auto max-w-150">
           <IngredientSearch.SelectedIngredientsList
             ingredientLinesWithExternalRefs={
               formState.ingredientLinesWithExternalRefs
@@ -199,23 +199,25 @@ function NewRecipeForm() {
             }
           />
 
-        {/* Summary */}
-        {formState.ingredientLinesWithExternalRefs.length > 0 && (
-            <div className="grid p-3 rounded-lg grid-cols-2 mt-4 w-full bg-neutral-500 **:text-zinc-50 ">
+          {/* Summary */}
+          {formState.ingredientLinesWithExternalRefs.length > 0 && (
+            <div className="grid w-full grid-cols-2 p-3 mt-4 rounded-lg bg-surface-dark ">
               <NutritionalInfoValue
+                lightText={true}
                 number={totalCalories}
                 label="Calorías totales"
               />
               <NutritionalInfoValue
+                lightText={true}
                 number={totalProtein}
                 label="Proteínas totales"
               />
             </div>
-        )}
+          )}
 
-          <ButtonNew
-            className='w-full mt-6'
-          disabled={invalidForm}>Crear receta</ButtonNew>
+          <ButtonNew className="w-full mt-6" disabled={invalidForm}>
+            Crear receta
+          </ButtonNew>
         </FormRow>
       </form>
     </IngredientSearch>

@@ -5,17 +5,26 @@ function NutritionalInfoValue({
   label,
   styleNumber,
   styleLabel,
+  className,
+  lightText = false,
 }: {
   number: number;
   label: string;
   styleNumber?: string;
   styleLabel?: string;
+  className?: string;
+  lightText?: boolean;
 }) {
   const formattedNumber = formatToInteger(number);
+
+  const textColorClass = lightText ? 'text-text-light' : 'text-text';
+
   return (
-    <div className="flex flex-col items-center">
-      <span className={`font-medium ${styleNumber}`}>{formattedNumber}</span>
-      <span className={`text-sm text-zinc-600 mt-[-5px] ${styleLabel}`}>
+    <div className={`flex flex-col items-center ${className}`}>
+      <span className={`font-medium ${styleNumber} ${textColorClass}`}>
+        {formattedNumber}
+      </span>
+      <span className={`text-sm mt-0.5 ${styleLabel} ${textColorClass}`}>
         {label}
       </span>
     </div>

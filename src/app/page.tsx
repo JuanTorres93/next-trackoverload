@@ -15,6 +15,12 @@ export default function LandingPage() {
             Go to app
           </Link>
         </div>
+        <div className="w-40 h-40 bg-primary"></div>
+        <div className="w-40 h-40 bg-primary-light"></div>
+        <div className="w-40 h-40 bg-primary-shade"></div>
+        <div className="w-40 h-40 bg-text"></div>
+        <div className="w-40 h-40 bg-success"></div>
+        <div className="w-40 h-40 bg-error"></div>
       </main>
     </div>
   );

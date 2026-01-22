@@ -34,14 +34,14 @@ function DaySummary({
 
   return (
     <div
-      className={`p-2 border-2 rounded-xl border-neutral-400 ${
-        isToday ? 'border-3! shadow-md border-green-600!' : ''
+      className={`p-2 border-2 rounded-xl border-surface-dark ${
+        isToday ? 'border-3! shadow-md border-primary-light!' : ''
       }`}
     >
       <h2 className="flex flex-col items-center justify-center">
         <span>{dayName}</span>
         <span className="text-sm text-zinc-600">{`${prependOnDigitNumberWithZero(
-          day
+          day,
         )}/${prependOnDigitNumberWithZero(month)}/${year}`}</span>
       </h2>
 

@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} antialiased overflow-y-scroll text-xl text-zinc-800`}
+        className={`${inter.className} antialiased overflow-y-scroll text-xl text-text bg-background`}
       >
         <div id="wrapper-all-always" className="w-full overflow-x-hidden">
           {children}

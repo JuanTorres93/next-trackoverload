@@ -12,7 +12,7 @@ function ButtonNew({
   className?: string;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   // NOTE: group class allows to target child elements on parent hover
-  const buttonStyle = `p-3 text-base font-medium text-green-600 transition border-2 border-green-600 rounded-md group hover:cursor-pointer hover:bg-green-600 hover:text-neutral-50 disabled:text-zinc-400 disabled:border-zinc-400 disabled:hover:bg-transparent disabled:cursor-not-allowed ${className}`;
+  const buttonStyle = `p-3 text-base font-medium text-primary transition border-2 border-primary rounded-md group hover:cursor-pointer hover:bg-primary hover:text-neutral-50 disabled:text-zinc-400 disabled:border-zinc-400 disabled:hover:bg-transparent disabled:cursor-not-allowed ${className}`;
 
   const buttonContent = (
     <>

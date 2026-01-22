@@ -12,10 +12,12 @@ function NutritionSummary({
   line,
   onQuantityChange,
   onRemove,
+  className,
 }: {
   line: IngredientLineDTO | RecipeDTO;
   onQuantityChange?: (quantity: number) => void;
   onRemove?: () => void;
+  className?: string;
 }) {
   const isIngredientLine = 'ingredient' in line;
   const defaultImageUrl = '/ingredient-no-picture.png';
@@ -29,8 +31,10 @@ function NutritionSummary({
     : line.ingredientLines.reduce((sum, il) => sum + il.quantityInGrams, 0);
 
   return (
-    <div className="grid grid-rows-[1fr_auto] h-full max-h-48 overflow-hidden rounded-xl  ">
-      <div className="grid grid-cols-[40px_1fr_5rem_min-content] p-2  gap-4 items-center bg-neutral-100">
+    <div
+      className={`grid  grid-rows-[1fr_auto] h-full max-h-48 overflow-hidden rounded-xl ${className}`}
+    >
+      <div className="grid grid-cols-[40px_1fr_5rem_min-content] p-2  gap-4 items-center bg-surface-card">
         <div className="relative h-12 overflow-hidden rounded-md aspect-square">
           <Image
             fill
@@ -69,9 +73,17 @@ function NutritionSummary({
         )}
       </div>
 
-      <div className="grid grid-cols-2 p-2 text-sm text-center bg-neutral-200 text-neutral-600">
-        <NutritionalInfoValue number={line.calories} label="Calorías" />
-        <NutritionalInfoValue number={line.protein} label="Proteínas" />
+      <div className="grid grid-cols-2 p-2 text-sm text-center bg-surface-dark ">
+        <NutritionalInfoValue
+          lightText={true}
+          number={line.calories}
+          label="Calorías"
+        />
+        <NutritionalInfoValue
+          lightText={true}
+          number={line.protein}
+          label="Proteínas"
+        />
       </div>
     </div>
   );

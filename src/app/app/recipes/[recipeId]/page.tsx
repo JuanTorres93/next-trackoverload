@@ -40,7 +40,7 @@ export default async function RecipePage({
     {
       id: recipeId,
       userId: 'dev-user', // TODO IMPORTANT: Replace with actual user ID from authenticated user
-    }
+    },
   );
 
   if (!recipe) return <PageWrapper>No se encontró la receta</PageWrapper>;
@@ -48,7 +48,7 @@ export default async function RecipePage({
   return (
     <PageWrapper>
       <div className="grid grid-cols-1 gap-20">
-        <header className="grid items-center w-full rounded-2xl gap-8 p-2 pr-6 grid-cols-[max-content_minmax(1rem,1fr)] grid-rows-[max-content_min-content] bg-green-800 text-zinc-100">
+        <header className="grid items-center w-full rounded-2xl gap-8 p-2 pr-6 grid-cols-[max-content_minmax(1rem,1fr)] grid-rows-[max-content_min-content] bg-primary text-zinc-100">
           <UpdateRecipeImage recipe={recipe} className="row-span-2 " />
 
           <UpdateRecipeTitle originalTitle={recipe.name} recipeId={recipe.id} />

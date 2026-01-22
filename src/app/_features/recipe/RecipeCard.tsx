@@ -10,7 +10,7 @@ function RecipeCard({ recipe }: { recipe: RecipeDTO }) {
   return (
     <Link
       href={`/app/recipes/${recipe.id}`}
-      className="p-3 min-w-52 rounded-lg grid grid-cols-2 grid-rows-[max-content_min-content_min-content] gap-4 bg-neutral-50 relative shadow-md hover:cursor-pointer hover:shadow-lg transition hover:bg-neutral-100"
+      className="p-3 min-w-52 rounded-lg grid grid-cols-2 grid-rows-[max-content_min-content_min-content] gap-4 bg-surface-card relative shadow-md hover:cursor-pointer hover:shadow-lg transition hover:bg-surface-light"
     >
       <ButtonDeleteHover
         onClick={async () => {
