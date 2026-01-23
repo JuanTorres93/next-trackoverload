@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useRef, useState } from 'react';
+import TextSmall from './typography/TextSmall';
 
 type ImageFile = {
   file: File;
@@ -115,19 +116,21 @@ export default function ImagePicker({
               Arrastra tu{multiple ? 's' : ''} im{multiple ? 'á' : 'a'}gen
               {multiple ? 'es' : ''} aquí
             </p>
-            <p className="text-sm font-medium opacity-70">
-              o haz clic para seleccionar — Máx: {maxSizeMB}MB
-            </p>
+            <TextSmall>
+              <p className="font-medium opacity-70">
+                o haz clic para seleccionar — Máx: {maxSizeMB}MB
+              </p>
+            </TextSmall>
           </>
         ) : (
           <div className="space-y-2">
-            <div className="space-y-1">
+            <TextSmall className="space-y-1">
               {images.map((image, index) => (
-                <p key={index} className="text-sm font-medium opacity-80">
+                <p key={index} className="font-medium opacity-80">
                   {image.file.name}
                 </p>
               ))}
-            </div>
+            </TextSmall>
           </div>
         )}
         <input
@@ -140,7 +143,11 @@ export default function ImagePicker({
         />
       </div>
 
-      {error && <p className="text-sm text-error">{error}</p>}
+      {error && (
+        <TextSmall>
+          <p className="text-error">{error}</p>
+        </TextSmall>
+      )}
     </div>
   );
 }

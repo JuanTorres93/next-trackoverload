@@ -1,4 +1,5 @@
 import { formatToInteger } from '../_utils/format/formatToInteger';
+import TextSmall from './typography/TextSmall';
 
 function NutritionalInfoValue({
   number,
@@ -24,9 +25,11 @@ function NutritionalInfoValue({
       <span className={`font-medium ${styleNumber} ${textColorClass}`}>
         {formattedNumber}
       </span>
-      <span className={`text-sm mt-0.5 ${styleLabel} ${textColorClass}`}>
-        {label}
-      </span>
+      <TextSmall>
+        <span className={`mt-0.5 ${styleLabel} ${textColorClass}`}>
+          {label}
+        </span>
+      </TextSmall>
     </div>
   );
 }

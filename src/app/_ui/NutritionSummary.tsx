@@ -5,6 +5,7 @@ import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import Image from 'next/image';
 import { HiOutlineX } from 'react-icons/hi';
+import TextSmall from './typography/TextSmall';
 
 const quantityStyle = 'w-full text-right border-none outline-none';
 
@@ -73,7 +74,7 @@ function NutritionSummary({
         )}
       </div>
 
-      <div className="grid grid-cols-2 p-2 text-sm text-center bg-surface-dark ">
+      <TextSmall className="grid grid-cols-2 p-2 text-center bg-surface-dark ">
         <NutritionalInfoValue
           lightText={true}
           number={line.calories}
@@ -84,7 +85,7 @@ function NutritionSummary({
           number={line.protein}
           label="Proteínas"
         />
-      </div>
+      </TextSmall>
     </div>
   );
 }

@@ -10,6 +10,7 @@ import { createContext, useContext, useState } from 'react';
 import IngredientItemMini from '../ingredient/IngredientItemMini';
 import IngredientLineItem from '../ingredient/IngredientLineItem';
 import { createInMemoryRecipeIngredientLine } from './utils';
+import TextSmall from '@/app/_ui/typography/TextSmall';
 
 type IngredientSearchContextType = {
   showFoundIngredients: boolean;
@@ -334,7 +335,7 @@ function SelectedIngredientsList({
       </div>
 
       {ingredientLinesWithExternalRefs.length === 0 && (
-        <div className="text-sm">No hay ingredientes seleccionados.</div>
+        <TextSmall>No hay ingredientes seleccionados.</TextSmall>
       )}
     </div>
   );

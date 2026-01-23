@@ -5,6 +5,7 @@ import { AssembledDayDTO } from '@/application-layer/dtos/DayDTO';
 import { dayIdToDayMonthYear } from '@/domain/value-objects/DayId/DayId';
 import { prependOnDigitNumberWithZero } from './utils/prependOnDigitNumberWithZero';
 import ButtonNew from '@/app/_ui/ButtonNew';
+import TextSmall from '@/app/_ui/typography/TextSmall';
 
 const computeIsToday = (day: number, month: number, year: number) => {
   const today = new Date();
@@ -40,9 +41,11 @@ function DaySummary({
     >
       <h2 className="flex flex-col items-center justify-center">
         <span>{dayName}</span>
-        <span className="text-sm">{`${prependOnDigitNumberWithZero(
-          day,
-        )}/${prependOnDigitNumberWithZero(month)}/${year}`}</span>
+        <TextSmall>
+          <span>{`${prependOnDigitNumberWithZero(
+            day,
+          )}/${prependOnDigitNumberWithZero(month)}/${year}`}</span>
+        </TextSmall>
       </h2>
 
       <div>{!assembledDay && <ButtonNew>Añadir comida</ButtonNew>}</div>
