@@ -26,8 +26,8 @@ function NavItem({
 }) {
   return (
     <li
-      className={`flex rounded-lg text-base p-2 w-full items-center text-zinc-500 hover:text-zinc-800 text-md  cursor-pointer transition ${
-        isActive ? 'bg-neutral-100 text-zinc-800' : ''
+      className={`flex rounded-lg text-base p-2 w-full items-center text-text-minor-emphasis hover:text-text hover:bg-surface-light text-md cursor-pointer transition ${
+        isActive ? 'bg-surface-dark text-text-light!' : ''
       }`}
     >
       <span className="mr-2">{icon}</span>

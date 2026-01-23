@@ -302,7 +302,7 @@ function SelectedIngredientsList({
   return (
     <div className={`${containerClassName}`}>
       {showIngredientLabel && numberOfSelectedIngredients > 0 && (
-        <span className="block mb-6 text-center text-zinc-700">
+        <span className="block mb-6 text-center">
           {numberOfSelectedIngredients ? numberOfSelectedIngredients : ''}{' '}
           ingrediente
           {numberOfSelectedIngredients === 1 ? '' : 's'}

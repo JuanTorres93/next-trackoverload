@@ -48,21 +48,21 @@ export default async function RecipePage({
   return (
     <PageWrapper>
       <div className="grid grid-cols-1 gap-20">
-        <header className="grid items-center w-full rounded-2xl gap-8 p-2 pr-6 grid-cols-[max-content_minmax(1rem,1fr)] grid-rows-[max-content_min-content] bg-primary text-zinc-100">
+        <header className="grid items-center w-full rounded-2xl gap-8 p-2 pr-6 grid-cols-[max-content_minmax(1rem,1fr)] grid-rows-[max-content_min-content] bg-surface-dark text-text-light">
           <UpdateRecipeImage recipe={recipe} className="row-span-2 " />
 
           <UpdateRecipeTitle originalTitle={recipe.name} recipeId={recipe.id} />
 
           <div className="flex justify-center gap-28">
             <NutritionalInfoValue
-              styleNumber="text-3xl text-zinc-300"
-              styleLabel="text-lg text-zinc-300!"
+              styleNumber="text-3xl text-text-light"
+              styleLabel="text-lg text-text-light!"
               number={formatToInteger(recipe.calories)}
               label="Calorías"
             />
             <NutritionalInfoValue
-              styleNumber="text-3xl text-zinc-300"
-              styleLabel="text-lg text-zinc-300!"
+              styleNumber="text-3xl text-text-light"
+              styleLabel="text-lg text-text-light!"
               number={formatToInteger(recipe.protein)}
               label="Proteínas"
             />

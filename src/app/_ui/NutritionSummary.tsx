@@ -44,7 +44,7 @@ function NutritionSummary({
           />
         </div>
         <span className="font-semibold">{name}</span>
-        <div className="relative flex items-center text-neutral-500">
+        <div className="relative flex items-center text-text-minor-emphasis">
           {onQuantityChange && (
             <>
               <Input
@@ -68,7 +68,7 @@ function NutritionSummary({
             data-testid="nutritional-summary-delete-button"
             onClick={onRemove}
           >
-            <HiOutlineX className="text-xl cursor-pointer text-neutral-500 hover:text-red-500" />
+            <HiOutlineX className="text-xl cursor-pointer text-text-minor-emphasis hover:text-error" />
           </div>
         )}
       </div>

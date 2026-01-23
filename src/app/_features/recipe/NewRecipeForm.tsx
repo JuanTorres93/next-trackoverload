@@ -136,7 +136,7 @@ function NewRecipeForm() {
         <FormRow className="grid items-start justify-center grid-cols-2 gap-8">
           <div
             id="image-and-name-container"
-            className="relative flex flex-col items-center justify-center p-4 mx-auto mb-2 overflow-hidden w-80 text-zinc-100 rounded-2xl aspect-square"
+            className="relative flex flex-col items-center justify-center p-4 mx-auto mb-2 overflow-hidden w-80 text-text-light rounded-2xl aspect-square"
           >
             <textarea
               className="z-10 resize-none text-center text-3xl  font-extrabold w-[90%] outline-none overflow-x-hidden max-h-[90%]"
@@ -163,7 +163,7 @@ function NewRecipeForm() {
             />
 
             {/* Overlay */}
-            <div className="absolute inset-0 bg-gray-600/60" />
+            <div className="absolute inset-0 bg-overlay/60" />
 
             <ImagePicker
               onFiles={handleImageSelection}

@@ -21,7 +21,7 @@ export default async function RecipesPage() {
         Nueva Receta
       </ButtonNew>
       {recipes.length === 0 ? (
-        <p className="text-center text-zinc-500">No hay recetas</p>
+        <p className="text-center text-text-minor-emphasis">No hay recetas</p>
       ) : (
         <div
           data-testid="recipes-container"

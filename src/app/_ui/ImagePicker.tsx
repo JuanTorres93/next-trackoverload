@@ -19,7 +19,7 @@ const validate = (
   files: File[],
   maxSizeMB: number,
   accept: string,
-  setError: React.Dispatch<React.SetStateAction<string | null>>
+  setError: React.Dispatch<React.SetStateAction<string | null>>,
 ) => {
   const maxBytes = maxSizeMB * 1024 * 1024;
   const acceptedMimes = accept.split(',').map((s) => s.trim());
@@ -27,7 +27,7 @@ const validate = (
 
   for (const f of files) {
     const typeOk = acceptedMimes.some((a) =>
-      a.endsWith('/*') ? f.type.startsWith(a.slice(0, -1)) : f.type === a
+      a.endsWith('/*') ? f.type.startsWith(a.slice(0, -1)) : f.type === a,
     );
     if (!typeOk) {
       setError(`Tipo no permitido: ${f.type}`);
@@ -36,8 +36,8 @@ const validate = (
     if (f.size > maxBytes) {
       setError(
         `Archivo demasiado grande: ${(f.size / 1024 / 1024).toFixed(
-          2
-        )} MB (máx ${maxSizeMB} MB)`
+          2,
+        )} MB (máx ${maxSizeMB} MB)`,
       );
       continue;
     }
@@ -73,7 +73,7 @@ export default function ImagePicker({
       setImages((prev) => (multiple ? [...prev, ...withPreview] : withPreview));
       onFiles?.(multiple ? valid : valid.slice(0, 1));
     },
-    [multiple, onFiles, accept, maxSizeMB]
+    [multiple, onFiles, accept, maxSizeMB],
   );
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -140,7 +140,7 @@ export default function ImagePicker({
         />
       </div>
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-error">{error}</p>}
     </div>
   );
 }

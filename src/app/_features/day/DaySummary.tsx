@@ -40,7 +40,7 @@ function DaySummary({
     >
       <h2 className="flex flex-col items-center justify-center">
         <span>{dayName}</span>
-        <span className="text-sm text-zinc-600">{`${prependOnDigitNumberWithZero(
+        <span className="text-sm">{`${prependOnDigitNumberWithZero(
           day,
         )}/${prependOnDigitNumberWithZero(month)}/${year}`}</span>
       </h2>
