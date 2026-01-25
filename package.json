@@ -9,14 +9,17 @@
     "lint": "eslint",
     "test": "vitest run -w --exclude '**/*.ratelimit.test.ts'",
     "test:all": "vitest",
+    "test:all:hook": "vitest run",
     "test:ui": "vitest --ui",
-    "test:watch": "vitest watch"
+    "test:watch": "vitest watch",
+    "prepare": "husky"
   },
   "dependencies": {
     "@testing-library/user-event": "^14.6.1",
     "@vitejs/plugin-react": "^5.1.1",
     "date-fns": "^4.1.0",
     "file-type": "^21.0.0",
+    "husky": "^9.1.7",
     "next": "^15.5.7",
     "react": "19.1.0",
     "react-dom": "19.1.0",
