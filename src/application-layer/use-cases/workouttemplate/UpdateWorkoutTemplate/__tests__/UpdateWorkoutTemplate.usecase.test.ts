@@ -38,25 +38,25 @@ describe('UpdateWorkoutTemplateUsecase', () => {
       };
 
       // Wait just a bit to ensure updatedAt will be different
-      await new Promise((resolve) => setTimeout(resolve, 20));
+      await new Promise((resolve) => setTimeout(resolve, 30));
       const result = await usecase.execute(request);
 
       expect(result.name).toBe('New Name');
       expect(result.id).toBe(vp.validWorkoutTemplateProps().id);
       expect(new Date(result.createdAt)).toEqual(existingTemplate.createdAt);
       expect(new Date(result.updatedAt)).not.toEqual(
-        vp.validWorkoutTemplateProps().updatedAt
+        vp.validWorkoutTemplateProps().updatedAt,
       );
 
       const exercisesIds = existingTemplate.exercises.map(
-        (ex) => ex.exerciseId
+        (ex) => ex.exerciseId,
       );
       const resultExercisesIds = result.exercises.map((ex) => ex.exerciseId);
       expect(resultExercisesIds).toEqual(exercisesIds);
 
       // Verify it was saved in the repo
       const savedTemplate = await workoutTemplatesRepo.getWorkoutTemplateById(
-        vp.validWorkoutTemplateProps().id
+        vp.validWorkoutTemplateProps().id,
       );
       expect(savedTemplate!.name).toBe('New Name');
     });
@@ -87,7 +87,7 @@ describe('UpdateWorkoutTemplateUsecase', () => {
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
       await expect(usecase.execute(request)).rejects.toThrow(
-        /UpdateWorkoutTemplate.*WorkoutTemplate.*not found/
+        /UpdateWorkoutTemplate.*WorkoutTemplate.*not found/,
       );
     });
 
@@ -114,7 +114,7 @@ describe('UpdateWorkoutTemplateUsecase', () => {
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
       await expect(usecase.execute(request)).rejects.toThrow(
-        /UpdateWorkoutTemplateUsecase.*User.*not.*found/
+        /UpdateWorkoutTemplateUsecase.*User.*not.*found/,
       );
     });
 
@@ -130,7 +130,7 @@ describe('UpdateWorkoutTemplateUsecase', () => {
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
       await expect(usecase.execute(request)).rejects.toThrow(
-        /UpdateWorkoutTemplateUsecase.*WorkoutTemplate.*not found/
+        /UpdateWorkoutTemplateUsecase.*WorkoutTemplate.*not found/,
       );
     });
   });
