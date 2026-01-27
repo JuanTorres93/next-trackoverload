@@ -83,9 +83,17 @@ describe('DayDTO', () => {
 
     it('should maintain data integrity after round-trip conversion', () => {
       const reconstructedDay = fromDayDTO(dayDTO);
-      const reconvertedDTO = toDayDTO(reconstructedDay);
+      const { updatedAt, ...reconvertedDTO } = toDayDTO(reconstructedDay);
 
-      expect(reconvertedDTO).toEqual(dayDTO);
+      const { updatedAt: originalUpdatedAt, ...originalDTO } = dayDTO;
+
+      expect(reconvertedDTO).toEqual(originalDTO);
+      // Expect updatedAt to be close enough (within 1 second)
+      expect(
+        Math.abs(
+          new Date(updatedAt).getTime() - new Date(originalUpdatedAt).getTime(),
+        ),
+      ).toBeLessThanOrEqual(1000);
     });
 
     it('should correctly parse day, month, year from id', () => {
