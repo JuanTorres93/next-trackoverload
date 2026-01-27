@@ -4,16 +4,14 @@ import Link from 'next/link';
 // import { HiCreditCard } from 'react-icons/hi2';
 import { usePathname } from 'next/navigation';
 import {
-  HiHome,
-  HiBeaker,
   HiBookOpen,
-  HiSquares2X2,
-  HiFire,
-  HiUserCircle,
-  HiCreditCard,
-  HiPresentationChartBar,
-  HiClipboardDocumentList,
   HiCalendarDays,
+  HiClipboardDocumentList,
+  HiCreditCard,
+  HiFire,
+  HiHome,
+  HiSquares2X2,
+  HiUserCircle,
 } from 'react-icons/hi2';
 function NavItem({
   icon,
@@ -26,8 +24,8 @@ function NavItem({
 }) {
   return (
     <li
-      className={`flex rounded-lg text-base p-2 w-full items-center text-text-minor-emphasis hover:text-text hover:bg-surface-light text-md cursor-pointer transition ${
-        isActive ? 'bg-surface-dark text-text-light!' : ''
+      className={`flex rounded-lg text-base p-2 w-full items-center text-text-minor-emphasis hover:text-text hover:bg-surface-light cursor-pointer transition ${
+        isActive ? 'bg-surface-dark! text-text-light!' : ''
       }`}
     >
       <span className="mr-2">{icon}</span>
