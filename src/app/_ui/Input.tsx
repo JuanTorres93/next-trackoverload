@@ -1,12 +1,21 @@
+import TextRegular from './typography/TextRegular';
+
 function Input({
-  className,
+  containerClassName,
+  children,
   ...props
-}: React.InputHTMLAttributes<HTMLInputElement>) {
+}: {
+  containerClassName?: string;
+  children?: React.ReactNode;
+} & React.InputHTMLAttributes<HTMLInputElement>) {
+  const { className, ...rest } = props;
   return (
-    <input
-      className={`border border-gray-300 py-1 px-4 rounded-lg text-lg ${className}`}
-      {...props}
-    />
+    <TextRegular
+      className={`flex items-center justify-start border border-border py-1 px-4 rounded-lg outline-none ${containerClassName}`}
+    >
+      <input className={`outline-none ${className}`} {...rest} />
+      {children}
+    </TextRegular>
   );
 }
 

@@ -33,7 +33,7 @@ function NutritionSummary({
 
   return (
     <div
-      className={`grid  grid-rows-[1fr_auto] h-full max-h-48 overflow-hidden rounded-xl ${className}`}
+      className={`grid grid-rows-[1fr_auto] h-full max-h-48 overflow-hidden rounded-xl ${className}`}
     >
       <div className="grid grid-cols-[40px_1fr_5rem_min-content] p-2  gap-4 items-center bg-surface-card">
         <div className="relative h-12 overflow-hidden rounded-md aspect-square">
@@ -47,16 +47,16 @@ function NutritionSummary({
         <span className="font-semibold">{name}</span>
         <div className="relative flex items-center text-text-minor-emphasis">
           {onQuantityChange && (
-            <>
-              <Input
-                className={quantityStyle}
-                type="number"
-                defaultValue={quantity}
-                onChange={(e) => onQuantityChange(Number(e.target.value))}
-                placeholder="gramos"
-              />
-              <span className="ml-[-.5rem]">g</span>
-            </>
+            <Input
+              className={quantityStyle}
+              containerClassName="border-0"
+              type="number"
+              defaultValue={quantity}
+              onChange={(e) => onQuantityChange(Number(e.target.value))}
+              placeholder="gramos"
+            >
+              <span className="ml-1">g</span>
+            </Input>
           )}
 
           {!onQuantityChange && (
