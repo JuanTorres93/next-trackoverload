@@ -1,11 +1,16 @@
 function TextSmall({
   children,
-  className,
+  ...props
 }: {
   children: React.ReactNode;
-  className?: string;
-}) {
-  return <div className={`text-sm ${className || ''}`}>{children}</div>;
+} & React.HTMLAttributes<HTMLDivElement>) {
+  const { className, ...rest } = props;
+
+  return (
+    <div className={`text-sm ${className || ''}`} {...rest}>
+      {children}
+    </div>
+  );
 }
 
 export default TextSmall;
