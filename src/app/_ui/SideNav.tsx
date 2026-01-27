@@ -13,6 +13,7 @@ import {
   HiSquares2X2,
   HiUserCircle,
 } from 'react-icons/hi2';
+import TextRegular from './typography/TextRegular';
 function NavItem({
   icon,
   isActive,
@@ -23,14 +24,14 @@ function NavItem({
   children?: React.ReactNode;
 }) {
   return (
-    <li
-      className={`flex rounded-lg text-base p-2 w-full items-center text-text-minor-emphasis hover:text-text hover:bg-surface-light cursor-pointer transition ${
+    <TextRegular
+      className={`flex rounded-lg p-2 w-full items-center text-text-minor-emphasis hover:text-text hover:bg-surface-light cursor-pointer transition ${
         isActive ? 'bg-surface-dark! text-text-light!' : ''
       }`}
     >
       <span className="mr-2">{icon}</span>
       {children}
-    </li>
+    </TextRegular>
   );
 }
 
@@ -59,11 +60,13 @@ function SideNav() {
         {/* TODO: PONER EL LOGO Arriba de la navbar */}
 
         {links.map((link) => (
-          <Link key={link.href} href={link.href} passHref>
-            <NavItem icon={link.icon} isActive={pathname === link.href}>
-              {link.label}
-            </NavItem>
-          </Link>
+          <li key={link.href}>
+            <Link href={link.href}>
+              <NavItem icon={link.icon} isActive={pathname === link.href}>
+                {link.label}
+              </NavItem>
+            </Link>
+          </li>
         ))}
 
         {/* TODO: Poner abajo menú de usuario */}

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
+import TextRegular from './_ui/typography/TextRegular';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -21,12 +22,23 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} antialiased overflow-y-scroll text-xl text-text bg-background`}
+        className={`${inter.className} antialiased overflow-y-scroll text-text bg-background`}
       >
-        <div id="wrapper-all-always" className="w-full overflow-x-hidden">
+        <TextRegular
+          id="wrapper-all-always"
+          className="w-full overflow-x-hidden"
+        >
           {children}
-        </div>
+        </TextRegular>
       </body>
     </html>
   );
 }
+// TODO NEXT Typography components
+// base --- 2 --- DONE
+//
+// lg --- 3
+// xl --- 3 (1 layout)
+// 3xl --- 4
+// 4xl --- 2
+// 7xl --- 1

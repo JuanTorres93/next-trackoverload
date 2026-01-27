@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { HiPlus } from 'react-icons/hi2';
+import TextRegular from './typography/TextRegular';
 
 function ButtonNew({
   children,
@@ -12,7 +13,7 @@ function ButtonNew({
   className?: string;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   // NOTE: group class allows to target child elements on parent hover
-  const buttonStyle = `p-3 text-base font-medium text-primary transition border-2 border-primary rounded-md group hover:cursor-pointer hover:bg-primary hover:text-text-light disabled:text-text-minor-emphasis disabled:border-text-minor-emphasis disabled:hover:bg-transparent disabled:cursor-not-allowed ${className}`;
+  const buttonStyle = `p-3 font-medium text-primary transition border-2 border-primary rounded-md group hover:cursor-pointer hover:bg-primary hover:text-text-light disabled:text-text-minor-emphasis disabled:border-text-minor-emphasis disabled:hover:bg-transparent disabled:cursor-not-allowed ${className}`;
 
   const buttonContent = (
     <>
@@ -23,9 +24,11 @@ function ButtonNew({
 
   if (href) {
     return (
-      <Link href={href} className={`${buttonStyle} inline-block`}>
-        {buttonContent}
-      </Link>
+      <TextRegular>
+        <Link href={href} className={`${buttonStyle} inline-block`}>
+          {buttonContent}
+        </Link>
+      </TextRegular>
     );
   }
 
