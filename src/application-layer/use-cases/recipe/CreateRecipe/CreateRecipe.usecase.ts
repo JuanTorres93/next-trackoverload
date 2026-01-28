@@ -8,7 +8,7 @@ import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { IdGenerator } from '@/domain/services/IdGenerator.port';
-import { ImageProcessor } from '@/domain/services/ImageProcessor/ImageProcessor.port';
+import { ImageProcessor } from '@/domain/services/ImageProcessor/ServerImageProcessor.port';
 import {
   createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo,
   CreateIngredientLineData,

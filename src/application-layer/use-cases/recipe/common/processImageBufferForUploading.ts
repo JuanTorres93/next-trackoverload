@@ -1,5 +1,5 @@
 import { ImagesRepo, ImageType } from '@/domain/repos/ImagesRepo.port';
-import { ImageProcessor } from '@/domain/services/ImageProcessor/ImageProcessor.port';
+import { ImageProcessor } from '@/domain/services/ImageProcessor/ServerImageProcessor.port';
 import {
   MAX_MB,
   SQUARE_IMAGE_SIZE_PIXELS,

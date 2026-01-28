@@ -1,3 +1,3 @@
-import { SharpImageProcessor } from '@/infra/services/ImageProcessor/SharpImageProcessor/SharpImageProcessor';
+import { SharpServerImageProcessor } from '@/infra/services/ImageProcessor/SharpServerImageProcessor/SharpServerImageProcessor';
 
-export const AppImageProcessor = new SharpImageProcessor();
+export const AppImageProcessor = new SharpServerImageProcessor();

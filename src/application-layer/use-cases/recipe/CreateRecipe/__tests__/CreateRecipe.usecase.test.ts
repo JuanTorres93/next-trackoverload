@@ -8,7 +8,7 @@ import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { User } from '@/domain/entities/user/User';
 import { MemoryExternalIngredientsRefRepo } from '@/infra';
 import { MemoryImagesRepo } from '@/infra/repos/memory/MemoryImagesRepo';
-import { SharpImageProcessor } from '@/infra/services/ImageProcessor/SharpImageProcessor/SharpImageProcessor';
+import { SharpServerImageProcessor } from '@/infra/services/ImageProcessor/SharpServerImageProcessor/SharpServerImageProcessor';
 import { MemoryIngredientsRepo } from '@/infra/repos/memory/MemoryIngredientsRepo';
 import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
@@ -22,7 +22,7 @@ describe('CreateRecipeUsecase', () => {
   let ingredientsRepo: MemoryIngredientsRepo;
   let externalIngredientsRefRepo: MemoryExternalIngredientsRefRepo;
   let imagesRepo: MemoryImagesRepo;
-  let imageProcessor: SharpImageProcessor;
+  let imageProcessor: SharpServerImageProcessor;
   let usersRepo: MemoryUsersRepo;
   let createRecipeUsecase: CreateRecipeUsecase;
   let testExternalIngredientRef: ExternalIngredientRef;
@@ -35,7 +35,7 @@ describe('CreateRecipeUsecase', () => {
     ingredientsRepo = new MemoryIngredientsRepo();
     externalIngredientsRefRepo = new MemoryExternalIngredientsRefRepo();
     imagesRepo = new MemoryImagesRepo();
-    imageProcessor = new SharpImageProcessor();
+    imageProcessor = new SharpServerImageProcessor();
     usersRepo = new MemoryUsersRepo();
 
     createRecipeUsecase = new CreateRecipeUsecase(

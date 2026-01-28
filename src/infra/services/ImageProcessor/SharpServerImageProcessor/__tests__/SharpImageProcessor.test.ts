@@ -3,15 +3,15 @@ import {
   createNonSquareTestImage,
   createTestImage,
 } from '../../../../../../tests/helpers/imageTestHelpers';
-import { SharpImageProcessor } from '../SharpImageProcessor';
+import { SharpServerImageProcessor } from '../SharpServerImageProcessor';
 
-describe('SharpImageProcessor', () => {
-  let imageProcessor: SharpImageProcessor;
+describe('SharpServerImageProcessor', () => {
+  let imageProcessor: SharpServerImageProcessor;
   let validImageBuffer: Buffer;
   let invalidImageBuffer: Buffer;
 
   beforeAll(async () => {
-    imageProcessor = new SharpImageProcessor();
+    imageProcessor = new SharpServerImageProcessor();
 
     validImageBuffer = await createTestImage('large');
     invalidImageBuffer = Buffer.from('this is not a valid image');
@@ -28,7 +28,7 @@ describe('SharpImageProcessor', () => {
 
       const compressedBuffer = await imageProcessor.compressToMaxMB(
         validImageBuffer,
-        targetSizeInMB
+        targetSizeInMB,
       );
 
       expect(compressedBuffer.length).toBeLessThanOrEqual(targetSizeInBytes);
@@ -43,7 +43,7 @@ describe('SharpImageProcessor', () => {
 
       const resizedBuffer = await imageProcessor.resizeToSquare(
         nonSquareImageBuffer,
-        sizeInPixels
+        sizeInPixels,
       );
 
       const metadata = await sharp(resizedBuffer).metadata();
@@ -56,13 +56,13 @@ describe('SharpImageProcessor', () => {
   describe('validate', () => {
     it('should validate a valid image buffer without throwing', async () => {
       await expect(
-        imageProcessor.validate(validImageBuffer)
+        imageProcessor.validate(validImageBuffer),
       ).resolves.toBeUndefined();
     });
 
     it('should throw an error for an invalid image buffer', async () => {
       await expect(imageProcessor.validate(invalidImageBuffer)).rejects.toThrow(
-        'Invalid image data'
+        'Invalid image data',
       );
     });
   });

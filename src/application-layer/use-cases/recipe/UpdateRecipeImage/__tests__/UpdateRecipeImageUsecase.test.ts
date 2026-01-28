@@ -2,7 +2,7 @@ import { NotFoundError } from '@/domain/common/errors';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { MemoryImagesRepo } from '@/infra/repos/memory/MemoryImagesRepo';
 import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
-import { SharpImageProcessor } from '@/infra/services/ImageProcessor/SharpImageProcessor/SharpImageProcessor';
+import { SharpServerImageProcessor } from '@/infra/services/ImageProcessor/SharpServerImageProcessor/SharpServerImageProcessor';
 import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
 import { UpdateRecipeImageUsecase } from '../UpdateRecipeImageUsecase';
 
@@ -12,7 +12,7 @@ import * as dto from '@/../tests/dtoProperties';
 describe('UpdateRecipeImageUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
   let imagesRepo: MemoryImagesRepo;
-  let imageProcessor: SharpImageProcessor;
+  let imageProcessor: SharpServerImageProcessor;
 
   let usecase: UpdateRecipeImageUsecase;
 
@@ -26,12 +26,12 @@ describe('UpdateRecipeImageUsecase', () => {
   beforeEach(async () => {
     recipesRepo = new MemoryRecipesRepo();
     imagesRepo = new MemoryImagesRepo();
-    imageProcessor = new SharpImageProcessor();
+    imageProcessor = new SharpServerImageProcessor();
 
     usecase = new UpdateRecipeImageUsecase(
       recipesRepo,
       imagesRepo,
-      imageProcessor
+      imageProcessor,
     );
 
     recipe = Recipe.create({
@@ -102,7 +102,7 @@ describe('UpdateRecipeImageUsecase', () => {
 
       const firstRecipeWithImage = await recipesRepo.getRecipeByIdAndUserId(
         recipe.id,
-        vp.userId
+        vp.userId,
       );
       const firstUrl = firstRecipeWithImage!.imageUrl;
 
@@ -118,7 +118,7 @@ describe('UpdateRecipeImageUsecase', () => {
 
       const secondRecipeWithImage = await recipesRepo.getRecipeByIdAndUserId(
         recipe.id,
-        vp.userId
+        vp.userId,
       );
       const secundUrl = secondRecipeWithImage!.imageUrl;
 
@@ -156,11 +156,11 @@ describe('UpdateRecipeImageUsecase', () => {
       };
 
       await expect(usecase.execute(request)).rejects.toThrowError(
-        NotFoundError
+        NotFoundError,
       );
 
       await expect(usecase.execute(request)).rejects.toThrowError(
-        /UpdateRecipeImageUsecase: Recipe.*not found/
+        /UpdateRecipeImageUsecase: Recipe.*not found/,
       );
     });
 
@@ -172,10 +172,10 @@ describe('UpdateRecipeImageUsecase', () => {
       };
 
       await expect(usecase.execute(request)).rejects.toThrowError(
-        NotFoundError
+        NotFoundError,
       );
       await expect(usecase.execute(request)).rejects.toThrowError(
-        /UpdateRecipeImageUsecase: Recipe.*not found/
+        /UpdateRecipeImageUsecase: Recipe.*not found/,
       );
     });
   });

@@ -2,7 +2,7 @@ import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { NotFoundError } from '@/domain/common/errors';
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { ImagesRepo, ImageType } from '@/domain/repos/ImagesRepo.port';
-import { ImageProcessor } from '@/domain/services/ImageProcessor/ImageProcessor.port';
+import { ImageProcessor } from '@/domain/services/ImageProcessor/ServerImageProcessor.port';
 import { processRecipeImageBufferForUploading } from '../common/processImageBufferForUploading';
 
 export type UpdateRecipeImageUsecaseRequest = {

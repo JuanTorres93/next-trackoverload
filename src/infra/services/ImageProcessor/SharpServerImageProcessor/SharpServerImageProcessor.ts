@@ -1,12 +1,12 @@
 import sharp from 'sharp';
 
-import { ImageProcessor } from '../../../../domain/services/ImageProcessor/ImageProcessor.port.js';
+import { ImageProcessor } from '../../../../domain/services/ImageProcessor/ServerImageProcessor.port.js';
 import {
   MAX_MB,
   SQUARE_IMAGE_SIZE_PIXELS,
 } from '@/domain/services/ImageProcessor/Config.js';
 
-export class SharpImageProcessor implements ImageProcessor {
+export class SharpServerImageProcessor implements ImageProcessor {
   async compressToMaxMB(
     imageData: Buffer,
     maxSizeMB: number = MAX_MB,
