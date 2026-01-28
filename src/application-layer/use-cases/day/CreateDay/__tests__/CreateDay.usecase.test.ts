@@ -32,7 +32,7 @@ describe('CreateDayUsecase', () => {
   });
 
   describe('Creation', () => {
-    it('should create and save a new day', async () => {
+    it('should createa new day', async () => {
       const request = {
         day: vp.validDayProps().day,
         month: vp.validDayProps().month,
@@ -48,11 +48,6 @@ describe('CreateDayUsecase', () => {
       expect(day.fakeMealIds).toEqual([]);
       expect(day).toHaveProperty('createdAt');
       expect(day).toHaveProperty('updatedAt');
-
-      const savedDay = await daysRepo.getDayById(day.id);
-
-      // @ts-expect-error savedDay won't be null
-      expect(toDayDTO(savedDay)).toEqual(day);
     });
 
     it('should return DayDTO', async () => {
@@ -70,6 +65,30 @@ describe('CreateDayUsecase', () => {
       for (const prop of dto.dayDTOProperties) {
         expect(day).toHaveProperty(prop);
       }
+    });
+  });
+
+  describe('Side effects', () => {
+    it('should save the new day in the DaysRepo', async () => {
+      const request = {
+        day: vp.validDayProps().day,
+        month: vp.validDayProps().month,
+        year: vp.validDayProps().year,
+        actorUserId: vp.userId,
+        targetUserId: vp.userId,
+      };
+
+      const initialDaysCount = daysRepo.countForTesting();
+
+      const day = await createDayUsecase.execute(request);
+
+      const finalDaysCount = daysRepo.countForTesting();
+
+      expect(finalDaysCount).toBe(initialDaysCount + 1);
+
+      const savedDay = await daysRepo.getDayById(day.id);
+
+      expect(toDayDTO(savedDay!)).toEqual(day);
     });
   });
 
