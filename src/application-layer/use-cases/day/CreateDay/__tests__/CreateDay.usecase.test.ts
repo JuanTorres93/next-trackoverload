@@ -87,7 +87,7 @@ describe('CreateDayUsecase', () => {
         NotFoundError,
       );
       await expect(createDayUsecase.execute(request)).rejects.toThrow(
-        /CreateDayUsecase.*user.*not.*found/,
+        /createDayNoSaveInRepo.*user.*not.*found/,
       );
     });
 
@@ -104,7 +104,7 @@ describe('CreateDayUsecase', () => {
         PermissionError,
       );
       await expect(createDayUsecase.execute(request)).rejects.toThrow(
-        /CreateDayUsecase: cannot create day for another user/,
+        /createDayNoSaveInRepo: cannot create day for another user/,
       );
     });
 
@@ -132,7 +132,7 @@ describe('CreateDayUsecase', () => {
         AlreadyExistsError,
       );
       await expect(createDayUsecase.execute(request)).rejects.toThrow(
-        /CreateDayUsecase: day.*already exists/,
+        /createDayNoSaveInRepo: day.*already exists/,
       );
     });
   });
