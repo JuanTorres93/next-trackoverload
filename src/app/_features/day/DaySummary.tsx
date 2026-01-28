@@ -16,6 +16,17 @@ const computeIsToday = (day: number, month: number, year: number) => {
   );
 };
 
+const computeIsPast = (day: number, month: number, year: number) => {
+  const today = new Date();
+  const todayDateOnly = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+  );
+  const targetDate = new Date(year, month - 1, day);
+  return targetDate < todayDateOnly;
+};
+
 function DaySummary({
   dayId,
   assembledDay,
@@ -32,19 +43,22 @@ function DaySummary({
     format(date, 'EEEE', { locale: es }).slice(1);
 
   const isToday = computeIsToday(day, month, year);
+  const isPast = computeIsPast(day, month, year);
 
   return (
     <div
       className={`p-2 border-2 rounded-xl border-surface-dark ${
         isToday ? 'border-3! shadow-md border-primary-light!' : ''
-      }`}
+      } ${isPast ? 'opacity-60' : ''}`}
     >
-      <div className="flex flex-col items-center justify-center">
-        <DayTitle dayName={dayName} isToday={isToday} />
-        <DateTitle day={day} month={month} year={year} />
-      </div>
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col items-center justify-center gap-.5">
+          <DayTitle dayName={dayName} isToday={isToday} />
+          <DateTitle day={day} month={month} year={year} />
+        </div>
 
-      <div>{!assembledDay && <ButtonNew>Añadir comida</ButtonNew>}</div>
+        {!assembledDay && <ButtonNew>Añadir comida</ButtonNew>}
+      </div>
     </div>
   );
 }
