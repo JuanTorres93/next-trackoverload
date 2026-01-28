@@ -3,11 +3,14 @@ import { useEffect, useState } from 'react';
 import RecipesGrid from './RecipesGrid';
 import SectionHeading from '@/app/_ui/typography/SectionHeading';
 import Spinner from '@/app/_ui/Spinner';
+import ButtonNew from '@/app/_ui/ButtonNew';
 
 function SelectRecipeModal() {
   const [recipes, setRecipes] = useState<RecipeDTO[]>([]);
   const [selectedRecipesIds, setSelectedRecipesIds] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const numberOfSelectedRecipes = selectedRecipesIds.length;
 
   function handleClickRecipe(recipeId: string) {
     if (selectedRecipesIds.includes(recipeId)) {
@@ -40,7 +43,15 @@ function SelectRecipeModal() {
 
   return (
     <div className="max-w-200 max-h-160 overflow-y-scroll w-[80dvw] p-4">
-      <SectionHeading>Tus recetas</SectionHeading>
+      <div className="flex ">
+        <SectionHeading>Tus recetas</SectionHeading>
+        <ButtonNew
+          className="ml-14 max-h-13"
+          disabled={numberOfSelectedRecipes <= 0}
+        >
+          Añadir comidas
+        </ButtonNew>
+      </div>
       {isLoading && <Spinner className="mx-auto" />}
       {!isLoading && (
         <RecipesGrid
