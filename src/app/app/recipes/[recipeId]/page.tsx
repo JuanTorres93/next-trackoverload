@@ -6,6 +6,7 @@ import { AppGetRecipeByIdForUserUsecase } from '@/interface-adapters/app/use-cas
 import RecipeDisplay from './RecipeDisplay';
 import UpdateRecipeImage from './UpdateRecipeImage';
 import UpdateRecipeTitle from './UpdateRecipeTitle';
+import SectionHeading from '@/app/_ui/typography/SectionHeading';
 
 export async function generateMetadata({
   params,
@@ -70,7 +71,9 @@ export default async function RecipePage({
         </header>
 
         <div>
-          <h2 className="pb-3 mb-6 text-4xl font-bold">Ingredientes</h2>
+          <SectionHeading>
+            <h2>Ingredientes</h2>
+          </SectionHeading>
 
           {/* Needs to be a separate component for interactivity through event handlers */}
           <RecipeDisplay recipe={recipe} />

@@ -34,11 +34,3 @@ export default function RootLayout({
     </html>
   );
 }
-// TODO NEXT Typography components
-// base --- 2 --- DONE
-//
-// lg --- 3
-// xl --- 3 (1 layout)
-// 3xl --- 4
-// 4xl --- 2
-// 7xl --- 1

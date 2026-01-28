@@ -27,7 +27,7 @@ function UpdateRecipeTitle({
   return (
     <input
       type="text"
-      className="self-center font-bold text-center text-7xl"
+      className="self-center text-5xl font-bold text-center"
       defaultValue={originalTitle}
       onChange={handleTitleChange}
     />
