@@ -1,3 +1,5 @@
+'use client';
+
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
@@ -6,6 +8,7 @@ import { AssembledDayDTO } from '@/application-layer/dtos/DayDTO';
 import { dayIdToDayMonthYear } from '@/domain/value-objects/DayId/DayId';
 import DateTitle from './DateTitle';
 import DayTitle from './DayTitle';
+import Modal from '@/app/_ui/Modal';
 
 const computeIsToday = (day: number, month: number, year: number) => {
   const today = new Date();
@@ -46,20 +49,30 @@ function DaySummary({
   const isPast = computeIsPast(day, month, year);
 
   return (
-    <div
-      className={`p-2 border-2 rounded-xl border-surface-dark ${
-        isToday ? 'border-3! shadow-md border-primary-light!' : ''
-      } ${isPast ? 'opacity-60' : ''}`}
-    >
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-col items-center justify-center gap-.5">
-          <DayTitle dayName={dayName} isToday={isToday} />
-          <DateTitle day={day} month={month} year={year} />
-        </div>
+    <Modal>
+      <div
+        className={`p-2 border-2 rounded-xl border-surface-dark ${
+          isToday ? 'border-3! shadow-md border-primary-light!' : ''
+        } ${isPast ? 'opacity-60' : ''}`}
+      >
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col items-center justify-center gap-.5">
+            <DayTitle dayName={dayName} isToday={isToday} />
+            <DateTitle day={day} month={month} year={year} />
+          </div>
 
-        {!assembledDay && <ButtonNew>Añadir comida</ButtonNew>}
+          {!assembledDay && (
+            <Modal.Open opens="add-food-modal">
+              <ButtonNew>Añadir comida</ButtonNew>
+            </Modal.Open>
+          )}
+        </div>
       </div>
-    </div>
+
+      <Modal.Window name="add-food-modal">
+        <div>AÑADIR COMIDA</div>
+      </Modal.Window>
+    </Modal>
   );
 }
 
