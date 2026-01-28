@@ -6,21 +6,32 @@ import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import Image from 'next/image';
 import Link from 'next/link';
 
-function RecipeCard({ recipe }: { recipe: RecipeDTO }) {
+function RecipeCard({
+  recipe,
+  asLink = true,
+}: {
+  recipe: RecipeDTO;
+  asLink?: boolean;
+}) {
+  const Wrapper = asLink ? Link : 'div';
+
   return (
-    <Link
+    <Wrapper
       href={`/app/recipes/${recipe.id}`}
       className="p-3 min-w-52 rounded-lg grid grid-cols-2 grid-rows-[max-content_min-content_min-content] gap-4 bg-surface-card relative shadow-md hover:cursor-pointer hover:shadow-lg transition hover:bg-surface-light"
     >
-      <ButtonDeleteHover
-        onClick={async () => {
-          await deleteRecipe(recipe.id);
-        }}
-      />
+      {asLink && (
+        <ButtonDeleteHover
+          onClick={async () => {
+            await deleteRecipe(recipe.id);
+          }}
+        />
+      )}
+
       <div className="relative h-32 col-span-2 overflow-hidden rounded-lg">
         <Image
           src={recipe.imageUrl ? recipe.imageUrl : '/recipe-no-picture.png'}
-          alt="Recipe name"
+          alt={recipe.name}
           fill
           className="object-cover"
         />
@@ -30,7 +41,7 @@ function RecipeCard({ recipe }: { recipe: RecipeDTO }) {
       <NutritionalInfoValue number={recipe.calories} label="Calorías" />
 
       <NutritionalInfoValue number={recipe.protein} label="Proteínas" />
-    </Link>
+    </Wrapper>
   );
 }
 

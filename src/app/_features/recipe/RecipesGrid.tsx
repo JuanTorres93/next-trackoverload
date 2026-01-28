@@ -3,8 +3,12 @@ import RecipeCard from './RecipeCard';
 
 function RecipesGrid({
   recipes,
+  asLink = true,
   ...props
-}: { recipes: RecipeDTO[] } & React.HTMLAttributes<HTMLDivElement>) {
+}: {
+  recipes: RecipeDTO[];
+  asLink?: boolean;
+} & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
   return (
@@ -13,7 +17,7 @@ function RecipesGrid({
       {...rest}
     >
       {recipes.map((recipe) => (
-        <RecipeCard key={recipe.id} recipe={recipe} />
+        <RecipeCard key={recipe.id} recipe={recipe} asLink={asLink} />
       ))}
     </div>
   );
