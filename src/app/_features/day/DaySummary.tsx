@@ -4,11 +4,12 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 import ButtonNew from '@/app/_ui/ButtonNew';
+import Modal from '@/app/_ui/Modal';
 import { AssembledDayDTO } from '@/application-layer/dtos/DayDTO';
 import { dayIdToDayMonthYear } from '@/domain/value-objects/DayId/DayId';
+import SelectRecipeModal from '../recipe/SelectRecipeModal';
 import DateTitle from './DateTitle';
 import DayTitle from './DayTitle';
-import Modal from '@/app/_ui/Modal';
 
 const computeIsToday = (day: number, month: number, year: number) => {
   const today = new Date();
@@ -70,7 +71,7 @@ function DaySummary({
       </div>
 
       <Modal.Window name="add-food-modal">
-        <div>AÑADIR COMIDA</div>
+        <SelectRecipeModal />
       </Modal.Window>
     </Modal>
   );

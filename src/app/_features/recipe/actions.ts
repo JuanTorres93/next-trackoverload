@@ -4,6 +4,7 @@ import {
   AppCreateRecipeUsecase,
   AppDeleteRecipeUsecase,
   AppDuplicateRecipeUsecase,
+  AppGetAllRecipesForUserUsecase,
   AppRemoveIngredientFromRecipeUsecase,
   AppUpdateRecipeImageUsecase,
   AppUpdateRecipeUsecase,
@@ -12,6 +13,16 @@ import {
 import { CreateIngredientLineData } from '@/application-layer/use-cases/recipe/common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
+
+export async function getAllRecipesForUser(userId: string) {
+  const recipes: RecipeDTO[] = await AppGetAllRecipesForUserUsecase.execute({
+    actorUserId: userId,
+    targetUserId: userId,
+  });
+
+  return recipes;
+}
 
 export async function createRecipe({
   userId,
