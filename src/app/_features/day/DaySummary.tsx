@@ -1,11 +1,11 @@
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
+import ButtonNew from '@/app/_ui/ButtonNew';
 import { AssembledDayDTO } from '@/application-layer/dtos/DayDTO';
 import { dayIdToDayMonthYear } from '@/domain/value-objects/DayId/DayId';
-import { prependOnDigitNumberWithZero } from './utils/prependOnDigitNumberWithZero';
-import ButtonNew from '@/app/_ui/ButtonNew';
-import TextSmall from '@/app/_ui/typography/TextSmall';
+import DateTitle from './DateTitle';
+import DayTitle from './DayTitle';
 
 const computeIsToday = (day: number, month: number, year: number) => {
   const today = new Date();
@@ -39,14 +39,10 @@ function DaySummary({
         isToday ? 'border-3! shadow-md border-primary-light!' : ''
       }`}
     >
-      <h2 className="flex flex-col items-center justify-center">
-        <span>{dayName}</span>
-        <TextSmall>
-          <span>{`${prependOnDigitNumberWithZero(
-            day,
-          )}/${prependOnDigitNumberWithZero(month)}/${year}`}</span>
-        </TextSmall>
-      </h2>
+      <div className="flex flex-col items-center justify-center">
+        <DayTitle dayName={dayName} isToday={isToday} />
+        <DateTitle day={day} month={month} year={year} />
+      </div>
 
       <div>{!assembledDay && <ButtonNew>Añadir comida</ButtonNew>}</div>
     </div>
