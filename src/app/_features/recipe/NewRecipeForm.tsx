@@ -17,7 +17,7 @@ import IngredientSearch, {
 export type NewRecipeFormState = {
   name: string;
   ingredientLinesWithExternalRefs: IngredientLineWithExternalRef[];
-  imageBuffer: File | undefined;
+  imageFile: File | undefined;
 };
 
 type FormErrors = Record<keyof NewRecipeFormState, string>;
@@ -25,7 +25,7 @@ type FormErrors = Record<keyof NewRecipeFormState, string>;
 const INITIAL_FORM_STATE: NewRecipeFormState = {
   name: 'Nueva receta',
   ingredientLinesWithExternalRefs: [],
-  imageBuffer: undefined,
+  imageFile: undefined,
 };
 
 function NewRecipeForm() {
@@ -90,7 +90,7 @@ function NewRecipeForm() {
 
   function handleImageSelection(files: File[]) {
     if (files.length > 0) {
-      setField('imageBuffer', files[0]);
+      setField('imageFile', files[0]);
     }
   }
 
@@ -121,7 +121,7 @@ function NewRecipeForm() {
       await createRecipe({
         userId: 'dev-user', // TODO IMPORTANT: Replace with actual user ID
         name: formState.name,
-        image: formState.imageBuffer,
+        imageFile: formState.imageFile,
         ingredientLinesInfo: ingredientLinesInfo,
       });
       handleResetForm();
@@ -152,8 +152,8 @@ function NewRecipeForm() {
             ></textarea>
             <Image
               src={
-                formState.imageBuffer
-                  ? URL.createObjectURL(formState.imageBuffer)
+                formState.imageFile
+                  ? URL.createObjectURL(formState.imageFile)
                   : '/recipe-no-picture.png'
               }
               alt="Imagen de la receta"

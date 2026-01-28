@@ -17,17 +17,17 @@ export async function createRecipe({
   userId,
   name,
   ingredientLinesInfo,
-  image,
+  imageFile,
 }: {
   userId: string;
   name: string;
   ingredientLinesInfo: CreateIngredientLineData[];
-  image?: File;
+  imageFile?: File;
 }) {
   let imageBuffer: Buffer | undefined;
 
-  if (image && image.size > 0) {
-    const arrayBuffer = await image.arrayBuffer();
+  if (imageFile && imageFile.size > 0) {
+    const arrayBuffer = await imageFile.arrayBuffer();
     imageBuffer = Buffer.from(arrayBuffer);
   }
 
