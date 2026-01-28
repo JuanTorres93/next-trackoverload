@@ -2,7 +2,7 @@ import { NotFoundError } from '@/domain/common/errors';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { MemoryImagesRepo } from '@/infra/repos/memory/MemoryImagesRepo';
 import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
-import { SharpServerImageProcessor } from '@/infra/services/ImageProcessor/SharpServerImageProcessor/SharpServerImageProcessor';
+import { SharpServerImageProcessor } from '@/infra/services/ImageProcessor/ServerImageProcessor/SharpServerImageProcessor/SharpServerImageProcessor';
 import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
 import { UpdateRecipeImageUsecase } from '../UpdateRecipeImageUsecase';
 
