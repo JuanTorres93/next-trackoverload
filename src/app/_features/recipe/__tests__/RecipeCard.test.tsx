@@ -26,10 +26,10 @@ describe('RecipeCard', () => {
 
     const recipeName = screen.getByText(mockRecipes[0].name);
     const caloriesInfo = screen.getByText(
-      Math.round(mockRecipes[0].calories).toString()
+      Math.round(mockRecipes[0].calories).toString(),
     );
     const proteinInfo = screen.getByText(
-      Math.round(mockRecipes[0].protein).toString()
+      Math.round(mockRecipes[0].protein).toString(),
     );
     const image = screen.getByRole('img') as HTMLImageElement;
 
@@ -49,5 +49,36 @@ describe('RecipeCard', () => {
     await userEvent.click(deleteButton);
 
     expect(recipesRepo.countForTesting()).toBe(recipesBeforeDelete - 1);
+  });
+
+  it('travels to recipe id page when clicked and asLink is not false', async () => {
+    await setup();
+
+    const recipeLink = screen.getByRole('link') as HTMLAnchorElement;
+
+    expect(recipeLink).toBeInTheDocument();
+    expect(recipeLink.href).toContain(`/app/recipes/${mockRecipes[0].id}`);
+  });
+
+  it('calls onClick when card is clicked and asLink is false', async () => {
+    const handleClick = vi.fn();
+
+    render(
+      <RecipeCard
+        recipe={mockRecipes[0]}
+        asLink={false}
+        onClick={handleClick}
+      />,
+    );
+
+    const recipeCard = screen
+      .getByText(mockRecipes[0].name)
+      .closest('div') as HTMLDivElement;
+
+    expect(recipeCard).toBeInTheDocument();
+
+    await userEvent.click(recipeCard);
+
+    expect(handleClick).toHaveBeenCalledTimes(1);
   });
 });
