@@ -3,6 +3,7 @@ import ButtonEditImage from '@/app/_ui/ButtonEditImage';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import Image from 'next/image';
 import { updateRecipeImage } from '@/app/_features/recipe/actions';
+import { AppClientImageProcessor } from '@/interface-adapters/app/services/AppClientImageProcessor';
 
 function UpdateRecipeImage({
   recipe,
@@ -21,7 +22,12 @@ function UpdateRecipeImage({
 
       <ButtonEditImage
         className="absolute bottom-2 right-2"
-        onImageUpload={(imageFile) => updateRecipeImage(recipe.id, imageFile)}
+        onImageUpload={async (imageFile) => {
+          const compressedImageFile =
+            await AppClientImageProcessor.compressToMaxMB(imageFile);
+
+          updateRecipeImage(recipe.id, compressedImageFile);
+        }}
       />
     </div>
   );

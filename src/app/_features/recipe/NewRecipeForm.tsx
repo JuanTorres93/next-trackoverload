@@ -14,6 +14,8 @@ import IngredientSearch, {
   IngredientLineWithExternalRef,
 } from './IngredientSearch';
 
+import { AppClientImageProcessor } from '@/interface-adapters/app/services/AppClientImageProcessor';
+
 export type NewRecipeFormState = {
   name: string;
   ingredientLinesWithExternalRefs: IngredientLineWithExternalRef[];
@@ -117,11 +119,19 @@ function NewRecipeForm() {
         },
       );
 
+    let compressedImageFile: File | undefined = undefined;
+    if (formState.imageFile) {
+      setIsLoading(true);
+      compressedImageFile = await AppClientImageProcessor.compressToMaxMB(
+        formState.imageFile,
+      );
+    }
+
     try {
       await createRecipe({
         userId: 'dev-user', // TODO IMPORTANT: Replace with actual user ID
         name: formState.name,
-        imageFile: formState.imageFile,
+        imageFile: compressedImageFile,
         ingredientLinesInfo: ingredientLinesInfo,
       });
       handleResetForm();

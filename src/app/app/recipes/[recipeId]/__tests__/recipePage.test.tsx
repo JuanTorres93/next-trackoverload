@@ -8,9 +8,18 @@ import { AppUsersRepo } from '@/interface-adapters/app/repos/AppUsersRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { vi } from 'vitest';
 
 // Mock before importing the component that uses next/cache
 import '@/../tests/mocks/nextjs';
+
+// Mock AppClientImageProcessor to avoid browser API incompatibilities in the test environment
+vi.mock('@/interface-adapters/app/services/AppClientImageProcessor', () => ({
+  AppClientImageProcessor: {
+    compressToMaxMB: vi.fn((file: File) => Promise.resolve(file)),
+  },
+}));
+
 import RecipePage from '../page';
 import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
 
@@ -27,7 +36,7 @@ createServer([
       const ingredients = mockIngredientsForIngredientFinder;
 
       const filteredIngredients = ingredients.filter((ingredient) =>
-        ingredient.ingredient.name.toLowerCase().includes(term.toLowerCase())
+        ingredient.ingredient.name.toLowerCase().includes(term.toLowerCase()),
       );
 
       return filteredIngredients;
@@ -154,7 +163,7 @@ describe('RecipePage', () => {
       const newQuantity = '500';
 
       const quantityInput = screen.getByDisplayValue(
-        lineToUpdate.quantityInGrams.toString()
+        lineToUpdate.quantityInGrams.toString(),
       );
 
       await userEvent.clear(quantityInput);
@@ -167,12 +176,12 @@ describe('RecipePage', () => {
           .getRecipeById(recipe.id)
           .then((r) =>
             r?.ingredientLines.find(
-              (line) => line.ingredient.id === lineToUpdate.ingredient.id
-            )
+              (line) => line.ingredient.id === lineToUpdate.ingredient.id,
+            ),
           );
 
         expect(updatedIngredientLine?.quantityInGrams).toBe(
-          parseInt(newQuantity)
+          parseInt(newQuantity),
         );
       });
     });
@@ -215,13 +224,13 @@ describe('RecipePage', () => {
       const initialIngredientLinesCount = recipe.ingredientLines.length;
 
       const ingredientLinesContainer = screen.getByTestId(
-        'ingredient-lines-container'
+        'ingredient-lines-container',
       );
 
       const ingredientLineElement = ingredientLinesContainer
         .children[0] as HTMLElement;
       const removeButton = within(ingredientLineElement).getByTestId(
-        'nutritional-summary-delete-button'
+        'nutritional-summary-delete-button',
       );
 
       await userEvent.click(removeButton);
@@ -230,7 +239,7 @@ describe('RecipePage', () => {
         const updatedRecipe = await recipesRepo.getRecipeById(recipe.id);
         expect(updatedRecipe).not.toBeNull();
         expect(updatedRecipe!.ingredientLines.length).toBe(
-          initialIngredientLinesCount - 1
+          initialIngredientLinesCount - 1,
         );
       });
     });
@@ -242,7 +251,7 @@ describe('RecipePage', () => {
 
       // Remove all ingredients except one
       const deleteIngredientButtons = await screen.findAllByTestId(
-        'nutritional-summary-delete-button'
+        'nutritional-summary-delete-button',
       );
 
       const [lastButton, ...restButtons] = deleteIngredientButtons;
@@ -268,13 +277,13 @@ describe('RecipePage', () => {
       const { renderedRecipe } = await setup();
 
       const existingLinesContainer = screen.getByTestId(
-        'ingredient-lines-container'
+        'ingredient-lines-container',
       );
       const initialIngredientLinesCount =
         existingLinesContainer.childElementCount;
 
       const searchIngredientInput = screen.getByPlaceholderText(
-        'Buscar ingredientes...'
+        'Buscar ingredientes...',
       );
 
       const searchButton = screen.getByRole('button', { name: 'Buscar' });
@@ -299,7 +308,7 @@ describe('RecipePage', () => {
         recipesRepo.getRecipeById(renderedRecipe.id).then((updatedRecipe) => {
           expect(updatedRecipe).not.toBeNull();
           expect(updatedRecipe!.ingredientLines.length).toBe(
-            initialIngredientLinesCount + 1
+            initialIngredientLinesCount + 1,
           );
         });
       });
@@ -309,7 +318,7 @@ describe('RecipePage', () => {
       const { renderedRecipe } = await setup();
 
       const titleInput = (await screen.findByDisplayValue(
-        renderedRecipe.name
+        renderedRecipe.name,
       )) as HTMLInputElement;
 
       const newTitle = 'Updated Recipe Title';
@@ -319,7 +328,7 @@ describe('RecipePage', () => {
 
       await waitFor(async () => {
         const updatedRecipe = await recipesRepo.getRecipeById(
-          renderedRecipe.id
+          renderedRecipe.id,
         );
 
         expect(updatedRecipe).not.toBeNull();
@@ -331,7 +340,7 @@ describe('RecipePage', () => {
       const { renderedRecipe } = await setup();
 
       const updateImageInput = screen.getByTestId(
-        'edit-recipe-image-button'
+        'edit-recipe-image-button',
       ) as HTMLInputElement;
 
       const testImage = await createTestImage('small');
@@ -341,7 +350,7 @@ describe('RecipePage', () => {
         'test-image.png',
         {
           type: 'image/png',
-        }
+        },
       );
 
       // Mock arrayBuffer method for Node.js environment
@@ -356,7 +365,7 @@ describe('RecipePage', () => {
 
       await waitFor(async () => {
         const updatedRecipe = await recipesRepo.getRecipeById(
-          renderedRecipe.id
+          renderedRecipe.id,
         );
 
         expect(updatedRecipe).not.toBeNull();
