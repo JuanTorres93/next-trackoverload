@@ -4,8 +4,8 @@ import NutritionalInfoValue from '@/app/_ui/NutritionalInfoValue';
 import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import Image from 'next/image';
-import { HiOutlineX } from 'react-icons/hi';
 import TextSmall from './typography/TextSmall';
+import ButtonX from './ButtonX';
 
 const quantityStyle = 'w-full text-right border-none outline-none';
 
@@ -65,12 +65,10 @@ function NutritionSummary({
         </div>
 
         {onRemove && (
-          <div
+          <ButtonX
             data-testid="nutritional-summary-delete-button"
             onClick={onRemove}
-          >
-            <HiOutlineX className="text-xl cursor-pointer text-text-minor-emphasis hover:text-error" />
-          </div>
+          />
         )}
       </div>
 

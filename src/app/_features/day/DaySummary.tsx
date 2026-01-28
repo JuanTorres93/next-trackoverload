@@ -76,4 +76,6 @@ function DaySummary({
   );
 }
 
+// TODO NEXT Create test file
+
 export default DaySummary;

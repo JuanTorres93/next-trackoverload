@@ -2,9 +2,8 @@
 
 import { cloneElement, createContext, useContext, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { HiXMark } from 'react-icons/hi2';
 import { useOutsideClick } from '../hooks/useOutsideClick';
-import ButtonNew from './ButtonNew';
+import ButtonX from './ButtonX';
 
 type ModalContextType = {
   close: () => void;
@@ -61,12 +60,9 @@ function Window({
     <div className="fixed inset-0 transition bg-overlay/80 z-1000 backdrop-blur-xs">
       <div
         ref={ref}
-        className="fixed top-[50%] left-[50%] translate-[-50%] translate-y-[-50%] bg-surface-card rounded-lg shadow-lg px-2 py-4 transition"
+        className="fixed top-[50%] left-[50%] translate-[-50%] translate-y-[-50%] bg-surface-card rounded-lg shadow-lg px-6 py-10 transition"
       >
-        {/* TODO Change button */}
-        <ButtonNew onClick={close}>
-          <HiXMark />
-        </ButtonNew>
+        <ButtonX className="absolute top-3 right-3" onClick={close} />
 
         <div>{cloneElement(children, { onCloseModal: close })} </div>
       </div>
