@@ -62,6 +62,8 @@ function DaySummary({
             <DateTitle day={day} month={month} year={year} />
           </div>
 
+          <span>MOSTRAR COMIDAS</span>
+
           {!assembledDay && (
             <Modal.Open opens="add-food-modal">
               <ButtonNew>Añadir comida</ButtonNew>
@@ -71,7 +73,7 @@ function DaySummary({
       </div>
 
       <Modal.Window name="add-food-modal">
-        <SelectRecipeModal />
+        <SelectRecipeModal dayId={dayId} />
       </Modal.Window>
     </Modal>
   );
