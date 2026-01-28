@@ -1,11 +1,17 @@
+import ButtonNew from '@/app/_ui/ButtonNew';
+import Spinner from '@/app/_ui/Spinner';
+import SectionHeading from '@/app/_ui/typography/SectionHeading';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { useEffect, useState } from 'react';
 import RecipesGrid from './RecipesGrid';
-import SectionHeading from '@/app/_ui/typography/SectionHeading';
-import Spinner from '@/app/_ui/Spinner';
-import ButtonNew from '@/app/_ui/ButtonNew';
 
-function SelectRecipeModal({ dayId }: { dayId: string }) {
+function SelectRecipeModal({
+  dayId,
+  onCloseModal,
+}: {
+  dayId: string;
+  onCloseModal?: () => void;
+}) {
   const [recipes, setRecipes] = useState<RecipeDTO[]>([]);
   const [selectedRecipesIds, setSelectedRecipesIds] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -45,10 +51,10 @@ function SelectRecipeModal({ dayId }: { dayId: string }) {
   async function handleCreateMeals() {
     setIsLoading(true);
 
-    // TODO hacer en paralelo las peticiones
+    const addMealPromises = [];
     try {
       for (const recipeId of selectedRecipesIds) {
-        const response = await fetch('/api/day/addMeal', {
+        const response = fetch('/api/day/addMeal', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -60,20 +66,20 @@ function SelectRecipeModal({ dayId }: { dayId: string }) {
           }),
         });
 
-        if (!response.ok) {
-          throw new Error('Failed to add meal to day');
-        }
+        addMealPromises.push(response);
       }
+
+      await Promise.all(addMealPromises);
 
       // Optionally, you can add some success feedback here
     } catch (error) {
       console.error('Error adding meals to day:', error);
     } finally {
       setIsLoading(false);
+      onCloseModal?.();
     }
   }
 
-  // TODO NEXT Close modal on success
   return (
     <div className="max-w-200 max-h-160 overflow-y-scroll w-[80dvw] p-4">
       <div className="flex ">
