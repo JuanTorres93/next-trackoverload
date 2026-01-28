@@ -3,12 +3,16 @@ import RecipeCard from './RecipeCard';
 
 function RecipesGrid({
   recipes,
+  selectedRecipesIds,
   asLink = true,
+  onClick,
   ...props
 }: {
   recipes: RecipeDTO[];
+  selectedRecipesIds?: string[];
   asLink?: boolean;
-} & React.HTMLAttributes<HTMLDivElement>) {
+  onClick?: (recipeId: string) => void;
+} & Omit<React.HTMLAttributes<HTMLDivElement>, 'onClick'>) {
   const { className, ...rest } = props;
 
   return (
@@ -17,7 +21,13 @@ function RecipesGrid({
       {...rest}
     >
       {recipes.map((recipe) => (
-        <RecipeCard key={recipe.id} recipe={recipe} asLink={asLink} />
+        <RecipeCard
+          key={recipe.id}
+          recipe={recipe}
+          asLink={asLink}
+          onClick={onClick ? () => onClick(recipe.id) : undefined}
+          isSelected={selectedRecipesIds?.includes(recipe.id) ?? false}
+        />
       ))}
     </div>
   );

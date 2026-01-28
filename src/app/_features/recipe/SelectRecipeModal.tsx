@@ -6,7 +6,16 @@ import Spinner from '@/app/_ui/Spinner';
 
 function SelectRecipeModal() {
   const [recipes, setRecipes] = useState<RecipeDTO[]>([]);
+  const [selectedRecipesIds, setSelectedRecipesIds] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  function handleClickRecipe(recipeId: string) {
+    if (selectedRecipesIds.includes(recipeId)) {
+      setSelectedRecipesIds((prev) => prev.filter((id) => id !== recipeId));
+    } else {
+      setSelectedRecipesIds((prev) => [...prev, recipeId]);
+    }
+  }
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -33,7 +42,14 @@ function SelectRecipeModal() {
     <div className="max-w-200 max-h-160 overflow-y-scroll w-[80dvw] p-4">
       <SectionHeading>Tus recetas</SectionHeading>
       {isLoading && <Spinner className="mx-auto" />}
-      {!isLoading && <RecipesGrid asLink={false} recipes={recipes} />}
+      {!isLoading && (
+        <RecipesGrid
+          asLink={false}
+          recipes={recipes}
+          onClick={handleClickRecipe}
+          selectedRecipesIds={selectedRecipesIds}
+        />
+      )}
     </div>
   );
 }

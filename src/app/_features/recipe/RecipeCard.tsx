@@ -9,16 +9,21 @@ import Link from 'next/link';
 function RecipeCard({
   recipe,
   asLink = true,
+  onClick,
+  isSelected = false,
 }: {
   recipe: RecipeDTO;
   asLink?: boolean;
+  onClick?: () => void;
+  isSelected?: boolean;
 }) {
   const Wrapper = asLink ? Link : 'div';
 
   return (
     <Wrapper
       href={`/app/recipes/${recipe.id}`}
-      className="p-3 min-w-52 rounded-lg grid grid-cols-2 grid-rows-[max-content_min-content_min-content] gap-4 bg-surface-card relative shadow-md hover:cursor-pointer hover:shadow-lg transition hover:bg-surface-light"
+      className={`p-3 min-w-52 rounded-lg grid grid-cols-2 grid-rows-[max-content_min-content_min-content] gap-4 bg-surface-card relative shadow-md hover:cursor-pointer hover:shadow-lg transition hover:bg-surface-light ${isSelected ? 'bg-surface-dark! [&_*]:text-text-light!' : ''}`}
+      onClick={asLink ? undefined : onClick}
     >
       {asLink && (
         <ButtonDeleteHover
