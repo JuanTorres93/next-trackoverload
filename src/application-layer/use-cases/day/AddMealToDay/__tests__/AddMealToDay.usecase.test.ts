@@ -37,7 +37,7 @@ describe('AddMealToDayUsecase', () => {
       mealsRepo,
       usersRepo,
       recipesRepo,
-      new Uuidv4IdGenerator()
+      new Uuidv4IdGenerator(),
     );
     day = Day.create({
       ...vp.validDayProps(),
@@ -104,7 +104,7 @@ describe('AddMealToDayUsecase', () => {
       const addedMeal = await mealsRepo.getMealById(result.mealIds[0]);
 
       expect(addedMeal!.ingredientLines).toHaveLength(
-        recipe.ingredientLines.length
+        recipe.ingredientLines.length,
       );
       expect(addedMeal!.ingredientLines).toHaveLength(1);
 
@@ -114,10 +114,10 @@ describe('AddMealToDayUsecase', () => {
       expect(addedIngredientLine.parentId).not.toBe(ingredientLine.parentId);
       expect(addedIngredientLine.parentType).toBe('meal');
       expect(addedIngredientLine.ingredient.id).toBe(
-        ingredientLine.ingredient.id
+        ingredientLine.ingredient.id,
       );
       expect(addedIngredientLine.quantityInGrams).toBe(
-        ingredientLine.quantityInGrams
+        ingredientLine.quantityInGrams,
       );
       expect(addedIngredientLine.calories).toBe(ingredientLine.calories);
       expect(addedIngredientLine.protein).toBe(ingredientLine.protein);
@@ -136,6 +136,20 @@ describe('AddMealToDayUsecase', () => {
       const allMeals = await mealsRepo.getAllMeals();
       expect(allMeals.length).toBe(1);
     });
+
+    it('should create new day if it does not exist', async () => {
+      const initialDaysCount = daysRepo.countForTesting();
+
+      await addMealToDayUsecase.execute({
+        dayId: '19990101',
+        userId: vp.userId,
+        recipeId: recipe.id,
+      });
+
+      const finalDaysCount = daysRepo.countForTesting();
+
+      expect(finalDaysCount).toBe(initialDaysCount + 1);
+    });
   });
 
   describe('Errors', () => {
@@ -150,11 +164,11 @@ describe('AddMealToDayUsecase', () => {
       };
 
       await expect(addMealToDayUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
 
       await expect(addMealToDayUsecase.execute(request)).rejects.toThrow(
-        /AddMealToDayUsecase.*user.*not.*found/
+        /AddMealToDayUsecase.*user.*not.*found/,
       );
     });
 
@@ -166,49 +180,11 @@ describe('AddMealToDayUsecase', () => {
       };
 
       await expect(addMealToDayUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
 
       await expect(addMealToDayUsecase.execute(request)).rejects.toThrow(
-        /AddMealToDayUsecase.*Recipe.*not.*found/
-      );
-    });
-
-    it("should throw error when trying to add meal to another user's day", async () => {
-      const anotherUser = User.create({
-        ...vp.validUserProps,
-        id: 'another-user-id',
-      });
-      await usersRepo.saveUser(anotherUser);
-
-      ingredient = Ingredient.create({
-        ...vp.validIngredientProps,
-      });
-      ingredientLine = IngredientLine.create({
-        ...vp.ingredientLineRecipePropsNoIngredient,
-        ingredient,
-      });
-
-      const anotherUserRecipe = Recipe.create({
-        ...vp.recipePropsNoIngredientLines,
-        id: 'another-user-recipe-id',
-        userId: anotherUser.id,
-        ingredientLines: [ingredientLine],
-      });
-      await recipesRepo.saveRecipe(anotherUserRecipe);
-
-      const request = {
-        dayId: day.id,
-        userId: anotherUser.id,
-        recipeId: anotherUserRecipe.id,
-      };
-
-      await expect(addMealToDayUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
-      );
-
-      await expect(addMealToDayUsecase.execute(request)).rejects.toThrow(
-        /AddMealToDayUsecase.*Day.*not.*found/
+        /AddMealToDayUsecase.*Recipe.*not.*found/,
       );
     });
   });

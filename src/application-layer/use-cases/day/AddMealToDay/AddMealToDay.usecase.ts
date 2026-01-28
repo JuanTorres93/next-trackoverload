@@ -7,6 +7,8 @@ import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { IdGenerator } from '@/domain/services/IdGenerator.port';
+import { dayIdToDayMonthYear } from '@/domain/value-objects/DayId/DayId';
+import { createDayNoSaveInRepo } from '../common/createDayNoSaveInRepo';
 
 export type AddMealToDayUsecaseRequest = {
   dayId: string;
@@ -20,36 +22,46 @@ export class AddMealToDayUsecase {
     private mealsRepo: MealsRepo,
     private usersRepo: UsersRepo,
     private recipesRepo: RecipesRepo,
-    private idGenerator: IdGenerator
+    private idGenerator: IdGenerator,
   ) {}
 
   async execute(request: AddMealToDayUsecaseRequest): Promise<DayDTO> {
     const user = await this.usersRepo.getUserById(request.userId);
     if (!user) {
       throw new NotFoundError(
-        `AddMealToDayUsecase: user with id ${request.userId} not found`
+        `AddMealToDayUsecase: user with id ${request.userId} not found`,
       );
     }
 
     const recipe = await this.recipesRepo.getRecipeByIdAndUserId(
       request.recipeId,
-      request.userId
+      request.userId,
     );
 
     if (!recipe) {
       throw new NotFoundError(
-        `AddMealToDayUsecase: Recipe with id ${request.recipeId} not found`
+        `AddMealToDayUsecase: Recipe with id ${request.recipeId} not found`,
       );
     }
 
-    const day = await this.daysRepo.getDayByIdAndUserId(
+    let dayToAddMeal = await this.daysRepo.getDayByIdAndUserId(
       request.dayId,
-      request.userId
+      request.userId,
     );
 
-    if (!day) {
-      throw new NotFoundError(
-        `AddMealToDayUsecase: Day with id ${request.dayId} for user with id ${request.userId} not found`
+    if (!dayToAddMeal) {
+      const { day, month, year } = dayIdToDayMonthYear(request.dayId);
+
+      dayToAddMeal = await createDayNoSaveInRepo(
+        this.usersRepo,
+        this.daysRepo,
+        {
+          day,
+          month,
+          year,
+          actorUserId: request.userId,
+          targetUserId: request.userId,
+        },
       );
     }
 
@@ -64,7 +76,7 @@ export class AddMealToDayUsecase {
         quantityInGrams: line.quantityInGrams,
         createdAt: new Date(),
         updatedAt: new Date(),
-      })
+      }),
     );
 
     const meal = Meal.create({
@@ -77,11 +89,11 @@ export class AddMealToDayUsecase {
       updatedAt: new Date(),
     });
 
-    day.addMeal(meal.id);
+    dayToAddMeal.addMeal(meal.id);
 
     await this.mealsRepo.saveMeal(meal);
-    await this.daysRepo.saveDay(day);
+    await this.daysRepo.saveDay(dayToAddMeal);
 
-    return toDayDTO(day);
+    return toDayDTO(dayToAddMeal);
   }
 }
