@@ -1,23 +1,23 @@
 import { ImagesRepo, ImageType } from '@/domain/repos/ImagesRepo.port';
-import { ImageProcessor } from '@/domain/services/ImageProcessor.port';
+import { ImageProcessor } from '@/domain/services/ImageProcessor/ImageProcessor.port';
 import {
   MAX_MB,
   SQUARE_IMAGE_SIZE_PIXELS,
-} from '@/infra/services/ImageProcessor/common';
+} from '@/domain/services/ImageProcessor/Config';
 
 export async function processRecipeImageBufferForUploading(
   imageBuffer: Buffer,
   imageProcessor: ImageProcessor,
   imagesRepo: ImagesRepo,
-  recipeId: string
+  recipeId: string,
 ): Promise<ImageType> {
   const resizedImageBuffer = await imageProcessor.resizeToSquare(
     imageBuffer,
-    SQUARE_IMAGE_SIZE_PIXELS
+    SQUARE_IMAGE_SIZE_PIXELS,
   );
   const processedImageBuffer = await imageProcessor.compressToMaxMB(
     resizedImageBuffer,
-    MAX_MB
+    MAX_MB,
   );
 
   const filename = `recipe_${recipeId}_${Date.now()}.jpg`;

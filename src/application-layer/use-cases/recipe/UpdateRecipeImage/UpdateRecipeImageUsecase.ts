@@ -2,7 +2,7 @@ import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { NotFoundError } from '@/domain/common/errors';
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { ImagesRepo, ImageType } from '@/domain/repos/ImagesRepo.port';
-import { ImageProcessor } from '@/domain/services/ImageProcessor.port';
+import { ImageProcessor } from '@/domain/services/ImageProcessor/ImageProcessor.port';
 import { processRecipeImageBufferForUploading } from '../common/processImageBufferForUploading';
 
 export type UpdateRecipeImageUsecaseRequest = {
@@ -15,20 +15,20 @@ export class UpdateRecipeImageUsecase {
   constructor(
     private recipesRepo: RecipesRepo,
     private imagesRepo: ImagesRepo,
-    private imageProcessor: ImageProcessor
+    private imageProcessor: ImageProcessor,
   ) {}
 
   async execute(
-    request: UpdateRecipeImageUsecaseRequest
+    request: UpdateRecipeImageUsecaseRequest,
   ): Promise<RecipeDTO | null> {
     const recipe = await this.recipesRepo.getRecipeByIdAndUserId(
       request.recipeId,
-      request.userId
+      request.userId,
     );
 
     if (!recipe) {
       throw new NotFoundError(
-        `UpdateRecipeImageUsecase: Recipe with id ${request.recipeId} not found`
+        `UpdateRecipeImageUsecase: Recipe with id ${request.recipeId} not found`,
       );
     }
 
@@ -47,7 +47,7 @@ export class UpdateRecipeImageUsecase {
       request.imageData,
       this.imageProcessor,
       this.imagesRepo,
-      recipe.id
+      recipe.id,
     );
 
     const newImageMetadata = await this.imagesRepo.save(imageType);

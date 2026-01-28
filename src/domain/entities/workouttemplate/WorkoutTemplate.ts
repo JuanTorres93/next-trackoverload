@@ -51,7 +51,7 @@ export class WorkoutTemplate {
         line.sets <= 0
       ) {
         throw new ValidationError(
-          'WorkoutTemplate exercises must be instances of WorkoutTemplateLine'
+          'WorkoutTemplate exercises must be instances of WorkoutTemplateLine',
         );
       }
     }
@@ -72,7 +72,7 @@ export class WorkoutTemplate {
   addExercise(newWorkoutTemplateLine: WorkoutTemplateLine) {
     // NOTE: maybe allow duplicates in the future?
     const existingLine = this.props.exercises.find(
-      (line) => line.exerciseId === newWorkoutTemplateLine.exerciseId
+      (line) => line.exerciseId === newWorkoutTemplateLine.exerciseId,
     );
     if (existingLine) {
       throw new ValidationError('WorkoutTemplate: Exercise already exists');
@@ -82,31 +82,31 @@ export class WorkoutTemplate {
 
   removeExercise(exerciseId: string) {
     const existingLine = this.props.exercises.find(
-      (line) => line.exerciseId === exerciseId
+      (line) => line.exerciseId === exerciseId,
     );
     if (!existingLine) {
       throw new NotFoundError('WorkoutTemplate: Exercise to remove not found');
     }
 
     this.props.exercises = this.props.exercises.filter(
-      (line) => line.exerciseId !== exerciseId
+      (line) => line.exerciseId !== exerciseId,
     );
   }
 
   reorderExercise(exerciseId: string, newIndex: number) {
     const validatedNewIndex = Integer.create(
       newIndex,
-      exerciseIndexIntegerOptions
+      exerciseIndexIntegerOptions,
     ).value;
 
     const exercise = this.props.exercises.find(
-      (line) => line.exerciseId === exerciseId
+      (line) => line.exerciseId === exerciseId,
     );
     if (!exercise)
       throw new NotFoundError('WorkoutTemplate: Exercise to reorder not found');
 
     this.props.exercises = this.props.exercises.filter(
-      (line) => line.exerciseId !== exerciseId
+      (line) => line.exerciseId !== exerciseId,
     );
     this.props.exercises.splice(validatedNewIndex, 0, exercise);
   }
@@ -129,7 +129,7 @@ export class WorkoutTemplate {
 
   updateExercise(
     exerciseId: string,
-    updateProps: WorkoutTemplateLineUpdateProps
+    updateProps: WorkoutTemplateLineUpdateProps,
   ) {
     const lineToUpdate: WorkoutTemplateLine | undefined =
       this.props.exercises.find((line) => line.exerciseId === exerciseId);

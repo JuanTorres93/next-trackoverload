@@ -16,30 +16,30 @@ export type UpdateWorkoutTemplateUsecaseRequest = {
 export class UpdateWorkoutTemplateUsecase {
   constructor(
     private workoutTemplatesRepo: WorkoutTemplatesRepo,
-    private usersRepo: UsersRepo
+    private usersRepo: UsersRepo,
   ) {}
 
   async execute(
-    request: UpdateWorkoutTemplateUsecaseRequest
+    request: UpdateWorkoutTemplateUsecaseRequest,
   ): Promise<WorkoutTemplateDTO> {
     const user = await this.usersRepo.getUserById(request.userId);
     if (!user) {
       throw new NotFoundError(
-        `UpdateWorkoutTemplateUsecase: User with id ${request.userId} not found`
+        `UpdateWorkoutTemplateUsecase: User with id ${request.userId} not found`,
       );
     }
 
     const workoutTemplate =
       await this.workoutTemplatesRepo.getWorkoutTemplateByIdAndUserId(
         request.id,
-        request.userId
+        request.userId,
       );
 
     const isDeleted = workoutTemplate?.isDeleted ?? false;
 
     if (!workoutTemplate || isDeleted) {
       throw new NotFoundError(
-        'UpdateWorkoutTemplateUsecase: WorkoutTemplate not found'
+        'UpdateWorkoutTemplateUsecase: WorkoutTemplate not found',
       );
     }
 

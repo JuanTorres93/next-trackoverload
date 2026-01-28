@@ -10,7 +10,7 @@ export class FileSystemImagesRepo implements ImagesRepo {
 
   constructor(
     imagesDir: string = path.join(PUBLIC_DIR, 'file_system_image_repo'),
-    baseUrl: string = '/file_system_image_repo'
+    baseUrl: string = '/file_system_image_repo',
   ) {
     this.imagesDir = imagesDir;
     this.baseUrl = baseUrl;
@@ -92,7 +92,7 @@ export class FileSystemImagesRepo implements ImagesRepo {
   async duplicateByUrl(
     imageUrl: string,
     newFilename: string,
-    newUrl: string
+    newUrl: string,
   ): Promise<ImageType['metadata']> {
     const filename = this.extractFilenameFromUrl(imageUrl);
     if (!filename) {
@@ -123,12 +123,14 @@ export class FileSystemImagesRepo implements ImagesRepo {
       throw new Error(
         `Failed to duplicate image ${imageUrl}: ${
           error instanceof Error ? error.message : 'Unknown error'
-        }`
+        }`,
       );
     }
   }
 
-  private extractFilenameFromUrl(imageUrl: string): string | null {
+  private extractFilenameFromUrl(imageUrl: string | undefined): string | null {
+    if (!imageUrl) return null;
+
     if (imageUrl.startsWith(this.baseUrl)) {
       return imageUrl.replace(`${this.baseUrl}/`, '');
     }
@@ -142,7 +144,7 @@ export class FileSystemImagesRepo implements ImagesRepo {
     try {
       const files = await fs.readdir(this.imagesDir);
       await Promise.all(
-        files.map((file) => fs.unlink(path.join(this.imagesDir, file)))
+        files.map((file) => fs.unlink(path.join(this.imagesDir, file))),
       );
     } catch {
       // Directory might not exist
@@ -165,7 +167,7 @@ export class FileSystemImagesRepo implements ImagesRepo {
     try {
       const files = await fs.readdir(this.imagesDir);
       const imageFiles = files.filter(
-        (file) => !file.endsWith('.metadata.json')
+        (file) => !file.endsWith('.metadata.json'),
       );
 
       const images: ImageType[] = [];
@@ -173,7 +175,7 @@ export class FileSystemImagesRepo implements ImagesRepo {
         const filePath = path.join(this.imagesDir, filename);
         const metadataPath = path.join(
           this.imagesDir,
-          `${filename}.metadata.json`
+          `${filename}.metadata.json`,
         );
 
         try {
