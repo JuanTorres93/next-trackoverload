@@ -1,7 +1,11 @@
 import * as vp from '@/../tests/createProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toDayDTO } from '@/application-layer/dtos/DayDTO';
-import { NotFoundError, PermissionError } from '@/domain/common/errors';
+import {
+  AlreadyExistsError,
+  NotFoundError,
+  PermissionError,
+} from '@/domain/common/errors';
 import { Day } from '@/domain/entities/day/Day';
 import { User } from '@/domain/entities/user/User';
 import { MemoryDaysRepo } from '@/infra/repos/memory/MemoryDaysRepo';
@@ -80,10 +84,10 @@ describe('CreateDayUsecase', () => {
       };
 
       await expect(createDayUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
       await expect(createDayUsecase.execute(request)).rejects.toThrow(
-        /CreateDayUsecase.*user.*not.*found/
+        /CreateDayUsecase.*user.*not.*found/,
       );
     });
 
@@ -97,10 +101,38 @@ describe('CreateDayUsecase', () => {
       };
 
       await expect(createDayUsecase.execute(request)).rejects.toThrow(
-        PermissionError
+        PermissionError,
       );
       await expect(createDayUsecase.execute(request)).rejects.toThrow(
-        /CreateDayUsecase: cannot create day for another user/
+        /CreateDayUsecase: cannot create day for another user/,
+      );
+    });
+
+    it('should throw error if Day already exists', async () => {
+      const existingDay = Day.create({
+        day: vp.validDayProps().day,
+        month: vp.validDayProps().month,
+        year: vp.validDayProps().year,
+        userId: vp.userId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+
+      await daysRepo.saveDay(existingDay);
+
+      const request = {
+        day: vp.validDayProps().day,
+        month: vp.validDayProps().month,
+        year: vp.validDayProps().year,
+        actorUserId: vp.userId,
+        targetUserId: vp.userId,
+      };
+
+      await expect(createDayUsecase.execute(request)).rejects.toThrow(
+        AlreadyExistsError,
+      );
+      await expect(createDayUsecase.execute(request)).rejects.toThrow(
+        /CreateDayUsecase: day.*already exists/,
       );
     });
   });
