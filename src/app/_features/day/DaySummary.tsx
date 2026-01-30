@@ -11,6 +11,8 @@ import SelectRecipeModal from '../recipe/SelectRecipeModal';
 import DateTitle from './DateTitle';
 import DayTitle from './DayTitle';
 
+// TODO NEXT Get assembledDay data and show meals summary
+
 const computeIsToday = (day: number, month: number, year: number) => {
   const today = new Date();
   return (
@@ -64,11 +66,9 @@ function DaySummary({
 
           <span>MOSTRAR COMIDAS</span>
 
-          {!assembledDay && (
-            <Modal.Open opens="add-food-modal">
-              <ButtonNew>Añadir comida</ButtonNew>
-            </Modal.Open>
-          )}
+          <Modal.Open opens="add-food-modal">
+            <ButtonNew>Añadir comida</ButtonNew>
+          </Modal.Open>
         </div>
       </div>
 
@@ -78,7 +78,5 @@ function DaySummary({
     </Modal>
   );
 }
-
-// TODO NEXT Create test file
 
 export default DaySummary;
