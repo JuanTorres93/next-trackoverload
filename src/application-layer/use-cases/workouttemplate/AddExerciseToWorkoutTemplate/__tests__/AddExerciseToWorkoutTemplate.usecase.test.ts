@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as exerciseTestProps from '../../../../../../tests/createProps/exerciseTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError } from '@/domain/common/errors';
@@ -35,12 +36,12 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
 
     // Create the exercises that will be used in tests
     const benchPressExercise = Exercise.create({
-      ...vp.validExerciseProps,
+      ...exerciseTestProps.validExerciseProps,
       id: 'bench-press',
     });
 
     const shoulderPressExercise = Exercise.create({
-      ...vp.validExerciseProps,
+      ...exerciseTestProps.validExerciseProps,
       id: 'shoulder-press',
     });
 

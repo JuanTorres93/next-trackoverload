@@ -1,5 +1,6 @@
 import { getGetters } from '@/application-layer/dtos/__tests__/_getGettersUtil';
 import * as vp from '@/../tests/createProps';
+import * as exerciseTestProps from './createProps/exerciseTestProps';
 import * as userTestProps from './createProps/userTestProps';
 
 import { Exercise } from '@/domain/entities/exercise/Exercise';
@@ -65,7 +66,7 @@ export const userDTOProperties = getGetters(sampleUser);
 
 // Exercise DTO
 const sampleExercise = Exercise.create({
-  ...vp.validExerciseProps,
+  ...exerciseTestProps.validExerciseProps,
 });
 export const exerciseDTOProperties = getGetters(sampleExercise);
 

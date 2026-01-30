@@ -4,6 +4,7 @@ import { MemoryExercisesRepo } from '@/infra/repos/memory/MemoryExercisesRepo';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
 import { NotFoundError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import * as exerciseTestProps from '../../../../../../tests/createProps/exerciseTestProps';
 
 describe('DeleteExerciseUsecase', () => {
   let exercisesRepo: MemoryExercisesRepo;
@@ -17,15 +18,17 @@ describe('DeleteExerciseUsecase', () => {
   describe('Deletion', () => {
     it('should delete existing exercise', async () => {
       const exercise = Exercise.create({
-        ...vp.validExerciseProps,
+        ...exerciseTestProps.validExerciseProps,
       });
 
       await exercisesRepo.saveExercise(exercise);
 
-      await deleteExerciseUsecase.execute({ id: vp.validExerciseProps.id });
+      await deleteExerciseUsecase.execute({
+        id: exerciseTestProps.validExerciseProps.id,
+      });
 
       const deletedExercise = await exercisesRepo.getExerciseById(
-        vp.validExerciseProps.id
+        exerciseTestProps.validExerciseProps.id,
       );
       expect(deletedExercise).toBeNull();
     });
@@ -34,11 +37,11 @@ describe('DeleteExerciseUsecase', () => {
   describe('Errors', () => {
     it('should throw NotFoundError when exercise does not exist', async () => {
       await expect(
-        deleteExerciseUsecase.execute({ id: 'non-existent' })
+        deleteExerciseUsecase.execute({ id: 'non-existent' }),
       ).rejects.toThrow(NotFoundError);
 
       await expect(
-        deleteExerciseUsecase.execute({ id: 'non-existent' })
+        deleteExerciseUsecase.execute({ id: 'non-existent' }),
       ).rejects.toThrow(/DeleteExerciseUsecase.*Exercise.*not/);
     });
   });

@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as exerciseTestProps from '../../../../tests/createProps/exerciseTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
 import { ExerciseDTO, toExerciseDTO } from '../ExerciseDTO';
@@ -8,7 +9,7 @@ describe('ExerciseDTO', () => {
   let exerciseDTO: ExerciseDTO;
 
   beforeEach(() => {
-    exercise = Exercise.create(vp.validExerciseProps);
+    exercise = Exercise.create(exerciseTestProps.validExerciseProps);
   });
 
   describe('toExerciseDTO', () => {

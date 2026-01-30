@@ -147,13 +147,6 @@ export const validWorkoutProps = {
   updatedAt: new Date(),
 };
 
-export const validExerciseProps = {
-  id: 'ex1',
-  name: 'Test Exercise',
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
-
 export const validFakeMealProps = {
   id: 'fakeMeal1',
   userId: userId,
@@ -211,15 +204,6 @@ export function validMealWithIngredientLines() {
     ingredientLines: [ingredientLine1],
   };
 }
-
-export const validUserProps = {
-  id: userId,
-  name: 'Test User',
-  email: 'testuser@example.com',
-  customerId: 'customer-123',
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
 
 export const validWorkoutLineProps = {
   id: 'workoutline-1',

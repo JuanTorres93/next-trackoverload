@@ -2,6 +2,7 @@ import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 import { FileSystemExercisesRepo } from '../FileSystemExercisesRepo';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
 import * as vp from '@/../tests/createProps';
+import * as exerciseTestProps from '../../../../../tests/createProps/exerciseTestProps';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -12,7 +13,7 @@ describe('FileSystemExercisesRepo', () => {
 
   beforeEach(async () => {
     repo = new FileSystemExercisesRepo(testDir);
-    exercise = Exercise.create(vp.validExerciseProps);
+    exercise = Exercise.create(exerciseTestProps.validExerciseProps);
     await repo.saveExercise(exercise);
   });
 
@@ -44,22 +45,24 @@ describe('FileSystemExercisesRepo', () => {
 
   it('should retrieve an exercise by ID', async () => {
     const fetchedExercise = await repo.getExerciseById(
-      vp.validExerciseProps.id
+      exerciseTestProps.validExerciseProps.id,
     );
     expect(fetchedExercise).not.toBeNull();
-    expect(fetchedExercise?.name).toBe(vp.validExerciseProps.name);
+    expect(fetchedExercise?.name).toBe(
+      exerciseTestProps.validExerciseProps.name,
+    );
   });
 
   it('should update an existing exercise', async () => {
     const updatedExercise = Exercise.create({
-      ...vp.validExerciseProps,
+      ...exerciseTestProps.validExerciseProps,
       name: 'Updated Push Up',
       updatedAt: new Date('2023-01-03'),
     });
     await repo.saveExercise(updatedExercise);
 
     const fetchedExercise = await repo.getExerciseById(
-      vp.validExerciseProps.id
+      exerciseTestProps.validExerciseProps.id,
     );
     expect(fetchedExercise).not.toBeNull();
     expect(fetchedExercise?.name).toBe('Updated Push Up');
@@ -78,7 +81,7 @@ describe('FileSystemExercisesRepo', () => {
     const allExercises = await repo.getAllExercises();
     expect(allExercises.length).toBe(1);
 
-    await repo.deleteExercise(vp.validExerciseProps.id);
+    await repo.deleteExercise(exerciseTestProps.validExerciseProps.id);
 
     const allExercisesAfterDeletion = await repo.getAllExercises();
     expect(allExercisesAfterDeletion.length).toBe(0);

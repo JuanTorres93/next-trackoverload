@@ -3,6 +3,7 @@ import { GetAllExercisesUsecase } from '../GetAllExercises.usecase';
 import { MemoryExercisesRepo } from '@/infra/repos/memory/MemoryExercisesRepo';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
 import * as vp from '@/../tests/createProps';
+import * as exerciseTestProps from '../../../../../../tests/createProps/exerciseTestProps';
 import * as dto from '@/../tests/dtoProperties';
 
 describe('GetAllExercisesUsecase', () => {
@@ -17,12 +18,12 @@ describe('GetAllExercisesUsecase', () => {
   describe('Found', () => {
     it('should return all exercises', async () => {
       const exercise1 = Exercise.create({
-        ...vp.validExerciseProps,
+        ...exerciseTestProps.validExerciseProps,
         id: '1',
         name: 'Push Up',
       });
       const exercise2 = Exercise.create({
-        ...vp.validExerciseProps,
+        ...exerciseTestProps.validExerciseProps,
         id: '2',
         name: 'Squat',
       });
@@ -41,10 +42,10 @@ describe('GetAllExercisesUsecase', () => {
 
     it('should return an array of ExerciseDTO', async () => {
       const exercise1 = Exercise.create({
-        ...vp.validExerciseProps,
+        ...exerciseTestProps.validExerciseProps,
       });
       const exercise2 = Exercise.create({
-        ...vp.validExerciseProps,
+        ...exerciseTestProps.validExerciseProps,
         id: '2',
         name: 'Squat',
       });

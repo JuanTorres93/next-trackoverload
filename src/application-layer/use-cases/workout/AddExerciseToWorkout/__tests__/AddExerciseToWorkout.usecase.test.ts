@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as exerciseTestProps from '../../../../../../tests/createProps/exerciseTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError } from '@/domain/common/errors';
@@ -40,7 +41,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
     });
 
     const exercise = Exercise.create({
-      ...vp.validExerciseProps,
+      ...exerciseTestProps.validExerciseProps,
       name: 'Push Up',
     });
 
@@ -54,7 +55,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
       const updatedWorkout = await addExerciseToWorkoutUsecase.execute({
         userId: userTestProps.userId,
         workoutId: vp.validWorkoutProps.id,
-        exerciseId: vp.validExerciseProps.id,
+        exerciseId: exerciseTestProps.validExerciseProps.id,
         setNumber: 1,
         reps: 10,
         weight: 0,
@@ -64,7 +65,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
       expect(updatedWorkout.exercises[0]).toEqual({
         id: updatedWorkout.exercises[0].id,
         workoutId: workout.id,
-        exerciseId: vp.validExerciseProps.id,
+        exerciseId: exerciseTestProps.validExerciseProps.id,
         setNumber: 1,
         reps: 10,
         weight: 0,
@@ -77,7 +78,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
       const updatedWorkout = await addExerciseToWorkoutUsecase.execute({
         userId: userTestProps.userId,
         workoutId: vp.validWorkoutProps.id,
-        exerciseId: vp.validExerciseProps.id,
+        exerciseId: exerciseTestProps.validExerciseProps.id,
         setNumber: 1,
         reps: 10,
         weight: 0,
@@ -94,7 +95,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
       await addExerciseToWorkoutUsecase.execute({
         userId: userTestProps.userId,
         workoutId: vp.validWorkoutProps.id,
-        exerciseId: vp.validExerciseProps.id,
+        exerciseId: exerciseTestProps.validExerciseProps.id,
         setNumber: 1,
         reps: 12,
         weight: 5,
@@ -104,7 +105,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
       const updatedWorkout = await addExerciseToWorkoutUsecase.execute({
         userId: userTestProps.userId,
         workoutId: vp.validWorkoutProps.id,
-        exerciseId: vp.validExerciseProps.id,
+        exerciseId: exerciseTestProps.validExerciseProps.id,
         setNumber: 2,
         reps: 12,
         weight: 5,
@@ -114,7 +115,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
       expect(updatedWorkout.exercises[1]).toEqual({
         id: updatedWorkout.exercises[1].id,
         workoutId: workout.id,
-        exerciseId: vp.validExerciseProps.id,
+        exerciseId: exerciseTestProps.validExerciseProps.id,
         setNumber: 2,
         reps: 12,
         weight: 5,
@@ -129,7 +130,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
       const request = {
         userId: userTestProps.userId,
         workoutId: 'non-existent',
-        exerciseId: vp.validExerciseProps.id,
+        exerciseId: exerciseTestProps.validExerciseProps.id,
         setNumber: 1,
         reps: 10,
         weight: 0,
@@ -170,7 +171,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
       });
 
       const exercise = Exercise.create({
-        ...vp.validExerciseProps,
+        ...exerciseTestProps.validExerciseProps,
         name: 'Push Up',
       });
 
@@ -180,7 +181,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
       const request = {
         userId: 'non-existent',
         workoutId: vp.validWorkoutProps.id,
-        exerciseId: vp.validExerciseProps.id,
+        exerciseId: exerciseTestProps.validExerciseProps.id,
         setNumber: 1,
         reps: 10,
         weight: 0,
@@ -206,7 +207,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
       const request = {
         userId: anotherUser.id,
         workoutId: vp.validWorkoutProps.id,
-        exerciseId: vp.validExerciseProps.id,
+        exerciseId: exerciseTestProps.validExerciseProps.id,
         setNumber: 1,
         reps: 10,
         weight: 0,

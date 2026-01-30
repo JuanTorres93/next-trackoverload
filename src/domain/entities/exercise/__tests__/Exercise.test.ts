@@ -1,19 +1,20 @@
 import { describe, expect, it } from 'vitest';
 import { Exercise } from '../Exercise';
 import * as vp from '@/../tests/createProps';
+import * as exerciseTestProps from '../../../../../tests/createProps/exerciseTestProps';
 import { ValidationError } from '@/domain/common/errors';
 
 describe('Exercise', () => {
   it('should create a valid exercise', () => {
-    const exercise = Exercise.create(vp.validExerciseProps);
+    const exercise = Exercise.create(exerciseTestProps.validExerciseProps);
 
     expect(exercise).toBeInstanceOf(Exercise);
-    expect(exercise.id).toBe(vp.validExerciseProps.id);
-    expect(exercise.name).toBe(vp.validExerciseProps.name);
+    expect(exercise.id).toBe(exerciseTestProps.validExerciseProps.id);
+    expect(exercise.name).toBe(exerciseTestProps.validExerciseProps.name);
   });
 
   it('should update name', async () => {
-    const exercise = Exercise.create(vp.validExerciseProps);
+    const exercise = Exercise.create(exerciseTestProps.validExerciseProps);
     const newName = 'Updated Exercise Name';
 
     exercise.update({ name: newName });
@@ -24,7 +25,7 @@ describe('Exercise', () => {
   it('should create an exercise if no createdAt or updatedAt is provided', async () => {
     // eslint-disable-next-line
     const { createdAt, updatedAt, ...propsWithoutDates } =
-      vp.validExerciseProps;
+      exerciseTestProps.validExerciseProps;
     // @ts-expect-error .create actually expects createdAt and updatedAt
     const exercise = Exercise.create(propsWithoutDates);
 
@@ -36,7 +37,7 @@ describe('Exercise', () => {
   it('should throw error if id is not instance of Id', async () => {
     expect(() => {
       Exercise.create({
-        ...vp.validExerciseProps,
+        ...exerciseTestProps.validExerciseProps,
         // @ts-expect-error testing invalid type
         id: 123,
       });
@@ -44,7 +45,7 @@ describe('Exercise', () => {
 
     expect(() => {
       Exercise.create({
-        ...vp.validExerciseProps,
+        ...exerciseTestProps.validExerciseProps,
         // @ts-expect-error testing invalid type
         id: 123,
       });
@@ -54,14 +55,14 @@ describe('Exercise', () => {
   it('should throw error if name is empty', async () => {
     expect(() => {
       Exercise.create({
-        ...vp.validExerciseProps,
+        ...exerciseTestProps.validExerciseProps,
         name: '',
       });
     }).toThrowError(ValidationError);
 
     expect(() => {
       Exercise.create({
-        ...vp.validExerciseProps,
+        ...exerciseTestProps.validExerciseProps,
         name: '',
       });
     }).toThrowError(/Text.*empty/);
@@ -72,14 +73,14 @@ describe('Exercise', () => {
 
     expect(() => {
       Exercise.create({
-        ...vp.validExerciseProps,
+        ...exerciseTestProps.validExerciseProps,
         name: longName,
       });
     }).toThrowError(ValidationError);
 
     expect(() => {
       Exercise.create({
-        ...vp.validExerciseProps,
+        ...exerciseTestProps.validExerciseProps,
         name: longName,
       });
     }).toThrowError(/Text.*not exceed/);

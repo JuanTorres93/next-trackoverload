@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as exerciseTestProps from '../../../../../../tests/createProps/exerciseTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toExerciseDTO } from '@/application-layer/dtos/ExerciseDTO';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
@@ -14,13 +15,13 @@ describe('CreateExerciseUsecase', () => {
     exercisesRepo = new MemoryExercisesRepo();
     createExerciseUsecase = new CreateExerciseUsecase(
       exercisesRepo,
-      new Uuidv4IdGenerator()
+      new Uuidv4IdGenerator(),
     );
   });
 
   describe('Creation', () => {
     it('should create and save a new exercise', async () => {
-      const request = { name: vp.validExerciseProps.name };
+      const request = { name: exerciseTestProps.validExerciseProps.name };
 
       const exercise = await createExerciseUsecase.execute(request);
 
@@ -36,7 +37,7 @@ describe('CreateExerciseUsecase', () => {
     });
 
     it('should return ExerciseDTO', async () => {
-      const request = { name: vp.validExerciseProps.name };
+      const request = { name: exerciseTestProps.validExerciseProps.name };
 
       const exercise = await createExerciseUsecase.execute(request);
 

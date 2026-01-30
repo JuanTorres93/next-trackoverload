@@ -1,4 +1,5 @@
 export const userId = 'user-1';
+
 export const validUserProps = {
   id: userId,
   name: 'Test User',
