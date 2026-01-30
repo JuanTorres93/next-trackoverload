@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as dayTestProps from '../../../../../../tests/createProps/dayTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import { NotFoundError } from '@/domain/common/errors';
 import { Day } from '@/domain/entities/day/Day';
@@ -34,7 +35,7 @@ describe('DeleteDayUsecase', () => {
     );
 
     day = Day.create({
-      ...vp.validDayProps(),
+      ...dayTestProps.validDayProps(),
     });
 
     user = User.create({
@@ -52,7 +53,9 @@ describe('DeleteDayUsecase', () => {
         userId: userTestProps.userId,
       });
 
-      const result = await daysRepo.getDayById(vp.dateId.toISOString());
+      const result = await daysRepo.getDayById(
+        dayTestProps.dateId.toISOString(),
+      );
       expect(result).toBeNull();
     });
   });

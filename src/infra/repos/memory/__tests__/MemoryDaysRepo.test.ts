@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as dayTestProps from '../../../../../tests/createProps/dayTestProps';
 import * as fakeMealTestProps from '../../../../../tests/createProps/fakeMealTestProps';
 import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import { Day } from '@/domain/entities/day/Day';
@@ -16,7 +17,7 @@ describe('MemoryDaysRepo', () => {
     fakeMeal = FakeMeal.create(fakeMealTestProps.validFakeMealProps);
 
     day = Day.create({
-      ...vp.validDayProps(),
+      ...dayTestProps.validDayProps(),
     });
 
     day.addFakeMeal(fakeMeal.id);
@@ -26,7 +27,7 @@ describe('MemoryDaysRepo', () => {
 
   it('should save a day', async () => {
     const newDay = Day.create({
-      ...vp.validDayProps(),
+      ...dayTestProps.validDayProps(),
       day: 2,
       month: 10,
       year: 2023,
@@ -42,7 +43,7 @@ describe('MemoryDaysRepo', () => {
 
   it('should update an existing day', async () => {
     const updatedDay = Day.create({
-      ...vp.validDayProps(),
+      ...dayTestProps.validDayProps(),
     });
     await repo.saveDay(updatedDay);
 
@@ -73,7 +74,7 @@ describe('MemoryDaysRepo', () => {
 
   it('should delete all days for a user', async () => {
     const day2 = Day.create({
-      ...vp.validDayProps(),
+      ...dayTestProps.validDayProps(),
       day: 2,
       month: 10,
       year: 2023,
@@ -81,7 +82,7 @@ describe('MemoryDaysRepo', () => {
     await repo.saveDay(day2);
 
     const day3 = Day.create({
-      ...vp.validDayProps(),
+      ...dayTestProps.validDayProps(),
       userId: 'user-2',
       day: 3,
       month: 10,

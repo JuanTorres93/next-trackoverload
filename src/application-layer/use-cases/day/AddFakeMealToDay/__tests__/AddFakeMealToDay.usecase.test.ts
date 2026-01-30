@@ -8,6 +8,7 @@ import { User } from '@/domain/entities/user/User';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
 
 import * as vp from '@/../tests/createProps';
+import * as dayTestProps from '../../../../../../tests/createProps/dayTestProps';
 import * as fakeMealTestProps from '../../../../../../tests/createProps/fakeMealTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
@@ -34,7 +35,7 @@ describe('AddFakeMealToDayUsecase', () => {
     );
 
     day = Day.create({
-      ...vp.validDayProps(),
+      ...dayTestProps.validDayProps(),
     });
 
     user = User.create({

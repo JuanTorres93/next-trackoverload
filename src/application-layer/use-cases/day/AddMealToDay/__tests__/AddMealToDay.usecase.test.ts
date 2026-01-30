@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as dayTestProps from '../../../../../../tests/createProps/dayTestProps';
 import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
 import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
@@ -43,7 +44,7 @@ describe('AddMealToDayUsecase', () => {
       new Uuidv4IdGenerator(),
     );
     day = Day.create({
-      ...vp.validDayProps(),
+      ...dayTestProps.validDayProps(),
     });
     ingredient = Ingredient.create({
       ...ingredientTestProps.validIngredientProps,

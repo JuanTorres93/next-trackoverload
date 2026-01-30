@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as dayTestProps from '../../../../tests/createProps/dayTestProps';
 import * as fakeMealTestProps from '../../../../tests/createProps/fakeMealTestProps';
 import * as mealTestProps from '../../../../tests/createProps/mealTestProps';
 import * as recipeTestProps from '../../../../tests/createProps/recipeTestProps';
@@ -34,7 +35,7 @@ describe('DayDTO', () => {
     fakeMeal = FakeMeal.create(fakeMealTestProps.validFakeMealProps);
 
     day = Day.create({
-      ...vp.validDayProps(),
+      ...dayTestProps.validDayProps(),
     });
 
     day.addMeal(meal.id);

@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as dayTestProps from '../../../../../../tests/createProps/dayTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toDayDTO } from '@/application-layer/dtos/DayDTO';
@@ -35,9 +36,9 @@ describe('CreateDayUsecase', () => {
   describe('Creation', () => {
     it('should createa new day', async () => {
       const request = {
-        day: vp.validDayProps().day,
-        month: vp.validDayProps().month,
-        year: vp.validDayProps().year,
+        day: dayTestProps.validDayProps().day,
+        month: dayTestProps.validDayProps().month,
+        year: dayTestProps.validDayProps().year,
         actorUserId: userTestProps.userId,
         targetUserId: userTestProps.userId,
       };
@@ -53,9 +54,9 @@ describe('CreateDayUsecase', () => {
 
     it('should return DayDTO', async () => {
       const request = {
-        day: vp.validDayProps().day,
-        month: vp.validDayProps().month,
-        year: vp.validDayProps().year,
+        day: dayTestProps.validDayProps().day,
+        month: dayTestProps.validDayProps().month,
+        year: dayTestProps.validDayProps().year,
         actorUserId: userTestProps.userId,
         targetUserId: userTestProps.userId,
       };
@@ -72,9 +73,9 @@ describe('CreateDayUsecase', () => {
   describe('Side effects', () => {
     it('should save the new day in the DaysRepo', async () => {
       const request = {
-        day: vp.validDayProps().day,
-        month: vp.validDayProps().month,
-        year: vp.validDayProps().year,
+        day: dayTestProps.validDayProps().day,
+        month: dayTestProps.validDayProps().month,
+        year: dayTestProps.validDayProps().year,
         actorUserId: userTestProps.userId,
         targetUserId: userTestProps.userId,
       };
@@ -96,9 +97,9 @@ describe('CreateDayUsecase', () => {
   describe('Errors', () => {
     it('should throw error if user does not exist', async () => {
       const request = {
-        day: vp.validDayProps().day,
-        month: vp.validDayProps().month,
-        year: vp.validDayProps().year,
+        day: dayTestProps.validDayProps().day,
+        month: dayTestProps.validDayProps().month,
+        year: dayTestProps.validDayProps().year,
         actorUserId: 'non-existent',
         targetUserId: 'non-existent',
       };
@@ -113,9 +114,9 @@ describe('CreateDayUsecase', () => {
 
     it('should throw error when trying to create a day for another user', async () => {
       const request = {
-        day: vp.validDayProps().day,
-        month: vp.validDayProps().month,
-        year: vp.validDayProps().year,
+        day: dayTestProps.validDayProps().day,
+        month: dayTestProps.validDayProps().month,
+        year: dayTestProps.validDayProps().year,
         actorUserId: userTestProps.userId,
         targetUserId: 'another-user-id',
       };
@@ -130,9 +131,9 @@ describe('CreateDayUsecase', () => {
 
     it('should throw error if Day already exists', async () => {
       const existingDay = Day.create({
-        day: vp.validDayProps().day,
-        month: vp.validDayProps().month,
-        year: vp.validDayProps().year,
+        day: dayTestProps.validDayProps().day,
+        month: dayTestProps.validDayProps().month,
+        year: dayTestProps.validDayProps().year,
         userId: userTestProps.userId,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -141,9 +142,9 @@ describe('CreateDayUsecase', () => {
       await daysRepo.saveDay(existingDay);
 
       const request = {
-        day: vp.validDayProps().day,
-        month: vp.validDayProps().month,
-        year: vp.validDayProps().year,
+        day: dayTestProps.validDayProps().day,
+        month: dayTestProps.validDayProps().month,
+        year: dayTestProps.validDayProps().year,
         actorUserId: userTestProps.userId,
         targetUserId: userTestProps.userId,
       };

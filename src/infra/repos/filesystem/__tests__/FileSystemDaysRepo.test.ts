@@ -3,6 +3,7 @@ import { FileSystemDaysRepo } from '../FileSystemDaysRepo';
 import { Day } from '@/domain/entities/day/Day';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import * as vp from '@/../tests/createProps';
+import * as dayTestProps from '../../../../../tests/createProps/dayTestProps';
 import * as fakeMealTestProps from '../../../../../tests/createProps/fakeMealTestProps';
 import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import fs from 'fs/promises';
@@ -19,7 +20,7 @@ describe('FileSystemDaysRepo', () => {
     fakeMeal = FakeMeal.create(fakeMealTestProps.validFakeMealProps);
 
     day = Day.create({
-      ...vp.validDayProps(),
+      ...dayTestProps.validDayProps(),
     });
 
     day.addFakeMeal(fakeMeal.id);
@@ -37,7 +38,7 @@ describe('FileSystemDaysRepo', () => {
 
   it('should save a day', async () => {
     const newDay = Day.create({
-      ...vp.validDayProps(),
+      ...dayTestProps.validDayProps(),
       day: 2,
       month: 10,
       year: 1111,
@@ -54,7 +55,7 @@ describe('FileSystemDaysRepo', () => {
 
   it('should update an existing day', async () => {
     const updatedDay = Day.create({
-      ...vp.validDayProps(),
+      ...dayTestProps.validDayProps(),
     });
     await repo.saveDay(updatedDay);
 
@@ -87,14 +88,14 @@ describe('FileSystemDaysRepo', () => {
   it('should retrieve days by date range', async () => {
     // Add more days
     const day2 = Day.create({
-      ...vp.validDayProps(),
+      ...dayTestProps.validDayProps(),
       day: 2,
       month: 10,
       year: 2023,
     });
 
     const day3 = Day.create({
-      ...vp.validDayProps(),
+      ...dayTestProps.validDayProps(),
       day: 5,
       month: 10,
       year: 2023,
@@ -110,7 +111,7 @@ describe('FileSystemDaysRepo', () => {
 
   it('should retrieve days by date range and user ID', async () => {
     const day2 = Day.create({
-      ...vp.validDayProps(),
+      ...dayTestProps.validDayProps(),
       day: 2,
       month: 10,
       year: 2023,
@@ -146,7 +147,7 @@ describe('FileSystemDaysRepo', () => {
 
   it('should delete all days for a user', async () => {
     const day2 = Day.create({
-      ...vp.validDayProps(),
+      ...dayTestProps.validDayProps(),
       day: 2,
       month: 10,
       year: 2023,
@@ -154,7 +155,7 @@ describe('FileSystemDaysRepo', () => {
     await repo.saveDay(day2);
 
     const day3 = Day.create({
-      ...vp.validDayProps(),
+      ...dayTestProps.validDayProps(),
       userId: 'user-2',
       day: 3,
       month: 10,

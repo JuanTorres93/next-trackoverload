@@ -7,6 +7,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { GetDayByIdUsecase } from '../GetDayById.usecase';
 
 import * as vp from '@/../tests/createProps';
+import * as dayTestProps from '../../../../../../tests/createProps/dayTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 
@@ -28,7 +29,7 @@ describe('GetDayByIdUsecase', () => {
     await usersRepo.saveUser(user);
 
     day = Day.create({
-      ...vp.validDayProps(),
+      ...dayTestProps.validDayProps(),
     });
     await daysRepo.saveDay(day);
   });

@@ -8,6 +8,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { RemoveMealFromDayUsecase } from '../RemoveMealFromDay.usecase';
 
 import * as vp from '@/../tests/createProps';
+import * as dayTestProps from '../../../../../../tests/createProps/dayTestProps';
 import * as fakeMealTestProps from '../../../../../../tests/createProps/fakeMealTestProps';
 import * as mealTestProps from '../../../../../../tests/createProps/mealTestProps';
 import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
@@ -53,7 +54,7 @@ describe('RemoveMealFromDayUsecase', () => {
     });
 
     day = Day.create({
-      ...vp.validDayProps(),
+      ...dayTestProps.validDayProps(),
     });
 
     user = User.create({

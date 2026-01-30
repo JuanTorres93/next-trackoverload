@@ -4,6 +4,7 @@ import { ValidationError } from '@/domain/common/errors';
 import { Day } from '../Day';
 
 import * as vp from '@/../tests/createProps';
+import * as dayTestProps from '../../../../../tests/createProps/dayTestProps';
 import { DayId } from '@/domain/value-objects/DayId/DayId';
 
 describe('Day', () => {
@@ -11,7 +12,7 @@ describe('Day', () => {
 
   beforeEach(() => {
     day = Day.create({
-      ...vp.validDayProps(),
+      ...dayTestProps.validDayProps(),
     });
   });
 
@@ -20,29 +21,29 @@ describe('Day', () => {
     expect(typeof day.id).toBe('string');
     expect(day.id).toBe(
       DayId.create({
-        day: vp.validDayProps().day,
-        month: vp.validDayProps().month,
-        year: vp.validDayProps().year,
-      }).value
+        day: dayTestProps.validDayProps().day,
+        month: dayTestProps.validDayProps().month,
+        year: dayTestProps.validDayProps().year,
+      }).value,
     );
   });
 
   it('should return its day', async () => {
     expect(day).toHaveProperty('day');
     expect(typeof day.day).toBe('number');
-    expect(day.day).toBe(vp.validDayProps().day);
+    expect(day.day).toBe(dayTestProps.validDayProps().day);
   });
 
   it('should return its month', async () => {
     expect(day).toHaveProperty('month');
     expect(typeof day.month).toBe('number');
-    expect(day.month).toBe(vp.validDayProps().month);
+    expect(day.month).toBe(dayTestProps.validDayProps().month);
   });
 
   it('should return its year', async () => {
     expect(day).toHaveProperty('year');
     expect(typeof day.year).toBe('number');
-    expect(day.year).toBe(vp.validDayProps().year);
+    expect(day.year).toBe(dayTestProps.validDayProps().year);
   });
 
   describe('creation', () => {
@@ -76,7 +77,7 @@ describe('Day', () => {
 
       expect(() => day.addMeal(newMealId)).toThrow(ValidationError);
       expect(() => day.addMeal(newMealId)).toThrow(
-        /Day.*Meal.*id.*already.*exists/
+        /Day.*Meal.*id.*already.*exists/,
       );
       expect(day.mealIds).toHaveLength(initialLength);
     });
@@ -94,7 +95,7 @@ describe('Day', () => {
     it('should throw error if removing meal that is not contained in day', async () => {
       expect(() => day.removeMealById('non-existent')).toThrow(ValidationError);
       expect(() => day.removeMealById('non-existent')).toThrow(
-        /Day.*No.*meal.*found.*id/
+        /Day.*No.*meal.*found.*id/,
       );
     });
   });
@@ -118,7 +119,7 @@ describe('Day', () => {
       day.addFakeMeal(newFakeMealId);
       expect(day.fakeMealIds).toHaveLength(initialLength + 1);
       expect(day.fakeMealIds[day.fakeMealIds.length - 1]).toEqual(
-        newFakeMealId
+        newFakeMealId,
       );
     });
 
@@ -128,7 +129,7 @@ describe('Day', () => {
 
       expect(() => day.addFakeMeal(fakeMealId)).toThrow(ValidationError);
       expect(() => day.addFakeMeal(fakeMealId)).toThrow(
-        /Day.*FakeMeal.*id.*already.*exists/
+        /Day.*FakeMeal.*id.*already.*exists/,
       );
       expect(day.fakeMealIds).toHaveLength(initialLength);
     });
@@ -145,10 +146,10 @@ describe('Day', () => {
 
     it('should throw error if removing fake meal that is not contained in day', async () => {
       expect(() => day.removeFakeMealById('non-existent')).toThrow(
-        ValidationError
+        ValidationError,
       );
       expect(() => day.removeFakeMealById('non-existent')).toThrow(
-        /Day.*No.*fake meal.*found.*id/
+        /Day.*No.*fake meal.*found.*id/,
       );
     });
   });
