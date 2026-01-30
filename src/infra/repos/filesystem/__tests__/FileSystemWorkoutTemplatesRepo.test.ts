@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import { WorkoutTemplateLine } from '@/domain/entities/workouttemplateline/WorkoutTemplateLine';
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
@@ -15,7 +16,7 @@ describe('FileSystemWorkoutTemplatesRepo', () => {
   beforeEach(async () => {
     repo = new FileSystemWorkoutTemplatesRepo(
       testTemplatesDir,
-      testTemplateLinesDir
+      testTemplateLinesDir,
     );
     workoutTemplate = WorkoutTemplate.create(vp.validWorkoutTemplateProps());
     await repo.saveWorkoutTemplate(workoutTemplate);
@@ -60,7 +61,7 @@ describe('FileSystemWorkoutTemplatesRepo', () => {
     expect(allWorkoutTemplates.length).toBe(2);
 
     const savedTemplate = allWorkoutTemplates.find(
-      (t) => t.id === 'another-template-id'
+      (t) => t.id === 'another-template-id',
     );
     expect(savedTemplate).toBeDefined();
     expect(savedTemplate?.name).toBe('Pull Template');
@@ -80,33 +81,34 @@ describe('FileSystemWorkoutTemplatesRepo', () => {
 
   it('should retrieve a workout template by ID', async () => {
     const fetchedWorkoutTemplate = await repo.getWorkoutTemplateById(
-      vp.validWorkoutTemplateProps().id
+      vp.validWorkoutTemplateProps().id,
     );
     expect(fetchedWorkoutTemplate).not.toBeNull();
     expect(fetchedWorkoutTemplate?.name).toBe(
-      vp.validWorkoutTemplateProps().name
+      vp.validWorkoutTemplateProps().name,
     );
   });
 
   it('should retrieve workout templates by user ID', async () => {
-    const userTemplates = await repo.getAllWorkoutTemplatesByUserId(vp.userId);
+    const userTemplates = await repo.getAllWorkoutTemplatesByUserId(
+      userTestProps.userId,
+    );
     expect(userTemplates.length).toBe(1);
-    expect(userTemplates[0].userId).toBe(vp.userId);
+    expect(userTemplates[0].userId).toBe(userTestProps.userId);
   });
 
   it('should retrieve a workout template by ID and user ID', async () => {
     const fetchedTemplate = await repo.getWorkoutTemplateByIdAndUserId(
       vp.validWorkoutTemplateProps().id,
-      vp.userId
+      userTestProps.userId,
     );
     expect(fetchedTemplate).not.toBeNull();
     expect(fetchedTemplate?.name).toBe(vp.validWorkoutTemplateProps().name);
   });
 
   it('should return null for non-existent workout template ID', async () => {
-    const fetchedWorkoutTemplate = await repo.getWorkoutTemplateById(
-      'non-existent-id'
-    );
+    const fetchedWorkoutTemplate =
+      await repo.getWorkoutTemplateById('non-existent-id');
     expect(fetchedWorkoutTemplate).toBeNull();
   });
 
@@ -114,7 +116,7 @@ describe('FileSystemWorkoutTemplatesRepo', () => {
     // Verify template file exists
     const templateFilePath = path.join(
       testTemplatesDir,
-      `${workoutTemplate.id}.json`
+      `${workoutTemplate.id}.json`,
     );
     const templateFileExists = await fs
       .access(templateFilePath)
@@ -138,7 +140,7 @@ describe('FileSystemWorkoutTemplatesRepo', () => {
     await repo.saveWorkoutTemplate(workoutTemplate);
 
     const fetchedTemplate = await repo.getWorkoutTemplateById(
-      workoutTemplate.id
+      workoutTemplate.id,
     );
     expect(fetchedTemplate).not.toBeNull();
     expect(fetchedTemplate?.isDeleted).toBe(true);
@@ -163,7 +165,7 @@ describe('FileSystemWorkoutTemplatesRepo', () => {
     const allTemplatesBefore = await repo.getAllWorkoutTemplates();
     expect(allTemplatesBefore.length).toBe(3);
 
-    await repo.deleteAllWorkoutTemplatesForUser(vp.userId);
+    await repo.deleteAllWorkoutTemplatesForUser(userTestProps.userId);
 
     const allTemplatesAfter = await repo.getAllWorkoutTemplates();
     expect(allTemplatesAfter.length).toBe(1);

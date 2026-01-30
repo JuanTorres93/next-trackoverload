@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError } from '@/domain/common/errors';
 import { User } from '@/domain/entities/user/User';
@@ -25,11 +26,11 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
     usersRepo = new MemoryUsersRepo();
     updateExerciseInWorkoutUsecase = new UpdateExerciseInWorkoutUsecase(
       workoutsRepo,
-      usersRepo
+      usersRepo,
     );
 
     user = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
     });
 
     workout = Workout.create({
@@ -44,7 +45,7 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
   describe('Execution', () => {
     it('should update exercise reps in workout', async () => {
       const updatedWorkout = await updateExerciseInWorkoutUsecase.execute({
-        userId: vp.userId,
+        userId: userTestProps.userId,
         workoutId: vp.validWorkoutProps.id,
         exerciseId: workoutLine.exerciseId,
         reps: 15,
@@ -52,19 +53,19 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
 
       expect(updatedWorkout.exercises[0].reps).toBe(15);
       expect(updatedWorkout.exercises[0].reps).not.toBe(
-        vp.validWorkoutLineProps.reps
+        vp.validWorkoutLineProps.reps,
       );
       expect(updatedWorkout.exercises[0].setNumber).toBe(
-        vp.validWorkoutLineProps.setNumber
+        vp.validWorkoutLineProps.setNumber,
       );
       expect(updatedWorkout.exercises[0].weight).toBe(
-        vp.validWorkoutLineProps.weight
+        vp.validWorkoutLineProps.weight,
       );
     });
 
     it('should return WorkoutDTO', async () => {
       const updatedWorkout = await updateExerciseInWorkoutUsecase.execute({
-        userId: vp.userId,
+        userId: userTestProps.userId,
         workoutId: vp.validWorkoutProps.id,
         exerciseId: vp.validWorkoutLineProps.exerciseId,
         reps: 15,
@@ -78,7 +79,7 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
 
     it('should update exercise weight in workout', async () => {
       const updatedWorkout = await updateExerciseInWorkoutUsecase.execute({
-        userId: vp.userId,
+        userId: userTestProps.userId,
         workoutId: vp.validWorkoutProps.id,
         exerciseId: vp.validWorkoutLineProps.exerciseId,
         weight: 25.5,
@@ -86,19 +87,19 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
 
       expect(updatedWorkout.exercises[0].weight).toBe(25.5);
       expect(updatedWorkout.exercises[0].weight).not.toBe(
-        vp.validWorkoutLineProps.weight
+        vp.validWorkoutLineProps.weight,
       );
       expect(updatedWorkout.exercises[0].reps).toBe(
-        vp.validWorkoutLineProps.reps
+        vp.validWorkoutLineProps.reps,
       );
       expect(updatedWorkout.exercises[0].setNumber).toBe(
-        vp.validWorkoutLineProps.setNumber
+        vp.validWorkoutLineProps.setNumber,
       );
     });
 
     it('should update exercise set number in workout', async () => {
       const updatedWorkout = await updateExerciseInWorkoutUsecase.execute({
-        userId: vp.userId,
+        userId: userTestProps.userId,
         workoutId: vp.validWorkoutProps.id,
         exerciseId: vp.validWorkoutLineProps.exerciseId,
         setNumber: 2,
@@ -106,19 +107,19 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
 
       expect(updatedWorkout.exercises[0].setNumber).toBe(2);
       expect(updatedWorkout.exercises[0].setNumber).not.toBe(
-        vp.validWorkoutLineProps.setNumber
+        vp.validWorkoutLineProps.setNumber,
       );
       expect(updatedWorkout.exercises[0].reps).toBe(
-        vp.validWorkoutLineProps.reps
+        vp.validWorkoutLineProps.reps,
       );
       expect(updatedWorkout.exercises[0].weight).toBe(
-        vp.validWorkoutLineProps.weight
+        vp.validWorkoutLineProps.weight,
       );
     });
 
     it('should update multiple properties at once', async () => {
       const updatedWorkout = await updateExerciseInWorkoutUsecase.execute({
-        userId: vp.userId,
+        userId: userTestProps.userId,
         workoutId: vp.validWorkoutProps.id,
         exerciseId: vp.validWorkoutLineProps.exerciseId,
         setNumber: 3,
@@ -135,18 +136,18 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
   describe('Errors', () => {
     it('should throw NotFoundError when workout does not exist', async () => {
       const request = {
-        userId: vp.userId,
+        userId: userTestProps.userId,
         workoutId: 'non-existent',
         exerciseId: vp.validWorkoutLineProps.exerciseId,
         reps: 15,
       };
 
       await expect(
-        updateExerciseInWorkoutUsecase.execute(request)
+        updateExerciseInWorkoutUsecase.execute(request),
       ).rejects.toThrow(NotFoundError);
 
       await expect(
-        updateExerciseInWorkoutUsecase.execute(request)
+        updateExerciseInWorkoutUsecase.execute(request),
       ).rejects.toThrow(/UpdateExerciseInWorkoutUsecase.*Workout.*not.*found/);
     });
 
@@ -159,17 +160,17 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
       };
 
       await expect(
-        updateExerciseInWorkoutUsecase.execute(request)
+        updateExerciseInWorkoutUsecase.execute(request),
       ).rejects.toThrow(NotFoundError);
 
       await expect(
-        updateExerciseInWorkoutUsecase.execute(request)
+        updateExerciseInWorkoutUsecase.execute(request),
       ).rejects.toThrow(/UpdateExerciseInWorkoutUsecase.*User.*not.*found/);
     });
 
     it("should throw error when trying to update exercise in another user's workout", async () => {
       const anotherUser = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
         id: 'another-user-id',
       });
 
@@ -183,11 +184,11 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
       };
 
       await expect(
-        updateExerciseInWorkoutUsecase.execute(request)
+        updateExerciseInWorkoutUsecase.execute(request),
       ).rejects.toThrow(NotFoundError);
 
       await expect(
-        updateExerciseInWorkoutUsecase.execute(request)
+        updateExerciseInWorkoutUsecase.execute(request),
       ).rejects.toThrow(/UpdateExerciseInWorkoutUsecase.*Workout.*not.*found/);
     });
   });

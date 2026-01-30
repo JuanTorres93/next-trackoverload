@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import { NotFoundError } from '@/domain/common/errors';
 import { Day } from '@/domain/entities/day/Day';
 import { User } from '@/domain/entities/user/User';
@@ -29,7 +30,7 @@ describe('DeleteDayUsecase', () => {
       daysRepo,
       usersRepo,
       mealsRepo,
-      fakeMealsRepo
+      fakeMealsRepo,
     );
 
     day = Day.create({
@@ -37,7 +38,7 @@ describe('DeleteDayUsecase', () => {
     });
 
     user = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
     });
 
     await usersRepo.saveUser(user);
@@ -46,7 +47,10 @@ describe('DeleteDayUsecase', () => {
 
   describe('Deletion', () => {
     it('should delete a day', async () => {
-      await deleteDayUsecase.execute({ dayId: day.id, userId: vp.userId });
+      await deleteDayUsecase.execute({
+        dayId: day.id,
+        userId: userTestProps.userId,
+      });
 
       const result = await daysRepo.getDayById(vp.dateId.toISOString());
       expect(result).toBeNull();
@@ -56,10 +60,16 @@ describe('DeleteDayUsecase', () => {
   describe('Errors', () => {
     it('should throw error when deleting non-existent day', async () => {
       await expect(
-        deleteDayUsecase.execute({ dayId: 'non-existent', userId: vp.userId })
+        deleteDayUsecase.execute({
+          dayId: 'non-existent',
+          userId: userTestProps.userId,
+        }),
       ).rejects.toThrow(NotFoundError);
       await expect(
-        deleteDayUsecase.execute({ dayId: 'non-existent', userId: vp.userId })
+        deleteDayUsecase.execute({
+          dayId: 'non-existent',
+          userId: userTestProps.userId,
+        }),
       ).rejects.toThrow(/DeleteDayUsecase.*Day not found/);
     });
 
@@ -68,20 +78,20 @@ describe('DeleteDayUsecase', () => {
         deleteDayUsecase.execute({
           dayId: day.id,
           userId: 'non-existent',
-        })
+        }),
       ).rejects.toThrow(NotFoundError);
 
       await expect(
         deleteDayUsecase.execute({
           dayId: day.id,
           userId: 'non-existent',
-        })
+        }),
       ).rejects.toThrow(/DeleteDayUsecase.*User.*not.*found/);
     });
 
     it("should throw error when trying to delete another user's Day", async () => {
       const anotherUser = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
         id: 'another-user-id',
         email: 'another-user@example.com',
       });
@@ -94,11 +104,11 @@ describe('DeleteDayUsecase', () => {
       };
 
       await expect(deleteDayUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
 
       await expect(deleteDayUsecase.execute(request)).rejects.toThrow(
-        /DeleteDayUsecase.*Day.*not.*found/
+        /DeleteDayUsecase.*Day.*not.*found/,
       );
     });
   });

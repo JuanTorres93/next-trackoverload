@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toUserDTO } from '@/application-layer/dtos/UserDTO';
 import { User } from '@/domain/entities/user/User';
@@ -19,14 +20,14 @@ describe('GetUserByIdUsecase', () => {
   describe('Execute', () => {
     it('should return user when found', async () => {
       const user = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
       });
 
       await usersRepo.saveUser(user);
 
       const result = await getUserByIdUsecase.execute({
-        actorUserId: vp.validUserProps.id,
-        targetUserId: vp.validUserProps.id,
+        actorUserId: userTestProps.validUserProps.id,
+        targetUserId: userTestProps.validUserProps.id,
       });
 
       expect(result).toEqual(toUserDTO(user));
@@ -34,14 +35,14 @@ describe('GetUserByIdUsecase', () => {
 
     it('should return user DTO when found', async () => {
       const user = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
       });
 
       await usersRepo.saveUser(user);
 
       const result = await getUserByIdUsecase.execute({
-        actorUserId: vp.validUserProps.id,
-        targetUserId: vp.validUserProps.id,
+        actorUserId: userTestProps.validUserProps.id,
+        targetUserId: userTestProps.validUserProps.id,
       });
 
       for (const prop of dto.userDTOProperties) {
@@ -68,11 +69,11 @@ describe('GetUserByIdUsecase', () => {
       };
 
       await expect(() =>
-        getUserByIdUsecase.execute(request)
+        getUserByIdUsecase.execute(request),
       ).rejects.toThrowError(PermissionError);
 
       await expect(() =>
-        getUserByIdUsecase.execute(request)
+        getUserByIdUsecase.execute(request),
       ).rejects.toThrowError(/GetUserByIdUsecase.*Access denied/);
     });
   });

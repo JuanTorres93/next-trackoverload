@@ -1,6 +1,7 @@
 import { toUserDTO, fromUserDTO, UserDTO } from '../UserDTO';
 import { User } from '@/domain/entities/user/User';
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 
 describe('UserDTO', () => {
@@ -8,7 +9,7 @@ describe('UserDTO', () => {
   let userDTO: UserDTO;
 
   beforeEach(() => {
-    user = User.create(vp.validUserProps);
+    user = User.create(userTestProps.validUserProps);
   });
 
   describe('toUserDTO', () => {
@@ -42,7 +43,7 @@ describe('UserDTO', () => {
 
     it('should handle user without customerId', () => {
       const userWithoutCustomerId = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
         customerId: undefined,
       });
       const dto = toUserDTO(userWithoutCustomerId);
@@ -68,10 +69,10 @@ describe('UserDTO', () => {
       expect(reconstructedUser.createdAt).toBeInstanceOf(Date);
       expect(reconstructedUser.updatedAt).toBeInstanceOf(Date);
       expect(reconstructedUser.createdAt.getTime()).toBe(
-        user.createdAt.getTime()
+        user.createdAt.getTime(),
       );
       expect(reconstructedUser.updatedAt.getTime()).toBe(
-        user.updatedAt.getTime()
+        user.updatedAt.getTime(),
       );
     });
 
@@ -90,7 +91,7 @@ describe('UserDTO', () => {
 
     it('should handle user without customerId', () => {
       const userWithoutCustomerId = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
         customerId: undefined,
       });
       const dto = toUserDTO(userWithoutCustomerId);

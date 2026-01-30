@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError } from '@/domain/common/errors';
 import { User } from '@/domain/entities/user/User';
@@ -20,7 +21,7 @@ describe('UpdateWorkoutTemplateUsecase', () => {
     usersRepo = new MemoryUsersRepo();
     usecase = new UpdateWorkoutTemplateUsecase(workoutTemplatesRepo, usersRepo);
 
-    user = User.create({ ...vp.validUserProps });
+    user = User.create({ ...userTestProps.validUserProps });
     existingTemplate = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps(),
     });
@@ -33,7 +34,7 @@ describe('UpdateWorkoutTemplateUsecase', () => {
     it('should update the workout template name', async () => {
       const request = {
         id: vp.validWorkoutTemplateProps().id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         name: 'New Name',
       };
 
@@ -64,7 +65,7 @@ describe('UpdateWorkoutTemplateUsecase', () => {
     it('should return WorkoutTemplateDTO', async () => {
       const request = {
         id: vp.validWorkoutTemplateProps().id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         name: 'Updated Name',
       };
 
@@ -82,7 +83,7 @@ describe('UpdateWorkoutTemplateUsecase', () => {
       const request = {
         id: 'non-existent',
         name: 'New Name',
-        userId: vp.userId,
+        userId: userTestProps.userId,
       };
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
@@ -98,7 +99,7 @@ describe('UpdateWorkoutTemplateUsecase', () => {
       const request = {
         id: vp.validWorkoutTemplateProps().id,
         name: 'Updated Name',
-        userId: vp.userId,
+        userId: userTestProps.userId,
       };
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
@@ -119,7 +120,10 @@ describe('UpdateWorkoutTemplateUsecase', () => {
     });
 
     it("should throw error when trying to update another user's workout template", async () => {
-      const anotherUser = User.create({ ...vp.validUserProps, id: 'user-2' });
+      const anotherUser = User.create({
+        ...userTestProps.validUserProps,
+        id: 'user-2',
+      });
       await usersRepo.saveUser(anotherUser);
 
       const request = {

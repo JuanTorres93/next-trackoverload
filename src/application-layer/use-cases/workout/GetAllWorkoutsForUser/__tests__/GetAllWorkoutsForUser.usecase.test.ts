@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError, PermissionError } from '@/domain/common/errors';
 import { User } from '@/domain/entities/user/User';
@@ -19,11 +20,11 @@ describe('GetAllWorkoutsUsecase', () => {
     usersRepo = new MemoryUsersRepo();
     getAllWorkoutsUsecase = new GetAllWorkoutsForUserUsecase(
       workoutsRepo,
-      usersRepo
+      usersRepo,
     );
 
     user = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
     });
     await usersRepo.saveUser(user);
   });
@@ -46,8 +47,8 @@ describe('GetAllWorkoutsUsecase', () => {
       await workoutsRepo.saveWorkout(workout2);
 
       const workouts = await getAllWorkoutsUsecase.execute({
-        actorUserId: vp.userId,
-        targetUserId: vp.userId,
+        actorUserId: userTestProps.userId,
+        targetUserId: userTestProps.userId,
       });
 
       const workoutIds = workouts.map((w) => w.id);
@@ -74,8 +75,8 @@ describe('GetAllWorkoutsUsecase', () => {
       await workoutsRepo.saveWorkout(workout2);
 
       const workouts = await getAllWorkoutsUsecase.execute({
-        actorUserId: vp.userId,
-        targetUserId: vp.userId,
+        actorUserId: userTestProps.userId,
+        targetUserId: userTestProps.userId,
       });
 
       for (const workout of workouts) {
@@ -89,8 +90,8 @@ describe('GetAllWorkoutsUsecase', () => {
 
     it('should return empty array when no workouts exist', async () => {
       const workouts = await getAllWorkoutsUsecase.execute({
-        actorUserId: vp.userId,
-        targetUserId: vp.userId,
+        actorUserId: userTestProps.userId,
+        targetUserId: userTestProps.userId,
       });
       expect(workouts).toHaveLength(0);
     });
@@ -104,33 +105,33 @@ describe('GetAllWorkoutsUsecase', () => {
       };
 
       await expect(getAllWorkoutsUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
 
       await expect(getAllWorkoutsUsecase.execute(request)).rejects.toThrow(
-        /GetAllWorkoutsForUserUsecase.*User.*not.*found/
+        /GetAllWorkoutsForUserUsecase.*User.*not.*found/,
       );
     });
 
     it('should throw error when trying to get another users workouts', async () => {
       const anotherUser = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
         id: 'another-user-id',
       });
 
       await usersRepo.saveUser(anotherUser);
 
       const request = {
-        actorUserId: vp.userId,
+        actorUserId: userTestProps.userId,
         targetUserId: anotherUser.id,
       };
 
       await expect(getAllWorkoutsUsecase.execute(request)).rejects.toThrow(
-        PermissionError
+        PermissionError,
       );
 
       await expect(getAllWorkoutsUsecase.execute(request)).rejects.toThrow(
-        /GetAllWorkoutsForUserUsecase.*cannot.*get.*workouts.*another user/
+        /GetAllWorkoutsForUserUsecase.*cannot.*get.*workouts.*another user/,
       );
     });
   });

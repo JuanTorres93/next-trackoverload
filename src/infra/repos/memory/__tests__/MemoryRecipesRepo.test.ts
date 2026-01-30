@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryRecipesRepo } from '../MemoryRecipesRepo';
 
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 
 describe('MemoryRecipesRepo', () => {
   let repo: MemoryRecipesRepo;
@@ -59,7 +60,7 @@ describe('MemoryRecipesRepo', () => {
 
   it('should retrieve a recipe by ID', async () => {
     const fetchedRecipe = await repo.getRecipeById(
-      vp.recipePropsNoIngredientLines.id
+      vp.recipePropsNoIngredientLines.id,
     );
     expect(fetchedRecipe).not.toBeNull();
     expect(fetchedRecipe?.name).toBe(vp.recipePropsNoIngredientLines.name);
@@ -101,7 +102,7 @@ describe('MemoryRecipesRepo', () => {
     const allRecipesBefore = await repo.getAllRecipes();
     expect(allRecipesBefore.length).toBe(3);
 
-    await repo.deleteAllRecipesForUser(vp.userId);
+    await repo.deleteAllRecipesForUser(userTestProps.userId);
 
     const allRecipesAfter = await repo.getAllRecipes();
     expect(allRecipesAfter.length).toBe(1);

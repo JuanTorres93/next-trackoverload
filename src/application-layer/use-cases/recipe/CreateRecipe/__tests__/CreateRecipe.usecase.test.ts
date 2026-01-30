@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { NotFoundError, PermissionError } from '@/domain/common/errors';
@@ -49,7 +50,7 @@ describe('CreateRecipeUsecase', () => {
     );
 
     user = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
     });
 
     await usersRepo.saveUser(user);
@@ -71,8 +72,8 @@ describe('CreateRecipeUsecase', () => {
   describe('Creation', () => {
     it('should create and save a new recipe with no image', async () => {
       const request = {
-        actorUserId: vp.userId,
-        targetUserId: vp.userId,
+        actorUserId: userTestProps.userId,
+        targetUserId: userTestProps.userId,
         name: 'Grilled Chicken',
         ingredientLinesInfo: [testIngredientLineInfo],
       };
@@ -80,7 +81,7 @@ describe('CreateRecipeUsecase', () => {
       const recipe = await createRecipeUsecase.execute(request);
 
       expect(recipe).toHaveProperty('id');
-      expect(recipe.userId).toBe(vp.userId);
+      expect(recipe.userId).toBe(userTestProps.userId);
       expect(recipe.name).toBe(request.name);
       expect(recipe.imageUrl).not.toBeDefined();
       expect(recipe.ingredientLines).toHaveLength(1);
@@ -94,8 +95,8 @@ describe('CreateRecipeUsecase', () => {
     it('should create and save a new recipe WITH image', async () => {
       const testImage = await createTestImage('small');
       const request = {
-        actorUserId: vp.userId,
-        targetUserId: vp.userId,
+        actorUserId: userTestProps.userId,
+        targetUserId: userTestProps.userId,
         name: 'Grilled Chicken',
         ingredientLinesInfo: [testIngredientLineInfo],
         imageBuffer: testImage,
@@ -104,7 +105,7 @@ describe('CreateRecipeUsecase', () => {
       const recipe = await createRecipeUsecase.execute(request);
 
       expect(recipe).toHaveProperty('id');
-      expect(recipe.userId).toBe(vp.userId);
+      expect(recipe.userId).toBe(userTestProps.userId);
       expect(recipe.name).toBe(request.name);
       expect(recipe.imageUrl).toBeDefined();
       expect(recipe.ingredientLines).toHaveLength(1);
@@ -148,8 +149,8 @@ describe('CreateRecipeUsecase', () => {
       const ingredientsBefore = ingredientsRepo.countForTesting();
 
       const request = {
-        actorUserId: vp.userId,
-        targetUserId: vp.userId,
+        actorUserId: userTestProps.userId,
+        targetUserId: userTestProps.userId,
         name: 'Grilled Chicken',
         ingredientLinesInfo: [ingredientsLineInfo],
       };
@@ -161,14 +162,14 @@ describe('CreateRecipeUsecase', () => {
       expect(ingredientsAfter).toBe(ingredientsBefore); // No new ingredient created
 
       expect(recipe).toHaveProperty('id');
-      expect(recipe.userId).toBe(vp.userId);
+      expect(recipe.userId).toBe(userTestProps.userId);
       expect(recipe.name).toBe(request.name);
     });
 
     it('should save recipe ingredient lines', async () => {
       const request = {
-        actorUserId: vp.userId,
-        targetUserId: vp.userId,
+        actorUserId: userTestProps.userId,
+        targetUserId: userTestProps.userId,
         name: 'Grilled Chicken',
         ingredientLinesInfo: [testIngredientLineInfo],
       };
@@ -183,8 +184,8 @@ describe('CreateRecipeUsecase', () => {
 
     it('should calculate correct nutritional info', async () => {
       const request = {
-        actorUserId: vp.userId,
-        targetUserId: vp.userId,
+        actorUserId: userTestProps.userId,
+        targetUserId: userTestProps.userId,
         name: 'Test Recipe',
         ingredientLinesInfo: [testIngredientLineInfo],
       };
@@ -198,8 +199,8 @@ describe('CreateRecipeUsecase', () => {
 
     it('should return RecipeDTO', async () => {
       const request = {
-        actorUserId: vp.userId,
-        targetUserId: vp.userId,
+        actorUserId: userTestProps.userId,
+        targetUserId: userTestProps.userId,
         name: 'Test Recipe',
         ingredientLinesInfo: [testIngredientLineInfo],
       };
@@ -235,8 +236,8 @@ describe('CreateRecipeUsecase', () => {
       };
 
       const request = {
-        actorUserId: vp.userId,
-        targetUserId: vp.userId,
+        actorUserId: userTestProps.userId,
+        targetUserId: userTestProps.userId,
         name: 'Chicken and Rice',
         ingredientLinesInfo: [testIngredientLineInfo, testIngredientLineInfo2],
       };
@@ -261,8 +262,8 @@ describe('CreateRecipeUsecase', () => {
 
       const testImage = await createTestImage('small');
       const request = {
-        actorUserId: vp.userId,
-        targetUserId: vp.userId,
+        actorUserId: userTestProps.userId,
+        targetUserId: userTestProps.userId,
         name: 'Recipe with Image',
         ingredientLinesInfo: [testIngredientLineInfo],
         imageBuffer: testImage,
@@ -287,8 +288,8 @@ describe('CreateRecipeUsecase', () => {
       };
 
       const request = {
-        actorUserId: vp.userId,
-        targetUserId: vp.userId,
+        actorUserId: userTestProps.userId,
+        targetUserId: userTestProps.userId,
         name: 'Recipe with New External Ingredient',
         ingredientLinesInfo: [newIngredientLineInfo],
       };
@@ -328,8 +329,8 @@ describe('CreateRecipeUsecase', () => {
       };
 
       const request = {
-        actorUserId: vp.userId,
-        targetUserId: vp.userId,
+        actorUserId: userTestProps.userId,
+        targetUserId: userTestProps.userId,
         name: 'Recipe with New Ingredient',
         ingredientLinesInfo: [newIngredientLineInfo],
       };
@@ -375,7 +376,7 @@ describe('CreateRecipeUsecase', () => {
 
     it('should throw error when trying to create recipe for another user', async () => {
       const request = {
-        actorUserId: vp.userId,
+        actorUserId: userTestProps.userId,
         targetUserId: 'another-user-id',
         name: 'Test Recipe',
         ingredientLinesInfo: [testIngredientLineInfo],

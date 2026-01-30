@@ -2,8 +2,8 @@ import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { WorkoutTemplateLine } from '@/domain/entities/workouttemplateline/WorkoutTemplateLine';
 import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
+import { userId } from './createProps/userTestProps';
 
-export const userId = 'user-1';
 export const dateId = new Date('2023-10-01');
 
 export function validDayProps() {

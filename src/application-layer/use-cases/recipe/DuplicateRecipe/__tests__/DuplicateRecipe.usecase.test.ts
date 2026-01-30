@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { NotFoundError } from '@/domain/common/errors';
@@ -25,11 +26,11 @@ describe('DuplicateRecipeUsecase', () => {
     duplicateRecipeUsecase = new DuplicateRecipeUsecase(
       recipesRepo,
       usersRepo,
-      new Uuidv4IdGenerator()
+      new Uuidv4IdGenerator(),
     );
 
     user = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
     });
 
     await usersRepo.saveUser(user);
@@ -49,7 +50,7 @@ describe('DuplicateRecipeUsecase', () => {
     });
 
     originalIngredientIds = testRecipe.ingredientLines.map(
-      (il) => il.ingredient.id
+      (il) => il.ingredient.id,
     );
 
     await recipesRepo.saveRecipe(testRecipe);
@@ -59,7 +60,7 @@ describe('DuplicateRecipeUsecase', () => {
     it('should duplicate recipe with default name', async () => {
       const request = {
         recipeId: testRecipe.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
       };
 
       const result = await duplicateRecipeUsecase.execute(request);
@@ -71,7 +72,7 @@ describe('DuplicateRecipeUsecase', () => {
       expect(result.protein).toBe(testRecipe.protein);
 
       const duplicatedIngredientIds = result.ingredientLines.map(
-        (il) => il.ingredient.id
+        (il) => il.ingredient.id,
       );
 
       for (const dupId of duplicatedIngredientIds) {
@@ -86,7 +87,7 @@ describe('DuplicateRecipeUsecase', () => {
       const request = {
         recipeId: testRecipe.id,
         newName: 'My Custom Recipe Copy',
-        userId: vp.userId,
+        userId: userTestProps.userId,
       };
 
       const result = await duplicateRecipeUsecase.execute(request);
@@ -94,7 +95,7 @@ describe('DuplicateRecipeUsecase', () => {
       expect(result.name).toBe('My Custom Recipe Copy');
 
       const duplicatedIngredientIds = result.ingredientLines.map(
-        (il) => il.ingredient.id
+        (il) => il.ingredient.id,
       );
 
       for (const dupId of duplicatedIngredientIds) {
@@ -117,7 +118,7 @@ describe('DuplicateRecipeUsecase', () => {
       testRecipe.addIngredientLine(secondIngredientLine);
 
       const request = {
-        userId: vp.userId,
+        userId: userTestProps.userId,
         recipeId: testRecipe.id,
       };
 
@@ -125,7 +126,7 @@ describe('DuplicateRecipeUsecase', () => {
 
       expect(result.ingredientLines).toHaveLength(2);
       const duplicatedIngredientIds = result.ingredientLines.map(
-        (il) => il.ingredient.id
+        (il) => il.ingredient.id,
       );
 
       // Verify all original ingredients are present
@@ -140,7 +141,7 @@ describe('DuplicateRecipeUsecase', () => {
     it('should create independent recipe copy with different id', async () => {
       const request = {
         recipeId: testRecipe.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
       };
 
       const duplicatedRecipe = await duplicateRecipeUsecase.execute(request);
@@ -150,11 +151,11 @@ describe('DuplicateRecipeUsecase', () => {
       expect(duplicatedRecipe.name).toBe(`${testRecipe.name} (Copy)`);
 
       const originalIngredientLinesIds = testRecipe.ingredientLines.map(
-        (il) => il.id
+        (il) => il.id,
       );
 
       const duplicatedIngredientLinesIds = duplicatedRecipe.ingredientLines.map(
-        (il) => il.id
+        (il) => il.id,
       );
 
       // Ingredient lines should be different instances
@@ -174,23 +175,23 @@ describe('DuplicateRecipeUsecase', () => {
 
       const request = {
         recipeId: testRecipe.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
       };
 
       const result = await duplicateRecipeUsecase.execute(request);
 
       expect(new Date(result.createdAt).getTime()).toBeGreaterThan(
-        testRecipe.createdAt.getTime()
+        testRecipe.createdAt.getTime(),
       );
       expect(new Date(result.updatedAt).getTime()).toBeGreaterThan(
-        testRecipe.updatedAt.getTime()
+        testRecipe.updatedAt.getTime(),
       );
     });
 
     it('should return RecipeDTO', async () => {
       const request = {
         recipeId: testRecipe.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
       };
 
       const result = await duplicateRecipeUsecase.execute(request);
@@ -204,18 +205,18 @@ describe('DuplicateRecipeUsecase', () => {
     it('should create new ingredientLines for duplicated recipe', async () => {
       const request = {
         recipeId: testRecipe.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
       };
 
       const result = await duplicateRecipeUsecase.execute(request);
 
       expect(result.ingredientLines).toHaveLength(
-        testRecipe.ingredientLines.length
+        testRecipe.ingredientLines.length,
       );
 
       for (let i = 0; i < result.ingredientLines.length; i++) {
         expect(result.ingredientLines[i].id).not.toBe(
-          testRecipe.ingredientLines[i].id
+          testRecipe.ingredientLines[i].id,
         );
       }
     });
@@ -225,15 +226,15 @@ describe('DuplicateRecipeUsecase', () => {
     it('should throw NotFoundError when recipe does not exist', async () => {
       const request = {
         recipeId: 'non-existent-id',
-        userId: vp.userId,
+        userId: userTestProps.userId,
       };
 
       await expect(duplicateRecipeUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
 
       await expect(duplicateRecipeUsecase.execute(request)).rejects.toThrow(
-        /DuplicateRecipeUsecase:.*Recipe.* not found/
+        /DuplicateRecipeUsecase:.*Recipe.* not found/,
       );
     });
 
@@ -244,16 +245,16 @@ describe('DuplicateRecipeUsecase', () => {
       };
 
       await expect(duplicateRecipeUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
       await expect(duplicateRecipeUsecase.execute(request)).rejects.toThrow(
-        /DuplicateRecipeUsecase.*user.*not.*found/
+        /DuplicateRecipeUsecase.*user.*not.*found/,
       );
     });
 
     it("should throw error when trying to duplicate another user's recipe", async () => {
       const anotherUser = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
         id: 'another-user-id',
         email: 'anotheruser@example.com',
       });
@@ -266,10 +267,10 @@ describe('DuplicateRecipeUsecase', () => {
       };
 
       await expect(duplicateRecipeUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
       await expect(duplicateRecipeUsecase.execute(request)).rejects.toThrow(
-        /DuplicateRecipeUsecase:.*Recipe.* not found/
+        /DuplicateRecipeUsecase:.*Recipe.* not found/,
       );
     });
   });

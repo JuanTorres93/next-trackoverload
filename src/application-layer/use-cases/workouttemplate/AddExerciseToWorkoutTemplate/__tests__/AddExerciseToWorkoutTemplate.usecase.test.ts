@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError } from '@/domain/common/errors';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
@@ -26,10 +27,10 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
       workoutTemplatesRepo,
       exercisesRepo,
       usersRepo,
-      new Uuidv4IdGenerator()
+      new Uuidv4IdGenerator(),
     );
 
-    user = User.create({ ...vp.validUserProps });
+    user = User.create({ ...userTestProps.validUserProps });
     await usersRepo.saveUser(user);
 
     // Create the exercises that will be used in tests
@@ -57,7 +58,7 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
   describe('Execution', () => {
     it('should add exercise to workout template', async () => {
       const request = {
-        userId: vp.userId,
+        userId: userTestProps.userId,
         workoutTemplateId: vp.validWorkoutTemplateProps().id,
         exerciseId: 'shoulder-press',
         sets: 4,
@@ -66,7 +67,7 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
       const result = await usecase.execute(request);
 
       expect(result.exercises).toHaveLength(
-        vp.validWorkoutTemplateProps().exercises.length + 1
+        vp.validWorkoutTemplateProps().exercises.length + 1,
       );
 
       const exercisesIds = result.exercises.map((ex) => ex.exerciseId);
@@ -74,16 +75,16 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
 
       // Verify it was saved
       const savedTemplate = await workoutTemplatesRepo.getWorkoutTemplateById(
-        vp.validWorkoutTemplateProps().id
+        vp.validWorkoutTemplateProps().id,
       );
       expect(savedTemplate!.exercises).toHaveLength(
-        vp.validWorkoutTemplateProps().exercises.length + 1
+        vp.validWorkoutTemplateProps().exercises.length + 1,
       );
     });
 
     it('should return WorkoutTemplateDTO', async () => {
       const request = {
-        userId: vp.userId,
+        userId: userTestProps.userId,
         workoutTemplateId: '1',
         exerciseId: 'shoulder-press',
         sets: 4,
@@ -101,7 +102,7 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
   describe('Errors', () => {
     it('should throw NotFoundError when workout template does not exist', async () => {
       const request = {
-        userId: vp.userId,
+        userId: userTestProps.userId,
         workoutTemplateId: 'non-existent',
         exerciseId: 'bench-press',
         sets: 3,
@@ -110,13 +111,13 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
       await expect(usecase.execute(request)).rejects.toThrow(
-        /AddExerciseToWorkoutTemplateUsecase.*WorkoutTemplate.*not found/
+        /AddExerciseToWorkoutTemplateUsecase.*WorkoutTemplate.*not found/,
       );
     });
 
     it('should throw error if exercise does not exist', async () => {
       const request = {
-        userId: vp.userId,
+        userId: userTestProps.userId,
         workoutTemplateId: '1',
         exerciseId: 'non-existent-exercise',
         sets: 3,
@@ -125,7 +126,7 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
       await expect(usecase.execute(request)).rejects.toThrow(
-        /AddExerciseToWorkoutTemplateUsecase.*Exercise.*not found/
+        /AddExerciseToWorkoutTemplateUsecase.*Exercise.*not found/,
       );
     });
 
@@ -134,7 +135,7 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
       existingTemplate.markAsDeleted();
 
       const request = {
-        userId: vp.userId,
+        userId: userTestProps.userId,
         workoutTemplateId: '1',
         exerciseId: 'shoulder-press',
         sets: 3,
@@ -142,7 +143,7 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
       await expect(usecase.execute(request)).rejects.toThrow(
-        /AddExerciseToWorkoutTemplateUsecase.*WorkoutTemplate.*not found/
+        /AddExerciseToWorkoutTemplateUsecase.*WorkoutTemplate.*not found/,
       );
     });
 
@@ -152,7 +153,7 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
       await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
       const request = {
-        userId: vp.userId,
+        userId: userTestProps.userId,
         workoutTemplateId: '1',
         exerciseId: 'shoulder-press',
         sets: 3,
@@ -161,7 +162,7 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
       await expect(usecase.execute(request)).rejects.toThrow(
-        /AddExerciseToWorkoutTemplateUsecase.*WorkoutTemplate.*not found/
+        /AddExerciseToWorkoutTemplateUsecase.*WorkoutTemplate.*not found/,
       );
     });
 
@@ -176,12 +177,15 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
       await expect(usecase.execute(request)).rejects.toThrow(
-        /AddExerciseToWorkoutTemplateUsecase.*User.*not.*found/
+        /AddExerciseToWorkoutTemplateUsecase.*User.*not.*found/,
       );
     });
 
     it("should throw error when trying to add exercise to another user's workout template", async () => {
-      const anotherUser = User.create({ ...vp.validUserProps, id: 'user-2' });
+      const anotherUser = User.create({
+        ...userTestProps.validUserProps,
+        id: 'user-2',
+      });
       await usersRepo.saveUser(anotherUser);
 
       const request = {
@@ -194,7 +198,7 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
       await expect(usecase.execute(request)).rejects.toThrow(
-        /AddExerciseToWorkoutTemplateUsecase.*WorkoutTemplate.*not found/
+        /AddExerciseToWorkoutTemplateUsecase.*WorkoutTemplate.*not found/,
       );
     });
   });

@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import { NotFoundError } from '@/domain/common/errors';
 import { User } from '@/domain/entities/user/User';
 import { Workout } from '@/domain/entities/workout/Workout';
@@ -20,7 +21,7 @@ describe('DeleteWorkoutUsecase', () => {
     deleteWorkoutUsecase = new DeleteWorkoutUsecase(workoutsRepo, usersRepo);
 
     user = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
     });
 
     workout = Workout.create({
@@ -36,7 +37,7 @@ describe('DeleteWorkoutUsecase', () => {
     it('should delete workout when it exists', async () => {
       // Verify workout exists
       const existingWorkout = await workoutsRepo.getWorkoutById(
-        vp.validWorkoutProps.id
+        vp.validWorkoutProps.id,
       );
       expect(existingWorkout).toBe(workout);
 
@@ -47,7 +48,7 @@ describe('DeleteWorkoutUsecase', () => {
 
       // Verify workout is deleted
       const deletedWorkout = await workoutsRepo.getWorkoutById(
-        vp.validWorkoutProps.id
+        vp.validWorkoutProps.id,
       );
       expect(deletedWorkout).toBeNull();
     });
@@ -61,11 +62,11 @@ describe('DeleteWorkoutUsecase', () => {
       };
 
       await expect(deleteWorkoutUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
 
       await expect(deleteWorkoutUsecase.execute(request)).rejects.toThrow(
-        /DeleteWorkoutUsecase.*Workout.*not found/
+        /DeleteWorkoutUsecase.*Workout.*not found/,
       );
     });
 
@@ -76,16 +77,16 @@ describe('DeleteWorkoutUsecase', () => {
       };
 
       await expect(deleteWorkoutUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
       await expect(deleteWorkoutUsecase.execute(request)).rejects.toThrow(
-        /DeleteWorkoutUsecase.*user.*not.*found/
+        /DeleteWorkoutUsecase.*user.*not.*found/,
       );
     });
 
     it("should throw error when trying to remove another user's workout", async () => {
       const anotherUser = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
         id: 'another-user-id',
         email: 'another-user@example.com',
       });
@@ -98,11 +99,11 @@ describe('DeleteWorkoutUsecase', () => {
       };
 
       await expect(deleteWorkoutUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
 
       await expect(deleteWorkoutUsecase.execute(request)).rejects.toThrow(
-        /DeleteWorkoutUsecase.*Workout.*not found/
+        /DeleteWorkoutUsecase.*Workout.*not found/,
       );
     });
   });

@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import { ValidationError } from '@/domain/common/errors';
 import { User, UserCreateProps } from '../User';
 
@@ -10,7 +11,7 @@ describe('User', () => {
 
   beforeEach(() => {
     validUserProps = {
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
     };
     user = User.create(validUserProps);
   });
@@ -60,7 +61,7 @@ describe('User', () => {
           ...validUserProps,
           // @ts-expect-error Testing invalid inputs
           customerId: 123,
-        })
+        }),
       ).toThrowError(ValidationError);
 
       expect(() =>
@@ -68,7 +69,7 @@ describe('User', () => {
           ...validUserProps,
           // @ts-expect-error Testing invalid inputs
           customerId: 123,
-        })
+        }),
       ).toThrowError(/Id.*string/);
     });
 
@@ -78,26 +79,26 @@ describe('User', () => {
         User.create({
           ...validUserProps,
           name: longName,
-        })
+        }),
       ).toThrowError(ValidationError);
 
       expect(() =>
         User.create({
           ...validUserProps,
           name: longName,
-        })
+        }),
       ).toThrowError(/Text.*not exceed/);
     });
 
     it('should throw error if patch is not provided when updating', async () => {
       expect(() =>
         // @ts-expect-error Testing invalid inputs
-        user.update()
+        user.update(),
       ).toThrowError(ValidationError);
 
       expect(() =>
         // @ts-expect-error Testing invalid inputs
-        user.update()
+        user.update(),
       ).toThrowError(/User.*patch.*required/);
     });
   });

@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryWorkoutTemplatesRepo } from '../MemoryWorkoutTemplatesRepo';
@@ -53,18 +54,17 @@ describe('MemoryWorkoutTemplatesRepo', () => {
 
   it('should retrieve a workout template by ID', async () => {
     const fetchedWorkoutTemplate = await repo.getWorkoutTemplateById(
-      vp.validWorkoutTemplateProps().id
+      vp.validWorkoutTemplateProps().id,
     );
     expect(fetchedWorkoutTemplate).not.toBeNull();
     expect(fetchedWorkoutTemplate?.name).toBe(
-      vp.validWorkoutTemplateProps().name
+      vp.validWorkoutTemplateProps().name,
     );
   });
 
   it('should return null for non-existent workout template ID', async () => {
-    const fetchedWorkoutTemplate = await repo.getWorkoutTemplateById(
-      'non-existent-id'
-    );
+    const fetchedWorkoutTemplate =
+      await repo.getWorkoutTemplateById('non-existent-id');
     expect(fetchedWorkoutTemplate).toBeNull();
   });
 
@@ -87,7 +87,7 @@ describe('MemoryWorkoutTemplatesRepo', () => {
     const allTemplatesBefore = await repo.getAllWorkoutTemplates();
     expect(allTemplatesBefore.length).toBe(3);
 
-    await repo.deleteAllWorkoutTemplatesForUser(vp.userId);
+    await repo.deleteAllWorkoutTemplatesForUser(userTestProps.userId);
 
     const allTemplatesAfter = await repo.getAllWorkoutTemplates();
     expect(allTemplatesAfter.length).toBe(1);

@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { AuthError, NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
@@ -37,15 +38,15 @@ describe('UpdateIngredientLineUsecase', () => {
       ingredientsRepo,
       recipesRepo,
       mealsRepo,
-      usersRepo
+      usersRepo,
     );
 
     user = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
       id: userId,
     });
     anotherUser = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
       id: anotherUserId,
     });
 
@@ -171,7 +172,7 @@ describe('UpdateIngredientLineUsecase', () => {
         };
 
         await expect(
-          updateIngredientLineUsecase.execute(request)
+          updateIngredientLineUsecase.execute(request),
         ).rejects.toThrow(NotFoundError);
       });
 
@@ -185,11 +186,11 @@ describe('UpdateIngredientLineUsecase', () => {
         };
 
         await expect(
-          updateIngredientLineUsecase.execute(request)
+          updateIngredientLineUsecase.execute(request),
         ).rejects.toThrow(NotFoundError);
 
         await expect(
-          updateIngredientLineUsecase.execute(request)
+          updateIngredientLineUsecase.execute(request),
         ).rejects.toThrow(/UpdateIngredientLineUsecase:.*recipe.*not found/i);
       });
 
@@ -203,13 +204,13 @@ describe('UpdateIngredientLineUsecase', () => {
         };
 
         await expect(
-          updateIngredientLineUsecase.execute(request)
+          updateIngredientLineUsecase.execute(request),
         ).rejects.toThrow(NotFoundError);
 
         await expect(
-          updateIngredientLineUsecase.execute(request)
+          updateIngredientLineUsecase.execute(request),
         ).rejects.toThrow(
-          /UpdateIngredientLineUsecase:.*IngredientLine.*not.*belong.*recipe/i
+          /UpdateIngredientLineUsecase:.*IngredientLine.*not.*belong.*recipe/i,
         );
       });
 
@@ -223,13 +224,13 @@ describe('UpdateIngredientLineUsecase', () => {
         };
 
         await expect(
-          updateIngredientLineUsecase.execute(request)
+          updateIngredientLineUsecase.execute(request),
         ).rejects.toThrow(AuthError);
 
         await expect(
-          updateIngredientLineUsecase.execute(request)
+          updateIngredientLineUsecase.execute(request),
         ).rejects.toThrow(
-          /UpdateIngredientLineUsecase:.*recipe.*not found for user/i
+          /UpdateIngredientLineUsecase:.*recipe.*not found for user/i,
         );
       });
 
@@ -243,13 +244,13 @@ describe('UpdateIngredientLineUsecase', () => {
         };
 
         await expect(
-          updateIngredientLineUsecase.execute(request)
+          updateIngredientLineUsecase.execute(request),
         ).rejects.toThrow(AuthError);
 
         await expect(
-          updateIngredientLineUsecase.execute(request)
+          updateIngredientLineUsecase.execute(request),
         ).rejects.toThrow(
-          /UpdateIngredientLineUsecase:.*meal.*not found for user/i
+          /UpdateIngredientLineUsecase:.*meal.*not found for user/i,
         );
       });
     });
@@ -337,11 +338,11 @@ describe('UpdateIngredientLineUsecase', () => {
         };
 
         await expect(
-          updateIngredientLineUsecase.execute(request)
+          updateIngredientLineUsecase.execute(request),
         ).rejects.toThrow(NotFoundError);
 
         await expect(
-          updateIngredientLineUsecase.execute(request)
+          updateIngredientLineUsecase.execute(request),
         ).rejects.toThrow(/UpdateIngredientLineUsecase:.*meal.*not found/i);
       });
 
@@ -355,13 +356,13 @@ describe('UpdateIngredientLineUsecase', () => {
         };
 
         await expect(
-          updateIngredientLineUsecase.execute(request)
+          updateIngredientLineUsecase.execute(request),
         ).rejects.toThrow(NotFoundError);
 
         await expect(
-          updateIngredientLineUsecase.execute(request)
+          updateIngredientLineUsecase.execute(request),
         ).rejects.toThrow(
-          /UpdateIngredientLineUsecase:.*IngredientLine.*not.*belong.*meal/i
+          /UpdateIngredientLineUsecase:.*IngredientLine.*not.*belong.*meal/i,
         );
       });
 
@@ -375,13 +376,13 @@ describe('UpdateIngredientLineUsecase', () => {
         };
 
         await expect(
-          updateIngredientLineUsecase.execute(request)
+          updateIngredientLineUsecase.execute(request),
         ).rejects.toThrow(AuthError);
 
         await expect(
-          updateIngredientLineUsecase.execute(request)
+          updateIngredientLineUsecase.execute(request),
         ).rejects.toThrow(
-          /UpdateIngredientLineUsecase:.*meal.*not found for user/i
+          /UpdateIngredientLineUsecase:.*meal.*not found for user/i,
         );
       });
     });
@@ -417,13 +418,13 @@ describe('UpdateIngredientLineUsecase', () => {
         };
 
         await expect(
-          updateIngredientLineUsecase.execute(request)
+          updateIngredientLineUsecase.execute(request),
         ).rejects.toThrow(NotFoundError);
 
         await expect(
-          updateIngredientLineUsecase.execute(request)
+          updateIngredientLineUsecase.execute(request),
         ).rejects.toThrow(
-          /UpdateIngredientLineUsecase:.*Ingredient.*not found/i
+          /UpdateIngredientLineUsecase:.*Ingredient.*not found/i,
         );
       }
     });
@@ -439,11 +440,11 @@ describe('UpdateIngredientLineUsecase', () => {
         };
 
         await expect(
-          updateIngredientLineUsecase.execute(request)
+          updateIngredientLineUsecase.execute(request),
         ).rejects.toThrow(NotFoundError);
 
         await expect(
-          updateIngredientLineUsecase.execute(request)
+          updateIngredientLineUsecase.execute(request),
         ).rejects.toThrow(/UpdateIngredientLine.*User.*not.*found/);
       }
     });

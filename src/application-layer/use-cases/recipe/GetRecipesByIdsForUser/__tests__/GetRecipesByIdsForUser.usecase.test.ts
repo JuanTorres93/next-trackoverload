@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
@@ -23,11 +24,11 @@ describe('GetRecipesByIdsForUserUsecase', () => {
     usersRepo = new MemoryUsersRepo();
     getRecipesByIdsUsecase = new GetRecipesByIdsForUserUsecase(
       recipesRepo,
-      usersRepo
+      usersRepo,
     );
 
     user = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
     });
 
     await usersRepo.saveUser(user);
@@ -62,21 +63,21 @@ describe('GetRecipesByIdsForUserUsecase', () => {
     it('should return recipes for valid ids', async () => {
       const request = {
         ids: [testRecipes[0].id, testRecipes[1].id],
-        userId: vp.userId,
+        userId: userTestProps.userId,
       };
 
       const result = await getRecipesByIdsUsecase.execute(request);
 
       expect(result).toHaveLength(2);
       expect(result).toEqual(
-        expect.arrayContaining(testRecipes.map(toRecipeDTO))
+        expect.arrayContaining(testRecipes.map(toRecipeDTO)),
       );
     });
 
     it('should return an array of RecipeDTOs', async () => {
       const request = {
         ids: [testRecipes[0].id, testRecipes[1].id],
-        userId: vp.userId,
+        userId: userTestProps.userId,
       };
 
       const result = await getRecipesByIdsUsecase.execute(request);
@@ -93,7 +94,7 @@ describe('GetRecipesByIdsForUserUsecase', () => {
     it('should filter out non-existent recipes', async () => {
       const request = {
         ids: [testRecipes[0].id, 'non-existent-id'],
-        userId: vp.userId,
+        userId: userTestProps.userId,
       };
 
       const result = await getRecipesByIdsUsecase.execute(request);
@@ -105,7 +106,7 @@ describe('GetRecipesByIdsForUserUsecase', () => {
     it('should return empty array for non-existent ids', async () => {
       const request = {
         ids: ['non-existent-1', 'non-existent-2'],
-        userId: vp.userId,
+        userId: userTestProps.userId,
       };
 
       const result = await getRecipesByIdsUsecase.execute(request);
@@ -116,7 +117,7 @@ describe('GetRecipesByIdsForUserUsecase', () => {
     it('should return one result when id is duplicated', async () => {
       const request = {
         ids: [testRecipes[0].id, testRecipes[0].id],
-        userId: vp.userId,
+        userId: userTestProps.userId,
       };
 
       const result = await getRecipesByIdsUsecase.execute(request);
@@ -127,7 +128,7 @@ describe('GetRecipesByIdsForUserUsecase', () => {
 
     it("should return empty array when trying to get another user's recipes", async () => {
       const anotherUser = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
         id: 'another-user-id',
       });
       await usersRepo.saveUser(anotherUser);
@@ -145,14 +146,14 @@ describe('GetRecipesByIdsForUserUsecase', () => {
 
   describe('Errors', () => {
     it('should throw ValidationError for empty ids array', async () => {
-      const request = { ids: [], userId: vp.userId };
+      const request = { ids: [], userId: userTestProps.userId };
 
       await expect(getRecipesByIdsUsecase.execute(request)).rejects.toThrow(
-        ValidationError
+        ValidationError,
       );
 
       await expect(getRecipesByIdsUsecase.execute(request)).rejects.toThrow(
-        /GetRecipesByIdsForUserUsecase.*ids.*non-empty array/
+        /GetRecipesByIdsForUserUsecase.*ids.*non-empty array/,
       );
     });
 
@@ -163,10 +164,10 @@ describe('GetRecipesByIdsForUserUsecase', () => {
       };
 
       await expect(getRecipesByIdsUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
       await expect(getRecipesByIdsUsecase.execute(request)).rejects.toThrow(
-        /GetRecipesByIdsForUserUsecase.*user.*not.*found/
+        /GetRecipesByIdsForUserUsecase.*user.*not.*found/,
       );
     });
   });

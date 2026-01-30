@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import { NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
@@ -26,11 +27,11 @@ describe('DeleteRecipeUsecase', () => {
     deleteRecipeUsecase = new DeleteRecipeUsecase(
       recipesRepo,
       memoryImagesRepo,
-      usersRepo
+      usersRepo,
     );
 
     user = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
     });
 
     await usersRepo.saveUser(user);
@@ -53,7 +54,7 @@ describe('DeleteRecipeUsecase', () => {
 
   describe('Deletion', () => {
     it('should delete recipe successfully', async () => {
-      const request = { id: testRecipe.id, userId: vp.userId };
+      const request = { id: testRecipe.id, userId: userTestProps.userId };
       await deleteRecipeUsecase.execute(request);
 
       const deletedRecipe = await recipesRepo.getRecipeById(testRecipe.id);
@@ -88,7 +89,7 @@ describe('DeleteRecipeUsecase', () => {
 
       await recipesRepo.saveRecipe(recipe);
 
-      const request = { id: recipe.id, userId: vp.userId };
+      const request = { id: recipe.id, userId: userTestProps.userId };
       await deleteRecipeUsecase.execute(request);
 
       const afterDeleteImages = memoryImagesRepo.countForTesting();
@@ -104,7 +105,7 @@ describe('DeleteRecipeUsecase', () => {
 
       await recipesRepo.saveRecipe(secondRecipe);
 
-      const request = { id: testRecipe.id, userId: vp.userId };
+      const request = { id: testRecipe.id, userId: userTestProps.userId };
       await deleteRecipeUsecase.execute(request);
 
       const remainingRecipe = await recipesRepo.getRecipeById(secondRecipe.id);
@@ -117,14 +118,14 @@ describe('DeleteRecipeUsecase', () => {
 
   describe('Errors', () => {
     it('should throw NotFoundError when recipe does not exist', async () => {
-      const request = { id: 'non-existent-id', userId: vp.userId };
+      const request = { id: 'non-existent-id', userId: userTestProps.userId };
 
       await expect(deleteRecipeUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
 
       await expect(deleteRecipeUsecase.execute(request)).rejects.toThrow(
-        /DeleteRecipeUsecase.*Recipe.*not.*found/
+        /DeleteRecipeUsecase.*Recipe.*not.*found/,
       );
     });
 
@@ -132,16 +133,16 @@ describe('DeleteRecipeUsecase', () => {
       const request = { id: 'some-id', userId: 'non-existent' };
 
       await expect(deleteRecipeUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
       await expect(deleteRecipeUsecase.execute(request)).rejects.toThrow(
-        /DeleteRecipeUsecase.*user.*not.*found/
+        /DeleteRecipeUsecase.*user.*not.*found/,
       );
     });
 
     it("should throw error when trying to delete another user's recipe", async () => {
       const anotherUser = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
         id: 'another-user-id',
         email: 'anotheruser@example.com',
       });
@@ -150,10 +151,10 @@ describe('DeleteRecipeUsecase', () => {
       const request = { id: testRecipe.id, userId: anotherUser.id };
 
       await expect(deleteRecipeUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
       await expect(deleteRecipeUsecase.execute(request)).rejects.toThrow(
-        /DeleteRecipeUsecase.*Recipe.*not.*found/
+        /DeleteRecipeUsecase.*Recipe.*not.*found/,
       );
     });
   });

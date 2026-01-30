@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError } from '@/domain/common/errors';
 import { Day } from '@/domain/entities/day/Day';
@@ -56,7 +57,7 @@ describe('AddMealToDayUsecase', () => {
     });
 
     user = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
     });
 
     await daysRepo.saveDay(day);
@@ -68,7 +69,7 @@ describe('AddMealToDayUsecase', () => {
     it('should add meal to existing day', async () => {
       const result = await addMealToDayUsecase.execute({
         dayId: day.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         recipeId: recipe.id,
       });
 
@@ -82,7 +83,7 @@ describe('AddMealToDayUsecase', () => {
     it('should return DayDTO', async () => {
       const result = await addMealToDayUsecase.execute({
         dayId: day.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         recipeId: recipe.id,
       });
 
@@ -97,7 +98,7 @@ describe('AddMealToDayUsecase', () => {
     it('should create new independent ingredient lines from recipe', async () => {
       const result = await addMealToDayUsecase.execute({
         dayId: day.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         recipeId: recipe.id,
       });
 
@@ -129,7 +130,7 @@ describe('AddMealToDayUsecase', () => {
 
       await addMealToDayUsecase.execute({
         dayId: day.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         recipeId: recipe.id,
       });
 
@@ -142,7 +143,7 @@ describe('AddMealToDayUsecase', () => {
 
       await addMealToDayUsecase.execute({
         dayId: '19990101',
-        userId: vp.userId,
+        userId: userTestProps.userId,
         recipeId: recipe.id,
       });
 
@@ -175,7 +176,7 @@ describe('AddMealToDayUsecase', () => {
     it('should throw error if recipe does not exist', async () => {
       const request = {
         dayId: day.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         recipeId: 'non-existent-recipe',
       };
 

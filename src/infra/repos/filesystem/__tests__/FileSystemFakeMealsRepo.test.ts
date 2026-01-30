@@ -2,6 +2,7 @@ import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 import { FileSystemFakeMealsRepo } from '../FileSystemFakeMealsRepo';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import fs from 'fs/promises';
 
 describe('FileSystemFakeMealsRepo', () => {
@@ -37,7 +38,7 @@ describe('FileSystemFakeMealsRepo', () => {
 
   it('should retrieve a fake meal by ID', async () => {
     const fetchedFakeMeal = await repo.getFakeMealById(
-      vp.validFakeMealProps.id
+      vp.validFakeMealProps.id,
     );
     expect(fetchedFakeMeal).not.toBeNull();
     expect(fetchedFakeMeal?.name).toBe(vp.validFakeMealProps.name);
@@ -89,14 +90,14 @@ describe('FileSystemFakeMealsRepo', () => {
     ]);
     expect(fetchedFakeMeals.length).toBe(2);
     expect(fetchedFakeMeals.map((fm) => fm.id)).toContain(
-      vp.validFakeMealProps.id
+      vp.validFakeMealProps.id,
     );
     expect(fetchedFakeMeals.map((fm) => fm.id)).toContain('fakemeal-2');
   });
 
   it('should retrieve fake meals by user ID', async () => {
     const fakeMeals = await repo.getAllFakeMealsByUserId(
-      vp.validFakeMealProps.userId
+      vp.validFakeMealProps.userId,
     );
     expect(fakeMeals.length).toBe(1);
     expect(fakeMeals[0].userId).toBe(vp.validFakeMealProps.userId);
@@ -105,7 +106,7 @@ describe('FileSystemFakeMealsRepo', () => {
   it('should retrieve a fake meal by ID and user ID', async () => {
     const fetchedFakeMeal = await repo.getFakeMealByIdAndUserId(
       vp.validFakeMealProps.id,
-      vp.validFakeMealProps.userId
+      vp.validFakeMealProps.userId,
     );
     expect(fetchedFakeMeal).not.toBeNull();
     expect(fetchedFakeMeal?.name).toBe(vp.validFakeMealProps.name);
@@ -114,7 +115,7 @@ describe('FileSystemFakeMealsRepo', () => {
   it('should return null when user ID does not match', async () => {
     const fetchedFakeMeal = await repo.getFakeMealByIdAndUserId(
       vp.validFakeMealProps.id,
-      'wrong-user-id'
+      'wrong-user-id',
     );
     expect(fetchedFakeMeal).toBeNull();
   });
@@ -128,7 +129,7 @@ describe('FileSystemFakeMealsRepo', () => {
     await repo.saveFakeMeal(updatedFakeMeal);
 
     const fetchedFakeMeal = await repo.getFakeMealById(
-      vp.validFakeMealProps.id
+      vp.validFakeMealProps.id,
     );
     expect(fetchedFakeMeal?.name).toBe('Updated Meal');
   });
@@ -143,7 +144,7 @@ describe('FileSystemFakeMealsRepo', () => {
   it('should delete a fake meal by ID and user ID', async () => {
     await repo.deleteFakeMealByIdAndUserId(
       vp.validFakeMealProps.id,
-      vp.validFakeMealProps.userId
+      vp.validFakeMealProps.userId,
     );
 
     const allFakeMeals = await repo.getAllFakeMeals();
@@ -153,7 +154,7 @@ describe('FileSystemFakeMealsRepo', () => {
   it('should not delete when user ID does not match', async () => {
     await repo.deleteFakeMealByIdAndUserId(
       vp.validFakeMealProps.id,
-      'wrong-user-id'
+      'wrong-user-id',
     );
 
     const allFakeMeals = await repo.getAllFakeMeals();
@@ -227,7 +228,7 @@ describe('FileSystemFakeMealsRepo', () => {
     const allFakeMealsBefore = await repo.getAllFakeMeals();
     expect(allFakeMealsBefore.length).toBe(3);
 
-    await repo.deleteAllFakeMealsForUser(vp.userId);
+    await repo.deleteAllFakeMealsForUser(userTestProps.userId);
 
     const allFakeMealsAfter = await repo.getAllFakeMeals();
     expect(allFakeMealsAfter.length).toBe(1);

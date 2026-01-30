@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError } from '@/domain/common/errors';
 import { User } from '@/domain/entities/user/User';
@@ -25,11 +26,11 @@ describe('RemoveSetFromWorkoutUsecase', () => {
     usersRepo = new MemoryUsersRepo();
     removeSetFromWorkoutUsecase = new RemoveSetFromWorkoutUsecase(
       workoutsRepo,
-      usersRepo
+      usersRepo,
     );
 
     user = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
     });
     await usersRepo.saveUser(user);
 
@@ -75,7 +76,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
   describe('Execution', () => {
     it('should remove specific set from workout', async () => {
       const updatedWorkout = await removeSetFromWorkoutUsecase.execute({
-        userId: vp.userId,
+        userId: userTestProps.userId,
         workoutId: workout.id,
         exerciseId: 'exercise-1',
         setNumber: 1,
@@ -84,20 +85,20 @@ describe('RemoveSetFromWorkoutUsecase', () => {
       expect(updatedWorkout.exercises).toHaveLength(2);
       // Should remove set 1 of exercise-1, and set 2 should be reordered to set 1
       const exercise1Sets = updatedWorkout.exercises.filter(
-        (e) => e.exerciseId === 'exercise-1'
+        (e) => e.exerciseId === 'exercise-1',
       );
       expect(exercise1Sets).toHaveLength(1);
       expect(exercise1Sets[0].setNumber).toBe(1); // Original set 2 reordered to set 1
       expect(exercise1Sets[0].reps).toBe(8); // Original set 2 data
       expect(exercise1Sets[0].weight).toBe(60); // Original set 2 data
       expect(
-        updatedWorkout.exercises.find((e) => e.exerciseId === 'exercise-2')
+        updatedWorkout.exercises.find((e) => e.exerciseId === 'exercise-2'),
       ).toBeDefined();
     });
 
     it('should return WorkoutDTO', async () => {
       const updatedWorkout = await removeSetFromWorkoutUsecase.execute({
-        userId: vp.userId,
+        userId: userTestProps.userId,
         workoutId: vp.validWorkoutProps.id,
         exerciseId: 'exercise-1',
         setNumber: 1,
@@ -119,13 +120,13 @@ describe('RemoveSetFromWorkoutUsecase', () => {
           setNumber: 3,
           reps: 6,
           weight: 70,
-        })
+        }),
       );
 
       await workoutsRepo.saveWorkout(workout);
 
       const updatedWorkout = await removeSetFromWorkoutUsecase.execute({
-        userId: vp.userId,
+        userId: userTestProps.userId,
         workoutId: vp.validWorkoutProps.id,
         exerciseId: 'exercise-1',
         setNumber: 2,
@@ -144,7 +145,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
       await workoutsRepo.saveWorkout(workout);
 
       const updatedWorkout = await removeSetFromWorkoutUsecase.execute({
-        userId: vp.userId,
+        userId: userTestProps.userId,
         workoutId: vp.validWorkoutProps.id,
         exerciseId: 'exercise-1',
         setNumber: 99, // Non-existent set number
@@ -159,18 +160,18 @@ describe('RemoveSetFromWorkoutUsecase', () => {
   describe('Errors', () => {
     it('should throw NotFoundError when workout does not exist', async () => {
       const request = {
-        userId: vp.userId,
+        userId: userTestProps.userId,
         workoutId: 'non-existent',
         exerciseId: 'exercise-1',
         setNumber: 1,
       };
 
       await expect(
-        removeSetFromWorkoutUsecase.execute(request)
+        removeSetFromWorkoutUsecase.execute(request),
       ).rejects.toThrow(NotFoundError);
 
       await expect(
-        removeSetFromWorkoutUsecase.execute(request)
+        removeSetFromWorkoutUsecase.execute(request),
       ).rejects.toThrow(/RemoveSetFromWorkoutUsecase.*Workout.*not.*found/);
     });
 
@@ -183,17 +184,17 @@ describe('RemoveSetFromWorkoutUsecase', () => {
       };
 
       await expect(
-        removeSetFromWorkoutUsecase.execute(request)
+        removeSetFromWorkoutUsecase.execute(request),
       ).rejects.toThrow(NotFoundError);
 
       await expect(
-        removeSetFromWorkoutUsecase.execute(request)
+        removeSetFromWorkoutUsecase.execute(request),
       ).rejects.toThrow(/RemoveSetFromWorkoutUsecase.*User.*not.*found/);
     });
 
     it("should throw error when trying to remove a set from another user's workout", async () => {
       const anotherUser = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
         id: 'another-user-id',
       });
       await usersRepo.saveUser(anotherUser);
@@ -206,11 +207,11 @@ describe('RemoveSetFromWorkoutUsecase', () => {
       };
 
       await expect(
-        removeSetFromWorkoutUsecase.execute(request)
+        removeSetFromWorkoutUsecase.execute(request),
       ).rejects.toThrow(NotFoundError);
 
       await expect(
-        removeSetFromWorkoutUsecase.execute(request)
+        removeSetFromWorkoutUsecase.execute(request),
       ).rejects.toThrow(/RemoveSetFromWorkoutUsecase.*Workout.*not.*found/);
     });
   });

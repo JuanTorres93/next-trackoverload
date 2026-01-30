@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 import { FileSystemWorkoutsRepo } from '../FileSystemWorkoutsRepo';
@@ -82,15 +83,17 @@ describe('FileSystemWorkoutsRepo', () => {
   });
 
   it('should retrieve workouts by user ID', async () => {
-    const userWorkouts = await repo.getAllWorkoutsByUserId(vp.userId);
+    const userWorkouts = await repo.getAllWorkoutsByUserId(
+      userTestProps.userId,
+    );
     expect(userWorkouts.length).toBe(1);
-    expect(userWorkouts[0].userId).toBe(vp.userId);
+    expect(userWorkouts[0].userId).toBe(userTestProps.userId);
   });
 
   it('should retrieve a workout by ID and user ID', async () => {
     const fetchedWorkout = await repo.getWorkoutByIdAndUserId(
       vp.validWorkoutProps.id,
-      vp.userId
+      userTestProps.userId,
     );
     expect(fetchedWorkout).not.toBeNull();
     expect(fetchedWorkout?.name).toBe('Push Day');
@@ -98,18 +101,18 @@ describe('FileSystemWorkoutsRepo', () => {
 
   it('should retrieve workouts by template ID', async () => {
     const workouts = await repo.getWorkoutsByTemplateId(
-      vp.validWorkoutProps.workoutTemplateId
+      vp.validWorkoutProps.workoutTemplateId,
     );
     expect(workouts.length).toBe(1);
     expect(workouts[0].workoutTemplateId).toBe(
-      vp.validWorkoutProps.workoutTemplateId
+      vp.validWorkoutProps.workoutTemplateId,
     );
   });
 
   it('should retrieve workouts by template ID and user ID', async () => {
     const workouts = await repo.getWorkoutsByTemplateIdAndUserId(
       vp.validWorkoutProps.workoutTemplateId,
-      vp.userId
+      userTestProps.userId,
     );
     expect(workouts.length).toBe(1);
   });
@@ -144,7 +147,7 @@ describe('FileSystemWorkoutsRepo', () => {
     // Verify workout line file exists
     const lineFilePath = path.join(
       testWorkoutLinesDir,
-      `${workoutLine.id}.json`
+      `${workoutLine.id}.json`,
     );
     const lineFileExists = await fs
       .access(lineFilePath)
@@ -171,7 +174,7 @@ describe('FileSystemWorkoutsRepo', () => {
     const allWorkoutsBefore = await repo.getAllWorkouts();
     expect(allWorkoutsBefore.length).toBe(3);
 
-    await repo.deleteAllWorkoutsForUser(vp.userId);
+    await repo.deleteAllWorkoutsForUser(userTestProps.userId);
 
     const allWorkoutsAfter = await repo.getAllWorkouts();
     expect(allWorkoutsAfter.length).toBe(1);

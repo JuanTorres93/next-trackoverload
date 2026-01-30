@@ -8,6 +8,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { RemoveMealFromDayUsecase } from '../RemoveMealFromDay.usecase';
 
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
@@ -30,7 +31,7 @@ describe('RemoveMealFromDayUsecase', () => {
     removeMealFromDayUsecase = new RemoveMealFromDayUsecase(
       daysRepo,
       usersRepo,
-      mealsRepo
+      mealsRepo,
     );
 
     const ingredient = Ingredient.create(vp.validIngredientProps);
@@ -50,7 +51,7 @@ describe('RemoveMealFromDayUsecase', () => {
     });
 
     user = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
     });
 
     day.addMeal(meal.id);
@@ -64,7 +65,7 @@ describe('RemoveMealFromDayUsecase', () => {
     it('should remove meal from day', async () => {
       const result = await removeMealFromDayUsecase.execute({
         date: day.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         mealId: vp.mealPropsNoIngredientLines.id,
       });
 
@@ -77,11 +78,14 @@ describe('RemoveMealFromDayUsecase', () => {
 
       await removeMealFromDayUsecase.execute({
         date: day.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         mealId: vp.mealPropsNoIngredientLines.id,
       });
 
-      const updatedDay = await daysRepo.getDayByIdAndUserId(day.id, vp.userId);
+      const updatedDay = await daysRepo.getDayByIdAndUserId(
+        day.id,
+        userTestProps.userId,
+      );
       expect(updatedDay!.fakeMealIds).toHaveLength(1);
       expect(updatedDay!.fakeMealIds[0]).toBe('fakeMeal1');
     });
@@ -89,7 +93,7 @@ describe('RemoveMealFromDayUsecase', () => {
     it('should return a DayDTO', async () => {
       const result = await removeMealFromDayUsecase.execute({
         date: day.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         mealId: vp.mealPropsNoIngredientLines.id,
       });
 
@@ -107,7 +111,7 @@ describe('RemoveMealFromDayUsecase', () => {
 
       await removeMealFromDayUsecase.execute({
         date: day.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         mealId: vp.mealPropsNoIngredientLines.id,
       });
 
@@ -120,15 +124,15 @@ describe('RemoveMealFromDayUsecase', () => {
     it('should throw error if day does not exist', async () => {
       const request = {
         date: '11111001',
-        userId: vp.userId,
+        userId: userTestProps.userId,
         mealId: vp.validFakeMealProps.id,
       };
 
       await expect(removeMealFromDayUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
       await expect(removeMealFromDayUsecase.execute(request)).rejects.toThrow(
-        /RemoveMealFromDay.*Day.*not/
+        /RemoveMealFromDay.*Day.*not/,
       );
     });
 
@@ -140,17 +144,17 @@ describe('RemoveMealFromDayUsecase', () => {
       };
 
       await expect(removeMealFromDayUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
 
       await expect(removeMealFromDayUsecase.execute(request)).rejects.toThrow(
-        /RemoveMealFromDay.*User.*not.*found/
+        /RemoveMealFromDay.*User.*not.*found/,
       );
     });
 
     it("should throw error when trying to remove meal another user's day", async () => {
       const anotherUser = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
         id: 'another-user-id',
         email: 'another-user@example.com',
       });
@@ -163,11 +167,11 @@ describe('RemoveMealFromDayUsecase', () => {
       };
 
       await expect(removeMealFromDayUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
 
       await expect(removeMealFromDayUsecase.execute(request)).rejects.toThrow(
-        /RemoveMealFromDay.*Day.*not/
+        /RemoveMealFromDay.*Day.*not/,
       );
     });
   });

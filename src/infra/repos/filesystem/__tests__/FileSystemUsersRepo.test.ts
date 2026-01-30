@@ -2,6 +2,7 @@ import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 import { FileSystemUsersRepo } from '../FileSystemUsersRepo';
 import { User } from '@/domain/entities/user/User';
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -12,7 +13,7 @@ describe('FileSystemUsersRepo', () => {
 
   beforeEach(async () => {
     repo = new FileSystemUsersRepo(testDir);
-    user = User.create(vp.validUserProps);
+    user = User.create(userTestProps.validUserProps);
     await repo.saveUser(user);
   });
 
@@ -26,7 +27,7 @@ describe('FileSystemUsersRepo', () => {
 
   it('should save a user', async () => {
     const newUser = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
       id: 'user-2',
       name: 'Jane Doe',
     });
@@ -41,16 +42,18 @@ describe('FileSystemUsersRepo', () => {
   });
 
   it('should retrieve a user by ID', async () => {
-    const fetchedUser = await repo.getUserById(vp.validUserProps.id);
+    const fetchedUser = await repo.getUserById(userTestProps.validUserProps.id);
     expect(fetchedUser).not.toBeNull();
-    expect(fetchedUser?.name).toBe(vp.validUserProps.name);
+    expect(fetchedUser?.name).toBe(userTestProps.validUserProps.name);
   });
 
   it('should retrieve a user by email', async () => {
-    const fetchedUser = await repo.getUserByEmail(vp.validUserProps.email);
+    const fetchedUser = await repo.getUserByEmail(
+      userTestProps.validUserProps.email,
+    );
     expect(fetchedUser).not.toBeNull();
-    expect(fetchedUser?.email).toBe(vp.validUserProps.email);
-    expect(fetchedUser?.name).toBe(vp.validUserProps.name);
+    expect(fetchedUser?.email).toBe(userTestProps.validUserProps.email);
+    expect(fetchedUser?.name).toBe(userTestProps.validUserProps.name);
   });
 
   it('should return null for non-existent email', async () => {
@@ -60,29 +63,31 @@ describe('FileSystemUsersRepo', () => {
 
   it('should retrieve a user by customerId', async () => {
     const fetchedUser = await repo.getUserByCustomerId(
-      vp.validUserProps.customerId
+      userTestProps.validUserProps.customerId,
     );
     expect(fetchedUser).not.toBeNull();
-    expect(fetchedUser?.customerId).toBe(vp.validUserProps.customerId);
-    expect(fetchedUser?.name).toBe(vp.validUserProps.name);
+    expect(fetchedUser?.customerId).toBe(
+      userTestProps.validUserProps.customerId,
+    );
+    expect(fetchedUser?.name).toBe(userTestProps.validUserProps.name);
   });
 
   it('should return null for non-existent customerId', async () => {
     const fetchedUser = await repo.getUserByCustomerId(
-      'non-existent-customer-id'
+      'non-existent-customer-id',
     );
     expect(fetchedUser).toBeNull();
   });
 
   it('should update an existing user', async () => {
     const updatedUser = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
       name: 'Updated Name',
       updatedAt: new Date('2023-01-03'),
     });
     await repo.saveUser(updatedUser);
 
-    const fetchedUser = await repo.getUserById(vp.validUserProps.id);
+    const fetchedUser = await repo.getUserById(userTestProps.validUserProps.id);
     expect(fetchedUser).not.toBeNull();
     expect(fetchedUser?.name).toBe('Updated Name');
   });
@@ -96,7 +101,7 @@ describe('FileSystemUsersRepo', () => {
     const allUsers = await repo.getAllUsers();
     expect(allUsers.length).toBe(1);
 
-    await repo.deleteUser(vp.validUserProps.id);
+    await repo.deleteUser(userTestProps.validUserProps.id);
 
     const allUsersAfterDeletion = await repo.getAllUsers();
     expect(allUsersAfterDeletion.length).toBe(0);

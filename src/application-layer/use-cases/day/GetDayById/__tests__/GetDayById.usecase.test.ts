@@ -7,6 +7,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { GetDayByIdUsecase } from '../GetDayById.usecase';
 
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 
 describe('GetDayByIdUsecase', () => {
@@ -22,7 +23,7 @@ describe('GetDayByIdUsecase', () => {
     getDayByIdUsecase = new GetDayByIdUsecase(daysRepo, usersRepo);
 
     user = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
     });
     await usersRepo.saveUser(user);
 
@@ -36,7 +37,7 @@ describe('GetDayByIdUsecase', () => {
     it('should return a day if it exists', async () => {
       const result = await getDayByIdUsecase.execute({
         dayId: day.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
       });
 
       expect(result!.id).toEqual(day.id);
@@ -45,7 +46,7 @@ describe('GetDayByIdUsecase', () => {
     it('should have list of meals ids', async () => {
       const result = await getDayByIdUsecase.execute({
         dayId: day.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
       });
 
       expect(result).toHaveProperty('mealIds');
@@ -55,7 +56,7 @@ describe('GetDayByIdUsecase', () => {
     it('should have list of fake meals ids', async () => {
       const result = await getDayByIdUsecase.execute({
         dayId: day.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
       });
 
       expect(result).toHaveProperty('fakeMealIds');
@@ -71,7 +72,7 @@ describe('GetDayByIdUsecase', () => {
 
       const result = await getDayByIdUsecase.execute({
         dayId: day.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
       });
 
       expect(result!.mealIds).toEqual(mealIds);
@@ -87,7 +88,7 @@ describe('GetDayByIdUsecase', () => {
 
       const result = await getDayByIdUsecase.execute({
         dayId: day.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
       });
 
       expect(result!.fakeMealIds).toEqual(fakeMealIds);
@@ -97,7 +98,7 @@ describe('GetDayByIdUsecase', () => {
     it('should return DayDTO', async () => {
       const result = await getDayByIdUsecase.execute({
         dayId: day.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
       });
 
       expect(result).not.toBeInstanceOf(Day);
@@ -109,7 +110,7 @@ describe('GetDayByIdUsecase', () => {
     it('should return null if day does not exist', async () => {
       const result = await getDayByIdUsecase.execute({
         dayId: '11110122',
-        userId: vp.userId,
+        userId: userTestProps.userId,
       });
 
       expect(result).toBeNull();
@@ -117,7 +118,7 @@ describe('GetDayByIdUsecase', () => {
 
     it("should return null when trying to get another user's day", async () => {
       const anotherUser = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
         id: 'another-user-id',
         email: 'another-user@example.com',
       });
@@ -143,11 +144,11 @@ describe('GetDayByIdUsecase', () => {
       };
 
       await expect(getDayByIdUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
 
       await expect(getDayByIdUsecase.execute(request)).rejects.toThrow(
-        /GetDayById.*User.*not.*found/
+        /GetDayById.*User.*not.*found/,
       );
     });
   });

@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toWorkoutDTO } from '@/application-layer/dtos/WorkoutDTO';
 import { NotFoundError } from '@/domain/common/errors';
@@ -20,11 +21,11 @@ describe('GetWorkoutByIdUsecase', () => {
     usersRepo = new MemoryUsersRepo();
     getWorkoutByIdUsecase = new GetWorkoutByIdForUserUsecase(
       workoutsRepo,
-      usersRepo
+      usersRepo,
     );
 
     user = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
     });
     await usersRepo.saveUser(user);
   });
@@ -40,7 +41,7 @@ describe('GetWorkoutByIdUsecase', () => {
 
       const result = await getWorkoutByIdUsecase.execute({
         id: vp.validWorkoutProps.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
       });
 
       expect(result).toEqual(toWorkoutDTO(workout));
@@ -57,7 +58,7 @@ describe('GetWorkoutByIdUsecase', () => {
 
       const result = await getWorkoutByIdUsecase.execute({
         id: vp.validWorkoutProps.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
       });
 
       expect(result).not.toBeInstanceOf(Workout);
@@ -70,7 +71,7 @@ describe('GetWorkoutByIdUsecase', () => {
     it('should return null when workout does not exist', async () => {
       const result = await getWorkoutByIdUsecase.execute({
         id: 'non-existent',
-        userId: vp.userId,
+        userId: userTestProps.userId,
       });
 
       expect(result).toBeNull();
@@ -78,7 +79,7 @@ describe('GetWorkoutByIdUsecase', () => {
 
     it('should return null when trying to get workout from another user', async () => {
       const anotherUser = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
         id: 'another-user-id',
       });
       await usersRepo.saveUser(anotherUser);
@@ -105,14 +106,14 @@ describe('GetWorkoutByIdUsecase', () => {
         getWorkoutByIdUsecase.execute({
           id: vp.validWorkoutProps.id,
           userId: 'non-existent',
-        })
+        }),
       ).rejects.toThrow(NotFoundError);
 
       await expect(
         getWorkoutByIdUsecase.execute({
           id: vp.validWorkoutProps.id,
           userId: 'non-existent',
-        })
+        }),
       ).rejects.toThrow(/GetWorkoutByIdForUserUsecase.*User.*not.*found/);
     });
   });

@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import { User } from '@/domain/entities/user/User';
@@ -26,10 +27,10 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
       workoutTemplatesRepo,
       workoutsRepo,
       usersRepo,
-      new Uuidv4IdGenerator()
+      new Uuidv4IdGenerator(),
     );
 
-    user = User.create({ ...vp.validUserProps });
+    user = User.create({ ...userTestProps.validUserProps });
 
     template = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps(),
@@ -42,7 +43,7 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
   describe('Execution', () => {
     it('should create workout from template ', async () => {
       const request = {
-        userId: vp.userId,
+        userId: userTestProps.userId,
         workoutTemplateId: vp.validWorkoutTemplateProps().id,
       };
 
@@ -53,17 +54,17 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
       expect(result.exercises).toHaveLength(
         vp
           .validWorkoutTemplateProps()
-          .exercises.reduce((acc, ex) => acc + ex.sets, 0)
+          .exercises.reduce((acc, ex) => acc + ex.sets, 0),
       ); // Sum of all sets of each exercise in template
 
       // Check exercise 1 sets
       const exercise1Sets = result.exercises.filter(
         (ex) =>
           ex.exerciseId ===
-          vp.validWorkoutTemplateProps().exercises[0].exerciseId
+          vp.validWorkoutTemplateProps().exercises[0].exerciseId,
       );
       expect(exercise1Sets).toHaveLength(
-        vp.validWorkoutTemplateProps().exercises[0].sets
+        vp.validWorkoutTemplateProps().exercises[0].sets,
       );
       expect(exercise1Sets[0]).toEqual({
         id: exercise1Sets[0].id,
@@ -82,10 +83,10 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
       const exercise2Sets = result.exercises.filter(
         (ex) =>
           ex.exerciseId ===
-          vp.validWorkoutTemplateProps().exercises[1].exerciseId
+          vp.validWorkoutTemplateProps().exercises[1].exerciseId,
       );
       expect(exercise2Sets).toHaveLength(
-        vp.validWorkoutTemplateProps().exercises[1].sets
+        vp.validWorkoutTemplateProps().exercises[1].sets,
       );
       expect(exercise2Sets[0].setNumber).toBe(1);
       expect(exercise2Sets[1].setNumber).toBe(2);
@@ -98,7 +99,7 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
 
     it('should return a WorkoutDTO', async () => {
       const request = {
-        userId: vp.userId,
+        userId: userTestProps.userId,
         workoutTemplateId: vp.validWorkoutTemplateProps().id,
       };
 
@@ -114,7 +115,7 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
     it('should create workout with custom name', async () => {
       const request = {
         workoutTemplateId: vp.validWorkoutTemplateProps().id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         workoutName: 'My Custom Workout',
       };
 
@@ -129,13 +130,13 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
     it('should throw NotFoundError when template does not exist', async () => {
       const request = {
         workoutTemplateId: 'non-existent',
-        userId: vp.userId,
+        userId: userTestProps.userId,
       };
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
       await expect(usecase.execute(request)).rejects.toThrow(
-        /CreateWorkoutFromTemplateUsecase:.*WorkoutTemplate not found/
+        /CreateWorkoutFromTemplateUsecase:.*WorkoutTemplate not found/,
       );
     });
 
@@ -148,14 +149,14 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
       await workoutTemplatesRepo.saveWorkoutTemplate(template);
 
       const request = {
-        userId: vp.userId,
+        userId: userTestProps.userId,
         workoutTemplateId: vp.validWorkoutTemplateProps().id,
       };
 
       await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
 
       await expect(usecase.execute(request)).rejects.toThrow(
-        /CreateWorkoutFromTemplateUsecase.*Cannot.*from.*empty template/
+        /CreateWorkoutFromTemplateUsecase.*Cannot.*from.*empty template/,
       );
     });
 
@@ -164,13 +165,13 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
       await workoutTemplatesRepo.saveWorkoutTemplate(template);
 
       const request = {
-        userId: vp.userId,
+        userId: userTestProps.userId,
         workoutTemplateId: vp.validWorkoutTemplateProps().id,
       };
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
       await expect(usecase.execute(request)).rejects.toThrow(
-        /CreateWorkoutFromTemplateUsecase:.*WorkoutTemplate.*not found/
+        /CreateWorkoutFromTemplateUsecase:.*WorkoutTemplate.*not found/,
       );
     });
 
@@ -183,12 +184,15 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
       await expect(usecase.execute(request)).rejects.toThrow(
-        /CreateWorkoutFromTemplateUsecase.*User.*not.*found/
+        /CreateWorkoutFromTemplateUsecase.*User.*not.*found/,
       );
     });
 
     it("should throw error when trying to create workout from another user's workout template", async () => {
-      const anotherUser = User.create({ ...vp.validUserProps, id: 'user-2' });
+      const anotherUser = User.create({
+        ...userTestProps.validUserProps,
+        id: 'user-2',
+      });
       await usersRepo.saveUser(anotherUser);
 
       const request = {
@@ -199,7 +203,7 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
       await expect(usecase.execute(request)).rejects.toThrow(
-        /CreateWorkoutFromTemplateUsecase:.*WorkoutTemplate not found/
+        /CreateWorkoutFromTemplateUsecase:.*WorkoutTemplate not found/,
       );
     });
   });

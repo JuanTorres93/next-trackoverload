@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError, PermissionError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
@@ -25,16 +26,16 @@ describe('GetAllRecipesForUserUsecase', () => {
     usersRepo = new MemoryUsersRepo();
     getAllRecipesUsecase = new GetAllRecipesForUserUsecase(
       recipesRepo,
-      usersRepo
+      usersRepo,
     );
 
     user1 = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
       id: userId1,
     });
 
     user2 = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
       id: userId2,
     });
 
@@ -165,10 +166,10 @@ describe('GetAllRecipesForUserUsecase', () => {
       };
 
       await expect(getAllRecipesUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
       await expect(getAllRecipesUsecase.execute(request)).rejects.toThrow(
-        /GetAllRecipesForUserUsecase.*user.*not.*found/
+        /GetAllRecipesForUserUsecase.*user.*not.*found/,
       );
     });
 
@@ -179,11 +180,11 @@ describe('GetAllRecipesForUserUsecase', () => {
       };
 
       await expect(getAllRecipesUsecase.execute(request)).rejects.toThrow(
-        PermissionError
+        PermissionError,
       );
 
       await expect(getAllRecipesUsecase.execute(request)).rejects.toThrow(
-        /GetAllRecipesForUserUsecase.*cannot.*get.*recipes.*another user/
+        /GetAllRecipesForUserUsecase.*cannot.*get.*recipes.*another user/,
       );
     });
   });

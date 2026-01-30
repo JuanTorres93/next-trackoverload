@@ -1,6 +1,7 @@
 import { GetAssembledDayByIdUsecase } from '../GetAssembledDayByIdUsecase';
 
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { Day } from '@/domain/entities/day/Day';
 import { MemoryDaysRepo } from '@/infra/repos/memory/MemoryDaysRepo';
@@ -32,7 +33,7 @@ describe('GetAssembledDayByIdUsecase', () => {
       daysRepo,
       mealsRepo,
       fakeMealsRepo,
-      usersRepo
+      usersRepo,
     );
 
     day = Day.create({
@@ -40,7 +41,7 @@ describe('GetAssembledDayByIdUsecase', () => {
     });
 
     user = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
     });
 
     await daysRepo.saveDay(day);
@@ -97,7 +98,7 @@ describe('GetAssembledDayByIdUsecase', () => {
 
     it('should return null if day exists but belongs to another user', async () => {
       const anotherUser = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
         id: 'another-user-id',
       });
 
@@ -120,10 +121,10 @@ describe('GetAssembledDayByIdUsecase', () => {
       };
 
       await expect(usecase.execute(request)).rejects.toThrowError(
-        NotFoundError
+        NotFoundError,
       );
       await expect(usecase.execute(request)).rejects.toThrowError(
-        /GetAssembledDayByIdUsecase.*User.*not found/
+        /GetAssembledDayByIdUsecase.*User.*not found/,
       );
     });
   });

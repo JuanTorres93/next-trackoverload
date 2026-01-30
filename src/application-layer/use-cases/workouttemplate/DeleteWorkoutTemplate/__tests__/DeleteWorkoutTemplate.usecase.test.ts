@@ -6,6 +6,7 @@ import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTempla
 import { User } from '@/domain/entities/user/User';
 import { NotFoundError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 
 describe('DeleteWorkoutTemplateUsecase', () => {
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
@@ -20,7 +21,7 @@ describe('DeleteWorkoutTemplateUsecase', () => {
     usecase = new DeleteWorkoutTemplateUsecase(workoutTemplatesRepo, usersRepo);
 
     user = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
     });
 
     existingTemplate = WorkoutTemplate.create({
@@ -33,18 +34,21 @@ describe('DeleteWorkoutTemplateUsecase', () => {
 
   describe('Execution', () => {
     it('should soft delete the workout template when it exists because workout references template id', async () => {
-      await usecase.execute({ id: existingTemplate.id, userId: vp.userId });
+      await usecase.execute({
+        id: existingTemplate.id,
+        userId: userTestProps.userId,
+      });
 
       // Verify template was soft deleted (not accessible via normal getter)
       const deletedTemplate = await workoutTemplatesRepo.getWorkoutTemplateById(
-        existingTemplate.id
+        existingTemplate.id,
       );
       expect(deletedTemplate).toBeNull();
 
       // But still exists in repo
       const templateIncludingDeleted =
         workoutTemplatesRepo.workoutTemplatesForTesting.find(
-          (t) => t.id === existingTemplate.id
+          (t) => t.id === existingTemplate.id,
         );
       expect(templateIncludingDeleted).not.toBeNull();
       expect(templateIncludingDeleted?.isDeleted).toBe(true);
@@ -54,17 +58,17 @@ describe('DeleteWorkoutTemplateUsecase', () => {
 
   describe('Errors', () => {
     it('should throw NotFoundError when workout template does not exist', async () => {
-      const request = { id: 'non-existent', userId: vp.userId };
+      const request = { id: 'non-existent', userId: userTestProps.userId };
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
       await expect(usecase.execute(request)).rejects.toThrow(
-        /DeleteWorkoutTemplateUsecase.*WorkoutTemplate.*not.*found/
+        /DeleteWorkoutTemplateUsecase.*WorkoutTemplate.*not.*found/,
       );
     });
 
     it('should throw error if workout template is already deleted', async () => {
-      const request = { id: existingTemplate.id, userId: vp.userId };
+      const request = { id: existingTemplate.id, userId: userTestProps.userId };
 
       // Delete it first
       await usecase.execute(request);
@@ -72,7 +76,7 @@ describe('DeleteWorkoutTemplateUsecase', () => {
       // Try deleting it again
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
       await expect(usecase.execute(request)).rejects.toThrow(
-        /DeleteWorkoutTemplateUsecase.*WorkoutTemplate.*not.*found/
+        /DeleteWorkoutTemplateUsecase.*WorkoutTemplate.*not.*found/,
       );
     });
 
@@ -85,12 +89,15 @@ describe('DeleteWorkoutTemplateUsecase', () => {
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
       await expect(usecase.execute(request)).rejects.toThrow(
-        /DeleteWorkoutTemplateUsecase.*User.*not.*found/
+        /DeleteWorkoutTemplateUsecase.*User.*not.*found/,
       );
     });
 
     it("should throw error when trying to delete another user's template", async () => {
-      const anotherUser = User.create({ ...vp.validUserProps, id: 'user-2' });
+      const anotherUser = User.create({
+        ...userTestProps.validUserProps,
+        id: 'user-2',
+      });
       await usersRepo.saveUser(anotherUser);
 
       const request = {
@@ -101,7 +108,7 @@ describe('DeleteWorkoutTemplateUsecase', () => {
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
       await expect(usecase.execute(request)).rejects.toThrow(
-        /DeleteWorkoutTemplateUsecase.*WorkoutTemplate.*not.*found/
+        /DeleteWorkoutTemplateUsecase.*WorkoutTemplate.*not.*found/,
       );
     });
   });

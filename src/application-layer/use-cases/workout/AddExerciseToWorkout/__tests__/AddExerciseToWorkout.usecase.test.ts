@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError } from '@/domain/common/errors';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
@@ -26,11 +27,11 @@ describe('AddExerciseToWorkoutUsecase', () => {
       workoutsRepo,
       exercisesRepo,
       usersRepo,
-      new Uuidv4IdGenerator()
+      new Uuidv4IdGenerator(),
     );
 
     user = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
     });
 
     workout = Workout.create({
@@ -51,7 +52,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
   describe('Execute', () => {
     it('should add exercise to workout', async () => {
       const updatedWorkout = await addExerciseToWorkoutUsecase.execute({
-        userId: vp.userId,
+        userId: userTestProps.userId,
         workoutId: vp.validWorkoutProps.id,
         exerciseId: vp.validExerciseProps.id,
         setNumber: 1,
@@ -74,7 +75,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
     it('should return WorkoutDTO', async () => {
       const updatedWorkout = await addExerciseToWorkoutUsecase.execute({
-        userId: vp.userId,
+        userId: userTestProps.userId,
         workoutId: vp.validWorkoutProps.id,
         exerciseId: vp.validExerciseProps.id,
         setNumber: 1,
@@ -91,7 +92,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
     it('should add exercise with different set number', async () => {
       // First set
       await addExerciseToWorkoutUsecase.execute({
-        userId: vp.userId,
+        userId: userTestProps.userId,
         workoutId: vp.validWorkoutProps.id,
         exerciseId: vp.validExerciseProps.id,
         setNumber: 1,
@@ -101,7 +102,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
       // Second set
       const updatedWorkout = await addExerciseToWorkoutUsecase.execute({
-        userId: vp.userId,
+        userId: userTestProps.userId,
         workoutId: vp.validWorkoutProps.id,
         exerciseId: vp.validExerciseProps.id,
         setNumber: 2,
@@ -126,7 +127,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
   describe('Errors', () => {
     it('should throw NotFoundError when workout does not exist', async () => {
       const request = {
-        userId: vp.userId,
+        userId: userTestProps.userId,
         workoutId: 'non-existent',
         exerciseId: vp.validExerciseProps.id,
         setNumber: 1,
@@ -135,17 +136,17 @@ describe('AddExerciseToWorkoutUsecase', () => {
       };
 
       await expect(
-        addExerciseToWorkoutUsecase.execute(request)
+        addExerciseToWorkoutUsecase.execute(request),
       ).rejects.toThrow(NotFoundError);
 
       await expect(
-        addExerciseToWorkoutUsecase.execute(request)
+        addExerciseToWorkoutUsecase.execute(request),
       ).rejects.toThrow(/AddExerciseToWorkoutUsecase.*Workout.*not found/);
     });
 
     it('should throw NotFoundError when exercise does not exist', async () => {
       const request = {
-        userId: vp.userId,
+        userId: userTestProps.userId,
         workoutId: vp.validWorkoutProps.id,
         exerciseId: 'non-existent',
         setNumber: 1,
@@ -154,11 +155,11 @@ describe('AddExerciseToWorkoutUsecase', () => {
       };
 
       await expect(
-        addExerciseToWorkoutUsecase.execute(request)
+        addExerciseToWorkoutUsecase.execute(request),
       ).rejects.toThrow(NotFoundError);
 
       await expect(
-        addExerciseToWorkoutUsecase.execute(request)
+        addExerciseToWorkoutUsecase.execute(request),
       ).rejects.toThrow(/AddExerciseToWorkoutUsecase.*Exercise.*not found/);
     });
 
@@ -186,16 +187,16 @@ describe('AddExerciseToWorkoutUsecase', () => {
       };
 
       await expect(
-        addExerciseToWorkoutUsecase.execute(request)
+        addExerciseToWorkoutUsecase.execute(request),
       ).rejects.toThrow(NotFoundError);
       await expect(
-        addExerciseToWorkoutUsecase.execute(request)
+        addExerciseToWorkoutUsecase.execute(request),
       ).rejects.toThrow(/AddExerciseToWorkoutUsecase.*user.*not.*found/);
     });
 
     it("should throw error when trying to add exercise to another user's workout", async () => {
       const anotherUser = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
         id: 'another-user-id',
         email: 'another-user@example.com',
       });
@@ -212,11 +213,11 @@ describe('AddExerciseToWorkoutUsecase', () => {
       };
 
       await expect(
-        addExerciseToWorkoutUsecase.execute(request)
+        addExerciseToWorkoutUsecase.execute(request),
       ).rejects.toThrow(NotFoundError);
 
       await expect(
-        addExerciseToWorkoutUsecase.execute(request)
+        addExerciseToWorkoutUsecase.execute(request),
       ).rejects.toThrow(/AddExerciseToWorkoutUsecase.*Workout.*not found/);
     });
   });

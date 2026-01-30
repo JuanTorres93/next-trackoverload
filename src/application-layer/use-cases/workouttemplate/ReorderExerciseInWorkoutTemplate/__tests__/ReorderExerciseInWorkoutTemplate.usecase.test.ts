@@ -6,6 +6,7 @@ import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTempla
 import { User } from '@/domain/entities/user/User';
 import { NotFoundError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { WorkoutTemplateLine } from '@/domain/entities/workouttemplateline/WorkoutTemplateLine';
 
@@ -22,10 +23,10 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
     usersRepo = new MemoryUsersRepo();
     usecase = new ReorderExerciseInWorkoutTemplateUsecase(
       workoutTemplatesRepo,
-      usersRepo
+      usersRepo,
     );
 
-    user = User.create({ ...vp.validUserProps });
+    user = User.create({ ...userTestProps.validUserProps });
     await usersRepo.saveUser(user);
 
     testTemplate = WorkoutTemplate.create(vp.validWorkoutTemplateProps());
@@ -49,7 +50,7 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
       const request = {
         workoutTemplateId: vp.validWorkoutTemplateProps().id,
         exerciseId: 'ex3',
-        userId: vp.userId,
+        userId: userTestProps.userId,
         newIndex: 0,
       };
 
@@ -62,7 +63,7 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
 
       // Verify template was saved
       const savedTemplate = await workoutTemplatesRepo.getWorkoutTemplateById(
-        result.id
+        result.id,
       );
       expect(savedTemplate).not.toBeNull();
       expect(savedTemplate!.exercises[0].exerciseId).toBe('ex3');
@@ -73,7 +74,7 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
         workoutTemplateId: vp.validWorkoutTemplateProps().id,
         exerciseId: 'ex3',
         newIndex: 0,
-        userId: vp.userId,
+        userId: userTestProps.userId,
       };
 
       const result = await usecase.execute(request);
@@ -89,7 +90,7 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
         workoutTemplateId: vp.validWorkoutTemplateProps().id,
         exerciseId: 'ex1',
         newIndex: 1,
-        userId: vp.userId,
+        userId: userTestProps.userId,
       };
 
       const result = await usecase.execute(request);
@@ -106,14 +107,14 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
       const request = {
         workoutTemplateId: 'non-existent',
         exerciseId: 'ex1',
-        userId: vp.userId,
+        userId: userTestProps.userId,
         newIndex: 0,
       };
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
       await expect(usecase.execute(request)).rejects.toThrow(
-        /ReorderExerciseInWorkoutTemplate.*WorkoutTemplate.*not.*found/
+        /ReorderExerciseInWorkoutTemplate.*WorkoutTemplate.*not.*found/,
       );
     });
 
@@ -124,7 +125,7 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
 
       const request = {
         workoutTemplateId: vp.validWorkoutTemplateProps().id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         exerciseId: 'ex3',
         newIndex: 0,
       };
@@ -132,7 +133,7 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
       await expect(usecase.execute(request)).rejects.toThrow(
-        /ReorderExerciseInWorkoutTemplate.*WorkoutTemplate.*not.*found/
+        /ReorderExerciseInWorkoutTemplate.*WorkoutTemplate.*not.*found/,
       );
     });
 
@@ -147,12 +148,15 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
       await expect(usecase.execute(request)).rejects.toThrow(
-        /ReorderExerciseInWorkoutTemplateUsecase.*User.*not.*found/
+        /ReorderExerciseInWorkoutTemplateUsecase.*User.*not.*found/,
       );
     });
 
     it("should throw error when trying to reorder exercise in another user's workout template", async () => {
-      const anotherUser = User.create({ ...vp.validUserProps, id: 'user-2' });
+      const anotherUser = User.create({
+        ...userTestProps.validUserProps,
+        id: 'user-2',
+      });
       await usersRepo.saveUser(anotherUser);
 
       const request = {
@@ -164,7 +168,7 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
       await expect(usecase.execute(request)).rejects.toThrow(
-        /ReorderExerciseInWorkoutTemplateUsecase.*WorkoutTemplate.*not.*found/
+        /ReorderExerciseInWorkoutTemplateUsecase.*WorkoutTemplate.*not.*found/,
       );
     });
   });

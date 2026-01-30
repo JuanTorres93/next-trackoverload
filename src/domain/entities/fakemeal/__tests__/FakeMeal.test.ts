@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import { ValidationError } from '@/domain/common/errors';
 import { FakeMeal, FakeMealCreateProps } from '../FakeMeal';
 
@@ -18,7 +19,7 @@ describe('FakeMeal', () => {
 
   it('should create a valid entity', () => {
     expect(fakeMeal).toBeInstanceOf(FakeMeal);
-    expect(fakeMeal.userId).toBe(vp.userId);
+    expect(fakeMeal.userId).toBe(userTestProps.userId);
   });
 
   it('should update protein', async () => {
@@ -45,14 +46,14 @@ describe('FakeMeal', () => {
       FakeMeal.create({
         ...validFakeMealProps,
         name: longName,
-      })
+      }),
     ).toThrow(ValidationError);
 
     expect(() =>
       FakeMeal.create({
         ...validFakeMealProps,
         name: longName,
-      })
+      }),
     ).toThrow(/Text.*exceed/);
   });
 
@@ -61,7 +62,7 @@ describe('FakeMeal', () => {
       FakeMeal.create({
         ...validFakeMealProps,
         name: '',
-      })
+      }),
     ).toThrow(ValidationError);
   });
 
@@ -70,13 +71,13 @@ describe('FakeMeal', () => {
     expect(() =>
       FakeMeal.create({
         ...props,
-      })
+      }),
     ).toThrow(ValidationError);
 
     expect(() =>
       FakeMeal.create({
         ...props,
-      })
+      }),
     ).toThrow(/Float.*positive/);
   });
 
@@ -85,13 +86,13 @@ describe('FakeMeal', () => {
     expect(() =>
       FakeMeal.create({
         ...props,
-      })
+      }),
     ).toThrow(ValidationError);
 
     expect(() =>
       FakeMeal.create({
         ...props,
-      })
+      }),
     ).toThrow(/Float.*positive/);
   });
 
@@ -101,7 +102,7 @@ describe('FakeMeal', () => {
         ...validFakeMealProps,
         // @ts-expect-error testing invalid type
         id: 123,
-      })
+      }),
     ).toThrowError(ValidationError);
 
     expect(() =>
@@ -109,7 +110,7 @@ describe('FakeMeal', () => {
         ...validFakeMealProps,
         // @ts-expect-error testing invalid type
         id: 123,
-      })
+      }),
     ).toThrowError(/Id.*string/);
   });
 
@@ -119,7 +120,7 @@ describe('FakeMeal', () => {
         ...validFakeMealProps,
         // @ts-expect-error testing invalid type
         userId: 123,
-      })
+      }),
     ).toThrowError(ValidationError);
 
     expect(() =>
@@ -127,7 +128,7 @@ describe('FakeMeal', () => {
         ...validFakeMealProps,
         // @ts-expect-error testing invalid type
         userId: 123,
-      })
+      }),
     ).toThrowError(/Id.*string/);
   });
 });

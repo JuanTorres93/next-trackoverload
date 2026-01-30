@@ -7,6 +7,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { GetWorkoutsByTemplateForUserUsecase } from '../GetWorkoutsByTemplateForUser.usecase';
 
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 
 describe('GetWorkoutsByTemplateUsecase', () => {
@@ -23,11 +24,11 @@ describe('GetWorkoutsByTemplateUsecase', () => {
     usersRepo = new MemoryUsersRepo();
     getWorkoutsByTemplateUsecase = new GetWorkoutsByTemplateForUserUsecase(
       workoutsRepo,
-      usersRepo
+      usersRepo,
     );
 
     user = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
     });
 
     workout1 = Workout.create({
@@ -62,7 +63,7 @@ describe('GetWorkoutsByTemplateUsecase', () => {
     it('should return workouts filtered by template id', async () => {
       const workouts = await getWorkoutsByTemplateUsecase.execute({
         templateId: 'template-1',
-        userId: vp.userId,
+        userId: userTestProps.userId,
       });
 
       const workoutIds = workouts.map((w) => w.id);
@@ -76,7 +77,7 @@ describe('GetWorkoutsByTemplateUsecase', () => {
     it('should return array of WorkoutDTO', async () => {
       const workouts = await getWorkoutsByTemplateUsecase.execute({
         templateId: 'template-1',
-        userId: vp.userId,
+        userId: userTestProps.userId,
       });
 
       for (const workout of workouts) {
@@ -91,7 +92,7 @@ describe('GetWorkoutsByTemplateUsecase', () => {
     it('should return empty array when no workouts exist for template', async () => {
       const workouts = await getWorkoutsByTemplateUsecase.execute({
         templateId: 'non-existent-template',
-        userId: vp.userId,
+        userId: userTestProps.userId,
       });
 
       expect(workouts).toHaveLength(0);
@@ -99,7 +100,7 @@ describe('GetWorkoutsByTemplateUsecase', () => {
 
     it('should return empty array when trying to get workouts from another user', async () => {
       const anotherUser = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
         id: 'user-2',
       });
 
@@ -122,13 +123,13 @@ describe('GetWorkoutsByTemplateUsecase', () => {
       };
 
       await expect(
-        getWorkoutsByTemplateUsecase.execute(request)
+        getWorkoutsByTemplateUsecase.execute(request),
       ).rejects.toThrow(NotFoundError);
 
       await expect(
-        getWorkoutsByTemplateUsecase.execute(request)
+        getWorkoutsByTemplateUsecase.execute(request),
       ).rejects.toThrow(
-        /GetWorkoutsByTemplateForUserUsecase.*User.*not.*found/
+        /GetWorkoutsByTemplateForUserUsecase.*User.*not.*found/,
       );
     });
   });

@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
@@ -23,7 +24,7 @@ describe('UpdateMealUsecase', () => {
     updateMealUsecase = new UpdateMealUsecase(mealsRepo, usersRepo);
 
     user = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
     });
 
     await usersRepo.saveUser(user);
@@ -52,7 +53,7 @@ describe('UpdateMealUsecase', () => {
     it('should update meal name', async () => {
       const updatedMeal = await updateMealUsecase.execute({
         id: meal.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         name: 'High Protein Meal',
       });
 
@@ -61,14 +62,14 @@ describe('UpdateMealUsecase', () => {
       expect(updatedMeal.ingredientLines).toHaveLength(1);
       expect(updatedMeal.createdAt).toBe(meal.createdAt.toISOString());
       expect(updatedMeal.updatedAt).not.toBe(
-        vp.mealPropsNoIngredientLines.updatedAt.toISOString()
+        vp.mealPropsNoIngredientLines.updatedAt.toISOString(),
       );
     });
 
     it('should return MealDTO', async () => {
       const result = await updateMealUsecase.execute({
         id: meal.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         name: 'Updated Meal Name',
       });
 
@@ -84,16 +85,16 @@ describe('UpdateMealUsecase', () => {
     it('should throw NotFoundError when meal does not exist', async () => {
       const request = {
         id: 'non-existent-meal-id',
-        userId: vp.userId,
+        userId: userTestProps.userId,
         name: 'New Name',
       };
 
       await expect(updateMealUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
 
       await expect(updateMealUsecase.execute(request)).rejects.toThrow(
-        /UpdateMealUsecase.*Meal.*not.*found/
+        /UpdateMealUsecase.*Meal.*not.*found/,
       );
     });
 
@@ -105,16 +106,16 @@ describe('UpdateMealUsecase', () => {
       };
 
       await expect(updateMealUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
       await expect(updateMealUsecase.execute(request)).rejects.toThrow(
-        /UpdateMealUsecase.*user.*not.*found/
+        /UpdateMealUsecase.*user.*not.*found/,
       );
     });
 
     it("should throw error when trying to read another user's meal", async () => {
       const anotherUser = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
         id: 'another-user-id',
         email: 'anotheruser@example.com',
       });
@@ -128,10 +129,10 @@ describe('UpdateMealUsecase', () => {
       };
 
       await expect(updateMealUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
       await expect(updateMealUsecase.execute(request)).rejects.toThrow(
-        /UpdateMealUsecase.*Meal.*not.*found/
+        /UpdateMealUsecase.*Meal.*not.*found/,
       );
     });
   });

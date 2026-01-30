@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toDayDTO } from '@/application-layer/dtos/DayDTO';
 import {
@@ -25,7 +26,7 @@ describe('CreateDayUsecase', () => {
     createDayUsecase = new CreateDayUsecase(daysRepo, usersRepo);
 
     user = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
     });
 
     await usersRepo.saveUser(user);
@@ -37,8 +38,8 @@ describe('CreateDayUsecase', () => {
         day: vp.validDayProps().day,
         month: vp.validDayProps().month,
         year: vp.validDayProps().year,
-        actorUserId: vp.userId,
-        targetUserId: vp.userId,
+        actorUserId: userTestProps.userId,
+        targetUserId: userTestProps.userId,
       };
 
       const day = await createDayUsecase.execute(request);
@@ -55,8 +56,8 @@ describe('CreateDayUsecase', () => {
         day: vp.validDayProps().day,
         month: vp.validDayProps().month,
         year: vp.validDayProps().year,
-        actorUserId: vp.userId,
-        targetUserId: vp.userId,
+        actorUserId: userTestProps.userId,
+        targetUserId: userTestProps.userId,
       };
 
       const day = await createDayUsecase.execute(request);
@@ -74,8 +75,8 @@ describe('CreateDayUsecase', () => {
         day: vp.validDayProps().day,
         month: vp.validDayProps().month,
         year: vp.validDayProps().year,
-        actorUserId: vp.userId,
-        targetUserId: vp.userId,
+        actorUserId: userTestProps.userId,
+        targetUserId: userTestProps.userId,
       };
 
       const initialDaysCount = daysRepo.countForTesting();
@@ -115,7 +116,7 @@ describe('CreateDayUsecase', () => {
         day: vp.validDayProps().day,
         month: vp.validDayProps().month,
         year: vp.validDayProps().year,
-        actorUserId: vp.userId,
+        actorUserId: userTestProps.userId,
         targetUserId: 'another-user-id',
       };
 
@@ -132,7 +133,7 @@ describe('CreateDayUsecase', () => {
         day: vp.validDayProps().day,
         month: vp.validDayProps().month,
         year: vp.validDayProps().year,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
@@ -143,8 +144,8 @@ describe('CreateDayUsecase', () => {
         day: vp.validDayProps().day,
         month: vp.validDayProps().month,
         year: vp.validDayProps().year,
-        actorUserId: vp.userId,
-        targetUserId: vp.userId,
+        actorUserId: userTestProps.userId,
+        targetUserId: userTestProps.userId,
       };
 
       await expect(createDayUsecase.execute(request)).rejects.toThrow(

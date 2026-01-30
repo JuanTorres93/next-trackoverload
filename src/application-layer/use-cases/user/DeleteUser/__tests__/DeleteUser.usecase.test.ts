@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import { NotFoundError, PermissionError } from '@/domain/common/errors';
 
 // Import entities
@@ -49,12 +50,12 @@ describe('DeleteUserUsecase', () => {
       mealsRepo,
       recipesRepo,
       workoutsRepo,
-      workoutTemplatesRepo
+      workoutTemplatesRepo,
     );
 
     // Create user
     const user = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
       name: 'Test User',
     });
     await usersRepo.saveUser(user);
@@ -62,32 +63,32 @@ describe('DeleteUserUsecase', () => {
     // Create associated resources
     const fakeMeal = FakeMeal.create({
       ...vp.validFakeMealProps,
-      userId: vp.userId,
+      userId: userTestProps.userId,
     });
 
     const meal = Meal.create({
       ...vp.validMealWithIngredientLines(),
-      userId: vp.userId,
+      userId: userTestProps.userId,
     });
 
     const recipe = Recipe.create({
       ...vp.validRecipePropsWithIngredientLines(),
-      userId: vp.userId,
+      userId: userTestProps.userId,
     });
 
     const workout = Workout.create({
       ...vp.validWorkoutPropsWithExercises(),
-      userId: vp.userId,
+      userId: userTestProps.userId,
     });
 
     const workoutTemplate = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps(),
-      userId: vp.userId,
+      userId: userTestProps.userId,
     });
 
     const day = Day.create({
       ...vp.validDayProps(),
-      userId: vp.userId,
+      userId: userTestProps.userId,
     });
 
     // Save all to their respective repos
@@ -102,107 +103,121 @@ describe('DeleteUserUsecase', () => {
   describe('Execute', () => {
     it('should delete user successfully', async () => {
       // Verify user exists before deletion
-      const existingUser = await usersRepo.getUserById(vp.userId);
+      const existingUser = await usersRepo.getUserById(userTestProps.userId);
       expect(existingUser).not.toBeNull();
 
       await deleteUserUsecase.execute({
-        actorUserId: vp.userId,
-        targetUserId: vp.userId,
+        actorUserId: userTestProps.userId,
+        targetUserId: userTestProps.userId,
       });
 
       // Verify user was deleted
-      const deletedUser = await usersRepo.getUserById(vp.userId);
+      const deletedUser = await usersRepo.getUserById(userTestProps.userId);
       expect(deletedUser).toBeNull();
     });
 
     describe('should delete all resources owned by user', () => {
       it('FakeMeals', async () => {
         const fakeMealsBefore = await fakeMealsRepo.getAllFakeMealsByUserId(
-          vp.userId
+          userTestProps.userId,
         );
         expect(fakeMealsBefore.length).toBeGreaterThan(0);
 
         await deleteUserUsecase.execute({
-          actorUserId: vp.userId,
-          targetUserId: vp.userId,
+          actorUserId: userTestProps.userId,
+          targetUserId: userTestProps.userId,
         });
 
         const fakeMealsAfter = await fakeMealsRepo.getAllFakeMealsByUserId(
-          vp.userId
+          userTestProps.userId,
         );
         expect(fakeMealsAfter.length).toBe(0);
       });
 
       it('Meals', async () => {
-        const mealsBefore = await mealsRepo.getAllMealsForUser(vp.userId);
+        const mealsBefore = await mealsRepo.getAllMealsForUser(
+          userTestProps.userId,
+        );
         expect(mealsBefore.length).toBeGreaterThan(0);
 
         await deleteUserUsecase.execute({
-          actorUserId: vp.userId,
-          targetUserId: vp.userId,
+          actorUserId: userTestProps.userId,
+          targetUserId: userTestProps.userId,
         });
 
-        const mealsAfter = await mealsRepo.getAllMealsForUser(vp.userId);
+        const mealsAfter = await mealsRepo.getAllMealsForUser(
+          userTestProps.userId,
+        );
         expect(mealsAfter.length).toBe(0);
       });
 
       it('Recipes', async () => {
         const recipesBefore = await recipesRepo.getAllRecipesByUserId(
-          vp.userId
+          userTestProps.userId,
         );
         expect(recipesBefore.length).toBeGreaterThan(0);
 
         await deleteUserUsecase.execute({
-          actorUserId: vp.userId,
-          targetUserId: vp.userId,
+          actorUserId: userTestProps.userId,
+          targetUserId: userTestProps.userId,
         });
 
-        const recipesAfter = await recipesRepo.getAllRecipesByUserId(vp.userId);
+        const recipesAfter = await recipesRepo.getAllRecipesByUserId(
+          userTestProps.userId,
+        );
         expect(recipesAfter.length).toBe(0);
       });
 
       it('Workouts', async () => {
         const workoutsBefore = await workoutsRepo.getAllWorkoutsByUserId(
-          vp.userId
+          userTestProps.userId,
         );
         expect(workoutsBefore.length).toBeGreaterThan(0);
 
         await deleteUserUsecase.execute({
-          actorUserId: vp.userId,
-          targetUserId: vp.userId,
+          actorUserId: userTestProps.userId,
+          targetUserId: userTestProps.userId,
         });
 
         const workoutsAfter = await workoutsRepo.getAllWorkoutsByUserId(
-          vp.userId
+          userTestProps.userId,
         );
         expect(workoutsAfter.length).toBe(0);
       });
 
       it('WorkoutTemplates', async () => {
         const workoutTemplatesBefore =
-          await workoutTemplatesRepo.getAllWorkoutTemplatesByUserId(vp.userId);
+          await workoutTemplatesRepo.getAllWorkoutTemplatesByUserId(
+            userTestProps.userId,
+          );
         expect(workoutTemplatesBefore.length).toBeGreaterThan(0);
 
         await deleteUserUsecase.execute({
-          actorUserId: vp.userId,
-          targetUserId: vp.userId,
+          actorUserId: userTestProps.userId,
+          targetUserId: userTestProps.userId,
         });
 
         const workoutTemplatesAfter =
-          await workoutTemplatesRepo.getAllWorkoutTemplatesByUserId(vp.userId);
+          await workoutTemplatesRepo.getAllWorkoutTemplatesByUserId(
+            userTestProps.userId,
+          );
         expect(workoutTemplatesAfter.length).toBe(0);
       });
 
       it('Days', async () => {
-        const daysBefore = await daysRepo.getAllDaysByUserId(vp.userId);
+        const daysBefore = await daysRepo.getAllDaysByUserId(
+          userTestProps.userId,
+        );
         expect(daysBefore.length).toBeGreaterThan(0);
 
         await deleteUserUsecase.execute({
-          actorUserId: vp.userId,
-          targetUserId: vp.userId,
+          actorUserId: userTestProps.userId,
+          targetUserId: userTestProps.userId,
         });
 
-        const daysAfter = await daysRepo.getAllDaysByUserId(vp.userId);
+        const daysAfter = await daysRepo.getAllDaysByUserId(
+          userTestProps.userId,
+        );
         expect(daysAfter.length).toBe(0);
       });
     });
@@ -216,17 +231,17 @@ describe('DeleteUserUsecase', () => {
       };
 
       await expect(deleteUserUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
 
       await expect(deleteUserUsecase.execute(request)).rejects.toThrow(
-        /DeleteUserUsecase.*User.*not found/
+        /DeleteUserUsecase.*User.*not found/,
       );
     });
 
     it('should throw error if a user is trying to delete another user', async () => {
       const anotherUser = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
         id: 'another-user-id',
         name: 'Another User',
       });
@@ -234,15 +249,15 @@ describe('DeleteUserUsecase', () => {
 
       const request = {
         actorUserId: anotherUser.id,
-        targetUserId: vp.userId,
+        targetUserId: userTestProps.userId,
       };
 
       await expect(deleteUserUsecase.execute(request)).rejects.toThrow(
-        PermissionError
+        PermissionError,
       );
 
       await expect(deleteUserUsecase.execute(request)).rejects.toThrow(
-        /DeleteUserUsecase.*delete.*another.*user/
+        /DeleteUserUsecase.*delete.*another.*user/,
       );
     });
   });

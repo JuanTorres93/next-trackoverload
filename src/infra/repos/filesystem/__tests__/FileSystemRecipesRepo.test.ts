@@ -7,6 +7,7 @@ import fs from 'fs/promises';
 import path from 'path';
 
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 
 describe('FileSystemRecipesRepo', () => {
   let repo: FileSystemRecipesRepo;
@@ -75,22 +76,22 @@ describe('FileSystemRecipesRepo', () => {
 
   it('should retrieve a recipe by ID', async () => {
     const fetchedRecipe = await repo.getRecipeById(
-      vp.recipePropsNoIngredientLines.id
+      vp.recipePropsNoIngredientLines.id,
     );
     expect(fetchedRecipe).not.toBeNull();
     expect(fetchedRecipe?.name).toBe(vp.recipePropsNoIngredientLines.name);
   });
 
   it('should retrieve recipes by user ID', async () => {
-    const userRecipes = await repo.getAllRecipesByUserId(vp.userId);
+    const userRecipes = await repo.getAllRecipesByUserId(userTestProps.userId);
     expect(userRecipes.length).toBe(1);
-    expect(userRecipes[0].userId).toBe(vp.userId);
+    expect(userRecipes[0].userId).toBe(userTestProps.userId);
   });
 
   it('should retrieve a recipe by ID and user ID', async () => {
     const fetchedRecipe = await repo.getRecipeByIdAndUserId(
       vp.recipePropsNoIngredientLines.id,
-      vp.userId
+      userTestProps.userId,
     );
     expect(fetchedRecipe).not.toBeNull();
     expect(fetchedRecipe?.name).toBe(vp.recipePropsNoIngredientLines.name);
@@ -123,7 +124,7 @@ describe('FileSystemRecipesRepo', () => {
     // Verify ingredient line file exists
     const lineFilePath = path.join(
       testIngredientLinesDir,
-      `${ingredientLine.id}.json`
+      `${ingredientLine.id}.json`,
     );
     const lineFileExists = await fs
       .access(lineFilePath)
@@ -138,7 +139,7 @@ describe('FileSystemRecipesRepo', () => {
     // Verify ingredient line file is deleted
     const lineFilePath = path.join(
       testIngredientLinesDir,
-      `${ingredientLine.id}.json`
+      `${ingredientLine.id}.json`,
     );
     const lineFileExists = await fs
       .access(lineFilePath)
@@ -179,7 +180,7 @@ describe('FileSystemRecipesRepo', () => {
     const allRecipesBefore = await repo.getAllRecipes();
     expect(allRecipesBefore.length).toBe(3);
 
-    await repo.deleteAllRecipesForUser(vp.userId);
+    await repo.deleteAllRecipesForUser(userTestProps.userId);
 
     const allRecipesAfter = await repo.getAllRecipes();
     expect(allRecipesAfter.length).toBe(1);

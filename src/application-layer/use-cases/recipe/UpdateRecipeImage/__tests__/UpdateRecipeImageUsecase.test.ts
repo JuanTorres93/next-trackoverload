@@ -7,6 +7,7 @@ import { createTestImage } from '../../../../../../tests/helpers/imageTestHelper
 import { UpdateRecipeImageUsecase } from '../UpdateRecipeImageUsecase';
 
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 
 describe('UpdateRecipeImageUsecase', () => {
@@ -36,7 +37,7 @@ describe('UpdateRecipeImageUsecase', () => {
 
     recipe = Recipe.create({
       ...vp.validRecipePropsWithIngredientLines(),
-      userId: vp.userId,
+      userId: userTestProps.userId,
     });
 
     await recipesRepo.saveRecipe(recipe);
@@ -46,7 +47,7 @@ describe('UpdateRecipeImageUsecase', () => {
     it('should return RecipeDTO', async () => {
       const result = await usecase.execute({
         recipeId: recipe.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         imageData: testImageBuffer,
       });
 
@@ -63,7 +64,7 @@ describe('UpdateRecipeImageUsecase', () => {
 
       const result = await usecase.execute({
         recipeId: recipe.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         imageData: testImageBuffer,
       });
 
@@ -74,7 +75,7 @@ describe('UpdateRecipeImageUsecase', () => {
       // If url was the same, browser would cache old image and not show inmediately the new one
       const result1 = await usecase.execute({
         recipeId: recipe.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         imageData: testImageBuffer,
       });
 
@@ -82,7 +83,7 @@ describe('UpdateRecipeImageUsecase', () => {
 
       const result2 = await usecase.execute({
         recipeId: recipe.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         imageData: await createTestImage('small'),
       });
 
@@ -96,13 +97,13 @@ describe('UpdateRecipeImageUsecase', () => {
       // First upload
       await usecase.execute({
         recipeId: recipe.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         imageData: testImageBuffer,
       });
 
       const firstRecipeWithImage = await recipesRepo.getRecipeByIdAndUserId(
         recipe.id,
-        vp.userId,
+        userTestProps.userId,
       );
       const firstUrl = firstRecipeWithImage!.imageUrl;
 
@@ -112,13 +113,13 @@ describe('UpdateRecipeImageUsecase', () => {
       // Second upload
       await usecase.execute({
         recipeId: recipe.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         imageData: testImageBuffer,
       });
 
       const secondRecipeWithImage = await recipesRepo.getRecipeByIdAndUserId(
         recipe.id,
-        vp.userId,
+        userTestProps.userId,
       );
       const secundUrl = secondRecipeWithImage!.imageUrl;
 
@@ -137,7 +138,7 @@ describe('UpdateRecipeImageUsecase', () => {
 
       await usecase.execute({
         recipeId: recipe.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         imageData: testImageBuffer,
       });
 
@@ -151,7 +152,7 @@ describe('UpdateRecipeImageUsecase', () => {
     it('should throw NotFoundError if recipe does not exist', async () => {
       const request = {
         recipeId: 'non-existent-recipe-id',
-        userId: vp.userId,
+        userId: userTestProps.userId,
         imageData: testImageBuffer,
       };
 

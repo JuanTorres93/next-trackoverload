@@ -9,6 +9,7 @@ import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerato
 import { CreateMealFromRecipeUsecase } from '../CreateMealFromRecipeUsecase';
 
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { User } from '@/domain/entities/user/User';
 import {
@@ -39,10 +40,10 @@ describe('CreateMealFromRecipeUsecase', () => {
       recipesRepo,
       mealsRepo,
       imagesRepo,
-      idGenerator
+      idGenerator,
     );
 
-    const user = User.create(vp.validUserProps);
+    const user = User.create(userTestProps.validUserProps);
     await usersRepo.saveUser(user);
 
     recipe = Recipe.create(vp.validRecipePropsWithIngredientLines());
@@ -54,7 +55,7 @@ describe('CreateMealFromRecipeUsecase', () => {
     it('should return MealDTO', async () => {
       const result = await usecase.execute({
         recipeId: recipe.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
       });
 
       expect(result).not.toBeInstanceOf(Meal);
@@ -68,7 +69,7 @@ describe('CreateMealFromRecipeUsecase', () => {
 
       const result = await usecase.execute({
         recipeId: recipe.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
       });
 
       const createdMealLinesIds = result.ingredientLines.map((line) => line.id);
@@ -87,7 +88,7 @@ describe('CreateMealFromRecipeUsecase', () => {
 
       await usecase.execute({
         recipeId: recipe.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
       });
 
       const mealsAfter = mealsRepo.countForTesting();
@@ -111,7 +112,7 @@ describe('CreateMealFromRecipeUsecase', () => {
 
       await usecase.execute({
         recipeId: recipe.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
       });
 
       const imagesAfter = imagesRepo.countForTesting();
@@ -132,7 +133,7 @@ describe('CreateMealFromRecipeUsecase', () => {
       // First meal creation
       await usecase.execute({
         recipeId: recipe.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
       });
 
       const imagesAfterFirstMeal = imagesRepo.countForTesting();
@@ -142,7 +143,7 @@ describe('CreateMealFromRecipeUsecase', () => {
       // Second meal creation
       await usecase.execute({
         recipeId: recipe.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
       });
 
       const imagesAfterSecondMeal = imagesRepo.countForTesting();
@@ -155,18 +156,18 @@ describe('CreateMealFromRecipeUsecase', () => {
     it('should throw error if recipe does not exist', async () => {
       const request = {
         recipeId: 'non-existent-recipe-id',
-        userId: vp.userId,
+        userId: userTestProps.userId,
       };
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
       await expect(usecase.execute(request)).rejects.toThrow(
-        /CreateMealFromRecipeUsecase: Recipe.*not found/
+        /CreateMealFromRecipeUsecase: Recipe.*not found/,
       );
     });
 
     it('should throw error if recipe does not belong to user', async () => {
       const otherUser = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
         id: 'other-user-id',
       });
       await usersRepo.saveUser(otherUser);
@@ -178,7 +179,7 @@ describe('CreateMealFromRecipeUsecase', () => {
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
       await expect(usecase.execute(request)).rejects.toThrow(
-        /CreateMealFromRecipeUsecase: Recipe.*not found/
+        /CreateMealFromRecipeUsecase: Recipe.*not found/,
       );
     });
 
@@ -190,7 +191,7 @@ describe('CreateMealFromRecipeUsecase', () => {
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
       await expect(usecase.execute(request)).rejects.toThrow(
-        /CreateMealFromRecipeUsecase: User.*not found/
+        /CreateMealFromRecipeUsecase: User.*not found/,
       );
     });
   });

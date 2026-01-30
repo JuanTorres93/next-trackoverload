@@ -20,22 +20,22 @@ export class GetAssembledDayByIdUsecase {
     private dayRepo: DaysRepo,
     private mealsRepo: MealsRepo,
     private fakeMealsRepo: FakeMealsRepo,
-    private usersRepo: UsersRepo
+    private usersRepo: UsersRepo,
   ) {}
 
   async execute(
-    request: GetAssembledDayByIdUsecaseRequest
+    request: GetAssembledDayByIdUsecaseRequest,
   ): Promise<AssembledDayDTO | null> {
     const user = await this.usersRepo.getUserById(request.userId);
     if (!user) {
       throw new NotFoundError(
-        `GetAssembledDayByIdUsecase: User with id ${request.userId} not found`
+        `GetAssembledDayByIdUsecase: User with id ${request.userId} not found`,
       );
     }
 
     const day = await this.dayRepo.getDayByIdAndUserId(
       request.dayId,
-      request.userId
+      request.userId,
     );
     if (!day) {
       return null;

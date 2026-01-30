@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryFakeMealsRepo } from '../MemoryFakeMealsRepo';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 
 describe('MemoryFakeMealsRepo', () => {
   let repo: MemoryFakeMealsRepo;
@@ -65,7 +66,7 @@ describe('MemoryFakeMealsRepo', () => {
 
   it('should retrieve a fake meal by ID', async () => {
     const fetchedFakeMeal = await repo.getFakeMealById(
-      vp.validFakeMealProps.id
+      vp.validFakeMealProps.id,
     );
     expect(fetchedFakeMeal).not.toBeNull();
     expect(fetchedFakeMeal?.name).toBe('Protein Shake');
@@ -117,7 +118,7 @@ describe('MemoryFakeMealsRepo', () => {
     ]);
     expect(fetchedFakeMeals.length).toBe(2);
     expect(fetchedFakeMeals.map((fm) => fm.id)).toContain(
-      vp.validFakeMealProps.id
+      vp.validFakeMealProps.id,
     );
     expect(fetchedFakeMeals.map((fm) => fm.id)).toContain('fakemeal-2');
   });
@@ -125,14 +126,14 @@ describe('MemoryFakeMealsRepo', () => {
   it('should retrieve a fake meal by ID and userId', async () => {
     const fetchedFakeMeal = await repo.getFakeMealByIdAndUserId(
       vp.validFakeMealProps.id,
-      'user-1'
+      'user-1',
     );
     expect(fetchedFakeMeal).not.toBeNull();
     expect(fetchedFakeMeal?.name).toBe('Protein Shake');
 
     const notFoundFakeMeal = await repo.getFakeMealByIdAndUserId(
       vp.validFakeMealProps.id,
-      'user-2'
+      'user-2',
     );
     expect(notFoundFakeMeal).toBeNull();
   });
@@ -235,7 +236,7 @@ describe('MemoryFakeMealsRepo', () => {
     const allFakeMealsBefore = await repo.getAllFakeMeals();
     expect(allFakeMealsBefore.length).toBe(3);
 
-    await repo.deleteAllFakeMealsForUser(vp.userId);
+    await repo.deleteAllFakeMealsForUser(userTestProps.userId);
 
     const allFakeMealsAfter = await repo.getAllFakeMeals();
     expect(allFakeMealsAfter.length).toBe(1);

@@ -8,6 +8,7 @@ import { User } from '@/domain/entities/user/User';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
 
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 
 describe('AddFakeMealToDayUsecase', () => {
@@ -28,7 +29,7 @@ describe('AddFakeMealToDayUsecase', () => {
       daysRepo,
       fakeMealsRepo,
       usersRepo,
-      new Uuidv4IdGenerator()
+      new Uuidv4IdGenerator(),
     );
 
     day = Day.create({
@@ -36,11 +37,11 @@ describe('AddFakeMealToDayUsecase', () => {
     });
 
     user = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
     });
 
     anotherUser = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
       id: 'another-user-id',
     });
 
@@ -109,11 +110,11 @@ describe('AddFakeMealToDayUsecase', () => {
       };
 
       await expect(addFakeMealToDayUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
 
       await expect(addFakeMealToDayUsecase.execute(request)).rejects.toThrow(
-        /AddFakeMealToDay.*User.*not.*found/
+        /AddFakeMealToDay.*User.*not.*found/,
       );
     });
 
@@ -127,11 +128,11 @@ describe('AddFakeMealToDayUsecase', () => {
       };
 
       await expect(addFakeMealToDayUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
 
       await expect(addFakeMealToDayUsecase.execute(request)).rejects.toThrow(
-        /AddFakeMealToDay.*Day.*not.*found/
+        /AddFakeMealToDay.*Day.*not.*found/,
       );
     });
   });

@@ -9,6 +9,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { RemoveIngredientFromRecipeUsecase } from '../RemoveIngredientFromRecipe.usecase';
 
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 
 describe('RemoveIngredientFromRecipeUsecase', () => {
@@ -25,11 +26,11 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
     usersRepo = new MemoryUsersRepo();
     removeIngredientFromRecipeUsecase = new RemoveIngredientFromRecipeUsecase(
       recipesRepo,
-      usersRepo
+      usersRepo,
     );
 
     user = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
     });
 
     await usersRepo.saveUser(user);
@@ -71,7 +72,7 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
       const request = {
         recipeId: testRecipe.id,
         ingredientId: testIngredient.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
       };
 
       const result = await removeIngredientFromRecipeUsecase.execute(request);
@@ -79,13 +80,13 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
       expect(result.ingredientLines).toHaveLength(originalIngredientCount - 1);
       expect(
         result.ingredientLines.some(
-          (line) => line.ingredient.id === testIngredient.id
-        )
+          (line) => line.ingredient.id === testIngredient.id,
+        ),
       ).toBe(false);
       expect(
         result.ingredientLines.some(
-          (line) => line.ingredient.id === secondIngredient.id
-        )
+          (line) => line.ingredient.id === secondIngredient.id,
+        ),
       ).toBe(true);
     });
 
@@ -93,7 +94,7 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
       const request = {
         recipeId: testRecipe.id,
         ingredientId: testIngredient.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
       };
 
       const result = await removeIngredientFromRecipeUsecase.execute(request);
@@ -110,17 +111,17 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
       const request = {
         recipeId: 'non-existent-id',
         ingredientId: testIngredient.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
       };
 
       await expect(
-        removeIngredientFromRecipeUsecase.execute(request)
+        removeIngredientFromRecipeUsecase.execute(request),
       ).rejects.toThrow(NotFoundError);
 
       await expect(
-        removeIngredientFromRecipeUsecase.execute(request)
+        removeIngredientFromRecipeUsecase.execute(request),
       ).rejects.toThrow(
-        /RemoveIngredientFromRecipeUsecase.*Recipe.*not.*found/
+        /RemoveIngredientFromRecipeUsecase.*Recipe.*not.*found/,
       );
     });
 
@@ -132,16 +133,16 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
       };
 
       await expect(
-        removeIngredientFromRecipeUsecase.execute(request)
+        removeIngredientFromRecipeUsecase.execute(request),
       ).rejects.toThrow(NotFoundError);
       await expect(
-        removeIngredientFromRecipeUsecase.execute(request)
+        removeIngredientFromRecipeUsecase.execute(request),
       ).rejects.toThrow(/RemoveIngredientFromRecipeUsecase.*user.*not.*found/);
     });
 
     it("should throw error if trying to delete another user's recipe", async () => {
       const anotherUser = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
         id: 'another-user-id',
       });
       await usersRepo.saveUser(anotherUser);
@@ -153,12 +154,12 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
       };
 
       await expect(
-        removeIngredientFromRecipeUsecase.execute(request)
+        removeIngredientFromRecipeUsecase.execute(request),
       ).rejects.toThrow(NotFoundError);
       await expect(
-        removeIngredientFromRecipeUsecase.execute(request)
+        removeIngredientFromRecipeUsecase.execute(request),
       ).rejects.toThrow(
-        /RemoveIngredientFromRecipeUsecase.*Recipe.*not.*found/
+        /RemoveIngredientFromRecipeUsecase.*Recipe.*not.*found/,
       );
     });
   });

@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
@@ -38,11 +39,11 @@ describe('AddIngredientToRecipeUsecase', () => {
       ingredientsRepo,
       usersRepo,
       externalIngredientsRefRepo,
-      idGenerator
+      idGenerator,
     );
 
     user = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
     });
 
     await usersRepo.saveUser(user);
@@ -85,7 +86,7 @@ describe('AddIngredientToRecipeUsecase', () => {
 
       const request = {
         recipeId: testRecipe.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         externalIngredientId: newExternalIngredientRef.externalId,
         source: vp.validExternalIngredientRefProps.source,
         name: vp.validIngredientProps.name,
@@ -102,7 +103,7 @@ describe('AddIngredientToRecipeUsecase', () => {
     it('should return RecipeDTO', async () => {
       const request = {
         recipeId: testRecipe.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         externalIngredientId: newExternalIngredientRef.externalId,
         source: vp.validExternalIngredientRefProps.source,
         name: vp.validIngredientProps.name,
@@ -126,7 +127,7 @@ describe('AddIngredientToRecipeUsecase', () => {
       await new Promise((resolve) => setTimeout(resolve, 10));
 
       const request = {
-        userId: vp.userId,
+        userId: userTestProps.userId,
         recipeId: testRecipe.id,
         externalIngredientId: newExternalIngredientRef.externalId,
         source: vp.validExternalIngredientRefProps.source,
@@ -139,7 +140,7 @@ describe('AddIngredientToRecipeUsecase', () => {
       const result = await addIngredientToRecipeUsecase.execute(request);
 
       expect(new Date(result.updatedAt).getTime()).toBeGreaterThan(
-        originalUpdatedAt.getTime()
+        originalUpdatedAt.getTime(),
       );
     });
   });
@@ -148,7 +149,7 @@ describe('AddIngredientToRecipeUsecase', () => {
     it('should create new external ingredient if it did not exist', async () => {
       const request = {
         recipeId: testRecipe.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         externalIngredientId: 'non-existent-external-ingredient-id',
         source: vp.validExternalIngredientRefProps.source,
         name: vp.validIngredientProps.name,
@@ -166,14 +167,14 @@ describe('AddIngredientToRecipeUsecase', () => {
         externalIngredientsRefRepo.countForTesting();
 
       expect(existingExternalIngredientAfter).toBe(
-        existingExternalIngredientBefore + 1
+        existingExternalIngredientBefore + 1,
       );
     });
 
     it('should create new ingredient if it did not exist', async () => {
       const request = {
         recipeId: testRecipe.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         externalIngredientId: 'non-existent-new-external-ingredient-id',
         source: vp.validExternalIngredientRefProps.source,
         name: 'Brand New Ingredient',
@@ -196,7 +197,7 @@ describe('AddIngredientToRecipeUsecase', () => {
     it('should throw NotFoundError when recipe does not exist', async () => {
       const request = {
         recipeId: 'non-existent-id',
-        userId: vp.userId,
+        userId: userTestProps.userId,
         externalIngredientId: newExternalIngredientRef.externalId,
         name: vp.validIngredientProps.name,
         source: vp.validExternalIngredientRefProps.source,
@@ -206,11 +207,11 @@ describe('AddIngredientToRecipeUsecase', () => {
       };
 
       await expect(
-        addIngredientToRecipeUsecase.execute(request)
+        addIngredientToRecipeUsecase.execute(request),
       ).rejects.toThrow(NotFoundError);
 
       await expect(
-        addIngredientToRecipeUsecase.execute(request)
+        addIngredientToRecipeUsecase.execute(request),
       ).rejects.toThrow(/AddIngredientToRecipeUsecase.*Recipe.*not.*found/);
     });
 
@@ -227,16 +228,16 @@ describe('AddIngredientToRecipeUsecase', () => {
       };
 
       await expect(
-        addIngredientToRecipeUsecase.execute(request)
+        addIngredientToRecipeUsecase.execute(request),
       ).rejects.toThrow(NotFoundError);
       await expect(
-        addIngredientToRecipeUsecase.execute(request)
+        addIngredientToRecipeUsecase.execute(request),
       ).rejects.toThrow(/AddIngredientToRecipeUsecase.*user.*not.*found/);
     });
 
     it("should throw error when trying to add ingredient another user's recipe", async () => {
       const anotherUser = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
         id: 'another-user-id',
       });
       await usersRepo.saveUser(anotherUser);
@@ -253,11 +254,11 @@ describe('AddIngredientToRecipeUsecase', () => {
       };
 
       await expect(
-        addIngredientToRecipeUsecase.execute(request)
+        addIngredientToRecipeUsecase.execute(request),
       ).rejects.toThrow(NotFoundError);
 
       await expect(
-        addIngredientToRecipeUsecase.execute(request)
+        addIngredientToRecipeUsecase.execute(request),
       ).rejects.toThrow(/AddIngredientToRecipeUsecase.*Recipe.*not.*found/);
     });
   });

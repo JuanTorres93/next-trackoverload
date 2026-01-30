@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toUserDTO, UserDTO } from '@/application-layer/dtos/UserDTO';
 import { AlreadyExistsError } from '@/domain/common/errors';
@@ -16,18 +17,18 @@ describe('CreateUserUsecase', () => {
     usersRepo = new MemoryUsersRepo();
     createUserUsecase = new CreateUserUsecase(
       usersRepo,
-      new Uuidv4IdGenerator()
+      new Uuidv4IdGenerator(),
     );
     user = await createUserUsecase.execute({
-      name: vp.validUserProps.name,
-      email: vp.validUserProps.email,
+      name: userTestProps.validUserProps.name,
+      email: userTestProps.validUserProps.email,
     });
   });
 
   describe('Execute', () => {
     it('should create user', async () => {
-      expect(user.name).toBe(vp.validUserProps.name);
-      expect(user.email).toBe(vp.validUserProps.email);
+      expect(user.name).toBe(userTestProps.validUserProps.name);
+      expect(user.email).toBe(userTestProps.validUserProps.email);
       expect(user.id).toBeDefined();
       expect(user.customerId).toBeUndefined();
       expect(user.createdAt).toBeDefined();
@@ -72,30 +73,30 @@ describe('CreateUserUsecase', () => {
     it('should throw error if email already exists', async () => {
       const request = {
         name: 'Duplicate Email User',
-        email: vp.validUserProps.email,
+        email: userTestProps.validUserProps.email,
       };
 
       await expect(createUserUsecase.execute(request)).rejects.toThrow(
-        AlreadyExistsError
+        AlreadyExistsError,
       );
 
       await expect(createUserUsecase.execute(request)).rejects.toThrow(
-        /CreateUserUsecase.*User.*email.*already exists/
+        /CreateUserUsecase.*User.*email.*already exists/,
       );
     });
 
     it('should throw error for same email with different case', async () => {
       const request = {
         name: 'Duplicate Email User',
-        email: vp.validUserProps.email.toUpperCase(),
+        email: userTestProps.validUserProps.email.toUpperCase(),
       };
 
       await expect(createUserUsecase.execute(request)).rejects.toThrow(
-        AlreadyExistsError
+        AlreadyExistsError,
       );
 
       await expect(createUserUsecase.execute(request)).rejects.toThrow(
-        /CreateUserUsecase.*User.*email.*already exists/
+        /CreateUserUsecase.*User.*email.*already exists/,
       );
     });
 
@@ -115,11 +116,11 @@ describe('CreateUserUsecase', () => {
       };
 
       await expect(createUserUsecase.execute(request)).rejects.toThrow(
-        AlreadyExistsError
+        AlreadyExistsError,
       );
 
       await expect(createUserUsecase.execute(request)).rejects.toThrow(
-        /CreateUserUsecase.*User.*customerId.*already exists/
+        /CreateUserUsecase.*User.*customerId.*already exists/,
       );
     });
   });

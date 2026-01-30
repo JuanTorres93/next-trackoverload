@@ -3,6 +3,7 @@ import { FileSystemDaysRepo } from '../FileSystemDaysRepo';
 import { Day } from '@/domain/entities/day/Day';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -68,15 +69,18 @@ describe('FileSystemDaysRepo', () => {
   });
 
   it('should retrieve days by user ID', async () => {
-    const userDays = await repo.getAllDaysByUserId(vp.userId);
+    const userDays = await repo.getAllDaysByUserId(userTestProps.userId);
     expect(userDays.length).toBe(1);
-    expect(userDays[0].userId).toBe(vp.userId);
+    expect(userDays[0].userId).toBe(userTestProps.userId);
   });
 
   it('should retrieve a day by ID and user ID', async () => {
-    const fetchedDay = await repo.getDayByIdAndUserId('20231001', vp.userId);
+    const fetchedDay = await repo.getDayByIdAndUserId(
+      '20231001',
+      userTestProps.userId,
+    );
     expect(fetchedDay).not.toBeNull();
-    expect(fetchedDay?.userId).toBe(vp.userId);
+    expect(fetchedDay?.userId).toBe(userTestProps.userId);
   });
 
   it('should retrieve days by date range', async () => {
@@ -115,11 +119,13 @@ describe('FileSystemDaysRepo', () => {
     const daysInRange = await repo.getDaysByDateRangeAndUserId(
       '20231001',
       '20231003',
-      vp.userId
+      userTestProps.userId,
     );
 
     expect(daysInRange.length).toBe(2);
-    expect(daysInRange.every((d) => d.userId === vp.userId)).toBe(true);
+    expect(daysInRange.every((d) => d.userId === userTestProps.userId)).toBe(
+      true,
+    );
   });
 
   it('should return null for non-existent day ID', async () => {
@@ -131,7 +137,7 @@ describe('FileSystemDaysRepo', () => {
     const allDays = await repo.getAllDays();
     expect(allDays.length).toBe(1);
 
-    await repo.deleteDayForUser('20231001', vp.userId);
+    await repo.deleteDayForUser('20231001', userTestProps.userId);
 
     const allDaysAfterDeletion = await repo.getAllDays();
     expect(allDaysAfterDeletion.length).toBe(0);
@@ -158,7 +164,7 @@ describe('FileSystemDaysRepo', () => {
     const allDaysBefore = await repo.getAllDays();
     expect(allDaysBefore.length).toBe(3);
 
-    await repo.deleteAllDaysForUser(vp.userId);
+    await repo.deleteAllDaysForUser(userTestProps.userId);
 
     const allDaysAfter = await repo.getAllDays();
     expect(allDaysAfter.length).toBe(1);
@@ -179,7 +185,7 @@ describe('FileSystemDaysRepo', () => {
     // Verify file content
     const content = await fs.readFile(filePath, 'utf-8');
     const data = JSON.parse(content);
-    expect(data.userId).toBe(vp.userId);
+    expect(data.userId).toBe(userTestProps.userId);
     expect(data.fakeMealIds).toHaveLength(1);
   });
 });

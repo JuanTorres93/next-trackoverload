@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { NotFoundError } from '@/domain/common/errors';
@@ -23,11 +24,11 @@ describe('GetRecipeByIdForUserUsecase', () => {
     usersRepo = new MemoryUsersRepo();
     getRecipeByIdUsecase = new GetRecipeByIdForUserUsecase(
       recipesRepo,
-      usersRepo
+      usersRepo,
     );
 
     user = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
     });
 
     await usersRepo.saveUser(user);
@@ -50,14 +51,14 @@ describe('GetRecipeByIdForUserUsecase', () => {
 
   describe('Execution', () => {
     it('should return recipe when it exists', async () => {
-      const request = { id: testRecipe.id, userId: vp.userId };
+      const request = { id: testRecipe.id, userId: userTestProps.userId };
       const result = await getRecipeByIdUsecase.execute(request);
 
       expect(result).toEqual(toRecipeDTO(testRecipe));
     });
 
     it('should return RecipeDTO', async () => {
-      const request = { id: testRecipe.id, userId: vp.userId };
+      const request = { id: testRecipe.id, userId: userTestProps.userId };
       const result = await getRecipeByIdUsecase.execute(request);
 
       expect(result).not.toBeInstanceOf(Recipe);
@@ -67,7 +68,7 @@ describe('GetRecipeByIdForUserUsecase', () => {
     });
 
     it('should return null when recipe does not exist', async () => {
-      const request = { id: 'non-existent-id', userId: vp.userId };
+      const request = { id: 'non-existent-id', userId: userTestProps.userId };
       const result = await getRecipeByIdUsecase.execute(request);
 
       expect(result).toBeNull();
@@ -75,7 +76,7 @@ describe('GetRecipeByIdForUserUsecase', () => {
 
     it("should return null when trying to get another user's recipe", async () => {
       const anotherUser = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
         id: 'another-user-id',
       });
       await usersRepo.saveUser(anotherUser);
@@ -92,10 +93,10 @@ describe('GetRecipeByIdForUserUsecase', () => {
       const request = { id: 'some-id', userId: 'non-existent' };
 
       await expect(getRecipeByIdUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
       await expect(getRecipeByIdUsecase.execute(request)).rejects.toThrow(
-        /GetRecipeByIdForUserUsecase.*user.*not.*found/
+        /GetRecipeByIdForUserUsecase.*user.*not.*found/,
       );
     });
   });

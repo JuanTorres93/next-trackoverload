@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryWorkoutsRepo } from '../MemoryWorkoutsRepo';
@@ -99,7 +100,7 @@ describe('MemoryWorkoutsRepo', () => {
     const allWorkoutsBefore = await repo.getAllWorkouts();
     expect(allWorkoutsBefore.length).toBe(3);
 
-    await repo.deleteAllWorkoutsForUser(vp.userId);
+    await repo.deleteAllWorkoutsForUser(userTestProps.userId);
 
     const allWorkoutsAfter = await repo.getAllWorkouts();
     expect(allWorkoutsAfter.length).toBe(1);

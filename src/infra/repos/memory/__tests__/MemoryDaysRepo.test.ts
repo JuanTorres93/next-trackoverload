@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import { Day } from '@/domain/entities/day/Day';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -64,7 +65,7 @@ describe('MemoryDaysRepo', () => {
     const allDays = await repo.getAllDays();
     expect(allDays.length).toBe(1);
 
-    await repo.deleteDayForUser('20231001', vp.userId);
+    await repo.deleteDayForUser('20231001', userTestProps.userId);
     const allDaysAfterDeletion = await repo.getAllDays();
     expect(allDaysAfterDeletion.length).toBe(0);
   });
@@ -90,7 +91,7 @@ describe('MemoryDaysRepo', () => {
     const allDaysBefore = await repo.getAllDays();
     expect(allDaysBefore.length).toBe(3);
 
-    await repo.deleteAllDaysForUser(vp.userId);
+    await repo.deleteAllDaysForUser(userTestProps.userId);
 
     const allDaysAfter = await repo.getAllDays();
     expect(allDaysAfter.length).toBe(1);

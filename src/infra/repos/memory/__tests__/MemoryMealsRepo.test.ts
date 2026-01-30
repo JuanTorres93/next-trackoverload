@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
@@ -67,7 +68,7 @@ describe('MemoryMealsRepo', () => {
 
   it('should retrieve a meal by ID', async () => {
     const fetchedMeal = await repo.getMealById(
-      vp.mealPropsNoIngredientLines.id
+      vp.mealPropsNoIngredientLines.id,
     );
     expect(fetchedMeal).not.toBeNull();
     expect(fetchedMeal?.name).toBe('Grilled Chicken');
@@ -122,13 +123,13 @@ describe('MemoryMealsRepo', () => {
     ]);
     expect(fetchedMeals.length).toBe(2);
     expect(fetchedMeals.map((m) => m.id)).toContain(
-      vp.mealPropsNoIngredientLines.id
+      vp.mealPropsNoIngredientLines.id,
     );
     expect(fetchedMeals.map((m) => m.id)).toContain('meal-2');
   });
 
   it('should retrieve all meals by a user', async () => {
-    const userMeals = await repo.getAllMealsForUser(vp.userId);
+    const userMeals = await repo.getAllMealsForUser(userTestProps.userId);
     expect(userMeals.length).toBe(1);
     expect(userMeals[0].id).toBe(vp.mealPropsNoIngredientLines.id);
     expect(userMeals[0].name).toBe('Grilled Chicken');
@@ -137,7 +138,7 @@ describe('MemoryMealsRepo', () => {
   it('should retrieve a meal by ID for a user', async () => {
     const fetchedMeal = await repo.getMealByIdForUser(
       vp.mealPropsNoIngredientLines.id,
-      vp.userId
+      userTestProps.userId,
     );
     expect(fetchedMeal).not.toBeNull();
     expect(fetchedMeal?.name).toBe('Grilled Chicken');
@@ -163,11 +164,11 @@ describe('MemoryMealsRepo', () => {
 
     const fetchedMeals = await repo.getMealsByRecipeIdAndUserId(
       vp.mealPropsNoIngredientLines.createdFromRecipeId,
-      vp.userId
+      userTestProps.userId,
     );
     expect(fetchedMeals.length).toBe(2);
     expect(fetchedMeals.map((m) => m.id)).toContain(
-      vp.mealPropsNoIngredientLines.id
+      vp.mealPropsNoIngredientLines.id,
     );
     expect(fetchedMeals.map((m) => m.id)).toContain('meal-2');
     expect(fetchedMeals.map((m) => m.id)).not.toContain('meal-3');
@@ -176,7 +177,7 @@ describe('MemoryMealsRepo', () => {
   it('should return empty array when no meals match recipeId and userId', async () => {
     const fetchedMeals = await repo.getMealsByRecipeIdAndUserId(
       'non-existent-recipe-id',
-      vp.userId
+      userTestProps.userId,
     );
     expect(fetchedMeals.length).toBe(0);
   });
@@ -184,7 +185,7 @@ describe('MemoryMealsRepo', () => {
   it('should return empty array when recipeId matches but userId does not', async () => {
     const fetchedMeals = await repo.getMealsByRecipeIdAndUserId(
       vp.mealPropsNoIngredientLines.createdFromRecipeId,
-      'different-user-id'
+      'different-user-id',
     );
     expect(fetchedMeals.length).toBe(0);
   });
@@ -276,7 +277,7 @@ describe('MemoryMealsRepo', () => {
     const allMealsBefore = await repo.getAllMeals();
     expect(allMealsBefore.length).toBe(3);
 
-    await repo.deleteAllMealsForUser(vp.userId);
+    await repo.deleteAllMealsForUser(userTestProps.userId);
 
     const allMealsAfter = await repo.getAllMeals();
     expect(allMealsAfter.length).toBe(1);

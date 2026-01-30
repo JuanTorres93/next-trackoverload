@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import { MemoryWorkoutTemplatesRepo } from '@/infra/repos/memory/MemoryWorkoutTemplatesRepo';
@@ -21,10 +22,10 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
     usersRepo = new MemoryUsersRepo();
     usecase = new GetAllWorkoutTemplatesForUserUsecase(
       workoutTemplatesRepo,
-      usersRepo
+      usersRepo,
     );
 
-    user = User.create({ ...vp.validUserProps });
+    user = User.create({ ...userTestProps.validUserProps });
 
     template1 = WorkoutTemplate.create({
       ...vp.validWorkoutTemplateProps(),
@@ -56,8 +57,8 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
       await workoutTemplatesRepo.saveWorkoutTemplate(user2Template);
 
       const result = await usecase.execute({
-        actorUserId: vp.userId,
-        targetUserId: vp.userId,
+        actorUserId: userTestProps.userId,
+        targetUserId: userTestProps.userId,
       });
 
       expect(result).toHaveLength(2);
@@ -65,13 +66,13 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
         'user1-template1-id',
         'user1-template2-id',
       ]);
-      expect(result.every((t) => t.userId === vp.userId)).toBe(true);
+      expect(result.every((t) => t.userId === userTestProps.userId)).toBe(true);
     });
 
     it('should return array of WorkoutTemplateDTO', async () => {
       const result = await usecase.execute({
-        actorUserId: vp.userId,
-        targetUserId: vp.userId,
+        actorUserId: userTestProps.userId,
+        targetUserId: userTestProps.userId,
       });
 
       expect(result).toHaveLength(2);
@@ -84,7 +85,7 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
 
     it('should return empty array if user has no templates', async () => {
       const anotherUser = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
         id: 'another-user-id',
         email: 'another-user@example.com',
       });
@@ -103,8 +104,8 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
       await workoutTemplatesRepo.saveWorkoutTemplate(template1);
 
       const result = await usecase.execute({
-        actorUserId: vp.userId,
-        targetUserId: vp.userId,
+        actorUserId: userTestProps.userId,
+        targetUserId: userTestProps.userId,
       });
       expect(result).toHaveLength(1);
       expect(result[0].id).toBe(template2.id);
@@ -121,27 +122,27 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
       await expect(usecase.execute(request)).rejects.toThrow(
-        /GetAllWorkoutTemplatesForUserUsecase.*User.*not.*found/
+        /GetAllWorkoutTemplatesForUserUsecase.*User.*not.*found/,
       );
     });
 
     it('should throw error when trying to get another users workout templates', async () => {
       const anotherUser = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
         id: 'another-user-id',
       });
 
       await usersRepo.saveUser(anotherUser);
 
       const request = {
-        actorUserId: vp.userId,
+        actorUserId: userTestProps.userId,
         targetUserId: anotherUser.id,
       };
 
       await expect(usecase.execute(request)).rejects.toThrow(PermissionError);
 
       await expect(usecase.execute(request)).rejects.toThrow(
-        /GetAllWorkoutTemplatesForUserUsecase.*cannot.*get.*workout templates.*another user/
+        /GetAllWorkoutTemplatesForUserUsecase.*cannot.*get.*workout templates.*another user/,
       );
     });
   });

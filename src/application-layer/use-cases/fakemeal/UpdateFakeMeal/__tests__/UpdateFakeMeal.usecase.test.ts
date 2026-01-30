@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { User } from '@/domain/entities/user/User';
@@ -21,7 +22,7 @@ describe('UpdateFakeMealUsecase', () => {
     usecase = new UpdateFakeMealUsecase(fakeMealsRepo, usersRepo);
 
     user = User.create({
-      ...vp.validUserProps,
+      ...userTestProps.validUserProps,
     });
 
     fakeMeal = FakeMeal.create({
@@ -36,7 +37,7 @@ describe('UpdateFakeMealUsecase', () => {
     it('should update fake meal name successfully', async () => {
       const result = await usecase.execute({
         id: vp.validFakeMealProps.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         patch: { name: 'Updated Name' },
       });
 
@@ -48,7 +49,7 @@ describe('UpdateFakeMealUsecase', () => {
     it('should return FakeMealDTO', async () => {
       const result = await usecase.execute({
         id: vp.validFakeMealProps.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         patch: { name: 'Updated Name' },
       });
 
@@ -61,7 +62,7 @@ describe('UpdateFakeMealUsecase', () => {
     it('should update fake meal only calories successfully', async () => {
       const result = await usecase.execute({
         id: vp.validFakeMealProps.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         patch: { calories: 600 },
       });
 
@@ -73,7 +74,7 @@ describe('UpdateFakeMealUsecase', () => {
     it('should update fake meal only protein successfully', async () => {
       const result = await usecase.execute({
         id: vp.validFakeMealProps.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         patch: { protein: 40 },
       });
 
@@ -85,7 +86,7 @@ describe('UpdateFakeMealUsecase', () => {
     it('should update multiple fields at once', async () => {
       const result = await usecase.execute({
         id: vp.validFakeMealProps.id,
-        userId: vp.userId,
+        userId: userTestProps.userId,
         patch: {
           name: 'Updated Name',
           calories: 600,
@@ -109,26 +110,26 @@ describe('UpdateFakeMealUsecase', () => {
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
       await expect(usecase.execute(request)).rejects.toThrow(
-        /UpdateFakeMealUsecase.*user.*not.*found/
+        /UpdateFakeMealUsecase.*user.*not.*found/,
       );
     });
 
     it('should throw error if fakeMeal does not exist', async () => {
       const request = {
         id: 'non-existent',
-        userId: vp.userId,
+        userId: userTestProps.userId,
         patch: { name: 'Updated Name' },
       };
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
       await expect(usecase.execute(request)).rejects.toThrow(
-        /UpdateFakeMealUsecase.*FakeMeal.*not found/
+        /UpdateFakeMealUsecase.*FakeMeal.*not found/,
       );
     });
 
     it("should throw error when trying to update another user's fake meal", async () => {
       const anotherUser = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
         id: 'another-user-id',
         email: 'anotheruser@example.com',
       });
@@ -142,7 +143,7 @@ describe('UpdateFakeMealUsecase', () => {
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
       await expect(usecase.execute(request)).rejects.toThrow(
-        /UpdateFakeMealUsecase.*FakeMeal.*not.*found/
+        /UpdateFakeMealUsecase.*FakeMeal.*not.*found/,
       );
     });
   });

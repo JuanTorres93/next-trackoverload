@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError, PermissionError } from '@/domain/common/errors';
 import { User } from '@/domain/entities/user/User';
@@ -18,34 +19,34 @@ describe('UpdateUserUsecase', () => {
   describe('Execute', () => {
     it('should update user name successfully', async () => {
       const user = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
         name: 'Old Name',
       });
 
       await usersRepo.saveUser(user);
 
       const result = await updateUserUsecase.execute({
-        actorUserId: vp.userId,
-        targetUserId: vp.userId,
+        actorUserId: userTestProps.userId,
+        targetUserId: userTestProps.userId,
         patch: { name: 'New Name' },
       });
 
       expect(result.name).toBe('New Name');
-      expect(result.id).toBe(vp.userId);
+      expect(result.id).toBe(userTestProps.userId);
       expect(result.customerId).toBe(user.customerId);
     });
 
     it('should return UserDTO', async () => {
       const user = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
         name: 'Old Name',
       });
 
       await usersRepo.saveUser(user);
 
       const result = await updateUserUsecase.execute({
-        actorUserId: vp.userId,
-        targetUserId: vp.userId,
+        actorUserId: userTestProps.userId,
+        targetUserId: userTestProps.userId,
         patch: { name: 'New Name' },
       });
 
@@ -57,20 +58,20 @@ describe('UpdateUserUsecase', () => {
 
     it('should update user and persist changes', async () => {
       const user = User.create({
-        ...vp.validUserProps,
+        ...userTestProps.validUserProps,
         name: 'Original Name',
       });
 
       await usersRepo.saveUser(user);
 
       await updateUserUsecase.execute({
-        actorUserId: vp.userId,
-        targetUserId: vp.userId,
+        actorUserId: userTestProps.userId,
+        targetUserId: userTestProps.userId,
         patch: { name: 'Updated Name' },
       });
 
       // Verify the change was persisted
-      const persistedUser = await usersRepo.getUserById(vp.userId);
+      const persistedUser = await usersRepo.getUserById(userTestProps.userId);
       expect(persistedUser?.name).toBe('Updated Name');
     });
   });
@@ -84,11 +85,11 @@ describe('UpdateUserUsecase', () => {
       };
 
       await expect(updateUserUsecase.execute(request)).rejects.toThrow(
-        NotFoundError
+        NotFoundError,
       );
 
       await expect(updateUserUsecase.execute(request)).rejects.toThrow(
-        /UpdateUserUsecase.*User.*not found/
+        /UpdateUserUsecase.*User.*not found/,
       );
     });
 
@@ -100,11 +101,11 @@ describe('UpdateUserUsecase', () => {
       };
 
       await expect(updateUserUsecase.execute(request)).rejects.toThrow(
-        PermissionError
+        PermissionError,
       );
 
       await expect(updateUserUsecase.execute(request)).rejects.toThrow(
-        /UpdateUserUsecase.*Access denied/
+        /UpdateUserUsecase.*Access denied/,
       );
     });
   });
