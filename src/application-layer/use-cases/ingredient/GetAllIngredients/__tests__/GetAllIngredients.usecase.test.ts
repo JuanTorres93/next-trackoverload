@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { MemoryIngredientsRepo } from '@/infra/repos/memory/MemoryIngredientsRepo';
@@ -17,11 +18,11 @@ describe('GetAllIngredientsUsecase', () => {
   describe('Found', () => {
     it('should return all ingredients', async () => {
       const ingredient1 = Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         name: 'Chicken Breast',
       });
       const ingredient2 = Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         id: 'ing-2',
         name: 'Rice',
       });
@@ -40,11 +41,11 @@ describe('GetAllIngredientsUsecase', () => {
 
     it('should return an array of IngredientDTO', async () => {
       const ingredient1 = Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         name: 'Chicken Breast',
       });
       const ingredient2 = Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         id: 'ing-2',
         name: 'Rice',
       });

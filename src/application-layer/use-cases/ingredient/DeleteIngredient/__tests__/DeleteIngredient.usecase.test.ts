@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import { NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { MemoryIngredientsRepo } from '@/infra/repos/memory/MemoryIngredientsRepo';
@@ -17,17 +18,17 @@ describe('DeleteIngredientUsecase', () => {
   describe('Deletion', () => {
     it('should delete existing ingredient', async () => {
       const ingredient = Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
       });
 
       await ingredientsRepo.saveIngredient(ingredient);
 
       await deleteIngredientUsecase.execute({
-        id: vp.validIngredientProps.id,
+        id: ingredientTestProps.validIngredientProps.id,
       });
 
       const deletedIngredient = await ingredientsRepo.getIngredientById(
-        vp.validIngredientProps.id
+        ingredientTestProps.validIngredientProps.id,
       );
       expect(deletedIngredient).toBeNull();
     });
@@ -36,10 +37,10 @@ describe('DeleteIngredientUsecase', () => {
   describe('Errors', () => {
     it('should throw NotFoundError when ingredient does not exist', async () => {
       await expect(
-        deleteIngredientUsecase.execute({ id: 'non-existent' })
+        deleteIngredientUsecase.execute({ id: 'non-existent' }),
       ).rejects.toThrow(NotFoundError);
       await expect(
-        deleteIngredientUsecase.execute({ id: 'non-existent' })
+        deleteIngredientUsecase.execute({ id: 'non-existent' }),
       ).rejects.toThrow(/DeleteIngredientUsecase.*Ingredient.*not found/);
     });
   });

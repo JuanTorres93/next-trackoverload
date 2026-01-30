@@ -9,6 +9,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { RemoveIngredientFromRecipeUsecase } from '../RemoveIngredientFromRecipe.usecase';
 
 import * as vp from '@/../tests/createProps';
+import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 
@@ -36,14 +37,14 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
     await usersRepo.saveUser(user);
 
     testIngredient = Ingredient.create({
-      ...vp.validIngredientProps,
+      ...ingredientTestProps.validIngredientProps,
       name: 'Chicken Breast',
       calories: 165,
       protein: 31,
     });
 
     secondIngredient = Ingredient.create({
-      ...vp.validIngredientProps,
+      ...ingredientTestProps.validIngredientProps,
       id: 'ingredient-2',
     });
 

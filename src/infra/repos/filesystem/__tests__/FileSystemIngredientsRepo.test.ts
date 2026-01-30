@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as ingredientTestProps from '../../../../../tests/createProps/ingredientTestProps';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import fs from 'fs/promises';
 import path from 'path';
@@ -12,7 +13,7 @@ describe('FileSystemIngredientsRepo', () => {
 
   beforeEach(async () => {
     repo = new FileSystemIngredientsRepo(testDir);
-    ingredient = Ingredient.create(vp.validIngredientProps);
+    ingredient = Ingredient.create(ingredientTestProps.validIngredientProps);
     await repo.saveIngredient(ingredient);
   });
 
@@ -27,7 +28,7 @@ describe('FileSystemIngredientsRepo', () => {
 
   it('should save an ingredient', async () => {
     const newIngredient = Ingredient.create({
-      ...vp.validIngredientProps,
+      ...ingredientTestProps.validIngredientProps,
       id: 'other-id',
       name: 'Rice',
       updatedAt: new Date('2023-01-02'),
@@ -44,7 +45,7 @@ describe('FileSystemIngredientsRepo', () => {
 
   it('should update an existing ingredient', async () => {
     const updatedIngredient = Ingredient.create({
-      ...vp.validIngredientProps,
+      ...ingredientTestProps.validIngredientProps,
       name: 'Updated Chicken Breast',
       updatedAt: new Date('2023-01-03'),
     });
@@ -57,10 +58,12 @@ describe('FileSystemIngredientsRepo', () => {
 
   it('should retrieve an ingredient by ID', async () => {
     const fetchedIngredient = await repo.getIngredientById(
-      vp.validIngredientProps.id
+      ingredientTestProps.validIngredientProps.id,
     );
     expect(fetchedIngredient).not.toBeNull();
-    expect(fetchedIngredient?.name).toBe(vp.validIngredientProps.name);
+    expect(fetchedIngredient?.name).toBe(
+      ingredientTestProps.validIngredientProps.name,
+    );
   });
 
   it('should return null for non-existent ingredient ID', async () => {
@@ -75,17 +78,17 @@ describe('FileSystemIngredientsRepo', () => {
 
       const ingredients = [
         Ingredient.create({
-          ...vp.validIngredientProps,
+          ...ingredientTestProps.validIngredientProps,
           id: 'id-1',
           name: 'Ingredient 1',
         }),
         Ingredient.create({
-          ...vp.validIngredientProps,
+          ...ingredientTestProps.validIngredientProps,
           id: 'id-2',
           name: 'Ingredient 2',
         }),
         Ingredient.create({
-          ...vp.validIngredientProps,
+          ...ingredientTestProps.validIngredientProps,
           id: 'id-3',
           name: 'Ingredient 3',
         }),
@@ -157,7 +160,7 @@ describe('FileSystemIngredientsRepo', () => {
     // Note: The delete method in FileSystem implementation follows the pattern of Memory repo,
     // which rejects with null when trying to delete (to be caught by use case)
     try {
-      await repo.deleteIngredient(vp.validIngredientProps.id);
+      await repo.deleteIngredient(ingredientTestProps.validIngredientProps.id);
     } catch {
       // Expected to throw/reject
     }
@@ -181,10 +184,10 @@ describe('FileSystemIngredientsRepo', () => {
     expect(data.id).toBe(ingredient.id);
     expect(data.name).toBe(ingredient.name);
     expect(data.nutritionalInfoPer100g.calories).toBe(
-      ingredient.nutritionalInfoPer100g.calories
+      ingredient.nutritionalInfoPer100g.calories,
     );
     expect(data.nutritionalInfoPer100g.protein).toBe(
-      ingredient.nutritionalInfoPer100g.protein
+      ingredient.nutritionalInfoPer100g.protein,
     );
   });
 
@@ -196,27 +199,27 @@ describe('FileSystemIngredientsRepo', () => {
 
       const ingredients = [
         Ingredient.create({
-          ...vp.validIngredientProps,
+          ...ingredientTestProps.validIngredientProps,
           id: '1',
           name: 'Chicken Breast',
         }),
         Ingredient.create({
-          ...vp.validIngredientProps,
+          ...ingredientTestProps.validIngredientProps,
           id: '2',
           name: 'Brown Rice',
         }),
         Ingredient.create({
-          ...vp.validIngredientProps,
+          ...ingredientTestProps.validIngredientProps,
           id: '3',
           name: 'Broccoli',
         }),
         Ingredient.create({
-          ...vp.validIngredientProps,
+          ...ingredientTestProps.validIngredientProps,
           id: '4',
           name: 'Salmon',
         }),
         Ingredient.create({
-          ...vp.validIngredientProps,
+          ...ingredientTestProps.validIngredientProps,
           id: '5',
           name: 'Chicken Thigh',
         }),

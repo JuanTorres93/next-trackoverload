@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
@@ -36,7 +37,7 @@ describe('DuplicateRecipeUsecase', () => {
     await usersRepo.saveUser(user);
 
     const testIngredient = Ingredient.create({
-      ...vp.validIngredientProps,
+      ...ingredientTestProps.validIngredientProps,
     });
 
     const testIngredientLine = IngredientLine.create({
@@ -105,7 +106,7 @@ describe('DuplicateRecipeUsecase', () => {
 
     it('should preserve all ingredients from original recipe', async () => {
       const secondIngredient = Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         id: 'second-ingredient-id',
       });
 

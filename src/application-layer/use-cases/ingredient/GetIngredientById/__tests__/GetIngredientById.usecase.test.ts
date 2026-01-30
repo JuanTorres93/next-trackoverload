@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { MemoryIngredientsRepo } from '@/infra/repos/memory/MemoryIngredientsRepo';
@@ -17,14 +18,14 @@ describe('GetIngredientByIdUsecase', () => {
   describe('Found', () => {
     it('should return ingredient when found', async () => {
       const ingredient = Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         name: 'Chicken Breast',
       });
 
       await ingredientsRepo.saveIngredient(ingredient);
 
       const result = await getIngredientByIdUsecase.execute({
-        id: vp.validIngredientProps.id,
+        id: ingredientTestProps.validIngredientProps.id,
       });
 
       expect(result).not.toBeNull();
@@ -34,14 +35,14 @@ describe('GetIngredientByIdUsecase', () => {
 
     it('should return IngredientDTO when ingredient found', async () => {
       const ingredient = Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         name: 'Chicken Breast',
       });
 
       await ingredientsRepo.saveIngredient(ingredient);
 
       const result = await getIngredientByIdUsecase.execute({
-        id: vp.validIngredientProps.id,
+        id: ingredientTestProps.validIngredientProps.id,
       });
 
       expect(result).not.toBeNull();

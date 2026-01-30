@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import * as vp from '@/../tests/createProps';
+import * as ingredientTestProps from '../../../../../tests/createProps/ingredientTestProps';
 import { ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
@@ -13,7 +14,9 @@ describe('Meal', () => {
   let validIngredientLine: IngredientLine;
 
   beforeEach(() => {
-    validIngredient = Ingredient.create(vp.validIngredientProps);
+    validIngredient = Ingredient.create(
+      ingredientTestProps.validIngredientProps,
+    );
 
     validIngredientLine = IngredientLine.create({
       ...vp.ingredientLineRecipePropsNoIngredient,
@@ -43,7 +46,7 @@ describe('Meal', () => {
       const anotherIngredientLine = IngredientLine.create({
         ...vp.ingredientLineRecipePropsNoIngredient,
         ingredient: Ingredient.create({
-          ...vp.validIngredientProps,
+          ...ingredientTestProps.validIngredientProps,
           id: 'other-ing',
           calories: 200,
           protein: 20,
@@ -59,14 +62,16 @@ describe('Meal', () => {
 
     it('should compute the correct total protein', async () => {
       const totalProtein = meal.protein;
-      expect(totalProtein).toBe(vp.validIngredientProps.protein);
+      expect(totalProtein).toBe(
+        ingredientTestProps.validIngredientProps.protein,
+      );
 
       // More than one ingredient line
       const anotherIngredientLine = IngredientLine.create({
         ...vp.ingredientLineRecipePropsNoIngredient,
         id: 'another-line-id',
         ingredient: Ingredient.create({
-          ...vp.validIngredientProps,
+          ...ingredientTestProps.validIngredientProps,
           id: 'other-ing',
           calories: 200,
           protein: 20,
@@ -76,7 +81,9 @@ describe('Meal', () => {
       meal.addIngredientLine(anotherIngredientLine);
 
       const newTotalProtein = meal.protein;
-      expect(newTotalProtein).toBe(vp.validIngredientProps.protein + 10);
+      expect(newTotalProtein).toBe(
+        ingredientTestProps.validIngredientProps.protein + 10,
+      );
     });
 
     it('should add a new ingredient line', async () => {
@@ -84,7 +91,7 @@ describe('Meal', () => {
         ...vp.ingredientLineRecipePropsNoIngredient,
         id: 'new-line',
         ingredient: Ingredient.create({
-          ...vp.validIngredientProps,
+          ...ingredientTestProps.validIngredientProps,
           id: 'other-ing',
         }),
       });
@@ -102,16 +109,16 @@ describe('Meal', () => {
       });
 
       expect(() => meal.addIngredientLine(duplicateIngredientLine)).toThrow(
-        ValidationError
+        ValidationError,
       );
       expect(() => meal.addIngredientLine(duplicateIngredientLine)).toThrow(
-        /Meal:.*ingredient.*already exists.*meal/i
+        /Meal:.*ingredient.*already exists.*meal/i,
       );
     });
 
     it('should remove an ingredient line based on ingredient id', async () => {
       const newIngredient = Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         id: 'new-ing',
       });
 
@@ -134,10 +141,10 @@ describe('Meal', () => {
       const ingredientIdToRemove = validIngredient.id;
 
       expect(() =>
-        meal.removeIngredientLineByIngredientId(ingredientIdToRemove)
+        meal.removeIngredientLineByIngredientId(ingredientIdToRemove),
       ).toThrow(ValidationError);
       expect(() =>
-        meal.removeIngredientLineByIngredientId(ingredientIdToRemove)
+        meal.removeIngredientLineByIngredientId(ingredientIdToRemove),
       ).toThrow(/Meal:.*At least one.*ingredient.*line.*exist/i);
     });
   });
@@ -148,13 +155,13 @@ describe('Meal', () => {
         Meal.create({
           ...validMealProps,
           ingredientLines: [],
-        })
+        }),
       ).toThrow(ValidationError);
       expect(() =>
         Meal.create({
           ...validMealProps,
           ingredientLines: [],
-        })
+        }),
       ).toThrow(/Meal:.*ingredientLines.*non-empty.*array/);
     });
 
@@ -167,14 +174,14 @@ describe('Meal', () => {
             ...validMealProps,
             // @ts-expect-error Testing invalid inputs
             ingredientLines: [invalidLine],
-          })
+          }),
         ).toThrow(ValidationError);
         expect(() =>
           Meal.create({
             ...validMealProps,
             // @ts-expect-error Testing invalid inputs
             ingredientLines: [invalidLine],
-          })
+          }),
         ).toThrow(/Meal:.*ingredientLines.*IngredientLine/);
       }
     });

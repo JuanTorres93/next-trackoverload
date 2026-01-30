@@ -3,6 +3,7 @@ import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine'
 import { WorkoutTemplateLine } from '@/domain/entities/workouttemplateline/WorkoutTemplateLine';
 import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
 import { userId } from './createProps/userTestProps';
+import { validIngredientProps } from './createProps/ingredientTestProps';
 
 export const dateId = new Date('2023-10-01');
 
@@ -153,15 +154,6 @@ export const validFakeMealProps = {
   name: 'Fake Chicken Breast',
   protein: 30,
   calories: 200,
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
-
-export const validIngredientProps = {
-  id: 'ing1',
-  name: 'Chicken Breast',
-  calories: 100,
-  protein: 15,
   createdAt: new Date(),
   updatedAt: new Date(),
 };

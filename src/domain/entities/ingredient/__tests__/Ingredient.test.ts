@@ -2,12 +2,13 @@ import { describe, expect, it, beforeEach } from 'vitest';
 import { Ingredient } from '../Ingredient';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import * as ingredientTestProps from '../../../../../tests/createProps/ingredientTestProps';
 
 describe('Ingredient', () => {
   let ingredient: Ingredient;
 
   beforeEach(() => {
-    ingredient = Ingredient.create(vp.validIngredientProps);
+    ingredient = Ingredient.create(ingredientTestProps.validIngredientProps);
   });
 
   it('should create a valid ingredient', () => {
@@ -17,7 +18,7 @@ describe('Ingredient', () => {
   it('should create an ingredient if no createdAt or updatedAt is provided', async () => {
     // eslint-disable-next-line
     const { createdAt, updatedAt, ...propsWithoutDates } =
-      vp.validIngredientProps;
+      ingredientTestProps.validIngredientProps;
     // @ts-expect-error .create actually expects createdAt and updatedAt
     const ingredient = Ingredient.create(propsWithoutDates);
 
@@ -50,7 +51,7 @@ describe('Ingredient', () => {
   it('should throw error if id is not Id type', async () => {
     expect(() => {
       Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         // @ts-expect-error testing invalid type
         id: 123,
       });
@@ -58,7 +59,7 @@ describe('Ingredient', () => {
 
     expect(() => {
       Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         // @ts-expect-error testing invalid type
         id: 123,
       });
@@ -69,46 +70,46 @@ describe('Ingredient', () => {
     const longName = 'a'.repeat(101);
     expect(() =>
       Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         name: longName,
-      })
+      }),
     ).toThrow(ValidationError);
 
     expect(() =>
       Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         name: longName,
-      })
+      }),
     ).toThrow(/Text.*exceed/);
   });
 
   it('should throw error if name is empty', async () => {
     expect(() =>
       Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         name: '',
-      })
+      }),
     ).toThrow(ValidationError);
 
     expect(() =>
       Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         name: '',
-      })
+      }),
     ).toThrow(/Text.*empty/);
   });
 
   it('should throw error if calores are below zero', async () => {
     expect(() => {
       Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         calories: -10,
       });
     }).toThrowError(ValidationError);
 
     expect(() => {
       Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         calories: -10,
       });
     }).toThrowError(/Float.*positive/);
@@ -117,14 +118,14 @@ describe('Ingredient', () => {
   it('should throw error if protein is below zero', async () => {
     expect(() => {
       Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         protein: -5,
       });
     }).toThrowError(ValidationError);
 
     expect(() => {
       Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         protein: -5,
       });
     }).toThrowError(/Float.*positive/);

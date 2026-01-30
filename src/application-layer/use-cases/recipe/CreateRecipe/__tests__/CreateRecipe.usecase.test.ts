@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
@@ -128,7 +129,7 @@ describe('CreateRecipeUsecase', () => {
       await externalIngredientsRefRepo.save(anotherExternalIngredientRef);
 
       const testIngredient = Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         id: 'existing-ingredient-id',
         name: 'Chicken Breast',
         calories: 165,
@@ -217,7 +218,7 @@ describe('CreateRecipeUsecase', () => {
     it('should create recipe with multiple ingredient lines', async () => {
       // Create a second test ingredient
       const testIngredient2 = Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         id: 'ingredient-2',
         name: 'Rice',
         calories: 130,

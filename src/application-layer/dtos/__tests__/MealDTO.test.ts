@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as ingredientTestProps from '../../../../tests/createProps/ingredientTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
@@ -12,7 +13,7 @@ describe('MealDTO', () => {
   let mealDTO: MealDTO;
 
   beforeEach(() => {
-    ingredient = Ingredient.create(vp.validIngredientProps);
+    ingredient = Ingredient.create(ingredientTestProps.validIngredientProps);
     ingredientLine = IngredientLine.create({
       ...vp.ingredientLineRecipePropsNoIngredient,
       parentType: 'meal',
@@ -109,7 +110,7 @@ describe('MealDTO', () => {
 
       expect(reconstructedMeal.ingredientLines).toHaveLength(1);
       expect(reconstructedMeal.ingredientLines[0]).toBeInstanceOf(
-        IngredientLine
+        IngredientLine,
       );
     });
 

@@ -4,8 +4,11 @@ import { Ingredient } from '../../ingredient/Ingredient';
 import { IngredientLine } from '../IngredientLine';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import * as ingredientTestProps from '../../../../../tests/createProps/ingredientTestProps';
 
-const validIngredient = Ingredient.create(vp.validIngredientProps);
+const validIngredient = Ingredient.create(
+  ingredientTestProps.validIngredientProps,
+);
 
 const validIngredientLineProps = {
   ...vp.ingredientLineRecipePropsNoIngredient,

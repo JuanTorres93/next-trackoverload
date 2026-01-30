@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { MemoryIngredientsRepo } from '@/infra/repos/memory/MemoryIngredientsRepo';
@@ -13,16 +14,16 @@ describe('CreateIngredientUsecase', () => {
     ingredientsRepo = new MemoryIngredientsRepo();
     createIngredientUsecase = new CreateIngredientUsecase(
       ingredientsRepo,
-      new Uuidv4IdGenerator()
+      new Uuidv4IdGenerator(),
     );
   });
 
   describe('Creation', () => {
     it('should create and save a new ingredient', async () => {
       const request = {
-        name: vp.validIngredientProps.name,
-        calories: vp.validIngredientProps.calories,
-        protein: vp.validIngredientProps.protein,
+        name: ingredientTestProps.validIngredientProps.name,
+        calories: ingredientTestProps.validIngredientProps.calories,
+        protein: ingredientTestProps.validIngredientProps.protein,
       };
 
       const ingredient = await createIngredientUsecase.execute(request);
@@ -35,16 +36,16 @@ describe('CreateIngredientUsecase', () => {
       expect(ingredient).toHaveProperty('updatedAt');
 
       const savedIngredient = await ingredientsRepo.getIngredientById(
-        ingredient.id
+        ingredient.id,
       );
       expect(savedIngredient).toBeDefined();
     });
 
     it('should return IngredientDTO', async () => {
       const request = {
-        name: vp.validIngredientProps.name,
-        calories: vp.validIngredientProps.calories,
-        protein: vp.validIngredientProps.protein,
+        name: ingredientTestProps.validIngredientProps.name,
+        calories: ingredientTestProps.validIngredientProps.calories,
+        protein: ingredientTestProps.validIngredientProps.protein,
       };
 
       const ingredient = await createIngredientUsecase.execute(request);

@@ -6,6 +6,7 @@ import { IngredientLine } from '../../ingredientline/IngredientLine';
 import { Recipe, RecipeCreateProps } from '../Recipe';
 
 import * as vp from '@/../tests/createProps';
+import * as ingredientTestProps from '../../../../../tests/createProps/ingredientTestProps';
 
 describe('Recipe', () => {
   let recipe: Recipe;
@@ -13,7 +14,9 @@ describe('Recipe', () => {
   let validIngredientLine: IngredientLine;
 
   beforeEach(() => {
-    const validIngredient = Ingredient.create(vp.validIngredientProps);
+    const validIngredient = Ingredient.create(
+      ingredientTestProps.validIngredientProps,
+    );
 
     validIngredientLine = IngredientLine.create({
       ...vp.ingredientLineRecipePropsNoIngredient,
@@ -41,7 +44,7 @@ describe('Recipe', () => {
         id: 'another-line-id',
         quantityInGrams: 50,
         ingredient: Ingredient.create({
-          ...vp.validIngredientProps,
+          ...ingredientTestProps.validIngredientProps,
           id: 'other-ing-id',
           calories: 200,
           protein: 20,
@@ -57,13 +60,15 @@ describe('Recipe', () => {
     });
 
     it('should compute total protein', async () => {
-      expect(recipe.protein).toBe(vp.validIngredientProps.protein);
+      expect(recipe.protein).toBe(
+        ingredientTestProps.validIngredientProps.protein,
+      );
 
       const anotherIngredientLine = IngredientLine.create({
         ...vp.ingredientLineRecipePropsNoIngredient,
         id: 'another-line-id',
         ingredient: Ingredient.create({
-          ...vp.validIngredientProps,
+          ...ingredientTestProps.validIngredientProps,
           id: 'other-ing-id',
           calories: 200,
           protein: 10,
@@ -77,7 +82,7 @@ describe('Recipe', () => {
       });
 
       expect(recipeWithTwoLines.protein).toBe(
-        vp.validIngredientProps.protein + 10
+        ingredientTestProps.validIngredientProps.protein + 10,
       );
     });
 
@@ -99,7 +104,7 @@ describe('Recipe', () => {
       const anotherIngredientLine = IngredientLine.create({
         ...vp.ingredientLineRecipePropsNoIngredient,
         ingredient: Ingredient.create({
-          ...vp.validIngredientProps,
+          ...ingredientTestProps.validIngredientProps,
           id: 'other-ing-id',
           calories: 200,
           protein: 20,
@@ -118,17 +123,19 @@ describe('Recipe', () => {
           ...vp.ingredientLineRecipePropsNoIngredient,
           id: 'another-line-id',
           ingredient: Ingredient.create({
-            ...vp.validIngredientProps,
+            ...ingredientTestProps.validIngredientProps,
             id: 'other-ing-id',
             calories: 200,
             protein: 20,
           }),
           quantityInGrams: 50,
-        })
+        }),
       );
       expect(recipe.ingredientLines.length).toBe(2);
 
-      recipe.removeIngredientLineByIngredientId(vp.validIngredientProps.id);
+      recipe.removeIngredientLineByIngredientId(
+        ingredientTestProps.validIngredientProps.id,
+      );
       expect(recipe.ingredientLines.length).toBe(1);
     });
   });
@@ -161,8 +168,8 @@ describe('Recipe', () => {
         ...vp.ingredientLineRecipePropsNoIngredient,
         id: 'duplicate-line-id',
         ingredient: Ingredient.create({
-          ...vp.validIngredientProps,
-          id: vp.validIngredientProps.id, // Same ingredient ID
+          ...ingredientTestProps.validIngredientProps,
+          id: ingredientTestProps.validIngredientProps.id, // Same ingredient ID
         }),
         quantityInGrams: 150,
       });
@@ -194,7 +201,9 @@ describe('Recipe', () => {
     });
 
     it('should throw error if creating recipe with duplicated ingredient', async () => {
-      const ingredient = Ingredient.create(vp.validIngredientProps);
+      const ingredient = Ingredient.create(
+        ingredientTestProps.validIngredientProps,
+      );
 
       const ingredientLine1 = IngredientLine.create({
         ...vp.ingredientLineRecipePropsNoIngredient,

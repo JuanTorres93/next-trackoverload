@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError } from '@/domain/common/errors';
@@ -45,7 +46,7 @@ describe('AddIngredientToMealUsecase', () => {
     await usersRepo.saveUser(user);
 
     const testIngredient = Ingredient.create({
-      ...vp.validIngredientProps,
+      ...ingredientTestProps.validIngredientProps,
       name: 'Chicken Breast',
       calories: 165,
       protein: 31,
@@ -64,7 +65,7 @@ describe('AddIngredientToMealUsecase', () => {
     await mealsRepo.saveMeal(testMeal);
 
     const newIngredient = Ingredient.create({
-      ...vp.validIngredientProps,
+      ...ingredientTestProps.validIngredientProps,
       id: 'ing-new',
       name: 'Rice',
       calories: 130,

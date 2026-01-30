@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError } from '@/domain/common/errors';
@@ -44,7 +45,7 @@ describe('AddMealToDayUsecase', () => {
       ...vp.validDayProps(),
     });
     ingredient = Ingredient.create({
-      ...vp.validIngredientProps,
+      ...ingredientTestProps.validIngredientProps,
     });
     ingredientLine = IngredientLine.create({
       ...vp.ingredientLineRecipePropsNoIngredient,

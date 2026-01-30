@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as ingredientTestProps from '../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
@@ -7,7 +8,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryMealsRepo } from '../MemoryMealsRepo';
 
 const validIngredientProps = {
-  ...vp.validIngredientProps,
+  ...ingredientTestProps.validIngredientProps,
   nutritionalInfoPer100g: {
     calories: 165,
     protein: 25,

@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
@@ -16,33 +17,33 @@ describe('GetIngredientsByFuzzyNameUsecase', () => {
   beforeEach(async () => {
     ingredientsRepo = new MemoryIngredientsRepo();
     getIngredientsByFuzzyNameUsecase = new GetIngredientsByFuzzyNameUsecase(
-      ingredientsRepo
+      ingredientsRepo,
     );
 
     // Setup test ingredients
     const ingredients = [
       Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         id: '1',
         name: 'Chicken Breast',
       }),
       Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         id: '2',
         name: 'Brown Rice',
       }),
       Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         id: '3',
         name: 'Broccoli',
       }),
       Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         id: '4',
         name: 'Salmon',
       }),
       Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         id: '5',
         name: 'Chicken Thigh',
       }),
@@ -136,11 +137,11 @@ describe('GetIngredientsByFuzzyNameUsecase', () => {
       const input = {} as GetIngredientsByFuzzyNameInput;
 
       await expect(
-        getIngredientsByFuzzyNameUsecase.execute(input)
+        getIngredientsByFuzzyNameUsecase.execute(input),
       ).rejects.toThrow(ValidationError);
 
       await expect(
-        getIngredientsByFuzzyNameUsecase.execute(input)
+        getIngredientsByFuzzyNameUsecase.execute(input),
       ).rejects.toThrow(/GetIngredientsByFuzzyName.*name.* required/);
     });
 
@@ -148,11 +149,11 @@ describe('GetIngredientsByFuzzyNameUsecase', () => {
       const input = { name: null } as unknown as GetIngredientsByFuzzyNameInput;
 
       await expect(
-        getIngredientsByFuzzyNameUsecase.execute(input)
+        getIngredientsByFuzzyNameUsecase.execute(input),
       ).rejects.toThrow(ValidationError);
 
       await expect(
-        getIngredientsByFuzzyNameUsecase.execute(input)
+        getIngredientsByFuzzyNameUsecase.execute(input),
       ).rejects.toThrow(/GetIngredientsByFuzzyName.*name.* required/);
     });
 
@@ -160,11 +161,11 @@ describe('GetIngredientsByFuzzyNameUsecase', () => {
       const input = { name: 123 } as unknown as GetIngredientsByFuzzyNameInput;
 
       await expect(
-        getIngredientsByFuzzyNameUsecase.execute(input)
+        getIngredientsByFuzzyNameUsecase.execute(input),
       ).rejects.toThrow(ValidationError);
 
       await expect(
-        getIngredientsByFuzzyNameUsecase.execute(input)
+        getIngredientsByFuzzyNameUsecase.execute(input),
       ).rejects.toThrow(/GetIngredientsByFuzzyName.*name.* must.*string/);
     });
 
@@ -172,15 +173,15 @@ describe('GetIngredientsByFuzzyNameUsecase', () => {
       await expect(
         getIngredientsByFuzzyNameUsecase.execute(
           // @ts-expect-error Testing undefined input
-          undefined
-        )
+          undefined,
+        ),
       ).rejects.toThrow(ValidationError);
 
       await expect(
         getIngredientsByFuzzyNameUsecase.execute(
           // @ts-expect-error Testing undefined input
-          undefined
-        )
+          undefined,
+        ),
       ).rejects.toThrow(/GetIngredientsByFuzzyName.*name.* required/);
     });
   });

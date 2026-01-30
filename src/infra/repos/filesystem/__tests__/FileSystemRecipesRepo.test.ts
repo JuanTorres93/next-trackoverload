@@ -7,6 +7,7 @@ import fs from 'fs/promises';
 import path from 'path';
 
 import * as vp from '@/../tests/createProps';
+import * as ingredientTestProps from '../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 
 describe('FileSystemRecipesRepo', () => {
@@ -19,7 +20,7 @@ describe('FileSystemRecipesRepo', () => {
 
   beforeEach(async () => {
     repo = new FileSystemRecipesRepo(testRecipesDir, testIngredientLinesDir);
-    ingredient = Ingredient.create(vp.validIngredientProps);
+    ingredient = Ingredient.create(ingredientTestProps.validIngredientProps);
 
     ingredientLine = IngredientLine.create({
       ...vp.ingredientLineRecipePropsNoIngredient,

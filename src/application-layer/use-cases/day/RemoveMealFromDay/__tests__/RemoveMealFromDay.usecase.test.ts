@@ -8,6 +8,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { RemoveMealFromDayUsecase } from '../RemoveMealFromDay.usecase';
 
 import * as vp from '@/../tests/createProps';
+import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
@@ -34,7 +35,9 @@ describe('RemoveMealFromDayUsecase', () => {
       mealsRepo,
     );
 
-    const ingredient = Ingredient.create(vp.validIngredientProps);
+    const ingredient = Ingredient.create(
+      ingredientTestProps.validIngredientProps,
+    );
     const ingredientLine = IngredientLine.create({
       ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient,

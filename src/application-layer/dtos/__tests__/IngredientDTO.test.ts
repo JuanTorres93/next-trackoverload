@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as ingredientTestProps from '../../../../tests/createProps/ingredientTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import {
@@ -12,7 +13,7 @@ describe('IngredientDTO', () => {
   let ingredientDTO: IngredientDTO;
 
   beforeEach(() => {
-    ingredient = Ingredient.create(vp.validIngredientProps);
+    ingredient = Ingredient.create(ingredientTestProps.validIngredientProps);
   });
 
   describe('toIngredientDTO', () => {
@@ -46,7 +47,7 @@ describe('IngredientDTO', () => {
 
     it('should handle optional imageUrl', () => {
       const ingredientWithImage = Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         imageUrl: 'https://example.com/image.jpg',
       });
 
@@ -67,7 +68,7 @@ describe('IngredientDTO', () => {
       expect(reconstructedIngredient.id).toBe(ingredient.id);
       expect(reconstructedIngredient.name).toBe(ingredient.name);
       expect(reconstructedIngredient.nutritionalInfoPer100g).toEqual(
-        ingredient.nutritionalInfoPer100g
+        ingredient.nutritionalInfoPer100g,
       );
     });
 
@@ -80,7 +81,7 @@ describe('IngredientDTO', () => {
 
     it('should handle optional imageUrl in conversion', () => {
       const ingredientWithImage = Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         imageUrl: 'https://example.com/image.jpg',
       });
 
@@ -92,7 +93,7 @@ describe('IngredientDTO', () => {
 
     it('should handle missing imageUrl', () => {
       const ingredientWithoutImage = Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         imageUrl: undefined,
       });
 

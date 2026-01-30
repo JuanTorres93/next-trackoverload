@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
@@ -16,7 +17,7 @@ describe('UpdateIngredientUsecase', () => {
     updateIngredientUsecase = new UpdateIngredientUsecase(ingredientsRepo);
 
     ingredient = Ingredient.create({
-      ...vp.validIngredientProps,
+      ...ingredientTestProps.validIngredientProps,
     });
 
     await ingredientsRepo.saveIngredient(ingredient);
@@ -34,7 +35,7 @@ describe('UpdateIngredientUsecase', () => {
       });
 
       const savedIngredient = await ingredientsRepo.getIngredientById(
-        ingredient.id
+        ingredient.id,
       );
 
       expect(savedIngredient).not.toBeNull();
@@ -52,16 +53,16 @@ describe('UpdateIngredientUsecase', () => {
       expect(updatedIngredient.name).toBe('UPDATED INGREDIENT');
       expect(updatedIngredient.id).toBe(ingredient.id);
       expect(updatedIngredient.nutritionalInfoPer100g.calories).toBe(
-        ingredient.nutritionalInfoPer100g.calories
+        ingredient.nutritionalInfoPer100g.calories,
       );
       expect(updatedIngredient.nutritionalInfoPer100g.protein).toBe(
-        ingredient.nutritionalInfoPer100g.protein
+        ingredient.nutritionalInfoPer100g.protein,
       );
       expect(updatedIngredient.createdAt).toBe(
-        ingredient.createdAt.toISOString()
+        ingredient.createdAt.toISOString(),
       );
       expect(updatedIngredient.updatedAt).not.toBe(
-        vp.validIngredientProps.updatedAt.toISOString()
+        ingredientTestProps.validIngredientProps.updatedAt.toISOString(),
       );
     });
 
@@ -73,13 +74,15 @@ describe('UpdateIngredientUsecase', () => {
         },
       });
 
-      expect(updatedIngredient.name).toBe(vp.validIngredientProps.name);
+      expect(updatedIngredient.name).toBe(
+        ingredientTestProps.validIngredientProps.name,
+      );
       expect(updatedIngredient.nutritionalInfoPer100g.calories).toBe(3333);
       expect(updatedIngredient.nutritionalInfoPer100g.protein).toBe(
-        vp.validIngredientProps.protein
+        ingredientTestProps.validIngredientProps.protein,
       );
       expect(updatedIngredient.updatedAt).not.toBe(
-        vp.validIngredientProps.updatedAt.toISOString()
+        ingredientTestProps.validIngredientProps.updatedAt.toISOString(),
       );
     });
 
@@ -91,13 +94,15 @@ describe('UpdateIngredientUsecase', () => {
         },
       });
 
-      expect(updatedIngredient.name).toBe(vp.validIngredientProps.name);
+      expect(updatedIngredient.name).toBe(
+        ingredientTestProps.validIngredientProps.name,
+      );
       expect(updatedIngredient.nutritionalInfoPer100g.calories).toBe(
-        vp.validIngredientProps.calories
+        ingredientTestProps.validIngredientProps.calories,
       );
       expect(updatedIngredient.nutritionalInfoPer100g.protein).toBe(666);
       expect(updatedIngredient.updatedAt).not.toBe(
-        vp.validIngredientProps.updatedAt.toISOString()
+        ingredientTestProps.validIngredientProps.updatedAt.toISOString(),
       );
     });
 
@@ -115,7 +120,7 @@ describe('UpdateIngredientUsecase', () => {
       expect(updatedIngredient.nutritionalInfoPer100g.calories).toBe(222);
       expect(updatedIngredient.nutritionalInfoPer100g.protein).toBe(888);
       expect(updatedIngredient.updatedAt).not.toBe(
-        vp.validIngredientProps.updatedAt.toISOString()
+        ingredientTestProps.validIngredientProps.updatedAt.toISOString(),
       );
     });
 
@@ -143,7 +148,7 @@ describe('UpdateIngredientUsecase', () => {
           patch: {
             name: 'New Name',
           },
-        })
+        }),
       ).rejects.toThrow(NotFoundError);
 
       await expect(
@@ -152,7 +157,7 @@ describe('UpdateIngredientUsecase', () => {
           patch: {
             name: 'New Name',
           },
-        })
+        }),
       ).rejects.toThrow(/UpdateIngredientUsecase.*Ingredient.*not found/);
     });
   });

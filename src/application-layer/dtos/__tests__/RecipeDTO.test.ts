@@ -3,6 +3,7 @@ import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import * as vp from '@/../tests/createProps';
+import * as ingredientTestProps from '../../../../tests/createProps/ingredientTestProps';
 import * as dto from '@/../tests/dtoProperties';
 
 describe('RecipeDTO', () => {
@@ -12,7 +13,7 @@ describe('RecipeDTO', () => {
   let recipeDTO: RecipeDTO;
 
   beforeEach(() => {
-    ingredient = Ingredient.create(vp.validIngredientProps);
+    ingredient = Ingredient.create(ingredientTestProps.validIngredientProps);
     ingredientLine = IngredientLine.create({
       ...vp.ingredientLineRecipePropsNoIngredient,
       ingredient,
@@ -117,7 +118,7 @@ describe('RecipeDTO', () => {
 
       expect(reconstructedRecipe.ingredientLines).toHaveLength(1);
       expect(reconstructedRecipe.ingredientLines[0]).toBeInstanceOf(
-        IngredientLine
+        IngredientLine,
       );
     });
 
@@ -138,7 +139,7 @@ describe('RecipeDTO', () => {
 
     it('should handle recipes with multiple ingredient lines', () => {
       const ingredient2 = Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
         id: 'ing-2',
       });
       const ingredientLine2 = IngredientLine.create({

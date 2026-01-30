@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryRecipesRepo } from '../MemoryRecipesRepo';
 
 import * as vp from '@/../tests/createProps';
+import * as ingredientTestProps from '../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 
 describe('MemoryRecipesRepo', () => {
@@ -15,7 +16,7 @@ describe('MemoryRecipesRepo', () => {
 
   beforeEach(async () => {
     repo = new MemoryRecipesRepo();
-    ingredient = Ingredient.create(vp.validIngredientProps);
+    ingredient = Ingredient.create(ingredientTestProps.validIngredientProps);
 
     ingredientLine = IngredientLine.create({
       ...vp.ingredientLineRecipePropsNoIngredient,

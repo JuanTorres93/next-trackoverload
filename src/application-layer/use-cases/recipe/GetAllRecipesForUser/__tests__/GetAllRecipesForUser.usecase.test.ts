@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError, PermissionError } from '@/domain/common/errors';
@@ -43,7 +44,7 @@ describe('GetAllRecipesForUserUsecase', () => {
     await usersRepo.saveUser(user2);
 
     const testIngredient = Ingredient.create({
-      ...vp.validIngredientProps,
+      ...ingredientTestProps.validIngredientProps,
     });
 
     const testIngredientLine = IngredientLine.create({
@@ -114,7 +115,7 @@ describe('GetAllRecipesForUserUsecase', () => {
     it('should return only recipes for the specified user', async () => {
       // Create a recipe for user2
       const testIngredient = Ingredient.create({
-        ...vp.validIngredientProps,
+        ...ingredientTestProps.validIngredientProps,
       });
 
       const testIngredientLine = IngredientLine.create({
