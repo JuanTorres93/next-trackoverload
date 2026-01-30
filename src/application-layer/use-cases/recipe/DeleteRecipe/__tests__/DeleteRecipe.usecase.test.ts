@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
 import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import { NotFoundError } from '@/domain/common/errors';
@@ -42,12 +43,12 @@ describe('DeleteRecipeUsecase', () => {
     });
 
     const testIngredientLine = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
+      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       ingredient: testIngredient,
     });
 
     testRecipe = Recipe.create({
-      ...vp.recipePropsNoIngredientLines,
+      ...recipeTestProps.recipePropsNoIngredientLines,
       ingredientLines: [testIngredientLine],
     });
     await recipesRepo.saveRecipe(testRecipe);
@@ -79,7 +80,7 @@ describe('DeleteRecipeUsecase', () => {
       });
 
       const recipe = Recipe.create({
-        ...vp.recipePropsNoIngredientLines,
+        ...recipeTestProps.recipePropsNoIngredientLines,
         ingredientLines: testRecipe.ingredientLines,
         imageUrl: uploadedImage.url,
       });
@@ -99,7 +100,7 @@ describe('DeleteRecipeUsecase', () => {
 
     it('should not affect other recipes when deleting one', async () => {
       const secondRecipe = Recipe.create({
-        ...vp.recipePropsNoIngredientLines,
+        ...recipeTestProps.recipePropsNoIngredientLines,
         id: 'second-recipe-id',
         ingredientLines: testRecipe.ingredientLines,
       });

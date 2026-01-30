@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
 import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
@@ -53,7 +54,7 @@ describe('AddIngredientToMealUsecase', () => {
     });
 
     const testIngredientLine = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
+      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       ingredient: testIngredient,
       quantityInGrams: 200,
     });

@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as recipeTestProps from '../../../../tests/createProps/recipeTestProps';
 import * as ingredientTestProps from '../../../../tests/createProps/ingredientTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { Day } from '@/domain/entities/day/Day';
@@ -19,7 +20,7 @@ describe('DayDTO', () => {
   beforeEach(() => {
     ingredient = Ingredient.create(ingredientTestProps.validIngredientProps);
     ingredientLine = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
+      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       parentType: 'meal',
       parentId: vp.mealPropsNoIngredientLines.id,
       ingredient,

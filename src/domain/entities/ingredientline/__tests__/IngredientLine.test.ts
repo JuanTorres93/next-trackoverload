@@ -4,6 +4,7 @@ import { Ingredient } from '../../ingredient/Ingredient';
 import { IngredientLine } from '../IngredientLine';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import * as recipeTestProps from '../../../../../tests/createProps/recipeTestProps';
 import * as ingredientTestProps from '../../../../../tests/createProps/ingredientTestProps';
 
 const validIngredient = Ingredient.create(
@@ -11,7 +12,7 @@ const validIngredient = Ingredient.create(
 );
 
 const validIngredientLineProps = {
-  ...vp.ingredientLineRecipePropsNoIngredient,
+  ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
   ingredient: validIngredient,
 };
 

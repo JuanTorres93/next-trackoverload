@@ -7,6 +7,7 @@ import fs from 'fs/promises';
 import path from 'path';
 
 import * as vp from '@/../tests/createProps';
+import * as recipeTestProps from '../../../../../tests/createProps/recipeTestProps';
 import * as ingredientTestProps from '../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 
@@ -23,13 +24,13 @@ describe('FileSystemRecipesRepo', () => {
     ingredient = Ingredient.create(ingredientTestProps.validIngredientProps);
 
     ingredientLine = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
+      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       ingredient,
       quantityInGrams: 200,
     });
 
     recipe = Recipe.create({
-      ...vp.recipePropsNoIngredientLines,
+      ...recipeTestProps.recipePropsNoIngredientLines,
       ingredientLines: [ingredientLine],
     });
 
@@ -47,7 +48,7 @@ describe('FileSystemRecipesRepo', () => {
 
   it('should save a recipe', async () => {
     const newRecipe = Recipe.create({
-      ...vp.recipePropsNoIngredientLines,
+      ...recipeTestProps.recipePropsNoIngredientLines,
       id: 'another-recipe-id',
       name: 'Cake',
       ingredientLines: [ingredientLine],
@@ -64,7 +65,7 @@ describe('FileSystemRecipesRepo', () => {
 
   it('should update an existing recipe', async () => {
     const updatedRecipe = Recipe.create({
-      ...vp.recipePropsNoIngredientLines,
+      ...recipeTestProps.recipePropsNoIngredientLines,
       ingredientLines: [ingredientLine],
       name: 'Updated Bread',
     });
@@ -77,10 +78,12 @@ describe('FileSystemRecipesRepo', () => {
 
   it('should retrieve a recipe by ID', async () => {
     const fetchedRecipe = await repo.getRecipeById(
-      vp.recipePropsNoIngredientLines.id,
+      recipeTestProps.recipePropsNoIngredientLines.id,
     );
     expect(fetchedRecipe).not.toBeNull();
-    expect(fetchedRecipe?.name).toBe(vp.recipePropsNoIngredientLines.name);
+    expect(fetchedRecipe?.name).toBe(
+      recipeTestProps.recipePropsNoIngredientLines.name,
+    );
   });
 
   it('should retrieve recipes by user ID', async () => {
@@ -91,11 +94,13 @@ describe('FileSystemRecipesRepo', () => {
 
   it('should retrieve a recipe by ID and user ID', async () => {
     const fetchedRecipe = await repo.getRecipeByIdAndUserId(
-      vp.recipePropsNoIngredientLines.id,
+      recipeTestProps.recipePropsNoIngredientLines.id,
       userTestProps.userId,
     );
     expect(fetchedRecipe).not.toBeNull();
-    expect(fetchedRecipe?.name).toBe(vp.recipePropsNoIngredientLines.name);
+    expect(fetchedRecipe?.name).toBe(
+      recipeTestProps.recipePropsNoIngredientLines.name,
+    );
   });
 
   it('should return null for non-existent recipe ID', async () => {
@@ -107,7 +112,7 @@ describe('FileSystemRecipesRepo', () => {
     const allRecipes = await repo.getAllRecipes();
     expect(allRecipes.length).toBe(1);
 
-    await repo.deleteRecipe(vp.recipePropsNoIngredientLines.id);
+    await repo.deleteRecipe(recipeTestProps.recipePropsNoIngredientLines.id);
 
     const allRecipesAfterDeletion = await repo.getAllRecipes();
     expect(allRecipesAfterDeletion.length).toBe(0);
@@ -135,7 +140,7 @@ describe('FileSystemRecipesRepo', () => {
   });
 
   it('should delete ingredient lines when recipe is deleted', async () => {
-    await repo.deleteRecipe(vp.recipePropsNoIngredientLines.id);
+    await repo.deleteRecipe(recipeTestProps.recipePropsNoIngredientLines.id);
 
     // Verify ingredient line file is deleted
     const lineFilePath = path.join(
@@ -151,25 +156,25 @@ describe('FileSystemRecipesRepo', () => {
 
   it('should delete all recipes for a user', async () => {
     const ingredientLine2 = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
+      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       id: 'line-2',
       ingredient,
       quantityInGrams: 100,
     });
     const recipe2 = Recipe.create({
-      ...vp.recipePropsNoIngredientLines,
+      ...recipeTestProps.recipePropsNoIngredientLines,
       id: 'recipe-2',
       name: 'Pasta',
       ingredientLines: [ingredientLine2],
     });
     const ingredientLine3 = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
+      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       id: 'line-3',
       ingredient,
       quantityInGrams: 150,
     });
     const recipe3 = Recipe.create({
-      ...vp.recipePropsNoIngredientLines,
+      ...recipeTestProps.recipePropsNoIngredientLines,
       id: 'recipe-3',
       userId: 'user-2',
       name: 'Pizza',

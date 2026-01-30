@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
 import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
@@ -45,12 +46,12 @@ describe('RemoveIngredientFromMealUsecase', () => {
     });
 
     const firstIngredientLine = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
+      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       ingredient: testIngredient,
     });
 
     const secondIngredientLine = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
+      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       ingredient: secondIngredient,
     });
 

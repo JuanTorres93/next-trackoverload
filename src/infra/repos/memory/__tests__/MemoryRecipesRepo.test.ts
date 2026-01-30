@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryRecipesRepo } from '../MemoryRecipesRepo';
 
 import * as vp from '@/../tests/createProps';
+import * as recipeTestProps from '../../../../../tests/createProps/recipeTestProps';
 import * as ingredientTestProps from '../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 
@@ -19,13 +20,13 @@ describe('MemoryRecipesRepo', () => {
     ingredient = Ingredient.create(ingredientTestProps.validIngredientProps);
 
     ingredientLine = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
+      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       ingredient,
       quantityInGrams: 200,
     });
 
     recipe = Recipe.create({
-      ...vp.recipePropsNoIngredientLines,
+      ...recipeTestProps.recipePropsNoIngredientLines,
       ingredientLines: [ingredientLine],
     });
 
@@ -34,7 +35,7 @@ describe('MemoryRecipesRepo', () => {
 
   it('should save a recipe', async () => {
     const newRecipe = Recipe.create({
-      ...vp.recipePropsNoIngredientLines,
+      ...recipeTestProps.recipePropsNoIngredientLines,
       id: 'another-recipe-id',
       name: 'Cake',
       ingredientLines: [ingredientLine],
@@ -48,7 +49,7 @@ describe('MemoryRecipesRepo', () => {
 
   it('should update an existing recipe', async () => {
     const updatedRecipe = Recipe.create({
-      ...vp.recipePropsNoIngredientLines,
+      ...recipeTestProps.recipePropsNoIngredientLines,
       ingredientLines: [ingredientLine],
       name: 'Updated Bread',
     });
@@ -61,10 +62,12 @@ describe('MemoryRecipesRepo', () => {
 
   it('should retrieve a recipe by ID', async () => {
     const fetchedRecipe = await repo.getRecipeById(
-      vp.recipePropsNoIngredientLines.id,
+      recipeTestProps.recipePropsNoIngredientLines.id,
     );
     expect(fetchedRecipe).not.toBeNull();
-    expect(fetchedRecipe?.name).toBe(vp.recipePropsNoIngredientLines.name);
+    expect(fetchedRecipe?.name).toBe(
+      recipeTestProps.recipePropsNoIngredientLines.name,
+    );
   });
 
   it('should return null for non-existent recipe ID', async () => {
@@ -76,7 +79,7 @@ describe('MemoryRecipesRepo', () => {
     const allRecipes = await repo.getAllRecipes();
     expect(allRecipes.length).toBe(1);
 
-    await repo.deleteRecipe(vp.recipePropsNoIngredientLines.id);
+    await repo.deleteRecipe(recipeTestProps.recipePropsNoIngredientLines.id);
 
     const allRecipesAfterDeletion = await repo.getAllRecipes();
     expect(allRecipesAfterDeletion.length).toBe(0);
@@ -84,7 +87,7 @@ describe('MemoryRecipesRepo', () => {
 
   it('should delete all recipes for a user', async () => {
     const recipe2 = Recipe.create({
-      ...vp.recipePropsNoIngredientLines,
+      ...recipeTestProps.recipePropsNoIngredientLines,
       id: 'recipe-2',
       name: 'Pasta',
       ingredientLines: [ingredientLine],
@@ -92,7 +95,7 @@ describe('MemoryRecipesRepo', () => {
     await repo.saveRecipe(recipe2);
 
     const recipe3 = Recipe.create({
-      ...vp.recipePropsNoIngredientLines,
+      ...recipeTestProps.recipePropsNoIngredientLines,
       id: 'recipe-3',
       userId: 'user-2',
       name: 'Pizza',

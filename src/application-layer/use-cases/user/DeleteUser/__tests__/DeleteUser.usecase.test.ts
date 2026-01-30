@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import { NotFoundError, PermissionError } from '@/domain/common/errors';
 
@@ -72,7 +73,7 @@ describe('DeleteUserUsecase', () => {
     });
 
     const recipe = Recipe.create({
-      ...vp.validRecipePropsWithIngredientLines(),
+      ...recipeTestProps.validRecipePropsWithIngredientLines(),
       userId: userTestProps.userId,
     });
 

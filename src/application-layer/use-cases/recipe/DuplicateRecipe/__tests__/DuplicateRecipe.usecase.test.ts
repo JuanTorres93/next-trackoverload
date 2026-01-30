@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
 import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
@@ -41,12 +42,12 @@ describe('DuplicateRecipeUsecase', () => {
     });
 
     const testIngredientLine = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
+      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       ingredient: testIngredient,
     });
 
     testRecipe = Recipe.create({
-      ...vp.recipePropsNoIngredientLines,
+      ...recipeTestProps.recipePropsNoIngredientLines,
       ingredientLines: [testIngredientLine],
     });
 
@@ -111,7 +112,7 @@ describe('DuplicateRecipeUsecase', () => {
       });
 
       const secondIngredientLine = IngredientLine.create({
-        ...vp.ingredientLineRecipePropsNoIngredient,
+        ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
         id: 'second-ingredient-line-id',
         ingredient: secondIngredient,
       });

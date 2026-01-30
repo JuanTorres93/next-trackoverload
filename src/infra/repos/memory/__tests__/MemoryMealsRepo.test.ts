@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as recipeTestProps from '../../../../../tests/createProps/recipeTestProps';
 import * as ingredientTestProps from '../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
@@ -26,7 +27,7 @@ describe('MemoryMealsRepo', () => {
     ingredient = Ingredient.create(validIngredientProps);
 
     ingredientLine = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
+      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       ingredient,
       quantityInGrams: 150,
     });

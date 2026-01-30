@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
 import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
@@ -39,17 +40,17 @@ describe('GetRecipesByIdsForUserUsecase', () => {
     });
 
     const testIngredientLine = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
+      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       ingredient: testIngredient,
     });
 
     testRecipes = [
       Recipe.create({
-        ...vp.recipePropsNoIngredientLines,
+        ...recipeTestProps.recipePropsNoIngredientLines,
         ingredientLines: [testIngredientLine],
       }),
       Recipe.create({
-        ...vp.recipePropsNoIngredientLines,
+        ...recipeTestProps.recipePropsNoIngredientLines,
         id: 'recipe2',
         ingredientLines: [testIngredientLine],
       }),

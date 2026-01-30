@@ -3,6 +3,7 @@ import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import * as vp from '@/../tests/createProps';
+import * as recipeTestProps from '../../../../tests/createProps/recipeTestProps';
 import * as ingredientTestProps from '../../../../tests/createProps/ingredientTestProps';
 import * as dto from '@/../tests/dtoProperties';
 
@@ -15,11 +16,11 @@ describe('RecipeDTO', () => {
   beforeEach(() => {
     ingredient = Ingredient.create(ingredientTestProps.validIngredientProps);
     ingredientLine = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
+      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       ingredient,
     });
     recipe = Recipe.create({
-      ...vp.recipePropsNoIngredientLines,
+      ...recipeTestProps.recipePropsNoIngredientLines,
       ingredientLines: [ingredientLine],
     });
   });
@@ -92,7 +93,7 @@ describe('RecipeDTO', () => {
 
     it('should handle optional imageUrl', () => {
       const recipeWithImage = Recipe.create({
-        ...vp.recipePropsNoIngredientLines,
+        ...recipeTestProps.recipePropsNoIngredientLines,
         imageUrl: 'https://example.com/recipe.jpg',
         ingredientLines: [ingredientLine],
       });
@@ -143,7 +144,7 @@ describe('RecipeDTO', () => {
         id: 'ing-2',
       });
       const ingredientLine2 = IngredientLine.create({
-        ...vp.ingredientLineRecipePropsNoIngredient,
+        ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
         id: 'line-2',
         parentId: recipe.id,
         ingredient: ingredient2,
@@ -151,7 +152,7 @@ describe('RecipeDTO', () => {
       });
 
       const recipeWithMultipleLines = Recipe.create({
-        ...vp.recipePropsNoIngredientLines,
+        ...recipeTestProps.recipePropsNoIngredientLines,
         ingredientLines: [ingredientLine, ingredientLine2],
       });
 

@@ -7,6 +7,7 @@ import { createTestImage } from '../../../../../../tests/helpers/imageTestHelper
 import { UpdateRecipeImageUsecase } from '../UpdateRecipeImageUsecase';
 
 import * as vp from '@/../tests/createProps';
+import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 
@@ -36,7 +37,7 @@ describe('UpdateRecipeImageUsecase', () => {
     );
 
     recipe = Recipe.create({
-      ...vp.validRecipePropsWithIngredientLines(),
+      ...recipeTestProps.validRecipePropsWithIngredientLines(),
       userId: userTestProps.userId,
     });
 

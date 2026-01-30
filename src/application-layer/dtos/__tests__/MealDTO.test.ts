@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as recipeTestProps from '../../../../tests/createProps/recipeTestProps';
 import * as ingredientTestProps from '../../../../tests/createProps/ingredientTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
@@ -15,7 +16,7 @@ describe('MealDTO', () => {
   beforeEach(() => {
     ingredient = Ingredient.create(ingredientTestProps.validIngredientProps);
     ingredientLine = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
+      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       parentType: 'meal',
       parentId: vp.mealPropsNoIngredientLines.id,
       ingredient,
@@ -131,7 +132,7 @@ describe('MealDTO', () => {
 
     it('should handle meals with multiple ingredient lines', () => {
       const ingredientLine2 = IngredientLine.create({
-        ...vp.ingredientLineRecipePropsNoIngredient,
+        ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
         id: 'line-2',
         parentId: meal.id,
         parentType: 'meal',

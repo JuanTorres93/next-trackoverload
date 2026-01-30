@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import * as vp from '@/../tests/createProps';
+import * as recipeTestProps from '../../../../../tests/createProps/recipeTestProps';
 import * as ingredientTestProps from '../../../../../tests/createProps/ingredientTestProps';
 import { ValidationError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
@@ -19,7 +20,7 @@ describe('Meal', () => {
     );
 
     validIngredientLine = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
+      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       ingredient: validIngredient,
       quantityInGrams: 100,
     });
@@ -44,7 +45,7 @@ describe('Meal', () => {
 
       // More than one ingredient line
       const anotherIngredientLine = IngredientLine.create({
-        ...vp.ingredientLineRecipePropsNoIngredient,
+        ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
         ingredient: Ingredient.create({
           ...ingredientTestProps.validIngredientProps,
           id: 'other-ing',
@@ -68,7 +69,7 @@ describe('Meal', () => {
 
       // More than one ingredient line
       const anotherIngredientLine = IngredientLine.create({
-        ...vp.ingredientLineRecipePropsNoIngredient,
+        ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
         id: 'another-line-id',
         ingredient: Ingredient.create({
           ...ingredientTestProps.validIngredientProps,
@@ -88,7 +89,7 @@ describe('Meal', () => {
 
     it('should add a new ingredient line', async () => {
       const newIngredientLine = IngredientLine.create({
-        ...vp.ingredientLineRecipePropsNoIngredient,
+        ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
         id: 'new-line',
         ingredient: Ingredient.create({
           ...ingredientTestProps.validIngredientProps,
@@ -104,7 +105,7 @@ describe('Meal', () => {
 
     it('should not add ingredient line with already existing ingredient', async () => {
       const duplicateIngredientLine = IngredientLine.create({
-        ...vp.ingredientLineRecipePropsNoIngredient,
+        ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
         ingredient: validIngredient,
       });
 
@@ -123,7 +124,7 @@ describe('Meal', () => {
       });
 
       const newIngredientLine = IngredientLine.create({
-        ...vp.ingredientLineRecipePropsNoIngredient,
+        ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
         id: 'new-line',
         ingredient: newIngredient,
       });

@@ -9,6 +9,7 @@ import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerato
 import { CreateMealFromRecipeUsecase } from '../CreateMealFromRecipeUsecase';
 
 import * as vp from '@/../tests/createProps';
+import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { User } from '@/domain/entities/user/User';
@@ -46,7 +47,9 @@ describe('CreateMealFromRecipeUsecase', () => {
     const user = User.create(userTestProps.validUserProps);
     await usersRepo.saveUser(user);
 
-    recipe = Recipe.create(vp.validRecipePropsWithIngredientLines());
+    recipe = Recipe.create(
+      recipeTestProps.validRecipePropsWithIngredientLines(),
+    );
 
     await recipesRepo.saveRecipe(recipe);
   });

@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as recipeTestProps from '../../../../../tests/createProps/recipeTestProps';
 import * as ingredientTestProps from '../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
@@ -30,7 +31,7 @@ describe('FileSystemMealsRepo', () => {
     ingredient = Ingredient.create(validIngredientProps);
 
     ingredientLine = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
+      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       ingredient,
       quantityInGrams: 150,
     });
@@ -93,7 +94,7 @@ describe('FileSystemMealsRepo', () => {
 
   it('should retrieve multiple meals by IDs', async () => {
     const ingredientLine2 = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
+      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       id: 'line-2',
       ingredient,
       quantityInGrams: 200,
@@ -105,7 +106,7 @@ describe('FileSystemMealsRepo', () => {
       ingredientLines: [ingredientLine2],
     });
     const ingredientLine3 = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
+      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       id: 'line-3',
       ingredient,
       quantityInGrams: 100,
@@ -138,7 +139,7 @@ describe('FileSystemMealsRepo', () => {
 
   it('should retrieve only existing meals when some IDs do not exist', async () => {
     const ingredientLine2 = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
+      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       id: 'line-2',
       ingredient,
       quantityInGrams: 200,
@@ -181,7 +182,7 @@ describe('FileSystemMealsRepo', () => {
 
   it('should retrieve meals by recipeId and userId', async () => {
     const ingredientLine2 = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
+      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       id: 'line-2',
       ingredient,
       quantityInGrams: 200,
@@ -194,7 +195,7 @@ describe('FileSystemMealsRepo', () => {
       createdFromRecipeId: vp.mealPropsNoIngredientLines.createdFromRecipeId,
     });
     const ingredientLine3 = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
+      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       id: 'line-3',
       ingredient,
       quantityInGrams: 100,
@@ -290,7 +291,7 @@ describe('FileSystemMealsRepo', () => {
 
   it('should delete multiple meals by IDs', async () => {
     const ingredientLine2 = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
+      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       id: 'line-2',
       ingredient,
       quantityInGrams: 200,
@@ -302,7 +303,7 @@ describe('FileSystemMealsRepo', () => {
       ingredientLines: [ingredientLine2],
     });
     const ingredientLine3 = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
+      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       id: 'line-3',
       ingredient,
       quantityInGrams: 100,
@@ -352,7 +353,7 @@ describe('FileSystemMealsRepo', () => {
 
   it('should handle deleting multiple meals with non-existent IDs', async () => {
     const ingredientLine2 = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
+      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       id: 'line-4',
       ingredient,
       quantityInGrams: 120,
@@ -380,7 +381,7 @@ describe('FileSystemMealsRepo', () => {
 
   it('should delete all meals for a user', async () => {
     const ingredientLine2 = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
+      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       id: 'line-5',
       ingredient,
       quantityInGrams: 120,
@@ -392,7 +393,7 @@ describe('FileSystemMealsRepo', () => {
       ingredientLines: [ingredientLine2],
     });
     const ingredientLine3 = IngredientLine.create({
-      ...vp.ingredientLineRecipePropsNoIngredient,
+      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       id: 'line-6',
       ingredient,
       quantityInGrams: 100,
