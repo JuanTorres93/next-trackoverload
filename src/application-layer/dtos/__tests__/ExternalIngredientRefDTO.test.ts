@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as externalIngredientRefTestProps from '../../../../tests/createProps/externalIngredientRefTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { ExternalIngredientRef } from '@/domain/entities/externalingredientref/ExternalIngredientRef';
 import {
@@ -13,20 +14,20 @@ describe('ExternalIngredientRefDTO', () => {
 
   beforeEach(() => {
     externalIngredientRef = ExternalIngredientRef.create(
-      vp.validExternalIngredientRefProps
+      externalIngredientRefTestProps.validExternalIngredientRefProps,
     );
   });
 
   describe('toExternalIngredientRefDTO', () => {
     beforeEach(() => {
       externalIngredientRefDTO = toExternalIngredientRefDTO(
-        externalIngredientRef
+        externalIngredientRef,
       );
     });
 
     it('should have a prop for each external ingredient ref getter', () => {
       expect(externalIngredientRefDTO).not.toBeInstanceOf(
-        ExternalIngredientRef
+        ExternalIngredientRef,
       );
 
       for (const getter of dto.externalIngredientRefDTOProperties) {
@@ -49,7 +50,7 @@ describe('ExternalIngredientRefDTO', () => {
 
     beforeEach(() => {
       externalIngredientRefDTO = toExternalIngredientRefDTO(
-        externalIngredientRef
+        externalIngredientRef,
       );
       recreatedRef = fromExternalIngredientRefDTO(externalIngredientRefDTO);
     });
@@ -62,13 +63,13 @@ describe('ExternalIngredientRefDTO', () => {
       expect(recreatedRef.externalId).toBe(externalIngredientRef.externalId);
       expect(recreatedRef.source).toBe(externalIngredientRef.source);
       expect(recreatedRef.ingredientId).toBe(
-        externalIngredientRef.ingredientId
+        externalIngredientRef.ingredientId,
       );
     });
 
     it('should preserve date when converting DTO to entity', () => {
       expect(recreatedRef.createdAt.getTime()).toBe(
-        externalIngredientRef.createdAt.getTime()
+        externalIngredientRef.createdAt.getTime(),
       );
     });
 
@@ -80,7 +81,7 @@ describe('ExternalIngredientRefDTO', () => {
       expect(recreated.source).toBe(externalIngredientRef.source);
       expect(recreated.ingredientId).toBe(externalIngredientRef.ingredientId);
       expect(recreated.createdAt.getTime()).toBe(
-        externalIngredientRef.createdAt.getTime()
+        externalIngredientRef.createdAt.getTime(),
       );
     });
   });

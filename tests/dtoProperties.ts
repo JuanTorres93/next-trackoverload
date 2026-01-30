@@ -1,5 +1,6 @@
 import { getGetters } from '@/application-layer/dtos/__tests__/_getGettersUtil';
 import * as vp from '@/../tests/createProps';
+import * as externalIngredientRefTestProps from './createProps/externalIngredientRefTestProps';
 import * as fakeMealTestProps from './createProps/fakeMealTestProps';
 import * as mealTestProps from './createProps/mealTestProps';
 import * as recipeTestProps from './createProps/recipeTestProps';
@@ -35,7 +36,7 @@ export const ingredientDTOProperties = getGetters(sampleIngredient);
 
 // ExternalIngredientRef DTO
 const sampleExternalIngredientRef = ExternalIngredientRef.create({
-  ...vp.validExternalIngredientRefProps,
+  ...externalIngredientRefTestProps.validExternalIngredientRefProps,
 });
 export const externalIngredientRefDTOProperties = getGetters(
   sampleExternalIngredientRef,

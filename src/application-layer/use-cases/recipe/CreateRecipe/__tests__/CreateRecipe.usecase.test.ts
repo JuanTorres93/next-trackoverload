@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as externalIngredientRefTestProps from '../../../../../../tests/createProps/externalIngredientRefTestProps';
 import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
@@ -57,7 +58,7 @@ describe('CreateRecipeUsecase', () => {
     await usersRepo.saveUser(user);
 
     testExternalIngredientRef = ExternalIngredientRef.create({
-      ...vp.validExternalIngredientRefProps,
+      ...externalIngredientRefTestProps.validExternalIngredientRefProps,
     });
 
     testIngredientLineInfo = {
@@ -121,7 +122,7 @@ describe('CreateRecipeUsecase', () => {
 
     it('should create recipe if ingredient already exists', async () => {
       const anotherExternalIngredientRef = ExternalIngredientRef.create({
-        ...vp.validExternalIngredientRefProps,
+        ...externalIngredientRefTestProps.validExternalIngredientRefProps,
         externalId: 'existing-external-ing-456',
         ingredientId: 'existing-ingredient-id',
       });

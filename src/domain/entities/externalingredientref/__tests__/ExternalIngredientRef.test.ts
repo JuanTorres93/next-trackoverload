@@ -3,6 +3,7 @@ import {
   ExternalIngredientRefCreateProps,
 } from '../ExternalIngredientRef';
 import * as vp from '@/../tests/createProps';
+import * as externalIngredientRefTestProps from '../../../../../tests/createProps/externalIngredientRefTestProps';
 
 describe('ExternalIngredientRef', () => {
   let externalIngredientRef: ExternalIngredientRef;
@@ -10,10 +11,10 @@ describe('ExternalIngredientRef', () => {
 
   beforeEach(() => {
     validExternalIngredientRefProps = {
-      ...vp.validExternalIngredientRefProps,
+      ...externalIngredientRefTestProps.validExternalIngredientRefProps,
     };
     externalIngredientRef = ExternalIngredientRef.create(
-      validExternalIngredientRefProps
+      validExternalIngredientRefProps,
     );
   });
 

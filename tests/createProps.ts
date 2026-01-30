@@ -1,7 +1,6 @@
 import { WorkoutTemplateLine } from '@/domain/entities/workouttemplateline/WorkoutTemplateLine';
 import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
 import { userId } from './createProps/userTestProps';
-import { validIngredientProps } from './createProps/ingredientTestProps';
 
 export const dateId = new Date('2023-10-01');
 
@@ -108,13 +107,6 @@ export const validWorkoutProps = {
   ],
   createdAt: new Date(),
   updatedAt: new Date(),
-};
-
-export const validExternalIngredientRefProps = {
-  externalId: 'ext-ing-1',
-  source: 'openfoodfacts',
-  ingredientId: validIngredientProps.id,
-  createdAt: new Date(),
 };
 
 export const validWorkoutLineProps = {
