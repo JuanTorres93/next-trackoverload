@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as workoutTestProps from '../../../../../../tests/createProps/workoutTestProps';
 import * as exerciseTestProps from '../../../../../../tests/createProps/exerciseTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
@@ -36,7 +37,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
     });
 
     workout = Workout.create({
-      ...vp.validWorkoutProps,
+      ...workoutTestProps.validWorkoutProps,
       exercises: [],
     });
 
@@ -54,7 +55,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
     it('should add exercise to workout', async () => {
       const updatedWorkout = await addExerciseToWorkoutUsecase.execute({
         userId: userTestProps.userId,
-        workoutId: vp.validWorkoutProps.id,
+        workoutId: workoutTestProps.validWorkoutProps.id,
         exerciseId: exerciseTestProps.validExerciseProps.id,
         setNumber: 1,
         reps: 10,
@@ -77,7 +78,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
     it('should return WorkoutDTO', async () => {
       const updatedWorkout = await addExerciseToWorkoutUsecase.execute({
         userId: userTestProps.userId,
-        workoutId: vp.validWorkoutProps.id,
+        workoutId: workoutTestProps.validWorkoutProps.id,
         exerciseId: exerciseTestProps.validExerciseProps.id,
         setNumber: 1,
         reps: 10,
@@ -94,7 +95,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
       // First set
       await addExerciseToWorkoutUsecase.execute({
         userId: userTestProps.userId,
-        workoutId: vp.validWorkoutProps.id,
+        workoutId: workoutTestProps.validWorkoutProps.id,
         exerciseId: exerciseTestProps.validExerciseProps.id,
         setNumber: 1,
         reps: 12,
@@ -104,7 +105,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
       // Second set
       const updatedWorkout = await addExerciseToWorkoutUsecase.execute({
         userId: userTestProps.userId,
-        workoutId: vp.validWorkoutProps.id,
+        workoutId: workoutTestProps.validWorkoutProps.id,
         exerciseId: exerciseTestProps.validExerciseProps.id,
         setNumber: 2,
         reps: 12,
@@ -148,7 +149,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
     it('should throw NotFoundError when exercise does not exist', async () => {
       const request = {
         userId: userTestProps.userId,
-        workoutId: vp.validWorkoutProps.id,
+        workoutId: workoutTestProps.validWorkoutProps.id,
         exerciseId: 'non-existent',
         setNumber: 1,
         reps: 10,
@@ -166,7 +167,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
     it('should throw error if user does not exist', async () => {
       const workout = Workout.create({
-        ...vp.validWorkoutProps,
+        ...workoutTestProps.validWorkoutProps,
         exercises: [],
       });
 
@@ -180,7 +181,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
       const request = {
         userId: 'non-existent',
-        workoutId: vp.validWorkoutProps.id,
+        workoutId: workoutTestProps.validWorkoutProps.id,
         exerciseId: exerciseTestProps.validExerciseProps.id,
         setNumber: 1,
         reps: 10,
@@ -206,7 +207,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
       const request = {
         userId: anotherUser.id,
-        workoutId: vp.validWorkoutProps.id,
+        workoutId: workoutTestProps.validWorkoutProps.id,
         exerciseId: exerciseTestProps.validExerciseProps.id,
         setNumber: 1,
         reps: 10,

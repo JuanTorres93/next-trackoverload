@@ -1,5 +1,5 @@
 import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
-import { userId } from './createProps/userTestProps';
+import { userId } from './userTestProps';
 
 export function validWorkoutPropsNoExercises() {
   return {

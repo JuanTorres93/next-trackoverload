@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as workoutTestProps from '../../../../../tests/createProps/workoutTestProps';
 import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
@@ -17,12 +18,12 @@ describe('FileSystemWorkoutsRepo', () => {
   beforeEach(async () => {
     repo = new FileSystemWorkoutsRepo(testWorkoutsDir, testWorkoutLinesDir);
     workout = Workout.create({
-      ...vp.validWorkoutPropsNoExercises(),
+      ...workoutTestProps.validWorkoutPropsNoExercises(),
       name: 'Push Day',
     });
 
     workoutLine = WorkoutLine.create({
-      ...vp.validWorkoutLineProps,
+      ...workoutTestProps.validWorkoutLineProps,
     });
 
     await repo.saveWorkout(workout);
@@ -39,7 +40,7 @@ describe('FileSystemWorkoutsRepo', () => {
 
   it('should save a workout', async () => {
     const newWorkout = Workout.create({
-      ...vp.validWorkoutPropsNoExercises(),
+      ...workoutTestProps.validWorkoutPropsNoExercises(),
       id: 'another-workout-id',
       name: 'Pull Day',
     });
@@ -65,7 +66,7 @@ describe('FileSystemWorkoutsRepo', () => {
 
   it('should update an existing workout', async () => {
     const updatedWorkout = Workout.create({
-      ...vp.validWorkoutPropsNoExercises(),
+      ...workoutTestProps.validWorkoutPropsNoExercises(),
       name: 'Updated Push Day',
       updatedAt: new Date('2023-01-03'),
     });
@@ -77,7 +78,9 @@ describe('FileSystemWorkoutsRepo', () => {
   });
 
   it('should retrieve a workout by ID', async () => {
-    const fetchedWorkout = await repo.getWorkoutById(vp.validWorkoutProps.id);
+    const fetchedWorkout = await repo.getWorkoutById(
+      workoutTestProps.validWorkoutProps.id,
+    );
     expect(fetchedWorkout).not.toBeNull();
     expect(fetchedWorkout?.name).toBe('Push Day');
   });
@@ -92,7 +95,7 @@ describe('FileSystemWorkoutsRepo', () => {
 
   it('should retrieve a workout by ID and user ID', async () => {
     const fetchedWorkout = await repo.getWorkoutByIdAndUserId(
-      vp.validWorkoutProps.id,
+      workoutTestProps.validWorkoutProps.id,
       userTestProps.userId,
     );
     expect(fetchedWorkout).not.toBeNull();
@@ -101,17 +104,17 @@ describe('FileSystemWorkoutsRepo', () => {
 
   it('should retrieve workouts by template ID', async () => {
     const workouts = await repo.getWorkoutsByTemplateId(
-      vp.validWorkoutProps.workoutTemplateId,
+      workoutTestProps.validWorkoutProps.workoutTemplateId,
     );
     expect(workouts.length).toBe(1);
     expect(workouts[0].workoutTemplateId).toBe(
-      vp.validWorkoutProps.workoutTemplateId,
+      workoutTestProps.validWorkoutProps.workoutTemplateId,
     );
   });
 
   it('should retrieve workouts by template ID and user ID', async () => {
     const workouts = await repo.getWorkoutsByTemplateIdAndUserId(
-      vp.validWorkoutProps.workoutTemplateId,
+      workoutTestProps.validWorkoutProps.workoutTemplateId,
       userTestProps.userId,
     );
     expect(workouts.length).toBe(1);
@@ -126,7 +129,7 @@ describe('FileSystemWorkoutsRepo', () => {
     const allWorkouts = await repo.getAllWorkouts();
     expect(allWorkouts.length).toBe(1);
 
-    await repo.deleteWorkout(vp.validWorkoutProps.id);
+    await repo.deleteWorkout(workoutTestProps.validWorkoutProps.id);
 
     const allWorkoutsAfterDeletion = await repo.getAllWorkouts();
     expect(allWorkoutsAfterDeletion.length).toBe(0);
@@ -158,12 +161,12 @@ describe('FileSystemWorkoutsRepo', () => {
 
   it('should delete all workouts for a user', async () => {
     const workout2 = Workout.create({
-      ...vp.validWorkoutPropsNoExercises(),
+      ...workoutTestProps.validWorkoutPropsNoExercises(),
       id: 'workout-2',
       name: 'Pull Day',
     });
     const workout3 = Workout.create({
-      ...vp.validWorkoutPropsNoExercises(),
+      ...workoutTestProps.validWorkoutPropsNoExercises(),
       id: 'workout-3',
       userId: 'user-2',
       name: 'Leg Day',

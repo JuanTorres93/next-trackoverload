@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as workoutTestProps from '../../../../../../tests/createProps/workoutTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError } from '@/domain/common/errors';
@@ -35,12 +36,12 @@ describe('RemoveSetFromWorkoutUsecase', () => {
     await usersRepo.saveUser(user);
 
     workout = Workout.create({
-      ...vp.validWorkoutPropsNoExercises(),
+      ...workoutTestProps.validWorkoutPropsNoExercises(),
       name: 'Push Day',
     });
 
     workoutLine1 = WorkoutLine.create({
-      ...vp.validWorkoutPropsNoExercises(),
+      ...workoutTestProps.validWorkoutPropsNoExercises(),
       workoutId: workout.id,
       exerciseId: 'exercise-1',
       setNumber: 1,
@@ -49,7 +50,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
     });
 
     workoutLine2 = WorkoutLine.create({
-      ...vp.validWorkoutPropsNoExercises(),
+      ...workoutTestProps.validWorkoutPropsNoExercises(),
       workoutId: workout.id,
       exerciseId: 'exercise-1',
       setNumber: 2,
@@ -58,7 +59,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
     });
 
     workoutLine3 = WorkoutLine.create({
-      ...vp.validWorkoutPropsNoExercises(),
+      ...workoutTestProps.validWorkoutPropsNoExercises(),
       workoutId: workout.id,
       exerciseId: 'exercise-2',
       setNumber: 1,
@@ -99,7 +100,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
     it('should return WorkoutDTO', async () => {
       const updatedWorkout = await removeSetFromWorkoutUsecase.execute({
         userId: userTestProps.userId,
-        workoutId: vp.validWorkoutProps.id,
+        workoutId: workoutTestProps.validWorkoutProps.id,
         exerciseId: 'exercise-1',
         setNumber: 1,
       });
@@ -114,7 +115,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
     it('should remove only the specified set number', async () => {
       workout.addExercise(
         WorkoutLine.create({
-          ...vp.validWorkoutPropsNoExercises(),
+          ...workoutTestProps.validWorkoutPropsNoExercises(),
           workoutId: workout.id,
           exerciseId: 'exercise-1',
           setNumber: 3,
@@ -127,7 +128,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
 
       const updatedWorkout = await removeSetFromWorkoutUsecase.execute({
         userId: userTestProps.userId,
-        workoutId: vp.validWorkoutProps.id,
+        workoutId: workoutTestProps.validWorkoutProps.id,
         exerciseId: 'exercise-1',
         setNumber: 2,
       });
@@ -137,7 +138,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
 
     it('should not modify workout when set does not exist', async () => {
       const workout = Workout.create({
-        ...vp.validWorkoutProps,
+        ...workoutTestProps.validWorkoutProps,
         name: 'Push Day',
         exercises: [workoutLine1],
       });
@@ -146,7 +147,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
 
       const updatedWorkout = await removeSetFromWorkoutUsecase.execute({
         userId: userTestProps.userId,
-        workoutId: vp.validWorkoutProps.id,
+        workoutId: workoutTestProps.validWorkoutProps.id,
         exerciseId: 'exercise-1',
         setNumber: 99, // Non-existent set number
       });
@@ -178,7 +179,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
     it('should throw error if user does not exist', async () => {
       const request = {
         userId: 'non-existent',
-        workoutId: vp.validWorkoutProps.id,
+        workoutId: workoutTestProps.validWorkoutProps.id,
         exerciseId: 'exercise-1',
         setNumber: 1,
       };

@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import * as vp from '@/../tests/createProps';
+import * as workoutTestProps from '../../../../../tests/createProps/workoutTestProps';
 import { ValidationError } from '@/domain/common/errors';
 import { Workout, WorkoutCreateProps } from '../Workout';
 import {
@@ -16,12 +17,12 @@ describe('Workout', () => {
 
   beforeEach(() => {
     validWorkoutLineProps = {
-      ...vp.validWorkoutLineProps,
+      ...workoutTestProps.validWorkoutLineProps,
     };
     workoutLine = WorkoutLine.create(validWorkoutLineProps);
 
     validWorkoutProps = {
-      ...vp.validWorkoutProps,
+      ...workoutTestProps.validWorkoutProps,
       exercises: [workoutLine],
     };
     workout = Workout.create(validWorkoutProps);
@@ -34,7 +35,7 @@ describe('Workout', () => {
 
     it('should add exercise', async () => {
       const newWorkoutLine = WorkoutLine.create({
-        ...vp.validWorkoutLineProps,
+        ...workoutTestProps.validWorkoutLineProps,
         exerciseId: 'ex2',
         setNumber: 1,
         reps: 12,
@@ -48,7 +49,7 @@ describe('Workout', () => {
 
     it('should remove exercise', async () => {
       const newWorkoutLine = WorkoutLine.create({
-        ...vp.validWorkoutLineProps,
+        ...workoutTestProps.validWorkoutLineProps,
         exerciseId: 'ex2',
         setNumber: 2,
         reps: 12,
@@ -83,32 +84,32 @@ describe('Workout', () => {
       // Second set of the same exercise
       workout.addExercise(
         WorkoutLine.create({
-          ...vp.validWorkoutPropsNoExercises(),
+          ...workoutTestProps.validWorkoutPropsNoExercises(),
           workoutId: workout.id,
           exerciseId: workoutLine.exerciseId,
           setNumber: 2,
           reps: 8,
           weight: 80,
-        })
+        }),
       );
 
       // Third set of the same exercise
       workout.addExercise(
         WorkoutLine.create({
-          ...vp.validWorkoutPropsNoExercises(),
+          ...workoutTestProps.validWorkoutPropsNoExercises(),
           workoutId: workout.id,
           exerciseId: workoutLine.exerciseId,
           setNumber: 3,
           reps: 6,
           weight: 70,
-        })
+        }),
       );
 
       // Remove the second set (the one first added in this test)
       workout.removeSet(workoutLine.exerciseId, 2);
 
       const remainingSets = workout.exercises.filter(
-        (line) => line.exerciseId === workoutLine.exerciseId
+        (line) => line.exerciseId === workoutLine.exerciseId,
       );
 
       // Defined in beforeEach block
@@ -131,18 +132,18 @@ describe('Workout', () => {
   describe('Errors', () => {
     it('should throw error if exercise already exists for a given set number on addition', async () => {
       const newWorkoutLine = WorkoutLine.create({
-        ...vp.validWorkoutLineProps,
+        ...workoutTestProps.validWorkoutLineProps,
         setNumber: 1,
         reps: 12,
         weight: 60,
       });
 
       expect(() => workout.addExercise(newWorkoutLine)).toThrow(
-        ValidationError
+        ValidationError,
       );
 
       expect(() => workout.addExercise(newWorkoutLine)).toThrow(
-        /Workout.*Exercise.*already.*exists/
+        /Workout.*Exercise.*already.*exists/,
       );
     });
 
@@ -154,11 +155,11 @@ describe('Workout', () => {
       };
 
       expect(() =>
-        workout.updateExercise('non-existent-exercise', updateProps)
+        workout.updateExercise('non-existent-exercise', updateProps),
       ).toThrow(ValidationError);
 
       expect(() =>
-        workout.updateExercise('non-existent-exercise', updateProps)
+        workout.updateExercise('non-existent-exercise', updateProps),
       ).toThrow(/Workout.*Exercise.*not.*found/);
     });
 

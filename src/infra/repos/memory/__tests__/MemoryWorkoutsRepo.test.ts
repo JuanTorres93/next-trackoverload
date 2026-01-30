@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as workoutTestProps from '../../../../../tests/createProps/workoutTestProps';
 import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -13,12 +14,12 @@ describe('MemoryWorkoutsRepo', () => {
   beforeEach(async () => {
     repo = new MemoryWorkoutsRepo();
     workout = Workout.create({
-      ...vp.validWorkoutPropsNoExercises(),
+      ...workoutTestProps.validWorkoutPropsNoExercises(),
       name: 'Push Day',
     });
 
     workoutLine = WorkoutLine.create({
-      ...vp.validWorkoutLineProps,
+      ...workoutTestProps.validWorkoutLineProps,
     });
 
     await repo.saveWorkout(workout);
@@ -26,7 +27,7 @@ describe('MemoryWorkoutsRepo', () => {
 
   it('should save a workout', async () => {
     const newWorkout = Workout.create({
-      ...vp.validWorkoutPropsNoExercises(),
+      ...workoutTestProps.validWorkoutPropsNoExercises(),
       id: 'another-workout-id',
       name: 'Pull Day',
     });
@@ -49,7 +50,7 @@ describe('MemoryWorkoutsRepo', () => {
 
   it('should update an existing workout', async () => {
     const updatedWorkout = Workout.create({
-      ...vp.validWorkoutPropsNoExercises(),
+      ...workoutTestProps.validWorkoutPropsNoExercises(),
       name: 'Updated Push Day',
       updatedAt: new Date('2023-01-03'),
     });
@@ -61,7 +62,9 @@ describe('MemoryWorkoutsRepo', () => {
   });
 
   it('should retrieve a workout by ID', async () => {
-    const fetchedWorkout = await repo.getWorkoutById(vp.validWorkoutProps.id);
+    const fetchedWorkout = await repo.getWorkoutById(
+      workoutTestProps.validWorkoutProps.id,
+    );
     expect(fetchedWorkout).not.toBeNull();
     expect(fetchedWorkout?.name).toBe('Push Day');
   });
@@ -75,7 +78,7 @@ describe('MemoryWorkoutsRepo', () => {
     const allWorkouts = await repo.getAllWorkouts();
     expect(allWorkouts.length).toBe(1);
 
-    await repo.deleteWorkout(vp.validWorkoutProps.id);
+    await repo.deleteWorkout(workoutTestProps.validWorkoutProps.id);
 
     const allWorkoutsAfterDeletion = await repo.getAllWorkouts();
     expect(allWorkoutsAfterDeletion.length).toBe(0);
@@ -83,14 +86,14 @@ describe('MemoryWorkoutsRepo', () => {
 
   it('should delete all workouts for a user', async () => {
     const workout2 = Workout.create({
-      ...vp.validWorkoutPropsNoExercises(),
+      ...workoutTestProps.validWorkoutPropsNoExercises(),
       id: 'workout-2',
       name: 'Pull Day',
     });
     await repo.saveWorkout(workout2);
 
     const workout3 = Workout.create({
-      ...vp.validWorkoutPropsNoExercises(),
+      ...workoutTestProps.validWorkoutPropsNoExercises(),
       id: 'workout-3',
       userId: 'user-2',
       name: 'Leg Day',

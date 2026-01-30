@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as workoutTestProps from '../../../../../../tests/createProps/workoutTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError, PermissionError } from '@/domain/common/errors';
@@ -32,12 +33,12 @@ describe('GetAllWorkoutsUsecase', () => {
   describe('Execution', () => {
     it('should return all workouts', async () => {
       const workout1 = Workout.create({
-        ...vp.validWorkoutProps,
+        ...workoutTestProps.validWorkoutProps,
         name: 'Push Day',
         exercises: [],
       });
       const workout2 = Workout.create({
-        ...vp.validWorkoutProps,
+        ...workoutTestProps.validWorkoutProps,
         id: 'another-workout-id',
         name: 'Pull Day',
         exercises: [],
@@ -60,12 +61,12 @@ describe('GetAllWorkoutsUsecase', () => {
 
     it('should return an array of WorkoutDTO', async () => {
       const workout1 = Workout.create({
-        ...vp.validWorkoutProps,
+        ...workoutTestProps.validWorkoutProps,
         name: 'Push Day',
         exercises: [],
       });
       const workout2 = Workout.create({
-        ...vp.validWorkoutProps,
+        ...workoutTestProps.validWorkoutProps,
         id: 'another-workout-id',
         name: 'Pull Day',
         exercises: [],

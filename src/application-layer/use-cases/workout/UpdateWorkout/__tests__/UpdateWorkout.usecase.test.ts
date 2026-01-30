@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as workoutTestProps from '../../../../../../tests/createProps/workoutTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError } from '@/domain/common/errors';
@@ -26,7 +27,7 @@ describe('UpdateWorkoutUsecase', () => {
     });
 
     workout = Workout.create({
-      ...vp.validWorkoutProps,
+      ...workoutTestProps.validWorkoutProps,
       exercises: [],
     });
 
@@ -37,20 +38,20 @@ describe('UpdateWorkoutUsecase', () => {
   describe('Execution', () => {
     it('should update workout name', async () => {
       const updatedWorkout = await updateWorkoutUsecase.execute({
-        id: vp.validWorkoutProps.id,
+        id: workoutTestProps.validWorkoutProps.id,
         userId: userTestProps.userId,
         name: 'Updated Push Day',
       });
 
       expect(updatedWorkout.name).toBe('Updated Push Day');
-      expect(updatedWorkout.id).toBe(vp.validWorkoutProps.id);
+      expect(updatedWorkout.id).toBe(workoutTestProps.validWorkoutProps.id);
       expect(updatedWorkout.workoutTemplateId).toBe('template-1');
       expect(updatedWorkout.exercises).toEqual([]);
     });
 
     it('should return WorkoutDTO', async () => {
       const updatedWorkout = await updateWorkoutUsecase.execute({
-        id: vp.validWorkoutProps.id,
+        id: workoutTestProps.validWorkoutProps.id,
         userId: userTestProps.userId,
         name: 'Updated Push Day',
       });
@@ -63,11 +64,11 @@ describe('UpdateWorkoutUsecase', () => {
 
     it('should keep existing name when not provided', async () => {
       const updatedWorkout = await updateWorkoutUsecase.execute({
-        id: vp.validWorkoutProps.id,
+        id: workoutTestProps.validWorkoutProps.id,
         userId: userTestProps.userId,
       });
 
-      expect(updatedWorkout.name).toBe(vp.validWorkoutProps.name);
+      expect(updatedWorkout.name).toBe(workoutTestProps.validWorkoutProps.name);
     });
   });
 
@@ -90,7 +91,7 @@ describe('UpdateWorkoutUsecase', () => {
 
     it('should throw error if user does not exist', async () => {
       const request = {
-        id: vp.validWorkoutProps.id,
+        id: workoutTestProps.validWorkoutProps.id,
         userId: 'non-existent',
         name: 'New Name',
       };
@@ -113,7 +114,7 @@ describe('UpdateWorkoutUsecase', () => {
       await usersRepo.saveUser(anotherUser);
 
       const request = {
-        id: vp.validWorkoutProps.id,
+        id: workoutTestProps.validWorkoutProps.id,
         userId: anotherUser.id,
         name: 'New Name',
       };

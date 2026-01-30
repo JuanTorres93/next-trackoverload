@@ -7,6 +7,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { GetWorkoutsByTemplateForUserUsecase } from '../GetWorkoutsByTemplateForUser.usecase';
 
 import * as vp from '@/../tests/createProps';
+import * as workoutTestProps from '../../../../../../tests/createProps/workoutTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 
@@ -32,14 +33,14 @@ describe('GetWorkoutsByTemplateUsecase', () => {
     });
 
     workout1 = Workout.create({
-      ...vp.validWorkoutProps,
+      ...workoutTestProps.validWorkoutProps,
       id: '1',
       name: 'Push Day #1',
       exercises: [],
     });
 
     workout2 = Workout.create({
-      ...vp.validWorkoutProps,
+      ...workoutTestProps.validWorkoutProps,
       id: '2',
       name: 'Pull Day #1',
       workoutTemplateId: 'template-2',
@@ -47,7 +48,7 @@ describe('GetWorkoutsByTemplateUsecase', () => {
     });
 
     workout3 = Workout.create({
-      ...vp.validWorkoutProps,
+      ...workoutTestProps.validWorkoutProps,
       id: '3',
       name: 'Push Day #2',
       exercises: [],

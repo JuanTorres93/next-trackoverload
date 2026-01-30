@@ -1,6 +1,7 @@
 import { toWorkoutLineDTO, WorkoutLineDTO } from '../WorkoutLineDTO';
 import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
 import * as vp from '@/../tests/createProps';
+import * as workoutTestProps from '../../../../tests/createProps/workoutTestProps';
 import * as dto from '@/../tests/dtoProperties';
 
 describe('WorkoutLineDTO', () => {
@@ -8,7 +9,7 @@ describe('WorkoutLineDTO', () => {
   let workoutLineDTO: WorkoutLineDTO;
 
   beforeEach(() => {
-    workoutLine = WorkoutLine.create(vp.validWorkoutLineProps);
+    workoutLine = WorkoutLine.create(workoutTestProps.validWorkoutLineProps);
   });
 
   describe('toWorkoutLineDTO', () => {

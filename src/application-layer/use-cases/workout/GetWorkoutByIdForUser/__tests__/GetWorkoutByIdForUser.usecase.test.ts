@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as workoutTestProps from '../../../../../../tests/createProps/workoutTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toWorkoutDTO } from '@/application-layer/dtos/WorkoutDTO';
@@ -33,14 +34,14 @@ describe('GetWorkoutByIdUsecase', () => {
   describe('Execution', () => {
     it('should return workout when it exists', async () => {
       const workout = Workout.create({
-        ...vp.validWorkoutProps,
+        ...workoutTestProps.validWorkoutProps,
         exercises: [],
       });
 
       await workoutsRepo.saveWorkout(workout);
 
       const result = await getWorkoutByIdUsecase.execute({
-        id: vp.validWorkoutProps.id,
+        id: workoutTestProps.validWorkoutProps.id,
         userId: userTestProps.userId,
       });
 
@@ -49,7 +50,7 @@ describe('GetWorkoutByIdUsecase', () => {
 
     it('should return WorkoutDTO', async () => {
       const workout = Workout.create({
-        ...vp.validWorkoutProps,
+        ...workoutTestProps.validWorkoutProps,
         name: 'Push Day',
         exercises: [],
       });
@@ -57,7 +58,7 @@ describe('GetWorkoutByIdUsecase', () => {
       await workoutsRepo.saveWorkout(workout);
 
       const result = await getWorkoutByIdUsecase.execute({
-        id: vp.validWorkoutProps.id,
+        id: workoutTestProps.validWorkoutProps.id,
         userId: userTestProps.userId,
       });
 
@@ -85,14 +86,14 @@ describe('GetWorkoutByIdUsecase', () => {
       await usersRepo.saveUser(anotherUser);
 
       const workout = Workout.create({
-        ...vp.validWorkoutProps,
+        ...workoutTestProps.validWorkoutProps,
         exercises: [],
       });
 
       await workoutsRepo.saveWorkout(workout);
 
       const result = await getWorkoutByIdUsecase.execute({
-        id: vp.validWorkoutProps.id,
+        id: workoutTestProps.validWorkoutProps.id,
         userId: anotherUser.id,
       });
 
@@ -104,14 +105,14 @@ describe('GetWorkoutByIdUsecase', () => {
     it('should throw error if user does not exist', async () => {
       await expect(
         getWorkoutByIdUsecase.execute({
-          id: vp.validWorkoutProps.id,
+          id: workoutTestProps.validWorkoutProps.id,
           userId: 'non-existent',
         }),
       ).rejects.toThrow(NotFoundError);
 
       await expect(
         getWorkoutByIdUsecase.execute({
-          id: vp.validWorkoutProps.id,
+          id: workoutTestProps.validWorkoutProps.id,
           userId: 'non-existent',
         }),
       ).rejects.toThrow(/GetWorkoutByIdForUserUsecase.*User.*not.*found/);

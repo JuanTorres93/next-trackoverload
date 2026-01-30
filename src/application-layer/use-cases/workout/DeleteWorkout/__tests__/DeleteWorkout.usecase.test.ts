@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as workoutTestProps from '../../../../../../tests/createProps/workoutTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import { NotFoundError } from '@/domain/common/errors';
 import { User } from '@/domain/entities/user/User';
@@ -25,7 +26,7 @@ describe('DeleteWorkoutUsecase', () => {
     });
 
     workout = Workout.create({
-      ...vp.validWorkoutProps,
+      ...workoutTestProps.validWorkoutProps,
       exercises: [],
     });
 
@@ -37,18 +38,18 @@ describe('DeleteWorkoutUsecase', () => {
     it('should delete workout when it exists', async () => {
       // Verify workout exists
       const existingWorkout = await workoutsRepo.getWorkoutById(
-        vp.validWorkoutProps.id,
+        workoutTestProps.validWorkoutProps.id,
       );
       expect(existingWorkout).toBe(workout);
 
       await deleteWorkoutUsecase.execute({
-        id: vp.validWorkoutProps.id,
-        userId: vp.validWorkoutProps.userId,
+        id: workoutTestProps.validWorkoutProps.id,
+        userId: workoutTestProps.validWorkoutProps.userId,
       });
 
       // Verify workout is deleted
       const deletedWorkout = await workoutsRepo.getWorkoutById(
-        vp.validWorkoutProps.id,
+        workoutTestProps.validWorkoutProps.id,
       );
       expect(deletedWorkout).toBeNull();
     });
@@ -58,7 +59,7 @@ describe('DeleteWorkoutUsecase', () => {
     it('should throw NotFoundError when workout does not exist', async () => {
       const request = {
         id: 'non-existent',
-        userId: vp.validWorkoutProps.userId,
+        userId: workoutTestProps.validWorkoutProps.userId,
       };
 
       await expect(deleteWorkoutUsecase.execute(request)).rejects.toThrow(
@@ -72,7 +73,7 @@ describe('DeleteWorkoutUsecase', () => {
 
     it('should throw error if user does not exist', async () => {
       const request = {
-        id: vp.validWorkoutProps.id,
+        id: workoutTestProps.validWorkoutProps.id,
         userId: 'non-existent',
       };
 
@@ -94,7 +95,7 @@ describe('DeleteWorkoutUsecase', () => {
       await usersRepo.saveUser(anotherUser);
 
       const request = {
-        id: vp.validWorkoutProps.id,
+        id: workoutTestProps.validWorkoutProps.id,
         userId: anotherUser.id,
       };
 

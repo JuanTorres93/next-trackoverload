@@ -1,6 +1,7 @@
 import { WorkoutLine, WorkoutLineCreateProps } from '../WorkoutLine';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import * as workoutTestProps from '../../../../../tests/createProps/workoutTestProps';
 
 describe('WorkoutLine', () => {
   let workoutLine: WorkoutLine;
@@ -8,7 +9,7 @@ describe('WorkoutLine', () => {
 
   beforeEach(() => {
     validWorkoutLineProps = {
-      ...vp.validWorkoutLineProps,
+      ...workoutTestProps.validWorkoutLineProps,
     };
     workoutLine = WorkoutLine.create(validWorkoutLineProps);
   });
