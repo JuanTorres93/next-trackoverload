@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as mealTestProps from '../../../../tests/createProps/mealTestProps';
 import * as recipeTestProps from '../../../../tests/createProps/recipeTestProps';
 import * as ingredientTestProps from '../../../../tests/createProps/ingredientTestProps';
 import * as dto from '@/../tests/dtoProperties';
@@ -18,11 +19,11 @@ describe('MealDTO', () => {
     ingredientLine = IngredientLine.create({
       ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       parentType: 'meal',
-      parentId: vp.mealPropsNoIngredientLines.id,
+      parentId: mealTestProps.mealPropsNoIngredientLines.id,
       ingredient,
     });
     meal = Meal.create({
-      ...vp.mealPropsNoIngredientLines,
+      ...mealTestProps.mealPropsNoIngredientLines,
       ingredientLines: [ingredientLine],
     });
   });
@@ -141,7 +142,7 @@ describe('MealDTO', () => {
       });
 
       const mealWithMultipleLines = Meal.create({
-        ...vp.mealPropsNoIngredientLines,
+        ...mealTestProps.mealPropsNoIngredientLines,
         ingredientLines: [ingredientLine, ingredientLine2],
       });
 

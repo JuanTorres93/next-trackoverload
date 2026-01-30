@@ -39,7 +39,7 @@ describe('UpdateWorkoutTemplateUsecase', () => {
       };
 
       // Wait just a bit to ensure updatedAt will be different
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 200));
       const result = await usecase.execute(request);
 
       expect(result.name).toBe('New Name');

@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as mealTestProps from '../../../../../../tests/createProps/mealTestProps';
 import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
 import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
@@ -60,7 +61,7 @@ describe('AddIngredientToMealUsecase', () => {
     });
 
     testMeal = Meal.create({
-      ...vp.mealPropsNoIngredientLines,
+      ...mealTestProps.mealPropsNoIngredientLines,
       ingredientLines: [testIngredientLine],
     });
     await mealsRepo.saveMeal(testMeal);

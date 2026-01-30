@@ -1,13 +1,7 @@
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { WorkoutTemplateLine } from '@/domain/entities/workouttemplateline/WorkoutTemplateLine';
 import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
 import { userId } from './createProps/userTestProps';
 import { validIngredientProps } from './createProps/ingredientTestProps';
-import {
-  recipePropsNoIngredientLines,
-  ingredientLineRecipePropsNoIngredient,
-} from './createProps/recipeTestProps';
 
 export const dateId = new Date('2023-10-01');
 
@@ -132,29 +126,6 @@ export const validExternalIngredientRefProps = {
   ingredientId: validIngredientProps.id,
   createdAt: new Date(),
 };
-
-export const mealPropsNoIngredientLines = {
-  id: 'meal1',
-  userId: userId,
-  name: 'Chicken Meal',
-  createdFromRecipeId: recipePropsNoIngredientLines.id,
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
-
-export function validMealWithIngredientLines() {
-  const ingredientLine1 = IngredientLine.create({
-    ...ingredientLineRecipePropsNoIngredient,
-    id: 'line-1',
-    ingredient: Ingredient.create(validIngredientProps),
-    quantityInGrams: 150,
-  });
-
-  return {
-    ...mealPropsNoIngredientLines,
-    ingredientLines: [ingredientLine1],
-  };
-}
 
 export const validWorkoutLineProps = {
   id: 'workoutline-1',

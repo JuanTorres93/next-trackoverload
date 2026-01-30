@@ -1,6 +1,7 @@
 import { GetAssembledDayByIdUsecase } from '../GetAssembledDayByIdUsecase';
 
 import * as vp from '@/../tests/createProps';
+import * as mealTestProps from '../../../../../../tests/createProps/mealTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { Day } from '@/domain/entities/day/Day';
@@ -62,7 +63,7 @@ describe('GetAssembledDayByIdUsecase', () => {
     });
 
     it('should assemble related meals and fake meals', async () => {
-      const meal = Meal.create(vp.validMealWithIngredientLines());
+      const meal = Meal.create(mealTestProps.validMealWithIngredientLines());
       const fakeMeal = FakeMeal.create(vp.validFakeMealProps);
 
       await mealsRepo.saveMeal(meal);

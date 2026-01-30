@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as mealTestProps from '../../../../../../tests/createProps/mealTestProps';
 import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
 import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
@@ -76,7 +77,7 @@ describe('UpdateIngredientLineUsecase', () => {
     });
 
     testMeal = Meal.create({
-      ...vp.mealPropsNoIngredientLines,
+      ...mealTestProps.mealPropsNoIngredientLines,
       id: 'test-meal-id',
       userId: userId,
       ingredientLines: [testIngredientLine],

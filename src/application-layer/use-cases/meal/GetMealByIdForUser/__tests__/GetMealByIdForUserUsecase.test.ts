@@ -3,6 +3,7 @@ import { GetMealByIdForUserUsecase } from '../GetMealByIdForUserUsecase';
 import { Meal } from '@/domain/entities/meal/Meal';
 
 import * as vp from '@/../tests/createProps';
+import * as mealTestProps from '../../../../../../tests/createProps/mealTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { MemoryMealsRepo } from '@/infra/repos/memory/MemoryMealsRepo';
@@ -25,7 +26,7 @@ describe('GetMealByIdForUserUsecase', () => {
     await usersRepo.saveUser(user);
 
     meal = Meal.create({
-      ...vp.validMealWithIngredientLines(),
+      ...mealTestProps.validMealWithIngredientLines(),
     });
 
     await mealsRepo.saveMeal(meal);

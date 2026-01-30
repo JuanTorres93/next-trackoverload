@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as mealTestProps from '../../../../../../tests/createProps/mealTestProps';
 import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import { NotFoundError, PermissionError } from '@/domain/common/errors';
@@ -68,7 +69,7 @@ describe('DeleteUserUsecase', () => {
     });
 
     const meal = Meal.create({
-      ...vp.validMealWithIngredientLines(),
+      ...mealTestProps.validMealWithIngredientLines(),
       userId: userTestProps.userId,
     });
 

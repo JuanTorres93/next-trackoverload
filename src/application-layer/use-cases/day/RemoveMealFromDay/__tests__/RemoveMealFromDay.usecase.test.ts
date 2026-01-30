@@ -8,6 +8,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { RemoveMealFromDayUsecase } from '../RemoveMealFromDay.usecase';
 
 import * as vp from '@/../tests/createProps';
+import * as mealTestProps from '../../../../../../tests/createProps/mealTestProps';
 import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
 import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
@@ -46,7 +47,7 @@ describe('RemoveMealFromDayUsecase', () => {
     });
 
     meal = Meal.create({
-      ...vp.mealPropsNoIngredientLines,
+      ...mealTestProps.mealPropsNoIngredientLines,
       ingredientLines: [ingredientLine],
     });
 
@@ -70,7 +71,7 @@ describe('RemoveMealFromDayUsecase', () => {
       const result = await removeMealFromDayUsecase.execute({
         date: day.id,
         userId: userTestProps.userId,
-        mealId: vp.mealPropsNoIngredientLines.id,
+        mealId: mealTestProps.mealPropsNoIngredientLines.id,
       });
 
       expect(result.mealIds).toHaveLength(0);
@@ -83,7 +84,7 @@ describe('RemoveMealFromDayUsecase', () => {
       await removeMealFromDayUsecase.execute({
         date: day.id,
         userId: userTestProps.userId,
-        mealId: vp.mealPropsNoIngredientLines.id,
+        mealId: mealTestProps.mealPropsNoIngredientLines.id,
       });
 
       const updatedDay = await daysRepo.getDayByIdAndUserId(
@@ -98,7 +99,7 @@ describe('RemoveMealFromDayUsecase', () => {
       const result = await removeMealFromDayUsecase.execute({
         date: day.id,
         userId: userTestProps.userId,
-        mealId: vp.mealPropsNoIngredientLines.id,
+        mealId: mealTestProps.mealPropsNoIngredientLines.id,
       });
 
       expect(result).not.toBeInstanceOf(Day);
@@ -116,7 +117,7 @@ describe('RemoveMealFromDayUsecase', () => {
       await removeMealFromDayUsecase.execute({
         date: day.id,
         userId: userTestProps.userId,
-        mealId: vp.mealPropsNoIngredientLines.id,
+        mealId: mealTestProps.mealPropsNoIngredientLines.id,
       });
 
       const mealsAfterRemoval = await mealsRepo.getAllMeals();
@@ -167,7 +168,7 @@ describe('RemoveMealFromDayUsecase', () => {
       const request = {
         date: day.id,
         userId: anotherUser.id,
-        mealId: vp.mealPropsNoIngredientLines.id,
+        mealId: mealTestProps.mealPropsNoIngredientLines.id,
       };
 
       await expect(removeMealFromDayUsecase.execute(request)).rejects.toThrow(

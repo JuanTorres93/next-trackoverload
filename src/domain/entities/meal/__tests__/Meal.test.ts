@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import * as vp from '@/../tests/createProps';
+import * as mealTestProps from '../../../../../tests/createProps/mealTestProps';
 import * as recipeTestProps from '../../../../../tests/createProps/recipeTestProps';
 import * as ingredientTestProps from '../../../../../tests/createProps/ingredientTestProps';
 import { ValidationError } from '@/domain/common/errors';
@@ -26,7 +27,7 @@ describe('Meal', () => {
     });
 
     validMealProps = {
-      ...vp.mealPropsNoIngredientLines,
+      ...mealTestProps.mealPropsNoIngredientLines,
       ingredientLines: [validIngredientLine],
     };
     meal = Meal.create(validMealProps);

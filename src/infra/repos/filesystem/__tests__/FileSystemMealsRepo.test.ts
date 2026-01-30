@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as mealTestProps from '../../../../../tests/createProps/mealTestProps';
 import * as recipeTestProps from '../../../../../tests/createProps/recipeTestProps';
 import * as ingredientTestProps from '../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../tests/createProps/userTestProps';
@@ -37,7 +38,7 @@ describe('FileSystemMealsRepo', () => {
     });
 
     meal = Meal.create({
-      ...vp.mealPropsNoIngredientLines,
+      ...mealTestProps.mealPropsNoIngredientLines,
       name: 'Grilled Chicken',
       ingredientLines: [ingredientLine],
     });
@@ -56,7 +57,7 @@ describe('FileSystemMealsRepo', () => {
 
   it('should save a meal', async () => {
     const newMeal = Meal.create({
-      ...vp.mealPropsNoIngredientLines,
+      ...mealTestProps.mealPropsNoIngredientLines,
       id: 'new-meal',
       name: 'Chicken Salad',
       ingredientLines: [ingredientLine],
@@ -73,7 +74,7 @@ describe('FileSystemMealsRepo', () => {
 
   it('should update an existing meal', async () => {
     const updatedMeal = Meal.create({
-      ...vp.mealPropsNoIngredientLines,
+      ...mealTestProps.mealPropsNoIngredientLines,
       name: 'Updated Grilled Chicken',
       ingredientLines: [ingredientLine],
     });
@@ -86,7 +87,7 @@ describe('FileSystemMealsRepo', () => {
 
   it('should retrieve a meal by ID', async () => {
     const fetchedMeal = await repo.getMealById(
-      vp.mealPropsNoIngredientLines.id,
+      mealTestProps.mealPropsNoIngredientLines.id,
     );
     expect(fetchedMeal).not.toBeNull();
     expect(fetchedMeal?.name).toBe('Grilled Chicken');
@@ -100,7 +101,7 @@ describe('FileSystemMealsRepo', () => {
       quantityInGrams: 200,
     });
     const meal2 = Meal.create({
-      ...vp.mealPropsNoIngredientLines,
+      ...mealTestProps.mealPropsNoIngredientLines,
       id: 'meal-2',
       name: 'Chicken Salad',
       ingredientLines: [ingredientLine2],
@@ -112,7 +113,7 @@ describe('FileSystemMealsRepo', () => {
       quantityInGrams: 100,
     });
     const meal3 = Meal.create({
-      ...vp.mealPropsNoIngredientLines,
+      ...mealTestProps.mealPropsNoIngredientLines,
       id: 'meal-3',
       name: 'Turkey Sandwich',
       ingredientLines: [ingredientLine3],
@@ -121,7 +122,7 @@ describe('FileSystemMealsRepo', () => {
     await repo.saveMeal(meal3);
 
     const fetchedMeals = await repo.getMealByIds([
-      vp.mealPropsNoIngredientLines.id,
+      mealTestProps.mealPropsNoIngredientLines.id,
       'meal-2',
     ]);
     expect(fetchedMeals.length).toBe(2);
@@ -145,7 +146,7 @@ describe('FileSystemMealsRepo', () => {
       quantityInGrams: 200,
     });
     const meal2 = Meal.create({
-      ...vp.mealPropsNoIngredientLines,
+      ...mealTestProps.mealPropsNoIngredientLines,
       id: 'meal-2',
       name: 'Chicken Salad',
       ingredientLines: [ingredientLine2],
@@ -153,13 +154,13 @@ describe('FileSystemMealsRepo', () => {
     await repo.saveMeal(meal2);
 
     const fetchedMeals = await repo.getMealByIds([
-      vp.mealPropsNoIngredientLines.id,
+      mealTestProps.mealPropsNoIngredientLines.id,
       'non-existent',
       'meal-2',
     ]);
     expect(fetchedMeals.length).toBe(2);
     expect(fetchedMeals.map((m) => m.id)).toContain(
-      vp.mealPropsNoIngredientLines.id,
+      mealTestProps.mealPropsNoIngredientLines.id,
     );
     expect(fetchedMeals.map((m) => m.id)).toContain('meal-2');
   });
@@ -167,13 +168,13 @@ describe('FileSystemMealsRepo', () => {
   it('should retrieve all meals by a user', async () => {
     const userMeals = await repo.getAllMealsForUser(userTestProps.userId);
     expect(userMeals.length).toBe(1);
-    expect(userMeals[0].id).toBe(vp.mealPropsNoIngredientLines.id);
+    expect(userMeals[0].id).toBe(mealTestProps.mealPropsNoIngredientLines.id);
     expect(userMeals[0].name).toBe('Grilled Chicken');
   });
 
   it('should retrieve a meal by ID for a user', async () => {
     const fetchedMeal = await repo.getMealByIdForUser(
-      vp.mealPropsNoIngredientLines.id,
+      mealTestProps.mealPropsNoIngredientLines.id,
       userTestProps.userId,
     );
     expect(fetchedMeal).not.toBeNull();
@@ -188,11 +189,12 @@ describe('FileSystemMealsRepo', () => {
       quantityInGrams: 200,
     });
     const meal2 = Meal.create({
-      ...vp.mealPropsNoIngredientLines,
+      ...mealTestProps.mealPropsNoIngredientLines,
       id: 'meal-2',
       name: 'Chicken Salad',
       ingredientLines: [ingredientLine2],
-      createdFromRecipeId: vp.mealPropsNoIngredientLines.createdFromRecipeId,
+      createdFromRecipeId:
+        mealTestProps.mealPropsNoIngredientLines.createdFromRecipeId,
     });
     const ingredientLine3 = IngredientLine.create({
       ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
@@ -201,7 +203,7 @@ describe('FileSystemMealsRepo', () => {
       quantityInGrams: 100,
     });
     const meal3 = Meal.create({
-      ...vp.mealPropsNoIngredientLines,
+      ...mealTestProps.mealPropsNoIngredientLines,
       id: 'meal-3',
       name: 'Turkey Sandwich',
       ingredientLines: [ingredientLine3],
@@ -211,12 +213,12 @@ describe('FileSystemMealsRepo', () => {
     await repo.saveMeal(meal3);
 
     const fetchedMeals = await repo.getMealsByRecipeIdAndUserId(
-      vp.mealPropsNoIngredientLines.createdFromRecipeId,
+      mealTestProps.mealPropsNoIngredientLines.createdFromRecipeId,
       userTestProps.userId,
     );
     expect(fetchedMeals.length).toBe(2);
     expect(fetchedMeals.map((m) => m.id)).toContain(
-      vp.mealPropsNoIngredientLines.id,
+      mealTestProps.mealPropsNoIngredientLines.id,
     );
     expect(fetchedMeals.map((m) => m.id)).toContain('meal-2');
     expect(fetchedMeals.map((m) => m.id)).not.toContain('meal-3');
@@ -232,7 +234,7 @@ describe('FileSystemMealsRepo', () => {
 
   it('should return empty array when recipeId matches but userId does not', async () => {
     const fetchedMeals = await repo.getMealsByRecipeIdAndUserId(
-      vp.mealPropsNoIngredientLines.createdFromRecipeId,
+      mealTestProps.mealPropsNoIngredientLines.createdFromRecipeId,
       'different-user-id',
     );
     expect(fetchedMeals.length).toBe(0);
@@ -247,7 +249,7 @@ describe('FileSystemMealsRepo', () => {
     const allMeals = await repo.getAllMeals();
     expect(allMeals.length).toBe(1);
 
-    await repo.deleteMeal(vp.mealPropsNoIngredientLines.id);
+    await repo.deleteMeal(mealTestProps.mealPropsNoIngredientLines.id);
 
     const allMealsAfterDeletion = await repo.getAllMeals();
     expect(allMealsAfterDeletion.length).toBe(0);
@@ -275,7 +277,7 @@ describe('FileSystemMealsRepo', () => {
   });
 
   it('should delete ingredient lines when meal is deleted', async () => {
-    await repo.deleteMeal(vp.mealPropsNoIngredientLines.id);
+    await repo.deleteMeal(mealTestProps.mealPropsNoIngredientLines.id);
 
     // Verify ingredient line file is deleted
     const lineFilePath = path.join(
@@ -297,7 +299,7 @@ describe('FileSystemMealsRepo', () => {
       quantityInGrams: 200,
     });
     const meal2 = Meal.create({
-      ...vp.mealPropsNoIngredientLines,
+      ...mealTestProps.mealPropsNoIngredientLines,
       id: 'meal-2',
       name: 'Chicken Salad',
       ingredientLines: [ingredientLine2],
@@ -309,7 +311,7 @@ describe('FileSystemMealsRepo', () => {
       quantityInGrams: 100,
     });
     const meal3 = Meal.create({
-      ...vp.mealPropsNoIngredientLines,
+      ...mealTestProps.mealPropsNoIngredientLines,
       id: 'meal-3',
       name: 'Turkey Sandwich',
       ingredientLines: [ingredientLine3],
@@ -321,7 +323,7 @@ describe('FileSystemMealsRepo', () => {
     expect(allMeals.length).toBe(3);
 
     await repo.deleteMultipleMeals([
-      vp.mealPropsNoIngredientLines.id,
+      mealTestProps.mealPropsNoIngredientLines.id,
       'meal-2',
     ]);
 
@@ -359,7 +361,7 @@ describe('FileSystemMealsRepo', () => {
       quantityInGrams: 120,
     });
     const meal2 = Meal.create({
-      ...vp.mealPropsNoIngredientLines,
+      ...mealTestProps.mealPropsNoIngredientLines,
       id: 'meal-2',
       name: 'Chicken Salad',
       ingredientLines: [ingredientLine2],
@@ -370,7 +372,7 @@ describe('FileSystemMealsRepo', () => {
     expect(allMeals.length).toBe(2);
 
     await repo.deleteMultipleMeals([
-      vp.mealPropsNoIngredientLines.id,
+      mealTestProps.mealPropsNoIngredientLines.id,
       'non-existent',
     ]);
 
@@ -387,7 +389,7 @@ describe('FileSystemMealsRepo', () => {
       quantityInGrams: 120,
     });
     const meal2 = Meal.create({
-      ...vp.mealPropsNoIngredientLines,
+      ...mealTestProps.mealPropsNoIngredientLines,
       id: 'meal-2',
       name: 'Chicken Salad',
       ingredientLines: [ingredientLine2],
@@ -399,7 +401,7 @@ describe('FileSystemMealsRepo', () => {
       quantityInGrams: 100,
     });
     const meal3 = Meal.create({
-      ...vp.mealPropsNoIngredientLines,
+      ...mealTestProps.mealPropsNoIngredientLines,
       id: 'meal-3',
       userId: 'user-2',
       name: 'Turkey Sandwich',

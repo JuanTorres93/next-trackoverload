@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as mealTestProps from '../../../../../../tests/createProps/mealTestProps';
 import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
 import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
@@ -41,7 +42,7 @@ describe('UpdateMealUsecase', () => {
     });
 
     meal = Meal.create({
-      ...vp.mealPropsNoIngredientLines,
+      ...mealTestProps.mealPropsNoIngredientLines,
       ingredientLines: [ingredientLine],
     });
 
@@ -60,11 +61,11 @@ describe('UpdateMealUsecase', () => {
       });
 
       expect(updatedMeal.name).toBe('High Protein Meal');
-      expect(updatedMeal.id).toBe(vp.mealPropsNoIngredientLines.id);
+      expect(updatedMeal.id).toBe(mealTestProps.mealPropsNoIngredientLines.id);
       expect(updatedMeal.ingredientLines).toHaveLength(1);
       expect(updatedMeal.createdAt).toBe(meal.createdAt.toISOString());
       expect(updatedMeal.updatedAt).not.toBe(
-        vp.mealPropsNoIngredientLines.updatedAt.toISOString(),
+        mealTestProps.mealPropsNoIngredientLines.updatedAt.toISOString(),
       );
     });
 
