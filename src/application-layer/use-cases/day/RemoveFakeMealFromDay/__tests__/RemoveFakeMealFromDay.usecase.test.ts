@@ -7,6 +7,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { RemoveFakeMealFromDayUsecase } from '../RemoveFakeMealFromDay.usecase';
 
 import * as vp from '@/../tests/createProps';
+import * as fakeMealTestProps from '../../../../../../tests/createProps/fakeMealTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
@@ -33,7 +34,7 @@ describe('RemoveMealFromDayUsecase', () => {
     );
 
     fakeMeal = FakeMeal.create({
-      ...vp.validFakeMealProps,
+      ...fakeMealTestProps.validFakeMealProps,
     });
 
     day = Day.create({
@@ -56,7 +57,7 @@ describe('RemoveMealFromDayUsecase', () => {
       const result = await removeFakeMealFromDayUsecase.execute({
         date: day.id,
         userId: userTestProps.userId,
-        fakeMealId: vp.validFakeMealProps.id,
+        fakeMealId: fakeMealTestProps.validFakeMealProps.id,
       });
 
       expect(result.mealIds).toHaveLength(0);
@@ -69,7 +70,7 @@ describe('RemoveMealFromDayUsecase', () => {
       await removeFakeMealFromDayUsecase.execute({
         date: day.id,
         userId: userTestProps.userId,
-        fakeMealId: vp.validFakeMealProps.id,
+        fakeMealId: fakeMealTestProps.validFakeMealProps.id,
       });
 
       const updatedDay = await daysRepo.getDayByIdAndUserId(
@@ -84,7 +85,7 @@ describe('RemoveMealFromDayUsecase', () => {
       const result = await removeFakeMealFromDayUsecase.execute({
         date: day.id,
         userId: userTestProps.userId,
-        fakeMealId: vp.validFakeMealProps.id,
+        fakeMealId: fakeMealTestProps.validFakeMealProps.id,
       });
 
       expect(result).not.toBeInstanceOf(Day);
@@ -97,7 +98,7 @@ describe('RemoveMealFromDayUsecase', () => {
       await removeFakeMealFromDayUsecase.execute({
         date: day.id,
         userId: userTestProps.userId,
-        fakeMealId: vp.validFakeMealProps.id,
+        fakeMealId: fakeMealTestProps.validFakeMealProps.id,
       });
 
       const updatedDay = await daysRepo.getDayByIdAndUserId(
@@ -116,7 +117,7 @@ describe('RemoveMealFromDayUsecase', () => {
       await removeFakeMealFromDayUsecase.execute({
         date: day.id,
         userId: userTestProps.userId,
-        fakeMealId: vp.validFakeMealProps.id,
+        fakeMealId: fakeMealTestProps.validFakeMealProps.id,
       });
 
       const mealsAfterRemoval = await fakeMealsRepo.getAllFakeMeals();
@@ -129,7 +130,7 @@ describe('RemoveMealFromDayUsecase', () => {
       const request = {
         date: '11111001',
         userId: userTestProps.userId,
-        fakeMealId: vp.validFakeMealProps.id,
+        fakeMealId: fakeMealTestProps.validFakeMealProps.id,
       };
 
       await expect(
@@ -144,7 +145,7 @@ describe('RemoveMealFromDayUsecase', () => {
       const request = {
         date: day.id,
         userId: 'non-existent',
-        fakeMealId: vp.validFakeMealProps.id,
+        fakeMealId: fakeMealTestProps.validFakeMealProps.id,
       };
 
       await expect(
@@ -168,7 +169,7 @@ describe('RemoveMealFromDayUsecase', () => {
       const request = {
         date: day.id,
         userId: anotherUser.id,
-        fakeMealId: vp.validFakeMealProps.id,
+        fakeMealId: fakeMealTestProps.validFakeMealProps.id,
       };
 
       await expect(

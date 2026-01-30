@@ -3,6 +3,7 @@ import { FileSystemDaysRepo } from '../FileSystemDaysRepo';
 import { Day } from '@/domain/entities/day/Day';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import * as vp from '@/../tests/createProps';
+import * as fakeMealTestProps from '../../../../../tests/createProps/fakeMealTestProps';
 import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import fs from 'fs/promises';
 import path from 'path';
@@ -15,7 +16,7 @@ describe('FileSystemDaysRepo', () => {
 
   beforeEach(async () => {
     repo = new FileSystemDaysRepo(testDir);
-    fakeMeal = FakeMeal.create(vp.validFakeMealProps);
+    fakeMeal = FakeMeal.create(fakeMealTestProps.validFakeMealProps);
 
     day = Day.create({
       ...vp.validDayProps(),

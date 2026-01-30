@@ -8,6 +8,7 @@ import { User } from '@/domain/entities/user/User';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
 
 import * as vp from '@/../tests/createProps';
+import * as fakeMealTestProps from '../../../../../../tests/createProps/fakeMealTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 
@@ -57,9 +58,9 @@ describe('AddFakeMealToDayUsecase', () => {
       const result = await addFakeMealToDayUsecase.execute({
         dayId: day.id,
         userId: user.id,
-        name: vp.validFakeMealProps.name,
-        calories: vp.validFakeMealProps.calories,
-        protein: vp.validFakeMealProps.protein,
+        name: fakeMealTestProps.validFakeMealProps.name,
+        calories: fakeMealTestProps.validFakeMealProps.calories,
+        protein: fakeMealTestProps.validFakeMealProps.protein,
       });
 
       expect(result.fakeMealIds).toHaveLength(1);
@@ -69,9 +70,9 @@ describe('AddFakeMealToDayUsecase', () => {
       const result = await addFakeMealToDayUsecase.execute({
         dayId: day.id,
         userId: user.id,
-        name: vp.validFakeMealProps.name,
-        calories: vp.validFakeMealProps.calories,
-        protein: vp.validFakeMealProps.protein,
+        name: fakeMealTestProps.validFakeMealProps.name,
+        calories: fakeMealTestProps.validFakeMealProps.calories,
+        protein: fakeMealTestProps.validFakeMealProps.protein,
       });
 
       expect(result).not.toBeInstanceOf(Day);
@@ -89,9 +90,9 @@ describe('AddFakeMealToDayUsecase', () => {
       await addFakeMealToDayUsecase.execute({
         dayId: day.id,
         userId: user.id,
-        name: vp.validFakeMealProps.name,
-        calories: vp.validFakeMealProps.calories,
-        protein: vp.validFakeMealProps.protein,
+        name: fakeMealTestProps.validFakeMealProps.name,
+        calories: fakeMealTestProps.validFakeMealProps.calories,
+        protein: fakeMealTestProps.validFakeMealProps.protein,
       });
 
       const afterFakeMealCount = await fakeMealsRepo.getAllFakeMeals();
@@ -104,9 +105,9 @@ describe('AddFakeMealToDayUsecase', () => {
       const request = {
         dayId: day.id,
         userId: 'non-existent',
-        name: vp.validFakeMealProps.name,
-        calories: vp.validFakeMealProps.calories,
-        protein: vp.validFakeMealProps.protein,
+        name: fakeMealTestProps.validFakeMealProps.name,
+        calories: fakeMealTestProps.validFakeMealProps.calories,
+        protein: fakeMealTestProps.validFakeMealProps.protein,
       };
 
       await expect(addFakeMealToDayUsecase.execute(request)).rejects.toThrow(
@@ -122,9 +123,9 @@ describe('AddFakeMealToDayUsecase', () => {
       const request = {
         dayId: day.id,
         userId: anotherUser.id,
-        name: vp.validFakeMealProps.name,
-        calories: vp.validFakeMealProps.calories,
-        protein: vp.validFakeMealProps.protein,
+        name: fakeMealTestProps.validFakeMealProps.name,
+        calories: fakeMealTestProps.validFakeMealProps.calories,
+        protein: fakeMealTestProps.validFakeMealProps.protein,
       };
 
       await expect(addFakeMealToDayUsecase.execute(request)).rejects.toThrow(

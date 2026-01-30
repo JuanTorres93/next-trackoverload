@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as fakeMealTestProps from '../../../../../../tests/createProps/fakeMealTestProps';
 import * as mealTestProps from '../../../../../../tests/createProps/mealTestProps';
 import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
@@ -64,7 +65,7 @@ describe('DeleteUserUsecase', () => {
 
     // Create associated resources
     const fakeMeal = FakeMeal.create({
-      ...vp.validFakeMealProps,
+      ...fakeMealTestProps.validFakeMealProps,
       userId: userTestProps.userId,
     });
 

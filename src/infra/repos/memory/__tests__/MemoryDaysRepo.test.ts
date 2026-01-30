@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as fakeMealTestProps from '../../../../../tests/createProps/fakeMealTestProps';
 import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import { Day } from '@/domain/entities/day/Day';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
@@ -12,7 +13,7 @@ describe('MemoryDaysRepo', () => {
 
   beforeEach(async () => {
     repo = new MemoryDaysRepo();
-    fakeMeal = FakeMeal.create(vp.validFakeMealProps);
+    fakeMeal = FakeMeal.create(fakeMealTestProps.validFakeMealProps);
 
     day = Day.create({
       ...vp.validDayProps(),

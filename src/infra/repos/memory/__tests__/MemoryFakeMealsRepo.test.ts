@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryFakeMealsRepo } from '../MemoryFakeMealsRepo';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import * as vp from '@/../tests/createProps';
+import * as fakeMealTestProps from '../../../../../tests/createProps/fakeMealTestProps';
 import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 
 describe('MemoryFakeMealsRepo', () => {
@@ -11,7 +12,7 @@ describe('MemoryFakeMealsRepo', () => {
   beforeEach(async () => {
     repo = new MemoryFakeMealsRepo();
     fakeMeal = FakeMeal.create({
-      ...vp.validFakeMealProps,
+      ...fakeMealTestProps.validFakeMealProps,
       name: 'Protein Shake',
       calories: 250,
       protein: 30,
@@ -21,7 +22,7 @@ describe('MemoryFakeMealsRepo', () => {
 
   it('should save a fake meal', async () => {
     const newFakeMeal = FakeMeal.create({
-      ...vp.validFakeMealProps,
+      ...fakeMealTestProps.validFakeMealProps,
       id: 'another-id',
       name: 'Energy Bar',
     });
@@ -34,8 +35,8 @@ describe('MemoryFakeMealsRepo', () => {
 
   it('should update an existing fake meal', async () => {
     const updatedFakeMeal = FakeMeal.create({
-      ...vp.validFakeMealProps,
-      id: vp.validFakeMealProps.id,
+      ...fakeMealTestProps.validFakeMealProps,
+      id: fakeMealTestProps.validFakeMealProps.id,
       name: 'Updated Protein Shake',
       updatedAt: new Date('2023-01-03'),
     });
@@ -48,7 +49,7 @@ describe('MemoryFakeMealsRepo', () => {
 
   it('should retrieve all fake meals by userId', async () => {
     const fakeMeal2 = FakeMeal.create({
-      ...vp.validFakeMealProps,
+      ...fakeMealTestProps.validFakeMealProps,
       id: '2',
       userId: 'user-2',
       name: 'Another Shake',
@@ -66,7 +67,7 @@ describe('MemoryFakeMealsRepo', () => {
 
   it('should retrieve a fake meal by ID', async () => {
     const fetchedFakeMeal = await repo.getFakeMealById(
-      vp.validFakeMealProps.id,
+      fakeMealTestProps.validFakeMealProps.id,
     );
     expect(fetchedFakeMeal).not.toBeNull();
     expect(fetchedFakeMeal?.name).toBe('Protein Shake');
@@ -74,12 +75,12 @@ describe('MemoryFakeMealsRepo', () => {
 
   it('should retrieve multiple fake meals by IDs', async () => {
     const fakeMeal2 = FakeMeal.create({
-      ...vp.validFakeMealProps,
+      ...fakeMealTestProps.validFakeMealProps,
       id: 'fakemeal-2',
       name: 'Energy Bar',
     });
     const fakeMeal3 = FakeMeal.create({
-      ...vp.validFakeMealProps,
+      ...fakeMealTestProps.validFakeMealProps,
       id: 'fakemeal-3',
       name: 'Protein Bar',
     });
@@ -87,7 +88,7 @@ describe('MemoryFakeMealsRepo', () => {
     await repo.saveFakeMeal(fakeMeal3);
 
     const fetchedFakeMeals = await repo.getFakeMealByIds([
-      vp.validFakeMealProps.id,
+      fakeMealTestProps.validFakeMealProps.id,
       'fakemeal-2',
     ]);
     expect(fetchedFakeMeals.length).toBe(2);
@@ -105,34 +106,34 @@ describe('MemoryFakeMealsRepo', () => {
 
   it('should retrieve only existing fake meals when some IDs do not exist', async () => {
     const fakeMeal2 = FakeMeal.create({
-      ...vp.validFakeMealProps,
+      ...fakeMealTestProps.validFakeMealProps,
       id: 'fakemeal-2',
       name: 'Energy Bar',
     });
     await repo.saveFakeMeal(fakeMeal2);
 
     const fetchedFakeMeals = await repo.getFakeMealByIds([
-      vp.validFakeMealProps.id,
+      fakeMealTestProps.validFakeMealProps.id,
       'non-existent',
       'fakemeal-2',
     ]);
     expect(fetchedFakeMeals.length).toBe(2);
     expect(fetchedFakeMeals.map((fm) => fm.id)).toContain(
-      vp.validFakeMealProps.id,
+      fakeMealTestProps.validFakeMealProps.id,
     );
     expect(fetchedFakeMeals.map((fm) => fm.id)).toContain('fakemeal-2');
   });
 
   it('should retrieve a fake meal by ID and userId', async () => {
     const fetchedFakeMeal = await repo.getFakeMealByIdAndUserId(
-      vp.validFakeMealProps.id,
+      fakeMealTestProps.validFakeMealProps.id,
       'user-1',
     );
     expect(fetchedFakeMeal).not.toBeNull();
     expect(fetchedFakeMeal?.name).toBe('Protein Shake');
 
     const notFoundFakeMeal = await repo.getFakeMealByIdAndUserId(
-      vp.validFakeMealProps.id,
+      fakeMealTestProps.validFakeMealProps.id,
       'user-2',
     );
     expect(notFoundFakeMeal).toBeNull();
@@ -147,7 +148,7 @@ describe('MemoryFakeMealsRepo', () => {
     const allFakeMeals = await repo.getAllFakeMeals();
     expect(allFakeMeals.length).toBe(1);
 
-    await repo.deleteFakeMeal(vp.validFakeMealProps.id);
+    await repo.deleteFakeMeal(fakeMealTestProps.validFakeMealProps.id);
 
     const allFakeMealsAfterDeletion = await repo.getAllFakeMeals();
     expect(allFakeMealsAfterDeletion.length).toBe(0);
@@ -155,7 +156,7 @@ describe('MemoryFakeMealsRepo', () => {
 
   it('should delete a fake meal by ID and userId', async () => {
     const fakeMeal2 = FakeMeal.create({
-      ...vp.validFakeMealProps,
+      ...fakeMealTestProps.validFakeMealProps,
       id: '2',
       userId: 'user-2',
       name: 'Another Shake',
@@ -165,7 +166,10 @@ describe('MemoryFakeMealsRepo', () => {
     const allFakeMeals = await repo.getAllFakeMeals();
     expect(allFakeMeals.length).toBe(2);
 
-    await repo.deleteFakeMealByIdAndUserId(vp.validFakeMealProps.id, 'user-1');
+    await repo.deleteFakeMealByIdAndUserId(
+      fakeMealTestProps.validFakeMealProps.id,
+      'user-1',
+    );
 
     const allFakeMealsAfterDeletion = await repo.getAllFakeMeals();
     expect(allFakeMealsAfterDeletion.length).toBe(1);
@@ -174,12 +178,12 @@ describe('MemoryFakeMealsRepo', () => {
 
   it('should delete multiple fake meals by IDs', async () => {
     const fakeMeal2 = FakeMeal.create({
-      ...vp.validFakeMealProps,
+      ...fakeMealTestProps.validFakeMealProps,
       id: '2',
       name: 'Energy Bar',
     });
     const fakeMeal3 = FakeMeal.create({
-      ...vp.validFakeMealProps,
+      ...fakeMealTestProps.validFakeMealProps,
       id: '3',
       name: 'Protein Bar',
     });
@@ -189,7 +193,10 @@ describe('MemoryFakeMealsRepo', () => {
     const allFakeMeals = await repo.getAllFakeMeals();
     expect(allFakeMeals.length).toBe(3);
 
-    await repo.deleteMultipleFakeMeals([vp.validFakeMealProps.id, '2']);
+    await repo.deleteMultipleFakeMeals([
+      fakeMealTestProps.validFakeMealProps.id,
+      '2',
+    ]);
 
     const allFakeMealsAfterDeletion = await repo.getAllFakeMeals();
     expect(allFakeMealsAfterDeletion.length).toBe(1);
@@ -198,7 +205,7 @@ describe('MemoryFakeMealsRepo', () => {
 
   it('should handle deleting multiple fake meals with non-existent IDs', async () => {
     const fakeMeal2 = FakeMeal.create({
-      ...vp.validFakeMealProps,
+      ...fakeMealTestProps.validFakeMealProps,
       id: '2',
       name: 'Energy Bar',
     });
@@ -208,7 +215,7 @@ describe('MemoryFakeMealsRepo', () => {
     expect(allFakeMeals.length).toBe(2);
 
     await repo.deleteMultipleFakeMeals([
-      vp.validFakeMealProps.id,
+      fakeMealTestProps.validFakeMealProps.id,
       'non-existent',
     ]);
 
@@ -219,14 +226,14 @@ describe('MemoryFakeMealsRepo', () => {
 
   it('should delete all fake meals for a user', async () => {
     const fakeMeal2 = FakeMeal.create({
-      ...vp.validFakeMealProps,
+      ...fakeMealTestProps.validFakeMealProps,
       id: '2',
       name: 'Energy Bar',
     });
     await repo.saveFakeMeal(fakeMeal2);
 
     const fakeMeal3 = FakeMeal.create({
-      ...vp.validFakeMealProps,
+      ...fakeMealTestProps.validFakeMealProps,
       id: '3',
       userId: 'user-2',
       name: 'Protein Bar',

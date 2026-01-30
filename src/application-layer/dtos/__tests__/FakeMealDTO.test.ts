@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as fakeMealTestProps from '../../../../tests/createProps/fakeMealTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { FakeMealDTO, fromFakeMealDTO, toFakeMealDTO } from '../FakeMealDTO';
@@ -8,7 +9,7 @@ describe('FakeMealDTO', () => {
   let fakeMealDTO: FakeMealDTO;
 
   beforeEach(() => {
-    fakeMeal = FakeMeal.create(vp.validFakeMealProps);
+    fakeMeal = FakeMeal.create(fakeMealTestProps.validFakeMealProps);
   });
 
   describe('toFakeMealDTO', () => {
@@ -66,10 +67,10 @@ describe('FakeMealDTO', () => {
       expect(reconstructedFakeMeal.createdAt).toBeInstanceOf(Date);
       expect(reconstructedFakeMeal.updatedAt).toBeInstanceOf(Date);
       expect(reconstructedFakeMeal.createdAt.toISOString()).toBe(
-        fakeMeal.createdAt.toISOString()
+        fakeMeal.createdAt.toISOString(),
       );
       expect(reconstructedFakeMeal.updatedAt.toISOString()).toBe(
-        fakeMeal.updatedAt.toISOString()
+        fakeMeal.updatedAt.toISOString(),
       );
     });
   });

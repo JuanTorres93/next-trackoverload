@@ -8,6 +8,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { RemoveMealFromDayUsecase } from '../RemoveMealFromDay.usecase';
 
 import * as vp from '@/../tests/createProps';
+import * as fakeMealTestProps from '../../../../../../tests/createProps/fakeMealTestProps';
 import * as mealTestProps from '../../../../../../tests/createProps/mealTestProps';
 import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
 import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
@@ -130,7 +131,7 @@ describe('RemoveMealFromDayUsecase', () => {
       const request = {
         date: '11111001',
         userId: userTestProps.userId,
-        mealId: vp.validFakeMealProps.id,
+        mealId: fakeMealTestProps.validFakeMealProps.id,
       };
 
       await expect(removeMealFromDayUsecase.execute(request)).rejects.toThrow(
@@ -145,7 +146,7 @@ describe('RemoveMealFromDayUsecase', () => {
       const request = {
         date: day.id,
         userId: 'non-existent',
-        mealId: vp.validFakeMealProps.id,
+        mealId: fakeMealTestProps.validFakeMealProps.id,
       };
 
       await expect(removeMealFromDayUsecase.execute(request)).rejects.toThrow(

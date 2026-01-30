@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import * as vp from '@/../tests/createProps';
+import * as fakeMealTestProps from '../../../../../tests/createProps/fakeMealTestProps';
 import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import { ValidationError } from '@/domain/common/errors';
 import { FakeMeal, FakeMealCreateProps } from '../FakeMeal';
@@ -11,7 +12,7 @@ describe('FakeMeal', () => {
 
   beforeEach(() => {
     validFakeMealProps = {
-      ...vp.validFakeMealProps,
+      ...fakeMealTestProps.validFakeMealProps,
       name: 'Bocadillo de chusmarro en La Peña',
     };
     fakeMeal = FakeMeal.create(validFakeMealProps);

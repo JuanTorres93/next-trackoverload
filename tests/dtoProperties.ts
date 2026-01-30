@@ -1,5 +1,6 @@
 import { getGetters } from '@/application-layer/dtos/__tests__/_getGettersUtil';
 import * as vp from '@/../tests/createProps';
+import * as fakeMealTestProps from './createProps/fakeMealTestProps';
 import * as mealTestProps from './createProps/mealTestProps';
 import * as recipeTestProps from './createProps/recipeTestProps';
 import * as ingredientTestProps from './createProps/ingredientTestProps';
@@ -22,7 +23,7 @@ import { Day } from '@/domain/entities/day/Day';
 
 // FakeMeal DTO
 const sampleFakeMeal = FakeMeal.create({
-  ...vp.validFakeMealProps,
+  ...fakeMealTestProps.validFakeMealProps,
 });
 export const fakeMealDTOProperties = getGetters(sampleFakeMeal);
 
