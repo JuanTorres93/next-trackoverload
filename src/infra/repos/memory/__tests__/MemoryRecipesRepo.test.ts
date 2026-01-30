@@ -4,7 +4,6 @@ import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryRecipesRepo } from '../MemoryRecipesRepo';
 
-import * as vp from '@/../tests/createProps';
 import * as recipeTestProps from '../../../../../tests/createProps/recipeTestProps';
 import * as ingredientTestProps from '../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../tests/createProps/userTestProps';

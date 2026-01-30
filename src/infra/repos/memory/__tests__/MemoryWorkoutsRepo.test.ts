@@ -1,4 +1,3 @@
-import * as vp from '@/../tests/createProps';
 import * as workoutTestProps from '../../../../../tests/createProps/workoutTestProps';
 import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import { Workout } from '@/domain/entities/workout/Workout';

@@ -6,7 +6,6 @@ import { FileSystemRecipesRepo } from '../FileSystemRecipesRepo';
 import fs from 'fs/promises';
 import path from 'path';
 
-import * as vp from '@/../tests/createProps';
 import * as recipeTestProps from '../../../../../tests/createProps/recipeTestProps';
 import * as ingredientTestProps from '../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../tests/createProps/userTestProps';

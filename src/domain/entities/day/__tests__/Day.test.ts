@@ -3,7 +3,6 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { ValidationError } from '@/domain/common/errors';
 import { Day } from '../Day';
 
-import * as vp from '@/../tests/createProps';
 import * as dayTestProps from '../../../../../tests/createProps/dayTestProps';
 import { DayId } from '@/domain/value-objects/DayId/DayId';
 

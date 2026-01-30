@@ -1,4 +1,3 @@
-import * as vp from '@/../tests/createProps';
 import * as externalIngredientRefTestProps from '../../../../../tests/createProps/externalIngredientRefTestProps';
 import { ExternalIngredientRef } from '@/domain/entities/externalingredientref/ExternalIngredientRef';
 import { beforeEach, describe, expect, it } from 'vitest';

@@ -1,4 +1,3 @@
-import * as vp from '@/../tests/createProps';
 import * as externalIngredientRefTestProps from '../../../../../../tests/createProps/externalIngredientRefTestProps';
 import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';

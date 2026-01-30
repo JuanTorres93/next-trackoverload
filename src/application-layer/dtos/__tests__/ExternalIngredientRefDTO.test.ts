@@ -1,4 +1,3 @@
-import * as vp from '@/../tests/createProps';
 import * as externalIngredientRefTestProps from '../../../../tests/createProps/externalIngredientRefTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { ExternalIngredientRef } from '@/domain/entities/externalingredientref/ExternalIngredientRef';

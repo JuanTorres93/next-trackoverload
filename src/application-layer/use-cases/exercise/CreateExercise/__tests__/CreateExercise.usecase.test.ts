@@ -1,4 +1,3 @@
-import * as vp from '@/../tests/createProps';
 import * as exerciseTestProps from '../../../../../../tests/createProps/exerciseTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toExerciseDTO } from '@/application-layer/dtos/ExerciseDTO';

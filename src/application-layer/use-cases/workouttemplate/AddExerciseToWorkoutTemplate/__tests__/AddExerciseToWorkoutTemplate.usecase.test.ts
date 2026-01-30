@@ -1,4 +1,3 @@
-import * as vp from '@/../tests/createProps';
 import * as workoutTemplateTestProps from '../../../../../../tests/createProps/workoutTemplateTestProps';
 import * as exerciseTestProps from '../../../../../../tests/createProps/exerciseTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';

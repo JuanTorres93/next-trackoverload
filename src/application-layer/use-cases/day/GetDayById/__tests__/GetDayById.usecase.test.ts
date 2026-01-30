@@ -6,7 +6,6 @@ import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetDayByIdUsecase } from '../GetDayById.usecase';
 
-import * as vp from '@/../tests/createProps';
 import * as dayTestProps from '../../../../../../tests/createProps/dayTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';

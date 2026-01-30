@@ -6,7 +6,6 @@ import { SharpServerImageProcessor } from '@/infra/services/ImageProcessor/Serve
 import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
 import { UpdateRecipeImageUsecase } from '../UpdateRecipeImageUsecase';
 
-import * as vp from '@/../tests/createProps';
 import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';

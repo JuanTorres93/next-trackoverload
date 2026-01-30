@@ -2,7 +2,6 @@ import { NotFoundError } from '@/domain/common/errors';
 import { GetMealByIdForUserUsecase } from '../GetMealByIdForUserUsecase';
 import { Meal } from '@/domain/entities/meal/Meal';
 
-import * as vp from '@/../tests/createProps';
 import * as mealTestProps from '../../../../../../tests/createProps/mealTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';

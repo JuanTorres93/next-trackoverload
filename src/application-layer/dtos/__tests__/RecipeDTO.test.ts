@@ -2,7 +2,6 @@ import { toRecipeDTO, fromRecipeDTO, RecipeDTO } from '../RecipeDTO';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
-import * as vp from '@/../tests/createProps';
 import * as recipeTestProps from '../../../../tests/createProps/recipeTestProps';
 import * as ingredientTestProps from '../../../../tests/createProps/ingredientTestProps';
 import * as dto from '@/../tests/dtoProperties';

@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import { Exercise } from '../Exercise';
-import * as vp from '@/../tests/createProps';
 import * as exerciseTestProps from '../../../../../tests/createProps/exerciseTestProps';
 import { ValidationError } from '@/domain/common/errors';
 

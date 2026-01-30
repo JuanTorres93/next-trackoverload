@@ -1,4 +1,3 @@
-import * as vp from '@/../tests/createProps';
 import * as ingredientTestProps from '../../../../../tests/createProps/ingredientTestProps';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { beforeEach, describe, expect, it } from 'vitest';

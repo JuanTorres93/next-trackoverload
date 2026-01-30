@@ -1,4 +1,3 @@
-import * as vp from '@/../tests/createProps';
 import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { ValidationError } from '@/domain/common/errors';

@@ -1,5 +1,4 @@
 import { getGetters } from '@/application-layer/dtos/__tests__/_getGettersUtil';
-import * as vp from '@/../tests/createProps';
 import * as workoutTestProps from './createProps/workoutTestProps';
 import * as workoutTemplateTestProps from './createProps/workoutTemplateTestProps';
 import * as dayTestProps from './createProps/dayTestProps';

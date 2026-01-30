@@ -1,4 +1,3 @@
-import * as vp from '@/../tests/createProps';
 import * as fakeMealTestProps from '../../../../tests/createProps/fakeMealTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';

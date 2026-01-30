@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import * as vp from '@/../tests/createProps';
 import * as workoutTemplateTestProps from '../../../../../tests/createProps/workoutTemplateTestProps';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import {

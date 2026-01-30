@@ -1,4 +1,3 @@
-import * as vp from '@/../tests/createProps';
 import * as dayTestProps from '../../../../../../tests/createProps/dayTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';

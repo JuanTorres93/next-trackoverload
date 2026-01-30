@@ -3,7 +3,6 @@ import {
   WorkoutTemplateLineDTO,
 } from '../WorkoutTemplateLineDTO';
 import { WorkoutTemplateLine } from '@/domain/entities/workouttemplateline/WorkoutTemplateLine';
-import * as vp from '@/../tests/createProps';
 import * as workoutTemplateTestProps from '../../../../tests/createProps/workoutTemplateTestProps';
 import * as dto from '@/../tests/dtoProperties';
 

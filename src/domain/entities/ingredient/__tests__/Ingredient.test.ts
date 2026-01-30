@@ -1,7 +1,6 @@
 import { describe, expect, it, beforeEach } from 'vitest';
 import { Ingredient } from '../Ingredient';
 import { ValidationError } from '@/domain/common/errors';
-import * as vp from '@/../tests/createProps';
 import * as ingredientTestProps from '../../../../../tests/createProps/ingredientTestProps';
 
 describe('Ingredient', () => {

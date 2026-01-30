@@ -1,7 +1,6 @@
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 import { FileSystemUsersRepo } from '../FileSystemUsersRepo';
 import { User } from '@/domain/entities/user/User';
-import * as vp from '@/../tests/createProps';
 import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import fs from 'fs/promises';
 import path from 'path';

@@ -5,7 +5,6 @@ import { Ingredient } from '../../ingredient/Ingredient';
 import { IngredientLine } from '../../ingredientline/IngredientLine';
 import { Recipe, RecipeCreateProps } from '../Recipe';
 
-import * as vp from '@/../tests/createProps';
 import * as recipeTestProps from '../../../../../tests/createProps/recipeTestProps';
 import * as ingredientTestProps from '../../../../../tests/createProps/ingredientTestProps';
 

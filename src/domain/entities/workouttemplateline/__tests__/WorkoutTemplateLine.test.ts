@@ -3,7 +3,6 @@ import {
   WorkoutTemplateLineCreateProps,
 } from '../WorkoutTemplateLine';
 import { ValidationError } from '@/domain/common/errors';
-import * as vp from '@/../tests/createProps';
 import * as workoutTemplateTestProps from '../../../../../tests/createProps/workoutTemplateTestProps';
 
 describe('WorkoutTemplateLine', () => {

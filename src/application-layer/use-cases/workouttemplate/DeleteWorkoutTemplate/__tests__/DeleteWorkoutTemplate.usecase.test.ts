@@ -5,7 +5,6 @@ import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import { User } from '@/domain/entities/user/User';
 import { NotFoundError } from '@/domain/common/errors';
-import * as vp from '@/../tests/createProps';
 import * as workoutTemplateTestProps from '../../../../../../tests/createProps/workoutTemplateTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 

@@ -1,7 +1,6 @@
 import { toWorkoutDTO, WorkoutDTO } from '../WorkoutDTO';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
-import * as vp from '@/../tests/createProps';
 import * as workoutTestProps from '../../../../tests/createProps/workoutTestProps';
 import * as dto from '@/../tests/dtoProperties';
 

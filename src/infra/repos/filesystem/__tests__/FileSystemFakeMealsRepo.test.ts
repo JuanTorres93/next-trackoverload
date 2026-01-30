@@ -1,7 +1,6 @@
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 import { FileSystemFakeMealsRepo } from '../FileSystemFakeMealsRepo';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import * as vp from '@/../tests/createProps';
 import * as fakeMealTestProps from '../../../../../tests/createProps/fakeMealTestProps';
 import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import fs from 'fs/promises';

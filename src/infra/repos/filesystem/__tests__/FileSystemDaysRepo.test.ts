@@ -2,7 +2,6 @@ import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 import { FileSystemDaysRepo } from '../FileSystemDaysRepo';
 import { Day } from '@/domain/entities/day/Day';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import * as vp from '@/../tests/createProps';
 import * as dayTestProps from '../../../../../tests/createProps/dayTestProps';
 import * as fakeMealTestProps from '../../../../../tests/createProps/fakeMealTestProps';
 import * as userTestProps from '../../../../../tests/createProps/userTestProps';

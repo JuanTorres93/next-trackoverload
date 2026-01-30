@@ -1,7 +1,6 @@
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 import { FileSystemExercisesRepo } from '../FileSystemExercisesRepo';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
-import * as vp from '@/../tests/createProps';
 import * as exerciseTestProps from '../../../../../tests/createProps/exerciseTestProps';
 import fs from 'fs/promises';
 import path from 'path';

@@ -2,7 +2,6 @@ import {
   ExternalIngredientRef,
   ExternalIngredientRefCreateProps,
 } from '../ExternalIngredientRef';
-import * as vp from '@/../tests/createProps';
 import * as externalIngredientRefTestProps from '../../../../../tests/createProps/externalIngredientRefTestProps';
 
 describe('ExternalIngredientRef', () => {

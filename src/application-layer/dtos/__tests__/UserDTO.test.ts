@@ -1,6 +1,5 @@
 import { toUserDTO, fromUserDTO, UserDTO } from '../UserDTO';
 import { User } from '@/domain/entities/user/User';
-import * as vp from '@/../tests/createProps';
 import * as userTestProps from '../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 

@@ -1,4 +1,3 @@
-import * as vp from '@/../tests/createProps';
 import * as dayTestProps from '../../../../tests/createProps/dayTestProps';
 import * as fakeMealTestProps from '../../../../tests/createProps/fakeMealTestProps';
 import * as mealTestProps from '../../../../tests/createProps/mealTestProps';
