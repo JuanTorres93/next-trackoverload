@@ -4,6 +4,7 @@ import {
 } from '../WorkoutTemplateLineDTO';
 import { WorkoutTemplateLine } from '@/domain/entities/workouttemplateline/WorkoutTemplateLine';
 import * as vp from '@/../tests/createProps';
+import * as workoutTemplateTestProps from '../../../../tests/createProps/workoutTemplateTestProps';
 import * as dto from '@/../tests/dtoProperties';
 
 describe('WorkoutTemplateLineDTO', () => {
@@ -12,7 +13,7 @@ describe('WorkoutTemplateLineDTO', () => {
 
   beforeEach(() => {
     workoutTemplateLine = WorkoutTemplateLine.create(
-      vp.validWorkoutTemplateLineProps
+      workoutTemplateTestProps.validWorkoutTemplateLineProps,
     );
   });
 

@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as workoutTemplateTestProps from '../../../../../../tests/createProps/workoutTemplateTestProps';
 import * as exerciseTestProps from '../../../../../../tests/createProps/exerciseTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
@@ -50,7 +51,7 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
 
     // Create a template with one existing exercise
     existingTemplate = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps(),
+      ...workoutTemplateTestProps.validWorkoutTemplateProps(),
     });
 
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
@@ -60,7 +61,8 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
     it('should add exercise to workout template', async () => {
       const request = {
         userId: userTestProps.userId,
-        workoutTemplateId: vp.validWorkoutTemplateProps().id,
+        workoutTemplateId:
+          workoutTemplateTestProps.validWorkoutTemplateProps().id,
         exerciseId: 'shoulder-press',
         sets: 4,
       };
@@ -68,7 +70,8 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
       const result = await usecase.execute(request);
 
       expect(result.exercises).toHaveLength(
-        vp.validWorkoutTemplateProps().exercises.length + 1,
+        workoutTemplateTestProps.validWorkoutTemplateProps().exercises.length +
+          1,
       );
 
       const exercisesIds = result.exercises.map((ex) => ex.exerciseId);
@@ -76,10 +79,11 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
 
       // Verify it was saved
       const savedTemplate = await workoutTemplatesRepo.getWorkoutTemplateById(
-        vp.validWorkoutTemplateProps().id,
+        workoutTemplateTestProps.validWorkoutTemplateProps().id,
       );
       expect(savedTemplate!.exercises).toHaveLength(
-        vp.validWorkoutTemplateProps().exercises.length + 1,
+        workoutTemplateTestProps.validWorkoutTemplateProps().exercises.length +
+          1,
       );
     });
 
@@ -170,7 +174,8 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
     it('should throw error if user does not exist', async () => {
       const request = {
         userId: 'non-existent',
-        workoutTemplateId: vp.validWorkoutTemplateProps().id,
+        workoutTemplateId:
+          workoutTemplateTestProps.validWorkoutTemplateProps().id,
         exerciseId: 'bench-press',
         sets: 3,
       };

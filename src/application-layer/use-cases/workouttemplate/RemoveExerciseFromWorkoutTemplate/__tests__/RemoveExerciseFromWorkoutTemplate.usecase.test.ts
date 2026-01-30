@@ -6,6 +6,7 @@ import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTempla
 import { User } from '@/domain/entities/user/User';
 import { NotFoundError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import * as workoutTemplateTestProps from '../../../../../../tests/createProps/workoutTemplateTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 
@@ -26,7 +27,7 @@ describe('RemoveExerciseFromWorkoutTemplateUsecase', () => {
 
     user = User.create({ ...userTestProps.validUserProps });
     existingTemplate = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps(),
+      ...workoutTemplateTestProps.validWorkoutTemplateProps(),
     });
 
     await usersRepo.saveUser(user);
@@ -36,19 +37,22 @@ describe('RemoveExerciseFromWorkoutTemplateUsecase', () => {
   describe('Execution', () => {
     it('should remove exercise from workout template', async () => {
       const request = {
-        workoutTemplateId: vp.validWorkoutTemplateProps().id,
+        workoutTemplateId:
+          workoutTemplateTestProps.validWorkoutTemplateProps().id,
         userId: userTestProps.userId,
-        exerciseId: vp.validWorkoutTemplateProps().exercises[0].exerciseId,
+        exerciseId:
+          workoutTemplateTestProps.validWorkoutTemplateProps().exercises[0]
+            .exerciseId,
       };
 
       const result = await usecase.execute(request);
 
       expect(result.exercises).toHaveLength(1);
       expect(result.exercises[0].id).toEqual(
-        vp.validWorkoutTemplateProps().exercises[1].id,
+        workoutTemplateTestProps.validWorkoutTemplateProps().exercises[1].id,
       );
       expect(result.exercises[0].sets).toEqual(
-        vp.validWorkoutTemplateProps().exercises[1].sets,
+        workoutTemplateTestProps.validWorkoutTemplateProps().exercises[1].sets,
       );
 
       // Verify template was saved
@@ -61,9 +65,12 @@ describe('RemoveExerciseFromWorkoutTemplateUsecase', () => {
 
     it('should return WorkoutTemplateDTO', async () => {
       const request = {
-        workoutTemplateId: vp.validWorkoutTemplateProps().id,
+        workoutTemplateId:
+          workoutTemplateTestProps.validWorkoutTemplateProps().id,
         userId: userTestProps.userId,
-        exerciseId: vp.validWorkoutTemplateProps().exercises[0].exerciseId,
+        exerciseId:
+          workoutTemplateTestProps.validWorkoutTemplateProps().exercises[0]
+            .exerciseId,
       };
 
       const result = await usecase.execute(request);
@@ -80,7 +87,9 @@ describe('RemoveExerciseFromWorkoutTemplateUsecase', () => {
       const request = {
         workoutTemplateId: 'non-existent',
         userId: userTestProps.userId,
-        exerciseId: vp.validWorkoutTemplateProps().exercises[0].exerciseId,
+        exerciseId:
+          workoutTemplateTestProps.validWorkoutTemplateProps().exercises[0]
+            .exerciseId,
       };
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
@@ -95,8 +104,11 @@ describe('RemoveExerciseFromWorkoutTemplateUsecase', () => {
       await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
       const request = {
-        workoutTemplateId: vp.validWorkoutTemplateProps().id,
-        exerciseId: vp.validWorkoutTemplateProps().exercises[0].exerciseId,
+        workoutTemplateId:
+          workoutTemplateTestProps.validWorkoutTemplateProps().id,
+        exerciseId:
+          workoutTemplateTestProps.validWorkoutTemplateProps().exercises[0]
+            .exerciseId,
         userId: userTestProps.userId,
       };
 
@@ -108,9 +120,12 @@ describe('RemoveExerciseFromWorkoutTemplateUsecase', () => {
 
     it('should throw error if user does not exist', async () => {
       const request = {
-        workoutTemplateId: vp.validWorkoutTemplateProps().id,
+        workoutTemplateId:
+          workoutTemplateTestProps.validWorkoutTemplateProps().id,
         userId: 'non-existent',
-        exerciseId: vp.validWorkoutTemplateProps().exercises[0].exerciseId,
+        exerciseId:
+          workoutTemplateTestProps.validWorkoutTemplateProps().exercises[0]
+            .exerciseId,
       };
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
@@ -128,9 +143,12 @@ describe('RemoveExerciseFromWorkoutTemplateUsecase', () => {
       await usersRepo.saveUser(anotherUser);
 
       const request = {
-        workoutTemplateId: vp.validWorkoutTemplateProps().id,
+        workoutTemplateId:
+          workoutTemplateTestProps.validWorkoutTemplateProps().id,
         userId: anotherUser.id,
-        exerciseId: vp.validWorkoutTemplateProps().exercises[0].exerciseId,
+        exerciseId:
+          workoutTemplateTestProps.validWorkoutTemplateProps().exercises[0]
+            .exerciseId,
       };
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);

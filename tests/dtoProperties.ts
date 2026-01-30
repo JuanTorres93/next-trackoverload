@@ -1,5 +1,6 @@
 import { getGetters } from '@/application-layer/dtos/__tests__/_getGettersUtil';
 import * as vp from '@/../tests/createProps';
+import * as workoutTemplateTestProps from './createProps/workoutTemplateTestProps';
 import * as dayTestProps from './createProps/dayTestProps';
 import * as externalIngredientRefTestProps from './createProps/externalIngredientRefTestProps';
 import * as fakeMealTestProps from './createProps/fakeMealTestProps';
@@ -91,13 +92,13 @@ export const workoutDTOProperties = getGetters(sampleWorkout);
 
 // WorkoutTemplate DTO
 const sampleWorkoutTemplate = WorkoutTemplate.create({
-  ...vp.validWorkoutTemplateProps(),
+  ...workoutTemplateTestProps.validWorkoutTemplateProps(),
 });
 export const workoutTemplateDTOProperties = getGetters(sampleWorkoutTemplate);
 
 // WorkoutTemplateLine DTO
 const sampleWorkoutTemplateLine = WorkoutTemplateLine.create({
-  ...vp.validWorkoutTemplateLineProps,
+  ...workoutTemplateTestProps.validWorkoutTemplateLineProps,
 });
 export const workoutTemplateLineDTOProperties = getGetters(
   sampleWorkoutTemplateLine,

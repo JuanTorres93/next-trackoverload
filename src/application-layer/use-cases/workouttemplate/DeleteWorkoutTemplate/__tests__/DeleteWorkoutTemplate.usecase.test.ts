@@ -6,6 +6,7 @@ import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTempla
 import { User } from '@/domain/entities/user/User';
 import { NotFoundError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import * as workoutTemplateTestProps from '../../../../../../tests/createProps/workoutTemplateTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 
 describe('DeleteWorkoutTemplateUsecase', () => {
@@ -25,7 +26,7 @@ describe('DeleteWorkoutTemplateUsecase', () => {
     });
 
     existingTemplate = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps(),
+      ...workoutTemplateTestProps.validWorkoutTemplateProps(),
     });
 
     await usersRepo.saveUser(user);

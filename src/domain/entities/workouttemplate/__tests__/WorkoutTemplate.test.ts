@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import * as vp from '@/../tests/createProps';
+import * as workoutTemplateTestProps from '../../../../../tests/createProps/workoutTemplateTestProps';
 import { NotFoundError, ValidationError } from '@/domain/common/errors';
 import {
   WorkoutTemplate,
@@ -14,7 +15,7 @@ describe('WorkoutTemplate', () => {
 
   beforeEach(() => {
     validWorkoutTemplateProps = {
-      ...vp.validWorkoutTemplateProps(),
+      ...workoutTemplateTestProps.validWorkoutTemplateProps(),
     };
 
     workoutTemplate = WorkoutTemplate.create(validWorkoutTemplateProps);
@@ -65,28 +66,33 @@ describe('WorkoutTemplate', () => {
     it('should remove exercise', async () => {
       expect(workoutTemplate.exercises).toHaveLength(2);
       workoutTemplate.removeExercise(
-        vp.validWorkoutTemplateProps().exercises[0].exerciseId
+        workoutTemplateTestProps.validWorkoutTemplateProps().exercises[0]
+          .exerciseId,
       );
       expect(workoutTemplate.exercises).toHaveLength(1);
 
       const remainingExercise = workoutTemplate.exercises[0];
       expect(remainingExercise.exerciseId).toBe(
-        vp.validWorkoutTemplateProps().exercises[1].exerciseId
+        workoutTemplateTestProps.validWorkoutTemplateProps().exercises[1]
+          .exerciseId,
       );
     });
 
     it('should reorder exercises', async () => {
       workoutTemplate.reorderExercise(
-        vp.validWorkoutTemplateProps().exercises[0].exerciseId,
-        1
+        workoutTemplateTestProps.validWorkoutTemplateProps().exercises[0]
+          .exerciseId,
+        1,
       );
 
       const exercisesIds = workoutTemplate.exercises.map(
-        (line) => line.exerciseId
+        (line) => line.exerciseId,
       );
       expect(exercisesIds).toEqual([
-        vp.validWorkoutTemplateProps().exercises[1].exerciseId,
-        vp.validWorkoutTemplateProps().exercises[0].exerciseId,
+        workoutTemplateTestProps.validWorkoutTemplateProps().exercises[1]
+          .exerciseId,
+        workoutTemplateTestProps.validWorkoutTemplateProps().exercises[0]
+          .exerciseId,
       ]);
     });
 
@@ -99,7 +105,7 @@ describe('WorkoutTemplate', () => {
           sets: 5,
           createdAt: new Date(),
           updatedAt: new Date(),
-        })
+        }),
       );
       workoutTemplate.addExercise(
         WorkoutTemplateLine.create({
@@ -109,7 +115,7 @@ describe('WorkoutTemplate', () => {
           sets: 2,
           createdAt: new Date(),
           updatedAt: new Date(),
-        })
+        }),
       );
       workoutTemplate.addExercise(
         WorkoutTemplateLine.create({
@@ -119,21 +125,24 @@ describe('WorkoutTemplate', () => {
           sets: 6,
           createdAt: new Date(),
           updatedAt: new Date(),
-        })
+        }),
       );
       workoutTemplate.reorderExercise(
-        vp.validWorkoutTemplateProps().exercises[0].exerciseId,
-        3
+        workoutTemplateTestProps.validWorkoutTemplateProps().exercises[0]
+          .exerciseId,
+        3,
       );
 
       const exercisesIds = workoutTemplate.exercises.map(
-        (line) => line.exerciseId
+        (line) => line.exerciseId,
       );
       expect(exercisesIds).toEqual([
-        vp.validWorkoutTemplateProps().exercises[1].exerciseId,
+        workoutTemplateTestProps.validWorkoutTemplateProps().exercises[1]
+          .exerciseId,
         'ex3',
         'ex4',
-        vp.validWorkoutTemplateProps().exercises[0].exerciseId,
+        workoutTemplateTestProps.validWorkoutTemplateProps().exercises[0]
+          .exerciseId,
         'ex5',
       ]);
 
@@ -141,27 +150,31 @@ describe('WorkoutTemplate', () => {
       workoutTemplate.reorderExercise('ex4', 0);
 
       const exercisesIds2 = workoutTemplate.exercises.map(
-        (line) => line.exerciseId
+        (line) => line.exerciseId,
       );
       expect(exercisesIds2).toEqual([
         'ex4',
-        vp.validWorkoutTemplateProps().exercises[1].exerciseId,
+        workoutTemplateTestProps.validWorkoutTemplateProps().exercises[1]
+          .exerciseId,
         'ex3',
-        vp.validWorkoutTemplateProps().exercises[0].exerciseId,
+        workoutTemplateTestProps.validWorkoutTemplateProps().exercises[0]
+          .exerciseId,
         'ex5',
       ]);
     });
 
     it('should update reps of an exercise', async () => {
       workoutTemplate.updateExercise(
-        vp.validWorkoutTemplateProps().exercises[0].exerciseId,
-        { sets: 66 }
+        workoutTemplateTestProps.validWorkoutTemplateProps().exercises[0]
+          .exerciseId,
+        { sets: 66 },
       );
       const exercises = workoutTemplate.exercises;
       const updatedExercise = exercises.find(
         (line) =>
           line.exerciseId ===
-          vp.validWorkoutTemplateProps().exercises[0].exerciseId
+          workoutTemplateTestProps.validWorkoutTemplateProps().exercises[0]
+            .exerciseId,
       );
       expect(updatedExercise).toBeDefined();
       expect(updatedExercise!.sets).toBe(66);
@@ -189,10 +202,10 @@ describe('WorkoutTemplate', () => {
       expect(workoutTemplate.isDeleted).toBe(true);
       expect(workoutTemplate.deletedAt).toBeDefined();
       expect(workoutTemplate.deletedAt!.getTime()).toBeGreaterThanOrEqual(
-        beforeDelete.getTime()
+        beforeDelete.getTime(),
       );
       expect(workoutTemplate.deletedAt!.getTime()).toBeLessThanOrEqual(
-        afterDelete.getTime()
+        afterDelete.getTime(),
       );
     });
 
@@ -202,7 +215,7 @@ describe('WorkoutTemplate', () => {
       setTimeout(() => {
         workoutTemplate.markAsDeleted();
         expect(workoutTemplate.updatedAt.getTime()).toBeGreaterThan(
-          originalUpdatedAt.getTime()
+          originalUpdatedAt.getTime(),
         );
       }, 2);
     });
@@ -225,7 +238,7 @@ describe('WorkoutTemplate', () => {
         updatedAt: new Date(),
       });
       expect(() => workoutTemplate.addExercise(newExercise)).toThrow(
-        ValidationError
+        ValidationError,
       );
     });
 
@@ -234,7 +247,7 @@ describe('WorkoutTemplate', () => {
       // @ts-expect-error exercises is not an array
       templateProps.exercises = null;
       expect(() => WorkoutTemplate.create(templateProps)).toThrow(
-        ValidationError
+        ValidationError,
       );
     });
 
@@ -274,15 +287,17 @@ describe('WorkoutTemplate', () => {
     it('should throw error if reordering to a negative index', async () => {
       expect(() => {
         workoutTemplate.reorderExercise(
-          vp.validWorkoutTemplateProps().exercises[0].exerciseId,
-          -1
+          workoutTemplateTestProps.validWorkoutTemplateProps().exercises[0]
+            .exerciseId,
+          -1,
         );
       }).toThrow(ValidationError);
 
       expect(() => {
         workoutTemplate.reorderExercise(
-          vp.validWorkoutTemplateProps().exercises[0].exerciseId,
-          -1
+          workoutTemplateTestProps.validWorkoutTemplateProps().exercises[0]
+            .exerciseId,
+          -1,
         );
       }).toThrow(/Integer.*positive/);
     });

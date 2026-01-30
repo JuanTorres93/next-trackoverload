@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as workoutTemplateTestProps from '../../../../../../tests/createProps/workoutTemplateTestProps';
 import * as dayTestProps from '../../../../../../tests/createProps/dayTestProps';
 import * as fakeMealTestProps from '../../../../../../tests/createProps/fakeMealTestProps';
 import * as mealTestProps from '../../../../../../tests/createProps/mealTestProps';
@@ -86,7 +87,7 @@ describe('DeleteUserUsecase', () => {
     });
 
     const workoutTemplate = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps(),
+      ...workoutTemplateTestProps.validWorkoutTemplateProps(),
       userId: userTestProps.userId,
     });
 

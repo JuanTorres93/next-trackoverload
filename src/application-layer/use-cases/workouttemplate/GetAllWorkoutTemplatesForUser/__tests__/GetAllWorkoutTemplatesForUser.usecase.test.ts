@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as workoutTemplateTestProps from '../../../../../../tests/createProps/workoutTemplateTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
@@ -28,13 +29,13 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
     user = User.create({ ...userTestProps.validUserProps });
 
     template1 = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps(),
+      ...workoutTemplateTestProps.validWorkoutTemplateProps(),
       id: 'user1-template1-id',
       exercises: [],
     });
 
     template2 = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps(),
+      ...workoutTemplateTestProps.validWorkoutTemplateProps(),
       id: 'user1-template2-id',
       exercises: [],
     });
@@ -47,7 +48,7 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
   describe('Execution', () => {
     it('should return all workout templates for a specific user', async () => {
       const user2Template = WorkoutTemplate.create({
-        ...vp.validWorkoutTemplateProps(),
+        ...workoutTemplateTestProps.validWorkoutTemplateProps(),
         id: 'user2-template-id',
         userId: 'user2-id',
         name: 'Leg Day',

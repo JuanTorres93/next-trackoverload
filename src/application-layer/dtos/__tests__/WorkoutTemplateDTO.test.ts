@@ -4,6 +4,7 @@ import {
 } from '../WorkoutTemplateDTO';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import * as vp from '@/../tests/createProps';
+import * as workoutTemplateTestProps from '../../../../tests/createProps/workoutTemplateTestProps';
 import * as dto from '@/../tests/dtoProperties';
 
 describe('WorkoutTemplateDTO', () => {
@@ -11,7 +12,7 @@ describe('WorkoutTemplateDTO', () => {
   let workoutTemplateDTO: WorkoutTemplateDTO;
 
   beforeEach(() => {
-    const validProps = vp.validWorkoutTemplateProps();
+    const validProps = workoutTemplateTestProps.validWorkoutTemplateProps();
     workoutTemplate = WorkoutTemplate.create(validProps);
   });
 
@@ -64,13 +65,13 @@ describe('WorkoutTemplateDTO', () => {
 
     it('should handle optional deletedAt', () => {
       const workoutTemplateWithDeletedAt = WorkoutTemplate.create({
-        ...vp.validWorkoutTemplateProps(),
+        ...workoutTemplateTestProps.validWorkoutTemplateProps(),
         deletedAt: new Date('2023-12-01'),
       });
 
       const dto = toWorkoutTemplateDTO(workoutTemplateWithDeletedAt);
       expect(dto.deletedAt).toBe(
-        workoutTemplateWithDeletedAt.deletedAt?.toISOString()
+        workoutTemplateWithDeletedAt.deletedAt?.toISOString(),
       );
     });
 

@@ -1,4 +1,5 @@
 import * as vp from '@/../tests/createProps';
+import * as workoutTemplateTestProps from '../../../../../../tests/createProps/workoutTemplateTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
@@ -27,7 +28,7 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
     user = User.create({ ...userTestProps.validUserProps });
 
     template = WorkoutTemplate.create({
-      ...vp.validWorkoutTemplateProps(),
+      ...workoutTemplateTestProps.validWorkoutTemplateProps(),
       name: 'Push Day',
     });
 
@@ -68,7 +69,7 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
       await usersRepo.saveUser(user2);
 
       const result = await usecase.execute({
-        id: vp.validWorkoutTemplateProps().id,
+        id: workoutTemplateTestProps.validWorkoutTemplateProps().id,
         userId: 'user2',
       });
       expect(result).toBeNull();
@@ -100,14 +101,14 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
     it('should throw error if user does not exist', async () => {
       await expect(
         usecase.execute({
-          id: vp.validWorkoutTemplateProps().id,
+          id: workoutTemplateTestProps.validWorkoutTemplateProps().id,
           userId: 'non-existent',
         }),
       ).rejects.toThrow(NotFoundError);
 
       await expect(
         usecase.execute({
-          id: vp.validWorkoutTemplateProps().id,
+          id: workoutTemplateTestProps.validWorkoutTemplateProps().id,
           userId: 'non-existent',
         }),
       ).rejects.toThrow(

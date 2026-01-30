@@ -4,6 +4,7 @@ import {
 } from '../WorkoutTemplateLine';
 import { ValidationError } from '@/domain/common/errors';
 import * as vp from '@/../tests/createProps';
+import * as workoutTemplateTestProps from '../../../../../tests/createProps/workoutTemplateTestProps';
 
 describe('WorkoutTemplateLine', () => {
   let workoutTemplateLine: WorkoutTemplateLine;
@@ -11,10 +12,10 @@ describe('WorkoutTemplateLine', () => {
 
   beforeEach(() => {
     validWorkoutTemplateLineProps = {
-      ...vp.validWorkoutTemplateLineProps,
+      ...workoutTemplateTestProps.validWorkoutTemplateLineProps,
     };
     workoutTemplateLine = WorkoutTemplateLine.create(
-      validWorkoutTemplateLineProps
+      validWorkoutTemplateLineProps,
     );
   });
 
@@ -25,32 +26,32 @@ describe('WorkoutTemplateLine', () => {
   it('should throw error if sets is zero', async () => {
     expect(() =>
       WorkoutTemplateLine.create({
-        ...vp.validWorkoutTemplateLineProps,
+        ...workoutTemplateTestProps.validWorkoutTemplateLineProps,
         sets: 0,
-      })
+      }),
     ).toThrow(ValidationError);
 
     expect(() =>
       WorkoutTemplateLine.create({
-        ...vp.validWorkoutTemplateLineProps,
+        ...workoutTemplateTestProps.validWorkoutTemplateLineProps,
         sets: 0,
-      })
+      }),
     ).toThrow(/Integer.*cannot be zero/);
   });
 
   it('should throw error if sets is negative', async () => {
     expect(() =>
       WorkoutTemplateLine.create({
-        ...vp.validWorkoutTemplateLineProps,
+        ...workoutTemplateTestProps.validWorkoutTemplateLineProps,
         sets: -3,
-      })
+      }),
     ).toThrow(ValidationError);
 
     expect(() =>
       WorkoutTemplateLine.create({
-        ...vp.validWorkoutTemplateLineProps,
+        ...workoutTemplateTestProps.validWorkoutTemplateLineProps,
         sets: -3,
-      })
+      }),
     ).toThrow(/Integer.*be positive/);
   });
 
