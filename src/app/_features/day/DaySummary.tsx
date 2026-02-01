@@ -10,6 +10,7 @@ import { dayIdToDayMonthYear } from '@/domain/value-objects/DayId/DayId';
 import SelectRecipeModal from '../recipe/SelectRecipeModal';
 import DateTitle from './DateTitle';
 import DayTitle from './DayTitle';
+import MealLine from '../meal/MealLine';
 
 // TODO NEXT Get assembledDay data and show meals summary
 
@@ -42,6 +43,9 @@ function DaySummary({
 }) {
   const { day, month, year } = dayIdToDayMonthYear(dayId);
 
+  const meals = assembledDay?.meals || [];
+  // TODO NEXT mange fakeMeals
+
   // Compute day name And capitalize first letter
   const date = new Date(year, month - 1, day);
   const dayName =
@@ -64,7 +68,8 @@ function DaySummary({
             <DateTitle day={day} month={month} year={year} />
           </div>
 
-          <span>MOSTRAR COMIDAS</span>
+          {meals.length > 0 &&
+            meals.map((meal) => <MealLine key={meal.id} meal={meal} />)}
 
           <Modal.Open opens="add-food-modal">
             <ButtonNew>Añadir comida</ButtonNew>

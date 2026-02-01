@@ -3,6 +3,7 @@ import Spinner from '@/app/_ui/Spinner';
 import SectionHeading from '@/app/_ui/typography/SectionHeading';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import RecipesGrid from './RecipesGrid';
 
 function SelectRecipeModal({
@@ -12,6 +13,7 @@ function SelectRecipeModal({
   dayId: string;
   onCloseModal?: () => void;
 }) {
+  const router = useRouter();
   const [recipes, setRecipes] = useState<RecipeDTO[]>([]);
   const [selectedRecipesIds, setSelectedRecipesIds] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -71,8 +73,9 @@ function SelectRecipeModal({
 
       await Promise.all(addMealPromises);
 
-      // Optionally, you can add some success feedback here
+      router.refresh();
     } catch (error) {
+      // TODO Toast error
       console.error('Error adding meals to day:', error);
     } finally {
       setIsLoading(false);

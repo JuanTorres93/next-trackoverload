@@ -13,7 +13,7 @@ const mealsRepo = AppMealsRepo as MemoryMealsRepo;
 const fakeMealsRepo = AppFakeMealsRepo as MemoryFakeMealsRepo;
 
 // Mock before importing the component that uses next/cache
-// import '@/../tests/mocks/nextjs';
+import '@/../tests/mocks/nextjs';
 
 import DaySummary from '../DaySummary';
 import { createServer } from '../../../../../tests/mocks/server';
@@ -50,10 +50,20 @@ async function setup() {
 
   const addFoodButton = screen.getByRole('button', { name: /añadir comida/i });
 
-  return { assembledDayDTO, addFoodButton };
+  return { assembledDayDTO, addFoodButton, meal, fakeMeal };
 }
 
 describe('DaySummary', () => {
+  it('should show meals info', async () => {
+    const { meal } = await setup();
+
+    const mealElement = await screen.findByText(new RegExp(meal.name, 'i'));
+
+    expect(mealElement).toBeInTheDocument();
+  });
+
+  // TODO NEXT Test show fake meals
+
   it('opens recipes selection modal window on button click', async () => {
     const { addFoodButton } = await setup();
 

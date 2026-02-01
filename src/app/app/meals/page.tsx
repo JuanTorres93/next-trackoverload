@@ -1,10 +1,10 @@
 import { eachDayOfInterval, endOfWeek, startOfWeek } from 'date-fns';
 
 import { DayId } from '@/domain/value-objects/DayId/DayId';
-import { AppGetAssembledDayById } from '@/interface-adapters/app/use-cases/day';
 
 import DaySummary from '@/app/_features/day/DaySummary';
 import PageWrapper from '../../_ui/PageWrapper';
+import { getAssembledDaysByIds } from '@/app/_features/day/actions';
 
 export const metadata = {
   title: 'Comidas',
@@ -26,17 +26,10 @@ export default async function MealsPage() {
         day: day.getDate(),
         month: day.getMonth() + 1,
         year: day.getFullYear(),
-      }).value
-  );
-  // TODO IMPORTANT: Create a new usecase to fetch a list of assembled days for better performance
-  const assembledDaysPromises = dayIds.map((dayId) =>
-    AppGetAssembledDayById.execute({
-      dayId,
-      userId: 'dev-user', // TODO: Replace with auth userId
-    }).then((assembledDay) => ({ dayId, assembledDay }))
+      }).value,
   );
 
-  const assembledDays = await Promise.all(assembledDaysPromises);
+  const assembledDays = await getAssembledDaysByIds(dayIds);
 
   return (
     <PageWrapper>
