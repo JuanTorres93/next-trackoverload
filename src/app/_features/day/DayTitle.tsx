@@ -9,7 +9,7 @@ function DayTitle({
   const { className, ...rest } = props;
   return (
     <h2
-      className={`text-lg ${isToday ? 'text-primary font-semibold' : ''} ${className ?? ''}`}
+      className={`text-lg text-text-light ${isToday ? 'font-semibold' : ''} ${className ?? ''}`}
       {...rest}
     >
       {dayName}

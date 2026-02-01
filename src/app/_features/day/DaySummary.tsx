@@ -44,7 +44,7 @@ function DaySummary({
   const { day, month, year } = dayIdToDayMonthYear(dayId);
 
   const meals = assembledDay?.meals || [];
-  // TODO NEXT mange fakeMeals
+  // TODO NEXT manage fakeMeals
 
   // Compute day name And capitalize first letter
   const date = new Date(year, month - 1, day);
@@ -58,21 +58,25 @@ function DaySummary({
   return (
     <Modal>
       <div
-        className={`p-2 border-2 rounded-xl border-surface-dark ${
+        className={`border-2 rounded-xl border-surface-dark overflow-x-hidden ${
           isToday ? 'border-3! shadow-md border-primary-light!' : ''
         } ${isPast ? 'opacity-60' : ''}`}
       >
         <div className="flex flex-col gap-4">
-          <div className="flex flex-col items-center justify-center gap-.5">
+          <div
+            className={`flex flex-col p-2 items-center bg-text-minor-emphasis justify-center gap-.5 ${isToday ? 'bg-primary-light!' : ''}`}
+          >
             <DayTitle dayName={dayName} isToday={isToday} />
             <DateTitle day={day} month={month} year={year} />
           </div>
 
           {meals.length > 0 &&
-            meals.map((meal) => <MealLine key={meal.id} meal={meal} />)}
+            meals.map((meal) => (
+              <MealLine className="m-2" key={meal.id} meal={meal} />
+            ))}
 
           <Modal.Open opens="add-food-modal">
-            <ButtonNew>Añadir comida</ButtonNew>
+            <ButtonNew className="m-2">Añadir comida</ButtonNew>
           </Modal.Open>
         </div>
       </div>

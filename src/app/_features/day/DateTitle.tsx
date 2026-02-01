@@ -13,10 +13,7 @@ function DateTitle({
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
   return (
-    <TextSmall
-      className={`text-text-minor-emphasis ${className ?? ''}`}
-      {...rest}
-    >
+    <TextSmall className={`text-text-light ${className ?? ''}`} {...rest}>
       <h3>
         {`${prependOnDigitNumberWithZero(
           day,
