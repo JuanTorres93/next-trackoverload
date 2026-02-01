@@ -31,6 +31,11 @@ createServer([
       return allRecipes;
     },
   },
+  {
+    path: '/api/day/addMeal',
+    method: 'post',
+    response: () => {},
+  },
 ]);
 
 async function setup() {
@@ -107,28 +112,41 @@ describe('DaySummary', () => {
     expect(addMealsButton).toBeEnabled();
   });
 
-  // TODO find a way to test meal creation. Right now I need to mock post request and that would not actually test anything
-  //it('should create meal in repo', async () => {
-  //  const { addFoodButton } = await setup();
-  //  const mealsCountBefore = mealsRepo.countForTesting();
+  it('should send post request to add a meal', async () => {
+    const { addFoodButton, assembledDayDTO } = await setup();
 
-  //  await userEvent.click(addFoodButton);
+    const fetchSpy = vi.spyOn(global, 'fetch');
 
-  //  const firstRecipeElement = await screen.findByText(
-  //    new RegExp(mockRecipes[0].name, 'i'),
-  //  );
+    await userEvent.click(addFoodButton);
 
-  //  await userEvent.click(firstRecipeElement);
+    const firstRecipeElement = await screen.findByText(
+      new RegExp(mockRecipes[0].name, 'i'),
+    );
 
-  //  const addMealsButton = screen.getByRole('button', {
-  //    name: /añadir comidas/i,
-  //  });
+    await userEvent.click(firstRecipeElement);
 
-  //  await userEvent.click(addMealsButton);
+    const addMealsButton = screen.getByRole('button', {
+      name: /añadir comidas/i,
+    });
 
-  //  await waitFor(() => {
-  //    const mealsCountAfter = mealsRepo.countForTesting();
-  //    expect(mealsCountAfter).toBe(mealsCountBefore + 1);
-  //  });
-  //});
+    await userEvent.click(addMealsButton);
+
+    await waitFor(() => {
+      // First time is for fetching recipes
+      // Second time is for adding meal
+      expect(fetchSpy).toHaveBeenCalledTimes(2);
+    });
+
+    const [, options] = fetchSpy.mock.calls[1];
+
+    const body = JSON.parse(options!.body as string);
+
+    expect(body).toEqual(
+      expect.objectContaining({
+        userId: 'dev-user', // TODO IMPORTANT Change when authentication is implemented. The value is hardocoded and the test will fail
+        dayId: assembledDayDTO.id,
+        recipeId: mockRecipes[0].id,
+      }),
+    );
+  });
 });
