@@ -1,23 +1,30 @@
-import { screen, render, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { AppMealsRepo } from '@/interface-adapters/app/repos/AppMealsRepo';
+import { AppDaysRepo } from '@/interface-adapters/app/repos/AppDaysRepo';
 import { AppFakeMealsRepo } from '@/interface-adapters/app/repos/AppFakeMealsRepo';
+import { AppMealsRepo } from '@/interface-adapters/app/repos/AppMealsRepo';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
-import { MemoryMealsRepo } from '@/infra/repos/memory/MemoryMealsRepo';
+import { MemoryDaysRepo } from '@/infra/repos/memory/MemoryDaysRepo';
 import { MemoryFakeMealsRepo } from '@/infra/repos/memory/MemoryFakeMealsRepo';
+import { MemoryMealsRepo } from '@/infra/repos/memory/MemoryMealsRepo';
 
+import {
+  getValidAssembledDayDTO,
+  validDayProps,
+} from '../../../../../tests/createProps/dayTestProps';
 import { createMockRecipes } from '../../../../../tests/mocks/recipes';
-import { getValidAssembledDayDTO } from '../../../../../tests/createProps/dayTestProps';
 
 const mealsRepo = AppMealsRepo as MemoryMealsRepo;
 const fakeMealsRepo = AppFakeMealsRepo as MemoryFakeMealsRepo;
+const daysRepo = AppDaysRepo as MemoryDaysRepo;
 
 // Mock before importing the component that uses next/cache
 import '@/../tests/mocks/nextjs';
 
-import DaySummary from '../DaySummary';
-import { createServer } from '../../../../../tests/mocks/server';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
+import { Day } from '@/domain/entities/day/Day';
+import { createServer } from '../../../../../tests/mocks/server';
+import DaySummary from '../DaySummary';
 
 const { mockRecipes } = await createMockRecipes();
 
@@ -39,10 +46,18 @@ createServer([
 ]);
 
 async function setup() {
+  const day = Day.create({
+    ...validDayProps(),
+    userId: 'dev-user', // TODO IMPORTANT Change when authentication is implemented. The value is hardocoded and the test will fail
+  });
   const { assembledDayDTO, meal, fakeMeal } = getValidAssembledDayDTO();
 
-  mealsRepo.saveMeal(meal);
-  fakeMealsRepo.saveFakeMeal(fakeMeal);
+  day.addMeal(meal.id);
+  day.addFakeMeal(fakeMeal.id);
+
+  await mealsRepo.saveMeal(meal);
+  await fakeMealsRepo.saveFakeMeal(fakeMeal);
+  await daysRepo.saveDay(day);
 
   render(
     <DaySummary dayId={assembledDayDTO.id} assembledDay={assembledDayDTO} />,
@@ -50,7 +65,10 @@ async function setup() {
 
   const addFoodButton = screen.getByRole('button', { name: /añadir comida/i });
 
-  return { assembledDayDTO, addFoodButton, meal, fakeMeal };
+  const deleteMealButton = screen.getAllByTestId(
+    'nutritional-summary-delete-button',
+  );
+  return { assembledDayDTO, addFoodButton, meal, fakeMeal, deleteMealButton };
 }
 
 describe('DaySummary', () => {
@@ -120,6 +138,20 @@ describe('DaySummary', () => {
     await userEvent.click(firstRecipeElement);
 
     expect(addMealsButton).toBeEnabled();
+  });
+
+  it('should remove meal on button click', async () => {
+    const { deleteMealButton } = await setup();
+
+    const mealsBefore = mealsRepo.countForTesting();
+    expect(mealsBefore).toBe(1);
+
+    await userEvent.click(deleteMealButton[0]);
+
+    await waitFor(() => {
+      const mealsAfter = mealsRepo.countForTesting();
+      expect(mealsAfter).toBe(0);
+    });
   });
 
   it('should send post request to add a meal', async () => {
