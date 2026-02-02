@@ -9,7 +9,7 @@ export interface DaysRepo {
   getDaysByDateRangeAndUserId(
     startDayId: string,
     endDayId: string,
-    userId: string
+    userId: string,
   ): Promise<Day[]>;
   saveDay(day: Day): Promise<void>;
   deleteDayForUser(id: string, userId: string): Promise<void>;

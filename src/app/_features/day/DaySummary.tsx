@@ -72,7 +72,12 @@ function DaySummary({
 
           {meals.length > 0 &&
             meals.map((meal) => (
-              <MealLine className="m-2" key={meal.id} meal={meal} />
+              <MealLine
+                className="m-2"
+                key={meal.id}
+                meal={meal}
+                dayId={dayId}
+              />
             ))}
 
           <Modal.Open opens="add-food-modal">

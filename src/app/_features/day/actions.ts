@@ -1,6 +1,8 @@
 'use server';
 import { AssembledDayDTO } from '@/application-layer/dtos/DayDTO';
 import { AppGetAssembledDayById } from '@/interface-adapters/app/use-cases/day';
+import { AppRemoveMealFromDayUsecase } from '@/interface-adapters/app/use-cases/day';
+import { revalidatePath } from 'next/cache';
 
 type AssembledDayResult = {
   dayId: string;
@@ -29,4 +31,18 @@ export async function getAssembledDaysByIds(
   const assembledDaysPromises = dayIds.map(getAssembledDayById);
 
   return Promise.all(assembledDaysPromises);
+}
+
+// TODO NEXT Testear que se borra con el click
+export async function removeMealFromDay(
+  dayId: string,
+  mealId: string,
+): Promise<void> {
+  await AppRemoveMealFromDayUsecase.execute({
+    date: dayId,
+    userId: 'dev-user', // TODO: Replace with auth userId
+    mealId,
+  });
+
+  revalidatePath(`/app/meals`);
 }

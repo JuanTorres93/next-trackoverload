@@ -14,24 +14,24 @@ export class RemoveMealFromDayUsecase {
   constructor(
     private daysRepo: DaysRepo,
     private usersRepo: UsersRepo,
-    private mealsRepo: MealsRepo
+    private mealsRepo: MealsRepo,
   ) {}
 
   async execute(request: RemoveMealFromDayUsecaseRequest): Promise<DayDTO> {
     const user = await this.usersRepo.getUserById(request.userId);
     if (!user) {
       throw new NotFoundError(
-        `RemoveMealFromDayUsecase: User with id ${request.userId} not found`
+        `RemoveMealFromDayUsecase: User with id ${request.userId} not found`,
       );
     }
 
     const day = await this.daysRepo.getDayByIdAndUserId(
       request.date,
-      request.userId
+      request.userId,
     );
     if (!day) {
       throw new NotFoundError(
-        `RemoveMealFromDayUsecase: Day not found for date ${request.date} and userId ${request.userId}`
+        `RemoveMealFromDayUsecase: Day not found for date ${request.date} and userId ${request.userId}`,
       );
     }
 

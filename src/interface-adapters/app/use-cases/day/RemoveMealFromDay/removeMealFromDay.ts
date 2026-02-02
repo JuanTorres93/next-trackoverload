@@ -6,5 +6,5 @@ import { RemoveMealFromDayUsecase } from '@/application-layer/use-cases/day/Remo
 export const AppRemoveMealFromDayUsecase = new RemoveMealFromDayUsecase(
   AppDaysRepo,
   AppUsersRepo,
-  AppMealsRepo
+  AppMealsRepo,
 );
