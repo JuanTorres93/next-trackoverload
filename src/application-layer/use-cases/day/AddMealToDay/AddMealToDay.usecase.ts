@@ -85,6 +85,7 @@ export class AddMealToDayUsecase {
       name: recipe.name,
       createdFromRecipeId: recipe.id,
       ingredientLines: mealIngredientLines,
+      imageUrl: recipe.imageUrl,
       createdAt: new Date(),
       updatedAt: new Date(),
     });

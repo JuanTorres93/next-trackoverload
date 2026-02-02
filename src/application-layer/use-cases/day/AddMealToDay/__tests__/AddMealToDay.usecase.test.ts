@@ -1,7 +1,3 @@
-import * as dayTestProps from '../../../../../../tests/createProps/dayTestProps';
-import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
-import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
-import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError } from '@/domain/common/errors';
 import { Day } from '@/domain/entities/day/Day';
@@ -13,8 +9,12 @@ import { MemoryDaysRepo } from '@/infra/repos/memory/MemoryDaysRepo';
 import { MemoryMealsRepo } from '@/infra/repos/memory/MemoryMealsRepo';
 import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
-import { AddMealToDayUsecase } from '../AddMealToDay.usecase';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
+import * as dayTestProps from '../../../../../../tests/createProps/dayTestProps';
+import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
+import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
+import { AddMealToDayUsecase } from '../AddMealToDay.usecase';
 
 describe('AddMealToDayUsecase', () => {
   let daysRepo: MemoryDaysRepo;
@@ -138,6 +138,25 @@ describe('AddMealToDayUsecase', () => {
 
       const allMeals = await mealsRepo.getAllMeals();
       expect(allMeals.length).toBe(1);
+    });
+
+    it('created meal should share recipe image', async () => {
+      const existingRecipe = await recipesRepo.getRecipeById(recipe.id);
+
+      existingRecipe!.updateImageUrl('http://example.com/image.jpg');
+
+      await recipesRepo.saveRecipe(existingRecipe!);
+
+      const result = await addMealToDayUsecase.execute({
+        dayId: day.id,
+        userId: userTestProps.userId,
+        recipeId: recipe.id,
+      });
+
+      const addedMeal = await mealsRepo.getMealById(result.mealIds[0]);
+
+      expect(addedMeal!.imageUrl).toBeDefined();
+      expect(addedMeal!.imageUrl).toBe(existingRecipe!.imageUrl);
     });
 
     it('should create new day if it does not exist', async () => {
