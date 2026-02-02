@@ -33,7 +33,6 @@ export async function getAssembledDaysByIds(
   return Promise.all(assembledDaysPromises);
 }
 
-// TODO NEXT Testear que se borra con el click
 export async function removeMealFromDay(
   dayId: string,
   mealId: string,
