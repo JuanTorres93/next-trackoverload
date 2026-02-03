@@ -12,8 +12,6 @@ import DateTitle from './DateTitle';
 import DayTitle from './DayTitle';
 import MealLine from '../meal/MealLine';
 
-// TODO NEXT Get assembledDay data and show meals summary
-
 const computeIsToday = (day: number, month: number, year: number) => {
   const today = new Date();
   return (
@@ -62,32 +60,42 @@ function DaySummary({
           isToday ? 'border-3! shadow-md border-primary-light!' : ''
         } ${isPast ? 'opacity-60' : ''}`}
       >
-        <div className="flex flex-col gap-4">
-          <div
-            className={`flex flex-col p-2 items-center bg-text-minor-emphasis justify-center gap-.5 ${isToday ? 'bg-primary-light!' : ''}`}
-          >
-            <DayTitle dayName={dayName} isToday={isToday} />
-            <DateTitle day={day} month={month} year={year} />
-          </div>
+        <div
+          className={`flex flex-col p-2 items-center bg-text-minor-emphasis justify-center gap-.5 ${isToday ? 'bg-primary-light!' : ''}`}
+        >
+          <DayTitle dayName={dayName} isToday={isToday} />
+          <DateTitle day={day} month={month} year={year} />
+        </div>
 
+        <div className="grid grid-cols-1 overflow-x-scroll max-h-100">
           {meals.length > 0 &&
             meals.map((meal) => (
               <MealLine
-                className="m-2"
+                className="m-3"
                 key={meal.id}
                 meal={meal}
                 dayId={dayId}
               />
             ))}
+        </div>
 
+        <div className="flex mt-3">
           <Modal.Open opens="add-food-modal">
-            <ButtonNew className="m-2">Añadir comida</ButtonNew>
+            <ButtonNew className="w-full m-2">Comida</ButtonNew>
+          </Modal.Open>
+
+          <Modal.Open opens="add-fake-meal-modal">
+            <ButtonNew className="w-full m-2">Rápido</ButtonNew>
           </Modal.Open>
         </div>
       </div>
 
       <Modal.Window name="add-food-modal">
         <SelectRecipeModal dayId={dayId} />
+      </Modal.Window>
+
+      <Modal.Window name="add-fake-meal-modal">
+        <div className="p-4">Aquí va el modal de añadir comida rápida</div>
       </Modal.Window>
     </Modal>
   );

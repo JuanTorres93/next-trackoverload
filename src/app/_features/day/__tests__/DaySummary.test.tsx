@@ -63,7 +63,7 @@ async function setup() {
     <DaySummary dayId={assembledDayDTO.id} assembledDay={assembledDayDTO} />,
   );
 
-  const addFoodButton = screen.getByRole('button', { name: /añadir comida/i });
+  const addFoodButton = screen.getByRole('button', { name: /comida/i });
 
   const deleteMealButton = screen.getAllByTestId(
     'nutritional-summary-delete-button',

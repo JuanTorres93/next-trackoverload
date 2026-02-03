@@ -33,7 +33,7 @@ export default async function MealsPage() {
 
   return (
     <PageWrapper>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(5rem,20rem))] gap-4">
         {assembledDays.map(({ dayId, assembledDay }) => (
           <DaySummary key={dayId} dayId={dayId} assembledDay={assembledDay} />
         ))}
