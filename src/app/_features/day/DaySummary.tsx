@@ -11,6 +11,7 @@ import SelectRecipeModal from '../recipe/SelectRecipeModal';
 import DateTitle from './DateTitle';
 import DayTitle from './DayTitle';
 import MealLine from '../meal/MealLine';
+import AddFakeMealModal from '../fakemeal/AddFakeMealModal';
 
 const computeIsToday = (day: number, month: number, year: number) => {
   const today = new Date();
@@ -95,7 +96,7 @@ function DaySummary({
       </Modal.Window>
 
       <Modal.Window name="add-fake-meal-modal">
-        <div className="p-4">Aquí va el modal de añadir comida rápida</div>
+        <AddFakeMealModal dayId={dayId} />
       </Modal.Window>
     </Modal>
   );
