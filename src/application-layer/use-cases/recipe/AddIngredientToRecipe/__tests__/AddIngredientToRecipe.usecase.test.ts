@@ -12,6 +12,7 @@ import { MemoryIngredientsRepo } from '@/infra/repos/memory/MemoryIngredientsRep
 import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { MemoryExternalIngredientsRefRepo } from '@/infra';
+import { MemoryUnitOfWork } from '@/infra/unit-of-work/memoryUnitOfWork/MemoryUnitOfWork';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
 
 import { AddIngredientToRecipeUsecase } from '../AddIngredientToRecipe.usecase';
@@ -23,6 +24,7 @@ describe('AddIngredientToRecipeUsecase', () => {
   let usersRepo: MemoryUsersRepo;
   let externalIngredientsRefRepo: MemoryExternalIngredientsRefRepo;
   let idGenerator: Uuidv4IdGenerator;
+  let unitOfWork: MemoryUnitOfWork;
 
   let addIngredientToRecipeUsecase: AddIngredientToRecipeUsecase;
   let testRecipe: Recipe;
@@ -36,12 +38,15 @@ describe('AddIngredientToRecipeUsecase', () => {
     usersRepo = new MemoryUsersRepo();
     externalIngredientsRefRepo = new MemoryExternalIngredientsRefRepo();
     idGenerator = new Uuidv4IdGenerator();
+    unitOfWork = new MemoryUnitOfWork();
+
     addIngredientToRecipeUsecase = new AddIngredientToRecipeUsecase(
       recipesRepo,
       ingredientsRepo,
       usersRepo,
       externalIngredientsRefRepo,
       idGenerator,
+      unitOfWork,
     );
 
     user = User.create({
