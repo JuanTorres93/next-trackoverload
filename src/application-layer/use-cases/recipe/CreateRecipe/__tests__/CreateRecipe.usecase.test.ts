@@ -14,6 +14,7 @@ import { SharpServerImageProcessor } from '@/infra/services/ImageProcessor/Serve
 import { MemoryIngredientsRepo } from '@/infra/repos/memory/MemoryIngredientsRepo';
 import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
+import { MemoryUnitOfWork } from '@/infra/unit-of-work/memoryUnitOfWork/MemoryUnitOfWork';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
 import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
 import { CreateRecipeUsecase } from '../CreateRecipe.usecase';
@@ -26,6 +27,7 @@ describe('CreateRecipeUsecase', () => {
   let imagesRepo: MemoryImagesRepo;
   let imageProcessor: SharpServerImageProcessor;
   let usersRepo: MemoryUsersRepo;
+  let unitOfWork: MemoryUnitOfWork;
   let createRecipeUsecase: CreateRecipeUsecase;
   let testExternalIngredientRef: ExternalIngredientRef;
   let testIngredientLineInfo: CreateIngredientLineData;
@@ -39,6 +41,7 @@ describe('CreateRecipeUsecase', () => {
     imagesRepo = new MemoryImagesRepo();
     imageProcessor = new SharpServerImageProcessor();
     usersRepo = new MemoryUsersRepo();
+    unitOfWork = new MemoryUnitOfWork();
 
     createRecipeUsecase = new CreateRecipeUsecase(
       recipesRepo,
@@ -48,6 +51,7 @@ describe('CreateRecipeUsecase', () => {
       idGenerator,
       externalIngredientsRefRepo,
       imageProcessor,
+      unitOfWork,
     );
 
     user = User.create({

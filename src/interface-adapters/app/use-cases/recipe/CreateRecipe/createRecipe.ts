@@ -6,6 +6,7 @@ import { AppUsersRepo } from '@/interface-adapters/app/repos/AppUsersRepo';
 import { AppExternalIngredientsRefRepo } from '@/interface-adapters/app/repos/AppExternalIngredientsRefRepo';
 import { CreateRecipeUsecase } from '@/application-layer/use-cases/recipe/CreateRecipe/CreateRecipe.usecase';
 import { AppUuidV4IdGenerator } from '@/interface-adapters/app/services/AppUuidV4IdGenerator';
+import { AppUnitOfWork } from '@/interface-adapters/app/repos/AppUnitOfWork';
 
 export const AppCreateRecipeUsecase = new CreateRecipeUsecase(
   AppRecipesRepo,
@@ -15,4 +16,5 @@ export const AppCreateRecipeUsecase = new CreateRecipeUsecase(
   AppUuidV4IdGenerator,
   AppExternalIngredientsRefRepo,
   AppImageProcessor,
+  AppUnitOfWork,
 );

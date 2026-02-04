@@ -8,6 +8,7 @@ import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { IdGenerator } from '@/domain/services/IdGenerator.port';
+import { UnitOfWork } from '@/application-layer/unit-of-work/UnitOfWork.port';
 import { ImageProcessor } from '@/domain/services/ImageProcessor/ServerImageProcessor.port';
 import {
   createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo,
@@ -32,6 +33,7 @@ export class CreateRecipeUsecase {
     private idGenerator: IdGenerator,
     private externalIngredientsRefRepo: ExternalIngredientsRefRepo,
     private imageProcessor: ImageProcessor,
+    private unitOfWork: UnitOfWork,
   ) {}
 
   async execute(request: CreateRecipeUsecaseRequest): Promise<RecipeDTO> {
@@ -97,6 +99,7 @@ export class CreateRecipeUsecase {
         newRecipeId,
       );
 
+      // Image not included in transaction because it does not belong to the DB
       imageMetadata = await this.imagesRepo.save(imageType);
     }
 
@@ -112,13 +115,15 @@ export class CreateRecipeUsecase {
 
     // Save any missing ingredients and external refs
     // TODO IMPORTANT: Create methods for batch saving to optimize performance
-    for (const extRef of Object.values(missingExternalIngredients)) {
-      await this.externalIngredientsRefRepo.save(extRef);
-    }
-    for (const ingredient of Object.values(missingIngredients)) {
-      await this.ingredientsRepo.saveIngredient(ingredient);
-    }
-    await this.recipesRepo.saveRecipe(newRecipe);
+    await this.unitOfWork.inTransaction(async () => {
+      for (const extRef of Object.values(missingExternalIngredients)) {
+        await this.externalIngredientsRefRepo.save(extRef);
+      }
+      for (const ingredient of Object.values(missingIngredients)) {
+        await this.ingredientsRepo.saveIngredient(ingredient);
+      }
+      await this.recipesRepo.saveRecipe(newRecipe);
+    });
 
     return toRecipeDTO(newRecipe);
   }

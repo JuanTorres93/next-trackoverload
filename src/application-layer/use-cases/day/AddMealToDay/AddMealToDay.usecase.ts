@@ -17,6 +17,7 @@ export type AddMealToDayUsecaseRequest = {
   recipeId: string;
 };
 
+// TODO Manage images for meals created from recipes
 export class AddMealToDayUsecase {
   constructor(
     private daysRepo: DaysRepo,
