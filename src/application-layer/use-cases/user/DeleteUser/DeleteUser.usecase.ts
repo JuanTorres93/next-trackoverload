@@ -6,6 +6,7 @@ import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
 import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
+import { UnitOfWork } from '@/application-layer/unit-of-work/UnitOfWork.port';
 
 export type DeleteUserUsecaseRequest = {
   actorUserId: string;
@@ -20,13 +21,14 @@ export class DeleteUserUsecase {
     private mealsRepo: MealsRepo,
     private recipesRepo: RecipesRepo,
     private workoutsRepo: WorkoutsRepo,
-    private workoutTemplatesRepo: WorkoutTemplatesRepo
+    private workoutTemplatesRepo: WorkoutTemplatesRepo,
+    private unitOfWork: UnitOfWork,
   ) {}
 
   async execute(request: DeleteUserUsecaseRequest): Promise<void> {
     if (request.actorUserId !== request.targetUserId) {
       throw new PermissionError(
-        'DeleteUserUsecase: cannot delete another user'
+        'DeleteUserUsecase: cannot delete another user',
       );
     }
 
@@ -36,15 +38,17 @@ export class DeleteUserUsecase {
       throw new NotFoundError('DeleteUserUsecase: User not found');
     }
 
-    await this.fakeMealsRepo.deleteAllFakeMealsForUser(request.targetUserId);
-    await this.mealsRepo.deleteAllMealsForUser(request.targetUserId);
-    await this.recipesRepo.deleteAllRecipesForUser(request.targetUserId);
-    await this.workoutsRepo.deleteAllWorkoutsForUser(request.targetUserId);
-    await this.workoutTemplatesRepo.deleteAllWorkoutTemplatesForUser(
-      request.targetUserId
-    );
-    await this.daysRepo.deleteAllDaysForUser(request.targetUserId);
+    await this.unitOfWork.inTransaction(async () => {
+      await this.fakeMealsRepo.deleteAllFakeMealsForUser(request.targetUserId);
+      await this.mealsRepo.deleteAllMealsForUser(request.targetUserId);
+      await this.recipesRepo.deleteAllRecipesForUser(request.targetUserId);
+      await this.workoutsRepo.deleteAllWorkoutsForUser(request.targetUserId);
+      await this.workoutTemplatesRepo.deleteAllWorkoutTemplatesForUser(
+        request.targetUserId,
+      );
+      await this.daysRepo.deleteAllDaysForUser(request.targetUserId);
 
-    await this.usersRepo.deleteUser(request.targetUserId);
+      await this.usersRepo.deleteUser(request.targetUserId);
+    });
   }
 }

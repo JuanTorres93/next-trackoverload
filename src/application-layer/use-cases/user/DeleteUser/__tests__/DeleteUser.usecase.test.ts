@@ -24,6 +24,7 @@ import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { MemoryWorkoutsRepo } from '@/infra/repos/memory/MemoryWorkoutsRepo';
 import { MemoryWorkoutTemplatesRepo } from '@/infra/repos/memory/MemoryWorkoutTemplatesRepo';
+import { MemoryUnitOfWork } from '@/infra/unit-of-work/memoryUnitOfWork/MemoryUnitOfWork';
 
 // Import use case
 import { DeleteUserUsecase } from '../DeleteUser.usecase';
@@ -36,6 +37,7 @@ describe('DeleteUserUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
   let workoutsRepo: MemoryWorkoutsRepo;
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
+  let unitOfWork: MemoryUnitOfWork;
 
   let deleteUserUsecase: DeleteUserUsecase;
 
@@ -47,6 +49,7 @@ describe('DeleteUserUsecase', () => {
     recipesRepo = new MemoryRecipesRepo();
     workoutsRepo = new MemoryWorkoutsRepo();
     workoutTemplatesRepo = new MemoryWorkoutTemplatesRepo();
+    unitOfWork = new MemoryUnitOfWork();
 
     deleteUserUsecase = new DeleteUserUsecase(
       usersRepo,
@@ -56,6 +59,7 @@ describe('DeleteUserUsecase', () => {
       recipesRepo,
       workoutsRepo,
       workoutTemplatesRepo,
+      unitOfWork,
     );
 
     // Create user

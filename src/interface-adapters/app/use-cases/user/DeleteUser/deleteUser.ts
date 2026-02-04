@@ -6,6 +6,7 @@ import { AppMealsRepo } from '@/interface-adapters/app/repos/AppMealsRepo';
 import { AppRecipesRepo } from '@/interface-adapters/app/repos/AppRecipesRepo';
 import { AppWorkoutsRepo } from '@/interface-adapters/app/repos/AppWorkoutsRepo';
 import { AppWorkoutsTemplatesRepo } from '@/interface-adapters/app/repos/AppWorkoutsTemplatesRepo';
+import { AppUnitOfWork } from '@/interface-adapters/app/repos/AppUnitOfWork';
 
 export const AppDeleteUserUsecase = new DeleteUserUsecase(
   AppUsersRepo,
@@ -14,5 +15,6 @@ export const AppDeleteUserUsecase = new DeleteUserUsecase(
   AppMealsRepo,
   AppRecipesRepo,
   AppWorkoutsRepo,
-  AppWorkoutsTemplatesRepo
+  AppWorkoutsTemplatesRepo,
+  AppUnitOfWork,
 );
