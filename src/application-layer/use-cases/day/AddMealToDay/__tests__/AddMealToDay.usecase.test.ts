@@ -10,6 +10,7 @@ import { MemoryMealsRepo } from '@/infra/repos/memory/MemoryMealsRepo';
 import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
+import { MemoryUnitOfWork } from '@/infra/unit-of-work/memoryUnitOfWork/MemoryUnitOfWork';
 import * as dayTestProps from '../../../../../../tests/createProps/dayTestProps';
 import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
@@ -21,6 +22,7 @@ describe('AddMealToDayUsecase', () => {
   let mealsRepo: MemoryMealsRepo;
   let usersRepo: MemoryUsersRepo;
   let recipesRepo: MemoryRecipesRepo;
+  let unitOfWork: MemoryUnitOfWork;
 
   let addMealToDayUsecase: AddMealToDayUsecase;
 
@@ -35,12 +37,15 @@ describe('AddMealToDayUsecase', () => {
     mealsRepo = new MemoryMealsRepo();
     usersRepo = new MemoryUsersRepo();
     recipesRepo = new MemoryRecipesRepo();
+    unitOfWork = new MemoryUnitOfWork();
+
     addMealToDayUsecase = new AddMealToDayUsecase(
       daysRepo,
       mealsRepo,
       usersRepo,
       recipesRepo,
       new Uuidv4IdGenerator(),
+      unitOfWork,
     );
     day = Day.create({
       ...dayTestProps.validDayProps(),

@@ -5,6 +5,7 @@ import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { IdGenerator } from '@/domain/services/IdGenerator.port';
+import { UnitOfWork } from '@/application-layer/unit-of-work/UnitOfWork.port';
 
 export type AddFakeMealToDayUsecaseRequest = {
   dayId: string;
@@ -19,25 +20,26 @@ export class AddFakeMealToDayUsecase {
     private daysRepo: DaysRepo,
     private fakeMealsRepo: FakeMealsRepo,
     private usersRepo: UsersRepo,
-    private idGenerator: IdGenerator
+    private idGenerator: IdGenerator,
+    private unitOfWork: UnitOfWork,
   ) {}
 
   async execute(request: AddFakeMealToDayUsecaseRequest): Promise<DayDTO> {
     const user = await this.usersRepo.getUserById(request.userId);
     if (!user) {
       throw new NotFoundError(
-        `AddFakeMealToDayUsecase: User with id ${request.userId} not found`
+        `AddFakeMealToDayUsecase: User with id ${request.userId} not found`,
       );
     }
 
     const day = await this.daysRepo.getDayByIdAndUserId(
       request.dayId,
-      request.userId
+      request.userId,
     );
 
     if (!day)
       throw new NotFoundError(
-        `AddFakeMealToDayUsecase: Day with id ${request.dayId} for user with id ${request.userId} not found`
+        `AddFakeMealToDayUsecase: Day with id ${request.dayId} for user with id ${request.userId} not found`,
       );
 
     const fakeMeal = FakeMeal.create({
@@ -51,8 +53,11 @@ export class AddFakeMealToDayUsecase {
     });
 
     day.addFakeMeal(fakeMeal.id);
-    await this.fakeMealsRepo.saveFakeMeal(fakeMeal);
-    await this.daysRepo.saveDay(day);
+
+    await this.unitOfWork.inTransaction(async () => {
+      await this.fakeMealsRepo.saveFakeMeal(fakeMeal);
+      await this.daysRepo.saveDay(day);
+    });
 
     return toDayDTO(day);
   }
