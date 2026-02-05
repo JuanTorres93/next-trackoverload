@@ -21,7 +21,7 @@ export type ExerciseProps = {
   updatedAt: DomainDate;
 };
 
-const nameTextOptions = {
+export const nameTextOptions = {
   maxLength: Integer.create(100),
   canBeEmpty: false,
 };
@@ -61,5 +61,14 @@ export class Exercise {
 
   get updatedAt() {
     return this.props.updatedAt.value;
+  }
+
+  toCreateProps(): ExerciseCreateProps {
+    return {
+      id: this.props.id.value,
+      name: this.props.name.value,
+      createdAt: this.props.createdAt.value,
+      updatedAt: this.props.updatedAt.value,
+    };
   }
 }
