@@ -1,8 +1,8 @@
+import { DomainDate } from '@/domain/value-objects/DomainDate/DomainDate';
 import { Float } from '@/domain/value-objects/Float/Float';
 import { Id } from '@/domain/value-objects/Id/Id';
-import { Text } from '@/domain/value-objects/Text/Text';
-import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 import { Integer } from '@/domain/value-objects/Integer/Integer';
+import { Text } from '@/domain/value-objects/Text/Text';
 import { ValidationError } from '@/domain/common/errors';
 
 type NutritionalInfoPer100g = {
@@ -16,8 +16,8 @@ export type IngredientCreateProps = {
   calories: number;
   protein: number;
   imageUrl?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
 export type IngredientUpdateProps = {
@@ -31,8 +31,8 @@ export type IngredientProps = {
   name: Text;
   nutritionalInfoPer100g: NutritionalInfoPer100g;
   imageUrl?: Text;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: DomainDate;
+  updatedAt: DomainDate;
 };
 
 const nameTextOptions = { canBeEmpty: false, maxLength: Integer.create(100) };
@@ -52,8 +52,8 @@ export class Ingredient {
         protein: Float.create(props.protein, proteinFloatOptions),
       },
       imageUrl: props.imageUrl ? Text.create(props.imageUrl) : undefined,
-      createdAt: handleCreatedAt(props.createdAt),
-      updatedAt: handleUpdatedAt(props.updatedAt),
+      createdAt: DomainDate.create(props.createdAt),
+      updatedAt: DomainDate.create(props.updatedAt),
     };
 
     return new Ingredient(ingredientProps);
@@ -70,17 +70,17 @@ export class Ingredient {
     if (patch.calories !== undefined) {
       this.props.nutritionalInfoPer100g.calories = Float.create(
         patch.calories,
-        caloriesFloatOptions
+        caloriesFloatOptions,
       );
     }
     if (patch.protein !== undefined) {
       this.props.nutritionalInfoPer100g.protein = Float.create(
         patch.protein,
-        proteinFloatOptions
+        proteinFloatOptions,
       );
     }
 
-    this.props.updatedAt = new Date();
+    this.props.updatedAt = DomainDate.create();
   }
 
   get id() {
@@ -103,10 +103,10 @@ export class Ingredient {
   }
 
   get createdAt() {
-    return this.props.createdAt;
+    return this.props.createdAt.value;
   }
 
   get updatedAt() {
-    return this.props.updatedAt;
+    return this.props.updatedAt.value;
   }
 }

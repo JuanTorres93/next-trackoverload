@@ -18,12 +18,19 @@ describe('Ingredient', () => {
     // eslint-disable-next-line
     const { createdAt, updatedAt, ...propsWithoutDates } =
       ingredientTestProps.validIngredientProps;
-    // @ts-expect-error .create actually expects createdAt and updatedAt
-    const ingredient = Ingredient.create(propsWithoutDates);
 
-    expect(ingredient).toBeInstanceOf(Ingredient);
-    expect(ingredient.createdAt instanceof Date).toBe(true);
-    expect(ingredient.updatedAt instanceof Date).toBe(true);
+    const ingredientWithoutDates = Ingredient.create(propsWithoutDates);
+
+    expect(ingredientWithoutDates).toBeInstanceOf(Ingredient);
+
+    const now = new Date();
+
+    expect(ingredientWithoutDates.createdAt.getTime()).toBeLessThanOrEqual(
+      now.getTime(),
+    );
+    expect(ingredientWithoutDates.updatedAt.getTime()).toBeLessThanOrEqual(
+      now.getTime(),
+    );
   });
 
   it('should update ingredient', async () => {
