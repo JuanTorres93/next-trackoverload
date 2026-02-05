@@ -9,7 +9,7 @@ export type WorkoutLineCreateProps = {
   exerciseId: string;
   setNumber: number;
   reps: number;
-  weight: number; // in kg
+  weightInKg: number;
   createdAt?: Date;
   updatedAt?: Date;
 };
@@ -17,7 +17,7 @@ export type WorkoutLineCreateProps = {
 export type WorkoutLineUpdateProps = {
   setNumber?: number;
   reps?: number;
-  weight?: number; // in kg
+  weightInKg?: number;
 };
 
 export type WorkoutLineProps = {
@@ -26,7 +26,7 @@ export type WorkoutLineProps = {
   exerciseId: Id;
   setNumber: Integer;
   reps: Integer;
-  weight: Float; // in kg
+  weightInKg: Float;
   createdAt: DomainDate;
   updatedAt: DomainDate;
 };
@@ -54,7 +54,7 @@ export class WorkoutLine {
       exerciseId: Id.create(props.exerciseId),
       setNumber: Integer.create(props.setNumber, setNumberIntegerOptions),
       reps: Integer.create(props.reps, repsIntegerOptions),
-      weight: Float.create(props.weight, weightFloatOptions),
+      weightInKg: Float.create(props.weightInKg, weightFloatOptions),
       createdAt: DomainDate.create(props.createdAt),
       updatedAt: DomainDate.create(props.updatedAt),
     };
@@ -72,8 +72,11 @@ export class WorkoutLine {
     if (patch.reps !== undefined) {
       this.props.reps = Integer.create(patch.reps, repsIntegerOptions);
     }
-    if (patch.weight !== undefined) {
-      this.props.weight = Float.create(patch.weight, weightFloatOptions);
+    if (patch.weightInKg !== undefined) {
+      this.props.weightInKg = Float.create(
+        patch.weightInKg,
+        weightFloatOptions,
+      );
     }
     this.props.updatedAt = DomainDate.create();
   }
@@ -99,8 +102,8 @@ export class WorkoutLine {
     return this.props.reps.value;
   }
 
-  get weight() {
-    return this.props.weight.value;
+  get weightInKg() {
+    return this.props.weightInKg.value;
   }
 
   get createdAt() {

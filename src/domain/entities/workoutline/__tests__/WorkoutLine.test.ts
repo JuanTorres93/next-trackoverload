@@ -152,14 +152,14 @@ describe('WorkoutLine', () => {
     expect(() => {
       WorkoutLine.create({
         ...validWorkoutLineProps,
-        weight: -20,
+        weightInKg: -20,
       });
     }).toThrowError(ValidationError);
 
     expect(() => {
       WorkoutLine.create({
         ...validWorkoutLineProps,
-        weight: -20,
+        weightInKg: -20,
       });
     }).toThrowError(/Float.*be positive/);
   });
@@ -183,11 +183,11 @@ describe('WorkoutLine', () => {
   });
 
   it('can update weight', async () => {
-    const newWeight = 75.5;
+    const newWeightInKg = 75.5;
     workoutLine.update({
-      weight: newWeight,
+      weightInKg: newWeightInKg,
     });
 
-    expect(workoutLine.weight).toBe(newWeight);
+    expect(workoutLine.weightInKg).toBe(newWeightInKg);
   });
 });

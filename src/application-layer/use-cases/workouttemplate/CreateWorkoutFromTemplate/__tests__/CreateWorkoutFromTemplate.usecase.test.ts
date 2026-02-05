@@ -80,7 +80,7 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
             .exerciseId,
         setNumber: 1,
         reps: 0,
-        weight: 0,
+        weightInKg: 0,
         createdAt: exercise1Sets[0].createdAt,
         updatedAt: exercise1Sets[0].updatedAt,
       });

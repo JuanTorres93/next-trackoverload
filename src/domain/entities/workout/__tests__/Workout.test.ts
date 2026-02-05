@@ -56,7 +56,7 @@ describe('Workout', () => {
         exerciseId: 'ex2',
         setNumber: 1,
         reps: 12,
-        weight: 60,
+        weightInKg: 60,
       });
 
       workout.addExercise(newWorkoutLine);
@@ -70,7 +70,7 @@ describe('Workout', () => {
         exerciseId: 'ex2',
         setNumber: 2,
         reps: 12,
-        weight: 60,
+        weightInKg: 60,
       });
       workout.addExercise(newWorkoutLine);
       workout.removeExercise(workoutLine.exerciseId);
@@ -82,13 +82,13 @@ describe('Workout', () => {
       const updateProps = {
         setNumber: 9,
         reps: 99,
-        weight: 88,
+        weightInKg: 88,
       };
 
       workout.updateExercise(workoutLine.exerciseId, updateProps);
       expect(workout.exercises[0].setNumber).toBe(9);
       expect(workout.exercises[0].reps).toBe(99);
-      expect(workout.exercises[0].weight).toBe(88);
+      expect(workout.exercises[0].weightInKg).toBe(88);
     });
 
     it('should update workout name', async () => {
@@ -106,7 +106,7 @@ describe('Workout', () => {
           exerciseId: workoutLine.exerciseId,
           setNumber: 2,
           reps: 8,
-          weight: 80,
+          weightInKg: 80,
         }),
       );
 
@@ -118,7 +118,7 @@ describe('Workout', () => {
           exerciseId: workoutLine.exerciseId,
           setNumber: 3,
           reps: 6,
-          weight: 70,
+          weightInKg: 70,
         }),
       );
 
@@ -139,10 +139,10 @@ describe('Workout', () => {
       expect(lastWorkoutLine.setNumber).toBe(2);
 
       expect(originalWorkoutLine.reps).toBe(workoutLine.reps);
-      expect(originalWorkoutLine.weight).toBe(workoutLine.weight);
+      expect(originalWorkoutLine.weightInKg).toBe(workoutLine.weightInKg);
 
       expect(lastWorkoutLine.reps).toBe(6);
-      expect(lastWorkoutLine.weight).toBe(70);
+      expect(lastWorkoutLine.weightInKg).toBe(70);
     });
   });
 
@@ -152,7 +152,7 @@ describe('Workout', () => {
         ...workoutTestProps.validWorkoutLineProps,
         setNumber: 1,
         reps: 12,
-        weight: 60,
+        weightInKg: 60,
       });
 
       expect(() => workout.addExercise(newWorkoutLine)).toThrow(
@@ -168,7 +168,7 @@ describe('Workout', () => {
       const updateProps = {
         setNumber: 9,
         reps: 99,
-        weight: 88,
+        weightInKg: 88,
       };
 
       expect(() =>

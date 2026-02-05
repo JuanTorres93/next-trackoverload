@@ -62,7 +62,7 @@ export class CreateWorkoutFromTemplateUsecase {
           exerciseId: templateExercise.exerciseId,
           setNumber,
           reps: 0,
-          weight: 0,
+          weightInKg: 0,
         });
 
         workoutExercises.push(workoutLine);

@@ -11,7 +11,7 @@ type WorkoutLineData = {
   exerciseId: string;
   setNumber: number;
   reps: number;
-  weight: number;
+  weightInKg: number;
   createdAt: string;
   updatedAt: string;
 };
@@ -32,7 +32,7 @@ export class FileSystemWorkoutsRepo implements WorkoutsRepo {
 
   constructor(
     workoutsBaseDir: string = path.join(FS_DATA_DIR, 'workouts'),
-    workoutLinesBaseDir: string = path.join(FS_DATA_DIR, 'workoutlines')
+    workoutLinesBaseDir: string = path.join(FS_DATA_DIR, 'workoutlines'),
   ) {
     this.workoutsDir = workoutsBaseDir;
     this.workoutLinesDir = workoutLinesBaseDir;
@@ -57,7 +57,7 @@ export class FileSystemWorkoutsRepo implements WorkoutsRepo {
 
   private serializeWorkoutLine(
     line: WorkoutLine,
-    workoutId: string
+    workoutId: string,
   ): WorkoutLineData {
     return {
       id: line.id,
@@ -65,7 +65,7 @@ export class FileSystemWorkoutsRepo implements WorkoutsRepo {
       exerciseId: line.exerciseId,
       setNumber: line.setNumber,
       reps: line.reps,
-      weight: line.weight,
+      weightInKg: line.weightInKg,
       createdAt: line.createdAt.toISOString(),
       updatedAt: line.updatedAt.toISOString(),
     };
@@ -78,7 +78,7 @@ export class FileSystemWorkoutsRepo implements WorkoutsRepo {
       exerciseId: data.exerciseId,
       setNumber: data.setNumber,
       reps: data.reps,
-      weight: data.weight,
+      weightInKg: data.weightInKg,
       createdAt: new Date(data.createdAt),
       updatedAt: new Date(data.updatedAt),
     });
@@ -91,7 +91,7 @@ export class FileSystemWorkoutsRepo implements WorkoutsRepo {
       name: workout.name,
       workoutTemplateId: workout.workoutTemplateId,
       exercises: workout.exercises.map((line) =>
-        this.serializeWorkoutLine(line, workout.id)
+        this.serializeWorkoutLine(line, workout.id),
       ),
       createdAt: workout.createdAt.toISOString(),
       updatedAt: workout.updatedAt.toISOString(),
@@ -105,7 +105,7 @@ export class FileSystemWorkoutsRepo implements WorkoutsRepo {
       name: data.name,
       workoutTemplateId: data.workoutTemplateId,
       exercises: data.exercises.map((lineData) =>
-        this.deserializeWorkoutLine(lineData)
+        this.deserializeWorkoutLine(lineData),
       ),
       createdAt: new Date(data.createdAt),
       updatedAt: new Date(data.updatedAt),
@@ -139,7 +139,7 @@ export class FileSystemWorkoutsRepo implements WorkoutsRepo {
           const content = await fs.readFile(filePath, 'utf-8');
           const data = JSON.parse(content) as WorkoutData;
           return this.deserializeWorkout(data);
-        })
+        }),
       );
 
       return workouts;
@@ -167,7 +167,7 @@ export class FileSystemWorkoutsRepo implements WorkoutsRepo {
 
   async getWorkoutByIdAndUserId(
     id: string,
-    userId: string
+    userId: string,
   ): Promise<Workout | null> {
     const workout = await this.getWorkoutById(id);
     if (workout && workout.userId === userId) {
@@ -179,18 +179,18 @@ export class FileSystemWorkoutsRepo implements WorkoutsRepo {
   async getWorkoutsByTemplateId(templateId: string): Promise<Workout[]> {
     const allWorkouts = await this.getAllWorkouts();
     return allWorkouts.filter(
-      (workout) => workout.workoutTemplateId === templateId
+      (workout) => workout.workoutTemplateId === templateId,
     );
   }
 
   async getWorkoutsByTemplateIdAndUserId(
     templateId: string,
-    userId: string
+    userId: string,
   ): Promise<Workout[]> {
     const allWorkouts = await this.getAllWorkouts();
     return allWorkouts.filter(
       (workout) =>
-        workout.workoutTemplateId === templateId && workout.userId === userId
+        workout.workoutTemplateId === templateId && workout.userId === userId,
     );
   }
 
@@ -241,7 +241,7 @@ export class FileSystemWorkoutsRepo implements WorkoutsRepo {
         } catch {
           // Workout file might not exist
         }
-      })
+      }),
     );
   }
 }

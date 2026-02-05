@@ -20,7 +20,7 @@ export function validWorkoutPropsWithExercises() {
     exerciseId: 'ex1',
     setNumber: 1,
     reps: 10,
-    weight: 50,
+    weightInKg: 50,
     createdAt: new Date(),
     updatedAt: new Date(),
   });
@@ -31,7 +31,7 @@ export function validWorkoutPropsWithExercises() {
     exerciseId: 'ex2',
     setNumber: 1,
     reps: 8,
-    weight: 70,
+    weightInKg: 70,
     createdAt: new Date(),
     updatedAt: new Date(),
   });
@@ -57,7 +57,7 @@ export const validWorkoutProps = {
       exerciseId: 'ex1',
       setNumber: 1,
       reps: 10,
-      weight: 50,
+      weightInKg: 50,
     },
   ],
   createdAt: new Date(),
@@ -70,7 +70,7 @@ export const validWorkoutLineProps = {
   exerciseId: 'exercise-1',
   setNumber: 1,
   reps: 10,
-  weight: 53.5,
+  weightInKg: 53.5,
   createdAt: new Date(),
   updatedAt: new Date(),
 };

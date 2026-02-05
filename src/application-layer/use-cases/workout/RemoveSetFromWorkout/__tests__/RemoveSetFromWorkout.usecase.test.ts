@@ -45,7 +45,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
       exerciseId: 'exercise-1',
       setNumber: 1,
       reps: 10,
-      weight: 50,
+      weightInKg: 50,
     });
 
     workoutLine2 = WorkoutLine.create({
@@ -54,7 +54,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
       exerciseId: 'exercise-1',
       setNumber: 2,
       reps: 8,
-      weight: 60,
+      weightInKg: 60,
     });
 
     workoutLine3 = WorkoutLine.create({
@@ -63,7 +63,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
       exerciseId: 'exercise-2',
       setNumber: 1,
       reps: 15,
-      weight: 20,
+      weightInKg: 20,
     });
 
     workout.addExercise(workoutLine1);
@@ -90,7 +90,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
       expect(exercise1Sets).toHaveLength(1);
       expect(exercise1Sets[0].setNumber).toBe(1); // Original set 2 reordered to set 1
       expect(exercise1Sets[0].reps).toBe(8); // Original set 2 data
-      expect(exercise1Sets[0].weight).toBe(60); // Original set 2 data
+      expect(exercise1Sets[0].weightInKg).toBe(60); // Original set 2 data
       expect(
         updatedWorkout.exercises.find((e) => e.exerciseId === 'exercise-2'),
       ).toBeDefined();
@@ -119,7 +119,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
           exerciseId: 'exercise-1',
           setNumber: 3,
           reps: 6,
-          weight: 70,
+          weightInKg: 70,
         }),
       );
 

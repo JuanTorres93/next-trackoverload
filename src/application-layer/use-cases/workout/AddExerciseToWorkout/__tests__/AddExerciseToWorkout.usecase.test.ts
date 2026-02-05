@@ -58,7 +58,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
         exerciseId: exerciseTestProps.validExerciseProps.id,
         setNumber: 1,
         reps: 10,
-        weight: 0,
+        weightInKg: 0,
       });
 
       expect(updatedWorkout.exercises).toHaveLength(1);
@@ -68,7 +68,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
         exerciseId: exerciseTestProps.validExerciseProps.id,
         setNumber: 1,
         reps: 10,
-        weight: 0,
+        weightInKg: 0,
         createdAt: updatedWorkout.exercises[0].createdAt,
         updatedAt: updatedWorkout.exercises[0].updatedAt,
       });
@@ -81,7 +81,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
         exerciseId: exerciseTestProps.validExerciseProps.id,
         setNumber: 1,
         reps: 10,
-        weight: 0,
+        weightInKg: 0,
       });
 
       for (const prop of dto.workoutDTOProperties) {
@@ -98,7 +98,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
         exerciseId: exerciseTestProps.validExerciseProps.id,
         setNumber: 1,
         reps: 12,
-        weight: 5,
+        weightInKg: 5,
       });
 
       // Second set
@@ -108,7 +108,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
         exerciseId: exerciseTestProps.validExerciseProps.id,
         setNumber: 2,
         reps: 12,
-        weight: 5,
+        weightInKg: 5,
       });
 
       expect(updatedWorkout.exercises).toHaveLength(2);
@@ -118,7 +118,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
         exerciseId: exerciseTestProps.validExerciseProps.id,
         setNumber: 2,
         reps: 12,
-        weight: 5,
+        weightInKg: 5,
         createdAt: updatedWorkout.exercises[1].createdAt,
         updatedAt: updatedWorkout.exercises[1].updatedAt,
       });
@@ -133,7 +133,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
         exerciseId: exerciseTestProps.validExerciseProps.id,
         setNumber: 1,
         reps: 10,
-        weight: 0,
+        weightInKg: 0,
       };
 
       await expect(
@@ -152,7 +152,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
         exerciseId: 'non-existent',
         setNumber: 1,
         reps: 10,
-        weight: 0,
+        weightInKg: 0,
       };
 
       await expect(
@@ -184,7 +184,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
         exerciseId: exerciseTestProps.validExerciseProps.id,
         setNumber: 1,
         reps: 10,
-        weight: 0,
+        weightInKg: 0,
       };
 
       await expect(
@@ -210,7 +210,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
         exerciseId: exerciseTestProps.validExerciseProps.id,
         setNumber: 1,
         reps: 10,
-        weight: 0,
+        weightInKg: 0,
       };
 
       await expect(

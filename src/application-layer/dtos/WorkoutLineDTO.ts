@@ -6,7 +6,7 @@ export type WorkoutLineDTO = {
   exerciseId: string;
   setNumber: number;
   reps: number;
-  weight: number; // in kg
+  weightInKg: number;
   createdAt: string;
   updatedAt: string;
 };
@@ -18,7 +18,7 @@ export function toWorkoutLineDTO(workoutLine: WorkoutLine): WorkoutLineDTO {
     exerciseId: workoutLine.exerciseId,
     setNumber: workoutLine.setNumber,
     reps: workoutLine.reps,
-    weight: workoutLine.weight,
+    weightInKg: workoutLine.weightInKg,
     createdAt: workoutLine.createdAt.toISOString(),
     updatedAt: workoutLine.updatedAt.toISOString(),
   };

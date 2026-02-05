@@ -9,40 +9,40 @@ export type UpdateExerciseInWorkoutUsecaseRequest = {
   exerciseId: string;
   setNumber?: number;
   reps?: number;
-  weight?: number;
+  weightInKg?: number;
 };
 
 export class UpdateExerciseInWorkoutUsecase {
   constructor(
     private workoutsRepo: WorkoutsRepo,
-    private usersRepo: UsersRepo
+    private usersRepo: UsersRepo,
   ) {}
 
   async execute(
-    request: UpdateExerciseInWorkoutUsecaseRequest
+    request: UpdateExerciseInWorkoutUsecaseRequest,
   ): Promise<WorkoutDTO> {
     const user = await this.usersRepo.getUserById(request.userId);
     if (!user) {
       throw new NotFoundError(
-        `UpdateExerciseInWorkoutUsecase: User with id ${request.userId} not found`
+        `UpdateExerciseInWorkoutUsecase: User with id ${request.userId} not found`,
       );
     }
 
     const workout = await this.workoutsRepo.getWorkoutByIdAndUserId(
       request.workoutId,
-      request.userId
+      request.userId,
     );
 
     if (!workout) {
       throw new NotFoundError(
-        'UpdateExerciseInWorkoutUsecase: Workout not found'
+        'UpdateExerciseInWorkoutUsecase: Workout not found',
       );
     }
 
     workout.updateExercise(request.exerciseId, {
       setNumber: request.setNumber,
       reps: request.reps,
-      weight: request.weight,
+      weightInKg: request.weightInKg,
     });
 
     await this.workoutsRepo.saveWorkout(workout);

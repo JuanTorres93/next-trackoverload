@@ -40,7 +40,7 @@ describe('WorkoutDTO', () => {
           exerciseId: line.exerciseId,
           setNumber: line.setNumber,
           reps: line.reps,
-          weight: line.weight,
+          weightInKg: line.weightInKg,
           createdAt: line.createdAt.toISOString(),
           updatedAt: line.updatedAt.toISOString(),
         })),

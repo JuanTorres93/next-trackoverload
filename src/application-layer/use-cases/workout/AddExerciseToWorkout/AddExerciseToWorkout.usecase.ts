@@ -12,7 +12,7 @@ export type AddExerciseToWorkoutUsecaseRequest = {
   exerciseId: string;
   setNumber: number;
   reps: number;
-  weight: number;
+  weightInKg: number;
 };
 
 export class AddExerciseToWorkoutUsecase {
@@ -57,7 +57,7 @@ export class AddExerciseToWorkoutUsecase {
       exerciseId: request.exerciseId,
       setNumber: request.setNumber,
       reps: request.reps,
-      weight: request.weight,
+      weightInKg: request.weightInKg,
     });
 
     workout.addExercise(workoutLine);

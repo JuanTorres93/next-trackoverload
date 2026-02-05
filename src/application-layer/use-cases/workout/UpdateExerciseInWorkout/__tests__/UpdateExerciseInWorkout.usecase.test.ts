@@ -58,8 +58,8 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
       expect(updatedWorkout.exercises[0].setNumber).toBe(
         workoutTestProps.validWorkoutLineProps.setNumber,
       );
-      expect(updatedWorkout.exercises[0].weight).toBe(
-        workoutTestProps.validWorkoutLineProps.weight,
+      expect(updatedWorkout.exercises[0].weightInKg).toBe(
+        workoutTestProps.validWorkoutLineProps.weightInKg,
       );
     });
 
@@ -82,12 +82,12 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
         userId: userTestProps.userId,
         workoutId: workoutTestProps.validWorkoutProps.id,
         exerciseId: workoutTestProps.validWorkoutLineProps.exerciseId,
-        weight: 25.5,
+        weightInKg: 25.5,
       });
 
-      expect(updatedWorkout.exercises[0].weight).toBe(25.5);
-      expect(updatedWorkout.exercises[0].weight).not.toBe(
-        workoutTestProps.validWorkoutLineProps.weight,
+      expect(updatedWorkout.exercises[0].weightInKg).toBe(25.5);
+      expect(updatedWorkout.exercises[0].weightInKg).not.toBe(
+        workoutTestProps.validWorkoutLineProps.weightInKg,
       );
       expect(updatedWorkout.exercises[0].reps).toBe(
         workoutTestProps.validWorkoutLineProps.reps,
@@ -112,8 +112,8 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
       expect(updatedWorkout.exercises[0].reps).toBe(
         workoutTestProps.validWorkoutLineProps.reps,
       );
-      expect(updatedWorkout.exercises[0].weight).toBe(
-        workoutTestProps.validWorkoutLineProps.weight,
+      expect(updatedWorkout.exercises[0].weightInKg).toBe(
+        workoutTestProps.validWorkoutLineProps.weightInKg,
       );
     });
 
@@ -124,12 +124,12 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
         exerciseId: workoutTestProps.validWorkoutLineProps.exerciseId,
         setNumber: 3,
         reps: 12,
-        weight: 30,
+        weightInKg: 30,
       });
 
       expect(updatedWorkout.exercises[0].setNumber).toBe(3);
       expect(updatedWorkout.exercises[0].reps).toBe(12);
-      expect(updatedWorkout.exercises[0].weight).toBe(30);
+      expect(updatedWorkout.exercises[0].weightInKg).toBe(30);
     });
   });
 

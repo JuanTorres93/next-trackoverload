@@ -9,7 +9,7 @@ import { setNumberIntegerOptions } from '../workoutline/WorkoutLine';
 type WorkoutLineUpdateProps = {
   setNumber?: number;
   reps?: number;
-  weight?: number;
+  weightInKg?: number;
 };
 
 export type WorkoutCreateProps = {
@@ -157,8 +157,8 @@ export class Workout {
     if (updateProps.reps !== undefined) {
       line.update({ reps: updateProps.reps });
     }
-    if (updateProps.weight !== undefined) {
-      line.update({ weight: updateProps.weight });
+    if (updateProps.weightInKg !== undefined) {
+      line.update({ weightInKg: updateProps.weightInKg });
     }
 
     this.props.updatedAt = DomainDate.create();
