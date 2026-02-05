@@ -40,16 +40,21 @@ describe('User', () => {
     });
 
     it('should set createdAt and updatedAt if not provided', () => {
-      const userWithoutDates = User.create({
-        id: 'another-user-id',
-        name: 'Another User',
-        email: 'anotheruser@example.com',
-        customerId: 'another-customer-id',
-        createdAt: undefined as unknown as Date,
-        updatedAt: undefined as unknown as Date,
-      });
-      expect(userWithoutDates.createdAt).toBeInstanceOf(Date);
-      expect(userWithoutDates.updatedAt).toBeInstanceOf(Date);
+      // eslint-disable-next-line
+      const { createdAt, updatedAt, ...propsWithoutDates } = validUserProps;
+
+      const userWithoutDates = User.create(propsWithoutDates);
+
+      expect(userWithoutDates).toBeInstanceOf(User);
+
+      const now = new Date();
+
+      expect(userWithoutDates.createdAt.getTime()).toBeLessThanOrEqual(
+        now.getTime(),
+      );
+      expect(userWithoutDates.updatedAt.getTime()).toBeLessThanOrEqual(
+        now.getTime(),
+      );
     });
   });
 

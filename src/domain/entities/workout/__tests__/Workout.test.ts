@@ -32,6 +32,24 @@ describe('Workout', () => {
       expect(workout).toBeInstanceOf(Workout);
     });
 
+    it('should create a workout if no createdAt or updatedAt is provided', async () => {
+      // eslint-disable-next-line
+      const { createdAt, updatedAt, ...propsWithoutDates } = validWorkoutProps;
+
+      const workoutWithoutDates = Workout.create(propsWithoutDates);
+
+      expect(workoutWithoutDates).toBeInstanceOf(Workout);
+
+      const now = new Date();
+
+      expect(workoutWithoutDates.createdAt.getTime()).toBeLessThanOrEqual(
+        now.getTime(),
+      );
+      expect(workoutWithoutDates.updatedAt.getTime()).toBeLessThanOrEqual(
+        now.getTime(),
+      );
+    });
+
     it('should add exercise', async () => {
       const newWorkoutLine = WorkoutLine.create({
         ...workoutTestProps.validWorkoutLineProps,

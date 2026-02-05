@@ -1,17 +1,17 @@
+import { DomainDate } from '@/domain/value-objects/DomainDate/DomainDate';
+import { Email } from '@/domain/value-objects/Email/Email';
 import { Id } from '@/domain/value-objects/Id/Id';
 import { Integer } from '@/domain/value-objects/Integer/Integer';
 import { Text } from '@/domain/value-objects/Text/Text';
-import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 import { ValidationError } from '@/domain/common/errors';
-import { Email } from '@/domain/value-objects/Email/Email';
 
 export type UserCreateProps = {
   id: string;
   name: string;
   email: string;
   customerId?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
 export type UserUpdateProps = {
@@ -24,8 +24,8 @@ export type UserProps = {
   name: Text;
   email: Email;
   customerId?: Id;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: DomainDate;
+  updatedAt: DomainDate;
 };
 
 const nameTextOptions = {
@@ -42,8 +42,8 @@ export class User {
       name: Text.create(props.name, nameTextOptions),
       email: Email.create(props.email),
       customerId: props.customerId ? Id.create(props.customerId) : undefined,
-      createdAt: handleCreatedAt(props.createdAt),
-      updatedAt: handleUpdatedAt(props.updatedAt),
+      createdAt: DomainDate.create(props.createdAt),
+      updatedAt: DomainDate.create(props.updatedAt),
     };
 
     return new User(userProps);
@@ -68,7 +68,7 @@ export class User {
       this.props.customerId = Id.create(patch.customerId);
     }
 
-    this.props.updatedAt = new Date();
+    this.props.updatedAt = DomainDate.create();
   }
 
   // Getters
@@ -89,10 +89,10 @@ export class User {
   }
 
   get createdAt() {
-    return this.props.createdAt;
+    return this.props.createdAt.value;
   }
 
   get updatedAt() {
-    return this.props.updatedAt;
+    return this.props.updatedAt.value;
   }
 }

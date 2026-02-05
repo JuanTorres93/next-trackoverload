@@ -1,7 +1,7 @@
+import { DomainDate } from '@/domain/value-objects/DomainDate/DomainDate';
 import { Float } from '@/domain/value-objects/Float/Float';
 import { Id } from '@/domain/value-objects/Id/Id';
 import { Integer } from '@/domain/value-objects/Integer/Integer';
-import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 
 export type WorkoutLineCreateProps = {
   id: string;
@@ -10,8 +10,8 @@ export type WorkoutLineCreateProps = {
   setNumber: number;
   reps: number;
   weight: number; // in kg
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
 export type WorkoutLineUpdateProps = {
@@ -27,8 +27,8 @@ export type WorkoutLineProps = {
   setNumber: Integer;
   reps: Integer;
   weight: Float; // in kg
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: DomainDate;
+  updatedAt: DomainDate;
 };
 
 export const setNumberIntegerOptions = {
@@ -55,8 +55,8 @@ export class WorkoutLine {
       setNumber: Integer.create(props.setNumber, setNumberIntegerOptions),
       reps: Integer.create(props.reps, repsIntegerOptions),
       weight: Float.create(props.weight, weightFloatOptions),
-      createdAt: handleCreatedAt(props.createdAt),
-      updatedAt: handleUpdatedAt(props.updatedAt),
+      createdAt: DomainDate.create(props.createdAt),
+      updatedAt: DomainDate.create(props.updatedAt),
     };
 
     return new WorkoutLine(entityProps);
@@ -66,7 +66,7 @@ export class WorkoutLine {
     if (patch.setNumber !== undefined) {
       this.props.setNumber = Integer.create(
         patch.setNumber,
-        setNumberIntegerOptions
+        setNumberIntegerOptions,
       );
     }
     if (patch.reps !== undefined) {
@@ -75,7 +75,7 @@ export class WorkoutLine {
     if (patch.weight !== undefined) {
       this.props.weight = Float.create(patch.weight, weightFloatOptions);
     }
-    this.props.updatedAt = handleUpdatedAt(new Date());
+    this.props.updatedAt = DomainDate.create();
   }
 
   // Getters
@@ -104,10 +104,10 @@ export class WorkoutLine {
   }
 
   get createdAt() {
-    return this.props.createdAt;
+    return this.props.createdAt.value;
   }
 
   get updatedAt() {
-    return this.props.updatedAt;
+    return this.props.updatedAt.value;
   }
 }
