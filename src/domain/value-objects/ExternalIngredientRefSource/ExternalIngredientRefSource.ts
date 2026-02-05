@@ -6,7 +6,7 @@ type ExternalIngredientRefSourceProps = {
   value: string;
 };
 
-const VALID_SOURCES = ['openfoodfacts'];
+export const VALID_SOURCES = ['openfoodfacts'];
 
 export class ExternalIngredientRefSource extends ValueObject<ExternalIngredientRefSourceProps> {
   private readonly _value: string;
@@ -25,8 +25,8 @@ export class ExternalIngredientRefSource extends ValueObject<ExternalIngredientR
     if (!VALID_SOURCES.includes(source.value)) {
       throw new ValidationError(
         `ExternalIngredientRefSource: value must be one of [${VALID_SOURCES.join(
-          ', '
-        )}]`
+          ', ',
+        )}]`,
       );
     }
 

@@ -47,4 +47,13 @@ export class ExternalIngredientRef {
   get createdAt() {
     return this.props.createdAt.value;
   }
+
+  toCreateProps(): ExternalIngredientRefCreateProps {
+    return {
+      externalId: this.props.externalId.value,
+      source: this.props.source.value,
+      ingredientId: this.props.ingredientId.value,
+      createdAt: this.props.createdAt.value,
+    };
+  }
 }
