@@ -1,8 +1,8 @@
+import { DomainDate } from '@/domain/value-objects/DomainDate/DomainDate';
 import { Id } from '@/domain/value-objects/Id/Id';
 import { Integer } from '@/domain/value-objects/Integer/Integer';
 import { Text } from '@/domain/value-objects/Text/Text';
 import { ValidationError } from '../../common/errors';
-import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 import { Calories } from '../../interfaces/Calories';
 import { Protein } from '../../interfaces/Protein';
 import { IngredientLine } from '../ingredientline/IngredientLine';
@@ -13,8 +13,8 @@ export type RecipeCreateProps = {
   name: string;
   imageUrl?: string;
   ingredientLines: IngredientLine[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
 export type RecipeProps = {
@@ -23,8 +23,8 @@ export type RecipeProps = {
   name: Text;
   imageUrl?: Text;
   ingredientLines: IngredientLine[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: DomainDate;
+  updatedAt: DomainDate;
 };
 
 const nameTextOptions = {
@@ -42,19 +42,19 @@ export class Recipe implements Protein, Calories {
       !props.ingredientLines.every((line) => line instanceof IngredientLine)
     ) {
       throw new ValidationError(
-        'Recipe: ingredientLines must be a non-empty array of IngredientLine'
+        'Recipe: ingredientLines must be a non-empty array of IngredientLine',
       );
     }
 
     // Ensure no duplicate ingredients in ingredientLines
     const ingredientIds = props.ingredientLines.map(
-      (line) => line.ingredient.id
+      (line) => line.ingredient.id,
     );
     const uniqueIngredientIds = new Set(ingredientIds);
 
     if (uniqueIngredientIds.size < ingredientIds.length) {
       throw new ValidationError(
-        'Recipe: ingredientLines contain duplicate ingredients'
+        'Recipe: ingredientLines contain duplicate ingredients',
       );
     }
 
@@ -64,8 +64,8 @@ export class Recipe implements Protein, Calories {
       name: Text.create(props.name, nameTextOptions),
       imageUrl: props.imageUrl ? Text.create(props.imageUrl) : undefined,
       ingredientLines: props.ingredientLines,
-      createdAt: handleCreatedAt(props.createdAt),
-      updatedAt: handleUpdatedAt(props.updatedAt),
+      createdAt: DomainDate.create(props.createdAt),
+      updatedAt: DomainDate.create(props.updatedAt),
     };
 
     return new Recipe(recipeProps);
@@ -73,12 +73,12 @@ export class Recipe implements Protein, Calories {
 
   rename(name: string): void {
     this.props.name = Text.create(name, nameTextOptions);
-    this.props.updatedAt = new Date();
+    this.props.updatedAt = DomainDate.create();
   }
 
   updateImageUrl(imageUrl: string): void {
     this.props.imageUrl = Text.create(imageUrl);
-    this.props.updatedAt = new Date();
+    this.props.updatedAt = DomainDate.create();
   }
 
   addIngredientLine(ingredientLine: IngredientLine): void {
@@ -89,32 +89,32 @@ export class Recipe implements Protein, Calories {
     this._throwIfIngredientExists(ingredientLine.ingredient.id);
 
     this.props.ingredientLines.push(ingredientLine);
-    this.props.updatedAt = new Date();
+    this.props.updatedAt = DomainDate.create();
   }
 
   removeIngredientLineByIngredientId(ingredientId: string): void {
     const idToRemove = Id.create(ingredientId).value;
 
     const filteredLines = this.props.ingredientLines.filter(
-      (line) => line.ingredient.id !== idToRemove
+      (line) => line.ingredient.id !== idToRemove,
     );
 
     // Validate that the ingredient line exists
     if (filteredLines.length === this.props.ingredientLines.length) {
       throw new ValidationError(
-        `Recipe: No ingredient line found with ingredient id ${idToRemove}`
+        `Recipe: No ingredient line found with ingredient id ${idToRemove}`,
       );
     }
 
     // Validate that we don't leave the recipe empty
     if (filteredLines.length === 0) {
       throw new ValidationError(
-        'Recipe: ingredientLines cannot be empty after removal'
+        'Recipe: ingredientLines cannot be empty after removal',
       );
     }
 
     this.props.ingredientLines = filteredLines;
-    this.props.updatedAt = new Date();
+    this.props.updatedAt = DomainDate.create();
   }
 
   get id() {
@@ -138,35 +138,35 @@ export class Recipe implements Protein, Calories {
   }
 
   get createdAt() {
-    return this.props.createdAt;
+    return this.props.createdAt.value;
   }
 
   get updatedAt() {
-    return this.props.updatedAt;
+    return this.props.updatedAt.value;
   }
 
   get calories() {
     return this.props.ingredientLines.reduce(
       (total, line) => total + line.calories,
-      0
+      0,
     );
   }
 
   get protein() {
     return this.props.ingredientLines.reduce(
       (total, line) => total + line.protein,
-      0
+      0,
     );
   }
 
   private _throwIfIngredientExists(ingredientId: string): void {
     const ingredientAlreadyExists = this.props.ingredientLines.some(
-      (line) => line.ingredient.id === ingredientId
+      (line) => line.ingredient.id === ingredientId,
     );
 
     if (ingredientAlreadyExists) {
       throw new ValidationError(
-        `Recipe: Ingredient with id ${ingredientId} already exists in recipe`
+        `Recipe: Ingredient with id ${ingredientId} already exists in recipe`,
       );
     }
   }

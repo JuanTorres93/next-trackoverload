@@ -36,6 +36,24 @@ describe('Recipe', () => {
       expect(recipe).toBeInstanceOf(Recipe);
     });
 
+    it('should create a recipe if no createdAt or updatedAt is provided', async () => {
+      // eslint-disable-next-line
+      const { createdAt, updatedAt, ...propsWithoutDates } = validRecipeProps;
+
+      const recipeWithoutDates = Recipe.create(propsWithoutDates);
+
+      expect(recipeWithoutDates).toBeInstanceOf(Recipe);
+
+      const now = new Date();
+
+      expect(recipeWithoutDates.createdAt.getTime()).toBeLessThanOrEqual(
+        now.getTime(),
+      );
+      expect(recipeWithoutDates.updatedAt.getTime()).toBeLessThanOrEqual(
+        now.getTime(),
+      );
+    });
+
     it('should compute total calories', async () => {
       expect(recipe.calories).toBe(100);
 

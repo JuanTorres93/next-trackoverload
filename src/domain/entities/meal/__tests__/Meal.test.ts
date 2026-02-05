@@ -36,6 +36,24 @@ describe('Meal', () => {
     it('should create a valid meal', () => {
       expect(meal).toBeInstanceOf(Meal);
     });
+
+    it('should create a meal if no createdAt or updatedAt is provided', async () => {
+      // eslint-disable-next-line
+      const { createdAt, updatedAt, ...propsWithoutDates } = validMealProps;
+
+      const mealWithoutDates = Meal.create(propsWithoutDates);
+
+      expect(mealWithoutDates).toBeInstanceOf(Meal);
+
+      const now = new Date();
+
+      expect(mealWithoutDates.createdAt.getTime()).toBeLessThanOrEqual(
+        now.getTime(),
+      );
+      expect(mealWithoutDates.updatedAt.getTime()).toBeLessThanOrEqual(
+        now.getTime(),
+      );
+    });
   });
 
   describe('Functionality', () => {

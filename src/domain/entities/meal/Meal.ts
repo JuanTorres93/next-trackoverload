@@ -1,8 +1,8 @@
+import { DomainDate } from '@/domain/value-objects/DomainDate/DomainDate';
 import { Id } from '@/domain/value-objects/Id/Id';
 import { Integer } from '@/domain/value-objects/Integer/Integer';
 import { Text } from '@/domain/value-objects/Text/Text';
 import { ValidationError } from '../../common/errors';
-import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 import { Calories } from '../../interfaces/Calories';
 import { Protein } from '../../interfaces/Protein';
 import { IngredientLine } from '../ingredientline/IngredientLine';
@@ -14,8 +14,8 @@ export type MealCreateProps = {
   ingredientLines: IngredientLine[];
   createdFromRecipeId: string;
   imageUrl?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
 export type MealUpdateProps = {
@@ -29,8 +29,8 @@ export type MealProps = {
   ingredientLines: IngredientLine[];
   createdFromRecipeId: Id;
   imageUrl?: Text;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: DomainDate;
+  updatedAt: DomainDate;
 };
 
 const nameTextOptions = { canBeEmpty: false, maxLength: Integer.create(100) };
@@ -45,7 +45,7 @@ export class Meal implements Calories, Protein {
       !props.ingredientLines.every((line) => line instanceof IngredientLine)
     ) {
       throw new ValidationError(
-        'Meal: ingredientLines must be a non-empty array of IngredientLine'
+        'Meal: ingredientLines must be a non-empty array of IngredientLine',
       );
     }
 
@@ -56,8 +56,8 @@ export class Meal implements Calories, Protein {
       ingredientLines: props.ingredientLines,
       createdFromRecipeId: Id.create(props.createdFromRecipeId),
       imageUrl: props.imageUrl ? Text.create(props.imageUrl) : undefined,
-      createdAt: handleCreatedAt(props.createdAt),
-      updatedAt: handleUpdatedAt(props.updatedAt),
+      createdAt: DomainDate.create(props.createdAt),
+      updatedAt: DomainDate.create(props.updatedAt),
     };
 
     return new Meal(mealProps);
@@ -69,39 +69,39 @@ export class Meal implements Calories, Protein {
     }
 
     const exists = this.props.ingredientLines.some(
-      (line) => line.ingredient.id === ingredientLine.ingredient.id
+      (line) => line.ingredient.id === ingredientLine.ingredient.id,
     );
 
     if (exists) {
       throw new ValidationError(
-        `Meal: Ingredient with id ${ingredientLine.ingredient.id} already exists in the meal`
+        `Meal: Ingredient with id ${ingredientLine.ingredient.id} already exists in the meal`,
       );
     }
 
     this.props.ingredientLines.push(ingredientLine);
-    this.props.updatedAt = new Date();
+    this.props.updatedAt = DomainDate.create();
   }
 
   removeIngredientLineByIngredientId(ingredientId: string): void {
     const initialLength = this.props.ingredientLines.length;
     const memoryComputation = this.props.ingredientLines.filter(
-      (line) => line.ingredient.id !== ingredientId
+      (line) => line.ingredient.id !== ingredientId,
     );
 
     if (memoryComputation.length === 0) {
       throw new ValidationError(
-        'Meal: At least one ingredient line must exist in the meal'
+        'Meal: At least one ingredient line must exist in the meal',
       );
     }
 
     if (memoryComputation.length === initialLength) {
       throw new ValidationError(
-        `Meal: No ingredient line found with ingredient id ${ingredientId}`
+        `Meal: No ingredient line found with ingredient id ${ingredientId}`,
       );
     }
 
     this.props.ingredientLines = memoryComputation;
-    this.props.updatedAt = new Date();
+    this.props.updatedAt = DomainDate.create();
   }
 
   update(patch: MealUpdateProps): void {
@@ -111,7 +111,7 @@ export class Meal implements Calories, Protein {
       Object.values(patch).every((value) => value === undefined)
     ) {
       throw new ValidationError(
-        'Meal: No properties provided in patch for update'
+        'Meal: No properties provided in patch for update',
       );
     }
 
@@ -119,7 +119,7 @@ export class Meal implements Calories, Protein {
       this.props.name = Text.create(patch.name, nameTextOptions);
     }
 
-    this.props.updatedAt = new Date();
+    this.props.updatedAt = DomainDate.create();
   }
 
   get calories(): number {
@@ -163,10 +163,10 @@ export class Meal implements Calories, Protein {
   }
 
   get createdAt() {
-    return this.props.createdAt;
+    return this.props.createdAt.value;
   }
 
   get updatedAt() {
-    return this.props.updatedAt;
+    return this.props.updatedAt.value;
   }
 }
