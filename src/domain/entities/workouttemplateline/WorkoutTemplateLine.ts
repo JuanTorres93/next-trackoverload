@@ -1,14 +1,14 @@
+import { DomainDate } from '@/domain/value-objects/DomainDate/DomainDate';
 import { Id } from '@/domain/value-objects/Id/Id';
 import { Integer } from '@/domain/value-objects/Integer/Integer';
-import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 
 export type WorkoutTemplateLineCreateProps = {
   id: string;
   templateId: string;
   exerciseId: string;
   sets: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
 export type WorkoutTemplateLineUpdateProps = {
@@ -21,8 +21,8 @@ export type WorkoutTemplateLineProps = {
   templateId: Id;
   exerciseId: Id;
   sets: Integer;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: DomainDate;
+  updatedAt: DomainDate;
 };
 
 const setsIntegerOptions = { canBeZero: false, onlyPositive: true };
@@ -36,8 +36,8 @@ export class WorkoutTemplateLine {
       templateId: Id.create(props.templateId),
       exerciseId: Id.create(props.exerciseId),
       sets: Integer.create(props.sets, setsIntegerOptions),
-      createdAt: handleCreatedAt(props.createdAt),
-      updatedAt: handleUpdatedAt(props.updatedAt),
+      createdAt: DomainDate.create(props.createdAt),
+      updatedAt: DomainDate.create(props.updatedAt),
     };
 
     return new WorkoutTemplateLine(entityProps);
@@ -52,7 +52,7 @@ export class WorkoutTemplateLine {
       this.props.exerciseId = Id.create(updateProps.exerciseId);
     }
 
-    this.props.updatedAt = new Date();
+    this.props.updatedAt = DomainDate.create();
   }
 
   // Getters
@@ -73,10 +73,10 @@ export class WorkoutTemplateLine {
   }
 
   get createdAt() {
-    return this.props.createdAt;
+    return this.props.createdAt.value;
   }
 
   get updatedAt() {
-    return this.props.updatedAt;
+    return this.props.updatedAt.value;
   }
 }

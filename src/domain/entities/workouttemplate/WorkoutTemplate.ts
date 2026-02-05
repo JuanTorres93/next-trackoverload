@@ -1,8 +1,8 @@
+import { DomainDate } from '@/domain/value-objects/DomainDate/DomainDate';
 import { Id } from '@/domain/value-objects/Id/Id';
 import { Integer } from '@/domain/value-objects/Integer/Integer';
 import { Text } from '@/domain/value-objects/Text/Text';
 import { NotFoundError, ValidationError } from '../../common/errors';
-import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 import {
   WorkoutTemplateLine,
   WorkoutTemplateLineUpdateProps,
@@ -13,8 +13,8 @@ export type WorkoutTemplateCreateProps = {
   userId: string;
   name: string;
   exercises: WorkoutTemplateLine[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
   deletedAt?: Date;
 };
 
@@ -27,8 +27,8 @@ export type WorkoutTemplateProps = {
   userId: Id;
   name: Text;
   exercises: WorkoutTemplateLine[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: DomainDate;
+  updatedAt: DomainDate;
   deletedAt?: Date;
 };
 
@@ -61,8 +61,8 @@ export class WorkoutTemplate {
       userId: Id.create(props.userId),
       name: Text.create(props.name, nameTextOptions),
       exercises: props.exercises,
-      createdAt: handleCreatedAt(props.createdAt),
-      updatedAt: handleUpdatedAt(props.updatedAt),
+      createdAt: DomainDate.create(props.createdAt),
+      updatedAt: DomainDate.create(props.updatedAt),
       deletedAt: props.deletedAt,
     };
 
@@ -124,7 +124,7 @@ export class WorkoutTemplate {
       this.props.name = Text.create(patch.name, nameTextOptions);
     }
 
-    this.props.updatedAt = new Date();
+    this.props.updatedAt = DomainDate.create();
   }
 
   updateExercise(
@@ -159,11 +159,11 @@ export class WorkoutTemplate {
   }
 
   get createdAt() {
-    return this.props.createdAt;
+    return this.props.createdAt.value;
   }
 
   get updatedAt() {
-    return this.props.updatedAt;
+    return this.props.updatedAt.value;
   }
 
   get deletedAt() {
@@ -177,6 +177,6 @@ export class WorkoutTemplate {
   markAsDeleted() {
     const now = new Date();
     this.props.deletedAt = now;
-    this.props.updatedAt = now;
+    this.props.updatedAt = DomainDate.create();
   }
 }

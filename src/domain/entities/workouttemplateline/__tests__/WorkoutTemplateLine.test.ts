@@ -22,6 +22,26 @@ describe('WorkoutTemplateLine', () => {
     expect(workoutTemplateLine).toBeInstanceOf(WorkoutTemplateLine);
   });
 
+  it('should create a workoutTemplateLine if no createdAt or updatedAt is provided', async () => {
+    // eslint-disable-next-line
+    const { createdAt, updatedAt, ...propsWithoutDates } =
+      validWorkoutTemplateLineProps;
+
+    const workoutTemplateLineWithoutDates =
+      WorkoutTemplateLine.create(propsWithoutDates);
+
+    expect(workoutTemplateLineWithoutDates).toBeInstanceOf(WorkoutTemplateLine);
+
+    const now = new Date();
+
+    expect(
+      workoutTemplateLineWithoutDates.createdAt.getTime(),
+    ).toBeLessThanOrEqual(now.getTime());
+    expect(
+      workoutTemplateLineWithoutDates.updatedAt.getTime(),
+    ).toBeLessThanOrEqual(now.getTime());
+  });
+
   it('should throw error if sets is zero', async () => {
     expect(() =>
       WorkoutTemplateLine.create({
