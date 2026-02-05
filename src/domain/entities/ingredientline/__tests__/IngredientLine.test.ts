@@ -26,6 +26,25 @@ describe('IngredientLine', () => {
     expect(ingredientLine).toBeInstanceOf(IngredientLine);
   });
 
+  it('should create an ingredient line if no createdAt or updatedAt is provided', async () => {
+    // eslint-disable-next-line
+    const { createdAt, updatedAt, ...propsWithoutDates } =
+      validIngredientLineProps;
+
+    const ingredientLineWithoutDates = IngredientLine.create(propsWithoutDates);
+
+    expect(ingredientLineWithoutDates).toBeInstanceOf(IngredientLine);
+
+    const now = new Date();
+
+    expect(ingredientLineWithoutDates.createdAt.getTime()).toBeLessThanOrEqual(
+      now.getTime(),
+    );
+    expect(ingredientLineWithoutDates.updatedAt.getTime()).toBeLessThanOrEqual(
+      now.getTime(),
+    );
+  });
+
   it('should compute total calories', async () => {
     expect(ingredientLine.calories).toBe(200); // 100 cal per 100g * 200g = 200 cal
   });

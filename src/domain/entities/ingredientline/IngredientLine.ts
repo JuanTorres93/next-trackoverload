@@ -1,9 +1,9 @@
 import { Calories } from '@/domain/interfaces/Calories';
 import { Protein } from '@/domain/interfaces/Protein';
+import { DomainDate } from '@/domain/value-objects/DomainDate/DomainDate';
 import { Float } from '@/domain/value-objects/Float/Float';
 import { Id } from '@/domain/value-objects/Id/Id';
 import { ValidationError } from '../../common/errors';
-import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 import { Ingredient } from '../ingredient/Ingredient';
 
 export type IngredientLineCreateProps = {
@@ -12,8 +12,8 @@ export type IngredientLineCreateProps = {
   parentType: 'meal' | 'recipe';
   ingredient: Ingredient;
   quantityInGrams: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
 export type IngredientLineUpdateProps = {
@@ -27,8 +27,8 @@ export type IngredientLineProps = {
   parentType: 'meal' | 'recipe';
   ingredient: Ingredient;
   quantityInGrams: Float;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: DomainDate;
+  updatedAt: DomainDate;
 };
 
 const quantityFloatOptions = { onlyPositive: true, canBeZero: false };
@@ -43,7 +43,7 @@ export class IngredientLine implements Calories, Protein {
 
     if (props.parentType !== 'meal' && props.parentType !== 'recipe') {
       throw new ValidationError(
-        'IngredientLine: parentType must be either meal or recipe'
+        'IngredientLine: parentType must be either meal or recipe',
       );
     }
 
@@ -54,10 +54,10 @@ export class IngredientLine implements Calories, Protein {
       ingredient: props.ingredient,
       quantityInGrams: Float.create(
         props.quantityInGrams,
-        quantityFloatOptions
+        quantityFloatOptions,
       ),
-      createdAt: handleCreatedAt(props.createdAt),
-      updatedAt: handleUpdatedAt(props.updatedAt),
+      createdAt: DomainDate.create(props.createdAt),
+      updatedAt: DomainDate.create(props.updatedAt),
     };
 
     return new IngredientLine(ingredientLineProps);
@@ -70,13 +70,13 @@ export class IngredientLine implements Calories, Protein {
       Object.values(patch).every((value) => value === undefined)
     ) {
       throw new ValidationError(
-        'IngredientLine update must have at least one field to update'
+        'IngredientLine update must have at least one field to update',
       );
     }
 
     if (patch.ingredient && !(patch.ingredient instanceof Ingredient)) {
       throw new ValidationError(
-        'IngredientLine update ingredient must have a valid patch'
+        'IngredientLine update ingredient must have a valid patch',
       );
     }
 
@@ -85,11 +85,11 @@ export class IngredientLine implements Calories, Protein {
     if (patch.quantityInGrams !== undefined) {
       this.props.quantityInGrams = Float.create(
         patch.quantityInGrams,
-        quantityFloatOptions
+        quantityFloatOptions,
       );
     }
 
-    this.props.updatedAt = handleUpdatedAt(this.props.updatedAt);
+    this.props.updatedAt = DomainDate.create();
   }
 
   get id() {
@@ -129,10 +129,10 @@ export class IngredientLine implements Calories, Protein {
   }
 
   get createdAt() {
-    return this.props.createdAt;
+    return this.props.createdAt.value;
   }
 
   get updatedAt() {
-    return this.props.updatedAt;
+    return this.props.updatedAt.value;
   }
 }
