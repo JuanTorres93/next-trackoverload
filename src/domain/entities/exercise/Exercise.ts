@@ -1,13 +1,13 @@
+import { DomainDate } from '@/domain/value-objects/DomainDate/DomainDate';
 import { Id } from '@/domain/value-objects/Id/Id';
-import { Text } from '@/domain/value-objects/Text/Text';
-import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 import { Integer } from '@/domain/value-objects/Integer/Integer';
+import { Text } from '@/domain/value-objects/Text/Text';
 
 export type ExerciseCreateProps = {
   id: string;
   name: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
 export type ExerciseUpdateProps = {
@@ -17,8 +17,8 @@ export type ExerciseUpdateProps = {
 export type ExerciseProps = {
   id: Id;
   name: Text;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: DomainDate;
+  updatedAt: DomainDate;
 };
 
 const nameTextOptions = {
@@ -33,8 +33,8 @@ export class Exercise {
     const exerciseProps: ExerciseProps = {
       id: Id.create(props.id),
       name: Text.create(props.name, nameTextOptions),
-      createdAt: handleCreatedAt(props.createdAt),
-      updatedAt: handleUpdatedAt(props.updatedAt),
+      createdAt: DomainDate.create(props.createdAt),
+      updatedAt: DomainDate.create(props.updatedAt),
     };
 
     return new Exercise(exerciseProps);
@@ -44,7 +44,7 @@ export class Exercise {
     if (patch.name) {
       this.props.name = Text.create(patch.name, nameTextOptions);
     }
-    this.props.updatedAt = new Date();
+    this.props.updatedAt = DomainDate.create(new Date());
   }
 
   get id() {
@@ -56,10 +56,10 @@ export class Exercise {
   }
 
   get createdAt() {
-    return this.props.createdAt;
+    return this.props.createdAt.value;
   }
 
   get updatedAt() {
-    return this.props.updatedAt;
+    return this.props.updatedAt.value;
   }
 }

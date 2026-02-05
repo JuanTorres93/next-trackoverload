@@ -25,7 +25,6 @@ describe('Exercise', () => {
     // eslint-disable-next-line
     const { createdAt, updatedAt, ...propsWithoutDates } =
       exerciseTestProps.validExerciseProps;
-    // @ts-expect-error .create actually expects createdAt and updatedAt
     const exercise = Exercise.create(propsWithoutDates);
 
     expect(exercise).toBeInstanceOf(Exercise);
