@@ -48,8 +48,6 @@ export class AddFakeMealToDayUsecase {
       name: request.name,
       calories: request.calories,
       protein: request.protein,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     day.addFakeMeal(fakeMeal.id);

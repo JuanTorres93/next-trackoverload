@@ -18,36 +18,36 @@ export class CreateWorkoutFromTemplateUsecase {
     private workoutTemplatesRepo: WorkoutTemplatesRepo,
     private workoutsRepo: WorkoutsRepo,
     private usersRepo: UsersRepo,
-    private idGenerator: IdGenerator
+    private idGenerator: IdGenerator,
   ) {}
 
   async execute(
-    request: CreateWorkoutFromTemplateUsecaseRequest
+    request: CreateWorkoutFromTemplateUsecaseRequest,
   ): Promise<WorkoutDTO> {
     const user = await this.usersRepo.getUserById(request.userId);
     if (!user) {
       throw new NotFoundError(
-        `CreateWorkoutFromTemplateUsecase: User with id ${request.userId} not found`
+        `CreateWorkoutFromTemplateUsecase: User with id ${request.userId} not found`,
       );
     }
 
     const workoutTemplate =
       await this.workoutTemplatesRepo.getWorkoutTemplateByIdAndUserId(
         request.workoutTemplateId,
-        request.userId
+        request.userId,
       );
 
     const isDeleted = workoutTemplate?.isDeleted ?? false;
 
     if (!workoutTemplate || isDeleted) {
       throw new NotFoundError(
-        'CreateWorkoutFromTemplateUsecase: WorkoutTemplate not found'
+        'CreateWorkoutFromTemplateUsecase: WorkoutTemplate not found',
       );
     }
 
     if (workoutTemplate.exercises.length === 0)
       throw new ValidationError(
-        'CreateWorkoutFromTemplateUsecase: Cannot create workout from an empty template'
+        'CreateWorkoutFromTemplateUsecase: Cannot create workout from an empty template',
       );
 
     const newWorkoutId = this.idGenerator.generateId();
@@ -63,8 +63,6 @@ export class CreateWorkoutFromTemplateUsecase {
           setNumber,
           reps: 0,
           weight: 0,
-          createdAt: new Date(),
-          updatedAt: new Date(),
         });
 
         workoutExercises.push(workoutLine);
@@ -79,8 +77,6 @@ export class CreateWorkoutFromTemplateUsecase {
         `${workoutTemplate.name} - ${new Date().toLocaleDateString()}`,
       workoutTemplateId: request.workoutTemplateId,
       exercises: workoutExercises,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await this.workoutsRepo.saveWorkout(newWorkout);

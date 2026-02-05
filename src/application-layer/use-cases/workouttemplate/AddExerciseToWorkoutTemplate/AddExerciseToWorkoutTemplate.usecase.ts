@@ -21,39 +21,39 @@ export class AddExerciseToWorkoutTemplateUsecase {
     private workoutTemplatesRepo: WorkoutTemplatesRepo,
     private exercisesRepo: ExercisesRepo,
     private usersRepo: UsersRepo,
-    private idGenerator: IdGenerator
+    private idGenerator: IdGenerator,
   ) {}
 
   async execute(
-    request: AddExerciseToWorkoutTemplateUsecaseRequest
+    request: AddExerciseToWorkoutTemplateUsecaseRequest,
   ): Promise<WorkoutTemplateDTO> {
     const user = await this.usersRepo.getUserById(request.userId);
     if (!user) {
       throw new NotFoundError(
-        `AddExerciseToWorkoutTemplateUsecase: User with id ${request.userId} not found`
+        `AddExerciseToWorkoutTemplateUsecase: User with id ${request.userId} not found`,
       );
     }
 
     const workoutTemplate =
       await this.workoutTemplatesRepo.getWorkoutTemplateByIdAndUserId(
         request.workoutTemplateId,
-        request.userId
+        request.userId,
       );
 
     const isDeleted = workoutTemplate?.isDeleted ?? false;
 
     if (!workoutTemplate || isDeleted) {
       throw new NotFoundError(
-        'AddExerciseToWorkoutTemplateUsecase: WorkoutTemplate not found'
+        'AddExerciseToWorkoutTemplateUsecase: WorkoutTemplate not found',
       );
     }
 
     const exercise = await this.exercisesRepo.getExerciseById(
-      request.exerciseId
+      request.exerciseId,
     );
     if (!exercise) {
       throw new NotFoundError(
-        'AddExerciseToWorkoutTemplateUsecase: Exercise not found'
+        'AddExerciseToWorkoutTemplateUsecase: Exercise not found',
       );
     }
 
@@ -62,8 +62,6 @@ export class AddExerciseToWorkoutTemplateUsecase {
       templateId: workoutTemplate.id,
       exerciseId: request.exerciseId,
       sets: request.sets,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     workoutTemplate.addExercise(workoutTemplateLine);

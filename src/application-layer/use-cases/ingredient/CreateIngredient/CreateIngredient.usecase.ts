@@ -15,19 +15,17 @@ export type CreateIngredientUsecaseRequest = {
 export class CreateIngredientUsecase {
   constructor(
     private ingredientsRepo: IngredientsRepo,
-    private idGenerator: IdGenerator
+    private idGenerator: IdGenerator,
   ) {}
 
   async execute(
-    request: CreateIngredientUsecaseRequest
+    request: CreateIngredientUsecaseRequest,
   ): Promise<IngredientDTO> {
     const newIngredient = Ingredient.create({
       id: this.idGenerator.generateId(),
       name: request.name,
       calories: Number(request.calories),
       protein: Number(request.protein),
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await this.ingredientsRepo.saveIngredient(newIngredient);

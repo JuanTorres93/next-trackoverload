@@ -12,7 +12,10 @@ export type CreateUserUsecaseRequest = {
 };
 
 export class CreateUserUsecase {
-  constructor(private usersRepo: UsersRepo, private idGenerator: IdGenerator) {}
+  constructor(
+    private usersRepo: UsersRepo,
+    private idGenerator: IdGenerator,
+  ) {}
 
   async execute(request: CreateUserUsecaseRequest): Promise<UserDTO> {
     // Validate email
@@ -32,13 +35,13 @@ export class CreateUserUsecase {
 
     if (existingEmail) {
       throw new AlreadyExistsError(
-        'CreateUserUsecase: User with this email already exists'
+        'CreateUserUsecase: User with this email already exists',
       );
     }
 
     if (existingCustomer) {
       throw new AlreadyExistsError(
-        'CreateUserUsecase: User with this customerId already exists'
+        'CreateUserUsecase: User with this customerId already exists',
       );
     }
 
@@ -48,8 +51,6 @@ export class CreateUserUsecase {
       name: request.name,
       email: request.email,
       customerId: request.customerId ? request.customerId : undefined,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await this.usersRepo.saveUser(newUser);

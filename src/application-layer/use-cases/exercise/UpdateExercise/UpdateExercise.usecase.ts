@@ -16,7 +16,7 @@ export class UpdateExerciseUsecase {
 
   async execute(request: UpdateExerciseUsecaseRequest): Promise<ExerciseDTO> {
     const existingExercise = await this.exercisesRepo.getExerciseById(
-      request.id
+      request.id,
     );
 
     if (!existingExercise) {
@@ -27,7 +27,6 @@ export class UpdateExerciseUsecase {
       id: existingExercise.id,
       name: request.name ?? existingExercise.name,
       createdAt: existingExercise.createdAt,
-      updatedAt: new Date(),
     });
 
     await this.exercisesRepo.saveExercise(updatedExercise);

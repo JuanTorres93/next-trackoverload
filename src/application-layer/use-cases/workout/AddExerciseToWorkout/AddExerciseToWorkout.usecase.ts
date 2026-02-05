@@ -20,22 +20,22 @@ export class AddExerciseToWorkoutUsecase {
     private workoutsRepo: WorkoutsRepo,
     private exercisesRepo: ExercisesRepo,
     private usersRepo: UsersRepo,
-    private idGenerator: IdGenerator
+    private idGenerator: IdGenerator,
   ) {}
 
   async execute(
-    request: AddExerciseToWorkoutUsecaseRequest
+    request: AddExerciseToWorkoutUsecaseRequest,
   ): Promise<WorkoutDTO> {
     const user = await this.usersRepo.getUserById(request.userId);
     if (!user) {
       throw new NotFoundError(
-        `AddExerciseToWorkoutUsecase: user with id ${request.userId} not found`
+        `AddExerciseToWorkoutUsecase: user with id ${request.userId} not found`,
       );
     }
 
     const workout = await this.workoutsRepo.getWorkoutByIdAndUserId(
       request.workoutId,
-      request.userId
+      request.userId,
     );
 
     if (!workout) {
@@ -43,11 +43,11 @@ export class AddExerciseToWorkoutUsecase {
     }
 
     const exercise = await this.exercisesRepo.getExerciseById(
-      request.exerciseId
+      request.exerciseId,
     );
     if (!exercise) {
       throw new NotFoundError(
-        'AddExerciseToWorkoutUsecase: Exercise not found'
+        'AddExerciseToWorkoutUsecase: Exercise not found',
       );
     }
 
@@ -58,8 +58,6 @@ export class AddExerciseToWorkoutUsecase {
       setNumber: request.setNumber,
       reps: request.reps,
       weight: request.weight,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     workout.addExercise(workoutLine);

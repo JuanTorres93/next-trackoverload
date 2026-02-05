@@ -77,8 +77,6 @@ export class AddMealToDayUsecase {
         parentType: 'meal',
         ingredient: line.ingredient,
         quantityInGrams: line.quantityInGrams,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       }),
     );
 
@@ -89,8 +87,6 @@ export class AddMealToDayUsecase {
       createdFromRecipeId: recipe.id,
       ingredientLines: mealIngredientLines,
       imageUrl: recipe.imageUrl,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     dayToAddMeal.addMeal(meal.id);

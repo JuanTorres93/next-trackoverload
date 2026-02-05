@@ -17,23 +17,23 @@ export class DuplicateRecipeUsecase {
   constructor(
     private recipesRepo: RecipesRepo,
     private usersRepo: UsersRepo,
-    private idGenerator: IdGenerator
+    private idGenerator: IdGenerator,
   ) {}
 
   async execute(request: DuplicateRecipeUsecaseRequest): Promise<RecipeDTO> {
     const user = await this.usersRepo.getUserById(request.userId);
     if (!user) {
       throw new NotFoundError(
-        `DuplicateRecipeUsecase: user with id ${request.userId} not found`
+        `DuplicateRecipeUsecase: user with id ${request.userId} not found`,
       );
     }
     const originalRecipe = await this.recipesRepo.getRecipeByIdAndUserId(
       request.recipeId,
-      request.userId
+      request.userId,
     );
     if (!originalRecipe) {
       throw new NotFoundError(
-        `DuplicateRecipeUsecase: Recipe with id ${request.recipeId} not found`
+        `DuplicateRecipeUsecase: Recipe with id ${request.recipeId} not found`,
       );
     }
 
@@ -50,8 +50,6 @@ export class DuplicateRecipeUsecase {
         parentType: 'recipe',
         quantityInGrams: ingredientline.quantityInGrams,
         ingredient: ingredientline.ingredient,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       });
       duplicatedIngredientLines.push(newIngredientLine);
     }
@@ -61,8 +59,6 @@ export class DuplicateRecipeUsecase {
       userId: request.userId,
       name: newName,
       ingredientLines: duplicatedIngredientLines,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await this.recipesRepo.saveRecipe(duplicatedRecipe);

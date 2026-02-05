@@ -13,15 +13,13 @@ export type CreateExerciseUsecaseRequest = {
 export class CreateExerciseUsecase {
   constructor(
     private exercisesRepo: ExercisesRepo,
-    private idGenerator: IdGenerator
+    private idGenerator: IdGenerator,
   ) {}
 
   async execute(request: CreateExerciseUsecaseRequest): Promise<ExerciseDTO> {
     const newExercise = Exercise.create({
       id: this.idGenerator.generateId(),
       name: request.name,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await this.exercisesRepo.saveExercise(newExercise);

@@ -58,7 +58,6 @@ export async function createIngredientsAndExternalIngredientsForIngredientLineNo
           externalId: lineInfo.externalIngredientId,
           source: lineInfo.source,
           ingredientId: newIngredientId,
-          createdAt: new Date(),
         });
 
       // Create new Ingredient
@@ -68,8 +67,6 @@ export async function createIngredientsAndExternalIngredientsForIngredientLineNo
         calories: lineInfo.caloriesPer100g,
         protein: lineInfo.proteinPer100g,
         imageUrl: lineInfo.imageUrl,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       });
     }
   }

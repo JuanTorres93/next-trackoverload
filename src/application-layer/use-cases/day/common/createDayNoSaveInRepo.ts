@@ -49,8 +49,6 @@ export async function createDayNoSaveInRepo(
     month: request.month,
     year: request.year,
     userId: request.targetUserId,
-    createdAt: new Date(),
-    updatedAt: new Date(),
   });
 
   return newDay;

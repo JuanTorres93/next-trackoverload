@@ -82,8 +82,6 @@ export class CreateRecipeUsecase {
         parentType: 'recipe',
         ingredient: ingredient,
         quantityInGrams: quantityInGrams,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       });
 
       ingredientLines.push(ingredientLine);
@@ -109,8 +107,6 @@ export class CreateRecipeUsecase {
       name: request.name,
       ingredientLines: ingredientLines,
       imageUrl: imageMetadata ? imageMetadata.url : undefined,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     // Save any missing ingredients and external refs

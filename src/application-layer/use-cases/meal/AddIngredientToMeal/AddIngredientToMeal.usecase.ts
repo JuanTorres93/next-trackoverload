@@ -18,33 +18,33 @@ export class AddIngredientToMealUsecase {
     private mealsRepo: MealsRepo,
     private ingredientsRepo: IngredientsRepo,
     private usersRepo: UsersRepo,
-    private idGenerator: IdGenerator
+    private idGenerator: IdGenerator,
   ) {}
 
   async execute(request: AddIngredientToMealUsecaseRequest): Promise<MealDTO> {
     const user = await this.usersRepo.getUserById(request.userId);
     if (!user) {
       throw new NotFoundError(
-        `AddIngredientToMealUsecase: user with id ${request.userId} not found`
+        `AddIngredientToMealUsecase: user with id ${request.userId} not found`,
       );
     }
 
     const existingMeal = await this.mealsRepo.getMealByIdForUser(
       request.mealId,
-      request.userId
+      request.userId,
     );
     if (!existingMeal) {
       throw new NotFoundError(
-        `AddIngredientToMealUsecase: Meal with id ${request.mealId} not found`
+        `AddIngredientToMealUsecase: Meal with id ${request.mealId} not found`,
       );
     }
 
     const ingredient = await this.ingredientsRepo.getIngredientById(
-      request.ingredientId
+      request.ingredientId,
     );
     if (!ingredient) {
       throw new NotFoundError(
-        `AddIngredientToMealUsecase: Ingredient with id ${request.ingredientId} not found`
+        `AddIngredientToMealUsecase: Ingredient with id ${request.ingredientId} not found`,
       );
     }
 
@@ -54,8 +54,6 @@ export class AddIngredientToMealUsecase {
       parentType: 'meal',
       ingredient: ingredient,
       quantityInGrams: request.quantityInGrams,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     existingMeal.addIngredientLine(newIngredientLine);

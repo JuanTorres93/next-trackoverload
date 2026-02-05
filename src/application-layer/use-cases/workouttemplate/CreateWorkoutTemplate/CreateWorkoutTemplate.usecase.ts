@@ -18,22 +18,22 @@ export class CreateWorkoutTemplateUsecase {
   constructor(
     private workoutTemplatesRepo: WorkoutTemplatesRepo,
     private usersRepo: UsersRepo,
-    private idGenerator: IdGenerator
+    private idGenerator: IdGenerator,
   ) {}
 
   async execute(
-    request: CreateWorkoutTemplateUsecaseRequest
+    request: CreateWorkoutTemplateUsecaseRequest,
   ): Promise<WorkoutTemplateDTO> {
     if (request.actorUserId !== request.targetUserId) {
       throw new PermissionError(
-        'CreateWorkoutTemplateUsecase: cannot create workout template for another user'
+        'CreateWorkoutTemplateUsecase: cannot create workout template for another user',
       );
     }
 
     const user = await this.usersRepo.getUserById(request.targetUserId);
     if (!user) {
       throw new NotFoundError(
-        `CreateWorkoutTemplateUsecase: User with id ${request.targetUserId} not found`
+        `CreateWorkoutTemplateUsecase: User with id ${request.targetUserId} not found`,
       );
     }
 
@@ -42,8 +42,6 @@ export class CreateWorkoutTemplateUsecase {
       userId: request.targetUserId,
       name: request.name,
       exercises: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await this.workoutTemplatesRepo.saveWorkoutTemplate(newWorkoutTemplate);

@@ -89,8 +89,6 @@ export class AddIngredientToRecipeUsecase {
       parentType: 'recipe',
       ingredient: ingredientToAdd,
       quantityInGrams: quantityInGrams,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     existingRecipe.addIngredientLine(newIngredientLine);
