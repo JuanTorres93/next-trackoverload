@@ -21,5 +21,24 @@ describe('ExternalIngredientRef', () => {
     it('should create a valid externalIngredientRef', () => {
       expect(externalIngredientRef).toBeInstanceOf(ExternalIngredientRef);
     });
+
+    it('should create externalIngredientRef if no createdAt date is provided', async () => {
+      // eslint-disable-next-line
+      const { createdAt, ...propsWithoutCreatedAt } =
+        validExternalIngredientRefProps;
+
+      const externalIngredientRefWithoutCreatedAt =
+        ExternalIngredientRef.create(propsWithoutCreatedAt);
+
+      expect(externalIngredientRefWithoutCreatedAt).toBeInstanceOf(
+        ExternalIngredientRef,
+      );
+
+      const now = new Date();
+
+      expect(
+        externalIngredientRefWithoutCreatedAt.createdAt.getTime(),
+      ).toBeLessThanOrEqual(now.getTime());
+    });
   });
 });

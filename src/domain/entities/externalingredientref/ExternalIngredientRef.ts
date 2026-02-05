@@ -1,32 +1,32 @@
-import { Id } from '@/domain/value-objects/Id/Id';
+import { DomainDate } from '@/domain/value-objects/DomainDate/DomainDate';
 import { ExternalIngredientRefSource } from '@/domain/value-objects/ExternalIngredientRefSource/ExternalIngredientRefSource';
-import { handleCreatedAt } from '../../common/utils';
+import { Id } from '@/domain/value-objects/Id/Id';
 
 export type ExternalIngredientRefCreateProps = {
   externalId: string;
   source: string;
   ingredientId: string;
-  createdAt: Date;
+  createdAt?: Date;
 };
 
 export type ExternalIngredientRefProps = {
   externalId: Id;
   source: ExternalIngredientRefSource;
   ingredientId: Id;
-  createdAt: Date;
+  createdAt: DomainDate;
 };
 
 export class ExternalIngredientRef {
   private constructor(private readonly props: ExternalIngredientRefProps) {}
 
   static create(
-    props: ExternalIngredientRefCreateProps
+    props: ExternalIngredientRefCreateProps,
   ): ExternalIngredientRef {
     const externalIngredientProps: ExternalIngredientRefProps = {
       externalId: Id.create(props.externalId),
       source: ExternalIngredientRefSource.create(props.source),
       ingredientId: Id.create(props.ingredientId),
-      createdAt: handleCreatedAt(props.createdAt),
+      createdAt: DomainDate.create(props.createdAt),
     };
 
     return new ExternalIngredientRef(externalIngredientProps);
@@ -45,6 +45,6 @@ export class ExternalIngredientRef {
   }
 
   get createdAt() {
-    return this.props.createdAt;
+    return this.props.createdAt.value;
   }
 }
