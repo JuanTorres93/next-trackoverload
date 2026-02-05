@@ -32,9 +32,12 @@ export type FakeMealProps = {
   updatedAt: DomainDate;
 };
 
-const nameTextOptions = { canBeEmpty: false, maxLength: Integer.create(100) };
-const caloriesFloatOptions = { onlyPositive: true };
-const proteinFloatOptions = { onlyPositive: true };
+export const nameTextOptions = {
+  canBeEmpty: false,
+  maxLength: Integer.create(100),
+};
+export const caloriesFloatOptions = { onlyPositive: true };
+export const proteinFloatOptions = { onlyPositive: true };
 
 export class FakeMeal implements Protein, Calories {
   private constructor(private readonly props: FakeMealProps) {}
@@ -93,5 +96,17 @@ export class FakeMeal implements Protein, Calories {
 
   get updatedAt() {
     return this.props.updatedAt.value;
+  }
+
+  toCreateProps(): FakeMealCreateProps {
+    return {
+      id: this.props.id.value,
+      userId: this.props.userId.value,
+      name: this.props.name.value,
+      calories: this.props.calories.value,
+      protein: this.props.protein.value,
+      createdAt: this.props.createdAt.value,
+      updatedAt: this.props.updatedAt.value,
+    };
   }
 }
