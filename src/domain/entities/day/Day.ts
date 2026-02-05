@@ -1,15 +1,15 @@
 import { DayId } from '@/domain/value-objects/DayId/DayId';
+import { DomainDate } from '@/domain/value-objects/DomainDate/DomainDate';
 import { Id } from '@/domain/value-objects/Id/Id';
 import { ValidationError } from '../../common/errors';
-import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
 
 export type DayCreateProps = {
   day: number;
   month: number;
   year: number;
   userId: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
 export type DayProps = {
@@ -17,8 +17,8 @@ export type DayProps = {
   userId: Id;
   mealIds: Id[];
   fakeMealIds: Id[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: DomainDate;
+  updatedAt: DomainDate;
 };
 
 export class Day {
@@ -34,8 +34,8 @@ export class Day {
       userId: Id.create(props.userId),
       mealIds: [],
       fakeMealIds: [],
-      createdAt: handleCreatedAt(props.createdAt),
-      updatedAt: handleUpdatedAt(props.updatedAt),
+      createdAt: DomainDate.create(props.createdAt),
+      updatedAt: DomainDate.create(props.updatedAt),
     };
 
     return new Day(dayProps);
@@ -46,12 +46,12 @@ export class Day {
 
     if (this.props.mealIds.find((mealId) => mealId.equals(validMealId))) {
       throw new ValidationError(
-        `Day: (Fake)Meal with id ${validMealId} already exists in the day`
+        `Day: (Fake)Meal with id ${validMealId} already exists in the day`,
       );
     }
 
     this.props.mealIds.push(validMealId);
-    this.props.updatedAt = new Date();
+    this.props.updatedAt = DomainDate.create(new Date());
   }
 
   addFakeMeal(fakeMealId: string): void {
@@ -61,12 +61,12 @@ export class Day {
       this.props.fakeMealIds.find((mealId) => mealId.equals(validFakeMealId))
     ) {
       throw new ValidationError(
-        `Day: FakeMeal with id ${validFakeMealId} already exists in the day`
+        `Day: FakeMeal with id ${validFakeMealId} already exists in the day`,
       );
     }
 
     this.props.fakeMealIds.push(validFakeMealId);
-    this.props.updatedAt = new Date();
+    this.props.updatedAt = DomainDate.create(new Date());
   }
 
   removeMealById(mealId: string): void {
@@ -74,13 +74,13 @@ export class Day {
     const initialLength = this.props.mealIds.length;
 
     this.props.mealIds = this.props.mealIds.filter(
-      (mealId) => !mealId.equals(validMealId)
+      (mealId) => !mealId.equals(validMealId),
     );
 
     if (this.props.mealIds.length === initialLength || initialLength === 0) {
       throw new ValidationError(`Day: No meal found with id ${mealId}`);
     }
-    this.props.updatedAt = new Date();
+    this.props.updatedAt = DomainDate.create(new Date());
   }
 
   removeFakeMealById(fakeMealId: string): void {
@@ -88,7 +88,7 @@ export class Day {
     const initialLength = this.props.fakeMealIds.length;
 
     this.props.fakeMealIds = this.props.fakeMealIds.filter(
-      (mealId) => !mealId.equals(validFakeMealId)
+      (mealId) => !mealId.equals(validFakeMealId),
     );
 
     if (
@@ -96,10 +96,10 @@ export class Day {
       initialLength === 0
     ) {
       throw new ValidationError(
-        `Day: No fake meal found with id ${fakeMealId}`
+        `Day: No fake meal found with id ${fakeMealId}`,
       );
     }
-    this.props.updatedAt = new Date();
+    this.props.updatedAt = DomainDate.create(new Date());
   }
 
   // Getters
@@ -132,10 +132,10 @@ export class Day {
   }
 
   get createdAt() {
-    return this.props.createdAt;
+    return this.props.createdAt.value;
   }
 
   get updatedAt() {
-    return this.props.updatedAt;
+    return this.props.updatedAt.value;
   }
 }

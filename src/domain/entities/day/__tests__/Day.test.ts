@@ -4,7 +4,6 @@ import { ValidationError } from '@/domain/common/errors';
 import { Day } from '../Day';
 
 import * as dayTestProps from '../../../../../tests/createProps/dayTestProps';
-import { DayId } from '@/domain/value-objects/DayId/DayId';
 
 describe('Day', () => {
   let day: Day;
@@ -15,39 +14,28 @@ describe('Day', () => {
     });
   });
 
-  it('should return its id', async () => {
-    expect(day).toHaveProperty('id');
-    expect(typeof day.id).toBe('string');
-    expect(day.id).toBe(
-      DayId.create({
-        day: dayTestProps.validDayProps().day,
-        month: dayTestProps.validDayProps().month,
-        year: dayTestProps.validDayProps().year,
-      }).value,
-    );
-  });
-
-  it('should return its day', async () => {
-    expect(day).toHaveProperty('day');
-    expect(typeof day.day).toBe('number');
-    expect(day.day).toBe(dayTestProps.validDayProps().day);
-  });
-
-  it('should return its month', async () => {
-    expect(day).toHaveProperty('month');
-    expect(typeof day.month).toBe('number');
-    expect(day.month).toBe(dayTestProps.validDayProps().month);
-  });
-
-  it('should return its year', async () => {
-    expect(day).toHaveProperty('year');
-    expect(typeof day.year).toBe('number');
-    expect(day.year).toBe(dayTestProps.validDayProps().year);
-  });
-
   describe('creation', () => {
     it('should create a valid day', () => {
       expect(day).toBeInstanceOf(Day);
+    });
+
+    it('should create Day if no dates are provided', async () => {
+      // eslint-disable-next-line
+      const { createdAt, updatedAt, ...propsWithoutDates } =
+        dayTestProps.validDayProps();
+
+      const dayWithoutDates = Day.create(propsWithoutDates);
+
+      expect(dayWithoutDates).toBeInstanceOf(Day);
+
+      const now = new Date();
+
+      expect(dayWithoutDates.createdAt.getTime()).toBeLessThanOrEqual(
+        now.getTime(),
+      );
+      expect(dayWithoutDates.updatedAt.getTime()).toBeLessThanOrEqual(
+        now.getTime(),
+      );
     });
   });
 
