@@ -6,7 +6,7 @@ export class MemoryIngredientsRepo implements IngredientsRepo {
 
   async saveIngredient(ingredient: Ingredient): Promise<void> {
     const existingIndex = this.ingredients.findIndex(
-      (ing) => ing.id === ingredient.id
+      (ing) => ing.id === ingredient.id,
     );
 
     if (existingIndex !== -1) {
@@ -35,18 +35,6 @@ export class MemoryIngredientsRepo implements IngredientsRepo {
     if (index === -1) return Promise.reject(null);
 
     this.ingredients.splice(index, 1);
-  }
-
-  async getByFuzzyName(name: string): Promise<Ingredient[]> {
-    const searchTerm = name.toLowerCase().trim();
-
-    if (!searchTerm) {
-      return [];
-    }
-
-    return this.ingredients.filter((ingredient) =>
-      ingredient.name.toLowerCase().includes(searchTerm)
-    );
   }
 
   // IMPORTANT NOTE: Helper method for testing - not part of the interface

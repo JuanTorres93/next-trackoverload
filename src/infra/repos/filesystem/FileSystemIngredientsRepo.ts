@@ -48,7 +48,7 @@ export class FileSystemIngredientsRepo implements IngredientsRepo {
           const content = await fs.readFile(filePath, 'utf-8');
           const data = JSON.parse(content) as IngredientDTO;
           return fromIngredientDTO(data);
-        })
+        }),
       );
 
       return ingredients;
@@ -74,11 +74,11 @@ export class FileSystemIngredientsRepo implements IngredientsRepo {
       ids.map(async (id) => {
         const ingredient = await this.getIngredientById(id);
         return ingredient;
-      })
+      }),
     );
 
     return ingredients.filter(
-      (ingredient): ingredient is Ingredient => ingredient !== null
+      (ingredient): ingredient is Ingredient => ingredient !== null,
     );
   }
 
@@ -91,19 +91,5 @@ export class FileSystemIngredientsRepo implements IngredientsRepo {
       // Validation is done in the use case to avoid false positives when using a real repo
       return Promise.reject(null);
     }
-  }
-
-  async getByFuzzyName(name: string): Promise<Ingredient[]> {
-    const searchTerm = name.toLowerCase().trim();
-
-    if (!searchTerm) {
-      return [];
-    }
-
-    const allIngredients = await this.getAllIngredients();
-
-    return allIngredients.filter((ingredient) =>
-      ingredient.name.toLowerCase().includes(searchTerm)
-    );
   }
 }

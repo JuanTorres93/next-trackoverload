@@ -81,28 +81,4 @@ export class MongoIngredientsRepo implements IngredientsRepo {
       return Promise.reject(null);
     }
   }
-
-  async getByFuzzyName(name: string): Promise<Ingredient[]> {
-    const searchTerm = name.toLowerCase().trim();
-
-    if (!searchTerm) {
-      return [];
-    }
-
-    const ingredientDocs = await IngredientMongo.find({
-      name: { $regex: searchTerm, $options: 'i' },
-    }).lean();
-
-    return ingredientDocs.map((doc) =>
-      Ingredient.create({
-        id: doc.id,
-        name: doc.name,
-        calories: doc.calories,
-        protein: doc.protein,
-        imageUrl: doc.imageUrl,
-        createdAt: doc.createdAt,
-        updatedAt: doc.updatedAt,
-      }),
-    );
-  }
 }
