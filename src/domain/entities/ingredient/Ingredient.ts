@@ -35,9 +35,12 @@ export type IngredientProps = {
   updatedAt: DomainDate;
 };
 
-const nameTextOptions = { canBeEmpty: false, maxLength: Integer.create(100) };
-const caloriesFloatOptions = { onlyPositive: true };
-const proteinFloatOptions = { onlyPositive: true };
+export const nameTextOptions = {
+  canBeEmpty: false,
+  maxLength: Integer.create(100),
+};
+export const caloriesFloatOptions = { onlyPositive: true };
+export const proteinFloatOptions = { onlyPositive: true };
 
 export class Ingredient {
   private constructor(private readonly props: IngredientProps) {}
