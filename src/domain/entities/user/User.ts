@@ -28,7 +28,7 @@ export type UserProps = {
   updatedAt: DomainDate;
 };
 
-const nameTextOptions = {
+export const nameTextOptions = {
   canBeEmpty: false,
   maxLength: Integer.create(100),
 };
@@ -94,5 +94,16 @@ export class User {
 
   get updatedAt() {
     return this.props.updatedAt.value;
+  }
+
+  toCreateProps(): UserCreateProps {
+    return {
+      id: this.props.id.value,
+      name: this.props.name.value,
+      email: this.props.email.value,
+      customerId: this.props.customerId?.value,
+      createdAt: this.props.createdAt.value,
+      updatedAt: this.props.updatedAt.value,
+    };
   }
 }
