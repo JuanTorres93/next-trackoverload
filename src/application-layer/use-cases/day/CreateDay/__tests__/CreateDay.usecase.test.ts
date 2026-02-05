@@ -134,8 +134,6 @@ describe('CreateDayUsecase', () => {
         month: dayTestProps.validDayProps().month,
         year: dayTestProps.validDayProps().year,
         userId: userTestProps.userId,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       });
 
       await daysRepo.saveDay(existingDay);

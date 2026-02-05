@@ -181,11 +181,11 @@ describe('AddMealToDayUsecase', () => {
 
   describe('Errors', () => {
     it('should throw error if user does not exist', async () => {
-      const date = '20231001';
+      const dayId = '20231001';
       const nonExistentUserId = 'non-existent-user';
 
       const request = {
-        dayId: date,
+        dayId,
         userId: nonExistentUserId,
         recipeId: recipe.id,
       };

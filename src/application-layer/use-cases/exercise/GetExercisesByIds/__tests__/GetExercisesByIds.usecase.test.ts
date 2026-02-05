@@ -18,14 +18,10 @@ describe('GetExercisesByIdsUsecase', () => {
       const exercise1 = Exercise.create({
         id: '1',
         name: 'Push Up',
-        createdAt: new Date(),
-        updatedAt: new Date(),
       });
       const exercise2 = Exercise.create({
         id: '2',
         name: 'Squat',
-        createdAt: new Date(),
-        updatedAt: new Date(),
       });
 
       await exercisesRepo.saveExercise(exercise1);
@@ -46,14 +42,10 @@ describe('GetExercisesByIdsUsecase', () => {
       const exercise1 = Exercise.create({
         id: '1',
         name: 'Push Up',
-        createdAt: new Date(),
-        updatedAt: new Date(),
       });
       const exercise2 = Exercise.create({
         id: '2',
         name: 'Squat',
-        createdAt: new Date(),
-        updatedAt: new Date(),
       });
 
       await exercisesRepo.saveExercise(exercise1);

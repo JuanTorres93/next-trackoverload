@@ -19,8 +19,6 @@ describe('UpdateExerciseUsecase', () => {
       const exercise = Exercise.create({
         id: '1',
         name: 'Push Up',
-        createdAt: new Date('2023-01-01'),
-        updatedAt: new Date('2023-01-01'),
       });
 
       await exercisesRepo.saveExercise(exercise);
@@ -33,7 +31,7 @@ describe('UpdateExerciseUsecase', () => {
       expect(updatedExercise.name).toBe('Modified Push Up');
       expect(updatedExercise.id).toBe('1');
       expect(updatedExercise.createdAt).toEqual(
-        exercise.createdAt.toISOString()
+        exercise.createdAt.toISOString(),
       );
       expect(updatedExercise.updatedAt).not.toEqual(exercise.updatedAt);
     });
@@ -42,8 +40,6 @@ describe('UpdateExerciseUsecase', () => {
       const exercise = Exercise.create({
         id: '1',
         name: 'Push Up',
-        createdAt: new Date(),
-        updatedAt: new Date(),
       });
 
       await exercisesRepo.saveExercise(exercise);
@@ -64,8 +60,6 @@ describe('UpdateExerciseUsecase', () => {
       const exercise = Exercise.create({
         id: '1',
         name: 'Push Up',
-        createdAt: new Date('2023-01-01'),
-        updatedAt: new Date('2023-01-01'),
       });
 
       await exercisesRepo.saveExercise(exercise);
@@ -85,16 +79,16 @@ describe('UpdateExerciseUsecase', () => {
         updateExerciseUsecase.execute({
           id: 'non-existent',
           name: 'New Name',
-        })
+        }),
       ).rejects.toThrow(NotFoundError);
     });
 
     it('should throw error if exercise does not exist', async () => {
       await expect(
-        updateExerciseUsecase.execute({ id: 'non-existent', name: 'New Name' })
+        updateExerciseUsecase.execute({ id: 'non-existent', name: 'New Name' }),
       ).rejects.toThrow(NotFoundError);
       await expect(
-        updateExerciseUsecase.execute({ id: 'non-existent', name: 'New Name' })
+        updateExerciseUsecase.execute({ id: 'non-existent', name: 'New Name' }),
       ).rejects.toThrow(/UpdateExerciseUsecase.*Exercise.*not found/);
     });
   });

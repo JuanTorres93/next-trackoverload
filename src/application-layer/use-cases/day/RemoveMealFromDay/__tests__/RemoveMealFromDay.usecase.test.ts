@@ -75,7 +75,7 @@ describe('RemoveMealFromDayUsecase', () => {
   describe('Removal', () => {
     it('should remove meal from day', async () => {
       const result = await removeMealFromDayUsecase.execute({
-        date: day.id,
+        dayId: day.id,
         userId: userTestProps.userId,
         mealId: mealTestProps.mealPropsNoIngredientLines.id,
       });
@@ -88,7 +88,7 @@ describe('RemoveMealFromDayUsecase', () => {
       await daysRepo.saveDay(day);
 
       await removeMealFromDayUsecase.execute({
-        date: day.id,
+        dayId: day.id,
         userId: userTestProps.userId,
         mealId: mealTestProps.mealPropsNoIngredientLines.id,
       });
@@ -103,7 +103,7 @@ describe('RemoveMealFromDayUsecase', () => {
 
     it('should return a DayDTO', async () => {
       const result = await removeMealFromDayUsecase.execute({
-        date: day.id,
+        dayId: day.id,
         userId: userTestProps.userId,
         mealId: mealTestProps.mealPropsNoIngredientLines.id,
       });
@@ -121,7 +121,7 @@ describe('RemoveMealFromDayUsecase', () => {
       expect(initialMeals).toHaveLength(1);
 
       await removeMealFromDayUsecase.execute({
-        date: day.id,
+        dayId: day.id,
         userId: userTestProps.userId,
         mealId: mealTestProps.mealPropsNoIngredientLines.id,
       });
@@ -134,7 +134,7 @@ describe('RemoveMealFromDayUsecase', () => {
   describe('Errors', () => {
     it('should throw error if day does not exist', async () => {
       const request = {
-        date: '11111001',
+        dayId: '11111001',
         userId: userTestProps.userId,
         mealId: fakeMealTestProps.validFakeMealProps.id,
       };
@@ -149,7 +149,7 @@ describe('RemoveMealFromDayUsecase', () => {
 
     it('should throw error if user does not exist', async () => {
       const request = {
-        date: day.id,
+        dayId: day.id,
         userId: 'non-existent',
         mealId: fakeMealTestProps.validFakeMealProps.id,
       };
@@ -172,7 +172,7 @@ describe('RemoveMealFromDayUsecase', () => {
       await usersRepo.saveUser(anotherUser);
 
       const request = {
-        date: day.id,
+        dayId: day.id,
         userId: anotherUser.id,
         mealId: mealTestProps.mealPropsNoIngredientLines.id,
       };

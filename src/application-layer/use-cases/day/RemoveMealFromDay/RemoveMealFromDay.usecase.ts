@@ -6,7 +6,7 @@ import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { UnitOfWork } from '@/application-layer/unit-of-work/UnitOfWork.port';
 
 export type RemoveMealFromDayUsecaseRequest = {
-  date: string;
+  dayId: string;
   userId: string;
   mealId: string;
 };
@@ -28,12 +28,12 @@ export class RemoveMealFromDayUsecase {
     }
 
     const day = await this.daysRepo.getDayByIdAndUserId(
-      request.date,
+      request.dayId,
       request.userId,
     );
     if (!day) {
       throw new NotFoundError(
-        `RemoveMealFromDayUsecase: Day not found for date ${request.date} and userId ${request.userId}`,
+        `RemoveMealFromDayUsecase: Day not found for date ${request.dayId} and userId ${request.userId}`,
       );
     }
 
