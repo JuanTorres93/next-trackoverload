@@ -1,10 +1,10 @@
+import { DomainDate } from '@/domain/value-objects/DomainDate/DomainDate';
 import { Float } from '@/domain/value-objects/Float/Float';
 import { Id } from '@/domain/value-objects/Id/Id';
-import { handleCreatedAt, handleUpdatedAt } from '../../common/utils';
+import { Integer } from '@/domain/value-objects/Integer/Integer';
+import { Text } from '@/domain/value-objects/Text/Text';
 import { Calories } from '../../interfaces/Calories';
 import { Protein } from '../../interfaces/Protein';
-import { Text } from '@/domain/value-objects/Text/Text';
-import { Integer } from '@/domain/value-objects/Integer/Integer';
 
 export type FakeMealCreateProps = {
   id: string;
@@ -12,8 +12,8 @@ export type FakeMealCreateProps = {
   name: string;
   calories: number;
   protein: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
 export type FakeUpdateProps = {
@@ -28,8 +28,8 @@ export type FakeMealProps = {
   name: Text;
   calories: Float;
   protein: Float;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: DomainDate;
+  updatedAt: DomainDate;
 };
 
 const nameTextOptions = { canBeEmpty: false, maxLength: Integer.create(100) };
@@ -46,8 +46,8 @@ export class FakeMeal implements Protein, Calories {
       name: Text.create(props.name, nameTextOptions),
       calories: Float.create(props.calories, caloriesFloatOptions),
       protein: Float.create(props.protein, proteinFloatOptions),
-      createdAt: handleCreatedAt(props.createdAt),
-      updatedAt: handleUpdatedAt(props.updatedAt),
+      createdAt: DomainDate.create(props.createdAt),
+      updatedAt: DomainDate.create(props.updatedAt),
     };
 
     return new FakeMeal(fakeMealProps);
@@ -63,7 +63,7 @@ export class FakeMeal implements Protein, Calories {
     if (patch.protein !== undefined) {
       this.props.protein = Float.create(patch.protein, proteinFloatOptions);
     }
-    this.props.updatedAt = handleUpdatedAt(this.props.updatedAt);
+    this.props.updatedAt = DomainDate.create(new Date());
   }
 
   // Getters
@@ -88,10 +88,10 @@ export class FakeMeal implements Protein, Calories {
   }
 
   get createdAt() {
-    return this.props.createdAt;
+    return this.props.createdAt.value;
   }
 
   get updatedAt() {
-    return this.props.updatedAt;
+    return this.props.updatedAt.value;
   }
 }

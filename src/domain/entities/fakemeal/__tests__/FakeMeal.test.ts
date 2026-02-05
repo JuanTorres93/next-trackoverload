@@ -17,118 +17,142 @@ describe('FakeMeal', () => {
     fakeMeal = FakeMeal.create(validFakeMealProps);
   });
 
-  it('should create a valid entity', () => {
-    expect(fakeMeal).toBeInstanceOf(FakeMeal);
-    expect(fakeMeal.userId).toBe(userTestProps.userId);
+  describe('creation', () => {
+    it('should create a valid entity', () => {
+      expect(fakeMeal).toBeInstanceOf(FakeMeal);
+      expect(fakeMeal.userId).toBe(userTestProps.userId);
+    });
+
+    it('should create FakeMeal if no createdAt or updatedAt is provided', async () => {
+      // eslint-disable-next-line
+      const { createdAt, updatedAt, ...propsWithoutDates } = validFakeMealProps;
+
+      const fakeMealWithoutDates = FakeMeal.create(propsWithoutDates);
+
+      expect(fakeMealWithoutDates).toBeInstanceOf(FakeMeal);
+
+      const now = new Date();
+
+      expect(fakeMealWithoutDates.createdAt.getTime()).toBeLessThanOrEqual(
+        now.getTime(),
+      );
+      expect(fakeMealWithoutDates.updatedAt.getTime()).toBeLessThanOrEqual(
+        now.getTime(),
+      );
+    });
   });
 
-  it('should update protein', async () => {
-    const patch = { protein: 100 };
-    fakeMeal.update(patch);
-    expect(fakeMeal.protein).toBe(100);
+  describe('update', () => {
+    it('should update protein', async () => {
+      const patch = { protein: 100 };
+      fakeMeal.update(patch);
+      expect(fakeMeal.protein).toBe(100);
+    });
+
+    it('should update calories', async () => {
+      const patch = { calories: 1000 };
+      fakeMeal.update(patch);
+      expect(fakeMeal.calories).toBe(1000);
+    });
+
+    it('should update name', async () => {
+      const patch = { name: 'New Name' };
+      fakeMeal.update(patch);
+      expect(fakeMeal.name).toBe('New Name');
+    });
   });
 
-  it('should update calories', async () => {
-    const patch = { calories: 1000 };
-    fakeMeal.update(patch);
-    expect(fakeMeal.calories).toBe(1000);
-  });
+  describe('validation', () => {
+    it('name should not be greater than 100 chars', async () => {
+      const longName = 'a'.repeat(101);
+      expect(() =>
+        FakeMeal.create({
+          ...validFakeMealProps,
+          name: longName,
+        }),
+      ).toThrow(ValidationError);
 
-  it('should update name', async () => {
-    const patch = { name: 'New Name' };
-    fakeMeal.update(patch);
-    expect(fakeMeal.name).toBe('New Name');
-  });
+      expect(() =>
+        FakeMeal.create({
+          ...validFakeMealProps,
+          name: longName,
+        }),
+      ).toThrow(/Text.*exceed/);
+    });
 
-  it('name should not be greater than 100 chars', async () => {
-    const longName = 'a'.repeat(101);
-    expect(() =>
-      FakeMeal.create({
-        ...validFakeMealProps,
-        name: longName,
-      }),
-    ).toThrow(ValidationError);
+    it('should throw validation error for empty name', async () => {
+      expect(() =>
+        FakeMeal.create({
+          ...validFakeMealProps,
+          name: '',
+        }),
+      ).toThrow(ValidationError);
+    });
 
-    expect(() =>
-      FakeMeal.create({
-        ...validFakeMealProps,
-        name: longName,
-      }),
-    ).toThrow(/Text.*exceed/);
-  });
+    it('should throw validation error for negative calories', async () => {
+      const props = { ...validFakeMealProps, calories: -10 };
+      expect(() =>
+        FakeMeal.create({
+          ...props,
+        }),
+      ).toThrow(ValidationError);
 
-  it('should throw validation error for empty name', async () => {
-    expect(() =>
-      FakeMeal.create({
-        ...validFakeMealProps,
-        name: '',
-      }),
-    ).toThrow(ValidationError);
-  });
+      expect(() =>
+        FakeMeal.create({
+          ...props,
+        }),
+      ).toThrow(/Float.*positive/);
+    });
 
-  it('should throw validation error for negative calories', async () => {
-    const props = { ...validFakeMealProps, calories: -10 };
-    expect(() =>
-      FakeMeal.create({
-        ...props,
-      }),
-    ).toThrow(ValidationError);
+    it('should throw validation error for negative proteins', async () => {
+      const props = { ...validFakeMealProps, protein: 0 - 1 };
+      expect(() =>
+        FakeMeal.create({
+          ...props,
+        }),
+      ).toThrow(ValidationError);
 
-    expect(() =>
-      FakeMeal.create({
-        ...props,
-      }),
-    ).toThrow(/Float.*positive/);
-  });
+      expect(() =>
+        FakeMeal.create({
+          ...props,
+        }),
+      ).toThrow(/Float.*positive/);
+    });
 
-  it('should throw validation error for negative proteins', async () => {
-    const props = { ...validFakeMealProps, protein: 0 - 1 };
-    expect(() =>
-      FakeMeal.create({
-        ...props,
-      }),
-    ).toThrow(ValidationError);
+    it('should throw ValidationError if id is not Instance of Id', async () => {
+      expect(() =>
+        FakeMeal.create({
+          ...validFakeMealProps,
+          // @ts-expect-error testing invalid type
+          id: 123,
+        }),
+      ).toThrowError(ValidationError);
 
-    expect(() =>
-      FakeMeal.create({
-        ...props,
-      }),
-    ).toThrow(/Float.*positive/);
-  });
+      expect(() =>
+        FakeMeal.create({
+          ...validFakeMealProps,
+          // @ts-expect-error testing invalid type
+          id: 123,
+        }),
+      ).toThrowError(/Id.*string/);
+    });
 
-  it('should throw ValidationError if id is not Instance of Id', async () => {
-    expect(() =>
-      FakeMeal.create({
-        ...validFakeMealProps,
-        // @ts-expect-error testing invalid type
-        id: 123,
-      }),
-    ).toThrowError(ValidationError);
+    it('should throw ValidationError if userId is not instance of Id', async () => {
+      expect(() =>
+        FakeMeal.create({
+          ...validFakeMealProps,
+          // @ts-expect-error testing invalid type
+          userId: 123,
+        }),
+      ).toThrowError(ValidationError);
 
-    expect(() =>
-      FakeMeal.create({
-        ...validFakeMealProps,
-        // @ts-expect-error testing invalid type
-        id: 123,
-      }),
-    ).toThrowError(/Id.*string/);
-  });
-
-  it('should throw ValidationError if userId is not instance of Id', async () => {
-    expect(() =>
-      FakeMeal.create({
-        ...validFakeMealProps,
-        // @ts-expect-error testing invalid type
-        userId: 123,
-      }),
-    ).toThrowError(ValidationError);
-
-    expect(() =>
-      FakeMeal.create({
-        ...validFakeMealProps,
-        // @ts-expect-error testing invalid type
-        userId: 123,
-      }),
-    ).toThrowError(/Id.*string/);
+      expect(() =>
+        FakeMeal.create({
+          ...validFakeMealProps,
+          // @ts-expect-error testing invalid type
+          userId: 123,
+        }),
+      ).toThrowError(/Id.*string/);
+    });
   });
 });
