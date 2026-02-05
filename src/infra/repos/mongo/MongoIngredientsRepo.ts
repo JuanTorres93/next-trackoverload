@@ -5,15 +5,7 @@ import { IngredientCreateProps } from '@/domain/entities/ingredient/Ingredient';
 
 export class MongoIngredientsRepo implements IngredientsRepo {
   async saveIngredient(ingredient: Ingredient): Promise<void> {
-    const ingredientData: IngredientCreateProps = {
-      id: ingredient.id,
-      name: ingredient.name,
-      calories: ingredient.nutritionalInfoPer100g.calories,
-      protein: ingredient.nutritionalInfoPer100g.protein,
-      imageUrl: ingredient.imageUrl,
-      createdAt: ingredient.createdAt,
-      updatedAt: ingredient.updatedAt,
-    };
+    const ingredientData: IngredientCreateProps = ingredient.toCreateProps();
 
     await IngredientMongo.findOneAndUpdate(
       { id: ingredient.id },

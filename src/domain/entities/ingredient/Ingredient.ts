@@ -86,6 +86,18 @@ export class Ingredient {
     this.props.updatedAt = DomainDate.create();
   }
 
+  toCreateProps(): IngredientCreateProps {
+    return {
+      id: this.id,
+      name: this.name,
+      calories: this.nutritionalInfoPer100g.calories,
+      protein: this.nutritionalInfoPer100g.protein,
+      imageUrl: this.imageUrl,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+    };
+  }
+
   get id() {
     return this.props.id.value;
   }
