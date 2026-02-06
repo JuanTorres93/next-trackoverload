@@ -33,7 +33,10 @@ export type MealProps = {
   updatedAt: DomainDate;
 };
 
-const nameTextOptions = { canBeEmpty: false, maxLength: Integer.create(100) };
+export const nameTextOptions = {
+  canBeEmpty: false,
+  maxLength: Integer.create(100),
+};
 
 export class Meal implements Calories, Protein {
   private constructor(private readonly props: MealProps) {}
@@ -120,6 +123,19 @@ export class Meal implements Calories, Protein {
     }
 
     this.props.updatedAt = DomainDate.create();
+  }
+
+  toCreateProps(): MealCreateProps {
+    return {
+      id: this.props.id.value,
+      userId: this.props.userId.value,
+      name: this.props.name.value,
+      ingredientLines: this.props.ingredientLines,
+      createdFromRecipeId: this.props.createdFromRecipeId.value,
+      imageUrl: this.props.imageUrl?.value,
+      createdAt: this.props.createdAt.value,
+      updatedAt: this.props.updatedAt.value,
+    };
   }
 
   get calories(): number {

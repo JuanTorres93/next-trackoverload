@@ -31,7 +31,7 @@ export type IngredientLineProps = {
   updatedAt: DomainDate;
 };
 
-const quantityFloatOptions = { onlyPositive: true, canBeZero: false };
+export const quantityFloatOptions = { onlyPositive: true, canBeZero: false };
 
 export class IngredientLine implements Calories, Protein {
   private constructor(private readonly props: IngredientLineProps) {}
