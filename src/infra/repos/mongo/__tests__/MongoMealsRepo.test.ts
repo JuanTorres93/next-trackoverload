@@ -1,16 +1,19 @@
-import * as mealTestProps from '../../../../../tests/createProps/mealTestProps';
-import * as ingredientTestProps from '../../../../../tests/createProps/ingredientTestProps';
-import * as recipeTestProps from '../../../../../tests/createProps/recipeTestProps';
-import { Meal } from '@/domain/entities/meal/Meal';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
+import { Meal } from '@/domain/entities/meal/Meal';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import { MongoMealsRepo } from '../MongoMealsRepo';
+import * as ingredientTestProps from '../../../../../tests/createProps/ingredientTestProps';
+import * as mealTestProps from '../../../../../tests/createProps/mealTestProps';
+import * as recipeTestProps from '../../../../../tests/createProps/recipeTestProps';
 import { MongoIngredientsRepo } from '../MongoIngredientsRepo';
+import { MongoMealsRepo } from '../MongoMealsRepo';
+import MealLineMongo from '../models/MealLineMongo';
+import MealMongo from '../models/MealMongo';
+import { mockForThrowingError } from './mockForThrowingError';
 import {
+  clearMongoTestDB,
   setupMongoTestDB,
   teardownMongoTestDB,
-  clearMongoTestDB,
 } from './setupMongoTestDB';
 
 describe('MongoMealsRepo', () => {
@@ -520,5 +523,73 @@ describe('MongoMealsRepo', () => {
     const allMeals = await repo.getAllMeals();
     expect(allMeals).toHaveLength(1);
     expect(allMeals[0].userId).toBe('other-user');
+  });
+
+  describe('transactions', () => {
+    it('should rollback changes if error occurs when deleting meal but deleting meal lines correct', async () => {
+      mockForThrowingError(MealLineMongo, 'deleteMany');
+
+      const mealId = mealTestProps.mealPropsNoIngredientLines.id;
+
+      const initialMealCount = await repo.getAllMeals();
+      expect(initialMealCount.length).toBe(1);
+
+      const initialMeal = await repo.getMealById(mealId);
+      expect(initialMeal).not.toBeNull();
+      expect(initialMeal!.ingredientLines).toHaveLength(1);
+      const initialMealLineId = initialMeal!.ingredientLines[0].id;
+
+      // Try to delete meal
+      await expect(repo.deleteMeal(mealId)).rejects.toThrow(
+        /Mocked error.*deleteMany/i,
+      );
+
+      // Verificar que el rollback funcionó: el meal todavía existe
+      const mealsAfterFailedDelete = await repo.getAllMeals();
+      expect(mealsAfterFailedDelete.length).toBe(1);
+
+      const mealAfterFailedDelete = await repo.getMealById(mealId);
+      expect(mealAfterFailedDelete).not.toBeNull();
+      expect(mealAfterFailedDelete!.id).toBe(mealId);
+
+      // Verificar que las meal lines todavía existen
+      expect(mealAfterFailedDelete!.ingredientLines).toHaveLength(1);
+      expect(mealAfterFailedDelete!.ingredientLines[0].id).toBe(
+        initialMealLineId,
+      );
+    });
+
+    it('it should rollback changes if error when deleting mealLines but deleting meal correct', async () => {
+      mockForThrowingError(MealMongo, 'deleteOne');
+
+      const mealId = mealTestProps.mealPropsNoIngredientLines.id;
+
+      const initialMealCount = await repo.getAllMeals();
+      expect(initialMealCount.length).toBe(1);
+
+      const initialMeal = await repo.getMealById(mealId);
+      expect(initialMeal).not.toBeNull();
+      expect(initialMeal!.ingredientLines).toHaveLength(1);
+      const initialMealLineId = initialMeal!.ingredientLines[0].id;
+
+      // Try to delete meal
+      await expect(repo.deleteMeal(mealId)).rejects.toThrow(
+        /Mocked error.*deleteOne/i,
+      );
+
+      // Verificar que el rollback funcionó: el meal todavía existe
+      const mealsAfterFailedDelete = await repo.getAllMeals();
+      expect(mealsAfterFailedDelete.length).toBe(1);
+
+      const mealAfterFailedDelete = await repo.getMealById(mealId);
+      expect(mealAfterFailedDelete).not.toBeNull();
+      expect(mealAfterFailedDelete!.id).toBe(mealId);
+
+      // Verificar que las meal lines todavía existen
+      expect(mealAfterFailedDelete!.ingredientLines).toHaveLength(1);
+      expect(mealAfterFailedDelete!.ingredientLines[0].id).toBe(
+        initialMealLineId,
+      );
+    });
   });
 });

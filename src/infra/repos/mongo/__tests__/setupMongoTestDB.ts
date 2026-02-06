@@ -1,26 +1,32 @@
-import { MongoMemoryServer } from 'mongodb-memory-server';
+import { MongoMemoryReplSet } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 
-let mongoServer: MongoMemoryServer | null = null;
+let mongoReplSet: MongoMemoryReplSet | null = null;
 
 export async function setupMongoTestDB(): Promise<string> {
-  if (!mongoServer) {
-    mongoServer = await MongoMemoryServer.create();
+  if (!mongoReplSet) {
+    mongoReplSet = await MongoMemoryReplSet.create({
+      replSet: {
+        name: 'testReplicaSet',
+        count: 1,
+        storageEngine: 'wiredTiger', // Needed for transactions
+      },
+    });
   }
 
-  const connectionString = mongoServer.getUri();
+  const uri = mongoReplSet.getUri();
 
-  await mongoose.connect(connectionString);
+  await mongoose.connect(uri);
 
-  return connectionString;
+  return uri;
 }
 
 export async function teardownMongoTestDB(): Promise<void> {
   await mongoose.disconnect();
 
-  if (mongoServer) {
-    await mongoServer.stop();
-    mongoServer = null;
+  if (mongoReplSet) {
+    await mongoReplSet.stop();
+    mongoReplSet = null;
   }
 }
 
@@ -29,11 +35,8 @@ export async function clearMongoTestDB(): Promise<void> {
     throw new Error('Mongoose is not connected');
   }
 
-  const collections = await mongoose.connection.db?.collections();
-
-  if (collections) {
-    for (const collection of collections) {
-      await collection.deleteMany({});
-    }
+  const collections = await mongoose.connection.db!.collections();
+  for (const collection of collections) {
+    await collection.deleteMany({});
   }
 }

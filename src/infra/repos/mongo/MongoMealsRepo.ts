@@ -120,15 +120,28 @@ export class MongoMealsRepo implements MealsRepo {
   }
 
   async deleteMeal(id: string): Promise<void> {
-    // TODO IMPORTANT: Transaction
-    const result = await MealMongo.deleteOne({ id });
+    const session = await MealMongo.startSession();
+    session.startTransaction();
 
-    if (result.deletedCount === 0) {
-      return Promise.reject(null);
+    let deletedCount: number;
+
+    try {
+      const result = await MealMongo.deleteOne({ id }, { session });
+      deletedCount = result.deletedCount || 0;
+
+      await MealLineMongo.deleteMany({ parentId: id }, { session });
+
+      await session.commitTransaction();
+    } catch (error) {
+      await session.abortTransaction();
+      throw error;
+    } finally {
+      await session.endSession();
     }
 
-    // Delete associated meal lines
-    await MealLineMongo.deleteMany({ parentId: id });
+    if (deletedCount === 0) {
+      return Promise.reject(null);
+    }
   }
 
   async deleteMultipleMeals(ids: string[]): Promise<void> {
