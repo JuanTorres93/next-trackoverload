@@ -158,14 +158,21 @@ export class MongoMealsRepo implements MealsRepo {
     const mealDocs = await MealMongo.find({ userId }).select('id').lean();
     const mealIds = mealDocs.map((doc) => doc.id);
 
-    // TODO IMPORTANT: Transaction
-    // Delete meals
-    await MealMongo.deleteMany({ userId });
+    const session = await MealMongo.startSession();
+    session.startTransaction();
 
-    // Delete associated meal lines
-    if (mealIds.length > 0) {
-      await MealLineMongo.deleteMany({ parentId: { $in: mealIds } });
-    }
+    await inMongoTransaction(session, async () => {
+      // Delete meals
+      await MealMongo.deleteMany({ userId }, { session });
+
+      // Delete associated meal lines
+      if (mealIds.length > 0) {
+        await MealLineMongo.deleteMany(
+          { parentId: { $in: mealIds } },
+          { session },
+        );
+      }
+    });
   }
 
   private toMealEntity(doc: PopulatedMealDoc): Meal | null {

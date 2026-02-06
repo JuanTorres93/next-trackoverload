@@ -545,7 +545,7 @@ describe('MongoMealsRepo', () => {
           /Mocked error.*deleteMany/i,
         );
 
-        // Verificar que el rollback funcionó: el meal todavía existe
+        // Verify that rollback worked: the meal still exists
         const mealsAfterFailedDelete = await repo.getAllMeals();
         expect(mealsAfterFailedDelete.length).toBe(1);
 
@@ -553,7 +553,7 @@ describe('MongoMealsRepo', () => {
         expect(mealAfterFailedDelete).not.toBeNull();
         expect(mealAfterFailedDelete!.id).toBe(mealId);
 
-        // Verificar que las meal lines todavía existen
+        // Verify that the meal lines still exist
         expect(mealAfterFailedDelete!.ingredientLines).toHaveLength(1);
         expect(mealAfterFailedDelete!.ingredientLines[0].id).toBe(
           initialMealLineId,
@@ -578,7 +578,7 @@ describe('MongoMealsRepo', () => {
           /Mocked error.*deleteOne/i,
         );
 
-        // Verificar que el rollback funcionó: el meal todavía existe
+        // Verify that rollback worked: the meal still exists
         const mealsAfterFailedDelete = await repo.getAllMeals();
         expect(mealsAfterFailedDelete.length).toBe(1);
 
@@ -586,7 +586,7 @@ describe('MongoMealsRepo', () => {
         expect(mealAfterFailedDelete).not.toBeNull();
         expect(mealAfterFailedDelete!.id).toBe(mealId);
 
-        // Verificar que las meal lines todavía existen
+        // Verify that the meal lines still exist
         expect(mealAfterFailedDelete!.ingredientLines).toHaveLength(1);
         expect(mealAfterFailedDelete!.ingredientLines[0].id).toBe(
           initialMealLineId,
@@ -613,7 +613,7 @@ describe('MongoMealsRepo', () => {
           /Mocked error.*deleteMany/i,
         );
 
-        // Verificar que el rollback funcionó: el meal todavía existe
+        // Verify that rollback worked: the meal still exists
         const mealsAfterFailedDelete = await repo.getAllMeals();
         expect(mealsAfterFailedDelete.length).toBe(1);
 
@@ -621,7 +621,7 @@ describe('MongoMealsRepo', () => {
         expect(mealAfterFailedDelete).not.toBeNull();
         expect(mealAfterFailedDelete!.id).toBe(mealId);
 
-        // Verificar que las meal lines todavía existen
+        // Verify that the meal lines still exist
         expect(mealAfterFailedDelete!.ingredientLines).toHaveLength(1);
         expect(mealAfterFailedDelete!.ingredientLines[0].id).toBe(
           initialMealLineId,
@@ -660,6 +660,70 @@ describe('MongoMealsRepo', () => {
           initialMealLineId,
         );
       });
+    });
+  });
+
+  describe('deleteAllMealsForUser', () => {
+    it('should rollback changes if error occurs when deleting meals but deleting meal lines correct', async () => {
+      mockForThrowingError(MealLineMongo, 'deleteMany');
+
+      const userId = mealTestProps.mealPropsNoIngredientLines.userId;
+
+      const initialMeals = await repo.getAllMealsForUser(userId);
+      expect(initialMeals).toHaveLength(1);
+
+      const initialMealLineId = initialMeals[0].ingredientLines[0].id;
+
+      // Try to delete meals for user
+      await expect(repo.deleteAllMealsForUser(userId)).rejects.toThrow(
+        /Mocked error.*deleteMany/i,
+      );
+
+      // Verify that rollback worked: the meal still exists
+      const mealsAfterFailedDelete = await repo.getAllMealsForUser(userId);
+      expect(mealsAfterFailedDelete).toHaveLength(1);
+
+      const mealAfterFailedDelete = mealsAfterFailedDelete[0];
+      expect(mealAfterFailedDelete.id).toBe(
+        mealTestProps.mealPropsNoIngredientLines.id,
+      );
+
+      // Verify that the meal lines still exist
+      expect(mealAfterFailedDelete.ingredientLines).toHaveLength(1);
+      expect(mealAfterFailedDelete.ingredientLines[0].id).toBe(
+        initialMealLineId,
+      );
+    });
+
+    it('should rollback changes if error occurs when deleting meal lines but deleting meals correct', async () => {
+      mockForThrowingError(MealMongo, 'deleteMany');
+
+      const userId = mealTestProps.mealPropsNoIngredientLines.userId;
+
+      const initialMeals = await repo.getAllMealsForUser(userId);
+      expect(initialMeals).toHaveLength(1);
+
+      const initialMealLineId = initialMeals[0].ingredientLines[0].id;
+
+      // Try to delete meals for user
+      await expect(repo.deleteAllMealsForUser(userId)).rejects.toThrow(
+        /Mocked error.*deleteMany/i,
+      );
+
+      // Verify that rollback worked: the meal still exists
+      const mealsAfterFailedDelete = await repo.getAllMealsForUser(userId);
+      expect(mealsAfterFailedDelete).toHaveLength(1);
+
+      const mealAfterFailedDelete = mealsAfterFailedDelete[0];
+      expect(mealAfterFailedDelete.id).toBe(
+        mealTestProps.mealPropsNoIngredientLines.id,
+      );
+
+      // Verify that the meal lines still exist
+      expect(mealAfterFailedDelete.ingredientLines).toHaveLength(1);
+      expect(mealAfterFailedDelete.ingredientLines[0].id).toBe(
+        initialMealLineId,
+      );
     });
   });
 });
