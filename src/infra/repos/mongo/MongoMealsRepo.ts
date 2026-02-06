@@ -7,6 +7,7 @@ import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientCreateProps } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLineCreateProps } from '@/domain/entities/ingredientline/IngredientLine';
 import { MealCreateProps } from '@/domain/entities/meal/Meal';
+import mongoose from 'mongoose';
 
 // Type for meal line document populated with ingredient
 type PopulatedMealLineDoc = Omit<IngredientLineCreateProps, 'ingredient'> & {
@@ -123,21 +124,14 @@ export class MongoMealsRepo implements MealsRepo {
     const session = await MealMongo.startSession();
     session.startTransaction();
 
-    let deletedCount: number;
+    let deletedCount: number = 0;
 
-    try {
+    await this.inTransaction(session, async () => {
       const result = await MealMongo.deleteOne({ id }, { session });
       deletedCount = result.deletedCount || 0;
 
       await MealLineMongo.deleteMany({ parentId: id }, { session });
-
-      await session.commitTransaction();
-    } catch (error) {
-      await session.abortTransaction();
-      throw error;
-    } finally {
-      await session.endSession();
-    }
+    });
 
     if (deletedCount === 0) {
       return Promise.reject(null);
@@ -145,10 +139,15 @@ export class MongoMealsRepo implements MealsRepo {
   }
 
   async deleteMultipleMeals(ids: string[]): Promise<void> {
-    // TODO IMPORTANT: Transaction
-    await MealMongo.deleteMany({ id: { $in: ids } });
-    // Delete associated meal lines
-    await MealLineMongo.deleteMany({ parentId: { $in: ids } });
+    const session = await MealMongo.startSession();
+    session.startTransaction();
+
+    await this.inTransaction(session, async () => {
+      // Delete meals
+      await MealMongo.deleteMany({ id: { $in: ids } }, { session });
+      // Delete associated meal lines
+      await MealLineMongo.deleteMany({ parentId: { $in: ids } }, { session });
+    });
   }
 
   async deleteAllMealsForUser(userId: string): Promise<void> {
@@ -205,5 +204,21 @@ export class MongoMealsRepo implements MealsRepo {
     return docs
       .map((doc) => this.toMealEntity(doc))
       .filter((meal): meal is Meal => meal !== null);
+  }
+
+  private async inTransaction(
+    session: mongoose.ClientSession,
+    work: () => Promise<void>,
+  ): Promise<void> {
+    try {
+      await work();
+
+      await session.commitTransaction();
+    } catch (error) {
+      await session.abortTransaction();
+      throw error;
+    } finally {
+      await session.endSession();
+    }
   }
 }

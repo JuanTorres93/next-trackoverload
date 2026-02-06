@@ -526,70 +526,140 @@ describe('MongoMealsRepo', () => {
   });
 
   describe('transactions', () => {
-    it('should rollback changes if error occurs when deleting meal but deleting meal lines correct', async () => {
-      mockForThrowingError(MealLineMongo, 'deleteMany');
+    describe('deleteMeal', () => {
+      it('should rollback changes if error occurs when deleting meal but deleting meal lines correct', async () => {
+        mockForThrowingError(MealLineMongo, 'deleteMany');
 
-      const mealId = mealTestProps.mealPropsNoIngredientLines.id;
+        const mealId = mealTestProps.mealPropsNoIngredientLines.id;
 
-      const initialMealCount = await repo.getAllMeals();
-      expect(initialMealCount.length).toBe(1);
+        const initialMealCount = await repo.getAllMeals();
+        expect(initialMealCount.length).toBe(1);
 
-      const initialMeal = await repo.getMealById(mealId);
-      expect(initialMeal).not.toBeNull();
-      expect(initialMeal!.ingredientLines).toHaveLength(1);
-      const initialMealLineId = initialMeal!.ingredientLines[0].id;
+        const initialMeal = await repo.getMealById(mealId);
+        expect(initialMeal).not.toBeNull();
+        expect(initialMeal!.ingredientLines).toHaveLength(1);
+        const initialMealLineId = initialMeal!.ingredientLines[0].id;
 
-      // Try to delete meal
-      await expect(repo.deleteMeal(mealId)).rejects.toThrow(
-        /Mocked error.*deleteMany/i,
-      );
+        // Try to delete meal
+        await expect(repo.deleteMeal(mealId)).rejects.toThrow(
+          /Mocked error.*deleteMany/i,
+        );
 
-      // Verificar que el rollback funcionó: el meal todavía existe
-      const mealsAfterFailedDelete = await repo.getAllMeals();
-      expect(mealsAfterFailedDelete.length).toBe(1);
+        // Verificar que el rollback funcionó: el meal todavía existe
+        const mealsAfterFailedDelete = await repo.getAllMeals();
+        expect(mealsAfterFailedDelete.length).toBe(1);
 
-      const mealAfterFailedDelete = await repo.getMealById(mealId);
-      expect(mealAfterFailedDelete).not.toBeNull();
-      expect(mealAfterFailedDelete!.id).toBe(mealId);
+        const mealAfterFailedDelete = await repo.getMealById(mealId);
+        expect(mealAfterFailedDelete).not.toBeNull();
+        expect(mealAfterFailedDelete!.id).toBe(mealId);
 
-      // Verificar que las meal lines todavía existen
-      expect(mealAfterFailedDelete!.ingredientLines).toHaveLength(1);
-      expect(mealAfterFailedDelete!.ingredientLines[0].id).toBe(
-        initialMealLineId,
-      );
+        // Verificar que las meal lines todavía existen
+        expect(mealAfterFailedDelete!.ingredientLines).toHaveLength(1);
+        expect(mealAfterFailedDelete!.ingredientLines[0].id).toBe(
+          initialMealLineId,
+        );
+      });
+
+      it('it should rollback changes if error when deleting mealLines but deleting meal correct', async () => {
+        mockForThrowingError(MealMongo, 'deleteOne');
+
+        const mealId = mealTestProps.mealPropsNoIngredientLines.id;
+
+        const initialMealCount = await repo.getAllMeals();
+        expect(initialMealCount.length).toBe(1);
+
+        const initialMeal = await repo.getMealById(mealId);
+        expect(initialMeal).not.toBeNull();
+        expect(initialMeal!.ingredientLines).toHaveLength(1);
+        const initialMealLineId = initialMeal!.ingredientLines[0].id;
+
+        // Try to delete meal
+        await expect(repo.deleteMeal(mealId)).rejects.toThrow(
+          /Mocked error.*deleteOne/i,
+        );
+
+        // Verificar que el rollback funcionó: el meal todavía existe
+        const mealsAfterFailedDelete = await repo.getAllMeals();
+        expect(mealsAfterFailedDelete.length).toBe(1);
+
+        const mealAfterFailedDelete = await repo.getMealById(mealId);
+        expect(mealAfterFailedDelete).not.toBeNull();
+        expect(mealAfterFailedDelete!.id).toBe(mealId);
+
+        // Verificar que las meal lines todavía existen
+        expect(mealAfterFailedDelete!.ingredientLines).toHaveLength(1);
+        expect(mealAfterFailedDelete!.ingredientLines[0].id).toBe(
+          initialMealLineId,
+        );
+      });
     });
 
-    it('it should rollback changes if error when deleting mealLines but deleting meal correct', async () => {
-      mockForThrowingError(MealMongo, 'deleteOne');
+    describe('deleteMultipleMeals', () => {
+      it('should rollback changes if error occurs when deleting meals but deleting meal lines correct', async () => {
+        mockForThrowingError(MealLineMongo, 'deleteMany');
 
-      const mealId = mealTestProps.mealPropsNoIngredientLines.id;
+        const mealId = mealTestProps.mealPropsNoIngredientLines.id;
 
-      const initialMealCount = await repo.getAllMeals();
-      expect(initialMealCount.length).toBe(1);
+        const initialMealCount = await repo.getAllMeals();
+        expect(initialMealCount.length).toBe(1);
 
-      const initialMeal = await repo.getMealById(mealId);
-      expect(initialMeal).not.toBeNull();
-      expect(initialMeal!.ingredientLines).toHaveLength(1);
-      const initialMealLineId = initialMeal!.ingredientLines[0].id;
+        const initialMeal = await repo.getMealById(mealId);
+        expect(initialMeal).not.toBeNull();
+        expect(initialMeal!.ingredientLines).toHaveLength(1);
+        const initialMealLineId = initialMeal!.ingredientLines[0].id;
 
-      // Try to delete meal
-      await expect(repo.deleteMeal(mealId)).rejects.toThrow(
-        /Mocked error.*deleteOne/i,
-      );
+        // Try to delete meal
+        await expect(repo.deleteMultipleMeals([mealId])).rejects.toThrow(
+          /Mocked error.*deleteMany/i,
+        );
 
-      // Verificar que el rollback funcionó: el meal todavía existe
-      const mealsAfterFailedDelete = await repo.getAllMeals();
-      expect(mealsAfterFailedDelete.length).toBe(1);
+        // Verificar que el rollback funcionó: el meal todavía existe
+        const mealsAfterFailedDelete = await repo.getAllMeals();
+        expect(mealsAfterFailedDelete.length).toBe(1);
 
-      const mealAfterFailedDelete = await repo.getMealById(mealId);
-      expect(mealAfterFailedDelete).not.toBeNull();
-      expect(mealAfterFailedDelete!.id).toBe(mealId);
+        const mealAfterFailedDelete = await repo.getMealById(mealId);
+        expect(mealAfterFailedDelete).not.toBeNull();
+        expect(mealAfterFailedDelete!.id).toBe(mealId);
 
-      // Verificar que las meal lines todavía existen
-      expect(mealAfterFailedDelete!.ingredientLines).toHaveLength(1);
-      expect(mealAfterFailedDelete!.ingredientLines[0].id).toBe(
-        initialMealLineId,
-      );
+        // Verificar que las meal lines todavía existen
+        expect(mealAfterFailedDelete!.ingredientLines).toHaveLength(1);
+        expect(mealAfterFailedDelete!.ingredientLines[0].id).toBe(
+          initialMealLineId,
+        );
+      });
+
+      it('should rollback changes if error occurs when deleting meal lines but deleting meals correct', async () => {
+        mockForThrowingError(MealMongo, 'deleteMany');
+
+        const mealId = mealTestProps.mealPropsNoIngredientLines.id;
+
+        const initialMealCount = await repo.getAllMeals();
+        expect(initialMealCount.length).toBe(1);
+
+        const initialMeal = await repo.getMealById(mealId);
+        expect(initialMeal).not.toBeNull();
+        expect(initialMeal!.ingredientLines).toHaveLength(1);
+        const initialMealLineId = initialMeal!.ingredientLines[0].id;
+
+        // Try to delete meal
+        await expect(repo.deleteMultipleMeals([mealId])).rejects.toThrow(
+          /Mocked error.*deleteMany/i,
+        );
+
+        // Verificar que el rollback funcionó: el meal todavía existe
+        const mealsAfterFailedDelete = await repo.getAllMeals();
+        expect(mealsAfterFailedDelete.length).toBe(1);
+
+        const mealAfterFailedDelete = await repo.getMealById(mealId);
+        expect(mealAfterFailedDelete).not.toBeNull();
+        expect(mealAfterFailedDelete!.id).toBe(mealId);
+
+        // Verificar que las meal lines todavía existen
+        expect(mealAfterFailedDelete!.ingredientLines).toHaveLength(1);
+        expect(mealAfterFailedDelete!.ingredientLines[0].id).toBe(
+          initialMealLineId,
+        );
+      });
     });
   });
 });
