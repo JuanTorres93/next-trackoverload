@@ -16,14 +16,7 @@ export class MongoExercisesRepo implements ExercisesRepo {
   async getAllExercises(): Promise<Exercise[]> {
     const exerciseDocs = await ExerciseMongo.find({}).lean();
 
-    return exerciseDocs.map((doc) =>
-      Exercise.create({
-        id: doc.id,
-        name: doc.name,
-        createdAt: doc.createdAt,
-        updatedAt: doc.updatedAt,
-      }),
-    );
+    return exerciseDocs.map((doc) => Exercise.create(doc));
   }
 
   async getExerciseById(id: string): Promise<Exercise | null> {
@@ -33,12 +26,7 @@ export class MongoExercisesRepo implements ExercisesRepo {
       return null;
     }
 
-    return Exercise.create({
-      id: doc.id,
-      name: doc.name,
-      createdAt: doc.createdAt,
-      updatedAt: doc.updatedAt,
-    });
+    return Exercise.create(doc);
   }
 
   async deleteExercise(id: string): Promise<void> {

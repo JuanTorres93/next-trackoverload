@@ -17,17 +17,7 @@ export class MongoIngredientsRepo implements IngredientsRepo {
   async getAllIngredients(): Promise<Ingredient[]> {
     const ingredientDocs = await IngredientMongo.find({}).lean();
 
-    return ingredientDocs.map((doc) =>
-      Ingredient.create({
-        id: doc.id,
-        name: doc.name,
-        calories: doc.calories,
-        protein: doc.protein,
-        imageUrl: doc.imageUrl,
-        createdAt: doc.createdAt,
-        updatedAt: doc.updatedAt,
-      }),
-    );
+    return ingredientDocs.map((doc) => Ingredient.create(doc));
   }
 
   async getIngredientById(id: string): Promise<Ingredient | null> {
@@ -37,15 +27,7 @@ export class MongoIngredientsRepo implements IngredientsRepo {
       return null;
     }
 
-    return Ingredient.create({
-      id: doc.id,
-      name: doc.name,
-      calories: doc.calories,
-      protein: doc.protein,
-      imageUrl: doc.imageUrl,
-      createdAt: doc.createdAt,
-      updatedAt: doc.updatedAt,
-    });
+    return Ingredient.create(doc);
   }
 
   async getIngredientsByIds(ids: string[]): Promise<Ingredient[]> {
@@ -53,17 +35,7 @@ export class MongoIngredientsRepo implements IngredientsRepo {
       id: { $in: ids },
     }).lean();
 
-    return ingredientDocs.map((doc) =>
-      Ingredient.create({
-        id: doc.id,
-        name: doc.name,
-        calories: doc.calories,
-        protein: doc.protein,
-        imageUrl: doc.imageUrl,
-        createdAt: doc.createdAt,
-        updatedAt: doc.updatedAt,
-      }),
-    );
+    return ingredientDocs.map((doc) => Ingredient.create(doc));
   }
 
   async deleteIngredient(id: string): Promise<void> {

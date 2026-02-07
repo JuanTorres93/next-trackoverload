@@ -16,16 +16,7 @@ export class MongoUsersRepo implements UsersRepo {
   async getAllUsers(): Promise<User[]> {
     const userDocs = await UserMongo.find({}).lean();
 
-    return userDocs.map((doc) =>
-      User.create({
-        id: doc.id,
-        name: doc.name,
-        email: doc.email,
-        customerId: doc.customerId,
-        createdAt: doc.createdAt,
-        updatedAt: doc.updatedAt,
-      }),
-    );
+    return userDocs.map((doc) => User.create(doc));
   }
 
   async getUserById(id: string): Promise<User | null> {
@@ -35,14 +26,7 @@ export class MongoUsersRepo implements UsersRepo {
       return null;
     }
 
-    return User.create({
-      id: doc.id,
-      name: doc.name,
-      email: doc.email,
-      customerId: doc.customerId,
-      createdAt: doc.createdAt,
-      updatedAt: doc.updatedAt,
-    });
+    return User.create(doc);
   }
 
   async getUserByEmail(email: string): Promise<User | null> {
@@ -52,14 +36,7 @@ export class MongoUsersRepo implements UsersRepo {
       return null;
     }
 
-    return User.create({
-      id: doc.id,
-      name: doc.name,
-      email: doc.email,
-      customerId: doc.customerId,
-      createdAt: doc.createdAt,
-      updatedAt: doc.updatedAt,
-    });
+    return User.create(doc);
   }
 
   async getUserByCustomerId(customerId: string): Promise<User | null> {
@@ -69,14 +46,7 @@ export class MongoUsersRepo implements UsersRepo {
       return null;
     }
 
-    return User.create({
-      id: doc.id,
-      name: doc.name,
-      email: doc.email,
-      customerId: doc.customerId,
-      createdAt: doc.createdAt,
-      updatedAt: doc.updatedAt,
-    });
+    return User.create(doc);
   }
 
   async deleteUser(id: string): Promise<void> {

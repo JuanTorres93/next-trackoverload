@@ -16,33 +16,13 @@ export class MongoFakeMealsRepo implements FakeMealsRepo {
   async getAllFakeMeals(): Promise<FakeMeal[]> {
     const fakeMealDocs = await FakeMealMongo.find({}).lean();
 
-    return fakeMealDocs.map((doc) =>
-      FakeMeal.create({
-        id: doc.id,
-        userId: doc.userId,
-        name: doc.name,
-        calories: doc.calories,
-        protein: doc.protein,
-        createdAt: doc.createdAt,
-        updatedAt: doc.updatedAt,
-      }),
-    );
+    return fakeMealDocs.map((doc) => FakeMeal.create(doc));
   }
 
   async getAllFakeMealsByUserId(userId: string): Promise<FakeMeal[]> {
     const fakeMealDocs = await FakeMealMongo.find({ userId }).lean();
 
-    return fakeMealDocs.map((doc) =>
-      FakeMeal.create({
-        id: doc.id,
-        userId: doc.userId,
-        name: doc.name,
-        calories: doc.calories,
-        protein: doc.protein,
-        createdAt: doc.createdAt,
-        updatedAt: doc.updatedAt,
-      }),
-    );
+    return fakeMealDocs.map((doc) => FakeMeal.create(doc));
   }
 
   async getFakeMealById(id: string): Promise<FakeMeal | null> {
@@ -52,31 +32,13 @@ export class MongoFakeMealsRepo implements FakeMealsRepo {
       return null;
     }
 
-    return FakeMeal.create({
-      id: doc.id,
-      userId: doc.userId,
-      name: doc.name,
-      calories: doc.calories,
-      protein: doc.protein,
-      createdAt: doc.createdAt,
-      updatedAt: doc.updatedAt,
-    });
+    return FakeMeal.create(doc);
   }
 
   async getFakeMealByIds(ids: string[]): Promise<FakeMeal[]> {
     const fakeMealDocs = await FakeMealMongo.find({ id: { $in: ids } }).lean();
 
-    return fakeMealDocs.map((doc) =>
-      FakeMeal.create({
-        id: doc.id,
-        userId: doc.userId,
-        name: doc.name,
-        calories: doc.calories,
-        protein: doc.protein,
-        createdAt: doc.createdAt,
-        updatedAt: doc.updatedAt,
-      }),
-    );
+    return fakeMealDocs.map((doc) => FakeMeal.create(doc));
   }
 
   async getFakeMealByIdAndUserId(
@@ -89,15 +51,7 @@ export class MongoFakeMealsRepo implements FakeMealsRepo {
       return null;
     }
 
-    return FakeMeal.create({
-      id: doc.id,
-      userId: doc.userId,
-      name: doc.name,
-      calories: doc.calories,
-      protein: doc.protein,
-      createdAt: doc.createdAt,
-      updatedAt: doc.updatedAt,
-    });
+    return FakeMeal.create(doc);
   }
 
   async deleteFakeMeal(id: string): Promise<void> {

@@ -31,12 +31,7 @@ export class MongoExternalIngredientsRefRepo implements ExternalIngredientsRefRe
       return null;
     }
 
-    return ExternalIngredientRef.create({
-      externalId: doc.externalId,
-      source: doc.source,
-      ingredientId: doc.ingredientId,
-      createdAt: doc.createdAt,
-    });
+    return ExternalIngredientRef.create(doc);
   }
 
   async getByExternalIdsAndSource(
@@ -48,14 +43,7 @@ export class MongoExternalIngredientsRefRepo implements ExternalIngredientsRefRe
       source,
     }).lean();
 
-    return docs.map((doc) =>
-      ExternalIngredientRef.create({
-        externalId: doc.externalId,
-        source: doc.source,
-        ingredientId: doc.ingredientId,
-        createdAt: doc.createdAt,
-      }),
-    );
+    return docs.map((doc) => ExternalIngredientRef.create(doc));
   }
 
   async delete(externalId: string): Promise<void> {
