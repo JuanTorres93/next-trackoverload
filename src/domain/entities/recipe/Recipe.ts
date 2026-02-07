@@ -27,7 +27,7 @@ export type RecipeProps = {
   updatedAt: DomainDate;
 };
 
-const nameTextOptions = {
+export const nameTextOptions = {
   canBeEmpty: false,
   maxLength: Integer.create(100),
 };
@@ -115,6 +115,18 @@ export class Recipe implements Protein, Calories {
 
     this.props.ingredientLines = filteredLines;
     this.props.updatedAt = DomainDate.create();
+  }
+
+  toCreateProps(): RecipeCreateProps {
+    return {
+      id: this.props.id.value,
+      userId: this.props.userId.value,
+      name: this.props.name.value,
+      imageUrl: this.props.imageUrl?.value,
+      ingredientLines: this.props.ingredientLines,
+      createdAt: this.props.createdAt.value,
+      updatedAt: this.props.updatedAt.value,
+    };
   }
 
   get id() {
