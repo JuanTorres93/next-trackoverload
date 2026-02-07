@@ -7,5 +7,13 @@ export function mockForThrowingError<T>(
 ) {
   const error = new Error(`Mocked error in ${String(methodName)}`);
 
-  return vi.spyOn(mongoModel, methodName as never).mockRejectedValueOnce(error);
+  const spy = vi
+    .spyOn(mongoModel, methodName as never)
+    .mockRejectedValueOnce(error);
+
+  afterEach(() => {
+    spy.mockRestore();
+  });
+
+  return spy;
 }

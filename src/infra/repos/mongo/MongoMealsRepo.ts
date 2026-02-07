@@ -27,28 +27,33 @@ export class MongoMealsRepo implements MealsRepo {
   async saveMeal(meal: Meal): Promise<void> {
     const mealData = meal.toCreateProps();
 
-    // TODO IMPORTANT: Transaction
-    await MealMongo.findOneAndUpdate({ id: meal.id }, mealData, {
-      upsert: true,
-      new: true,
+    const session = await MealMongo.startSession();
+    session.startTransaction();
+
+    await inMongoTransaction(session, async () => {
+      await MealMongo.findOneAndUpdate({ id: meal.id }, mealData, {
+        upsert: true,
+        new: true,
+        session,
+      });
+
+      // Delete existing meal lines for this meal first
+      await MealLineMongo.deleteMany({ parentId: meal.id }, { session });
+
+      // Save new meal lines
+      const mealLines = meal.ingredientLines.map((line) => ({
+        id: line.id,
+        parentId: meal.id,
+        ingredientId: line.ingredient.id,
+        quantityInGrams: line.quantityInGrams,
+        createdAt: line.createdAt,
+        updatedAt: line.updatedAt,
+      }));
+
+      if (mealLines.length > 0) {
+        await MealLineMongo.insertMany(mealLines, { session });
+      }
     });
-
-    // Delete existing meal lines for this meal first
-    await MealLineMongo.deleteMany({ parentId: meal.id });
-
-    // Save new meal lines
-    const mealLines = meal.ingredientLines.map((line) => ({
-      id: line.id,
-      parentId: meal.id,
-      ingredientId: line.ingredient.id,
-      quantityInGrams: line.quantityInGrams,
-      createdAt: line.createdAt,
-      updatedAt: line.updatedAt,
-    }));
-
-    if (mealLines.length > 0) {
-      await MealLineMongo.insertMany(mealLines);
-    }
   }
 
   async getAllMeals(): Promise<Meal[]> {
@@ -175,6 +180,7 @@ export class MongoMealsRepo implements MealsRepo {
     });
   }
 
+  // TODO NEXT: Intentar borrar este método y usar los DTOs
   private toMealEntity(doc: PopulatedMealDoc): Meal | null {
     if (!doc.mealLines || doc.mealLines.length === 0) {
       return null;

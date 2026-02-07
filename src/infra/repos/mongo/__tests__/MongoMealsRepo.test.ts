@@ -526,6 +526,121 @@ describe('MongoMealsRepo', () => {
   });
 
   describe('transactions', () => {
+    describe('saveMeal', () => {
+      it('should rollback changes if error meal find and update', async () => {
+        mockForThrowingError(MealMongo, 'findOneAndUpdate');
+
+        const existingMeal = await repo.getMealById(
+          mealTestProps.mealPropsNoIngredientLines.id,
+        );
+        existingMeal!.update({
+          name: 'Updated Meal Name',
+        });
+
+        // Try to save meal - should throw error
+        await expect(repo.saveMeal(existingMeal!)).rejects.toThrow(
+          /Mocked error.*findOneAndUpdate/i,
+        );
+
+        const notUpdatedMeal = await repo.getMealById(
+          mealTestProps.mealPropsNoIngredientLines.id,
+        );
+        expect(notUpdatedMeal!.name).toBe(
+          mealTestProps.mealPropsNoIngredientLines.name,
+        );
+      });
+
+      it('should rollback changes if error in deleteMany meal lines', async () => {
+        mockForThrowingError(MealLineMongo, 'deleteMany');
+
+        const existingMeal = await repo.getMealById(
+          mealTestProps.mealPropsNoIngredientLines.id,
+        );
+        existingMeal!.update({
+          name: 'Updated Meal Name',
+        });
+
+        const anotherIngredient = Ingredient.create({
+          ...ingredientTestProps.validIngredientProps,
+          id: 'ingredient-2',
+          name: 'Tomato',
+        });
+        await ingredientsRepo.saveIngredient(anotherIngredient);
+
+        const newLine = IngredientLine.create({
+          ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
+          id: 'line-new',
+          parentId: existingMeal!.id,
+          parentType: 'meal',
+          ingredient: anotherIngredient,
+          quantityInGrams: 50,
+        });
+
+        existingMeal!.addIngredientLine(newLine);
+
+        // Try to save meal
+        await expect(repo.saveMeal(existingMeal!)).rejects.toThrow(
+          /Mocked error.*deleteMany/i,
+        );
+
+        const notUpdatedMeal = await repo.getMealById(
+          mealTestProps.mealPropsNoIngredientLines.id,
+        );
+        expect(notUpdatedMeal!.name).toBe(
+          mealTestProps.mealPropsNoIngredientLines.name,
+        );
+        expect(notUpdatedMeal!.ingredientLines).toHaveLength(1);
+        expect(notUpdatedMeal!.ingredientLines[0].ingredient.name).toBe(
+          ingredientTestProps.validIngredientProps.name,
+        );
+      });
+
+      it('should rollback changes if error in insertMany meal lines', async () => {
+        mockForThrowingError(MealLineMongo, 'insertMany');
+
+        const existingMeal = await repo.getMealById(
+          mealTestProps.mealPropsNoIngredientLines.id,
+        );
+        existingMeal!.update({
+          name: 'Updated Meal Name',
+        });
+
+        const anotherIngredient = Ingredient.create({
+          ...ingredientTestProps.validIngredientProps,
+          id: 'ingredient-2',
+          name: 'Tomato',
+        });
+        await ingredientsRepo.saveIngredient(anotherIngredient);
+
+        const newLine = IngredientLine.create({
+          ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
+          id: 'line-new',
+          parentId: existingMeal!.id,
+          parentType: 'meal',
+          ingredient: anotherIngredient,
+          quantityInGrams: 50,
+        });
+
+        existingMeal!.addIngredientLine(newLine);
+
+        // Try to save meal
+        await expect(repo.saveMeal(existingMeal!)).rejects.toThrow(
+          /Mocked error.*insertMany/i,
+        );
+
+        const notUpdatedMeal = await repo.getMealById(
+          mealTestProps.mealPropsNoIngredientLines.id,
+        );
+        expect(notUpdatedMeal!.name).toBe(
+          mealTestProps.mealPropsNoIngredientLines.name,
+        );
+        expect(notUpdatedMeal!.ingredientLines).toHaveLength(1);
+        expect(notUpdatedMeal!.ingredientLines[0].ingredient.name).toBe(
+          ingredientTestProps.validIngredientProps.name,
+        );
+      });
+    });
+
     describe('deleteMeal', () => {
       it('should rollback changes if error occurs when deleting meal but deleting meal lines correct', async () => {
         mockForThrowingError(MealLineMongo, 'deleteMany');
