@@ -180,7 +180,6 @@ export class MongoMealsRepo implements MealsRepo {
     });
   }
 
-  // TODO NEXT: Intentar borrar este método y usar los DTOs
   private toMealEntity(doc: PopulatedMealDoc): Meal | null {
     if (!doc.mealLines || doc.mealLines.length === 0) {
       return null;
@@ -190,13 +189,9 @@ export class MongoMealsRepo implements MealsRepo {
       .filter((line) => line.ingredient)
       .map((line) =>
         IngredientLine.create({
-          id: line.id,
-          parentId: line.parentId,
+          ...line,
           parentType: 'meal',
           ingredient: Ingredient.create(line.ingredient!),
-          quantityInGrams: line.quantityInGrams,
-          createdAt: line.createdAt,
-          updatedAt: line.updatedAt,
         }),
       );
 
@@ -205,14 +200,8 @@ export class MongoMealsRepo implements MealsRepo {
     }
 
     return Meal.create({
-      id: doc.id,
-      userId: doc.userId,
-      name: doc.name,
+      ...doc,
       ingredientLines,
-      createdFromRecipeId: doc.createdFromRecipeId,
-      imageUrl: doc.imageUrl,
-      createdAt: doc.createdAt,
-      updatedAt: doc.updatedAt,
     });
   }
 
