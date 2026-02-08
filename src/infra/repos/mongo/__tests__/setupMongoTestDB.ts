@@ -1,5 +1,6 @@
 import { MongoMemoryReplSet } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
+import { getMongooseInstance } from '../config';
 
 let mongoReplSet: MongoMemoryReplSet | null = null;
 
@@ -16,7 +17,7 @@ export async function setupMongoTestDB(): Promise<string> {
 
   const uri = mongoReplSet.getUri();
 
-  await mongoose.connect(uri);
+  await getMongooseInstance(uri);
 
   return uri;
 }

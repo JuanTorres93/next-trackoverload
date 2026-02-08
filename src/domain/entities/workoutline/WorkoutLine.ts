@@ -81,6 +81,19 @@ export class WorkoutLine {
     this.props.updatedAt = DomainDate.create();
   }
 
+  toCreateProps(): WorkoutLineCreateProps {
+    return {
+      id: this.id,
+      workoutId: this.workoutId,
+      exerciseId: this.exerciseId,
+      setNumber: this.setNumber,
+      reps: this.reps,
+      weightInKg: this.weightInKg,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+    };
+  }
+
   // Getters
   get id() {
     return this.props.id.value;
