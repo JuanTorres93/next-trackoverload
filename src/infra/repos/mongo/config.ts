@@ -22,8 +22,13 @@ const MONGODB_PASSWORD_DEV = process.env.MONGODB_PASSWORD_DEV;
 
 export const MONGODB_URI_DEV = `mongodb+srv://${MONGODB_USERNAME_DEV}:${MONGODB_PASSWORD_DEV}@cluster0.pjn69gs.mongodb.net/?appName=Cluster0`;
 
-export async function getMongooseInstance(uri: string) {
+let isConnected = false;
+
+export async function startMongooseConnection(uri: string) {
+  if (isConnected) return;
+
   await mongoose.connect(uri);
+  isConnected = true;
 
   // Init mongo models to avoid errors of creating collection in transaction
   await initMongoModels();
@@ -35,7 +40,7 @@ export async function getMongooseDevelopmentInstance() {
       'getMongooseDevelopmentInstance: Not in development environment',
     );
 
-  await getMongooseInstance(MONGODB_URI_DEV);
+  await startMongooseConnection(MONGODB_URI_DEV);
 }
 
 export async function initMongoModels() {
