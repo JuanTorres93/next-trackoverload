@@ -1,12 +1,21 @@
-import { FileSystemRecipesRepo } from '@/infra/repos/filesystem';
+import { AdapterError } from '@/domain/common/errors';
 import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
+import { MongoRecipesRepo } from '@/infra/repos/mongo/MongoRecipesRepo';
+import { mongooseInitPromise } from './common/initMongoose';
 
-let AppRecipesRepo: FileSystemRecipesRepo | MemoryRecipesRepo;
+let AppRecipesRepo: MemoryRecipesRepo | MongoRecipesRepo;
 
 if (process.env.NODE_ENV === 'test') {
   AppRecipesRepo = new MemoryRecipesRepo();
-} else {
-  AppRecipesRepo = new FileSystemRecipesRepo();
+} else if (process.env.NODE_ENV === 'development') {
+  await mongooseInitPromise;
+  AppRecipesRepo = new MongoRecipesRepo();
+}
+// TODO implement production
+else {
+  throw new AdapterError(
+    "AppRecipesRepo: NODE_ENV must be one of 'production', 'development', or 'test'",
+  );
 }
 
 export { AppRecipesRepo };

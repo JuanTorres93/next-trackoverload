@@ -1,12 +1,21 @@
-import { FileSystemWorkoutsRepo } from '@/infra/repos/filesystem';
+import { AdapterError } from '@/domain/common/errors';
 import { MemoryWorkoutsRepo } from '@/infra/repos/memory/MemoryWorkoutsRepo';
+import { MongoWorkoutsRepo } from '@/infra/repos/mongo/MongoWorkoutsRepo';
+import { mongooseInitPromise } from './common/initMongoose';
 
-let AppWorkoutsRepo: FileSystemWorkoutsRepo | MemoryWorkoutsRepo;
+let AppWorkoutsRepo: MemoryWorkoutsRepo | MongoWorkoutsRepo;
 
 if (process.env.NODE_ENV === 'test') {
   AppWorkoutsRepo = new MemoryWorkoutsRepo();
-} else {
-  AppWorkoutsRepo = new FileSystemWorkoutsRepo();
+} else if (process.env.NODE_ENV === 'development') {
+  await mongooseInitPromise;
+  AppWorkoutsRepo = new MongoWorkoutsRepo();
+}
+// TODO implement production
+else {
+  throw new AdapterError(
+    "AppWorkoutsRepo: NODE_ENV must be one of 'production', 'development', or 'test'",
+  );
 }
 
 export { AppWorkoutsRepo };

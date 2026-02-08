@@ -60,9 +60,8 @@ workoutLineSchema.virtual('exercise', {
   justOne: true,
 });
 
-const WorkoutLineMongo = mongoose.model<WorkoutLineMongoProps>(
-  'WorkoutLine',
-  workoutLineSchema,
-);
+const WorkoutLineMongo =
+  mongoose.models.WorkoutLine ||
+  mongoose.model<WorkoutLineMongoProps>('WorkoutLine', workoutLineSchema);
 
 export default WorkoutLineMongo;

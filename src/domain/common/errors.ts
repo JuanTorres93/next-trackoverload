@@ -19,3 +19,5 @@ export class RateLimitError extends DomainError {}
 export class ConflictError extends DomainError {}
 
 export class InfrastructureError extends DomainError {}
+
+export class AdapterError extends DomainError {}

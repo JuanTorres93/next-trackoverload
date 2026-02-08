@@ -45,6 +45,7 @@ mealSchema.virtual('mealLines', {
   foreignField: 'parentId',
 });
 
-const MealMongo = mongoose.model<MealCreateProps>('Meal', mealSchema);
+const MealMongo =
+  mongoose.models.Meal || mongoose.model<MealCreateProps>('Meal', mealSchema);
 
 export default MealMongo;

@@ -31,6 +31,7 @@ externalIngredientRefSchema.index(
 );
 
 const ExternalIngredientRefMongo =
+  mongoose.models.ExternalIngredientRef ||
   mongoose.model<ExternalIngredientRefCreateProps>(
     'ExternalIngredientRef',
     externalIngredientRefSchema,

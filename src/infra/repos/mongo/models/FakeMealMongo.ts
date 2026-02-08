@@ -41,9 +41,8 @@ const fakeMealSchema = new mongoose.Schema<FakeMealCreateProps>({
   },
 });
 
-const FakeMealMongo = mongoose.model<FakeMealCreateProps>(
-  'FakeMeal',
-  fakeMealSchema,
-);
+const FakeMealMongo =
+  mongoose.models.FakeMeal ||
+  mongoose.model<FakeMealCreateProps>('FakeMeal', fakeMealSchema);
 
 export default FakeMealMongo;

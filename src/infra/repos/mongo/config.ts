@@ -19,19 +19,30 @@ import { InfrastructureError } from '../../../domain/common/errors';
 
 const MONGODB_USERNAME_DEV = process.env.MONGODB_USERNAME_DEV;
 const MONGODB_PASSWORD_DEV = process.env.MONGODB_PASSWORD_DEV;
+const MONGODB_DB_NAME_DEV = process.env.MONGODB_DB_NAME_DEV;
 
-export const MONGODB_URI_DEV = `mongodb+srv://${MONGODB_USERNAME_DEV}:${MONGODB_PASSWORD_DEV}@cluster0.pjn69gs.mongodb.net/?appName=Cluster0`;
+export const MONGODB_URI_DEV = `mongodb+srv://${MONGODB_USERNAME_DEV}:${MONGODB_PASSWORD_DEV}@cluster0.pjn69gs.mongodb.net/${MONGODB_DB_NAME_DEV}?appName=Cluster0`;
 
-let isConnected = false;
+// Prevent multiple connections in development when Next.js does hot reload
+// Use global so the promise persists across recompilations
+declare global {
+  var mongooseConnectionPromise: Promise<void> | undefined;
+}
 
 export async function startMongooseConnection(uri: string) {
-  if (isConnected) return;
+  // If a connection promise already exists in global, reuse it
+  if (global.mongooseConnectionPromise) {
+    return global.mongooseConnectionPromise;
+  }
 
-  await mongoose.connect(uri);
-  isConnected = true;
+  // Create a new promise and store it in global
+  global.mongooseConnectionPromise = (async () => {
+    await mongoose.connect(uri);
+    // Init mongo models to avoid errors of creating collection in transaction
+    await initMongoModels();
+  })();
 
-  // Init mongo models to avoid errors of creating collection in transaction
-  await initMongoModels();
+  return global.mongooseConnectionPromise;
 }
 
 export async function getMongooseDevelopmentInstance() {

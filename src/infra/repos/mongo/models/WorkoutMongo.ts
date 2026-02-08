@@ -45,9 +45,8 @@ workoutSchema.virtual('workoutLines', {
   foreignField: 'workoutId',
 });
 
-const WorkoutMongo = mongoose.model<WorkoutCreateProps>(
-  'Workout',
-  workoutSchema,
-);
+const WorkoutMongo =
+  mongoose.models.Workout ||
+  mongoose.model<WorkoutCreateProps>('Workout', workoutSchema);
 
 export default WorkoutMongo;

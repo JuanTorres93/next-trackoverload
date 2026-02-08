@@ -42,9 +42,8 @@ const ingredientSchema = new mongoose.Schema<IngredientCreateProps>({
   },
 });
 
-const IngredientMongo = mongoose.model<IngredientCreateProps>(
-  'Ingredient',
-  ingredientSchema,
-);
+const IngredientMongo =
+  mongoose.models.Ingredient ||
+  mongoose.model<IngredientCreateProps>('Ingredient', ingredientSchema);
 
 export default IngredientMongo;

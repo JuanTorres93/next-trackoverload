@@ -44,6 +44,8 @@ recipeSchema.virtual('recipeLines', {
   foreignField: 'parentId',
 });
 
-const RecipeMongo = mongoose.model<RecipeCreateProps>('Recipe', recipeSchema);
+const RecipeMongo =
+  mongoose.models.Recipe ||
+  mongoose.model<RecipeCreateProps>('Recipe', recipeSchema);
 
 export default RecipeMongo;

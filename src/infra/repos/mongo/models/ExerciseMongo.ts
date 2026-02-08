@@ -25,9 +25,8 @@ const exerciseSchema = new mongoose.Schema<ExerciseCreateProps>({
   },
 });
 
-const ExerciseMongo = mongoose.model<ExerciseCreateProps>(
-  'Exercise',
-  exerciseSchema,
-);
+const ExerciseMongo =
+  mongoose.models.Exercise ||
+  mongoose.model<ExerciseCreateProps>('Exercise', exerciseSchema);
 
 export default ExerciseMongo;

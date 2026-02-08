@@ -9,25 +9,28 @@ export type GetAllRecipesForUserUsecaseRequest = {
 };
 
 export class GetAllRecipesForUserUsecase {
-  constructor(private recipesRepo: RecipesRepo, private usersRepo: UsersRepo) {}
+  constructor(
+    private recipesRepo: RecipesRepo,
+    private usersRepo: UsersRepo,
+  ) {}
 
   async execute(
-    request: GetAllRecipesForUserUsecaseRequest
+    request: GetAllRecipesForUserUsecaseRequest,
   ): Promise<RecipeDTO[]> {
     if (request.actorUserId !== request.targetUserId) {
       throw new PermissionError(
-        `GetAllRecipesForUserUsecase: cannot get recipes for another user`
+        `GetAllRecipesForUserUsecase: cannot get recipes for another user`,
       );
     }
 
     const user = await this.usersRepo.getUserById(request.targetUserId);
     if (!user) {
       throw new NotFoundError(
-        `GetAllRecipesForUserUsecase: user with id ${request.targetUserId} not found`
+        `GetAllRecipesForUserUsecase: user with id ${request.targetUserId} not found`,
       );
     }
     const recipes = await this.recipesRepo.getAllRecipesByUserId(
-      request.targetUserId
+      request.targetUserId,
     );
 
     return recipes.map(toRecipeDTO) || [];

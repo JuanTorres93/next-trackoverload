@@ -52,9 +52,8 @@ mealLineSchema.virtual('ingredient', {
   justOne: true,
 });
 
-const MealLineMongo = mongoose.model<MealLineMongoProps>(
-  'MealLine',
-  mealLineSchema,
-);
+const MealLineMongo =
+  mongoose.models.MealLine ||
+  mongoose.model<MealLineMongoProps>('MealLine', mealLineSchema);
 
 export default MealLineMongo;

@@ -44,9 +44,11 @@ workoutTemplateSchema.virtual('templateLines', {
   foreignField: 'templateId',
 });
 
-const WorkoutTemplateMongo = mongoose.model<WorkoutTemplateCreateProps>(
-  'WorkoutTemplate',
-  workoutTemplateSchema,
-);
+const WorkoutTemplateMongo =
+  mongoose.models.WorkoutTemplate ||
+  mongoose.model<WorkoutTemplateCreateProps>(
+    'WorkoutTemplate',
+    workoutTemplateSchema,
+  );
 
 export default WorkoutTemplateMongo;

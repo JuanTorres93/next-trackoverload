@@ -31,6 +31,7 @@ const userSchema = new mongoose.Schema<UserCreateProps>({
   },
 });
 
-const UserMongo = mongoose.model<UserCreateProps>('User', userSchema);
+const UserMongo =
+  mongoose.models.User || mongoose.model<UserCreateProps>('User', userSchema);
 
 export default UserMongo;

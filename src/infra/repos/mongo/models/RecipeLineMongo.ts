@@ -52,9 +52,8 @@ recipeLineSchema.virtual('ingredient', {
   justOne: true,
 });
 
-const RecipeLineMongo = mongoose.model<RecipeLineMongoProps>(
-  'RecipeLine',
-  recipeLineSchema,
-);
+const RecipeLineMongo =
+  mongoose.models.RecipeLine ||
+  mongoose.model<RecipeLineMongoProps>('RecipeLine', recipeLineSchema);
 
 export default RecipeLineMongo;

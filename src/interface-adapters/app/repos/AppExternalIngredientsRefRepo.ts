@@ -1,14 +1,23 @@
-import { FileSystemExternalIngredientsRefRepo } from '@/infra/repos/filesystem/FileSystemExternalIngredientsRefRepo';
+import { AdapterError } from '@/domain/common/errors';
 import { MemoryExternalIngredientsRefRepo } from '@/infra/repos/memory/MemoryExternalIngredientsRefRepo';
+import { MongoExternalIngredientsRefRepo } from '@/infra/repos/mongo/MongoExternalIngredientsRefRepo';
+import { mongooseInitPromise } from './common/initMongoose';
 
 let AppExternalIngredientsRefRepo:
-  | FileSystemExternalIngredientsRefRepo
-  | MemoryExternalIngredientsRefRepo;
+  | MemoryExternalIngredientsRefRepo
+  | MongoExternalIngredientsRefRepo;
 
 if (process.env.NODE_ENV === 'test') {
   AppExternalIngredientsRefRepo = new MemoryExternalIngredientsRefRepo();
-} else {
-  AppExternalIngredientsRefRepo = new FileSystemExternalIngredientsRefRepo();
+} else if (process.env.NODE_ENV === 'development') {
+  await mongooseInitPromise;
+  AppExternalIngredientsRefRepo = new MongoExternalIngredientsRefRepo();
+}
+// TODO implement production
+else {
+  throw new AdapterError(
+    "AppExternalIngredientsRefRepo: NODE_ENV must be one of 'production', 'development', or 'test'",
+  );
 }
 
 export { AppExternalIngredientsRefRepo };

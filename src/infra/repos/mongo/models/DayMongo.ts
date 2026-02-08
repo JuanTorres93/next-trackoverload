@@ -47,6 +47,7 @@ const daySchema = new mongoose.Schema<DayMongoProps>({
 daySchema.index({ userId: 1 });
 daySchema.index({ userId: 1, year: 1, month: 1, day: 1 });
 
-const DayMongo = mongoose.model<DayMongoProps>('Day', daySchema);
+const DayMongo =
+  mongoose.models.Day || mongoose.model<DayMongoProps>('Day', daySchema);
 
 export default DayMongo;
