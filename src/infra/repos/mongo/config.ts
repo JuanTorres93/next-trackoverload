@@ -11,13 +11,15 @@ import './models/RecipeMongo';
 import './models/UserMongo';
 import './models/WorkoutMongo';
 import './models/WorkoutLineMongo';
+import './models/WorkoutTemplateMongo';
+import './models/WorkoutTemplateLineMongo';
 
 import { InfrastructureError } from '../../../domain/common/errors';
 
-const MONGODB_USERNAME = process.env.MONGODB_USERNAME_DEV;
-const MONGODB_PASSWORD = process.env.MONGODB_PASSWORD_DEV;
+const MONGODB_USERNAME_DEV = process.env.MONGODB_USERNAME_DEV;
+const MONGODB_PASSWORD_DEV = process.env.MONGODB_PASSWORD_DEV;
 
-export const MONGODB_URI_DEV = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@cluster0.pjn69gs.mongodb.net/?appName=Cluster0`;
+export const MONGODB_URI_DEV = `mongodb+srv://${MONGODB_USERNAME_DEV}:${MONGODB_PASSWORD_DEV}@cluster0.pjn69gs.mongodb.net/?appName=Cluster0`;
 
 export async function getMongooseInstance(uri: string) {
   await mongoose.connect(uri);
@@ -48,7 +50,8 @@ export async function initMongoModels() {
     mongoose.model('User'),
     mongoose.model('Workout'),
     mongoose.model('WorkoutLine'),
-    mongoose.model('Exercise'),
+    mongoose.model('WorkoutTemplate'),
+    mongoose.model('WorkoutTemplateLine'),
   ];
 
   for (const model of models) {

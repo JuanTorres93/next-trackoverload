@@ -32,7 +32,10 @@ export type WorkoutTemplateProps = {
   deletedAt?: Date;
 };
 
-const nameTextOptions = { canBeEmpty: false, maxLength: Integer.create(100) };
+export const nameTextOptions = {
+  canBeEmpty: false,
+  maxLength: Integer.create(100),
+};
 const exerciseIndexIntegerOptions = { onlyPositive: true };
 
 export class WorkoutTemplate {
@@ -178,5 +181,17 @@ export class WorkoutTemplate {
     const now = new Date();
     this.props.deletedAt = now;
     this.props.updatedAt = DomainDate.create();
+  }
+
+  toCreateProps(): WorkoutTemplateCreateProps {
+    return {
+      id: this.props.id.value,
+      userId: this.props.userId.value,
+      name: this.props.name.value,
+      exercises: this.props.exercises,
+      createdAt: this.props.createdAt.value,
+      updatedAt: this.props.updatedAt.value,
+      deletedAt: this.props.deletedAt,
+    };
   }
 }

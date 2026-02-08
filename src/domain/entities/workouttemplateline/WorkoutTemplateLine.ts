@@ -25,7 +25,7 @@ export type WorkoutTemplateLineProps = {
   updatedAt: DomainDate;
 };
 
-const setsIntegerOptions = { canBeZero: false, onlyPositive: true };
+export const setsIntegerOptions = { canBeZero: false, onlyPositive: true };
 
 export class WorkoutTemplateLine {
   private constructor(private readonly props: WorkoutTemplateLineProps) {}
@@ -78,5 +78,16 @@ export class WorkoutTemplateLine {
 
   get updatedAt() {
     return this.props.updatedAt.value;
+  }
+
+  toCreateProps(): WorkoutTemplateLineCreateProps {
+    return {
+      id: this.props.id.value,
+      templateId: this.props.templateId.value,
+      exerciseId: this.props.exerciseId.value,
+      sets: this.props.sets.value,
+      createdAt: this.props.createdAt.value,
+      updatedAt: this.props.updatedAt.value,
+    };
   }
 }
