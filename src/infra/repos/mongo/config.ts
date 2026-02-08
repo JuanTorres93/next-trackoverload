@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+import './models/DayMongo';
 import './models/ExerciseMongo';
 import './models/ExternalIngredientRefMongo';
 import './models/FakeMealMongo';
@@ -39,6 +40,7 @@ export async function getMongooseDevelopmentInstance() {
 
 export async function initMongoModels() {
   const models = [
+    mongoose.model('Day'),
     mongoose.model('Exercise'),
     mongoose.model('ExternalIngredientRef'),
     mongoose.model('FakeMeal'),

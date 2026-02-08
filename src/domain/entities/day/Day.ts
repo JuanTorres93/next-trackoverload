@@ -102,6 +102,17 @@ export class Day {
     this.props.updatedAt = DomainDate.create(new Date());
   }
 
+  toCreateProps(): DayCreateProps {
+    return {
+      day: this.day,
+      month: this.month,
+      year: this.year,
+      userId: this.userId,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+    };
+  }
+
   // Getters
   get id() {
     return this.props.id.value;
