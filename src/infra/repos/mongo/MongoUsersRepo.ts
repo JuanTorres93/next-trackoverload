@@ -2,14 +2,18 @@ import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { User } from '@/domain/entities/user/User';
 import UserMongo from './models/UserMongo';
 import { UserCreateProps } from '@/domain/entities/user/User';
+import { withTransaction } from './common/withTransaction';
 
 export class MongoUsersRepo implements UsersRepo {
   async saveUser(user: User): Promise<void> {
-    const userData: UserCreateProps = user.toCreateProps();
+    return withTransaction(async (session) => {
+      const userData: UserCreateProps = user.toCreateProps();
 
-    await UserMongo.findOneAndUpdate({ id: user.id }, userData, {
-      upsert: true,
-      new: true,
+      await UserMongo.findOneAndUpdate({ id: user.id }, userData, {
+        upsert: true,
+        new: true,
+        session,
+      });
     });
   }
 
@@ -50,10 +54,12 @@ export class MongoUsersRepo implements UsersRepo {
   }
 
   async deleteUser(id: string): Promise<void> {
-    const result = await UserMongo.deleteOne({ id });
+    return withTransaction(async (session) => {
+      const result = await UserMongo.deleteOne({ id }, { session });
 
-    if (result.deletedCount === 0) {
-      return Promise.reject(null);
-    }
+      if (result.deletedCount === 0) {
+        return Promise.reject(null);
+      }
+    });
   }
 }

@@ -2,14 +2,18 @@ import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import FakeMealMongo from './models/FakeMealMongo';
 import { FakeMealCreateProps } from '@/domain/entities/fakemeal/FakeMeal';
+import { withTransaction } from './common/withTransaction';
 
 export class MongoFakeMealsRepo implements FakeMealsRepo {
   async saveFakeMeal(fakeMeal: FakeMeal): Promise<void> {
-    const fakeMealData: FakeMealCreateProps = fakeMeal.toCreateProps();
+    return withTransaction(async (session) => {
+      const fakeMealData: FakeMealCreateProps = fakeMeal.toCreateProps();
 
-    await FakeMealMongo.findOneAndUpdate({ id: fakeMeal.id }, fakeMealData, {
-      upsert: true,
-      new: true,
+      await FakeMealMongo.findOneAndUpdate({ id: fakeMeal.id }, fakeMealData, {
+        upsert: true,
+        new: true,
+        session,
+      });
     });
   }
 
@@ -55,26 +59,34 @@ export class MongoFakeMealsRepo implements FakeMealsRepo {
   }
 
   async deleteFakeMeal(id: string): Promise<void> {
-    const result = await FakeMealMongo.deleteOne({ id });
+    return withTransaction(async (session) => {
+      const result = await FakeMealMongo.deleteOne({ id }, { session });
 
-    if (result.deletedCount === 0) {
-      return Promise.reject(null);
-    }
+      if (result.deletedCount === 0) {
+        return Promise.reject(null);
+      }
+    });
   }
 
   async deleteMultipleFakeMeals(ids: string[]): Promise<void> {
-    await FakeMealMongo.deleteMany({ id: { $in: ids } });
+    return withTransaction(async (session) => {
+      await FakeMealMongo.deleteMany({ id: { $in: ids } }, { session });
+    });
   }
 
   async deleteFakeMealByIdAndUserId(id: string, userId: string): Promise<void> {
-    const result = await FakeMealMongo.deleteOne({ id, userId });
+    return withTransaction(async (session) => {
+      const result = await FakeMealMongo.deleteOne({ id, userId }, { session });
 
-    if (result.deletedCount === 0) {
-      return Promise.reject(null);
-    }
+      if (result.deletedCount === 0) {
+        return Promise.reject(null);
+      }
+    });
   }
 
   async deleteAllFakeMealsForUser(userId: string): Promise<void> {
-    await FakeMealMongo.deleteMany({ userId });
+    return withTransaction(async (session) => {
+      await FakeMealMongo.deleteMany({ userId }, { session });
+    });
   }
 }

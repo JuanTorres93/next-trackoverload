@@ -1,23 +1,27 @@
 import { Day } from '@/domain/entities/day/Day';
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import DayMongo, { DayMongoProps } from './models/DayMongo';
+import { withTransaction } from './common/withTransaction';
 
 export class MongoDaysRepo implements DaysRepo {
   async saveDay(day: Day): Promise<void> {
-    const dayData = {
-      ...day.toCreateProps(),
-      mealIds: day.mealIds,
-      fakeMealIds: day.fakeMealIds,
-    };
+    return withTransaction(async (session) => {
+      const dayData = {
+        ...day.toCreateProps(),
+        mealIds: day.mealIds,
+        fakeMealIds: day.fakeMealIds,
+      };
 
-    await DayMongo.findOneAndUpdate(
-      { day: day.day, month: day.month, year: day.year, userId: day.userId },
-      dayData,
-      {
-        upsert: true,
-        new: true,
-      },
-    );
+      await DayMongo.findOneAndUpdate(
+        { day: day.day, month: day.month, year: day.year, userId: day.userId },
+        dayData,
+        {
+          upsert: true,
+          new: true,
+          session,
+        },
+      );
+    });
   }
 
   async getAllDays(): Promise<Day[]> {
@@ -85,13 +89,17 @@ export class MongoDaysRepo implements DaysRepo {
   }
 
   async deleteDayForUser(id: string, userId: string): Promise<void> {
-    const { year, month, day } = this.parseId(id);
+    return withTransaction(async (session) => {
+      const { year, month, day } = this.parseId(id);
 
-    await DayMongo.deleteOne({ year, month, day, userId });
+      await DayMongo.deleteOne({ year, month, day, userId }, { session });
+    });
   }
 
   async deleteAllDaysForUser(userId: string): Promise<void> {
-    await DayMongo.deleteMany({ userId });
+    return withTransaction(async (session) => {
+      await DayMongo.deleteMany({ userId }, { session });
+    });
   }
 
   private toDayEntity(doc: DayMongoProps): Day {
