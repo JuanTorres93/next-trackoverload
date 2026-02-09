@@ -91,10 +91,7 @@ describe('AddFakeMealToDayUsecase', () => {
         addFakeMealToDayUsecase.execute(validRequest),
       ).rejects.toThrow('Mocked error in saveFakeMeal');
 
-      const dayAfter = await daysRepo.getDayByIdAndUserId(day.id, user.id);
-      expect(dayAfter?.fakeMealIds).toHaveLength(0);
-      const fakeMealsAfter = await fakeMealsRepo.getAllFakeMeals();
-      expect(fakeMealsAfter).toHaveLength(0);
+      await initialExpectations();
     });
 
     it('should rollback if saving day fails', async () => {
@@ -106,9 +103,7 @@ describe('AddFakeMealToDayUsecase', () => {
         addFakeMealToDayUsecase.execute(validRequest),
       ).rejects.toThrow('Mocked error in saveDay');
 
-      // Verify that the fake meal was not saved
-      const fakeMealsAfter = await fakeMealsRepo.getAllFakeMeals();
-      expect(fakeMealsAfter).toHaveLength(0);
+      await initialExpectations();
     });
   });
 });
