@@ -5,7 +5,6 @@ import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { IdGenerator } from '@/domain/services/IdGenerator.port';
-import { UnitOfWork } from '@/application-layer/unit-of-work/UnitOfWork.port';
 
 export type AddFakeMealToDayUsecaseRequest = {
   dayId: string;
@@ -21,7 +20,6 @@ export class AddFakeMealToDayUsecase {
     private fakeMealsRepo: FakeMealsRepo,
     private usersRepo: UsersRepo,
     private idGenerator: IdGenerator,
-    private unitOfWork: UnitOfWork,
   ) {}
 
   async execute(request: AddFakeMealToDayUsecaseRequest): Promise<DayDTO> {
@@ -52,10 +50,8 @@ export class AddFakeMealToDayUsecase {
 
     day.addFakeMeal(fakeMeal.id);
 
-    await this.unitOfWork.inTransaction(async () => {
-      await this.fakeMealsRepo.saveFakeMeal(fakeMeal);
-      await this.daysRepo.saveDay(day);
-    });
+    await this.fakeMealsRepo.saveFakeMeal(fakeMeal);
+    await this.daysRepo.saveDay(day);
 
     return toDayDTO(day);
   }

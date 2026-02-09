@@ -3,7 +3,6 @@ import { NotFoundError } from '@/domain/common/errors';
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
-import { UnitOfWork } from '@/application-layer/unit-of-work/UnitOfWork.port';
 
 export type RemoveMealFromDayUsecaseRequest = {
   dayId: string;
@@ -16,7 +15,6 @@ export class RemoveMealFromDayUsecase {
     private daysRepo: DaysRepo,
     private usersRepo: UsersRepo,
     private mealsRepo: MealsRepo,
-    private unitOfWork: UnitOfWork,
   ) {}
 
   async execute(request: RemoveMealFromDayUsecaseRequest): Promise<DayDTO> {
@@ -39,10 +37,8 @@ export class RemoveMealFromDayUsecase {
 
     day.removeMealById(request.mealId);
 
-    await this.unitOfWork.inTransaction(async () => {
-      await this.mealsRepo.deleteMeal(request.mealId);
-      await this.daysRepo.saveDay(day);
-    });
+    await this.mealsRepo.deleteMeal(request.mealId);
+    await this.daysRepo.saveDay(day);
 
     return toDayDTO(day);
   }

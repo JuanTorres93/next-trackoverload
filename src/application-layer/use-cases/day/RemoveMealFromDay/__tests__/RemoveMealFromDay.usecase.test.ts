@@ -4,7 +4,6 @@ import { User } from '@/domain/entities/user/User';
 import { MemoryDaysRepo } from '@/infra/repos/memory/MemoryDaysRepo';
 import { MemoryMealsRepo } from '@/infra/repos/memory/MemoryMealsRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
-import { MemoryUnitOfWork } from '@/infra/unit-of-work/MemoryUnitOfWork/MemoryUnitOfWork';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { RemoveMealFromDayUsecase } from '../RemoveMealFromDay.usecase';
 
@@ -23,7 +22,6 @@ describe('RemoveMealFromDayUsecase', () => {
   let daysRepo: MemoryDaysRepo;
   let usersRepo: MemoryUsersRepo;
   let mealsRepo: MemoryMealsRepo;
-  let unitOfWork: MemoryUnitOfWork;
 
   let removeMealFromDayUsecase: RemoveMealFromDayUsecase;
   let user: User;
@@ -34,13 +32,11 @@ describe('RemoveMealFromDayUsecase', () => {
     daysRepo = new MemoryDaysRepo();
     usersRepo = new MemoryUsersRepo();
     mealsRepo = new MemoryMealsRepo();
-    unitOfWork = new MemoryUnitOfWork();
 
     removeMealFromDayUsecase = new RemoveMealFromDayUsecase(
       daysRepo,
       usersRepo,
       mealsRepo,
-      unitOfWork,
     );
 
     const ingredient = Ingredient.create(

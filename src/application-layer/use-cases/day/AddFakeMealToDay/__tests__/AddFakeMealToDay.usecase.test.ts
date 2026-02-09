@@ -6,7 +6,6 @@ import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { AddFakeMealToDayUsecase } from '../AddFakeMealToDay.usecase';
 import { User } from '@/domain/entities/user/User';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
-import { MemoryUnitOfWork } from '@/infra/unit-of-work/MemoryUnitOfWork/MemoryUnitOfWork';
 
 import * as dayTestProps from '../../../../../../tests/createProps/dayTestProps';
 import * as fakeMealTestProps from '../../../../../../tests/createProps/fakeMealTestProps';
@@ -17,7 +16,6 @@ describe('AddFakeMealToDayUsecase', () => {
   let daysRepo: MemoryDaysRepo;
   let fakeMealsRepo: MemoryFakeMealsRepo;
   let usersRepo: MemoryUsersRepo;
-  let unitOfWork: MemoryUnitOfWork;
 
   let addFakeMealToDayUsecase: AddFakeMealToDayUsecase;
   let day: Day;
@@ -28,14 +26,12 @@ describe('AddFakeMealToDayUsecase', () => {
     daysRepo = new MemoryDaysRepo();
     fakeMealsRepo = new MemoryFakeMealsRepo();
     usersRepo = new MemoryUsersRepo();
-    unitOfWork = new MemoryUnitOfWork();
 
     addFakeMealToDayUsecase = new AddFakeMealToDayUsecase(
       daysRepo,
       fakeMealsRepo,
       usersRepo,
       new Uuidv4IdGenerator(),
-      unitOfWork,
     );
 
     day = Day.create({

@@ -7,7 +7,6 @@ import { MemoryDaysRepo } from '@/infra/repos/memory/MemoryDaysRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { MemoryFakeMealsRepo } from '@/infra/repos/memory/MemoryFakeMealsRepo';
 import { MemoryMealsRepo } from '@/infra/repos/memory/MemoryMealsRepo';
-import { MemoryUnitOfWork } from '@/infra/unit-of-work/MemoryUnitOfWork/MemoryUnitOfWork';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { DeleteDayUsecase } from '../DeleteDay.usecase';
 
@@ -16,7 +15,6 @@ describe('DeleteDayUsecase', () => {
   let usersRepo: MemoryUsersRepo;
   let mealsRepo: MemoryMealsRepo;
   let fakeMealsRepo: MemoryFakeMealsRepo;
-  let unitOfWork: MemoryUnitOfWork;
 
   let deleteDayUsecase: DeleteDayUsecase;
   let user: User;
@@ -27,14 +25,12 @@ describe('DeleteDayUsecase', () => {
     usersRepo = new MemoryUsersRepo();
     mealsRepo = new MemoryMealsRepo();
     fakeMealsRepo = new MemoryFakeMealsRepo();
-    unitOfWork = new MemoryUnitOfWork();
 
     deleteDayUsecase = new DeleteDayUsecase(
       daysRepo,
       usersRepo,
       mealsRepo,
       fakeMealsRepo,
-      unitOfWork,
     );
 
     day = Day.create({

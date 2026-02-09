@@ -1,10 +1,9 @@
+import { AddMealToDayUsecase } from '@/application-layer/use-cases/day/AddMealToDay/AddMealToDay.usecase';
 import { AppDaysRepo } from '@/interface-adapters/app/repos/AppDaysRepo';
 import { AppMealsRepo } from '@/interface-adapters/app/repos/AppMealsRepo';
-import { AppUsersRepo } from '@/interface-adapters/app/repos/AppUsersRepo';
 import { AppRecipesRepo } from '@/interface-adapters/app/repos/AppRecipesRepo';
-import { AddMealToDayUsecase } from '@/application-layer/use-cases/day/AddMealToDay/AddMealToDay.usecase';
+import { AppUsersRepo } from '@/interface-adapters/app/repos/AppUsersRepo';
 import { AppUuidV4IdGenerator } from '@/interface-adapters/app/services/AppUuidV4IdGenerator';
-import { AppUnitOfWork } from '@/interface-adapters/app/repos/AppUnitOfWork';
 
 export const AppAddMealToDayUsecase = new AddMealToDayUsecase(
   AppDaysRepo,
@@ -12,5 +11,4 @@ export const AppAddMealToDayUsecase = new AddMealToDayUsecase(
   AppUsersRepo,
   AppRecipesRepo,
   AppUuidV4IdGenerator,
-  AppUnitOfWork,
 );

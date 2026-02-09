@@ -7,7 +7,6 @@ import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { IdGenerator } from '@/domain/services/IdGenerator.port';
-import { UnitOfWork } from '@/application-layer/unit-of-work/UnitOfWork.port';
 import { createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo } from '../common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
 
 export type AddIngredientToRecipeUsecaseRequest = {
@@ -29,7 +28,6 @@ export class AddIngredientToRecipeUsecase {
     private usersRepo: UsersRepo,
     private externalIngredientsRefRepo: ExternalIngredientsRefRepo,
     private idGenerator: IdGenerator,
-    private unitOfWork: UnitOfWork,
   ) {}
 
   async execute(
@@ -93,20 +91,18 @@ export class AddIngredientToRecipeUsecase {
 
     existingRecipe.addIngredientLine(newIngredientLine);
 
-    await this.unitOfWork.inTransaction(async () => {
-      if (Object.keys(createdExternalIngredients).length > 0) {
-        const externalIngredient = Object.values(createdExternalIngredients)[0];
+    if (Object.keys(createdExternalIngredients).length > 0) {
+      const externalIngredient = Object.values(createdExternalIngredients)[0];
 
-        await this.externalIngredientsRefRepo.save(externalIngredient);
-      }
+      await this.externalIngredientsRefRepo.save(externalIngredient);
+    }
 
-      if (Object.keys(createdIngredients).length > 0) {
-        const ingredient = Object.values(createdIngredients)[0];
-        await this.ingredientsRepo.saveIngredient(ingredient);
-      }
+    if (Object.keys(createdIngredients).length > 0) {
+      const ingredient = Object.values(createdIngredients)[0];
+      await this.ingredientsRepo.saveIngredient(ingredient);
+    }
 
-      await this.recipesRepo.saveRecipe(existingRecipe);
-    });
+    await this.recipesRepo.saveRecipe(existingRecipe);
 
     return toRecipeDTO(existingRecipe);
   }
