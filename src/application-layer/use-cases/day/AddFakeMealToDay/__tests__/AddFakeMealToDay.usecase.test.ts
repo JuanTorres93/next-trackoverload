@@ -6,7 +6,7 @@ import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { AddFakeMealToDayUsecase } from '../AddFakeMealToDay.usecase';
 import { User } from '@/domain/entities/user/User';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
-import { MemoryUnitOfWork } from '@/infra/unit-of-work/memoryUnitOfWork/MemoryUnitOfWork';
+import { MemoryUnitOfWork } from '@/infra/unit-of-work/MemoryUnitOfWork/MemoryUnitOfWork';
 
 import * as dayTestProps from '../../../../../../tests/createProps/dayTestProps';
 import * as fakeMealTestProps from '../../../../../../tests/createProps/fakeMealTestProps';

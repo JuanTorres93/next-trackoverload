@@ -12,7 +12,7 @@ import { MemoryIngredientsRepo } from '@/infra/repos/memory/MemoryIngredientsRep
 import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { MemoryExternalIngredientsRefRepo } from '@/infra';
-import { MemoryUnitOfWork } from '@/infra/unit-of-work/memoryUnitOfWork/MemoryUnitOfWork';
+import { MemoryUnitOfWork } from '@/infra/unit-of-work/MemoryUnitOfWork/MemoryUnitOfWork';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
 
 import { AddIngredientToRecipeUsecase } from '../AddIngredientToRecipe.usecase';
