@@ -4,6 +4,7 @@ import { User } from '@/domain/entities/user/User';
 import { MemoryDaysRepo } from '@/infra/repos/memory/MemoryDaysRepo';
 import { MemoryMealsRepo } from '@/infra/repos/memory/MemoryMealsRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
+import { MemoryTransactionContext } from '@/infra/transaction-context/MemoryTransactionContext/MemoryTransactionContext';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { RemoveMealFromDayUsecase } from '../RemoveMealFromDay.usecase';
 
@@ -37,6 +38,7 @@ describe('RemoveMealFromDayUsecase', () => {
       daysRepo,
       usersRepo,
       mealsRepo,
+      new MemoryTransactionContext(),
     );
 
     const ingredient = Ingredient.create(

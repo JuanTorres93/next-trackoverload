@@ -7,6 +7,7 @@ import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { IdGenerator } from '@/domain/services/IdGenerator.port';
+import { TransactionContext } from '@/application-layer/ports/TransactionContext.port';
 import { dayIdToDayMonthYear } from '@/domain/value-objects/DayId/DayId';
 import { createDayNoSaveInRepo } from '../common/createDayNoSaveInRepo';
 
@@ -24,6 +25,7 @@ export class AddMealToDayUsecase {
     private usersRepo: UsersRepo,
     private recipesRepo: RecipesRepo,
     private idGenerator: IdGenerator,
+    private transactionContext: TransactionContext,
   ) {}
 
   async execute(request: AddMealToDayUsecaseRequest): Promise<DayDTO> {
@@ -89,8 +91,10 @@ export class AddMealToDayUsecase {
 
     dayToAddMeal.addMeal(meal.id);
 
-    await this.mealsRepo.saveMeal(meal);
-    await this.daysRepo.saveDay(dayToAddMeal);
+    await this.transactionContext.run(async () => {
+      await this.mealsRepo.saveMeal(meal);
+      await this.daysRepo.saveDay(dayToAddMeal);
+    });
 
     return toDayDTO(dayToAddMeal);
   }

@@ -3,6 +3,7 @@ import { Day } from '@/domain/entities/day/Day';
 import { User } from '@/domain/entities/user/User';
 import { MemoryDaysRepo } from '@/infra/repos/memory/MemoryDaysRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
+import { MemoryTransactionContext } from '@/infra/transaction-context/MemoryTransactionContext/MemoryTransactionContext';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { RemoveFakeMealFromDayUsecase } from '../RemoveFakeMealFromDay.usecase';
 
@@ -32,6 +33,7 @@ describe('RemoveMealFromDayUsecase', () => {
       daysRepo,
       usersRepo,
       fakeMealsRepo,
+      new MemoryTransactionContext(),
     );
 
     fakeMeal = FakeMeal.create({

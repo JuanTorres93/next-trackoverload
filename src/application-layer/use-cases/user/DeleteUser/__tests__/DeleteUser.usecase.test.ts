@@ -24,6 +24,7 @@ import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { MemoryWorkoutsRepo } from '@/infra/repos/memory/MemoryWorkoutsRepo';
 import { MemoryWorkoutTemplatesRepo } from '@/infra/repos/memory/MemoryWorkoutTemplatesRepo';
+import { MemoryTransactionContext } from '@/infra/transaction-context/MemoryTransactionContext/MemoryTransactionContext';
 
 // Import use case
 import { DeleteUserUsecase } from '../DeleteUser.usecase';
@@ -56,6 +57,7 @@ describe('DeleteUserUsecase', () => {
       recipesRepo,
       workoutsRepo,
       workoutTemplatesRepo,
+      new MemoryTransactionContext(),
     );
 
     // Create user

@@ -7,6 +7,7 @@ import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { IdGenerator } from '@/domain/services/IdGenerator.port';
+import { TransactionContext } from '@/application-layer/ports/TransactionContext.port';
 import { createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo } from '../common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
 
 export type AddIngredientToRecipeUsecaseRequest = {
@@ -28,6 +29,7 @@ export class AddIngredientToRecipeUsecase {
     private usersRepo: UsersRepo,
     private externalIngredientsRefRepo: ExternalIngredientsRefRepo,
     private idGenerator: IdGenerator,
+    private transactionContext: TransactionContext,
   ) {}
 
   async execute(
@@ -91,18 +93,20 @@ export class AddIngredientToRecipeUsecase {
 
     existingRecipe.addIngredientLine(newIngredientLine);
 
-    if (Object.keys(createdExternalIngredients).length > 0) {
-      const externalIngredient = Object.values(createdExternalIngredients)[0];
+    await this.transactionContext.run(async () => {
+      if (Object.keys(createdExternalIngredients).length > 0) {
+        const externalIngredient = Object.values(createdExternalIngredients)[0];
 
-      await this.externalIngredientsRefRepo.save(externalIngredient);
-    }
+        await this.externalIngredientsRefRepo.save(externalIngredient);
+      }
 
-    if (Object.keys(createdIngredients).length > 0) {
-      const ingredient = Object.values(createdIngredients)[0];
-      await this.ingredientsRepo.saveIngredient(ingredient);
-    }
+      if (Object.keys(createdIngredients).length > 0) {
+        const ingredient = Object.values(createdIngredients)[0];
+        await this.ingredientsRepo.saveIngredient(ingredient);
+      }
 
-    await this.recipesRepo.saveRecipe(existingRecipe);
+      await this.recipesRepo.saveRecipe(existingRecipe);
+    });
 
     return toRecipeDTO(existingRecipe);
   }

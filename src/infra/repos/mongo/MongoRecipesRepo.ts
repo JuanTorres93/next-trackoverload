@@ -8,7 +8,7 @@ import {
 } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe, RecipeCreateProps } from '@/domain/entities/recipe/Recipe';
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
-import { inMongoTransaction } from './common/inMongoTransaction';
+import { withTransaction } from './common/withTransaction';
 import RecipeLineMongo from './models/RecipeLineMongo';
 import RecipeMongo from './models/RecipeMongo';
 
@@ -27,10 +27,7 @@ export class MongoRecipesRepo implements RecipesRepo {
   async saveRecipe(recipe: Recipe): Promise<void> {
     const recipeData = recipe.toCreateProps();
 
-    const session = await RecipeMongo.startSession();
-    session.startTransaction();
-
-    await inMongoTransaction(session, async () => {
+    await withTransaction(async (session) => {
       await RecipeMongo.findOneAndUpdate({ id: recipe.id }, recipeData, {
         upsert: true,
         new: true,
@@ -104,12 +101,9 @@ export class MongoRecipesRepo implements RecipesRepo {
   }
 
   async deleteRecipe(id: string): Promise<void> {
-    const session = await RecipeMongo.startSession();
-    session.startTransaction();
-
     let deletedCount: number = 0;
 
-    await inMongoTransaction(session, async () => {
+    await withTransaction(async (session) => {
       const result = await RecipeMongo.deleteOne({ id }, { session });
       deletedCount = result.deletedCount || 0;
 
@@ -145,10 +139,7 @@ export class MongoRecipesRepo implements RecipesRepo {
     const recipeDocs = await RecipeMongo.find({ userId }).select('id').lean();
     const recipeIds = recipeDocs.map((doc) => doc.id);
 
-    const session = await RecipeMongo.startSession();
-    session.startTransaction();
-
-    await inMongoTransaction(session, async () => {
+    await withTransaction(async (session) => {
       await RecipeMongo.deleteMany({ userId }, { session });
 
       // Delete associated recipe lines

@@ -10,6 +10,7 @@ import { MemoryMealsRepo } from '@/infra/repos/memory/MemoryMealsRepo';
 import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
+import { MemoryTransactionContext } from '@/infra/transaction-context/MemoryTransactionContext/MemoryTransactionContext';
 import * as dayTestProps from '../../../../../../tests/createProps/dayTestProps';
 import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
@@ -42,6 +43,7 @@ describe('AddMealToDayUsecase', () => {
       usersRepo,
       recipesRepo,
       new Uuidv4IdGenerator(),
+      new MemoryTransactionContext(),
     );
     day = Day.create({
       ...dayTestProps.validDayProps(),

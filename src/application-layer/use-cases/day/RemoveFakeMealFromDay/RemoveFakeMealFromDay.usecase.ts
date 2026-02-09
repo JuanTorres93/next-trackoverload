@@ -3,6 +3,7 @@ import { NotFoundError } from '@/domain/common/errors';
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
+import { TransactionContext } from '@/application-layer/ports/TransactionContext.port';
 
 export type RemoveFakeMealFromDayUsecaseRequest = {
   dayId: string;
@@ -15,6 +16,7 @@ export class RemoveFakeMealFromDayUsecase {
     private daysRepo: DaysRepo,
     private usersRepo: UsersRepo,
     private fakeMealsRepo: FakeMealsRepo,
+    private transactionContext: TransactionContext,
   ) {}
 
   async execute(request: RemoveFakeMealFromDayUsecaseRequest): Promise<DayDTO> {
@@ -38,8 +40,10 @@ export class RemoveFakeMealFromDayUsecase {
 
     day.removeMealById(request.fakeMealId);
 
-    await this.fakeMealsRepo.deleteFakeMeal(request.fakeMealId);
-    await this.daysRepo.saveDay(day);
+    await this.transactionContext.run(async () => {
+      await this.fakeMealsRepo.deleteFakeMeal(request.fakeMealId);
+      await this.daysRepo.saveDay(day);
+    });
 
     return toDayDTO(day);
   }

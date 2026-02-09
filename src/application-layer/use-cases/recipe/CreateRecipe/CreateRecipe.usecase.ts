@@ -9,6 +9,7 @@ import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { IdGenerator } from '@/domain/services/IdGenerator.port';
 import { ImageProcessor } from '@/domain/services/ImageProcessor/ServerImageProcessor.port';
+import { TransactionContext } from '@/application-layer/ports/TransactionContext.port';
 import {
   createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo,
   CreateIngredientLineData,
@@ -32,6 +33,7 @@ export class CreateRecipeUsecase {
     private idGenerator: IdGenerator,
     private externalIngredientsRefRepo: ExternalIngredientsRefRepo,
     private imageProcessor: ImageProcessor,
+    private transactionContext: TransactionContext,
   ) {}
 
   async execute(request: CreateRecipeUsecaseRequest): Promise<RecipeDTO> {
@@ -109,13 +111,15 @@ export class CreateRecipeUsecase {
 
     // Save any missing ingredients and external refs
     // TODO IMPORTANT: Create methods for batch saving to optimize performance
-    for (const extRef of Object.values(missingExternalIngredients)) {
-      await this.externalIngredientsRefRepo.save(extRef);
-    }
-    for (const ingredient of Object.values(missingIngredients)) {
-      await this.ingredientsRepo.saveIngredient(ingredient);
-    }
-    await this.recipesRepo.saveRecipe(newRecipe);
+    await this.transactionContext.run(async () => {
+      for (const extRef of Object.values(missingExternalIngredients)) {
+        await this.externalIngredientsRefRepo.save(extRef);
+      }
+      for (const ingredient of Object.values(missingIngredients)) {
+        await this.ingredientsRepo.saveIngredient(ingredient);
+      }
+      await this.recipesRepo.saveRecipe(newRecipe);
+    });
 
     return toRecipeDTO(newRecipe);
   }

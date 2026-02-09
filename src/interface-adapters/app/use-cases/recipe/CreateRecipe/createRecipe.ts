@@ -6,6 +6,7 @@ import { AppRecipesRepo } from '@/interface-adapters/app/repos/AppRecipesRepo';
 import { AppUsersRepo } from '@/interface-adapters/app/repos/AppUsersRepo';
 import { AppImageProcessor } from '@/interface-adapters/app/services/AppImageProcessor';
 import { AppUuidV4IdGenerator } from '@/interface-adapters/app/services/AppUuidV4IdGenerator';
+import { AppTransactionContext } from '@/interface-adapters/app/services/AppTransactionContext';
 
 export const AppCreateRecipeUsecase = new CreateRecipeUsecase(
   AppRecipesRepo,
@@ -15,4 +16,5 @@ export const AppCreateRecipeUsecase = new CreateRecipeUsecase(
   AppUuidV4IdGenerator,
   AppExternalIngredientsRefRepo,
   AppImageProcessor,
+  AppTransactionContext,
 );

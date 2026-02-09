@@ -6,6 +6,7 @@ import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { AddFakeMealToDayUsecase } from '../AddFakeMealToDay.usecase';
 import { User } from '@/domain/entities/user/User';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
+import { MemoryTransactionContext } from '@/infra/transaction-context/MemoryTransactionContext/MemoryTransactionContext';
 
 import * as dayTestProps from '../../../../../../tests/createProps/dayTestProps';
 import * as fakeMealTestProps from '../../../../../../tests/createProps/fakeMealTestProps';
@@ -32,6 +33,7 @@ describe('AddFakeMealToDayUsecase', () => {
       fakeMealsRepo,
       usersRepo,
       new Uuidv4IdGenerator(),
+      new MemoryTransactionContext(),
     );
 
     day = Day.create({

@@ -15,6 +15,7 @@ import { MemoryIngredientsRepo } from '@/infra/repos/memory/MemoryIngredientsRep
 import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
+import { MemoryTransactionContext } from '@/infra/transaction-context/MemoryTransactionContext/MemoryTransactionContext';
 import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
 import { CreateRecipeUsecase } from '../CreateRecipe.usecase';
 import { CreateIngredientLineData } from '../../common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
@@ -48,6 +49,7 @@ describe('CreateRecipeUsecase', () => {
       idGenerator,
       externalIngredientsRefRepo,
       imageProcessor,
+      new MemoryTransactionContext(),
     );
 
     user = User.create({

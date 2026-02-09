@@ -13,6 +13,7 @@ import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { MemoryExternalIngredientsRefRepo } from '@/infra';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
+import { MemoryTransactionContext } from '@/infra/transaction-context/MemoryTransactionContext/MemoryTransactionContext';
 
 import { AddIngredientToRecipeUsecase } from '../AddIngredientToRecipe.usecase';
 import { ExternalIngredientRef } from '@/domain/entities/externalingredientref/ExternalIngredientRef';
@@ -43,6 +44,7 @@ describe('AddIngredientToRecipeUsecase', () => {
       usersRepo,
       externalIngredientsRefRepo,
       idGenerator,
+      new MemoryTransactionContext(),
     );
 
     user = User.create({

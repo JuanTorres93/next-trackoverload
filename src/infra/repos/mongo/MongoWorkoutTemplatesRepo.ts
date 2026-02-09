@@ -8,11 +8,9 @@ import {
   WorkoutTemplateCreateProps,
 } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
-import { inMongoTransaction } from './common/inMongoTransaction';
+import { withTransaction } from './common/withTransaction';
 import WorkoutTemplateLineMongo from './models/WorkoutTemplateLineMongo';
 import WorkoutTemplateMongo from './models/WorkoutTemplateMongo';
-
-// TODO NEXT: Comprobar este archivo y sus tests
 
 // Type for workout template line document populated with exercise
 type PopulatedTemplateLineDoc = Omit<
@@ -32,10 +30,7 @@ export class MongoWorkoutTemplatesRepo implements WorkoutTemplatesRepo {
   async saveWorkoutTemplate(template: WorkoutTemplate): Promise<void> {
     const templateData = template.toCreateProps();
 
-    const session = await WorkoutTemplateMongo.startSession();
-    session.startTransaction();
-
-    await inMongoTransaction(session, async () => {
+    await withTransaction(async (session) => {
       await WorkoutTemplateMongo.findOneAndUpdate(
         { id: template.id },
         templateData,
@@ -119,10 +114,7 @@ export class MongoWorkoutTemplatesRepo implements WorkoutTemplatesRepo {
       .lean();
     const templateIds = templateDocs.map((doc) => doc.id);
 
-    const session = await WorkoutTemplateMongo.startSession();
-    session.startTransaction();
-
-    await inMongoTransaction(session, async () => {
+    await withTransaction(async (session) => {
       // Delete templates
       await WorkoutTemplateMongo.deleteMany({ userId }, { session });
 

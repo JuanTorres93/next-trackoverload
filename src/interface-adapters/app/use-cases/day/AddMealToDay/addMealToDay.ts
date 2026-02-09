@@ -4,6 +4,7 @@ import { AppMealsRepo } from '@/interface-adapters/app/repos/AppMealsRepo';
 import { AppRecipesRepo } from '@/interface-adapters/app/repos/AppRecipesRepo';
 import { AppUsersRepo } from '@/interface-adapters/app/repos/AppUsersRepo';
 import { AppUuidV4IdGenerator } from '@/interface-adapters/app/services/AppUuidV4IdGenerator';
+import { AppTransactionContext } from '@/interface-adapters/app/services/AppTransactionContext';
 
 export const AppAddMealToDayUsecase = new AddMealToDayUsecase(
   AppDaysRepo,
@@ -11,4 +12,5 @@ export const AppAddMealToDayUsecase = new AddMealToDayUsecase(
   AppUsersRepo,
   AppRecipesRepo,
   AppUuidV4IdGenerator,
+  AppTransactionContext,
 );

@@ -2,6 +2,7 @@ import { AppDaysRepo } from '@/interface-adapters/app/repos/AppDaysRepo';
 import { AppFakeMealsRepo } from '@/interface-adapters/app/repos/AppFakeMealsRepo';
 import { AppMealsRepo } from '@/interface-adapters/app/repos/AppMealsRepo';
 import { AppUsersRepo } from '@/interface-adapters/app/repos/AppUsersRepo';
+import { AppTransactionContext } from '@/interface-adapters/app/services/AppTransactionContext';
 
 import { DeleteDayUsecase } from '@/application-layer/use-cases/day/DeleteDay/DeleteDay.usecase';
 
@@ -10,4 +11,5 @@ export const AppDeleteDayUsecase = new DeleteDayUsecase(
   AppUsersRepo,
   AppMealsRepo,
   AppFakeMealsRepo,
+  AppTransactionContext,
 );

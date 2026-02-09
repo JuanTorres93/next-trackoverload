@@ -3,6 +3,7 @@ import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
 import { MealsRepo } from '@/domain/repos/MealsRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
+import { TransactionContext } from '@/application-layer/ports/TransactionContext.port';
 
 export type DeleteDayUsecaseRequest = {
   dayId: string;
@@ -15,6 +16,7 @@ export class DeleteDayUsecase {
     private usersRepo: UsersRepo,
     private mealsRepo: MealsRepo,
     private fakeMealsRepo: FakeMealsRepo,
+    private transactionContext: TransactionContext,
   ) {}
 
   async execute(request: DeleteDayUsecaseRequest): Promise<void> {
@@ -34,10 +36,12 @@ export class DeleteDayUsecase {
     }
 
     // Delete child independent entities (meals and fake meals)
-    await this.mealsRepo.deleteMultipleMeals(day.mealIds);
-    await this.fakeMealsRepo.deleteMultipleFakeMeals(day.fakeMealIds);
+    await this.transactionContext.run(async () => {
+      await this.mealsRepo.deleteMultipleMeals(day.mealIds);
+      await this.fakeMealsRepo.deleteMultipleFakeMeals(day.fakeMealIds);
 
-    // Delete the day itself
-    await this.daysRepo.deleteDayForUser(request.dayId, request.userId);
+      // Delete the day itself
+      await this.daysRepo.deleteDayForUser(request.dayId, request.userId);
+    });
   }
 }

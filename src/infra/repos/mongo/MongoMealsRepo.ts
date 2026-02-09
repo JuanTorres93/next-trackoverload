@@ -8,7 +8,7 @@ import {
 } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal, MealCreateProps } from '@/domain/entities/meal/Meal';
 import { MealsRepo } from '@/domain/repos/MealsRepo.port';
-import { inMongoTransaction } from './common/inMongoTransaction';
+import { withTransaction } from './common/withTransaction';
 import MealLineMongo from './models/MealLineMongo';
 import MealMongo from './models/MealMongo';
 
@@ -27,10 +27,7 @@ export class MongoMealsRepo implements MealsRepo {
   async saveMeal(meal: Meal): Promise<void> {
     const mealData = meal.toCreateProps();
 
-    const session = await MealMongo.startSession();
-    session.startTransaction();
-
-    await inMongoTransaction(session, async () => {
+    await withTransaction(async (session) => {
       await MealMongo.findOneAndUpdate({ id: meal.id }, mealData, {
         upsert: true,
         new: true,
@@ -129,12 +126,9 @@ export class MongoMealsRepo implements MealsRepo {
   }
 
   async deleteMeal(id: string): Promise<void> {
-    const session = await MealMongo.startSession();
-    session.startTransaction();
-
     let deletedCount: number = 0;
 
-    await inMongoTransaction(session, async () => {
+    await withTransaction(async (session) => {
       const result = await MealMongo.deleteOne({ id }, { session });
       deletedCount = result.deletedCount || 0;
 
@@ -147,10 +141,7 @@ export class MongoMealsRepo implements MealsRepo {
   }
 
   async deleteMultipleMeals(ids: string[]): Promise<void> {
-    const session = await MealMongo.startSession();
-    session.startTransaction();
-
-    await inMongoTransaction(session, async () => {
+    await withTransaction(async (session) => {
       // Delete meals
       await MealMongo.deleteMany({ id: { $in: ids } }, { session });
       // Delete associated meal lines
@@ -163,10 +154,7 @@ export class MongoMealsRepo implements MealsRepo {
     const mealDocs = await MealMongo.find({ userId }).select('id').lean();
     const mealIds = mealDocs.map((doc) => doc.id);
 
-    const session = await MealMongo.startSession();
-    session.startTransaction();
-
-    await inMongoTransaction(session, async () => {
+    await withTransaction(async (session) => {
       // Delete meals
       await MealMongo.deleteMany({ userId }, { session });
 

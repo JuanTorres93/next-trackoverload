@@ -7,6 +7,7 @@ import { MemoryDaysRepo } from '@/infra/repos/memory/MemoryDaysRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { MemoryFakeMealsRepo } from '@/infra/repos/memory/MemoryFakeMealsRepo';
 import { MemoryMealsRepo } from '@/infra/repos/memory/MemoryMealsRepo';
+import { MemoryTransactionContext } from '@/infra/transaction-context/MemoryTransactionContext/MemoryTransactionContext';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { DeleteDayUsecase } from '../DeleteDay.usecase';
 
@@ -31,6 +32,7 @@ describe('DeleteDayUsecase', () => {
       usersRepo,
       mealsRepo,
       fakeMealsRepo,
+      new MemoryTransactionContext(),
     );
 
     day = Day.create({

@@ -5,7 +5,7 @@ import {
 } from '@/domain/entities/workoutline/WorkoutLine';
 import { Workout, WorkoutCreateProps } from '@/domain/entities/workout/Workout';
 import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
-import { inMongoTransaction } from './common/inMongoTransaction';
+import { withTransaction } from './common/withTransaction';
 import WorkoutLineMongo from './models/WorkoutLineMongo';
 import WorkoutMongo from './models/WorkoutMongo';
 
@@ -24,10 +24,7 @@ export class MongoWorkoutsRepo implements WorkoutsRepo {
   async saveWorkout(workout: Workout): Promise<void> {
     const workoutData = workout.toCreateProps();
 
-    const session = await WorkoutMongo.startSession();
-    session.startTransaction();
-
-    await inMongoTransaction(session, async () => {
+    await withTransaction(async (session) => {
       await WorkoutMongo.findOneAndUpdate({ id: workout.id }, workoutData, {
         upsert: true,
         new: true,
@@ -127,12 +124,9 @@ export class MongoWorkoutsRepo implements WorkoutsRepo {
   }
 
   async deleteWorkout(id: string): Promise<void> {
-    const session = await WorkoutMongo.startSession();
-    session.startTransaction();
-
     let deletedCount: number = 0;
 
-    await inMongoTransaction(session, async () => {
+    await withTransaction(async (session) => {
       const result = await WorkoutMongo.deleteOne({ id }, { session });
       deletedCount = result.deletedCount || 0;
 
@@ -149,10 +143,7 @@ export class MongoWorkoutsRepo implements WorkoutsRepo {
     const workoutDocs = await WorkoutMongo.find({ userId }).select('id').lean();
     const workoutIds = workoutDocs.map((doc) => doc.id);
 
-    const session = await WorkoutMongo.startSession();
-    session.startTransaction();
-
-    await inMongoTransaction(session, async () => {
+    await withTransaction(async (session) => {
       // Delete workouts
       await WorkoutMongo.deleteMany({ userId }, { session });
 
