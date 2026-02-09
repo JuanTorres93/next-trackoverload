@@ -7,19 +7,21 @@ const storage = new AsyncLocalStorage<mongoose.ClientSession>();
 export class MongoTransactionContext implements TransactionContext {
   async run<T>(work: () => Promise<T>): Promise<T> {
     const session = await mongoose.startSession();
+    session.startTransaction();
 
     try {
-      session.startTransaction();
-
       // Store session in AsyncLocalStorage and execute work
       const result = await storage.run(session, async () => {
         return await work();
       });
 
+      // If we get here, work succeeded, commit the transaction
       await session.commitTransaction();
       return result;
     } catch (error) {
-      await session.abortTransaction();
+      if (session.inTransaction()) {
+        await session.abortTransaction();
+      }
       throw error;
     } finally {
       await session.endSession();

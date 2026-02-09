@@ -27,6 +27,7 @@ describe('MongoTransactionContext', () => {
   beforeAll(async () => {
     await setupMongoTestDB();
     TestModel = mongoose.model<TestDoc>('TestDoc', TestSchema);
+    await TestModel.init();
   });
 
   beforeEach(async () => {
@@ -204,7 +205,7 @@ describe('MongoTransactionContext', () => {
           expect(session).toBeDefined();
           throw new Error('Test error');
         });
-      } catch (error) {
+      } catch {
         // Expected error
       }
 
