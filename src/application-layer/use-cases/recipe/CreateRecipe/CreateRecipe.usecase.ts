@@ -115,9 +115,11 @@ export class CreateRecipeUsecase {
       for (const extRef of Object.values(missingExternalIngredients)) {
         await this.externalIngredientsRefRepo.save(extRef);
       }
+
       for (const ingredient of Object.values(missingIngredients)) {
         await this.ingredientsRepo.saveIngredient(ingredient);
       }
+
       await this.recipesRepo.saveRecipe(newRecipe);
     });
 
