@@ -2,6 +2,7 @@ import { ExternalIngredientsRefRepo } from '@/domain/repos/ExternalIngredientsRe
 import { ExternalIngredientRef } from '@/domain/entities/externalingredientref/ExternalIngredientRef';
 import ExternalIngredientRefMongo from './models/ExternalIngredientRefMongo';
 import { ExternalIngredientRefCreateProps } from '@/domain/entities/externalingredientref/ExternalIngredientRef';
+import { withTransaction } from './common/withTransaction';
 
 export class MongoExternalIngredientsRefRepo implements ExternalIngredientsRefRepo {
   async getAllExternalIngredientsRef(): Promise<ExternalIngredientRef[]> {
@@ -11,17 +12,19 @@ export class MongoExternalIngredientsRefRepo implements ExternalIngredientsRefRe
   }
 
   async save(externalIngredientRef: ExternalIngredientRef): Promise<void> {
-    const data: ExternalIngredientRefCreateProps =
-      externalIngredientRef.toCreateProps();
+    return withTransaction(async (session) => {
+      const data: ExternalIngredientRefCreateProps =
+        externalIngredientRef.toCreateProps();
 
-    await ExternalIngredientRefMongo.findOneAndUpdate(
-      {
-        externalId: externalIngredientRef.externalId,
-        source: externalIngredientRef.source,
-      },
-      data,
-      { upsert: true, new: true },
-    );
+      await ExternalIngredientRefMongo.findOneAndUpdate(
+        {
+          externalId: externalIngredientRef.externalId,
+          source: externalIngredientRef.source,
+        },
+        data,
+        { upsert: true, new: true, session },
+      );
+    });
   }
 
   async getByExternalIdAndSource(
@@ -53,10 +56,15 @@ export class MongoExternalIngredientsRefRepo implements ExternalIngredientsRefRe
   }
 
   async delete(externalId: string): Promise<void> {
-    const result = await ExternalIngredientRefMongo.deleteOne({ externalId });
+    return withTransaction(async (session) => {
+      const result = await ExternalIngredientRefMongo.deleteOne(
+        { externalId },
+        { session },
+      );
 
-    if (result.deletedCount === 0) {
-      return Promise.reject(null);
-    }
+      if (result.deletedCount === 0) {
+        return Promise.reject(null);
+      }
+    });
   }
 }
