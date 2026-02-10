@@ -160,6 +160,52 @@ describe('MemoryExternalIngredientsRefRepo', () => {
     });
   });
 
+  describe('getAllExternalIngredientsRef', () => {
+    it('should return all external ingredient refs', async () => {
+      const ref2 = ExternalIngredientRef.create({
+        ...externalIngredientRefTestProps.validExternalIngredientRefProps,
+        externalId: 'ext-id-2',
+        ingredientId: 'ing-id-2',
+      });
+      const ref3 = ExternalIngredientRef.create({
+        ...externalIngredientRefTestProps.validExternalIngredientRefProps,
+        externalId: 'ext-id-3',
+        ingredientId: 'ing-id-3',
+      });
+      await repo.save(ref2);
+      await repo.save(ref3);
+
+      const allRefs = await repo.getAllExternalIngredientsRef();
+
+      expect(allRefs.length).toBe(3);
+      expect(allRefs.map((r) => r.externalId)).toContain(
+        externalIngredientRefTestProps.validExternalIngredientRefProps
+          .externalId,
+      );
+      expect(allRefs.map((r) => r.externalId)).toContain('ext-id-2');
+      expect(allRefs.map((r) => r.externalId)).toContain('ext-id-3');
+    });
+
+    it('should return empty array when no refs exist', async () => {
+      repo.clearForTesting();
+      const allRefs = await repo.getAllExternalIngredientsRef();
+      expect(allRefs.length).toBe(0);
+    });
+
+    it('should return a copy of the array (not modify original)', async () => {
+      const allRefs = await repo.getAllExternalIngredientsRef();
+      allRefs.push(
+        ExternalIngredientRef.create({
+          ...externalIngredientRefTestProps.validExternalIngredientRefProps,
+          externalId: 'should-not-be-saved',
+        }),
+      );
+
+      const allRefsAgain = await repo.getAllExternalIngredientsRef();
+      expect(allRefsAgain.length).toBe(1);
+    });
+  });
+
   describe('delete', () => {
     it('should delete an external ingredient ref by externalId', async () => {
       await repo.delete(

@@ -190,7 +190,46 @@ describe('MongoExternalIngredientsRefRepo', () => {
       });
     });
   });
+  describe('getAllExternalIngredientsRef', () => {
+    it('should return all external ingredient refs', async () => {
+      await clearMongoTestDB();
 
+      const refs = [
+        ExternalIngredientRef.create({
+          ...externalIngredientRefTestProps.validExternalIngredientRefProps,
+          externalId: 'ext-id-1',
+          ingredientId: 'ing-id-1',
+        }),
+        ExternalIngredientRef.create({
+          ...externalIngredientRefTestProps.validExternalIngredientRefProps,
+          externalId: 'ext-id-2',
+          ingredientId: 'ing-id-2',
+        }),
+        ExternalIngredientRef.create({
+          ...externalIngredientRefTestProps.validExternalIngredientRefProps,
+          externalId: 'ext-id-3',
+          ingredientId: 'ing-id-3',
+        }),
+      ];
+
+      for (const ref of refs) {
+        await repo.save(ref);
+      }
+
+      const allRefs = await repo.getAllExternalIngredientsRef();
+
+      expect(allRefs.length).toBe(3);
+      expect(allRefs.map((r) => r.externalId)).toContain('ext-id-1');
+      expect(allRefs.map((r) => r.externalId)).toContain('ext-id-2');
+      expect(allRefs.map((r) => r.externalId)).toContain('ext-id-3');
+    });
+
+    it('should return empty array when no refs exist', async () => {
+      await clearMongoTestDB();
+      const allRefs = await repo.getAllExternalIngredientsRef();
+      expect(allRefs.length).toBe(0);
+    });
+  });
   it('should delete an external ingredient ref by external ID', async () => {
     const fetchedBefore = await repo.getByExternalIdAndSource(
       externalIngredientRefTestProps.validExternalIngredientRefProps.externalId,

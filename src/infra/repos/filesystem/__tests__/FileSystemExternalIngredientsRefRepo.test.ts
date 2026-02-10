@@ -185,6 +185,39 @@ describe('FileSystemExternalIngredientsRefRepo', () => {
     });
   });
 
+  describe('getAllExternalIngredientsRef', () => {
+    it('should return all external ingredient refs', async () => {
+      const ref2 = ExternalIngredientRef.create({
+        ...externalIngredientRefTestProps.validExternalIngredientRefProps,
+        externalId: 'ext-id-2',
+        ingredientId: 'ing-id-2',
+      });
+      const ref3 = ExternalIngredientRef.create({
+        ...externalIngredientRefTestProps.validExternalIngredientRefProps,
+        externalId: 'ext-id-3',
+        ingredientId: 'ing-id-3',
+      });
+      await repo.save(ref2);
+      await repo.save(ref3);
+
+      const allRefs = await repo.getAllExternalIngredientsRef();
+
+      expect(allRefs.length).toBe(3);
+      expect(allRefs.map((r) => r.externalId)).toContain(
+        externalIngredientRefTestProps.validExternalIngredientRefProps
+          .externalId,
+      );
+      expect(allRefs.map((r) => r.externalId)).toContain('ext-id-2');
+      expect(allRefs.map((r) => r.externalId)).toContain('ext-id-3');
+    });
+
+    it('should return empty array when no refs exist', async () => {
+      await fs.rm(testDir, { recursive: true, force: true });
+      const allRefs = await repo.getAllExternalIngredientsRef();
+      expect(allRefs.length).toBe(0);
+    });
+  });
+
   describe('delete', () => {
     it('should delete external ingredient ref by externalId', async () => {
       const repoCountBefore = await repo.countForTesting?.();

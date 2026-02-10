@@ -9,15 +9,34 @@ import fs from 'fs/promises';
 import path from 'path';
 import { FS_DATA_DIR } from './common';
 
-export class FileSystemExternalIngredientsRefRepo
-  implements ExternalIngredientsRefRepo
-{
+export class FileSystemExternalIngredientsRefRepo implements ExternalIngredientsRefRepo {
   private readonly dataDir: string;
 
   constructor(
-    baseDir: string = path.join(FS_DATA_DIR, 'externalingredientsref')
+    baseDir: string = path.join(FS_DATA_DIR, 'externalingredientsref'),
   ) {
     this.dataDir = baseDir;
+  }
+
+  async getAllExternalIngredientsRef(): Promise<ExternalIngredientRef[]> {
+    await this.ensureDataDir();
+    const results: ExternalIngredientRef[] = [];
+
+    try {
+      const files = await fs.readdir(this.dataDir);
+      const jsonFiles = files.filter((f) => f.endsWith('.json'));
+
+      for (const file of jsonFiles) {
+        const filePath = path.join(this.dataDir, file);
+        const content = await fs.readFile(filePath, 'utf-8');
+        const data = JSON.parse(content) as ExternalIngredientRefDTO;
+        results.push(fromExternalIngredientRefDTO(data));
+      }
+    } catch {
+      // Directory might not exist or be empty
+    }
+
+    return results;
   }
 
   private async ensureDataDir(): Promise<void> {
@@ -35,7 +54,7 @@ export class FileSystemExternalIngredientsRefRepo
 
   async getByExternalIdAndSource(
     externalId: string,
-    source: string
+    source: string,
   ): Promise<ExternalIngredientRef | null> {
     const filePath = this.getFilePath(externalId, source);
 
@@ -50,7 +69,7 @@ export class FileSystemExternalIngredientsRefRepo
 
   async getByExternalIdsAndSource(
     externalIds: string[],
-    source: string
+    source: string,
   ): Promise<ExternalIngredientRef[]> {
     const results: ExternalIngredientRef[] = [];
 
@@ -69,7 +88,7 @@ export class FileSystemExternalIngredientsRefRepo
     const data = toExternalIngredientRefDTO(externalIngredientRef);
     const filePath = this.getFilePath(
       externalIngredientRef.externalId,
-      externalIngredientRef.source
+      externalIngredientRef.source,
     );
     await fs.writeFile(filePath, JSON.stringify(data, null, 2));
   }

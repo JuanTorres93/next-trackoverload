@@ -4,6 +4,12 @@ import ExternalIngredientRefMongo from './models/ExternalIngredientRefMongo';
 import { ExternalIngredientRefCreateProps } from '@/domain/entities/externalingredientref/ExternalIngredientRef';
 
 export class MongoExternalIngredientsRefRepo implements ExternalIngredientsRefRepo {
+  async getAllExternalIngredientsRef(): Promise<ExternalIngredientRef[]> {
+    const docs = await ExternalIngredientRefMongo.find({}).lean();
+
+    return docs.map((doc) => ExternalIngredientRef.create(doc));
+  }
+
   async save(externalIngredientRef: ExternalIngredientRef): Promise<void> {
     const data: ExternalIngredientRefCreateProps =
       externalIngredientRef.toCreateProps();
