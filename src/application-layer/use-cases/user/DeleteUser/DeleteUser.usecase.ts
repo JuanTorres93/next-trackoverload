@@ -40,12 +40,17 @@ export class DeleteUserUsecase {
 
     await this.transactionContext.run(async () => {
       await this.fakeMealsRepo.deleteAllFakeMealsForUser(request.targetUserId);
+
       await this.mealsRepo.deleteAllMealsForUser(request.targetUserId);
+
       await this.recipesRepo.deleteAllRecipesForUser(request.targetUserId);
+
       await this.workoutsRepo.deleteAllWorkoutsForUser(request.targetUserId);
+
       await this.workoutTemplatesRepo.deleteAllWorkoutTemplatesForUser(
         request.targetUserId,
       );
+
       await this.daysRepo.deleteAllDaysForUser(request.targetUserId);
 
       await this.usersRepo.deleteUser(request.targetUserId);
