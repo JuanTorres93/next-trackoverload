@@ -61,12 +61,6 @@ export class CloudinaryImagesRepo implements ImagesRepo {
     }
   }
 
-  async duplicateByUrl(
-    imageUrl: string,
-    newFilename: string,
-    newUrl: string,
-  ): Promise<ImageType['metadata']> {}
-
   private getPublicIdFromFilename(filename: string): string {
     const noFileExtension = filename.replace(/\.[^/.]+$/, '');
 

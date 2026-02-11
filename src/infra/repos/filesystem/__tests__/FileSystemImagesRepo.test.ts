@@ -116,7 +116,7 @@ describe('FileSystemImagesRepo', () => {
 
     const allImages = await imagesRepo.getAllForTesting();
     const savedImage = allImages.find(
-      (img) => img.metadata.url === savedMetadata.url
+      (img) => img.metadata.url === savedMetadata.url,
     );
 
     expect(savedImage).toBeDefined();
@@ -126,7 +126,7 @@ describe('FileSystemImagesRepo', () => {
   it('should handle deletion of non-existent image', async () => {
     // Should not throw
     await expect(
-      imagesRepo.deleteByUrl('/test-images/non-existent.jpg')
+      imagesRepo.deleteByUrl('/test-images/non-existent.jpg'),
     ).resolves.not.toThrow();
   });
 
@@ -137,56 +137,5 @@ describe('FileSystemImagesRepo', () => {
     expect(savedMetadata.sizeBytes).toBe(testImage.metadata.sizeBytes);
     expect(savedMetadata.filename).toContain('image');
     expect(savedMetadata.filename).toContain('.jpg');
-  });
-
-  it('should duplicate image by url', async () => {
-    const savedMetadata = await imagesRepo.save(testImage);
-    let count = await imagesRepo.countForTesting();
-    expect(count).toBe(1);
-
-    const newFilename = 'image-copy.jpg';
-    const newUrl = imagesRepo.generateUrl(newFilename);
-    const duplicatedMetadata = await imagesRepo.duplicateByUrl(
-      savedMetadata.url,
-      newFilename,
-      newUrl
-    );
-
-    count = await imagesRepo.countForTesting();
-    expect(count).toBe(2);
-    expect(duplicatedMetadata.url).not.toBe(savedMetadata.url);
-    expect(duplicatedMetadata.filename).not.toBe(savedMetadata.filename);
-    expect(duplicatedMetadata.filename).toContain('copy');
-    expect(duplicatedMetadata.mimeType).toBe(savedMetadata.mimeType);
-    expect(duplicatedMetadata.sizeBytes).toBe(savedMetadata.sizeBytes);
-
-    // Verify both images exist
-    const original = await imagesRepo.getByUrl(savedMetadata.url);
-    const duplicate = await imagesRepo.getByUrl(duplicatedMetadata.url);
-    expect(original).toEqual(savedMetadata);
-    expect(duplicate).toEqual(duplicatedMetadata);
-
-    // Verify buffer was duplicated
-    const allImages = await imagesRepo.getAllForTesting();
-    const originalImage = allImages.find(
-      (img) => img.metadata.url === savedMetadata.url
-    );
-    const duplicatedImage = allImages.find(
-      (img) => img.metadata.url === duplicatedMetadata.url
-    );
-    expect(originalImage?.buffer).toEqual(testImage.buffer);
-    expect(duplicatedImage?.buffer).toEqual(testImage.buffer);
-  });
-
-  it('should throw error when duplicating non-existent image', async () => {
-    const newFilename = 'copy.jpg';
-    const newUrl = imagesRepo.generateUrl(newFilename);
-    await expect(
-      imagesRepo.duplicateByUrl(
-        '/test-images/non-existent.jpg',
-        newFilename,
-        newUrl
-      )
-    ).rejects.toThrow('Failed to duplicate');
   });
 });
