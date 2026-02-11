@@ -50,6 +50,7 @@ export class CreateUserUsecase {
       id: this.idGenerator.generateId(),
       name: request.name,
       email: request.email,
+      hashedPassword: 'hashed-placeholder', // TODO IMPORTANT handle password properly
       customerId: request.customerId ? request.customerId : undefined,
     });
 

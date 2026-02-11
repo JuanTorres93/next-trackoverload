@@ -19,14 +19,3 @@ export function toUserDTO(user: User): UserDTO {
     updatedAt: user.updatedAt.toISOString(),
   };
 }
-
-export function fromUserDTO(dto: UserDTO): User {
-  return User.create({
-    id: dto.id,
-    name: dto.name,
-    email: dto.email,
-    customerId: dto.customerId,
-    createdAt: new Date(dto.createdAt),
-    updatedAt: new Date(dto.updatedAt),
-  });
-}

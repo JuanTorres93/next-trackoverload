@@ -69,7 +69,10 @@ export const recipeDTOProperties = getGetters(sampleRecipe);
 const sampleUser = User.create({
   ...userTestProps.validUserProps,
 });
-export const userDTOProperties = getGetters(sampleUser);
+const allUserGetters = getGetters(sampleUser);
+export const userDTOProperties = allUserGetters.filter(
+  (getter) => getter !== 'hashedPassword',
+);
 
 // Exercise DTO
 const sampleExercise = Exercise.create({

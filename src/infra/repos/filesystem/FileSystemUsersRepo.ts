@@ -1,9 +1,18 @@
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
-import { User } from '@/domain/entities/user/User';
-import { UserDTO } from '@/application-layer/dtos/UserDTO';
+import { User, UserCreateProps } from '@/domain/entities/user/User';
 import fs from 'fs/promises';
 import path from 'path';
 import { FS_DATA_DIR } from './common';
+
+type UserPersistence = {
+  id: string;
+  name: string;
+  email: string;
+  hashedPassword: string;
+  customerId?: string;
+  createdAt: string;
+  updatedAt: string;
+};
 
 export class FileSystemUsersRepo implements UsersRepo {
   private readonly dataDir: string;
@@ -24,26 +33,30 @@ export class FileSystemUsersRepo implements UsersRepo {
     return path.join(this.dataDir, `${id}.json`);
   }
 
-  private serializeUser(user: User): UserDTO {
+  private serializeUser(user: User): UserPersistence {
+    const props = user.toCreateProps();
     return {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      customerId: user.customerId,
-      createdAt: user.createdAt.toISOString(),
-      updatedAt: user.updatedAt.toISOString(),
+      id: props.id,
+      name: props.name,
+      email: props.email,
+      hashedPassword: props.hashedPassword,
+      customerId: props.customerId,
+      createdAt: props.createdAt?.toISOString() ?? new Date().toISOString(),
+      updatedAt: props.updatedAt?.toISOString() ?? new Date().toISOString(),
     };
   }
 
-  private deserializeUser(data: UserDTO): User {
-    return User.create({
+  private deserializeUser(data: UserPersistence): User {
+    const props: UserCreateProps = {
       id: data.id,
       name: data.name,
       email: data.email,
+      hashedPassword: data.hashedPassword,
       customerId: data.customerId,
       createdAt: new Date(data.createdAt),
       updatedAt: new Date(data.updatedAt),
-    });
+    };
+    return User.create(props);
   }
 
   async saveUser(user: User): Promise<void> {
@@ -64,9 +77,9 @@ export class FileSystemUsersRepo implements UsersRepo {
         jsonFiles.map(async (file) => {
           const filePath = path.join(this.dataDir, file);
           const content = await fs.readFile(filePath, 'utf-8');
-          const data = JSON.parse(content) as UserDTO;
+          const data = JSON.parse(content) as UserPersistence;
           return this.deserializeUser(data);
-        })
+        }),
       );
 
       return users;
@@ -80,7 +93,7 @@ export class FileSystemUsersRepo implements UsersRepo {
 
     try {
       const content = await fs.readFile(filePath, 'utf-8');
-      const data = JSON.parse(content) as UserDTO;
+      const data = JSON.parse(content) as UserPersistence;
       return this.deserializeUser(data);
     } catch {
       return null;

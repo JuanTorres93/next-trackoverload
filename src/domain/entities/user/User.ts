@@ -4,11 +4,13 @@ import { Id } from '@/domain/value-objects/Id/Id';
 import { Integer } from '@/domain/value-objects/Integer/Integer';
 import { Text } from '@/domain/value-objects/Text/Text';
 import { ValidationError } from '@/domain/common/errors';
+import { HashedPassword } from '@/domain/value-objects/HashedPassword/HashedPassword';
 
 export type UserCreateProps = {
   id: string;
   name: string;
   email: string;
+  hashedPassword: string;
   customerId?: string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -23,6 +25,7 @@ export type UserProps = {
   id: Id;
   name: Text;
   email: Email;
+  hashedPassword: HashedPassword;
   customerId?: Id;
   createdAt: DomainDate;
   updatedAt: DomainDate;
@@ -41,6 +44,7 @@ export class User {
       id: Id.create(props.id),
       name: Text.create(props.name, nameTextOptions),
       email: Email.create(props.email),
+      hashedPassword: HashedPassword.create(props.hashedPassword),
       customerId: props.customerId ? Id.create(props.customerId) : undefined,
       createdAt: DomainDate.create(props.createdAt),
       updatedAt: DomainDate.create(props.updatedAt),
@@ -84,6 +88,10 @@ export class User {
     return this.props.email.value;
   }
 
+  get hashedPassword() {
+    return this.props.hashedPassword;
+  }
+
   get customerId() {
     return this.props.customerId?.value;
   }
@@ -101,6 +109,7 @@ export class User {
       id: this.props.id.value,
       name: this.props.name.value,
       email: this.props.email.value,
+      hashedPassword: this.props.hashedPassword.value,
       customerId: this.props.customerId?.value,
       createdAt: this.props.createdAt.value,
       updatedAt: this.props.updatedAt.value,

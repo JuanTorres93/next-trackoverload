@@ -17,6 +17,10 @@ const userSchema = new mongoose.Schema<UserCreateProps>({
     required: true,
     unique: true,
   },
+  hashedPassword: {
+    type: String,
+    required: true, // NOTE: Turn to false when implementing OAuth2.0 or similar where password is not stored in system
+  },
   customerId: {
     type: String,
     required: false,
