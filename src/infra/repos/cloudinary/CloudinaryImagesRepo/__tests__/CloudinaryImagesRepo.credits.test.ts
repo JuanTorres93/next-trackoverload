@@ -6,7 +6,19 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
 import { CloudinaryImagesRepo } from '../CloudinaryImagesRepo';
 
-describe('CloudinaryImagesRepo', () => {
+// Check if Cloudinary credentials are available
+const hasCloudinaryCredentials = Boolean(
+  process.env.CLOUDINARY_CLOUD_NAME &&
+  process.env.CLOUDINARY_API_KEY &&
+  process.env.CLOUDINARY_API_SECRET,
+);
+
+// Skip tests in CI/CD if credentials are not available
+// In local development, tests will run and fail if credentials are missing
+const isCI = Boolean(process.env.CI || process.env.GITHUB_ACTIONS);
+const shouldSkip = isCI && !hasCloudinaryCredentials;
+
+describe.skipIf(shouldSkip)('CloudinaryImagesRepo', () => {
   let repo: CloudinaryImagesRepo;
 
   beforeEach(() => {
