@@ -54,6 +54,7 @@ export class CloudinaryImagesRepo implements ImagesRepo {
       };
     } catch (error: unknown) {
       // If resource not found (404), return null
+      // @ts-expect-error - Cloudinary error structure
       if (error.error?.http_code === 404) {
         return null;
       }
