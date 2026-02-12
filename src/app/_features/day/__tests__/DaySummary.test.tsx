@@ -80,7 +80,14 @@ describe('DaySummary', () => {
     expect(mealElement).toBeInTheDocument();
   });
 
-  // TODO NEXT Test show fake meals
+  it('should show fake meals info', async () => {
+    const { fakeMeal } = await setup();
+
+    const fakeMealElement = await screen.findByText(
+      new RegExp(fakeMeal.name, 'i'),
+    );
+    expect(fakeMealElement).toBeInTheDocument();
+  });
 
   it('opens recipes selection modal window on button click', async () => {
     const { addFoodButton } = await setup();

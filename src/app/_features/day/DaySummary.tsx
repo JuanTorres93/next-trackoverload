@@ -12,6 +12,7 @@ import DateTitle from './DateTitle';
 import DayTitle from './DayTitle';
 import MealLine from '../meal/MealLine';
 import AddFakeMealModal from '../fakemeal/AddFakeMealModal';
+import FakeMeal from '../fakemeal/FakeMeal';
 
 const computeIsToday = (day: number, month: number, year: number) => {
   const today = new Date();
@@ -43,7 +44,7 @@ function DaySummary({
   const { day, month, year } = dayIdToDayMonthYear(dayId);
 
   const meals = assembledDay?.meals || [];
-  // TODO NEXT manage fakeMeals
+  const fakeMeals = assembledDay?.fakeMeals || [];
 
   // Compute day name And capitalize first letter
   const date = new Date(year, month - 1, day);
@@ -75,6 +76,16 @@ function DaySummary({
                 className="m-3"
                 key={meal.id}
                 meal={meal}
+                dayId={dayId}
+              />
+            ))}
+
+          {fakeMeals.length > 0 &&
+            fakeMeals.map((fakeMeal) => (
+              <FakeMeal
+                className="m-3"
+                key={fakeMeal.id}
+                fakeMeal={fakeMeal}
                 dayId={dayId}
               />
             ))}
