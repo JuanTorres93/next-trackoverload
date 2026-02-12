@@ -89,7 +89,7 @@ export class User {
   }
 
   get hashedPassword() {
-    return this.props.hashedPassword;
+    return this.props.hashedPassword.value;
   }
 
   get customerId() {

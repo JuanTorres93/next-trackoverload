@@ -4,10 +4,12 @@ import { User } from '@/domain/entities/user/User';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { Email } from '@/domain/value-objects/Email/Email';
 import { IdGenerator } from '@/domain/services/IdGenerator.port';
+import { PasswordEncryptorService } from '@/domain/services/PasswordEncryptorService.port';
 
 export type CreateUserUsecaseRequest = {
   name: string;
   email: string;
+  plainPassword: string;
   customerId?: string;
 };
 
@@ -15,6 +17,7 @@ export class CreateUserUsecase {
   constructor(
     private usersRepo: UsersRepo,
     private idGenerator: IdGenerator,
+    private passwordEncryptor: PasswordEncryptorService,
   ) {}
 
   async execute(request: CreateUserUsecaseRequest): Promise<UserDTO> {
@@ -45,12 +48,15 @@ export class CreateUserUsecase {
       );
     }
 
-    // Create new user
+    const hashedPassword = await this.passwordEncryptor.hashPassword(
+      request.plainPassword,
+    );
+
     const newUser = User.create({
       id: this.idGenerator.generateId(),
       name: request.name,
       email: request.email,
-      hashedPassword: 'hashed-placeholder', // TODO IMPORTANT handle password properly
+      hashedPassword,
       customerId: request.customerId ? request.customerId : undefined,
     });
 

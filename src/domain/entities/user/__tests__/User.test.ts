@@ -1,9 +1,8 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import { ValidationError } from '@/domain/common/errors';
+import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import { User, UserCreateProps } from '../User';
-import { HashedPassword } from '@/domain/value-objects/HashedPassword/HashedPassword';
 
 describe('User', () => {
   let user: User;
@@ -28,7 +27,7 @@ describe('User', () => {
 
     it('should have a hashed password', () => {
       expect(user.hashedPassword).not.toBeUndefined();
-      expect(user.hashedPassword).toBeInstanceOf(HashedPassword);
+      expect(user.hashedPassword.length).toBeGreaterThan(10);
     });
 
     it('should change its name', async () => {

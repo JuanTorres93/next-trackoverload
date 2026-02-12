@@ -4,23 +4,33 @@ import { toUserDTO, UserDTO } from '@/application-layer/dtos/UserDTO';
 import { AlreadyExistsError } from '@/domain/common/errors';
 import { User } from '@/domain/entities/user/User';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
+import { DummyPasswordEncryptorService } from '@/infra/services/PasswordEncryptorService/DummyPasswordEncryptorService/DummyPasswordEncryptorService';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
 import { CreateUserUsecase } from '../CreateUser.usecase';
 
 describe('CreateUserUsecase', () => {
   let usersRepo: MemoryUsersRepo;
+  let passwordEncryptor: DummyPasswordEncryptorService;
+
   let createUserUsecase: CreateUserUsecase;
   let user: UserDTO;
 
+  const plainPassword = 'secureP@ssword123';
+
   beforeEach(async () => {
     usersRepo = new MemoryUsersRepo();
+    passwordEncryptor = new DummyPasswordEncryptorService();
+
     createUserUsecase = new CreateUserUsecase(
       usersRepo,
       new Uuidv4IdGenerator(),
+      passwordEncryptor,
     );
+
     user = await createUserUsecase.execute({
       name: userTestProps.validUserProps.name,
       email: userTestProps.validUserProps.email,
+      plainPassword: plainPassword,
     });
   });
 
@@ -48,11 +58,26 @@ describe('CreateUserUsecase', () => {
       }
     });
 
+    it('should not expose password', () => {
+      // @ts-expect-error hashedPassword is not part of UserDTO
+      expect(user.hashedPassword).toBeUndefined();
+    });
+
+    it('user entity should have hashedPassword', async () => {
+      const userEntity = await usersRepo.getUserById(user.id);
+
+      const expectedHashedPassword =
+        await passwordEncryptor.hashPassword(plainPassword);
+
+      expect(userEntity!.hashedPassword).toBe(expectedHashedPassword);
+    });
+
     it('should create user with customerId', async () => {
       const result = await createUserUsecase.execute({
         name: 'Jane Doe',
         email: 'janedoe@example.com',
         customerId: 'customer-123',
+        plainPassword,
       });
 
       expect(result.customerId).toBe('customer-123');
@@ -62,6 +87,7 @@ describe('CreateUserUsecase', () => {
       const user2 = await createUserUsecase.execute({
         name: 'User Two',
         email: 'usertwo@example.com',
+        plainPassword,
       });
 
       expect(user.id).not.toBe(user2.id);
@@ -73,6 +99,7 @@ describe('CreateUserUsecase', () => {
       const request = {
         name: 'Duplicate Email User',
         email: userTestProps.validUserProps.email,
+        plainPassword,
       };
 
       await expect(createUserUsecase.execute(request)).rejects.toThrow(
@@ -88,6 +115,7 @@ describe('CreateUserUsecase', () => {
       const request = {
         name: 'Duplicate Email User',
         email: userTestProps.validUserProps.email.toUpperCase(),
+        plainPassword,
       };
 
       await expect(createUserUsecase.execute(request)).rejects.toThrow(
@@ -105,6 +133,7 @@ describe('CreateUserUsecase', () => {
         name: 'First User',
         email: 'firstuser@example.com',
         customerId: 'customer-123',
+        plainPassword,
       });
 
       // Attempt to create second user with same customerId
@@ -112,6 +141,7 @@ describe('CreateUserUsecase', () => {
         name: 'Second User',
         email: 'seconduser@example.com',
         customerId: 'customer-123',
+        plainPassword,
       };
 
       await expect(createUserUsecase.execute(request)).rejects.toThrow(
