@@ -18,7 +18,13 @@ const INITIAL_FORM_STATE: AddFakeMealFormState = {
   protein: 0,
 };
 
-function AddFakeMealForm({ dayId }: { dayId: string }) {
+function AddFakeMealForm({
+  dayId,
+  onSuccess,
+}: {
+  dayId: string;
+  onSuccess?: () => void;
+}) {
   const [formState, setFormState] =
     useState<AddFakeMealFormState>(INITIAL_FORM_STATE);
   const [formErrors, setFormErrors] = useState<FormErrors>({} as FormErrors);
@@ -26,7 +32,7 @@ function AddFakeMealForm({ dayId }: { dayId: string }) {
 
   const invalidForm =
     formState.name.trim() === '' ||
-    formState.calories <= 0 ||
+    formState.calories < 0 ||
     formState.protein < 0 ||
     isLoading;
 
@@ -51,6 +57,7 @@ function AddFakeMealForm({ dayId }: { dayId: string }) {
       );
 
       handleResetForm();
+      onSuccess?.();
     } catch (error) {
     } finally {
       setIsLoading(false);
