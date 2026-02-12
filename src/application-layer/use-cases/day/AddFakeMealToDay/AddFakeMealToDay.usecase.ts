@@ -6,6 +6,9 @@ import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { IdGenerator } from '@/domain/services/IdGenerator.port';
 import { TransactionContext } from '@/application-layer/ports/TransactionContext.port';
+import { Day } from '@/domain/entities/day/Day';
+import { dayIdToDayMonthYear } from '@/domain/value-objects/DayId/DayId';
+import { createDayNoSaveInRepo } from '../common/createDayNoSaveInRepo';
 
 export type AddFakeMealToDayUsecaseRequest = {
   dayId: string;
@@ -32,15 +35,28 @@ export class AddFakeMealToDayUsecase {
       );
     }
 
-    const day = await this.daysRepo.getDayByIdAndUserId(
+    let dayToAddFakeMeal: Day | null;
+
+    dayToAddFakeMeal = await this.daysRepo.getDayByIdAndUserId(
       request.dayId,
       request.userId,
     );
 
-    if (!day)
-      throw new NotFoundError(
-        `AddFakeMealToDayUsecase: Day with id ${request.dayId} for user with id ${request.userId} not found`,
+    if (!dayToAddFakeMeal) {
+      const { day, month, year } = dayIdToDayMonthYear(request.dayId);
+
+      dayToAddFakeMeal = await createDayNoSaveInRepo(
+        this.usersRepo,
+        this.daysRepo,
+        {
+          day,
+          month,
+          year,
+          actorUserId: request.userId,
+          targetUserId: request.userId,
+        },
       );
+    }
 
     const fakeMeal = FakeMeal.create({
       id: this.idGenerator.generateId(),
@@ -50,13 +66,13 @@ export class AddFakeMealToDayUsecase {
       protein: request.protein,
     });
 
-    day.addFakeMeal(fakeMeal.id);
+    dayToAddFakeMeal.addFakeMeal(fakeMeal.id);
 
     await this.transactionContext.run(async () => {
       await this.fakeMealsRepo.saveFakeMeal(fakeMeal);
-      await this.daysRepo.saveDay(day);
+      await this.daysRepo.saveDay(dayToAddFakeMeal);
     });
 
-    return toDayDTO(day);
+    return toDayDTO(dayToAddFakeMeal);
   }
 }

@@ -101,6 +101,20 @@ describe('AddFakeMealToDayUsecase', () => {
       const afterFakeMealCount = await fakeMealsRepo.getAllFakeMeals();
       expect(afterFakeMealCount).toHaveLength(1);
     });
+
+    it('should create new day if it does not exist', async () => {
+      const initialDayCount = daysRepo.countForTesting();
+
+      await addFakeMealToDayUsecase.execute({
+        dayId: '19900101',
+        userId: user.id,
+        calories: 10,
+        name: 'Fake Meal for non-existent day',
+        protein: 1,
+      });
+      const finalDayCount = daysRepo.countForTesting();
+      expect(finalDayCount).toBe(initialDayCount + 1);
+    });
   });
 
   describe('Errors', () => {
@@ -119,24 +133,6 @@ describe('AddFakeMealToDayUsecase', () => {
 
       await expect(addFakeMealToDayUsecase.execute(request)).rejects.toThrow(
         /AddFakeMealToDay.*User.*not.*found/,
-      );
-    });
-
-    it("should throw error when trying to add fake meal to another user's day", async () => {
-      const request = {
-        dayId: day.id,
-        userId: anotherUser.id,
-        name: fakeMealTestProps.validFakeMealProps.name,
-        calories: fakeMealTestProps.validFakeMealProps.calories,
-        protein: fakeMealTestProps.validFakeMealProps.protein,
-      };
-
-      await expect(addFakeMealToDayUsecase.execute(request)).rejects.toThrow(
-        NotFoundError,
-      );
-
-      await expect(addFakeMealToDayUsecase.execute(request)).rejects.toThrow(
-        /AddFakeMealToDay.*Day.*not.*found/,
       );
     });
   });
