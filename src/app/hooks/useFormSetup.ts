@@ -18,6 +18,7 @@ export function useFormSetup<T>(initialState: T) {
 
   return {
     formState,
+    setFormState, // For complex state updates, like in NewRecipeForm with ingredient lines, prefer using setField
     setField,
     formErrors,
     setFormErrors,

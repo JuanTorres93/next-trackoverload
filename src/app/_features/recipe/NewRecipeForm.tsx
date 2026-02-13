@@ -5,6 +5,7 @@ import FormRow from '@/app/_ui/form/FormRow';
 import ImagePicker from '@/app/_ui/ImagePicker';
 import NutritionalInfoValue from '@/app/_ui/NutritionalInfoValue';
 import { formatToInteger } from '@/app/_utils/format/formatToInteger';
+import { useFormSetup } from '@/app/hooks/useFormSetup';
 import { CreateIngredientLineData } from '@/application-layer/use-cases/recipe/common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
@@ -22,8 +23,6 @@ export type NewRecipeFormState = {
   imageFile: File | undefined;
 };
 
-type FormErrors = Record<keyof NewRecipeFormState, string>;
-
 const INITIAL_FORM_STATE: NewRecipeFormState = {
   name: 'Nueva receta',
   ingredientLinesWithExternalRefs: [],
@@ -31,10 +30,14 @@ const INITIAL_FORM_STATE: NewRecipeFormState = {
 };
 
 function NewRecipeForm() {
-  const [formState, setFormState] =
-    useState<NewRecipeFormState>(INITIAL_FORM_STATE);
-  const [formErrors, setFormErrors] = useState<FormErrors>({} as FormErrors);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const {
+    formState,
+    setFormState,
+    setField,
+    isLoading,
+    resetForm,
+    setIsLoading,
+  } = useFormSetup<NewRecipeFormState>(INITIAL_FORM_STATE);
 
   // Separate state needed due to implementation of IngredientSearch component
   const [
@@ -51,7 +54,7 @@ function NewRecipeForm() {
       ingredientLinesWithExternalRefs:
         ingredientLinesWithExternalRefsIngredientComponent,
     }));
-  }, [ingredientLinesWithExternalRefsIngredientComponent]);
+  }, [ingredientLinesWithExternalRefsIngredientComponent, setFormState]);
 
   const invalidForm =
     formState.ingredientLinesWithExternalRefs.length === 0 ||
@@ -61,13 +64,6 @@ function NewRecipeForm() {
         ingLineWithExternalRef.ingredientLine.quantityInGrams <= 0,
     ) ||
     isLoading;
-
-  function setField<FormKey extends keyof NewRecipeFormState>(
-    key: FormKey,
-    value: NewRecipeFormState[FormKey],
-  ) {
-    setFormState((prev) => ({ ...prev, [key]: value }));
-  }
 
   const totalCalories = formatToInteger(
     formState.ingredientLinesWithExternalRefs.reduce(
@@ -84,11 +80,6 @@ function NewRecipeForm() {
       0,
     ),
   );
-
-  function handleResetForm() {
-    setFormState(INITIAL_FORM_STATE);
-    setFormErrors({} as FormErrors);
-  }
 
   function handleImageSelection(files: File[]) {
     if (files.length > 0) {
@@ -134,7 +125,7 @@ function NewRecipeForm() {
         imageFile: compressedImageFile,
         ingredientLinesInfo: ingredientLinesInfo,
       });
-      handleResetForm();
+      resetForm();
     } finally {
       setIsLoading(false);
     }
