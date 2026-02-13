@@ -1,7 +1,7 @@
 import ButtonNew from '@/app/_ui/ButtonNew';
 import FormEntry from '@/app/_ui/form/FormEntry';
 import Input from '@/app/_ui/Input';
-import { useState } from 'react';
+import { useFormSetup } from '@/app/hooks/useFormSetup';
 import { addFakeMealToDay } from './actions';
 
 export type AddFakeMealFormState = {
@@ -9,8 +9,6 @@ export type AddFakeMealFormState = {
   calories: number;
   protein: number;
 };
-
-type FormErrors = Record<keyof AddFakeMealFormState, string>;
 
 const INITIAL_FORM_STATE: AddFakeMealFormState = {
   name: 'Comida en datos',
@@ -25,23 +23,14 @@ function AddFakeMealForm({
   dayId: string;
   onSuccess?: () => void;
 }) {
-  const [formState, setFormState] =
-    useState<AddFakeMealFormState>(INITIAL_FORM_STATE);
-  const [formErrors, setFormErrors] = useState<FormErrors>({} as FormErrors);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { formState, isLoading, setIsLoading, setField, resetForm } =
+    useFormSetup<AddFakeMealFormState>(INITIAL_FORM_STATE);
 
   const invalidForm =
     formState.name.trim() === '' ||
     formState.calories < 0 ||
     formState.protein < 0 ||
     isLoading;
-
-  function setField<FormKey extends keyof AddFakeMealFormState>(
-    key: FormKey,
-    value: AddFakeMealFormState[FormKey],
-  ) {
-    setFormState((prev) => ({ ...prev, [key]: value }));
-  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -56,17 +45,12 @@ function AddFakeMealForm({
         formState.protein,
       );
 
-      handleResetForm();
+      resetForm();
       onSuccess?.();
     } catch (error) {
     } finally {
       setIsLoading(false);
     }
-  }
-
-  function handleResetForm() {
-    setFormState(INITIAL_FORM_STATE);
-    setFormErrors({} as FormErrors);
   }
 
   return (
