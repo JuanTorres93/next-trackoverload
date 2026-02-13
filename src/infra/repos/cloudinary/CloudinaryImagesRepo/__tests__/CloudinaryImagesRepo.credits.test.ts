@@ -176,5 +176,49 @@ describe.skipIf(shouldSkip)('CloudinaryImagesRepo', () => {
         expect(retrievedMetadata?.sizeBytes).toBe(uploadedMetadata.sizeBytes);
       });
     });
+
+    describe('duplicateByUrl', () => {
+      it('should duplicate an existing image', async () => {
+        const duplicatedMetadata = await repo.duplicateByUrl(
+          uploadedMetadata.url,
+        );
+
+        expect(duplicatedMetadata).toBeDefined();
+        expect(duplicatedMetadata.url).not.toBe(uploadedMetadata.url);
+        expect(duplicatedMetadata.url).toContain('https://res.cloudinary.com/');
+        expect(duplicatedMetadata.mimeType).toBe(uploadedMetadata.mimeType);
+        expect(duplicatedMetadata.sizeBytes).toBeGreaterThan(0);
+
+        // Cleanup duplicated image
+        await repo.deleteByUrl(duplicatedMetadata.url);
+      });
+
+      it('should throw error when duplicating non-existent image', async () => {
+        const nonExistentUrl =
+          'https://res.cloudinary.com/demo/image/upload/non-existent-image-12345.png';
+
+        await expect(repo.duplicateByUrl(nonExistentUrl)).rejects.toThrow(
+          'Image not found',
+        );
+      });
+
+      it('should create independent copy that can be deleted separately', async () => {
+        const duplicatedMetadata = await repo.duplicateByUrl(
+          uploadedMetadata.url,
+        );
+
+        // Delete the duplicate
+        await repo.deleteByUrl(duplicatedMetadata.url);
+
+        // Original should still exist
+        const originalMetadata = await repo.getByUrl(uploadedMetadata.url);
+        expect(originalMetadata).not.toBeNull();
+        expect(originalMetadata?.url).toBe(uploadedMetadata.url);
+
+        // Duplicate should be gone
+        const duplicateCheck = await repo.getByUrl(duplicatedMetadata.url);
+        expect(duplicateCheck).toBeNull();
+      });
+    });
   });
 });

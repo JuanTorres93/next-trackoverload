@@ -138,4 +138,76 @@ describe('FileSystemImagesRepo', () => {
     expect(savedMetadata.filename).toContain('image');
     expect(savedMetadata.filename).toContain('.jpg');
   });
+
+  describe('duplicateByUrl', () => {
+    it('should duplicate an existing image', async () => {
+      const savedMetadata = await imagesRepo.save(testImage);
+      const initialCount = await imagesRepo.countForTesting();
+
+      const duplicatedMetadata = await imagesRepo.duplicateByUrl(
+        savedMetadata.url,
+      );
+
+      const newCount = await imagesRepo.countForTesting();
+      expect(newCount).toBe(initialCount + 1);
+      expect(duplicatedMetadata.url).not.toBe(savedMetadata.url);
+      expect(duplicatedMetadata.filename).not.toBe(savedMetadata.filename);
+      expect(duplicatedMetadata.filename).toContain('_copy_');
+      expect(duplicatedMetadata.mimeType).toBe(savedMetadata.mimeType);
+      expect(duplicatedMetadata.sizeBytes).toBe(savedMetadata.sizeBytes);
+    });
+
+    it('should throw error when duplicating non-existent image', async () => {
+      await expect(
+        imagesRepo.duplicateByUrl('/test-images/non-existent.jpg'),
+      ).rejects.toThrow('Failed to duplicate');
+    });
+
+    it('should create physical copy of image file', async () => {
+      const savedMetadata = await imagesRepo.save(testImage);
+      const duplicatedMetadata = await imagesRepo.duplicateByUrl(
+        savedMetadata.url,
+      );
+
+      // Verify both images exist independently
+      const original = await imagesRepo.getByUrl(savedMetadata.url);
+      const duplicate = await imagesRepo.getByUrl(duplicatedMetadata.url);
+
+      expect(original).toBeDefined();
+      expect(duplicate).toBeDefined();
+      expect(original?.sizeBytes).toBe(duplicate?.sizeBytes);
+    });
+
+    it('should allow deletion of duplicated image without affecting original', async () => {
+      const savedMetadata = await imagesRepo.save(testImage);
+      const duplicatedMetadata = await imagesRepo.duplicateByUrl(
+        savedMetadata.url,
+      );
+
+      await imagesRepo.deleteByUrl(duplicatedMetadata.url);
+
+      const original = await imagesRepo.getByUrl(savedMetadata.url);
+      const duplicate = await imagesRepo.getByUrl(duplicatedMetadata.url);
+
+      expect(original).toBeDefined();
+      expect(duplicate).toBeNull();
+    });
+
+    it('should preserve buffer content in duplicated image', async () => {
+      const savedMetadata = await imagesRepo.save(testImage);
+      const duplicatedMetadata = await imagesRepo.duplicateByUrl(
+        savedMetadata.url,
+      );
+
+      const allImages = await imagesRepo.getAllForTesting();
+      const original = allImages.find(
+        (img) => img.metadata.url === savedMetadata.url,
+      );
+      const duplicate = allImages.find(
+        (img) => img.metadata.url === duplicatedMetadata.url,
+      );
+
+      expect(original?.buffer).toEqual(duplicate?.buffer);
+    });
+  });
 });

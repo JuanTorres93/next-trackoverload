@@ -62,6 +62,38 @@ export class CloudinaryImagesRepo implements ImagesRepo {
     }
   }
 
+  async duplicateByUrl(imageUrl: string): Promise<ImageType['metadata']> {
+    const originalPublicId = this.extractPublicIdFromUrl(imageUrl);
+
+    try {
+      const originalResource =
+        await this.cloudinary.api.resource(originalPublicId);
+
+      // Generate new public ID with timestamp
+      const basePublicId = originalPublicId.replace(/_\d+$/, '');
+      const newPublicId = `${basePublicId}_${Date.now()}`;
+
+      // Upload the image from its URL to create a duplicate
+      const uploadResult = await this.cloudinary.uploader.upload(imageUrl, {
+        public_id: newPublicId,
+        resource_type: 'image',
+      });
+
+      return {
+        url: uploadResult.secure_url,
+        filename: `${newPublicId}.${originalResource.format}`,
+        mimeType: `image/${originalResource.format}`,
+        sizeBytes: uploadResult.bytes,
+      };
+    } catch (error: unknown) {
+      // @ts-expect-error - Cloudinary error structure
+      if (error.error?.http_code === 404) {
+        throw new Error(`Image not found with URL: ${imageUrl}`);
+      }
+      throw error;
+    }
+  }
+
   private getPublicIdFromFilename(filename: string): string {
     const noFileExtension = filename.replace(/\.[^/.]+$/, '');
 

@@ -17,4 +17,6 @@ export interface ImagesRepo {
   deleteByUrl(imageUrl: string): Promise<void>;
 
   getByUrl(imageUrl: string): Promise<ImageType['metadata'] | null>;
+
+  duplicateByUrl(imageUrl: string): Promise<ImageType['metadata']>;
 }
