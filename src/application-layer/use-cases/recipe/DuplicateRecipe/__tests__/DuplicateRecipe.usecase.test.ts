@@ -1,6 +1,3 @@
-import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
-import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
-import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { NotFoundError } from '@/domain/common/errors';
@@ -8,15 +5,26 @@ import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { User } from '@/domain/entities/user/User';
+import { MemoryImagesRepo } from '@/infra/repos/memory/MemoryImagesRepo';
 import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
+import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
+import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
+import {
+  createFakeMetadata,
+  createTestImage,
+} from '../../../../../../tests/helpers/imageTestHelpers';
 import { DuplicateRecipeUsecase } from '../DuplicateRecipe.usecase';
 
 describe('DuplicateRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
   let usersRepo: MemoryUsersRepo;
+  let imagesRepo: MemoryImagesRepo;
+
   let duplicateRecipeUsecase: DuplicateRecipeUsecase;
+
   let testRecipe: Recipe;
   let user: User;
   let originalIngredientIds: string[];
@@ -24,10 +32,13 @@ describe('DuplicateRecipeUsecase', () => {
   beforeEach(async () => {
     recipesRepo = new MemoryRecipesRepo();
     usersRepo = new MemoryUsersRepo();
+    imagesRepo = new MemoryImagesRepo();
+
     duplicateRecipeUsecase = new DuplicateRecipeUsecase(
       recipesRepo,
       usersRepo,
       new Uuidv4IdGenerator(),
+      imagesRepo,
     );
 
     user = User.create({
@@ -45,9 +56,18 @@ describe('DuplicateRecipeUsecase', () => {
       ingredient: testIngredient,
     });
 
+    const testImage = await createTestImage();
+    const imageMetadata = createFakeMetadata();
+    const image = {
+      buffer: testImage,
+      metadata: imageMetadata,
+    };
+    await imagesRepo.save(image);
+
     testRecipe = Recipe.create({
       ...recipeTestProps.recipePropsNoIngredientLines,
       ingredientLines: [testIngredientLine],
+      imageUrl: imageMetadata.url,
     });
 
     originalIngredientIds = testRecipe.ingredientLines.map(
@@ -220,6 +240,22 @@ describe('DuplicateRecipeUsecase', () => {
           testRecipe.ingredientLines[i].id,
         );
       }
+    });
+  });
+
+  describe('Side effects', () => {
+    it('should duplicate recipe image if it has one', async () => {
+      const initialImages = imagesRepo.countForTesting();
+
+      const request = {
+        recipeId: testRecipe.id,
+        userId: userTestProps.userId,
+      };
+
+      await duplicateRecipeUsecase.execute(request);
+
+      const finalImages = imagesRepo.countForTesting();
+      expect(finalImages).toBe(initialImages + 1);
     });
   });
 

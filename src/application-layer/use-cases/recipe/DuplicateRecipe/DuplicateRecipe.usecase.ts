@@ -2,6 +2,7 @@ import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
+import { ImagesRepo } from '@/domain/repos/ImagesRepo.port';
 
 import { NotFoundError } from '@/domain/common/errors';
 import { IdGenerator } from '@/domain/services/IdGenerator.port';
@@ -18,6 +19,7 @@ export class DuplicateRecipeUsecase {
     private recipesRepo: RecipesRepo,
     private usersRepo: UsersRepo,
     private idGenerator: IdGenerator,
+    private imagesRepo: ImagesRepo,
   ) {}
 
   async execute(request: DuplicateRecipeUsecaseRequest): Promise<RecipeDTO> {
@@ -60,6 +62,14 @@ export class DuplicateRecipeUsecase {
       name: newName,
       ingredientLines: duplicatedIngredientLines,
     });
+
+    if (originalRecipe.imageUrl) {
+      const duplicatedImageMetadata = await this.imagesRepo.duplicateByUrl(
+        originalRecipe.imageUrl,
+      );
+
+      duplicatedRecipe.updateImageUrl(duplicatedImageMetadata.url);
+    }
 
     await this.recipesRepo.saveRecipe(duplicatedRecipe);
 
