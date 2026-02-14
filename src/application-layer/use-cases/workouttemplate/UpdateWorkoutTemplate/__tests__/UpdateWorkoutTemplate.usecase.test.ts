@@ -32,6 +32,9 @@ describe('UpdateWorkoutTemplateUsecase', () => {
 
   describe('Execution', () => {
     it('should update the workout template name', async () => {
+      const { updatedAt: originalUpdatedAt } =
+        workoutTemplateTestProps.validWorkoutTemplateProps();
+
       const request = {
         id: workoutTemplateTestProps.validWorkoutTemplateProps().id,
         userId: userTestProps.userId,
@@ -39,7 +42,7 @@ describe('UpdateWorkoutTemplateUsecase', () => {
       };
 
       // Wait just a bit to ensure updatedAt will be different
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      await new Promise((resolve) => setTimeout(resolve, 20));
       const result = await usecase.execute(request);
 
       expect(result.name).toBe('New Name');
@@ -47,9 +50,7 @@ describe('UpdateWorkoutTemplateUsecase', () => {
         workoutTemplateTestProps.validWorkoutTemplateProps().id,
       );
       expect(new Date(result.createdAt)).toEqual(existingTemplate.createdAt);
-      expect(new Date(result.updatedAt)).not.toEqual(
-        workoutTemplateTestProps.validWorkoutTemplateProps().updatedAt,
-      );
+      expect(new Date(result.updatedAt)).not.toEqual(originalUpdatedAt);
 
       const exercisesIds = existingTemplate.exercises.map(
         (ex) => ex.exerciseId,
