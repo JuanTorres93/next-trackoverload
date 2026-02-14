@@ -44,26 +44,14 @@ describe('DuplicateRecipeUsecase', () => {
       ...userTestProps.validUserProps,
     });
 
-    await usersRepo.saveUser(user);
-
-    const testIngredient = ingredientTestProps.createTestIngredient();
-
-    const testIngredientLine = IngredientLine.create({
-      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
-      ingredient: testIngredient,
-    });
-
     const testImage = await createTestImage();
     const imageMetadata = createFakeMetadata();
     const image = {
       buffer: testImage,
       metadata: imageMetadata,
     };
-    await imagesRepo.save(image);
 
-    testRecipe = Recipe.create({
-      ...recipeTestProps.recipePropsNoIngredientLines,
-      ingredientLines: [testIngredientLine],
+    testRecipe = recipeTestProps.createTestRecipe({
       imageUrl: imageMetadata.url,
     });
 
@@ -71,6 +59,8 @@ describe('DuplicateRecipeUsecase', () => {
       (il) => il.ingredient.id,
     );
 
+    await usersRepo.saveUser(user);
+    await imagesRepo.save(image);
     await recipesRepo.saveRecipe(testRecipe);
   });
 

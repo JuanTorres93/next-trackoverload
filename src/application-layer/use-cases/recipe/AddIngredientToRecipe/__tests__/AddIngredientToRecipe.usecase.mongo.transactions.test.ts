@@ -1,5 +1,4 @@
 import { ExternalIngredientRef } from '@/domain/entities/externalingredientref/ExternalIngredientRef';
-import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { User } from '@/domain/entities/user/User';
 import { mockForThrowingError } from '@/infra/repos/mongo/__tests__/mockForThrowingError';
@@ -58,27 +57,17 @@ describe('AddIngredientToRecipeUsecase', () => {
       ...userTestProps.validUserProps,
     });
 
-    await usersRepo.saveUser(user);
-
-    // Create ingredient for initial recipe
     const testExternalIngredientRef = ExternalIngredientRef.create({
       ...externalIngredientRefTestProps.validExternalIngredientRefProps,
     });
 
     const testIngredient = ingredientTestProps.createTestIngredient();
 
+    testRecipe = recipeTestProps.createTestRecipe({}, 1);
+
+    await usersRepo.saveUser(user);
     await ingredientsRepo.saveIngredient(testIngredient);
     await externalIngredientsRefRepo.save(testExternalIngredientRef);
-
-    const testIngredientLine = IngredientLine.create({
-      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
-      ingredient: testIngredient,
-    });
-
-    testRecipe = Recipe.create({
-      ...recipeTestProps.recipePropsNoIngredientLines,
-      ingredientLines: [testIngredientLine],
-    });
     await recipesRepo.saveRecipe(testRecipe);
 
     initialExpectations = async () => {

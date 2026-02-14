@@ -1,18 +1,18 @@
-import * as mealTestProps from '../../../../../../tests/createProps/mealTestProps';
-import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
-import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
-import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { AuthError, NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { User } from '@/domain/entities/user/User';
 import { MemoryIngredientsRepo } from '@/infra/repos/memory/MemoryIngredientsRepo';
 import { MemoryMealsRepo } from '@/infra/repos/memory/MemoryMealsRepo';
 import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
-import { User } from '@/domain/entities/user/User';
+import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
+import * as mealTestProps from '../../../../../../tests/createProps/mealTestProps';
+import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import { UpdateIngredientLineUsecase } from '../UpdateIngredientLine.usecase';
 
 describe('UpdateIngredientLineUsecase', () => {
@@ -22,13 +22,12 @@ describe('UpdateIngredientLineUsecase', () => {
   let usersRepo: MemoryUsersRepo;
   let updateIngredientLineUsecase: UpdateIngredientLineUsecase;
   let testIngredientLine: IngredientLine;
-  let testIngredient: Ingredient;
   let alternativeIngredient: Ingredient;
   let testRecipe: Recipe;
   let testMeal: Meal;
   let user: User;
   let anotherUser: User;
-  const userId = 'test-user-id';
+
   const anotherUserId = 'another-user-id';
 
   beforeEach(async () => {
@@ -45,15 +44,10 @@ describe('UpdateIngredientLineUsecase', () => {
 
     user = User.create({
       ...userTestProps.validUserProps,
-      id: userId,
     });
     anotherUser = User.create({
       ...userTestProps.validUserProps,
       id: anotherUserId,
-    });
-
-    testIngredient = ingredientTestProps.createTestIngredient({
-      name: 'Chicken Breast',
     });
 
     alternativeIngredient = ingredientTestProps.createTestIngredient({
@@ -61,29 +55,18 @@ describe('UpdateIngredientLineUsecase', () => {
       name: 'Turkey Breast',
     });
 
-    testIngredientLine = IngredientLine.create({
-      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
-      ingredient: testIngredient,
-      quantityInGrams: 200,
-    });
-
-    testRecipe = Recipe.create({
-      ...recipeTestProps.recipePropsNoIngredientLines,
-      userId: userId,
-      ingredientLines: [testIngredientLine],
-    });
+    testRecipe = recipeTestProps.createTestRecipe({}, 1);
+    testIngredientLine = [...testRecipe.ingredientLines][0];
 
     testMeal = Meal.create({
       ...mealTestProps.mealPropsNoIngredientLines,
       id: 'test-meal-id',
-      userId: userId,
       ingredientLines: [testIngredientLine],
     });
 
     // Save entities to repos
     await usersRepo.saveUser(user);
     await usersRepo.saveUser(anotherUser);
-    await ingredientsRepo.saveIngredient(testIngredient);
     await ingredientsRepo.saveIngredient(alternativeIngredient);
     await recipesRepo.saveRecipe(testRecipe);
     await mealsRepo.saveMeal(testMeal);
@@ -93,7 +76,7 @@ describe('UpdateIngredientLineUsecase', () => {
     describe('Updated', () => {
       it('should update only the quantity when quantityInGrams is provided for recipe', async () => {
         const request = {
-          userId: userId,
+          userId: userTestProps.userId,
           parentEntityType: 'recipe' as const,
           parentEntityId: testRecipe.id,
           ingredientLineId: testIngredientLine.id,
@@ -103,14 +86,16 @@ describe('UpdateIngredientLineUsecase', () => {
         const result = await updateIngredientLineUsecase.execute(request);
 
         expect(result.quantityInGrams).toBe(300);
-        expect(result.ingredient.id).toBe(testIngredient.id);
+        expect(result.ingredient.id).toBe(
+          testRecipe.ingredientLines[0].ingredient.id,
+        );
         expect(result.ingredient.name).toBe('Chicken Breast');
         expect(result.id).toBe(testIngredientLine.id);
       });
 
       it('should return IngredientLineDTO', async () => {
         const request = {
-          userId: userId,
+          userId: userTestProps.userId,
           parentEntityType: 'recipe' as const,
           parentEntityId: testRecipe.id,
           ingredientLineId: testIngredientLine.id,
@@ -127,7 +112,7 @@ describe('UpdateIngredientLineUsecase', () => {
 
       it('should update only the ingredient when ingredientId is provided', async () => {
         const request = {
-          userId: userId,
+          userId: userTestProps.userId,
           parentEntityType: 'recipe' as const,
           parentEntityId: testRecipe.id,
           ingredientLineId: testIngredientLine.id,
@@ -144,7 +129,7 @@ describe('UpdateIngredientLineUsecase', () => {
 
       it('should update both ingredient and quantity when both are provided', async () => {
         const request = {
-          userId: userId,
+          userId: userTestProps.userId,
           parentEntityType: 'recipe' as const,
           parentEntityId: testRecipe.id,
           ingredientLineId: testIngredientLine.id,
@@ -164,7 +149,7 @@ describe('UpdateIngredientLineUsecase', () => {
     describe('Errors', () => {
       it('should throw NotFoundError when recipe does not exist', async () => {
         const request = {
-          userId: userId,
+          userId: userTestProps.userId,
           parentEntityType: 'recipe' as const,
           parentEntityId: 'non-existent-recipe-id',
           ingredientLineId: testIngredientLine.id,
@@ -178,7 +163,7 @@ describe('UpdateIngredientLineUsecase', () => {
 
       it('should throw NotFoundError when recipe does not exist', async () => {
         const request = {
-          userId: userId,
+          userId: userTestProps.userId,
           parentEntityType: 'recipe' as const,
           parentEntityId: 'non-existent-recipe-id',
           ingredientLineId: testIngredientLine.id,
@@ -196,7 +181,7 @@ describe('UpdateIngredientLineUsecase', () => {
 
       it('should throw NotFoundError when ingredient line does not exist', async () => {
         const request = {
-          userId: userId,
+          userId: userTestProps.userId,
           parentEntityType: 'recipe' as const,
           parentEntityId: testRecipe.id,
           ingredientLineId: 'non-existent-ingredient-line-id',
@@ -260,7 +245,7 @@ describe('UpdateIngredientLineUsecase', () => {
     describe('Updated', () => {
       it('should update only the quantity when quantityInGrams is provided for meal', async () => {
         const request = {
-          userId: userId,
+          userId: userTestProps.userId,
           parentEntityType: 'meal' as const,
           parentEntityId: testMeal.id,
           ingredientLineId: testIngredientLine.id,
@@ -270,13 +255,15 @@ describe('UpdateIngredientLineUsecase', () => {
         const result = await updateIngredientLineUsecase.execute(request);
 
         expect(result.quantityInGrams).toBe(350);
-        expect(result.ingredient.id).toBe(testIngredient.id);
+        expect(result.ingredient.id).toBe(
+          testRecipe.ingredientLines[0].ingredient.id,
+        );
         expect(result.id).toBe(testIngredientLine.id);
       });
 
       it('should return IngredientLineDTO', async () => {
         const request = {
-          userId: userId,
+          userId: userTestProps.userId,
           parentEntityType: 'meal' as const,
           parentEntityId: testMeal.id,
           ingredientLineId: testIngredientLine.id,
@@ -293,7 +280,7 @@ describe('UpdateIngredientLineUsecase', () => {
 
       it('should update only the ingredient when ingredientId is provided', async () => {
         const request = {
-          userId: userId,
+          userId: userTestProps.userId,
           parentEntityType: 'meal' as const,
           parentEntityId: testMeal.id,
           ingredientLineId: testIngredientLine.id,
@@ -310,7 +297,7 @@ describe('UpdateIngredientLineUsecase', () => {
 
       it('should update both ingredient and quantity when both are provided', async () => {
         const request = {
-          userId: userId,
+          userId: userTestProps.userId,
           parentEntityType: 'meal' as const,
           parentEntityId: testMeal.id,
           ingredientLineId: testIngredientLine.id,
@@ -330,7 +317,7 @@ describe('UpdateIngredientLineUsecase', () => {
     describe('Errors', () => {
       it('should throw NotFoundError when meal does not exist', async () => {
         const request = {
-          userId: userId,
+          userId: userTestProps.userId,
           parentEntityType: 'meal' as const,
           parentEntityId: 'non-existent-meal-id',
           ingredientLineId: testIngredientLine.id,
@@ -348,7 +335,7 @@ describe('UpdateIngredientLineUsecase', () => {
 
       it('should throw NotFoundError when ingredient line does not exist', async () => {
         const request = {
-          userId: userId,
+          userId: userTestProps.userId,
           parentEntityType: 'meal' as const,
           parentEntityId: testMeal.id,
           ingredientLineId: 'non-existent-ingredient-line-id',
@@ -410,7 +397,7 @@ describe('UpdateIngredientLineUsecase', () => {
     it('should throw NotFoundError when ingredient does not exist', async () => {
       for (const info of differentInfo) {
         const request = {
-          userId: userId,
+          userId: userTestProps.userId,
           parentEntityType: info.parentEntityType,
           parentEntityId: info.parentEntityId,
           ingredientLineId: testIngredientLine.id,

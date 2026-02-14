@@ -1,8 +1,6 @@
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError } from '@/domain/common/errors';
 import { Day } from '@/domain/entities/day/Day';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { User } from '@/domain/entities/user/User';
 import { MemoryDaysRepo } from '@/infra/repos/memory/MemoryDaysRepo';
@@ -12,7 +10,6 @@ import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
 import { MemoryTransactionContext } from '@/infra/transaction-context/MemoryTransactionContext/MemoryTransactionContext';
 import * as dayTestProps from '../../../../../../tests/createProps/dayTestProps';
-import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import { AddMealToDayUsecase } from '../AddMealToDay.usecase';
@@ -26,8 +23,6 @@ describe('AddMealToDayUsecase', () => {
   let addMealToDayUsecase: AddMealToDayUsecase;
 
   let day: Day;
-  let ingredient: Ingredient;
-  let ingredientLine: IngredientLine;
   let recipe: Recipe;
   let user: User;
 
@@ -45,21 +40,12 @@ describe('AddMealToDayUsecase', () => {
       new Uuidv4IdGenerator(),
       new MemoryTransactionContext(),
     );
+
     day = Day.create({
       ...dayTestProps.validDayProps(),
     });
 
-    ingredient = ingredientTestProps.createTestIngredient();
-
-    ingredientLine = IngredientLine.create({
-      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
-      ingredient,
-    });
-
-    recipe = Recipe.create({
-      ...recipeTestProps.recipePropsNoIngredientLines,
-      ingredientLines: [ingredientLine],
-    });
+    recipe = recipeTestProps.createTestRecipe({}, 1);
 
     user = User.create({
       ...userTestProps.validUserProps,
@@ -101,6 +87,8 @@ describe('AddMealToDayUsecase', () => {
 
   describe('Side effects', () => {
     it('should create new independent ingredient lines from recipe', async () => {
+      const originalRecipeLine = [...recipe.ingredientLines][0];
+
       const result = await addMealToDayUsecase.execute({
         dayId: day.id,
         userId: userTestProps.userId,
@@ -116,17 +104,19 @@ describe('AddMealToDayUsecase', () => {
 
       const addedIngredientLine = addedMeal!.ingredientLines[0];
 
-      expect(addedIngredientLine.id).not.toBe(ingredientLine.id);
-      expect(addedIngredientLine.parentId).not.toBe(ingredientLine.parentId);
+      expect(addedIngredientLine.id).not.toBe(originalRecipeLine.id);
+      expect(addedIngredientLine.parentId).not.toBe(
+        originalRecipeLine.parentId,
+      );
       expect(addedIngredientLine.parentType).toBe('meal');
       expect(addedIngredientLine.ingredient.id).toBe(
-        ingredientLine.ingredient.id,
+        originalRecipeLine.ingredient.id,
       );
       expect(addedIngredientLine.quantityInGrams).toBe(
-        ingredientLine.quantityInGrams,
+        originalRecipeLine.quantityInGrams,
       );
-      expect(addedIngredientLine.calories).toBe(ingredientLine.calories);
-      expect(addedIngredientLine.protein).toBe(ingredientLine.protein);
+      expect(addedIngredientLine.calories).toBe(originalRecipeLine.calories);
+      expect(addedIngredientLine.protein).toBe(originalRecipeLine.protein);
     });
 
     it('should create new meal', async () => {

@@ -1,12 +1,10 @@
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError, PermissionError } from '@/domain/common/errors';
-import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { User } from '@/domain/entities/user/User';
 import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
-import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import { GetAllRecipesForUserUsecase } from '../GetAllRecipesForUser.usecase';
@@ -18,7 +16,7 @@ describe('GetAllRecipesForUserUsecase', () => {
   let testRecipes: Recipe[];
   let user1: User;
   let user2: User;
-  const userId1 = 'user-1';
+  const userId1 = userTestProps.userId;
   const userId2 = 'user-2';
 
   beforeEach(async () => {
@@ -31,7 +29,6 @@ describe('GetAllRecipesForUserUsecase', () => {
 
     user1 = User.create({
       ...userTestProps.validUserProps,
-      id: userId1,
     });
 
     user2 = User.create({
@@ -39,32 +36,21 @@ describe('GetAllRecipesForUserUsecase', () => {
       id: userId2,
     });
 
-    await usersRepo.saveUser(user1);
-    await usersRepo.saveUser(user2);
-
-    const testIngredient = ingredientTestProps.createTestIngredient();
-
-    const testIngredientLine = IngredientLine.create({
-      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
-      ingredient: testIngredient,
-    });
-
     testRecipes = [
-      Recipe.create({
-        ...recipeTestProps.recipePropsNoIngredientLines,
-        id: 'recipe-1',
-        ingredientLines: [testIngredientLine],
-      }),
-      Recipe.create({
-        ...recipeTestProps.recipePropsNoIngredientLines,
-        id: 'recipe-2',
-        ingredientLines: [testIngredientLine],
-      }),
+      recipeTestProps.createTestRecipe({}, 1),
+      recipeTestProps.createTestRecipe(
+        {
+          id: 'recipe2',
+        },
+        2,
+      ),
     ];
 
     for (const recipe of testRecipes) {
       await recipesRepo.saveRecipe(recipe);
     }
+    await usersRepo.saveUser(user1);
+    await usersRepo.saveUser(user2);
   });
 
   describe('Execution', () => {
@@ -110,19 +96,9 @@ describe('GetAllRecipesForUserUsecase', () => {
     });
 
     it('should return only recipes for the specified user', async () => {
-      // Create a recipe for user2
-      const testIngredient = ingredientTestProps.createTestIngredient();
-
-      const testIngredientLine = IngredientLine.create({
-        ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
-        ingredient: testIngredient,
-      });
-
-      const user2Recipe = Recipe.create({
-        ...recipeTestProps.recipePropsNoIngredientLines,
+      const user2Recipe = recipeTestProps.createTestRecipe({
         id: 'user-2-recipe',
         userId: userId2,
-        ingredientLines: [testIngredientLine],
       });
 
       await recipesRepo.saveRecipe(user2Recipe);

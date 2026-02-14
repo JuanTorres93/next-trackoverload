@@ -110,10 +110,14 @@ describe('Recipe', () => {
     });
 
     it('should update its imageURL', async () => {
-      expect(recipe.imageUrl).toBeUndefined();
+      // Default imageUrl contains "recipe"
+      expect(recipe.imageUrl).toContain('recipe');
+
       const newImageUrl = 'http://example.com/new-image.png';
       recipe.updateImageUrl(newImageUrl);
+
       expect(recipe.imageUrl).toBe(newImageUrl);
+      expect(recipe.imageUrl).not.toContain('recipe');
     });
 
     it('should add a new ingredient line', async () => {

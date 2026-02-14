@@ -1,22 +1,21 @@
-import * as externalIngredientRefTestProps from '../../../../../../tests/createProps/externalIngredientRefTestProps';
-import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
-import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
-import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { User } from '@/domain/entities/user/User';
+import { MemoryExternalIngredientsRefRepo } from '@/infra';
 import { MemoryIngredientsRepo } from '@/infra/repos/memory/MemoryIngredientsRepo';
 import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
-import { MemoryExternalIngredientsRefRepo } from '@/infra';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
 import { MemoryTransactionContext } from '@/infra/transaction-context/MemoryTransactionContext/MemoryTransactionContext';
+import * as externalIngredientRefTestProps from '../../../../../../tests/createProps/externalIngredientRefTestProps';
+import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
+import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 
-import { AddIngredientToRecipeUsecase } from '../AddIngredientToRecipe.usecase';
 import { ExternalIngredientRef } from '@/domain/entities/externalingredientref/ExternalIngredientRef';
+import { AddIngredientToRecipeUsecase } from '../AddIngredientToRecipe.usecase';
 
 describe('AddIngredientToRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
@@ -51,33 +50,21 @@ describe('AddIngredientToRecipeUsecase', () => {
       ...userTestProps.validUserProps,
     });
 
-    await usersRepo.saveUser(user);
-
-    const testIngredient = ingredientTestProps.createTestIngredient();
-
-    await ingredientsRepo.saveIngredient(testIngredient);
-
-    const testIngredientLine = IngredientLine.create({
-      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
-      ingredient: testIngredient,
-    });
-
-    testRecipe = Recipe.create({
-      ...recipeTestProps.recipePropsNoIngredientLines,
-      ingredientLines: [testIngredientLine],
-    });
-    await recipesRepo.saveRecipe(testRecipe);
+    testRecipe = recipeTestProps.createTestRecipe({}, 1);
 
     // Create ingredient for adding to recipe
     newExternalIngredientRef = ExternalIngredientRef.create({
       ...externalIngredientRefTestProps.validExternalIngredientRefProps,
       ingredientId: 'new-ingredient-id',
     });
-    await externalIngredientsRefRepo.save(newExternalIngredientRef);
 
     newIngredient = ingredientTestProps.createTestIngredient({
       id: 'new-ingredient-id',
     });
+
+    await usersRepo.saveUser(user);
+    await recipesRepo.saveRecipe(testRecipe);
+    await externalIngredientsRefRepo.save(newExternalIngredientRef);
     await ingredientsRepo.saveIngredient(newIngredient);
   });
 

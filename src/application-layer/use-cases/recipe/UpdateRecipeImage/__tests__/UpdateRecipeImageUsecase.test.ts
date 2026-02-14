@@ -35,10 +35,7 @@ describe('UpdateRecipeImageUsecase', () => {
       imageProcessor,
     );
 
-    recipe = Recipe.create({
-      ...recipeTestProps.validRecipePropsWithIngredientLines(),
-      userId: userTestProps.userId,
-    });
+    recipe = recipeTestProps.createTestRecipe();
 
     await recipesRepo.saveRecipe(recipe);
   });
@@ -58,8 +55,15 @@ describe('UpdateRecipeImageUsecase', () => {
     });
 
     it('should update recipe imageUrl', async () => {
-      const oldImageUrl = recipe.imageUrl;
+      recipe.updateImageUrl(undefined);
+      await recipesRepo.saveRecipe(recipe);
 
+      const recipeFromRepo = await recipesRepo.getRecipeByIdAndUserId(
+        recipe.id,
+        userTestProps.userId,
+      );
+
+      const oldImageUrl = recipeFromRepo!.imageUrl;
       expect(oldImageUrl).not.toBeDefined();
 
       const result = await usecase.execute({

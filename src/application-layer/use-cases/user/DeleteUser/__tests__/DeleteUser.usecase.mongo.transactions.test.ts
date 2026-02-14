@@ -2,7 +2,6 @@ import { Day } from '@/domain/entities/day/Day';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { Meal } from '@/domain/entities/meal/Meal';
-import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { User } from '@/domain/entities/user/User';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
@@ -27,10 +26,10 @@ import * as dayTestProps from '../../../../../../tests/createProps/dayTestProps'
 import { validExerciseProps } from '../../../../../../tests/createProps/exerciseTestProps';
 import * as fakeMealTestProps from '../../../../../../tests/createProps/fakeMealTestProps';
 import { validMealWithIngredientLines } from '../../../../../../tests/createProps/mealTestProps';
-import { validRecipePropsWithIngredientLines } from '../../../../../../tests/createProps/recipeTestProps';
+import { createTestRecipe } from '../../../../../../tests/createProps/recipeTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
-import { validWorkoutPropsWithExercises } from '../../../../../../tests/createProps/workoutTestProps';
 import { validWorkoutTemplateProps } from '../../../../../../tests/createProps/workoutTemplateTestProps';
+import { validWorkoutPropsWithExercises } from '../../../../../../tests/createProps/workoutTestProps';
 import { DeleteUserUsecase } from '../DeleteUser.usecase';
 
 describe('DeleteUserUsecase', () => {
@@ -98,10 +97,7 @@ describe('DeleteUserUsecase', () => {
       await ingredientsRepo.saveIngredient(line.ingredient);
     }
 
-    const recipe = Recipe.create({
-      ...validRecipePropsWithIngredientLines(),
-      userId: user.id,
-    });
+    const recipe = createTestRecipe();
 
     // Save ingredients for recipe
     for (const line of recipe.ingredientLines) {

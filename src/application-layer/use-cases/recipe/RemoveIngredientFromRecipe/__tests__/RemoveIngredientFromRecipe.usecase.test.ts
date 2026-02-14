@@ -1,6 +1,5 @@
 import { NotFoundError } from '@/domain/common/errors';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { User } from '@/domain/entities/user/User';
 import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
@@ -8,10 +7,9 @@ import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { RemoveIngredientFromRecipeUsecase } from '../RemoveIngredientFromRecipe.usecase';
 
-import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
-import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
-import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
+import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 
 describe('RemoveIngredientFromRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
@@ -19,7 +17,6 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
   let removeIngredientFromRecipeUsecase: RemoveIngredientFromRecipeUsecase;
   let testRecipe: Recipe;
   let testIngredient: Ingredient;
-  let secondIngredient: Ingredient;
   let user: User;
 
   beforeEach(async () => {
@@ -36,55 +33,40 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
 
     await usersRepo.saveUser(user);
 
-    testIngredient = ingredientTestProps.createTestIngredient({
-      name: 'Chicken Breast',
-      calories: 165,
-      protein: 31,
-    });
+    testRecipe = recipeTestProps.createTestRecipe({}, 2);
+    testIngredient = testRecipe.ingredientLines[0].ingredient;
 
-    secondIngredient = ingredientTestProps.createTestIngredient({
-      id: 'ingredient-2',
-    });
-
-    const firstIngredientLine = IngredientLine.create({
-      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
-      ingredient: testIngredient,
-    });
-
-    const secondIngredientLine = IngredientLine.create({
-      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
-      id: 'ingredient-line-2',
-      ingredient: secondIngredient,
-    });
-
-    testRecipe = Recipe.create({
-      ...recipeTestProps.recipePropsNoIngredientLines,
-      ingredientLines: [firstIngredientLine, secondIngredientLine],
-    });
     await recipesRepo.saveRecipe(testRecipe);
   });
 
   describe('Execute', () => {
     it('should remove ingredient from recipe successfully', async () => {
       const originalIngredientCount = testRecipe.ingredientLines.length;
+      const firstIngredientId = testRecipe.ingredientLines[0].ingredient.id;
+      const secondIngredientId = testRecipe.ingredientLines[1].ingredient.id;
 
       const request = {
         recipeId: testRecipe.id,
-        ingredientId: testIngredient.id,
+        ingredientId: firstIngredientId,
         userId: userTestProps.userId,
       };
 
       const result = await removeIngredientFromRecipeUsecase.execute(request);
 
+      // Expect to have one ingredient less
       expect(result.ingredientLines).toHaveLength(originalIngredientCount - 1);
+
+      // Expect the removed ingredient to no longer be in the recipe
       expect(
         result.ingredientLines.some(
-          (line) => line.ingredient.id === testIngredient.id,
+          (line) => line.ingredient.id === firstIngredientId,
         ),
       ).toBe(false);
+
+      // Expect the other ingredient to still be in the recipe
       expect(
         result.ingredientLines.some(
-          (line) => line.ingredient.id === secondIngredient.id,
+          (line) => line.ingredient.id === secondIngredientId,
         ),
       ).toBe(true);
     });

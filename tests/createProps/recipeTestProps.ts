@@ -2,21 +2,24 @@ import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { validIngredientProps } from './ingredientTestProps';
 import { userId } from './userTestProps';
+import { Recipe, RecipeCreateProps } from '@/domain/entities/recipe/Recipe';
 
 export const recipePropsNoIngredientLines = {
   id: 'recipe1',
   userId: userId,
   name: 'Test Recipe',
+  imageUrl: 'http://example.com/recipe.jpg',
   createdAt: new Date(),
   updatedAt: new Date(),
 };
 
-export function validRecipePropsWithIngredientLines() {
+export function validRecipePropsWithIngredientLines(
+  numLines = 2,
+): RecipeCreateProps {
   const ingredientLine1 = IngredientLine.create({
     ...ingredientLineRecipePropsNoIngredient,
     id: 'line-1',
     ingredient: Ingredient.create(validIngredientProps),
-    quantityInGrams: 100,
   });
 
   const ingredientLine2 = IngredientLine.create({
@@ -30,13 +33,35 @@ export function validRecipePropsWithIngredientLines() {
       createdAt: new Date(),
       updatedAt: new Date(),
     }),
-    quantityInGrams: 200,
   });
+
+  let ingredientLines = [ingredientLine1, ingredientLine2];
+
+  if (numLines === 1) {
+    ingredientLines = [ingredientLine1];
+  }
 
   return {
     ...recipePropsNoIngredientLines,
-    ingredientLines: [ingredientLine1, ingredientLine2],
+    ingredientLines,
   };
+}
+
+export function createTestRecipe(
+  props?: Partial<RecipeCreateProps>,
+  numIngredientLines: number = 1,
+): Recipe {
+  const validProps = validRecipePropsWithIngredientLines(numIngredientLines);
+
+  return Recipe.create({
+    id: props?.id || validProps.id,
+    userId: props?.userId || validProps.userId,
+    name: props?.name || validProps.name,
+    ingredientLines: props?.ingredientLines || validProps.ingredientLines,
+    createdAt: props?.createdAt || validProps.createdAt,
+    updatedAt: props?.updatedAt || validProps.updatedAt,
+    imageUrl: props?.imageUrl || validProps.imageUrl,
+  });
 }
 
 export const ingredientLineRecipePropsNoIngredient = {

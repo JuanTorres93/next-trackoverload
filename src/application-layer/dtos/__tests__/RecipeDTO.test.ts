@@ -1,28 +1,16 @@
-import { toRecipeDTO, fromRecipeDTO, RecipeDTO } from '../RecipeDTO';
-import { Recipe } from '@/domain/entities/recipe/Recipe';
+import * as dto from '@/../tests/dtoProperties';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
+import { Recipe } from '@/domain/entities/recipe/Recipe';
 import * as recipeTestProps from '../../../../tests/createProps/recipeTestProps';
-import * as ingredientTestProps from '../../../../tests/createProps/ingredientTestProps';
-import * as dto from '@/../tests/dtoProperties';
+import { fromRecipeDTO, RecipeDTO, toRecipeDTO } from '../RecipeDTO';
 
 describe('RecipeDTO', () => {
   let recipe: Recipe;
-  let ingredient: Ingredient;
-  let ingredientLine: IngredientLine;
   let recipeDTO: RecipeDTO;
 
   beforeEach(() => {
-    ingredient = ingredientTestProps.createTestIngredient();
-
-    ingredientLine = IngredientLine.create({
-      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
-      ingredient,
-    });
-    recipe = Recipe.create({
-      ...recipeTestProps.recipePropsNoIngredientLines,
-      ingredientLines: [ingredientLine],
-    });
+    recipe = recipeTestProps.createTestRecipe({}, 1);
   });
 
   describe('toRecipeDTO', () => {
@@ -92,11 +80,12 @@ describe('RecipeDTO', () => {
     });
 
     it('should handle optional imageUrl', () => {
-      const recipeWithImage = Recipe.create({
-        ...recipeTestProps.recipePropsNoIngredientLines,
-        imageUrl: 'https://example.com/recipe.jpg',
-        ingredientLines: [ingredientLine],
-      });
+      const recipeWithImage = recipeTestProps.createTestRecipe(
+        {
+          imageUrl: 'https://example.com/recipe.jpg',
+        },
+        1,
+      );
 
       const dto = toRecipeDTO(recipeWithImage);
       expect(dto.imageUrl).toBe('https://example.com/recipe.jpg');
@@ -139,29 +128,20 @@ describe('RecipeDTO', () => {
     });
 
     it('should handle recipes with multiple ingredient lines', () => {
-      const ingredient2 = ingredientTestProps.createTestIngredient({
-        id: 'ing-2',
-      });
-
-      const ingredientLine2 = IngredientLine.create({
-        ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
-        id: 'line-2',
-        parentId: recipe.id,
-        ingredient: ingredient2,
-        quantityInGrams: 100,
-      });
-
-      const recipeWithMultipleLines = Recipe.create({
-        ...recipeTestProps.recipePropsNoIngredientLines,
-        ingredientLines: [ingredientLine, ingredientLine2],
-      });
+      const recipeWithMultipleLines = recipeTestProps.createTestRecipe({}, 2);
 
       const dto = toRecipeDTO(recipeWithMultipleLines);
       const reconstructed = fromRecipeDTO(dto);
 
       expect(reconstructed.ingredientLines).toHaveLength(2);
-      expect(reconstructed.ingredientLines[0].id).toBe(ingredientLine.id);
-      expect(reconstructed.ingredientLines[1].id).toBe(ingredientLine2.id);
+      expect(reconstructed.ingredientLines[0].id).toBe(
+        recipeTestProps.validRecipePropsWithIngredientLines().ingredientLines[0]
+          .id,
+      );
+      expect(reconstructed.ingredientLines[1].id).toBe(
+        recipeTestProps.validRecipePropsWithIngredientLines().ingredientLines[1]
+          .id,
+      );
     });
   });
 });

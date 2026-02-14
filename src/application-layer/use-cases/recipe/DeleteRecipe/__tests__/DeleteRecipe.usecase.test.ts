@@ -1,12 +1,10 @@
 import { NotFoundError } from '@/domain/common/errors';
-import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { User } from '@/domain/entities/user/User';
 import { ImageType } from '@/domain/repos/ImagesRepo.port';
 import { MemoryImagesRepo } from '@/infra/repos/memory/MemoryImagesRepo';
 import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
-import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
@@ -24,6 +22,7 @@ describe('DeleteRecipeUsecase', () => {
     recipesRepo = new MemoryRecipesRepo();
     memoryImagesRepo = new MemoryImagesRepo();
     usersRepo = new MemoryUsersRepo();
+
     deleteRecipeUsecase = new DeleteRecipeUsecase(
       recipesRepo,
       memoryImagesRepo,
@@ -34,19 +33,9 @@ describe('DeleteRecipeUsecase', () => {
       ...userTestProps.validUserProps,
     });
 
+    testRecipe = recipeTestProps.createTestRecipe({}, 1);
+
     await usersRepo.saveUser(user);
-
-    const testIngredient = ingredientTestProps.createTestIngredient();
-
-    const testIngredientLine = IngredientLine.create({
-      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
-      ingredient: testIngredient,
-    });
-
-    testRecipe = Recipe.create({
-      ...recipeTestProps.recipePropsNoIngredientLines,
-      ingredientLines: [testIngredientLine],
-    });
     await recipesRepo.saveRecipe(testRecipe);
   });
 
@@ -75,9 +64,7 @@ describe('DeleteRecipeUsecase', () => {
         metadata,
       });
 
-      const recipe = Recipe.create({
-        ...recipeTestProps.recipePropsNoIngredientLines,
-        ingredientLines: testRecipe.ingredientLines,
+      const recipe = recipeTestProps.createTestRecipe({
         imageUrl: uploadedImage.url,
       });
 
@@ -95,8 +82,7 @@ describe('DeleteRecipeUsecase', () => {
     });
 
     it('should not affect other recipes when deleting one', async () => {
-      const secondRecipe = Recipe.create({
-        ...recipeTestProps.recipePropsNoIngredientLines,
+      const secondRecipe = recipeTestProps.createTestRecipe({
         id: 'second-recipe-id',
         ingredientLines: testRecipe.ingredientLines,
       });

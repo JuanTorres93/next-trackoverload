@@ -1,17 +1,16 @@
-import * as workoutTestProps from '../../../../../../tests/createProps/workoutTestProps';
-import * as workoutTemplateTestProps from '../../../../../../tests/createProps/workoutTemplateTestProps';
+import { NotFoundError, PermissionError } from '@/domain/common/errors';
 import * as dayTestProps from '../../../../../../tests/createProps/dayTestProps';
 import * as fakeMealTestProps from '../../../../../../tests/createProps/fakeMealTestProps';
 import * as mealTestProps from '../../../../../../tests/createProps/mealTestProps';
 import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
-import { NotFoundError, PermissionError } from '@/domain/common/errors';
+import * as workoutTemplateTestProps from '../../../../../../tests/createProps/workoutTemplateTestProps';
+import * as workoutTestProps from '../../../../../../tests/createProps/workoutTestProps';
 
 // Import entities
 import { Day } from '@/domain/entities/day/Day';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { Meal } from '@/domain/entities/meal/Meal';
-import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { User } from '@/domain/entities/user/User';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
@@ -78,10 +77,7 @@ describe('DeleteUserUsecase', () => {
       userId: userTestProps.userId,
     });
 
-    const recipe = Recipe.create({
-      ...recipeTestProps.validRecipePropsWithIngredientLines(),
-      userId: userTestProps.userId,
-    });
+    const recipe = recipeTestProps.createTestRecipe();
 
     const workout = Workout.create({
       ...workoutTestProps.validWorkoutPropsWithExercises(),

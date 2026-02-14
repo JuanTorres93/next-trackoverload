@@ -1,6 +1,5 @@
 import { Day } from '@/domain/entities/day/Day';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { User } from '@/domain/entities/user/User';
 import { mockForThrowingError } from '@/infra/repos/mongo/__tests__/mockForThrowingError';
@@ -33,7 +32,6 @@ describe('AddMealToDayUsecase', () => {
 
   let day: Day;
   let ingredient: Ingredient;
-  let ingredientLine: IngredientLine;
   let recipe: Recipe;
   let user: User;
 
@@ -60,21 +58,14 @@ describe('AddMealToDayUsecase', () => {
       new Uuidv4IdGenerator(),
       new MongoTransactionContext(),
     );
+
     day = Day.create({
       ...dayTestProps.validDayProps(),
     });
 
     ingredient = ingredientTestProps.createTestIngredient();
 
-    ingredientLine = IngredientLine.create({
-      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
-      ingredient,
-    });
-
-    recipe = Recipe.create({
-      ...recipeTestProps.recipePropsNoIngredientLines,
-      ingredientLines: [ingredientLine],
-    });
+    recipe = recipeTestProps.createTestRecipe();
 
     user = User.create({
       ...userTestProps.validUserProps,

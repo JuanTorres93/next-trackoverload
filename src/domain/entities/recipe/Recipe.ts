@@ -76,8 +76,8 @@ export class Recipe implements Protein, Calories {
     this.props.updatedAt = DomainDate.create();
   }
 
-  updateImageUrl(imageUrl: string): void {
-    this.props.imageUrl = Text.create(imageUrl);
+  updateImageUrl(imageUrl: string | undefined): void {
+    this.props.imageUrl = imageUrl ? Text.create(imageUrl) : undefined;
     this.props.updatedAt = DomainDate.create();
   }
 
