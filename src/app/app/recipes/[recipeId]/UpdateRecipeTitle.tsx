@@ -1,7 +1,7 @@
 'use client';
 
 import { renameRecipe } from '@/app/_features/recipe/actions';
-import { useDebounce } from '@/app/hooks/useDebounce';
+import { useDebounce } from '@/app/_hooks/useDebounce';
 
 function UpdateRecipeTitle({
   originalTitle,

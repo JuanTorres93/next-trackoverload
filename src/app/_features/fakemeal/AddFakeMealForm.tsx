@@ -1,7 +1,7 @@
 import ButtonNew from '@/app/_ui/ButtonNew';
 import FormEntry from '@/app/_ui/form/FormEntry';
 import Input from '@/app/_ui/Input';
-import { useFormSetup } from '@/app/hooks/useFormSetup';
+import { useFormSetup } from '@/app/_hooks/useFormSetup';
 import { addFakeMealToDay } from './actions';
 
 export type AddFakeMealFormState = {

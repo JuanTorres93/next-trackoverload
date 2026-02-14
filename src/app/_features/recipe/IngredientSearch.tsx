@@ -3,7 +3,7 @@ import ButtonSearch from '@/app/_ui/ButtonSearch';
 import Input from '@/app/_ui/Input';
 import Spinner from '@/app/_ui/Spinner';
 import { formatToInteger } from '@/app/_utils/format/formatToInteger';
-import { useOutsideClick } from '@/app/hooks/useOutsideClick';
+import { useOutsideClick } from '@/app/_hooks/useOutsideClick';
 import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
 import { IngredientFinderResult } from '@/domain/services/IngredientFinder.port';
 import { createContext, useContext, useState } from 'react';

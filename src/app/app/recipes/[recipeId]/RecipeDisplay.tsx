@@ -16,7 +16,7 @@ import IngredientSearch, {
   IngredientLineWithExternalRef,
 } from '@/app/_features/recipe/IngredientSearch';
 import ButtonNew from '@/app/_ui/ButtonNew';
-import { useDebounce } from '@/app/hooks/useDebounce';
+import { useDebounce } from '@/app/_hooks/useDebounce';
 import { useState } from 'react';
 
 interface RecipeDisplayProps {
