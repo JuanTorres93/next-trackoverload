@@ -1,16 +1,15 @@
-import * as mealTestProps from '../../../../../../tests/createProps/mealTestProps';
-import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
-import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
-import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError } from '@/domain/common/errors';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { User } from '@/domain/entities/user/User';
 import { MemoryMealsRepo } from '@/infra/repos/memory/MemoryMealsRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
+import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
+import * as mealTestProps from '../../../../../../tests/createProps/mealTestProps';
+import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import { UpdateMealUsecase } from '../UpdateMeal.usecase';
 
 describe('UpdateMealUsecase', () => {
@@ -31,9 +30,7 @@ describe('UpdateMealUsecase', () => {
 
     await usersRepo.saveUser(user);
 
-    const ingredient = Ingredient.create({
-      ...ingredientTestProps.validIngredientProps,
-    });
+    const ingredient = ingredientTestProps.createTestIngredient();
 
     const ingredientLine = IngredientLine.create({
       ...recipeTestProps.ingredientLineRecipePropsNoIngredient,

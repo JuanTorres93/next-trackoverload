@@ -1,24 +1,23 @@
-import * as externalIngredientRefTestProps from '../../../../../../tests/createProps/externalIngredientRefTestProps';
-import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
-import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { NotFoundError, PermissionError } from '@/domain/common/errors';
 import { ExternalIngredientRef } from '@/domain/entities/externalingredientref/ExternalIngredientRef';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { User } from '@/domain/entities/user/User';
 import { MemoryExternalIngredientsRefRepo } from '@/infra';
 import { MemoryImagesRepo } from '@/infra/repos/memory/MemoryImagesRepo';
-import { SharpServerImageProcessor } from '@/infra/services/ImageProcessor/ServerImageProcessor/SharpServerImageProcessor/SharpServerImageProcessor';
 import { MemoryIngredientsRepo } from '@/infra/repos/memory/MemoryIngredientsRepo';
 import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
+import { SharpServerImageProcessor } from '@/infra/services/ImageProcessor/ServerImageProcessor/SharpServerImageProcessor/SharpServerImageProcessor';
 import { MemoryTransactionContext } from '@/infra/transaction-context/MemoryTransactionContext/MemoryTransactionContext';
+import * as externalIngredientRefTestProps from '../../../../../../tests/createProps/externalIngredientRefTestProps';
+import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
-import { CreateRecipeUsecase } from '../CreateRecipe.usecase';
 import { CreateIngredientLineData } from '../../common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
+import { CreateRecipeUsecase } from '../CreateRecipe.usecase';
 
 describe('CreateRecipeUsecase', () => {
   let recipesRepo: MemoryRecipesRepo;
@@ -130,8 +129,7 @@ describe('CreateRecipeUsecase', () => {
 
       await externalIngredientsRefRepo.save(anotherExternalIngredientRef);
 
-      const testIngredient = Ingredient.create({
-        ...ingredientTestProps.validIngredientProps,
+      const testIngredient = ingredientTestProps.createTestIngredient({
         id: 'existing-ingredient-id',
         name: 'Chicken Breast',
         calories: 165,
@@ -219,8 +217,7 @@ describe('CreateRecipeUsecase', () => {
 
     it('should create recipe with multiple ingredient lines', async () => {
       // Create a second test ingredient
-      const testIngredient2 = Ingredient.create({
-        ...ingredientTestProps.validIngredientProps,
+      const testIngredient2 = ingredientTestProps.createTestIngredient({
         id: 'ingredient-2',
         name: 'Rice',
         calories: 130,

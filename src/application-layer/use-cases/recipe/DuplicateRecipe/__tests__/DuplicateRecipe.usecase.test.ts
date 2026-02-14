@@ -1,7 +1,6 @@
 import * as dto from '@/../tests/dtoProperties';
 import { toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { NotFoundError } from '@/domain/common/errors';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { User } from '@/domain/entities/user/User';
@@ -47,9 +46,7 @@ describe('DuplicateRecipeUsecase', () => {
 
     await usersRepo.saveUser(user);
 
-    const testIngredient = Ingredient.create({
-      ...ingredientTestProps.validIngredientProps,
-    });
+    const testIngredient = ingredientTestProps.createTestIngredient();
 
     const testIngredientLine = IngredientLine.create({
       ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
@@ -125,8 +122,7 @@ describe('DuplicateRecipeUsecase', () => {
     });
 
     it('should preserve all ingredients from original recipe', async () => {
-      const secondIngredient = Ingredient.create({
-        ...ingredientTestProps.validIngredientProps,
+      const secondIngredient = ingredientTestProps.createTestIngredient({
         id: 'second-ingredient-id',
       });
 

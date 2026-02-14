@@ -8,16 +8,15 @@ import { MemoryTransactionContext } from '@/infra/transaction-context/MemoryTran
 import { beforeEach, describe, expect, it } from 'vitest';
 import { RemoveMealFromDayUsecase } from '../RemoveMealFromDay.usecase';
 
-import * as dayTestProps from '../../../../../../tests/createProps/dayTestProps';
-import * as fakeMealTestProps from '../../../../../../tests/createProps/fakeMealTestProps';
-import * as mealTestProps from '../../../../../../tests/createProps/mealTestProps';
-import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
-import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
-import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
+import * as dayTestProps from '../../../../../../tests/createProps/dayTestProps';
+import * as fakeMealTestProps from '../../../../../../tests/createProps/fakeMealTestProps';
+import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
+import * as mealTestProps from '../../../../../../tests/createProps/mealTestProps';
+import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 
 describe('RemoveMealFromDayUsecase', () => {
   let daysRepo: MemoryDaysRepo;
@@ -41,9 +40,8 @@ describe('RemoveMealFromDayUsecase', () => {
       new MemoryTransactionContext(),
     );
 
-    const ingredient = Ingredient.create(
-      ingredientTestProps.validIngredientProps,
-    );
+    const ingredient = ingredientTestProps.createTestIngredient();
+
     const ingredientLine = IngredientLine.create({
       ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       ingredient,

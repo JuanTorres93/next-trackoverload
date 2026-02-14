@@ -13,7 +13,8 @@ describe('RecipeDTO', () => {
   let recipeDTO: RecipeDTO;
 
   beforeEach(() => {
-    ingredient = Ingredient.create(ingredientTestProps.validIngredientProps);
+    ingredient = ingredientTestProps.createTestIngredient();
+
     ingredientLine = IngredientLine.create({
       ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       ingredient,
@@ -138,10 +139,10 @@ describe('RecipeDTO', () => {
     });
 
     it('should handle recipes with multiple ingredient lines', () => {
-      const ingredient2 = Ingredient.create({
-        ...ingredientTestProps.validIngredientProps,
+      const ingredient2 = ingredientTestProps.createTestIngredient({
         id: 'ing-2',
       });
+
       const ingredientLine2 = IngredientLine.create({
         ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
         id: 'line-2',

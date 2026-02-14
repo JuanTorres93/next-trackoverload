@@ -20,7 +20,8 @@ describe('DayDTO', () => {
   let dayDTO: DayDTO;
 
   beforeEach(() => {
-    ingredient = Ingredient.create(ingredientTestProps.validIngredientProps);
+    ingredient = ingredientTestProps.createTestIngredient();
+
     ingredientLine = IngredientLine.create({
       ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       parentType: 'meal',

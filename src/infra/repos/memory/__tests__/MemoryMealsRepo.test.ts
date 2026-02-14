@@ -1,20 +1,12 @@
-import * as mealTestProps from '../../../../../tests/createProps/mealTestProps';
-import * as recipeTestProps from '../../../../../tests/createProps/recipeTestProps';
-import * as ingredientTestProps from '../../../../../tests/createProps/ingredientTestProps';
-import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { beforeEach, describe, expect, it } from 'vitest';
+import * as ingredientTestProps from '../../../../../tests/createProps/ingredientTestProps';
+import * as mealTestProps from '../../../../../tests/createProps/mealTestProps';
+import * as recipeTestProps from '../../../../../tests/createProps/recipeTestProps';
+import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import { MemoryMealsRepo } from '../MemoryMealsRepo';
-
-const validIngredientProps = {
-  ...ingredientTestProps.validIngredientProps,
-  nutritionalInfoPer100g: {
-    calories: 165,
-    protein: 25,
-  },
-};
 
 describe('MemoryMealsRepo', () => {
   let repo: MemoryMealsRepo;
@@ -24,7 +16,7 @@ describe('MemoryMealsRepo', () => {
 
   beforeEach(async () => {
     repo = new MemoryMealsRepo();
-    ingredient = Ingredient.create(validIngredientProps);
+    ingredient = ingredientTestProps.createTestIngredient();
 
     ingredientLine = IngredientLine.create({
       ...recipeTestProps.ingredientLineRecipePropsNoIngredient,

@@ -31,17 +31,14 @@ describe('MongoRecipesRepo', () => {
     ingredientsRepo = new MongoIngredientsRepo();
     repo = new MongoRecipesRepo();
 
-    // Create and save ingredients first (needed for recipe lines)
-    ingredient = Ingredient.create(ingredientTestProps.validIngredientProps);
+    ingredient = ingredientTestProps.createTestIngredient();
     await ingredientsRepo.saveIngredient(ingredient);
 
-    const ingredient2 = Ingredient.create({
+    const ingredient2 = ingredientTestProps.createTestIngredient({
       id: 'ing2',
       name: 'Rice',
       calories: 130,
       protein: 3,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
     await ingredientsRepo.saveIngredient(ingredient2);
 
@@ -61,8 +58,7 @@ describe('MongoRecipesRepo', () => {
       const allRecipesBefore = await repo.getAllRecipes();
       expect(allRecipesBefore.length).toBe(1);
 
-      const newIngredient = Ingredient.create({
-        ...ingredientTestProps.validIngredientProps,
+      const newIngredient = ingredientTestProps.createTestIngredient({
         id: 'ingredient-2',
         name: 'Rice',
       });
@@ -111,8 +107,7 @@ describe('MongoRecipesRepo', () => {
       );
       expect(existingRecipe!.ingredientLines).toHaveLength(2);
 
-      const anotherIngredient = Ingredient.create({
-        ...ingredientTestProps.validIngredientProps,
+      const anotherIngredient = ingredientTestProps.createTestIngredient({
         id: 'ingredient-3',
         name: 'Tomato',
       });
@@ -149,7 +144,7 @@ describe('MongoRecipesRepo', () => {
       const recipes = await repo.getAllRecipes();
       expect(recipes[0].ingredientLines).toHaveLength(2);
       expect(recipes[0].ingredientLines[0].ingredient.name).toBe(
-        ingredientTestProps.validIngredientProps.name,
+        ingredient.name,
       );
     });
   });
@@ -196,8 +191,7 @@ describe('MongoRecipesRepo', () => {
     });
 
     it('should only return recipes for the specified user', async () => {
-      const anotherIngredient = Ingredient.create({
-        ...ingredientTestProps.validIngredientProps,
+      const anotherIngredient = ingredientTestProps.createTestIngredient({
         id: 'ingredient-other',
         name: 'Other Ingredient',
       });
@@ -312,8 +306,7 @@ describe('MongoRecipesRepo', () => {
 
   describe('deleteMultipleIngredientLinesInRecipe', () => {
     it('should delete multiple ingredient lines', async () => {
-      const anotherIngredient = Ingredient.create({
-        ...ingredientTestProps.validIngredientProps,
+      const anotherIngredient = ingredientTestProps.createTestIngredient({
         id: 'ingredient-another',
         name: 'Another Ingredient',
       });
@@ -373,8 +366,7 @@ describe('MongoRecipesRepo', () => {
 
   describe('deleteAllRecipesForUser', () => {
     it('should delete all recipes for a user', async () => {
-      const anotherIngredient = Ingredient.create({
-        ...ingredientTestProps.validIngredientProps,
+      const anotherIngredient = ingredientTestProps.createTestIngredient({
         id: 'ingredient-2',
         name: 'Another Ingredient',
       });
@@ -467,8 +459,7 @@ describe('MongoRecipesRepo', () => {
         );
         existingRecipe!.rename('Updated Recipe Name');
 
-        const anotherIngredient = Ingredient.create({
-          ...ingredientTestProps.validIngredientProps,
+        const anotherIngredient = ingredientTestProps.createTestIngredient({
           id: 'ingredient-2',
           name: 'Tomato',
         });
@@ -507,8 +498,7 @@ describe('MongoRecipesRepo', () => {
         );
         existingRecipe!.rename('Updated Recipe Name');
 
-        const anotherIngredient = Ingredient.create({
-          ...ingredientTestProps.validIngredientProps,
+        const anotherIngredient = ingredientTestProps.createTestIngredient({
           id: 'ingredient-2',
           name: 'Tomato',
         });
@@ -635,8 +625,7 @@ describe('MongoRecipesRepo', () => {
 
     describe('deleteMultipleIngredientLinesInRecipe', () => {
       it('should rollback changes if error occurs when deleting multiple ingredient lines', async () => {
-        const anotherIngredient = Ingredient.create({
-          ...ingredientTestProps.validIngredientProps,
+        const anotherIngredient = ingredientTestProps.createTestIngredient({
           id: 'ingredient-another',
           name: 'Another Ingredient',
         });
@@ -651,7 +640,7 @@ describe('MongoRecipesRepo', () => {
               id: 'line-recipe2-1',
               parentId: 'recipe-2',
               parentType: 'recipe',
-              ingredient: ingredient,
+              ingredient: anotherIngredient,
               quantityInGrams: 100,
             }),
           ],

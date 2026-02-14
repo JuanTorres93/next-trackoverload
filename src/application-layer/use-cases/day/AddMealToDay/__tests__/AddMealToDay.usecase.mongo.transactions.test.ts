@@ -63,9 +63,9 @@ describe('AddMealToDayUsecase', () => {
     day = Day.create({
       ...dayTestProps.validDayProps(),
     });
-    ingredient = Ingredient.create({
-      ...ingredientTestProps.validIngredientProps,
-    });
+
+    ingredient = ingredientTestProps.createTestIngredient();
+
     ingredientLine = IngredientLine.create({
       ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       ingredient,

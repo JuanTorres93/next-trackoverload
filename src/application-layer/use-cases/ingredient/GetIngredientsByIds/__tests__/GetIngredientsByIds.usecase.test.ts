@@ -18,12 +18,11 @@ describe('GetIngredientsByIdsUsecase', () => {
 
   describe('Found', () => {
     it('should return ingredients that exist', async () => {
-      const ingredient1 = Ingredient.create({
-        ...ingredientTestProps.validIngredientProps,
+      const ingredient1 = ingredientTestProps.createTestIngredient({
         name: 'Chicken Breast',
       });
-      const ingredient2 = Ingredient.create({
-        ...ingredientTestProps.validIngredientProps,
+
+      const ingredient2 = ingredientTestProps.createTestIngredient({
         id: '2',
         name: 'Rice',
       });
@@ -32,7 +31,7 @@ describe('GetIngredientsByIdsUsecase', () => {
       await ingredientsRepo.saveIngredient(ingredient2);
 
       const ingredients = await getIngredientsByIdsUsecase.execute({
-        ids: [ingredientTestProps.validIngredientProps.id, '2', 'non-existent'],
+        ids: [ingredient1.id, ingredient2.id, 'non-existent'],
       });
 
       const ingredientIds = ingredients.map((i) => i.id);
@@ -43,12 +42,10 @@ describe('GetIngredientsByIdsUsecase', () => {
     });
 
     it('should return an array of IngredientDTO', async () => {
-      const ingredient1 = Ingredient.create({
-        ...ingredientTestProps.validIngredientProps,
+      const ingredient1 = ingredientTestProps.createTestIngredient({
         name: 'Chicken Breast',
       });
-      const ingredient2 = Ingredient.create({
-        ...ingredientTestProps.validIngredientProps,
+      const ingredient2 = ingredientTestProps.createTestIngredient({
         id: '2',
         name: 'Rice',
       });
@@ -57,7 +54,7 @@ describe('GetIngredientsByIdsUsecase', () => {
       await ingredientsRepo.saveIngredient(ingredient2);
 
       const ingredients = await getIngredientsByIdsUsecase.execute({
-        ids: [ingredientTestProps.validIngredientProps.id, '2'],
+        ids: [ingredient1.id, ingredient2.id],
       });
 
       expect(ingredients).toHaveLength(2);

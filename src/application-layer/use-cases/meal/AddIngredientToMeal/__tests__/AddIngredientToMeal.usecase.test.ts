@@ -1,10 +1,5 @@
-import * as mealTestProps from '../../../../../../tests/createProps/mealTestProps';
-import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
-import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
-import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError } from '@/domain/common/errors';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { User } from '@/domain/entities/user/User';
@@ -12,6 +7,10 @@ import { MemoryIngredientsRepo } from '@/infra/repos/memory/MemoryIngredientsRep
 import { MemoryMealsRepo } from '@/infra/repos/memory/MemoryMealsRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
+import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
+import * as mealTestProps from '../../../../../../tests/createProps/mealTestProps';
+import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import {
   AddIngredientToMealUsecase,
   AddIngredientToMealUsecaseRequest,
@@ -46,8 +45,7 @@ describe('AddIngredientToMealUsecase', () => {
 
     await usersRepo.saveUser(user);
 
-    const testIngredient = Ingredient.create({
-      ...ingredientTestProps.validIngredientProps,
+    const testIngredient = ingredientTestProps.createTestIngredient({
       name: 'Chicken Breast',
       calories: 165,
       protein: 31,
@@ -65,8 +63,7 @@ describe('AddIngredientToMealUsecase', () => {
     });
     await mealsRepo.saveMeal(testMeal);
 
-    const newIngredient = Ingredient.create({
-      ...ingredientTestProps.validIngredientProps,
+    const newIngredient = ingredientTestProps.createTestIngredient({
       id: 'ing-new',
       name: 'Rice',
       calories: 130,

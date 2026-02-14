@@ -33,7 +33,7 @@ describe('MongoMealsRepo', () => {
     repo = new MongoMealsRepo();
 
     // Create and save an ingredient first (needed for meal lines)
-    ingredient = Ingredient.create(ingredientTestProps.validIngredientProps);
+    ingredient = ingredientTestProps.createTestIngredient();
     await ingredientsRepo.saveIngredient(ingredient);
 
     // Create a meal with ingredient lines
@@ -46,8 +46,7 @@ describe('MongoMealsRepo', () => {
   });
 
   it('should save a meal with its ingredient lines', async () => {
-    const newIngredient = Ingredient.create({
-      ...ingredientTestProps.validIngredientProps,
+    const newIngredient = ingredientTestProps.createTestIngredient({
       id: 'ingredient-2',
       name: 'Rice',
     });
@@ -99,8 +98,7 @@ describe('MongoMealsRepo', () => {
     expect(existingMeal!.ingredientLines).toHaveLength(1);
 
     // Create a new ingredient and add it to the meal
-    const newIngredient = Ingredient.create({
-      ...ingredientTestProps.validIngredientProps,
+    const newIngredient = ingredientTestProps.createTestIngredient({
       id: 'ingredient-3',
       name: 'Beans',
     });
@@ -153,7 +151,7 @@ describe('MongoMealsRepo', () => {
       repo = new MongoMealsRepo();
 
       // Save ingredient
-      ingredient = Ingredient.create(ingredientTestProps.validIngredientProps);
+      ingredient = ingredientTestProps.createTestIngredient();
       await ingredientsRepo.saveIngredient(ingredient);
 
       const meals = [
@@ -560,8 +558,7 @@ describe('MongoMealsRepo', () => {
           name: 'Updated Meal Name',
         });
 
-        const anotherIngredient = Ingredient.create({
-          ...ingredientTestProps.validIngredientProps,
+        const anotherIngredient = ingredientTestProps.createTestIngredient({
           id: 'ingredient-2',
           name: 'Tomato',
         });
@@ -591,7 +588,7 @@ describe('MongoMealsRepo', () => {
         );
         expect(notUpdatedMeal!.ingredientLines).toHaveLength(1);
         expect(notUpdatedMeal!.ingredientLines[0].ingredient.name).toBe(
-          ingredientTestProps.validIngredientProps.name,
+          ingredient.name,
         );
       });
 
@@ -605,8 +602,7 @@ describe('MongoMealsRepo', () => {
           name: 'Updated Meal Name',
         });
 
-        const anotherIngredient = Ingredient.create({
-          ...ingredientTestProps.validIngredientProps,
+        const anotherIngredient = ingredientTestProps.createTestIngredient({
           id: 'ingredient-2',
           name: 'Tomato',
         });
@@ -636,7 +632,7 @@ describe('MongoMealsRepo', () => {
         );
         expect(notUpdatedMeal!.ingredientLines).toHaveLength(1);
         expect(notUpdatedMeal!.ingredientLines[0].ingredient.name).toBe(
-          ingredientTestProps.validIngredientProps.name,
+          ingredient.name,
         );
       });
     });

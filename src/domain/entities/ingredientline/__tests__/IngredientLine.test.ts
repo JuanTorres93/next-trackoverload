@@ -6,9 +6,7 @@ import { ValidationError } from '@/domain/common/errors';
 import * as recipeTestProps from '../../../../../tests/createProps/recipeTestProps';
 import * as ingredientTestProps from '../../../../../tests/createProps/ingredientTestProps';
 
-const validIngredient = Ingredient.create(
-  ingredientTestProps.validIngredientProps,
-);
+const validIngredient = ingredientTestProps.createTestIngredient();
 
 const validIngredientLineProps = {
   ...recipeTestProps.ingredientLineRecipePropsNoIngredient,

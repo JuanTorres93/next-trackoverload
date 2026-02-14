@@ -9,13 +9,13 @@ describe('MemoryIngredientsRepo', () => {
 
   beforeEach(async () => {
     repo = new MemoryIngredientsRepo();
-    ingredient = Ingredient.create(ingredientTestProps.validIngredientProps);
+    ingredient = ingredientTestProps.createTestIngredient();
+
     await repo.saveIngredient(ingredient);
   });
 
   it('should save an ingredient', async () => {
-    const newIngredient = Ingredient.create({
-      ...ingredientTestProps.validIngredientProps,
+    const newIngredient = ingredientTestProps.createTestIngredient({
       id: 'other-id',
       name: 'Rice',
       updatedAt: new Date('2023-01-02'),
@@ -28,8 +28,8 @@ describe('MemoryIngredientsRepo', () => {
   });
 
   it('should update an existing ingredient', async () => {
-    const updatedIngredient = Ingredient.create({
-      ...ingredientTestProps.validIngredientProps,
+    const updatedIngredient = ingredientTestProps.createTestIngredient({
+      id: ingredient.id,
       name: 'Updated Chicken Breast',
       updatedAt: new Date('2023-01-03'),
     });
@@ -41,13 +41,9 @@ describe('MemoryIngredientsRepo', () => {
   });
 
   it('should retrieve an ingredient by ID', async () => {
-    const fetchedIngredient = await repo.getIngredientById(
-      ingredientTestProps.validIngredientProps.id,
-    );
+    const fetchedIngredient = await repo.getIngredientById(ingredient.id);
     expect(fetchedIngredient).not.toBeNull();
-    expect(fetchedIngredient?.name).toBe(
-      ingredientTestProps.validIngredientProps.name,
-    );
+    expect(fetchedIngredient?.name).toBe(ingredient.name);
   });
 
   it('should return null for non-existent ingredient ID', async () => {
@@ -60,18 +56,15 @@ describe('MemoryIngredientsRepo', () => {
       repo = new MemoryIngredientsRepo();
 
       const ingredients = [
-        Ingredient.create({
-          ...ingredientTestProps.validIngredientProps,
+        ingredientTestProps.createTestIngredient({
           id: 'id-1',
           name: 'Ingredient 1',
         }),
-        Ingredient.create({
-          ...ingredientTestProps.validIngredientProps,
+        ingredientTestProps.createTestIngredient({
           id: 'id-2',
           name: 'Ingredient 2',
         }),
-        Ingredient.create({
-          ...ingredientTestProps.validIngredientProps,
+        ingredientTestProps.createTestIngredient({
           id: 'id-3',
           name: 'Ingredient 3',
         }),
@@ -140,7 +133,7 @@ describe('MemoryIngredientsRepo', () => {
     const allIngredients = await repo.getAllIngredients();
     expect(allIngredients.length).toBe(1);
 
-    await repo.deleteIngredient(ingredientTestProps.validIngredientProps.id);
+    await repo.deleteIngredient(ingredient.id);
 
     const allIngredientsAfterDeletion = await repo.getAllIngredients();
     expect(allIngredientsAfterDeletion.length).toBe(0);

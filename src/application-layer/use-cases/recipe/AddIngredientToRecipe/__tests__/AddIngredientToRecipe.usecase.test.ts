@@ -53,10 +53,7 @@ describe('AddIngredientToRecipeUsecase', () => {
 
     await usersRepo.saveUser(user);
 
-    // Create ingredient for initial recipe
-    const testIngredient = Ingredient.create({
-      ...ingredientTestProps.validIngredientProps,
-    });
+    const testIngredient = ingredientTestProps.createTestIngredient();
 
     await ingredientsRepo.saveIngredient(testIngredient);
 
@@ -78,8 +75,7 @@ describe('AddIngredientToRecipeUsecase', () => {
     });
     await externalIngredientsRefRepo.save(newExternalIngredientRef);
 
-    newIngredient = Ingredient.create({
-      ...ingredientTestProps.validIngredientProps,
+    newIngredient = ingredientTestProps.createTestIngredient({
       id: 'new-ingredient-id',
     });
     await ingredientsRepo.saveIngredient(newIngredient);
@@ -95,9 +91,9 @@ describe('AddIngredientToRecipeUsecase', () => {
         externalIngredientId: newExternalIngredientRef.externalId,
         source:
           externalIngredientRefTestProps.validExternalIngredientRefProps.source,
-        name: ingredientTestProps.validIngredientProps.name,
-        caloriesPer100g: ingredientTestProps.validIngredientProps.calories,
-        proteinPer100g: ingredientTestProps.validIngredientProps.protein,
+        name: newIngredient.name,
+        caloriesPer100g: newIngredient.nutritionalInfoPer100g.calories,
+        proteinPer100g: newIngredient.nutritionalInfoPer100g.protein,
         quantityInGrams: 150,
       };
 
@@ -113,9 +109,9 @@ describe('AddIngredientToRecipeUsecase', () => {
         externalIngredientId: newExternalIngredientRef.externalId,
         source:
           externalIngredientRefTestProps.validExternalIngredientRefProps.source,
-        name: ingredientTestProps.validIngredientProps.name,
-        caloriesPer100g: ingredientTestProps.validIngredientProps.calories,
-        proteinPer100g: ingredientTestProps.validIngredientProps.protein,
+        name: newIngredient.name,
+        caloriesPer100g: newIngredient.nutritionalInfoPer100g.calories,
+        proteinPer100g: newIngredient.nutritionalInfoPer100g.protein,
         quantityInGrams: 150,
       };
 
@@ -139,9 +135,9 @@ describe('AddIngredientToRecipeUsecase', () => {
         externalIngredientId: newExternalIngredientRef.externalId,
         source:
           externalIngredientRefTestProps.validExternalIngredientRefProps.source,
-        name: ingredientTestProps.validIngredientProps.name,
-        caloriesPer100g: ingredientTestProps.validIngredientProps.calories,
-        proteinPer100g: ingredientTestProps.validIngredientProps.protein,
+        name: newIngredient.name,
+        caloriesPer100g: newIngredient.nutritionalInfoPer100g.calories,
+        proteinPer100g: newIngredient.nutritionalInfoPer100g.protein,
         quantityInGrams: 150,
       };
 
@@ -161,9 +157,9 @@ describe('AddIngredientToRecipeUsecase', () => {
         externalIngredientId: 'non-existent-external-ingredient-id',
         source:
           externalIngredientRefTestProps.validExternalIngredientRefProps.source,
-        name: ingredientTestProps.validIngredientProps.name,
-        caloriesPer100g: ingredientTestProps.validIngredientProps.calories,
-        proteinPer100g: ingredientTestProps.validIngredientProps.protein,
+        name: newIngredient.name,
+        caloriesPer100g: newIngredient.nutritionalInfoPer100g.calories,
+        proteinPer100g: newIngredient.nutritionalInfoPer100g.protein,
         quantityInGrams: 200,
       };
 
@@ -209,11 +205,11 @@ describe('AddIngredientToRecipeUsecase', () => {
         recipeId: 'non-existent-id',
         userId: userTestProps.userId,
         externalIngredientId: newExternalIngredientRef.externalId,
-        name: ingredientTestProps.validIngredientProps.name,
+        name: newIngredient.name,
         source:
           externalIngredientRefTestProps.validExternalIngredientRefProps.source,
-        caloriesPer100g: ingredientTestProps.validIngredientProps.calories,
-        proteinPer100g: ingredientTestProps.validIngredientProps.protein,
+        caloriesPer100g: newIngredient.nutritionalInfoPer100g.calories,
+        proteinPer100g: newIngredient.nutritionalInfoPer100g.protein,
         quantityInGrams: 150,
       };
 
@@ -233,9 +229,9 @@ describe('AddIngredientToRecipeUsecase', () => {
         externalIngredientId: newExternalIngredientRef.externalId,
         source:
           externalIngredientRefTestProps.validExternalIngredientRefProps.source,
-        name: ingredientTestProps.validIngredientProps.name,
-        caloriesPer100g: ingredientTestProps.validIngredientProps.calories,
-        proteinPer100g: ingredientTestProps.validIngredientProps.protein,
+        name: newIngredient.name,
+        caloriesPer100g: newIngredient.nutritionalInfoPer100g.calories,
+        proteinPer100g: newIngredient.nutritionalInfoPer100g.protein,
         quantityInGrams: 100,
       };
 
@@ -260,9 +256,9 @@ describe('AddIngredientToRecipeUsecase', () => {
         externalIngredientId: newExternalIngredientRef.externalId,
         source:
           externalIngredientRefTestProps.validExternalIngredientRefProps.source,
-        name: ingredientTestProps.validIngredientProps.name,
-        caloriesPer100g: ingredientTestProps.validIngredientProps.calories,
-        proteinPer100g: ingredientTestProps.validIngredientProps.protein,
+        name: newIngredient.name,
+        caloriesPer100g: newIngredient.nutritionalInfoPer100g.calories,
+        proteinPer100g: newIngredient.nutritionalInfoPer100g.protein,
         quantityInGrams: 150,
       };
 

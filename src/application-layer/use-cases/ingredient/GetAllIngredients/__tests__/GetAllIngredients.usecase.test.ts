@@ -16,12 +16,11 @@ describe('GetAllIngredientsUsecase', () => {
 
   describe('Found', () => {
     it('should return all ingredients', async () => {
-      const ingredient1 = Ingredient.create({
-        ...ingredientTestProps.validIngredientProps,
+      const ingredient1 = ingredientTestProps.createTestIngredient({
         name: 'Chicken Breast',
       });
-      const ingredient2 = Ingredient.create({
-        ...ingredientTestProps.validIngredientProps,
+
+      const ingredient2 = ingredientTestProps.createTestIngredient({
         id: 'ing-2',
         name: 'Rice',
       });
@@ -39,12 +38,10 @@ describe('GetAllIngredientsUsecase', () => {
     });
 
     it('should return an array of IngredientDTO', async () => {
-      const ingredient1 = Ingredient.create({
-        ...ingredientTestProps.validIngredientProps,
+      const ingredient1 = ingredientTestProps.createTestIngredient({
         name: 'Chicken Breast',
       });
-      const ingredient2 = Ingredient.create({
-        ...ingredientTestProps.validIngredientProps,
+      const ingredient2 = ingredientTestProps.createTestIngredient({
         id: 'ing-2',
         name: 'Rice',
       });

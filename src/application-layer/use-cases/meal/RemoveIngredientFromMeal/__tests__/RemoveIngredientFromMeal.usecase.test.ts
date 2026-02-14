@@ -36,12 +36,9 @@ describe('RemoveIngredientFromMealUsecase', () => {
 
     await usersRepo.saveUser(user);
 
-    testIngredient = Ingredient.create({
-      ...ingredientTestProps.validIngredientProps,
-    });
+    testIngredient = ingredientTestProps.createTestIngredient();
 
-    secondIngredient = Ingredient.create({
-      ...ingredientTestProps.validIngredientProps,
+    secondIngredient = ingredientTestProps.createTestIngredient({
       id: 'ing2',
     });
 

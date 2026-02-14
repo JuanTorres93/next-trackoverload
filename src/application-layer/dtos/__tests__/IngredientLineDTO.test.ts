@@ -15,7 +15,8 @@ describe('IngredientLineDTO', () => {
   let ingredientLineDTO: IngredientLineDTO;
 
   beforeEach(() => {
-    ingredient = Ingredient.create(ingredientTestProps.validIngredientProps);
+    ingredient = ingredientTestProps.createTestIngredient();
+
     ingredientLine = IngredientLine.create({
       ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       ingredient,
@@ -104,10 +105,7 @@ describe('IngredientLineDTO', () => {
     });
 
     it('should handle ingredient lines with optional imageUrl', () => {
-      const ingredientWithImage = Ingredient.create({
-        ...ingredientTestProps.validIngredientProps,
-        imageUrl: 'https://example.com/image.jpg',
-      });
+      const ingredientWithImage = ingredientTestProps.createTestIngredient();
 
       const ingredientLineWithImage = IngredientLine.create({
         ...recipeTestProps.ingredientLineRecipePropsNoIngredient,

@@ -10,13 +10,12 @@ import * as ingredientTestProps from '../../../../../tests/createProps/ingredien
 
 describe('Recipe', () => {
   let recipe: Recipe;
+  let validIngredient: Ingredient;
   let validRecipeProps: RecipeCreateProps;
   let validIngredientLine: IngredientLine;
 
   beforeEach(() => {
-    const validIngredient = Ingredient.create(
-      ingredientTestProps.validIngredientProps,
-    );
+    validIngredient = ingredientTestProps.createTestIngredient();
 
     validIngredientLine = IngredientLine.create({
       ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
@@ -61,8 +60,7 @@ describe('Recipe', () => {
         ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
         id: 'another-line-id',
         quantityInGrams: 50,
-        ingredient: Ingredient.create({
-          ...ingredientTestProps.validIngredientProps,
+        ingredient: ingredientTestProps.createTestIngredient({
           id: 'other-ing-id',
           calories: 200,
           protein: 20,
@@ -79,14 +77,13 @@ describe('Recipe', () => {
 
     it('should compute total protein', async () => {
       expect(recipe.protein).toBe(
-        ingredientTestProps.validIngredientProps.protein,
+        validIngredient.nutritionalInfoPer100g.protein,
       );
 
       const anotherIngredientLine = IngredientLine.create({
         ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
         id: 'another-line-id',
-        ingredient: Ingredient.create({
-          ...ingredientTestProps.validIngredientProps,
+        ingredient: ingredientTestProps.createTestIngredient({
           id: 'other-ing-id',
           calories: 200,
           protein: 10,
@@ -100,7 +97,7 @@ describe('Recipe', () => {
       });
 
       expect(recipeWithTwoLines.protein).toBe(
-        ingredientTestProps.validIngredientProps.protein + 10,
+        validIngredient.nutritionalInfoPer100g.protein + 10,
       );
     });
 
@@ -123,8 +120,7 @@ describe('Recipe', () => {
       expect(recipe.ingredientLines.length).toBe(1);
       const anotherIngredientLine = IngredientLine.create({
         ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
-        ingredient: Ingredient.create({
-          ...ingredientTestProps.validIngredientProps,
+        ingredient: ingredientTestProps.createTestIngredient({
           id: 'other-ing-id',
           calories: 200,
           protein: 20,
@@ -142,8 +138,7 @@ describe('Recipe', () => {
         IngredientLine.create({
           ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
           id: 'another-line-id',
-          ingredient: Ingredient.create({
-            ...ingredientTestProps.validIngredientProps,
+          ingredient: ingredientTestProps.createTestIngredient({
             id: 'other-ing-id',
             calories: 200,
             protein: 20,
@@ -153,9 +148,7 @@ describe('Recipe', () => {
       );
       expect(recipe.ingredientLines.length).toBe(2);
 
-      recipe.removeIngredientLineByIngredientId(
-        ingredientTestProps.validIngredientProps.id,
-      );
+      recipe.removeIngredientLineByIngredientId(validIngredient.id);
       expect(recipe.ingredientLines.length).toBe(1);
     });
   });
@@ -187,9 +180,8 @@ describe('Recipe', () => {
       const duplicateIngredientLine = IngredientLine.create({
         ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
         id: 'duplicate-line-id',
-        ingredient: Ingredient.create({
-          ...ingredientTestProps.validIngredientProps,
-          id: ingredientTestProps.validIngredientProps.id, // Same ingredient ID
+        ingredient: ingredientTestProps.createTestIngredient({
+          id: validIngredient.id, // Same ingredient ID
         }),
         quantityInGrams: 150,
       });
@@ -221,21 +213,17 @@ describe('Recipe', () => {
     });
 
     it('should throw error if creating recipe with duplicated ingredient', async () => {
-      const ingredient = Ingredient.create(
-        ingredientTestProps.validIngredientProps,
-      );
-
       const ingredientLine1 = IngredientLine.create({
         ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
         id: 'line-1',
-        ingredient,
+        ingredient: validIngredient,
         quantityInGrams: 100,
       });
 
       const ingredientLine2 = IngredientLine.create({
         ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
         id: 'line-2',
-        ingredient, // Same ingredient
+        ingredient: validIngredient,
         quantityInGrams: 150,
       });
 

@@ -15,9 +15,7 @@ describe('Meal', () => {
   let validIngredientLine: IngredientLine;
 
   beforeEach(() => {
-    validIngredient = Ingredient.create(
-      ingredientTestProps.validIngredientProps,
-    );
+    validIngredient = ingredientTestProps.createTestIngredient();
 
     validIngredientLine = IngredientLine.create({
       ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
@@ -64,8 +62,7 @@ describe('Meal', () => {
       // More than one ingredient line
       const anotherIngredientLine = IngredientLine.create({
         ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
-        ingredient: Ingredient.create({
-          ...ingredientTestProps.validIngredientProps,
+        ingredient: ingredientTestProps.createTestIngredient({
           id: 'other-ing',
           calories: 200,
           protein: 20,
@@ -81,16 +78,13 @@ describe('Meal', () => {
 
     it('should compute the correct total protein', async () => {
       const totalProtein = meal.protein;
-      expect(totalProtein).toBe(
-        ingredientTestProps.validIngredientProps.protein,
-      );
+      expect(totalProtein).toBe(validIngredient.nutritionalInfoPer100g.protein);
 
       // More than one ingredient line
       const anotherIngredientLine = IngredientLine.create({
         ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
         id: 'another-line-id',
-        ingredient: Ingredient.create({
-          ...ingredientTestProps.validIngredientProps,
+        ingredient: ingredientTestProps.createTestIngredient({
           id: 'other-ing',
           calories: 200,
           protein: 20,
@@ -101,7 +95,7 @@ describe('Meal', () => {
 
       const newTotalProtein = meal.protein;
       expect(newTotalProtein).toBe(
-        ingredientTestProps.validIngredientProps.protein + 10,
+        validIngredient.nutritionalInfoPer100g.protein + 10,
       );
     });
 
@@ -109,8 +103,7 @@ describe('Meal', () => {
       const newIngredientLine = IngredientLine.create({
         ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
         id: 'new-line',
-        ingredient: Ingredient.create({
-          ...ingredientTestProps.validIngredientProps,
+        ingredient: ingredientTestProps.createTestIngredient({
           id: 'other-ing',
         }),
       });
@@ -136,8 +129,7 @@ describe('Meal', () => {
     });
 
     it('should remove an ingredient line based on ingredient id', async () => {
-      const newIngredient = Ingredient.create({
-        ...ingredientTestProps.validIngredientProps,
+      const newIngredient = ingredientTestProps.createTestIngredient({
         id: 'new-ing',
       });
 

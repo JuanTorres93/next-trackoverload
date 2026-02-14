@@ -12,7 +12,7 @@ describe('IngredientDTO', () => {
   let ingredientDTO: IngredientDTO;
 
   beforeEach(() => {
-    ingredient = Ingredient.create(ingredientTestProps.validIngredientProps);
+    ingredient = ingredientTestProps.createTestIngredient();
   });
 
   describe('toIngredientDTO', () => {
@@ -45,8 +45,7 @@ describe('IngredientDTO', () => {
     });
 
     it('should handle optional imageUrl', () => {
-      const ingredientWithImage = Ingredient.create({
-        ...ingredientTestProps.validIngredientProps,
+      const ingredientWithImage = ingredientTestProps.createTestIngredient({
         imageUrl: 'https://example.com/image.jpg',
       });
 
@@ -79,8 +78,7 @@ describe('IngredientDTO', () => {
     });
 
     it('should handle optional imageUrl in conversion', () => {
-      const ingredientWithImage = Ingredient.create({
-        ...ingredientTestProps.validIngredientProps,
+      const ingredientWithImage = ingredientTestProps.createTestIngredient({
         imageUrl: 'https://example.com/image.jpg',
       });
 

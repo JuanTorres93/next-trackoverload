@@ -15,9 +15,7 @@ describe('UpdateIngredientUsecase', () => {
     ingredientsRepo = new MemoryIngredientsRepo();
     updateIngredientUsecase = new UpdateIngredientUsecase(ingredientsRepo);
 
-    ingredient = Ingredient.create({
-      ...ingredientTestProps.validIngredientProps,
-    });
+    ingredient = ingredientTestProps.createTestIngredient();
 
     await ingredientsRepo.saveIngredient(ingredient);
     // Wait a bit to ensure updatedAt will be different
@@ -73,12 +71,10 @@ describe('UpdateIngredientUsecase', () => {
         },
       });
 
-      expect(updatedIngredient.name).toBe(
-        ingredientTestProps.validIngredientProps.name,
-      );
+      expect(updatedIngredient.name).toBe(ingredient.name);
       expect(updatedIngredient.nutritionalInfoPer100g.calories).toBe(3333);
       expect(updatedIngredient.nutritionalInfoPer100g.protein).toBe(
-        ingredientTestProps.validIngredientProps.protein,
+        ingredient.nutritionalInfoPer100g.protein,
       );
       expect(updatedIngredient.updatedAt).not.toBe(
         ingredientTestProps.validIngredientProps.updatedAt.toISOString(),
@@ -93,11 +89,9 @@ describe('UpdateIngredientUsecase', () => {
         },
       });
 
-      expect(updatedIngredient.name).toBe(
-        ingredientTestProps.validIngredientProps.name,
-      );
+      expect(updatedIngredient.name).toBe(ingredient.name);
       expect(updatedIngredient.nutritionalInfoPer100g.calories).toBe(
-        ingredientTestProps.validIngredientProps.calories,
+        ingredient.nutritionalInfoPer100g.calories,
       );
       expect(updatedIngredient.nutritionalInfoPer100g.protein).toBe(666);
       expect(updatedIngredient.updatedAt).not.toBe(

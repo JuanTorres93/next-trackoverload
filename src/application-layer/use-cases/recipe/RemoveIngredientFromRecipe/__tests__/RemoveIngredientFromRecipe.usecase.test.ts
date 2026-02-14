@@ -36,15 +36,13 @@ describe('RemoveIngredientFromRecipeUsecase', () => {
 
     await usersRepo.saveUser(user);
 
-    testIngredient = Ingredient.create({
-      ...ingredientTestProps.validIngredientProps,
+    testIngredient = ingredientTestProps.createTestIngredient({
       name: 'Chicken Breast',
       calories: 165,
       protein: 31,
     });
 
-    secondIngredient = Ingredient.create({
-      ...ingredientTestProps.validIngredientProps,
+    secondIngredient = ingredientTestProps.createTestIngredient({
       id: 'ingredient-2',
     });
 

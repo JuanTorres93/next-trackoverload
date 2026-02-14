@@ -1,4 +1,4 @@
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
+import { ExternalIngredientRef } from '@/domain/entities/externalingredientref/ExternalIngredientRef';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { User } from '@/domain/entities/user/User';
@@ -20,7 +20,6 @@ import * as ingredientTestProps from '../../../../../../tests/createProps/ingred
 import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import { AddIngredientToRecipeUsecase } from '../AddIngredientToRecipe.usecase';
-import { ExternalIngredientRef } from '@/domain/entities/externalingredientref/ExternalIngredientRef';
 
 describe('AddIngredientToRecipeUsecase', () => {
   let recipesRepo: MongoRecipesRepo;
@@ -66,9 +65,7 @@ describe('AddIngredientToRecipeUsecase', () => {
       ...externalIngredientRefTestProps.validExternalIngredientRefProps,
     });
 
-    const testIngredient = Ingredient.create({
-      ...ingredientTestProps.validIngredientProps,
-    });
+    const testIngredient = ingredientTestProps.createTestIngredient();
 
     await ingredientsRepo.saveIngredient(testIngredient);
     await externalIngredientsRefRepo.save(testExternalIngredientRef);

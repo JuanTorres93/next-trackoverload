@@ -15,7 +15,20 @@ describe('Ingredient', () => {
       expect(ingredient).toBeInstanceOf(Ingredient);
     });
 
+    it('should create a valid ingredient if no imageUrl provided', () => {
+      // Disable eslint for destructuring to avoid unused variable error for imageUrl
+      // eslint-disable-next-line
+      const { imageUrl, ...propsWithoutImageUrl } =
+        ingredientTestProps.validIngredientProps;
+
+      const ingredientWithoutImageUrl = Ingredient.create(propsWithoutImageUrl);
+
+      expect(ingredientWithoutImageUrl).toBeInstanceOf(Ingredient);
+      expect(ingredientWithoutImageUrl.imageUrl).toBeUndefined();
+    });
+
     it('should create an ingredient if no createdAt or updatedAt is provided', async () => {
+      // Disable eslint for destructuring to avoid unused variable error for createdAt and updatedAt
       // eslint-disable-next-line
       const { createdAt, updatedAt, ...propsWithoutDates } =
         ingredientTestProps.validIngredientProps;

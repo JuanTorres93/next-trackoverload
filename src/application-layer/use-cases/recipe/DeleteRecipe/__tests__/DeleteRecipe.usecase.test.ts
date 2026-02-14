@@ -1,8 +1,4 @@
-import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
-import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
-import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import { NotFoundError } from '@/domain/common/errors';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { User } from '@/domain/entities/user/User';
@@ -10,6 +6,9 @@ import { ImageType } from '@/domain/repos/ImagesRepo.port';
 import { MemoryImagesRepo } from '@/infra/repos/memory/MemoryImagesRepo';
 import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
+import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
+import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
 import { DeleteRecipeUsecase } from '../DeleteRecipe.usecase';
 
@@ -37,9 +36,7 @@ describe('DeleteRecipeUsecase', () => {
 
     await usersRepo.saveUser(user);
 
-    const testIngredient = Ingredient.create({
-      ...ingredientTestProps.validIngredientProps,
-    });
+    const testIngredient = ingredientTestProps.createTestIngredient();
 
     const testIngredientLine = IngredientLine.create({
       ...recipeTestProps.ingredientLineRecipePropsNoIngredient,

@@ -16,7 +16,7 @@ describe('MemoryRecipesRepo', () => {
 
   beforeEach(async () => {
     repo = new MemoryRecipesRepo();
-    ingredient = Ingredient.create(ingredientTestProps.validIngredientProps);
+    ingredient = ingredientTestProps.createTestIngredient();
 
     ingredientLine = IngredientLine.create({
       ...recipeTestProps.ingredientLineRecipePropsNoIngredient,

@@ -16,15 +16,14 @@ describe('GetIngredientByIdUsecase', () => {
 
   describe('Found', () => {
     it('should return ingredient when found', async () => {
-      const ingredient = Ingredient.create({
-        ...ingredientTestProps.validIngredientProps,
+      const ingredient = ingredientTestProps.createTestIngredient({
         name: 'Chicken Breast',
       });
 
       await ingredientsRepo.saveIngredient(ingredient);
 
       const result = await getIngredientByIdUsecase.execute({
-        id: ingredientTestProps.validIngredientProps.id,
+        id: ingredient.id,
       });
 
       expect(result).not.toBeNull();
@@ -33,15 +32,14 @@ describe('GetIngredientByIdUsecase', () => {
     });
 
     it('should return IngredientDTO when ingredient found', async () => {
-      const ingredient = Ingredient.create({
-        ...ingredientTestProps.validIngredientProps,
+      const ingredient = ingredientTestProps.createTestIngredient({
         name: 'Chicken Breast',
       });
 
       await ingredientsRepo.saveIngredient(ingredient);
 
       const result = await getIngredientByIdUsecase.execute({
-        id: ingredientTestProps.validIngredientProps.id,
+        id: ingredient.id,
       });
 
       expect(result).not.toBeNull();

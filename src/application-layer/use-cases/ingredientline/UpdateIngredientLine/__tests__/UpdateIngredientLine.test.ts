@@ -52,13 +52,11 @@ describe('UpdateIngredientLineUsecase', () => {
       id: anotherUserId,
     });
 
-    testIngredient = Ingredient.create({
-      ...ingredientTestProps.validIngredientProps,
+    testIngredient = ingredientTestProps.createTestIngredient({
       name: 'Chicken Breast',
     });
 
-    alternativeIngredient = Ingredient.create({
-      ...ingredientTestProps.validIngredientProps,
+    alternativeIngredient = ingredientTestProps.createTestIngredient({
       id: 'alternative-ingredient-id',
       name: 'Turkey Breast',
     });

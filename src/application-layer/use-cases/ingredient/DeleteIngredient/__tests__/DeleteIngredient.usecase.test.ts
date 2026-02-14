@@ -1,8 +1,7 @@
-import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import { NotFoundError } from '@/domain/common/errors';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import { MemoryIngredientsRepo } from '@/infra/repos/memory/MemoryIngredientsRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
+import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import { DeleteIngredientUsecase } from '../DeleteIngredient.usecase';
 
 describe('DeleteIngredientUsecase', () => {
@@ -16,18 +15,16 @@ describe('DeleteIngredientUsecase', () => {
 
   describe('Deletion', () => {
     it('should delete existing ingredient', async () => {
-      const ingredient = Ingredient.create({
-        ...ingredientTestProps.validIngredientProps,
-      });
+      const ingredient = ingredientTestProps.createTestIngredient();
 
       await ingredientsRepo.saveIngredient(ingredient);
 
       await deleteIngredientUsecase.execute({
-        id: ingredientTestProps.validIngredientProps.id,
+        id: ingredient.id,
       });
 
       const deletedIngredient = await ingredientsRepo.getIngredientById(
-        ingredientTestProps.validIngredientProps.id,
+        ingredient.id,
       );
       expect(deletedIngredient).toBeNull();
     });

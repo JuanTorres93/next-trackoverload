@@ -14,7 +14,8 @@ describe('MealDTO', () => {
   let mealDTO: MealDTO;
 
   beforeEach(() => {
-    ingredient = Ingredient.create(ingredientTestProps.validIngredientProps);
+    ingredient = ingredientTestProps.createTestIngredient();
+
     ingredientLine = IngredientLine.create({
       ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       parentType: 'meal',
