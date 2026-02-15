@@ -4,7 +4,10 @@ import { Workout, WorkoutCreateProps } from '@/domain/entities/workout/Workout';
 
 import { validWorkoutTemplateProps } from './workoutTemplateTestProps';
 
+import { validExerciseProps } from './exerciseTestProps';
+
 const workoutId = 'workout-1';
+const exerciseId = validExerciseProps.id;
 
 export function validWorkoutPropsNoExercises() {
   return {
@@ -13,8 +16,6 @@ export function validWorkoutPropsNoExercises() {
     name: 'Push',
     workoutTemplateId: validWorkoutTemplateProps().id,
     exercises: [],
-    createdAt: new Date(),
-    updatedAt: new Date(),
   };
 }
 
@@ -22,12 +23,10 @@ export function validWorkoutPropsWithExercises() {
   const workoutLine1 = WorkoutLine.create({
     id: 'line1',
     workoutId: workoutId,
-    exerciseId: 'ex1',
+    exerciseId: exerciseId,
     setNumber: 1,
     reps: 10,
     weightInKg: 50,
-    createdAt: new Date(),
-    updatedAt: new Date(),
   });
 
   const workoutLine2 = WorkoutLine.create({
@@ -55,7 +54,7 @@ export const validWorkoutProps = {
   workoutTemplateId: validWorkoutTemplateProps().id,
   exercises: [
     {
-      exerciseId: 'exercise-1',
+      exerciseId: exerciseId,
       setNumber: 1,
       reps: 10,
       weightInKg: 50,
@@ -66,7 +65,7 @@ export const validWorkoutProps = {
 export const validWorkoutLineProps = {
   id: 'workoutline-1',
   workoutId: workoutId,
-  exerciseId: 'exercise-1',
+  exerciseId: exerciseId,
   setNumber: 1,
   reps: 10,
   weightInKg: 53.5,
