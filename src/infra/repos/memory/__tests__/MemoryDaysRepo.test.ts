@@ -16,9 +16,7 @@ describe('MemoryDaysRepo', () => {
 
     fakeMeal = fakeMealTestProps.createTestFakeMeal();
 
-    day = Day.create({
-      ...dayTestProps.validDayProps(),
-    });
+    day = dayTestProps.createEmptyTestDay();
 
     day.addFakeMeal(fakeMeal.id);
 
@@ -26,8 +24,7 @@ describe('MemoryDaysRepo', () => {
   });
 
   it('should save a day', async () => {
-    const newDay = Day.create({
-      ...dayTestProps.validDayProps(),
+    const newDay = dayTestProps.createEmptyTestDay({
       day: 2,
       month: 10,
       year: 2023,
@@ -42,12 +39,11 @@ describe('MemoryDaysRepo', () => {
   });
 
   it('should update an existing day', async () => {
-    const updatedDay = Day.create({
-      ...dayTestProps.validDayProps(),
-    });
+    const updatedDay = dayTestProps.createEmptyTestDay();
     await repo.saveDay(updatedDay);
 
     const allDays = await repo.getAllDays();
+
     expect(allDays.length).toBe(1);
     expect(allDays[0].fakeMealIds.length).toBe(0);
   });
@@ -73,21 +69,20 @@ describe('MemoryDaysRepo', () => {
   });
 
   it('should delete all days for a user', async () => {
-    const day2 = Day.create({
-      ...dayTestProps.validDayProps(),
+    const day2 = dayTestProps.createEmptyTestDay({
       day: 2,
       month: 10,
       year: 2023,
     });
-    await repo.saveDay(day2);
 
-    const day3 = Day.create({
-      ...dayTestProps.validDayProps(),
+    const day3 = dayTestProps.createEmptyTestDay({
       userId: 'user-2',
       day: 3,
       month: 10,
       year: 2023,
     });
+
+    await repo.saveDay(day2);
     await repo.saveDay(day3);
 
     const allDaysBefore = await repo.getAllDays();

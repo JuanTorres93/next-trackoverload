@@ -36,9 +36,7 @@ describe('AddFakeMealToDayUsecase', () => {
       new MemoryTransactionContext(),
     );
 
-    day = Day.create({
-      ...dayTestProps.validDayProps(),
-    });
+    day = dayTestProps.createEmptyTestDay();
 
     user = User.create({
       ...userTestProps.validUserProps,

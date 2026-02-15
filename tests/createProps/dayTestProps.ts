@@ -1,12 +1,12 @@
-import { Day } from '@/domain/entities/day/Day';
-import { validFakeMealProps } from './fakeMealTestProps';
-import { validMealWithIngredientLines } from './mealTestProps';
-import { userId } from './userTestProps';
 import { AssembledDayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
-import { Meal } from '@/domain/entities/meal/Meal';
-import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { toMealDTO } from '@/application-layer/dtos/MealDTO';
 import { toFakeMealDTO } from '@/application-layer/dtos/FakeMealDTO';
+import { toMealDTO } from '@/application-layer/dtos/MealDTO';
+import { Day, DayCreateProps } from '@/domain/entities/day/Day';
+import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { Meal } from '@/domain/entities/meal/Meal';
+import { createTestFakeMeal } from './fakeMealTestProps';
+import { createTestMeal } from './mealTestProps';
+import { userId } from './userTestProps';
 
 export const dateId = new Date('2023-10-01');
 
@@ -26,16 +26,14 @@ export function getValidAssembledDayDTO(): {
   meal: Meal;
   fakeMeal: FakeMeal;
 } {
+  const meal = createTestMeal();
+  const fakeMeal = createTestFakeMeal();
+
   const dayProps = validDayProps();
-  const mealProps = validMealWithIngredientLines();
-  const fakeMealProps = { ...validFakeMealProps };
-
   const day = Day.create(dayProps);
-  day.addMeal(mealProps.id);
-  day.addFakeMeal(fakeMealProps.id);
 
-  const meal = Meal.create(mealProps);
-  const fakeMeal = FakeMeal.create(fakeMealProps);
+  day.addMeal(meal.id);
+  day.addFakeMeal(fakeMeal.id);
 
   const mealDTO = toMealDTO(meal);
   const fakeMealDTO = toFakeMealDTO(fakeMeal);
@@ -52,4 +50,15 @@ export function getValidAssembledDayDTO(): {
     meal,
     fakeMeal,
   };
+}
+
+export function createEmptyTestDay(props?: Partial<DayCreateProps>): Day {
+  return Day.create({
+    day: props?.day || dateId.getDate(),
+    month: props?.month || dateId.getMonth() + 1,
+    year: props?.year || dateId.getFullYear(),
+    userId: props?.userId || userId,
+    createdAt: props?.createdAt || new Date(),
+    updatedAt: props?.updatedAt || new Date(),
+  });
 }

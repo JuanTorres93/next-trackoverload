@@ -3,10 +3,10 @@ import userEvent from '@testing-library/user-event';
 
 import { createMockUser } from '../../../../../tests/mocks/user';
 
+import { MemoryDaysRepo } from '@/infra/repos/memory/MemoryDaysRepo';
+import { MemoryFakeMealsRepo } from '@/infra/repos/memory/MemoryFakeMealsRepo';
 import { AppDaysRepo } from '@/interface-adapters/app/repos/AppDaysRepo';
 import { AppFakeMealsRepo } from '@/interface-adapters/app/repos/AppFakeMealsRepo';
-import { MemoryFakeMealsRepo } from '@/infra/repos/memory/MemoryFakeMealsRepo';
-import { MemoryDaysRepo } from '@/infra/repos/memory/MemoryDaysRepo';
 
 const fakeMealsRepo = AppFakeMealsRepo as MemoryFakeMealsRepo;
 const daysRepo = AppDaysRepo as MemoryDaysRepo;
@@ -14,9 +14,8 @@ const daysRepo = AppDaysRepo as MemoryDaysRepo;
 // Mock before importing the component that uses next/navigation
 import '@/../tests/mocks/nextjs';
 
+import { createEmptyTestDay } from '../../../../../tests/createProps/dayTestProps';
 import AddFakeMealForm from '../AddFakeMealForm';
-import { Day } from '@/domain/entities/day/Day';
-import { validDayProps } from '../../../../../tests/createProps/dayTestProps';
 
 await createMockUser();
 
@@ -24,8 +23,7 @@ async function setup() {
   daysRepo.clearForTesting();
   fakeMealsRepo.clearForTesting();
 
-  const day = Day.create({
-    ...validDayProps(),
+  const day = createEmptyTestDay({
     userId: 'dev-user',
   });
   await daysRepo.saveDay(day);

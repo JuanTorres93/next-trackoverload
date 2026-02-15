@@ -9,8 +9,8 @@ import { MemoryFakeMealsRepo } from '@/infra/repos/memory/MemoryFakeMealsRepo';
 import { MemoryMealsRepo } from '@/infra/repos/memory/MemoryMealsRepo';
 
 import {
+  createEmptyTestDay,
   getValidAssembledDayDTO,
-  validDayProps,
 } from '../../../../../tests/createProps/dayTestProps';
 import { createMockRecipes } from '../../../../../tests/mocks/recipes';
 
@@ -22,7 +22,6 @@ const daysRepo = AppDaysRepo as MemoryDaysRepo;
 import '@/../tests/mocks/nextjs';
 
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
-import { Day } from '@/domain/entities/day/Day';
 import { createServer } from '../../../../../tests/mocks/server';
 import DaySummary from '../DaySummary';
 
@@ -46,10 +45,10 @@ createServer([
 ]);
 
 async function setup() {
-  const day = Day.create({
-    ...validDayProps(),
+  const day = createEmptyTestDay({
     userId: 'dev-user', // TODO IMPORTANT Change when authentication is implemented. The value is hardocoded and the test will fail
   });
+
   const { assembledDayDTO, meal, fakeMeal } = getValidAssembledDayDTO();
 
   day.addMeal(meal.id);
@@ -68,6 +67,7 @@ async function setup() {
   const deleteMealButton = screen.getAllByTestId(
     'nutritional-summary-delete-button',
   );
+
   return { assembledDayDTO, addFoodButton, meal, fakeMeal, deleteMealButton };
 }
 

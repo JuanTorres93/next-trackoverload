@@ -18,9 +18,7 @@ describe('DayDTO', () => {
 
     fakeMeal = fakeMealTestProps.createTestFakeMeal();
 
-    day = Day.create({
-      ...dayTestProps.validDayProps(),
-    });
+    day = dayTestProps.createEmptyTestDay();
 
     day.addMeal(meal.id);
     day.addFakeMeal(fakeMeal.id);

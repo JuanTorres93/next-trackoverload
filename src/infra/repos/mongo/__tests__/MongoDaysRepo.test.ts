@@ -21,10 +21,10 @@ describe('MongoDaysRepo', () => {
 
     repo = new MongoDaysRepo();
 
-    // Create a day with a meal and fake meal
-    day = Day.create(dayTestProps.validDayProps());
+    day = dayTestProps.createEmptyTestDay();
     day.addMeal('meal-1');
     day.addFakeMeal('fakemeal-1');
+
     await repo.saveDay(day);
   });
 
@@ -34,11 +34,11 @@ describe('MongoDaysRepo', () => {
 
   describe('saveDay', () => {
     it('should save a new day', async () => {
-      const newDay = Day.create({
-        ...dayTestProps.validDayProps(),
+      const newDay = dayTestProps.createEmptyTestDay({
         day: 2,
       });
       newDay.addMeal('meal-2');
+
       await repo.saveDay(newDay);
 
       const allDays = await repo.getAllDays();
@@ -80,14 +80,14 @@ describe('MongoDaysRepo', () => {
 
   describe('getAllDays', () => {
     it('should retrieve all days', async () => {
-      const day2 = Day.create({
-        ...dayTestProps.validDayProps(),
+      const day2 = dayTestProps.createEmptyTestDay({
         day: 2,
         userId: 'user-2',
       });
       await repo.saveDay(day2);
 
       const allDays = await repo.getAllDays();
+
       expect(allDays).toHaveLength(2);
     });
 
@@ -110,27 +110,23 @@ describe('MongoDaysRepo', () => {
 
   describe('getAllDaysByUserId', () => {
     it('should retrieve all days for a specific user', async () => {
-      const day2 = Day.create({
-        ...dayTestProps.validDayProps(),
+      const day2 = dayTestProps.createEmptyTestDay({
         day: 2,
-        userId: dayTestProps.validDayProps().userId,
+        userId: day.userId,
       });
       await repo.saveDay(day2);
 
-      const day3 = Day.create({
-        ...dayTestProps.validDayProps(),
+      const day3 = dayTestProps.createEmptyTestDay({
         day: 3,
         userId: 'user-other',
       });
       await repo.saveDay(day3);
 
-      const userDays = await repo.getAllDaysByUserId(
-        dayTestProps.validDayProps().userId,
-      );
+      const userDays = await repo.getAllDaysByUserId(day.userId);
       expect(userDays).toHaveLength(2);
-      expect(
-        userDays.every((d) => d.userId === dayTestProps.validDayProps().userId),
-      ).toBe(true);
+      expect(userDays.every((userDay) => userDay.userId === day.userId)).toBe(
+        true,
+      );
     });
 
     it('should return empty array for user with no days', async () => {
@@ -145,9 +141,9 @@ describe('MongoDaysRepo', () => {
 
       expect(foundDay).not.toBeNull();
       expect(foundDay!.id).toBe(day.id);
-      expect(foundDay!.day).toBe(dayTestProps.validDayProps().day);
-      expect(foundDay!.month).toBe(dayTestProps.validDayProps().month);
-      expect(foundDay!.year).toBe(dayTestProps.validDayProps().year);
+      expect(foundDay!.day).toBe(day.day);
+      expect(foundDay!.month).toBe(day.month);
+      expect(foundDay!.year).toBe(day.year);
     });
 
     it('should return null for non-existent id', async () => {
@@ -167,14 +163,11 @@ describe('MongoDaysRepo', () => {
 
   describe('getDayByIdAndUserId', () => {
     it('should retrieve a day by id and userId', async () => {
-      const foundDay = await repo.getDayByIdAndUserId(
-        day.id,
-        dayTestProps.validDayProps().userId,
-      );
+      const foundDay = await repo.getDayByIdAndUserId(day.id, day.userId);
 
       expect(foundDay).not.toBeNull();
       expect(foundDay!.id).toBe(day.id);
-      expect(foundDay!.userId).toBe(dayTestProps.validDayProps().userId);
+      expect(foundDay!.userId).toBe(day.userId);
     });
 
     it('should return null if userId does not match', async () => {
@@ -183,10 +176,7 @@ describe('MongoDaysRepo', () => {
     });
 
     it('should return null if id does not exist', async () => {
-      const foundDay = await repo.getDayByIdAndUserId(
-        '20251231',
-        dayTestProps.validDayProps().userId,
-      );
+      const foundDay = await repo.getDayByIdAndUserId('20251231', day.userId);
       expect(foundDay).toBeNull();
     });
   });
@@ -194,20 +184,16 @@ describe('MongoDaysRepo', () => {
   describe('getDaysByDateRange', () => {
     beforeEach(async () => {
       // Add more days for range testing
-      const day2 = Day.create({
-        ...dayTestProps.validDayProps(),
+      const day2 = dayTestProps.createEmptyTestDay({
         day: 2,
       });
-      const day3 = Day.create({
-        ...dayTestProps.validDayProps(),
+      const day3 = dayTestProps.createEmptyTestDay({
         day: 3,
       });
-      const day5 = Day.create({
-        ...dayTestProps.validDayProps(),
+      const day5 = dayTestProps.createEmptyTestDay({
         day: 5,
       });
-      const day10 = Day.create({
-        ...dayTestProps.validDayProps(),
+      const day10 = dayTestProps.createEmptyTestDay({
         day: 10,
       });
 
@@ -245,18 +231,16 @@ describe('MongoDaysRepo', () => {
   describe('getDaysByDateRangeAndUserId', () => {
     beforeEach(async () => {
       // Add days for different users
-      const day2User1 = Day.create({
-        ...dayTestProps.validDayProps(),
+      const day2User1 = dayTestProps.createEmptyTestDay({
         day: 2,
-        userId: dayTestProps.validDayProps().userId,
+        userId: day.userId,
       });
-      const day3User1 = Day.create({
-        ...dayTestProps.validDayProps(),
+      const day3User1 = dayTestProps.createEmptyTestDay({
         day: 3,
-        userId: dayTestProps.validDayProps().userId,
+        userId: day.userId,
       });
-      const day2User2 = Day.create({
-        ...dayTestProps.validDayProps(),
+
+      const day2User2 = dayTestProps.createEmptyTestDay({
         day: 2,
         userId: 'user-other',
       });
@@ -270,13 +254,11 @@ describe('MongoDaysRepo', () => {
       const days = await repo.getDaysByDateRangeAndUserId(
         '20231001',
         '20231003',
-        dayTestProps.validDayProps().userId,
+        day.userId,
       );
 
       expect(days.length).toBe(3); // day 1, 2, 3 for user 1
-      expect(
-        days.every((d) => d.userId === dayTestProps.validDayProps().userId),
-      ).toBe(true);
+      expect(days.every((d) => d.userId === day.userId)).toBe(true);
       const dayNumbers = days.map((d) => d.day);
       expect(dayNumbers).toContain(1);
       expect(dayNumbers).toContain(2);
@@ -287,7 +269,7 @@ describe('MongoDaysRepo', () => {
       const daysUser1 = await repo.getDaysByDateRangeAndUserId(
         '20231001',
         '20231003',
-        dayTestProps.validDayProps().userId,
+        day.userId,
       );
       const daysUser2 = await repo.getDaysByDateRangeAndUserId(
         '20231001',
@@ -315,7 +297,7 @@ describe('MongoDaysRepo', () => {
       const allDaysBefore = await repo.getAllDays();
       expect(allDaysBefore).toHaveLength(1);
 
-      await repo.deleteDayForUser(day.id, dayTestProps.validDayProps().userId);
+      await repo.deleteDayForUser(day.id, day.userId);
 
       const allDaysAfter = await repo.getAllDays();
       expect(allDaysAfter).toHaveLength(0);
@@ -330,20 +312,17 @@ describe('MongoDaysRepo', () => {
 
     it('should not throw error when day does not exist', async () => {
       await expect(
-        repo.deleteDayForUser('20251231', dayTestProps.validDayProps().userId),
+        repo.deleteDayForUser('20251231', day.userId),
       ).resolves.not.toThrow();
     });
   });
 
   describe('deleteAllDaysForUser', () => {
     it('should delete all days for a specific user', async () => {
-      const day2 = Day.create({
-        ...dayTestProps.validDayProps(),
+      const day2 = dayTestProps.createEmptyTestDay({
         day: 2,
-        userId: dayTestProps.validDayProps().userId,
       });
-      const day3 = Day.create({
-        ...dayTestProps.validDayProps(),
+      const day3 = dayTestProps.createEmptyTestDay({
         day: 3,
         userId: 'user-other',
       });
@@ -354,7 +333,7 @@ describe('MongoDaysRepo', () => {
       const allDaysBefore = await repo.getAllDays();
       expect(allDaysBefore).toHaveLength(3);
 
-      await repo.deleteAllDaysForUser(dayTestProps.validDayProps().userId);
+      await repo.deleteAllDaysForUser(day2.userId);
 
       const allDaysAfter = await repo.getAllDays();
       expect(allDaysAfter).toHaveLength(1);

@@ -58,12 +58,10 @@ describe('DeleteDayUsecase', () => {
     );
 
     meal = createTestMeal();
-
     fakeMeal = createTestFakeMeal();
 
-    day = Day.create({
-      ...dayTestProps.validDayProps(),
-    });
+    day = dayTestProps.createEmptyTestDay();
+
     day.addMeal(meal.id);
     day.addFakeMeal(fakeMeal.id);
 

@@ -38,9 +38,7 @@ describe('RemoveMealFromDayUsecase', () => {
 
     fakeMeal = fakeMealTestProps.createTestFakeMeal();
 
-    day = Day.create({
-      ...dayTestProps.validDayProps(),
-    });
+    day = dayTestProps.createEmptyTestDay();
 
     user = User.create({
       ...userTestProps.validUserProps,

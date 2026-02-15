@@ -41,9 +41,7 @@ describe('AddMealToDayUsecase', () => {
       new MemoryTransactionContext(),
     );
 
-    day = Day.create({
-      ...dayTestProps.validDayProps(),
-    });
+    day = dayTestProps.createEmptyTestDay();
 
     recipe = recipeTestProps.createTestRecipe({}, 1);
 

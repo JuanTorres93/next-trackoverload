@@ -59,9 +59,7 @@ describe('AddMealToDayUsecase', () => {
       new MongoTransactionContext(),
     );
 
-    day = Day.create({
-      ...dayTestProps.validDayProps(),
-    });
+    day = dayTestProps.createEmptyTestDay();
 
     ingredient = ingredientTestProps.createTestIngredient();
 

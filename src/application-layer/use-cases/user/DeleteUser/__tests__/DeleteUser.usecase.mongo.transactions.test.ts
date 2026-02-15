@@ -1,4 +1,3 @@
-import { Day } from '@/domain/entities/day/Day';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
 import { User } from '@/domain/entities/user/User';
 import { Workout } from '@/domain/entities/workout/Workout';
@@ -95,10 +94,7 @@ describe('DeleteUserUsecase', () => {
       await ingredientsRepo.saveIngredient(line.ingredient);
     }
 
-    const day = Day.create({
-      ...dayTestProps.validDayProps(),
-      userId: user.id,
-    });
+    const day = dayTestProps.createEmptyTestDay();
 
     // Create exercises needed for workouts and templates
     const exercise1 = Exercise.create({
