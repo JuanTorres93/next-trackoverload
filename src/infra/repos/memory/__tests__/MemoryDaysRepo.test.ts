@@ -13,7 +13,8 @@ describe('MemoryDaysRepo', () => {
 
   beforeEach(async () => {
     repo = new MemoryDaysRepo();
-    fakeMeal = FakeMeal.create(fakeMealTestProps.validFakeMealProps);
+
+    fakeMeal = fakeMealTestProps.createTestFakeMeal();
 
     day = Day.create({
       ...dayTestProps.validDayProps(),

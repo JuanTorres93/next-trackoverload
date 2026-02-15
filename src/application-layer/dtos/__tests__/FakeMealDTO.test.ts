@@ -8,7 +8,7 @@ describe('FakeMealDTO', () => {
   let fakeMealDTO: FakeMealDTO;
 
   beforeEach(() => {
-    fakeMeal = FakeMeal.create(fakeMealTestProps.validFakeMealProps);
+    fakeMeal = fakeMealTestProps.createTestFakeMeal();
   });
 
   describe('toFakeMealDTO', () => {

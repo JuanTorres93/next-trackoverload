@@ -3,7 +3,6 @@ import { GetAssembledDayByIdUsecase } from '../GetAssembledDayByIdUsecase';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError } from '@/domain/common/errors';
 import { Day } from '@/domain/entities/day/Day';
-import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { User } from '@/domain/entities/user/User';
 import { MemoryDaysRepo } from '@/infra/repos/memory/MemoryDaysRepo';
 import { MemoryFakeMealsRepo } from '@/infra/repos/memory/MemoryFakeMealsRepo';
@@ -64,7 +63,7 @@ describe('GetAssembledDayByIdUsecase', () => {
 
     it('should assemble related meals and fake meals', async () => {
       const meal = mealTestProps.createTestMeal();
-      const fakeMeal = FakeMeal.create(fakeMealTestProps.validFakeMealProps);
+      const fakeMeal = fakeMealTestProps.createTestFakeMeal();
 
       await mealsRepo.saveMeal(meal);
       await fakeMealsRepo.saveFakeMeal(fakeMeal);

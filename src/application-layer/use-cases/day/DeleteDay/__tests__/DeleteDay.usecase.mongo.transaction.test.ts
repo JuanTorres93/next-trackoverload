@@ -16,7 +16,7 @@ import { MongoUsersRepo } from '@/infra/repos/mongo/MongoUsersRepo';
 import { MongoTransactionContext } from '@/infra/transaction-context/MongoTransactionContext/MongoTransactionContext';
 import { beforeEach, describe } from 'vitest';
 import * as dayTestProps from '../../../../../../tests/createProps/dayTestProps';
-import { validFakeMealProps } from '../../../../../../tests/createProps/fakeMealTestProps';
+import { createTestFakeMeal } from '../../../../../../tests/createProps/fakeMealTestProps';
 import { createTestMeal } from '../../../../../../tests/createProps/mealTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import { DeleteDayUsecase } from '../DeleteDay.usecase';
@@ -59,9 +59,7 @@ describe('DeleteDayUsecase', () => {
 
     meal = createTestMeal();
 
-    fakeMeal = FakeMeal.create({
-      ...validFakeMealProps,
-    });
+    fakeMeal = createTestFakeMeal();
 
     day = Day.create({
       ...dayTestProps.validDayProps(),

@@ -1,6 +1,5 @@
 import { Day } from '@/domain/entities/day/Day';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
-import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { User } from '@/domain/entities/user/User';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
@@ -81,11 +80,7 @@ describe('DeleteUserUsecase', () => {
     await usersRepo.saveUser(user);
 
     // Create associated resources
-    const fakeMeal = FakeMeal.create({
-      ...fakeMealTestProps.validFakeMealProps,
-      userId: user.id,
-    });
-
+    const fakeMeal = fakeMealTestProps.createTestFakeMeal();
     const meal = createTestMeal();
 
     // Save ingredients for meal

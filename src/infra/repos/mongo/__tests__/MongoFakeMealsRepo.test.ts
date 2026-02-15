@@ -20,7 +20,9 @@ describe('MongoFakeMealsRepo', () => {
     await clearMongoTestDB();
 
     repo = new MongoFakeMealsRepo();
-    fakeMeal = FakeMeal.create(fakeMealTestProps.validFakeMealProps);
+
+    fakeMeal = fakeMealTestProps.createTestFakeMeal();
+
     await repo.saveFakeMeal(fakeMeal);
   });
 
@@ -29,11 +31,9 @@ describe('MongoFakeMealsRepo', () => {
   });
 
   it('should save a fake meal', async () => {
-    const newFakeMeal = FakeMeal.create({
-      ...fakeMealTestProps.validFakeMealProps,
+    const newFakeMeal = fakeMealTestProps.createTestFakeMeal({
       id: 'fakeMeal-2',
       name: 'Fake Rice Bowl',
-      updatedAt: new Date('2023-01-02'),
     });
     await repo.saveFakeMeal(newFakeMeal);
 
@@ -43,9 +43,7 @@ describe('MongoFakeMealsRepo', () => {
   });
 
   it('should update an existing fake meal', async () => {
-    const existingFakeMeal = await repo.getFakeMealById(
-      fakeMealTestProps.validFakeMealProps.id,
-    );
+    const existingFakeMeal = await repo.getFakeMealById(fakeMeal.id);
     existingFakeMeal!.update({
       name: 'Updated Fake Meal',
       calories: 300,
@@ -59,15 +57,11 @@ describe('MongoFakeMealsRepo', () => {
   });
 
   it('should retrieve a fake meal by ID', async () => {
-    const fetchedFakeMeal = await repo.getFakeMealById(
-      fakeMealTestProps.validFakeMealProps.id,
-    );
+    const fetchedFakeMeal = await repo.getFakeMealById(fakeMeal.id);
 
     expect(fetchedFakeMeal).not.toBeNull();
-    expect(fetchedFakeMeal!.id).toBe(fakeMealTestProps.validFakeMealProps.id);
-    expect(fetchedFakeMeal!.name).toBe(
-      fakeMealTestProps.validFakeMealProps.name,
-    );
+    expect(fetchedFakeMeal!.id).toBe(fakeMeal.id);
+    expect(fetchedFakeMeal!.name).toBe(fakeMeal.name);
   });
 
   it('should return null for non-existent fake meal ID', async () => {
@@ -82,22 +76,17 @@ describe('MongoFakeMealsRepo', () => {
       repo = new MongoFakeMealsRepo();
 
       const fakeMeals = [
-        FakeMeal.create({
-          ...fakeMealTestProps.validFakeMealProps,
+        fakeMealTestProps.createTestFakeMeal({
           id: 'fakeMeal-1',
-          name: 'Fake Meal 1',
         }),
 
-        FakeMeal.create({
-          ...fakeMealTestProps.validFakeMealProps,
+        fakeMealTestProps.createTestFakeMeal({
           id: 'fakeMeal-2',
           name: 'Fake Meal 2',
         }),
 
-        FakeMeal.create({
-          ...fakeMealTestProps.validFakeMealProps,
+        fakeMealTestProps.createTestFakeMeal({
           id: 'fakeMeal-3',
-          name: 'Fake Meal 3',
         }),
       ];
 
@@ -164,49 +153,38 @@ describe('MongoFakeMealsRepo', () => {
   });
 
   it('should retrieve all fake meals by user ID', async () => {
-    const fakeMeal2 = FakeMeal.create({
-      ...fakeMealTestProps.validFakeMealProps,
+    const fakeMeal2 = fakeMealTestProps.createTestFakeMeal({
       id: 'fakeMeal-2',
-      name: 'Another Fake Meal',
     });
-    const fakeMealOtherUser = FakeMeal.create({
-      ...fakeMealTestProps.validFakeMealProps,
+
+    const fakeMealOtherUser = fakeMealTestProps.createTestFakeMeal({
       id: 'fakeMeal-3',
       userId: 'other-user',
-      name: 'Other User Meal',
     });
 
     await repo.saveFakeMeal(fakeMeal2);
     await repo.saveFakeMeal(fakeMealOtherUser);
 
-    const userFakeMeals = await repo.getAllFakeMealsByUserId(
-      fakeMealTestProps.validFakeMealProps.userId,
-    );
+    const userFakeMeals = await repo.getAllFakeMealsByUserId(fakeMeal.userId);
 
     expect(userFakeMeals).toHaveLength(2);
-    expect(
-      userFakeMeals.every(
-        (m) => m.userId === fakeMealTestProps.validFakeMealProps.userId,
-      ),
-    ).toBe(true);
+    expect(userFakeMeals.every((m) => m.userId === fakeMeal.userId)).toBe(true);
   });
 
   it('should retrieve a fake meal by ID and user ID', async () => {
     const fetchedFakeMeal = await repo.getFakeMealByIdAndUserId(
-      fakeMealTestProps.validFakeMealProps.id,
-      fakeMealTestProps.validFakeMealProps.userId,
+      fakeMeal.id,
+      fakeMeal.userId,
     );
 
     expect(fetchedFakeMeal).not.toBeNull();
-    expect(fetchedFakeMeal!.id).toBe(fakeMealTestProps.validFakeMealProps.id);
-    expect(fetchedFakeMeal!.userId).toBe(
-      fakeMealTestProps.validFakeMealProps.userId,
-    );
+    expect(fetchedFakeMeal!.id).toBe(fakeMeal.id);
+    expect(fetchedFakeMeal!.userId).toBe(fakeMeal.userId);
   });
 
   it('should return null when fake meal ID and user ID do not match', async () => {
     const fetchedFakeMeal = await repo.getFakeMealByIdAndUserId(
-      fakeMealTestProps.validFakeMealProps.id,
+      fakeMeal.id,
       'wrong-user-id',
     );
 
@@ -214,15 +192,11 @@ describe('MongoFakeMealsRepo', () => {
   });
 
   it('should retrieve all fake meals', async () => {
-    const fakeMeal2 = FakeMeal.create({
-      ...fakeMealTestProps.validFakeMealProps,
+    const fakeMeal2 = fakeMealTestProps.createTestFakeMeal({
       id: 'fakeMeal-2',
-      name: 'Fake Meal 2',
     });
-    const fakeMeal3 = FakeMeal.create({
-      ...fakeMealTestProps.validFakeMealProps,
+    const fakeMeal3 = fakeMealTestProps.createTestFakeMeal({
       id: 'fakeMeal-3',
-      name: 'Fake Meal 3',
     });
 
     await repo.saveFakeMeal(fakeMeal2);
@@ -236,7 +210,7 @@ describe('MongoFakeMealsRepo', () => {
     const allFakeMeals = await repo.getAllFakeMeals();
     expect(allFakeMeals.length).toBe(1);
 
-    await repo.deleteFakeMeal(fakeMealTestProps.validFakeMealProps.id);
+    await repo.deleteFakeMeal(fakeMeal.id);
 
     const allFakeMealsAfterDeletion = await repo.getAllFakeMeals();
     expect(allFakeMealsAfterDeletion.length).toBe(0);
@@ -247,12 +221,10 @@ describe('MongoFakeMealsRepo', () => {
   });
 
   it('should delete multiple fake meals by IDs', async () => {
-    const fakeMeal2 = FakeMeal.create({
-      ...fakeMealTestProps.validFakeMealProps,
+    const fakeMeal2 = fakeMealTestProps.createTestFakeMeal({
       id: 'fakeMeal-2',
     });
-    const fakeMeal3 = FakeMeal.create({
-      ...fakeMealTestProps.validFakeMealProps,
+    const fakeMeal3 = fakeMealTestProps.createTestFakeMeal({
       id: 'fakeMeal-3',
     });
 
@@ -263,39 +235,27 @@ describe('MongoFakeMealsRepo', () => {
 
     const remainingFakeMeals = await repo.getAllFakeMeals();
     expect(remainingFakeMeals).toHaveLength(1);
-    expect(remainingFakeMeals[0].id).toBe(
-      fakeMealTestProps.validFakeMealProps.id,
-    );
+    expect(remainingFakeMeals[0].id).toBe(fakeMeal.id);
   });
 
   it('should delete a fake meal by ID and user ID', async () => {
-    await repo.deleteFakeMealByIdAndUserId(
-      fakeMealTestProps.validFakeMealProps.id,
-      fakeMealTestProps.validFakeMealProps.userId,
-    );
+    await repo.deleteFakeMealByIdAndUserId(fakeMeal.id, fakeMeal.userId);
 
-    const fetchedFakeMeal = await repo.getFakeMealById(
-      fakeMealTestProps.validFakeMealProps.id,
-    );
+    const fetchedFakeMeal = await repo.getFakeMealById(fakeMeal.id);
     expect(fetchedFakeMeal).toBeNull();
   });
 
   it('should reject when deleting fake meal with wrong user ID', async () => {
     await expect(
-      repo.deleteFakeMealByIdAndUserId(
-        fakeMealTestProps.validFakeMealProps.id,
-        'wrong-user-id',
-      ),
+      repo.deleteFakeMealByIdAndUserId(fakeMeal.id, 'wrong-user-id'),
     ).rejects.toEqual(null);
   });
 
   it('should delete all fake meals for a user', async () => {
-    const fakeMeal2 = FakeMeal.create({
-      ...fakeMealTestProps.validFakeMealProps,
+    const fakeMeal2 = fakeMealTestProps.createTestFakeMeal({
       id: 'fakeMeal-2',
     });
-    const fakeMealOtherUser = FakeMeal.create({
-      ...fakeMealTestProps.validFakeMealProps,
+    const fakeMealOtherUser = fakeMealTestProps.createTestFakeMeal({
       id: 'fakeMeal-3',
       userId: 'other-user',
     });
@@ -303,9 +263,7 @@ describe('MongoFakeMealsRepo', () => {
     await repo.saveFakeMeal(fakeMeal2);
     await repo.saveFakeMeal(fakeMealOtherUser);
 
-    await repo.deleteAllFakeMealsForUser(
-      fakeMealTestProps.validFakeMealProps.userId,
-    );
+    await repo.deleteAllFakeMealsForUser(fakeMeal.userId);
 
     const allFakeMeals = await repo.getAllFakeMeals();
     expect(allFakeMeals).toHaveLength(1);

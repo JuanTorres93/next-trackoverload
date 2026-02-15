@@ -16,7 +16,7 @@ describe('DayDTO', () => {
   beforeEach(() => {
     meal = mealTestProps.createTestMeal();
 
-    fakeMeal = FakeMeal.create(fakeMealTestProps.validFakeMealProps);
+    fakeMeal = fakeMealTestProps.createTestFakeMeal();
 
     day = Day.create({
       ...dayTestProps.validDayProps(),

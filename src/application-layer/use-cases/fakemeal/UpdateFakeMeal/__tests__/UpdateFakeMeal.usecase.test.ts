@@ -25,9 +25,7 @@ describe('UpdateFakeMealUsecase', () => {
       ...userTestProps.validUserProps,
     });
 
-    fakeMeal = FakeMeal.create({
-      ...fakeMealTestProps.validFakeMealProps,
-    });
+    fakeMeal = fakeMealTestProps.createTestFakeMeal();
 
     await usersRepo.saveUser(user);
     await fakeMealsRepo.saveFakeMeal(fakeMeal);
@@ -36,7 +34,7 @@ describe('UpdateFakeMealUsecase', () => {
   describe('Updated', () => {
     it('should update fake meal name successfully', async () => {
       const result = await usecase.execute({
-        id: fakeMealTestProps.validFakeMealProps.id,
+        id: fakeMeal.id,
         userId: userTestProps.userId,
         patch: { name: 'Updated Name' },
       });
@@ -48,7 +46,7 @@ describe('UpdateFakeMealUsecase', () => {
 
     it('should return FakeMealDTO', async () => {
       const result = await usecase.execute({
-        id: fakeMealTestProps.validFakeMealProps.id,
+        id: fakeMeal.id,
         userId: userTestProps.userId,
         patch: { name: 'Updated Name' },
       });
@@ -61,31 +59,31 @@ describe('UpdateFakeMealUsecase', () => {
 
     it('should update fake meal only calories successfully', async () => {
       const result = await usecase.execute({
-        id: fakeMealTestProps.validFakeMealProps.id,
+        id: fakeMeal.id,
         userId: userTestProps.userId,
         patch: { calories: 600 },
       });
 
-      expect(result.name).toBe(fakeMealTestProps.validFakeMealProps.name);
+      expect(result.name).toBe(fakeMeal.name);
       expect(result.calories).toBe(600);
       expect(result.protein).toBe(30);
     });
 
     it('should update fake meal only protein successfully', async () => {
       const result = await usecase.execute({
-        id: fakeMealTestProps.validFakeMealProps.id,
+        id: fakeMeal.id,
         userId: userTestProps.userId,
         patch: { protein: 40 },
       });
 
-      expect(result.name).toBe(fakeMealTestProps.validFakeMealProps.name);
+      expect(result.name).toBe(fakeMeal.name);
       expect(result.calories).toBe(200);
       expect(result.protein).toBe(40);
     });
 
     it('should update multiple fields at once', async () => {
       const result = await usecase.execute({
-        id: fakeMealTestProps.validFakeMealProps.id,
+        id: fakeMeal.id,
         userId: userTestProps.userId,
         patch: {
           name: 'Updated Name',
@@ -103,7 +101,7 @@ describe('UpdateFakeMealUsecase', () => {
   describe('Errors', () => {
     it('should throw error if user does not exist', async () => {
       const request = {
-        id: fakeMealTestProps.validFakeMealProps.id,
+        id: fakeMeal.id,
         userId: 'non-existent',
         patch: { name: 'Updated Name' },
       };
@@ -136,7 +134,7 @@ describe('UpdateFakeMealUsecase', () => {
       await usersRepo.saveUser(anotherUser);
 
       const request = {
-        id: fakeMealTestProps.validFakeMealProps.id,
+        id: fakeMeal.id,
         userId: anotherUser.id,
         patch: { name: 'Updated Name' },
       };
