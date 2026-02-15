@@ -1,6 +1,5 @@
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError } from '@/domain/common/errors';
-import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { User } from '@/domain/entities/user/User';
 import { MemoryIngredientsRepo } from '@/infra/repos/memory/MemoryIngredientsRepo';
@@ -9,7 +8,6 @@ import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
 import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as mealTestProps from '../../../../../../tests/createProps/mealTestProps';
-import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import {
   AddIngredientToMealUsecase,
@@ -43,33 +41,14 @@ describe('AddIngredientToMealUsecase', () => {
       ...userTestProps.validUserProps,
     });
 
-    await usersRepo.saveUser(user);
-
-    const testIngredient = ingredientTestProps.createTestIngredient({
-      name: 'Chicken Breast',
-      calories: 165,
-      protein: 31,
-    });
-
-    const testIngredientLine = IngredientLine.create({
-      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
-      ingredient: testIngredient,
-      quantityInGrams: 200,
-    });
-
-    testMeal = Meal.create({
-      ...mealTestProps.mealPropsNoIngredientLines,
-      ingredientLines: [testIngredientLine],
-    });
-    await mealsRepo.saveMeal(testMeal);
+    testMeal = mealTestProps.createTestMeal();
 
     const newIngredient = ingredientTestProps.createTestIngredient({
       id: 'ing-new',
-      name: 'Rice',
-      calories: 130,
-      protein: 2.7,
     });
 
+    await usersRepo.saveUser(user);
+    await mealsRepo.saveMeal(testMeal);
     await ingredientsRepo.saveIngredient(newIngredient);
 
     newIngredientLineInfo = {

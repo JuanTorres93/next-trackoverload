@@ -1,13 +1,13 @@
 import { NotFoundError } from '@/domain/common/errors';
-import { GetMealByIdForUserUsecase } from '../GetMealByIdForUserUsecase';
 import { Meal } from '@/domain/entities/meal/Meal';
+import { GetMealByIdForUserUsecase } from '../GetMealByIdForUserUsecase';
 
-import * as mealTestProps from '../../../../../../tests/createProps/mealTestProps';
-import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
+import { User } from '@/domain/entities/user/User';
 import { MemoryMealsRepo } from '@/infra/repos/memory/MemoryMealsRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
-import { User } from '@/domain/entities/user/User';
+import * as mealTestProps from '../../../../../../tests/createProps/mealTestProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 
 describe('GetMealByIdForUserUsecase', () => {
   let mealsRepo: MemoryMealsRepo;
@@ -24,9 +24,7 @@ describe('GetMealByIdForUserUsecase', () => {
     user = User.create({ ...userTestProps.validUserProps });
     await usersRepo.saveUser(user);
 
-    meal = Meal.create({
-      ...mealTestProps.validMealWithIngredientLines(),
-    });
+    meal = mealTestProps.createTestMeal();
 
     await mealsRepo.saveMeal(meal);
   });

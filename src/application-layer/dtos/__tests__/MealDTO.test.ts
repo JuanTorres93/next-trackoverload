@@ -10,22 +10,12 @@ import { fromMealDTO, MealDTO, toMealDTO } from '../MealDTO';
 describe('MealDTO', () => {
   let meal: Meal;
   let ingredient: Ingredient;
-  let ingredientLine: IngredientLine;
   let mealDTO: MealDTO;
 
   beforeEach(() => {
     ingredient = ingredientTestProps.createTestIngredient();
 
-    ingredientLine = IngredientLine.create({
-      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
-      parentType: 'meal',
-      parentId: mealTestProps.mealPropsNoIngredientLines.id,
-      ingredient,
-    });
-    meal = Meal.create({
-      ...mealTestProps.mealPropsNoIngredientLines,
-      ingredientLines: [ingredientLine],
-    });
+    meal = mealTestProps.createTestMeal();
   });
 
   describe('toMealDTO', () => {
@@ -132,6 +122,8 @@ describe('MealDTO', () => {
     });
 
     it('should handle meals with multiple ingredient lines', () => {
+      const originalIngredientLine = meal.ingredientLines[0];
+
       const ingredientLine2 = IngredientLine.create({
         ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
         id: 'line-2',
@@ -141,16 +133,17 @@ describe('MealDTO', () => {
         quantityInGrams: 100,
       });
 
-      const mealWithMultipleLines = Meal.create({
-        ...mealTestProps.mealPropsNoIngredientLines,
-        ingredientLines: [ingredientLine, ingredientLine2],
+      const mealWithMultipleLines = mealTestProps.createTestMeal({
+        ingredientLines: [originalIngredientLine, ingredientLine2],
       });
 
       const dto = toMealDTO(mealWithMultipleLines);
       const reconstructed = fromMealDTO(dto);
 
       expect(reconstructed.ingredientLines).toHaveLength(2);
-      expect(reconstructed.ingredientLines[0].id).toBe(ingredientLine.id);
+      expect(reconstructed.ingredientLines[0].id).toBe(
+        originalIngredientLine.id,
+      );
       expect(reconstructed.ingredientLines[1].id).toBe(ingredientLine2.id);
     });
   });

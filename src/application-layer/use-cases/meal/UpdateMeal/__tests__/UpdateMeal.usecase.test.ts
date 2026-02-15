@@ -1,14 +1,11 @@
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError } from '@/domain/common/errors';
-import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
 import { User } from '@/domain/entities/user/User';
 import { MemoryMealsRepo } from '@/infra/repos/memory/MemoryMealsRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { beforeEach, describe, expect, it } from 'vitest';
-import * as ingredientTestProps from '../../../../../../tests/createProps/ingredientTestProps';
 import * as mealTestProps from '../../../../../../tests/createProps/mealTestProps';
-import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import { UpdateMealUsecase } from '../UpdateMeal.usecase';
 
@@ -28,20 +25,9 @@ describe('UpdateMealUsecase', () => {
       ...userTestProps.validUserProps,
     });
 
+    meal = mealTestProps.createTestMeal();
+
     await usersRepo.saveUser(user);
-
-    const ingredient = ingredientTestProps.createTestIngredient();
-
-    const ingredientLine = IngredientLine.create({
-      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
-      ingredient,
-    });
-
-    meal = Meal.create({
-      ...mealTestProps.mealPropsNoIngredientLines,
-      ingredientLines: [ingredientLine],
-    });
-
     await mealsRepo.saveMeal(meal);
 
     // Wait a bit to ensure updatedAt will be different
@@ -57,7 +43,7 @@ describe('UpdateMealUsecase', () => {
       });
 
       expect(updatedMeal.name).toBe('High Protein Meal');
-      expect(updatedMeal.id).toBe(mealTestProps.mealPropsNoIngredientLines.id);
+      expect(updatedMeal.id).toBe(meal.id);
       expect(updatedMeal.ingredientLines).toHaveLength(1);
       expect(updatedMeal.createdAt).toBe(meal.createdAt.toISOString());
       expect(updatedMeal.updatedAt).not.toBe(

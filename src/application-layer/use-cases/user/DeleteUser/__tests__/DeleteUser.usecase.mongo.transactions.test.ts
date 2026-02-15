@@ -1,7 +1,6 @@
 import { Day } from '@/domain/entities/day/Day';
 import { Exercise } from '@/domain/entities/exercise/Exercise';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { Meal } from '@/domain/entities/meal/Meal';
 import { User } from '@/domain/entities/user/User';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
@@ -25,7 +24,7 @@ import { beforeEach, describe } from 'vitest';
 import * as dayTestProps from '../../../../../../tests/createProps/dayTestProps';
 import { validExerciseProps } from '../../../../../../tests/createProps/exerciseTestProps';
 import * as fakeMealTestProps from '../../../../../../tests/createProps/fakeMealTestProps';
-import { validMealWithIngredientLines } from '../../../../../../tests/createProps/mealTestProps';
+import { createTestMeal } from '../../../../../../tests/createProps/mealTestProps';
 import { createTestRecipe } from '../../../../../../tests/createProps/recipeTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import { validWorkoutTemplateProps } from '../../../../../../tests/createProps/workoutTemplateTestProps';
@@ -87,10 +86,7 @@ describe('DeleteUserUsecase', () => {
       userId: user.id,
     });
 
-    const meal = Meal.create({
-      ...validMealWithIngredientLines(),
-      userId: user.id,
-    });
+    const meal = createTestMeal();
 
     // Save ingredients for meal
     for (const line of meal.ingredientLines) {

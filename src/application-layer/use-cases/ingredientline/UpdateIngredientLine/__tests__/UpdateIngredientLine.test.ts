@@ -58,11 +58,7 @@ describe('UpdateIngredientLineUsecase', () => {
     testRecipe = recipeTestProps.createTestRecipe({}, 1);
     testIngredientLine = [...testRecipe.ingredientLines][0];
 
-    testMeal = Meal.create({
-      ...mealTestProps.mealPropsNoIngredientLines,
-      id: 'test-meal-id',
-      ingredientLines: [testIngredientLine],
-    });
+    testMeal = mealTestProps.createTestMeal();
 
     // Save entities to repos
     await usersRepo.saveUser(user);
@@ -290,8 +286,8 @@ describe('UpdateIngredientLineUsecase', () => {
         const result = await updateIngredientLineUsecase.execute(request);
 
         expect(result.ingredient.id).toBe(alternativeIngredient.id);
-        expect(result.ingredient.name).toBe('Turkey Breast');
-        expect(result.quantityInGrams).toBe(200);
+        expect(result.ingredient.name).toBe(alternativeIngredient.name);
+        expect(result.quantityInGrams).toBe(150);
         expect(result.id).toBe(testIngredientLine.id);
       });
 

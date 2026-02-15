@@ -42,20 +42,14 @@ describe('RemoveIngredientFromMealUsecase', () => {
       id: 'ing2',
     });
 
-    const firstIngredientLine = IngredientLine.create({
-      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
-      ingredient: testIngredient,
-    });
-
     const secondIngredientLine = IngredientLine.create({
       ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
       ingredient: secondIngredient,
     });
 
-    testMeal = Meal.create({
-      ...mealTestProps.mealPropsNoIngredientLines,
-      ingredientLines: [firstIngredientLine, secondIngredientLine],
-    });
+    testMeal = mealTestProps.createTestMeal();
+    testMeal.addIngredientLine(secondIngredientLine);
+
     await mealsRepo.saveMeal(testMeal);
   });
 

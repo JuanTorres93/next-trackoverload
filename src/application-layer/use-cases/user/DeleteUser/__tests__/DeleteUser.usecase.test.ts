@@ -10,7 +10,6 @@ import * as workoutTestProps from '../../../../../../tests/createProps/workoutTe
 // Import entities
 import { Day } from '@/domain/entities/day/Day';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { Meal } from '@/domain/entities/meal/Meal';
 import { User } from '@/domain/entities/user/User';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
@@ -72,10 +71,7 @@ describe('DeleteUserUsecase', () => {
       userId: userTestProps.userId,
     });
 
-    const meal = Meal.create({
-      ...mealTestProps.validMealWithIngredientLines(),
-      userId: userTestProps.userId,
-    });
+    const meal = mealTestProps.createTestMeal();
 
     const recipe = recipeTestProps.createTestRecipe();
 

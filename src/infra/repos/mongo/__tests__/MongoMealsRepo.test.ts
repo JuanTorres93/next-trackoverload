@@ -32,12 +32,11 @@ describe('MongoMealsRepo', () => {
     ingredientsRepo = new MongoIngredientsRepo();
     repo = new MongoMealsRepo();
 
-    // Create and save an ingredient first (needed for meal lines)
     ingredient = ingredientTestProps.createTestIngredient();
-    await ingredientsRepo.saveIngredient(ingredient);
 
-    // Create a meal with ingredient lines
-    meal = Meal.create(mealTestProps.validMealWithIngredientLines());
+    meal = mealTestProps.createTestMeal();
+
+    await ingredientsRepo.saveIngredient(ingredient);
     await repo.saveMeal(meal);
   });
 
@@ -50,7 +49,6 @@ describe('MongoMealsRepo', () => {
       id: 'ingredient-2',
       name: 'Rice',
     });
-    await ingredientsRepo.saveIngredient(newIngredient);
 
     const ingredientLine = IngredientLine.create({
       ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
@@ -58,19 +56,19 @@ describe('MongoMealsRepo', () => {
       parentId: 'meal-2',
       parentType: 'meal',
       ingredient: newIngredient,
-      quantityInGrams: 200,
     });
 
-    const newMeal = Meal.create({
-      ...mealTestProps.mealPropsNoIngredientLines,
+    const newMeal = mealTestProps.createTestMeal({
       id: 'meal-2',
       name: 'Rice Bowl',
       ingredientLines: [ingredientLine],
-      updatedAt: new Date('2023-01-02'),
     });
+
+    await ingredientsRepo.saveIngredient(newIngredient);
     await repo.saveMeal(newMeal);
 
     const allMeals = await repo.getAllMeals();
+
     expect(allMeals.length).toBe(2);
     expect(allMeals[1].name).toBe('Rice Bowl');
     expect(allMeals[1].ingredientLines).toHaveLength(1);
@@ -78,9 +76,7 @@ describe('MongoMealsRepo', () => {
   });
 
   it('should update an existing meal', async () => {
-    const existingMeal = await repo.getMealById(
-      mealTestProps.mealPropsNoIngredientLines.id,
-    );
+    const existingMeal = await repo.getMealById(meal.id);
     existingMeal!.update({
       name: 'Updated Meal Name',
     });
@@ -92,9 +88,7 @@ describe('MongoMealsRepo', () => {
   });
 
   it('should update meal ingredient lines when saving', async () => {
-    const existingMeal = await repo.getMealById(
-      mealTestProps.mealPropsNoIngredientLines.id,
-    );
+    const existingMeal = await repo.getMealById(meal.id);
     expect(existingMeal!.ingredientLines).toHaveLength(1);
 
     // Create a new ingredient and add it to the meal
@@ -124,14 +118,10 @@ describe('MongoMealsRepo', () => {
   });
 
   it('should retrieve a meal by ID with its ingredient lines', async () => {
-    const fetchedMeal = await repo.getMealById(
-      mealTestProps.mealPropsNoIngredientLines.id,
-    );
+    const fetchedMeal = await repo.getMealById(meal.id);
 
-    expect(fetchedMeal!.id).toBe(mealTestProps.mealPropsNoIngredientLines.id);
-    expect(fetchedMeal!.name).toBe(
-      mealTestProps.mealPropsNoIngredientLines.name,
-    );
+    expect(fetchedMeal!.id).toBe(meal.id);
+    expect(fetchedMeal!.name).toBe(meal.name);
     expect(fetchedMeal!.ingredientLines).toHaveLength(1);
     expect(fetchedMeal!.ingredientLines[0].ingredient).toBeInstanceOf(
       Ingredient,
@@ -155,8 +145,7 @@ describe('MongoMealsRepo', () => {
       await ingredientsRepo.saveIngredient(ingredient);
 
       const meals = [
-        Meal.create({
-          ...mealTestProps.mealPropsNoIngredientLines,
+        mealTestProps.createTestMeal({
           id: 'meal-1',
           name: 'Meal 1',
           ingredientLines: [
@@ -171,8 +160,7 @@ describe('MongoMealsRepo', () => {
           ],
         }),
 
-        Meal.create({
-          ...mealTestProps.mealPropsNoIngredientLines,
+        mealTestProps.createTestMeal({
           id: 'meal-2',
           name: 'Meal 2',
           ingredientLines: [
@@ -187,10 +175,8 @@ describe('MongoMealsRepo', () => {
           ],
         }),
 
-        Meal.create({
-          ...mealTestProps.mealPropsNoIngredientLines,
+        mealTestProps.createTestMeal({
           id: 'meal-3',
-          name: 'Meal 3',
           ingredientLines: [
             IngredientLine.create({
               ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
@@ -261,35 +247,31 @@ describe('MongoMealsRepo', () => {
   });
 
   it('should retrieve all meals for a specific user', async () => {
-    const meal2 = Meal.create({
-      ...mealTestProps.mealPropsNoIngredientLines,
-      id: 'meal-2',
-      name: 'Another Meal',
+    const meal2Id = 'meal-2';
+    const meal2 = mealTestProps.createTestMeal({
+      id: meal2Id,
       ingredientLines: [
         IngredientLine.create({
           ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
           id: 'line-m2',
-          parentId: 'meal-2',
+          parentId: meal2Id,
           parentType: 'meal',
           ingredient,
-          quantityInGrams: 120,
         }),
       ],
     });
 
-    const mealOtherUser = Meal.create({
-      ...mealTestProps.mealPropsNoIngredientLines,
-      id: 'meal-3',
+    const mealOtherUserId = 'meal-3';
+    const mealOtherUser = mealTestProps.createTestMeal({
+      id: mealOtherUserId,
       userId: 'other-user',
-      name: 'Other User Meal',
       ingredientLines: [
         IngredientLine.create({
           ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
           id: 'line-m3',
-          parentId: 'meal-3',
+          parentId: mealOtherUserId,
           parentType: 'meal',
           ingredient,
-          quantityInGrams: 80,
         }),
       ],
     });
@@ -297,72 +279,53 @@ describe('MongoMealsRepo', () => {
     await repo.saveMeal(meal2);
     await repo.saveMeal(mealOtherUser);
 
-    const userMeals = await repo.getAllMealsForUser(
-      mealTestProps.mealPropsNoIngredientLines.userId,
-    );
+    const userMeals = await repo.getAllMealsForUser(meal.userId);
 
     expect(userMeals).toHaveLength(2);
-    expect(
-      userMeals.every(
-        (m) => m.userId === mealTestProps.mealPropsNoIngredientLines.userId,
-      ),
-    ).toBe(true);
+    expect(userMeals.every((m) => m.userId === meal.userId)).toBe(true);
   });
 
   it('should retrieve a meal by ID and user ID', async () => {
-    const fetchedMeal = await repo.getMealByIdForUser(
-      mealTestProps.mealPropsNoIngredientLines.id,
-      mealTestProps.mealPropsNoIngredientLines.userId,
-    );
+    const fetchedMeal = await repo.getMealByIdForUser(meal.id, meal.userId);
 
     expect(fetchedMeal).not.toBeNull();
-    expect(fetchedMeal!.id).toBe(mealTestProps.mealPropsNoIngredientLines.id);
-    expect(fetchedMeal!.userId).toBe(
-      mealTestProps.mealPropsNoIngredientLines.userId,
-    );
+    expect(fetchedMeal!.id).toBe(meal.id);
+    expect(fetchedMeal!.userId).toBe(meal.userId);
   });
 
   it('should return null when meal ID and user ID do not match', async () => {
-    const fetchedMeal = await repo.getMealByIdForUser(
-      mealTestProps.mealPropsNoIngredientLines.id,
-      'wrong-user-id',
-    );
+    const fetchedMeal = await repo.getMealByIdForUser(meal.id, 'wrong-user-id');
 
     expect(fetchedMeal).toBeNull();
   });
 
   it('should retrieve meals by recipe ID and user ID', async () => {
-    const meal2 = Meal.create({
-      ...mealTestProps.mealPropsNoIngredientLines,
-      id: 'meal-2',
-      name: 'Same Recipe Meal',
-      createdFromRecipeId:
-        mealTestProps.mealPropsNoIngredientLines.createdFromRecipeId,
+    const meal2Id = 'meal-2';
+    const meal2 = mealTestProps.createTestMeal({
+      id: meal2Id,
+      createdFromRecipeId: meal.createdFromRecipeId,
       ingredientLines: [
         IngredientLine.create({
           ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
           id: 'line-m2',
-          parentId: 'meal-2',
+          parentId: meal2Id,
           parentType: 'meal',
           ingredient,
-          quantityInGrams: 90,
         }),
       ],
     });
 
-    const mealDifferentRecipe = Meal.create({
-      ...mealTestProps.mealPropsNoIngredientLines,
-      id: 'meal-3',
-      name: 'Different Recipe Meal',
+    const meal3Id = 'meal-3';
+    const mealDifferentRecipe = mealTestProps.createTestMeal({
+      id: meal3Id,
       createdFromRecipeId: 'different-recipe-id',
       ingredientLines: [
         IngredientLine.create({
           ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
           id: 'line-m3',
-          parentId: 'meal-3',
+          parentId: meal3Id,
           parentType: 'meal',
           ingredient,
-          quantityInGrams: 110,
         }),
       ],
     });
@@ -371,48 +334,44 @@ describe('MongoMealsRepo', () => {
     await repo.saveMeal(mealDifferentRecipe);
 
     const mealsFromRecipe = await repo.getMealsByRecipeIdAndUserId(
-      mealTestProps.mealPropsNoIngredientLines.createdFromRecipeId,
-      mealTestProps.mealPropsNoIngredientLines.userId,
+      meal.createdFromRecipeId,
+      meal.userId,
     );
 
     expect(mealsFromRecipe).toHaveLength(2);
     expect(
       mealsFromRecipe.every(
-        (m) =>
-          m.createdFromRecipeId ===
-          mealTestProps.mealPropsNoIngredientLines.createdFromRecipeId,
+        (mealFromRecipe) =>
+          mealFromRecipe.createdFromRecipeId === meal.createdFromRecipeId,
       ),
     ).toBe(true);
   });
 
   it('should retrieve all meals', async () => {
-    const meal2 = Meal.create({
-      ...mealTestProps.mealPropsNoIngredientLines,
-      id: 'meal-2',
-      name: 'Meal 2',
+    const meal2Id = 'meal-2';
+    const meal2 = mealTestProps.createTestMeal({
+      id: meal2Id,
       ingredientLines: [
         IngredientLine.create({
           ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
           id: 'line-2',
-          parentId: 'meal-2',
+          parentId: meal2Id,
           parentType: 'meal',
           ingredient,
-          quantityInGrams: 75,
         }),
       ],
     });
-    const meal3 = Meal.create({
-      ...mealTestProps.mealPropsNoIngredientLines,
-      id: 'meal-3',
-      name: 'Meal 3',
+
+    const meal3Id = 'meal-3';
+    const meal3 = mealTestProps.createTestMeal({
+      id: meal3Id,
       ingredientLines: [
         IngredientLine.create({
           ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
           id: 'line-3',
-          parentId: 'meal-3',
+          parentId: meal3Id,
           parentType: 'meal',
           ingredient,
-          quantityInGrams: 125,
         }),
       ],
     });
@@ -421,6 +380,7 @@ describe('MongoMealsRepo', () => {
     await repo.saveMeal(meal3);
 
     const allMeals = await repo.getAllMeals();
+
     expect(allMeals).toHaveLength(3);
   });
 
@@ -428,7 +388,7 @@ describe('MongoMealsRepo', () => {
     const allMeals = await repo.getAllMeals();
     expect(allMeals.length).toBe(1);
 
-    await repo.deleteMeal(mealTestProps.mealPropsNoIngredientLines.id);
+    await repo.deleteMeal(meal.id);
 
     const allMealsAfterDeletion = await repo.getAllMeals();
     expect(allMealsAfterDeletion.length).toBe(0);
@@ -439,31 +399,31 @@ describe('MongoMealsRepo', () => {
   });
 
   it('should delete multiple meals by IDs', async () => {
-    const meal2 = Meal.create({
-      ...mealTestProps.mealPropsNoIngredientLines,
-      id: 'meal-2',
+    const meal2Id = 'meal-2';
+    const meal2 = mealTestProps.createTestMeal({
+      id: meal2Id,
       ingredientLines: [
         IngredientLine.create({
           ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
           id: 'line-2',
-          parentId: 'meal-2',
+          parentId: meal2Id,
           parentType: 'meal',
           ingredient,
           quantityInGrams: 95,
         }),
       ],
     });
-    const meal3 = Meal.create({
-      ...mealTestProps.mealPropsNoIngredientLines,
-      id: 'meal-3',
+
+    const meal3Id = 'meal-3';
+    const meal3 = mealTestProps.createTestMeal({
+      id: meal3Id,
       ingredientLines: [
         IngredientLine.create({
           ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
           id: 'line-3',
-          parentId: 'meal-3',
+          parentId: meal3Id,
           parentType: 'meal',
           ingredient,
-          quantityInGrams: 115,
         }),
       ],
     });
@@ -475,38 +435,35 @@ describe('MongoMealsRepo', () => {
 
     const remainingMeals = await repo.getAllMeals();
     expect(remainingMeals).toHaveLength(1);
-    expect(remainingMeals[0].id).toBe(
-      mealTestProps.mealPropsNoIngredientLines.id,
-    );
+    expect(remainingMeals[0].id).toBe(meal.id);
   });
 
   it('should delete all meals for a user', async () => {
-    const meal2 = Meal.create({
-      ...mealTestProps.mealPropsNoIngredientLines,
-      id: 'meal-2',
+    const meal2Id = 'meal-2';
+    const meal2 = mealTestProps.createTestMeal({
+      id: meal2Id,
       ingredientLines: [
         IngredientLine.create({
           ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
           id: 'line-2',
-          parentId: 'meal-2',
+          parentId: meal2Id,
           parentType: 'meal',
           ingredient,
-          quantityInGrams: 85,
         }),
       ],
     });
-    const mealOtherUser = Meal.create({
-      ...mealTestProps.mealPropsNoIngredientLines,
-      id: 'meal-3',
+
+    const mealOtherUserId = 'meal-3';
+    const mealOtherUser = mealTestProps.createTestMeal({
+      id: mealOtherUserId,
       userId: 'other-user',
       ingredientLines: [
         IngredientLine.create({
           ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
           id: 'line-3',
-          parentId: 'meal-3',
+          parentId: mealOtherUserId,
           parentType: 'meal',
           ingredient,
-          quantityInGrams: 105,
         }),
       ],
     });
@@ -514,9 +471,7 @@ describe('MongoMealsRepo', () => {
     await repo.saveMeal(meal2);
     await repo.saveMeal(mealOtherUser);
 
-    await repo.deleteAllMealsForUser(
-      mealTestProps.mealPropsNoIngredientLines.userId,
-    );
+    await repo.deleteAllMealsForUser(meal.userId);
 
     const allMeals = await repo.getAllMeals();
     expect(allMeals).toHaveLength(1);
@@ -528,9 +483,7 @@ describe('MongoMealsRepo', () => {
       it('should rollback changes if error meal find and update', async () => {
         mockForThrowingError(MealMongo, 'findOneAndUpdate');
 
-        const existingMeal = await repo.getMealById(
-          mealTestProps.mealPropsNoIngredientLines.id,
-        );
+        const existingMeal = await repo.getMealById(meal.id);
         existingMeal!.update({
           name: 'Updated Meal Name',
         });
@@ -540,20 +493,14 @@ describe('MongoMealsRepo', () => {
           /Mocked error.*findOneAndUpdate/i,
         );
 
-        const notUpdatedMeal = await repo.getMealById(
-          mealTestProps.mealPropsNoIngredientLines.id,
-        );
-        expect(notUpdatedMeal!.name).toBe(
-          mealTestProps.mealPropsNoIngredientLines.name,
-        );
+        const notUpdatedMeal = await repo.getMealById(meal.id);
+        expect(notUpdatedMeal!.name).toBe(meal.name);
       });
 
       it('should rollback changes if error in deleteMany meal lines', async () => {
         mockForThrowingError(MealLineMongo, 'deleteMany');
 
-        const existingMeal = await repo.getMealById(
-          mealTestProps.mealPropsNoIngredientLines.id,
-        );
+        const existingMeal = await repo.getMealById(meal.id);
         existingMeal!.update({
           name: 'Updated Meal Name',
         });
@@ -580,12 +527,8 @@ describe('MongoMealsRepo', () => {
           /Mocked error.*deleteMany/i,
         );
 
-        const notUpdatedMeal = await repo.getMealById(
-          mealTestProps.mealPropsNoIngredientLines.id,
-        );
-        expect(notUpdatedMeal!.name).toBe(
-          mealTestProps.mealPropsNoIngredientLines.name,
-        );
+        const notUpdatedMeal = await repo.getMealById(meal.id);
+        expect(notUpdatedMeal!.name).toBe(meal.name);
         expect(notUpdatedMeal!.ingredientLines).toHaveLength(1);
         expect(notUpdatedMeal!.ingredientLines[0].ingredient.name).toBe(
           ingredient.name,
@@ -595,9 +538,7 @@ describe('MongoMealsRepo', () => {
       it('should rollback changes if error in insertMany meal lines', async () => {
         mockForThrowingError(MealLineMongo, 'insertMany');
 
-        const existingMeal = await repo.getMealById(
-          mealTestProps.mealPropsNoIngredientLines.id,
-        );
+        const existingMeal = await repo.getMealById(meal.id);
         existingMeal!.update({
           name: 'Updated Meal Name',
         });
@@ -624,12 +565,8 @@ describe('MongoMealsRepo', () => {
           /Mocked error.*insertMany/i,
         );
 
-        const notUpdatedMeal = await repo.getMealById(
-          mealTestProps.mealPropsNoIngredientLines.id,
-        );
-        expect(notUpdatedMeal!.name).toBe(
-          mealTestProps.mealPropsNoIngredientLines.name,
-        );
+        const notUpdatedMeal = await repo.getMealById(meal.id);
+        expect(notUpdatedMeal!.name).toBe(meal.name);
         expect(notUpdatedMeal!.ingredientLines).toHaveLength(1);
         expect(notUpdatedMeal!.ingredientLines[0].ingredient.name).toBe(
           ingredient.name,
@@ -641,7 +578,7 @@ describe('MongoMealsRepo', () => {
       it('should rollback changes if error occurs when deleting meal but deleting meal lines correct', async () => {
         mockForThrowingError(MealLineMongo, 'deleteMany');
 
-        const mealId = mealTestProps.mealPropsNoIngredientLines.id;
+        const mealId = meal.id;
 
         const initialMealCount = await repo.getAllMeals();
         expect(initialMealCount.length).toBe(1);
@@ -674,7 +611,7 @@ describe('MongoMealsRepo', () => {
       it('it should rollback changes if error when deleting mealLines but deleting meal correct', async () => {
         mockForThrowingError(MealMongo, 'deleteOne');
 
-        const mealId = mealTestProps.mealPropsNoIngredientLines.id;
+        const mealId = meal.id;
 
         const initialMealCount = await repo.getAllMeals();
         expect(initialMealCount.length).toBe(1);
@@ -709,7 +646,7 @@ describe('MongoMealsRepo', () => {
       it('should rollback changes if error occurs when deleting meals but deleting meal lines correct', async () => {
         mockForThrowingError(MealLineMongo, 'deleteMany');
 
-        const mealId = mealTestProps.mealPropsNoIngredientLines.id;
+        const mealId = meal.id;
 
         const initialMealCount = await repo.getAllMeals();
         expect(initialMealCount.length).toBe(1);
@@ -742,7 +679,7 @@ describe('MongoMealsRepo', () => {
       it('should rollback changes if error occurs when deleting meal lines but deleting meals correct', async () => {
         mockForThrowingError(MealMongo, 'deleteMany');
 
-        const mealId = mealTestProps.mealPropsNoIngredientLines.id;
+        const mealId = meal.id;
 
         const initialMealCount = await repo.getAllMeals();
         expect(initialMealCount.length).toBe(1);
@@ -778,7 +715,7 @@ describe('MongoMealsRepo', () => {
     it('should rollback changes if error occurs when deleting meals but deleting meal lines correct', async () => {
       mockForThrowingError(MealLineMongo, 'deleteMany');
 
-      const userId = mealTestProps.mealPropsNoIngredientLines.userId;
+      const userId = meal.userId;
 
       const initialMeals = await repo.getAllMealsForUser(userId);
       expect(initialMeals).toHaveLength(1);
@@ -795,9 +732,7 @@ describe('MongoMealsRepo', () => {
       expect(mealsAfterFailedDelete).toHaveLength(1);
 
       const mealAfterFailedDelete = mealsAfterFailedDelete[0];
-      expect(mealAfterFailedDelete.id).toBe(
-        mealTestProps.mealPropsNoIngredientLines.id,
-      );
+      expect(mealAfterFailedDelete.id).toBe(meal.id);
 
       // Verify that the meal lines still exist
       expect(mealAfterFailedDelete.ingredientLines).toHaveLength(1);
@@ -809,7 +744,7 @@ describe('MongoMealsRepo', () => {
     it('should rollback changes if error occurs when deleting meal lines but deleting meals correct', async () => {
       mockForThrowingError(MealMongo, 'deleteMany');
 
-      const userId = mealTestProps.mealPropsNoIngredientLines.userId;
+      const userId = meal.userId;
 
       const initialMeals = await repo.getAllMealsForUser(userId);
       expect(initialMeals).toHaveLength(1);
@@ -826,9 +761,7 @@ describe('MongoMealsRepo', () => {
       expect(mealsAfterFailedDelete).toHaveLength(1);
 
       const mealAfterFailedDelete = mealsAfterFailedDelete[0];
-      expect(mealAfterFailedDelete.id).toBe(
-        mealTestProps.mealPropsNoIngredientLines.id,
-      );
+      expect(mealAfterFailedDelete.id).toBe(meal.id);
 
       // Verify that the meal lines still exist
       expect(mealAfterFailedDelete.ingredientLines).toHaveLength(1);

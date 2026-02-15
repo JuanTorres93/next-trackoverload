@@ -1,19 +1,18 @@
 import { GetAssembledDayByIdUsecase } from '../GetAssembledDayByIdUsecase';
 
+import * as dto from '@/../tests/dtoProperties';
+import { NotFoundError } from '@/domain/common/errors';
+import { Day } from '@/domain/entities/day/Day';
+import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { User } from '@/domain/entities/user/User';
+import { MemoryDaysRepo } from '@/infra/repos/memory/MemoryDaysRepo';
+import { MemoryFakeMealsRepo } from '@/infra/repos/memory/MemoryFakeMealsRepo';
+import { MemoryMealsRepo } from '@/infra/repos/memory/MemoryMealsRepo';
+import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import * as dayTestProps from '../../../../../../tests/createProps/dayTestProps';
 import * as fakeMealTestProps from '../../../../../../tests/createProps/fakeMealTestProps';
 import * as mealTestProps from '../../../../../../tests/createProps/mealTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
-import * as dto from '@/../tests/dtoProperties';
-import { Day } from '@/domain/entities/day/Day';
-import { MemoryDaysRepo } from '@/infra/repos/memory/MemoryDaysRepo';
-import { MemoryMealsRepo } from '@/infra/repos/memory/MemoryMealsRepo';
-import { MemoryFakeMealsRepo } from '@/infra/repos/memory/MemoryFakeMealsRepo';
-import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
-import { NotFoundError } from '@/domain/common/errors';
-import { User } from '@/domain/entities/user/User';
-import { Meal } from '@/domain/entities/meal/Meal';
-import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 
 describe('GetAssembledDayByIdUsecase', () => {
   let daysRepo: MemoryDaysRepo;
@@ -64,7 +63,7 @@ describe('GetAssembledDayByIdUsecase', () => {
     });
 
     it('should assemble related meals and fake meals', async () => {
-      const meal = Meal.create(mealTestProps.validMealWithIngredientLines());
+      const meal = mealTestProps.createTestMeal();
       const fakeMeal = FakeMeal.create(fakeMealTestProps.validFakeMealProps);
 
       await mealsRepo.saveMeal(meal);

@@ -1,5 +1,8 @@
 import { Day } from '@/domain/entities/day/Day';
+import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { Meal } from '@/domain/entities/meal/Meal';
 import { User } from '@/domain/entities/user/User';
+import { mockForThrowingError } from '@/infra/repos/mongo/__tests__/mockForThrowingError';
 import {
   clearMongoTestDB,
   setupMongoTestDB,
@@ -7,19 +10,16 @@ import {
 } from '@/infra/repos/mongo/__tests__/setupMongoTestDB';
 import { MongoDaysRepo } from '@/infra/repos/mongo/MongoDaysRepo';
 import { MongoFakeMealsRepo } from '@/infra/repos/mongo/MongoFakeMealsRepo';
+import { MongoIngredientsRepo } from '@/infra/repos/mongo/MongoIngredientsRepo';
 import { MongoMealsRepo } from '@/infra/repos/mongo/MongoMealsRepo';
 import { MongoUsersRepo } from '@/infra/repos/mongo/MongoUsersRepo';
-import { MongoIngredientsRepo } from '@/infra/repos/mongo/MongoIngredientsRepo';
 import { MongoTransactionContext } from '@/infra/transaction-context/MongoTransactionContext/MongoTransactionContext';
 import { beforeEach, describe } from 'vitest';
 import * as dayTestProps from '../../../../../../tests/createProps/dayTestProps';
-import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
-import { validMealWithIngredientLines } from '../../../../../../tests/createProps/mealTestProps';
 import { validFakeMealProps } from '../../../../../../tests/createProps/fakeMealTestProps';
+import { createTestMeal } from '../../../../../../tests/createProps/mealTestProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import { DeleteDayUsecase } from '../DeleteDay.usecase';
-import { mockForThrowingError } from '@/infra/repos/mongo/__tests__/mockForThrowingError';
-import { Meal } from '@/domain/entities/meal/Meal';
-import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 
 describe('DeleteDayUsecase', () => {
   let daysRepo: MongoDaysRepo;
@@ -57,9 +57,7 @@ describe('DeleteDayUsecase', () => {
       new MongoTransactionContext(),
     );
 
-    meal = Meal.create({
-      ...validMealWithIngredientLines(),
-    });
+    meal = createTestMeal();
 
     fakeMeal = FakeMeal.create({
       ...validFakeMealProps,

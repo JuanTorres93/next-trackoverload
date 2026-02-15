@@ -1,37 +1,21 @@
-import * as dayTestProps from '../../../../tests/createProps/dayTestProps';
-import * as fakeMealTestProps from '../../../../tests/createProps/fakeMealTestProps';
-import * as mealTestProps from '../../../../tests/createProps/mealTestProps';
-import * as recipeTestProps from '../../../../tests/createProps/recipeTestProps';
-import * as ingredientTestProps from '../../../../tests/createProps/ingredientTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { Day } from '@/domain/entities/day/Day';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
 import { Meal } from '@/domain/entities/meal/Meal';
+import * as dayTestProps from '../../../../tests/createProps/dayTestProps';
+import * as fakeMealTestProps from '../../../../tests/createProps/fakeMealTestProps';
+import * as mealTestProps from '../../../../tests/createProps/mealTestProps';
 import { DayDTO, fromDayDTO, toDayDTO } from '../DayDTO';
 
 describe('DayDTO', () => {
   let day: Day;
   let meal: Meal;
   let fakeMeal: FakeMeal;
-  let ingredient: Ingredient;
-  let ingredientLine: IngredientLine;
   let dayDTO: DayDTO;
 
   beforeEach(() => {
-    ingredient = ingredientTestProps.createTestIngredient();
+    meal = mealTestProps.createTestMeal();
 
-    ingredientLine = IngredientLine.create({
-      ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
-      parentType: 'meal',
-      parentId: mealTestProps.mealPropsNoIngredientLines.id,
-      ingredient,
-    });
-    meal = Meal.create({
-      ...mealTestProps.mealPropsNoIngredientLines,
-      ingredientLines: [ingredientLine],
-    });
     fakeMeal = FakeMeal.create(fakeMealTestProps.validFakeMealProps);
 
     day = Day.create({
