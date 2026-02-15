@@ -16,25 +16,20 @@ describe('GetExerciseByIdUsecase', () => {
 
   describe('Found', () => {
     it('should return exercise when found', async () => {
-      const exercise = Exercise.create({
-        ...exerciseTestProps.validExerciseProps,
+      const exercise = exerciseTestProps.createTestExercise({
         id: '1',
-        name: 'Push Up',
       });
 
       await exercisesRepo.saveExercise(exercise);
 
       const result = await getExerciseByIdUsecase.execute({ id: '1' });
 
-      // @ts-expect-error result is not null here
-      expect(result.id).toEqual(exercise.id);
+      expect(result!.id).toEqual(exercise.id);
     });
 
     it('should return an array of ExerciseDTO', async () => {
-      const exercise = Exercise.create({
-        ...exerciseTestProps.validExerciseProps,
+      const exercise = exerciseTestProps.createTestExercise({
         id: '1',
-        name: 'Push Up',
       });
 
       await exercisesRepo.saveExercise(exercise);

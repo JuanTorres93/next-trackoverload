@@ -32,7 +32,7 @@ describe('MongoWorkoutTemplatesRepo', () => {
     repo = new MongoWorkoutTemplatesRepo();
 
     // Create and save an exercise first (needed for template lines)
-    exercise = Exercise.create(exerciseTestProps.validExerciseProps);
+    exercise = exerciseTestProps.createTestExercise();
     await exercisesRepo.saveExercise(exercise);
 
     // Create a workout template with template lines
@@ -61,10 +61,8 @@ describe('MongoWorkoutTemplatesRepo', () => {
 
   describe('saveWorkoutTemplate', () => {
     it('should save a workout template with its template lines', async () => {
-      const newExercise = Exercise.create({
-        ...exerciseTestProps.validExerciseProps,
+      const newExercise = exerciseTestProps.createTestExercise({
         id: 'exercise-2',
-        name: 'Squat',
       });
       await exercisesRepo.saveExercise(newExercise);
 
@@ -81,8 +79,6 @@ describe('MongoWorkoutTemplatesRepo', () => {
         userId: workoutTemplateTestProps.validWorkoutTemplateProps().userId,
         name: 'Leg Day Template',
         exercises: [templateLine],
-        createdAt: new Date('2023-01-02'),
-        updatedAt: new Date('2023-01-02'),
       });
       await repo.saveWorkoutTemplate(newTemplate);
 
@@ -109,11 +105,8 @@ describe('MongoWorkoutTemplatesRepo', () => {
       const existingTemplate = await repo.getWorkoutTemplateById('template-1');
       expect(existingTemplate!.exercises).toHaveLength(1);
 
-      // Create a new exercise and add it to the template
-      const newExercise = Exercise.create({
-        ...exerciseTestProps.validExerciseProps,
+      const newExercise = exerciseTestProps.createTestExercise({
         id: 'exercise-3',
-        name: 'Bench Press',
       });
       await exercisesRepo.saveExercise(newExercise);
 
@@ -432,10 +425,8 @@ describe('MongoWorkoutTemplatesRepo', () => {
           name: 'Updated Template Name',
         });
 
-        const anotherExercise = Exercise.create({
-          ...exerciseTestProps.validExerciseProps,
+        const anotherExercise = exerciseTestProps.createTestExercise({
           id: 'exercise-2',
-          name: 'Deadlift',
         });
         await exercisesRepo.saveExercise(anotherExercise);
 
@@ -470,10 +461,8 @@ describe('MongoWorkoutTemplatesRepo', () => {
           name: 'Updated Template Name',
         });
 
-        const anotherExercise = Exercise.create({
-          ...exerciseTestProps.validExerciseProps,
+        const anotherExercise = exerciseTestProps.createTestExercise({
           id: 'exercise-2',
-          name: 'Deadlift',
         });
         await exercisesRepo.saveExercise(anotherExercise);
 

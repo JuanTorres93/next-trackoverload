@@ -16,8 +16,11 @@ describe('AddExerciseToWorkoutUsecase', () => {
   let workoutsRepo: MemoryWorkoutsRepo;
   let exercisesRepo: MemoryExercisesRepo;
   let usersRepo: MemoryUsersRepo;
+
   let addExerciseToWorkoutUsecase: AddExerciseToWorkoutUsecase;
+
   let user: User;
+  let exercise: Exercise;
   let workout: Workout;
 
   beforeEach(async () => {
@@ -38,10 +41,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
       exercises: [],
     });
 
-    const exercise = Exercise.create({
-      ...exerciseTestProps.validExerciseProps,
-      name: 'Push Up',
-    });
+    exercise = exerciseTestProps.createTestExercise();
 
     await usersRepo.saveUser(user);
     await workoutsRepo.saveWorkout(workout);
@@ -53,7 +53,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
       const updatedWorkout = await addExerciseToWorkoutUsecase.execute({
         userId: userTestProps.userId,
         workoutId: workoutTestProps.validWorkoutProps.id,
-        exerciseId: exerciseTestProps.validExerciseProps.id,
+        exerciseId: exercise.id,
         setNumber: 1,
         reps: 10,
         weightInKg: 0,
@@ -63,7 +63,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
       expect(updatedWorkout.exercises[0]).toEqual({
         id: updatedWorkout.exercises[0].id,
         workoutId: workout.id,
-        exerciseId: exerciseTestProps.validExerciseProps.id,
+        exerciseId: exercise.id,
         setNumber: 1,
         reps: 10,
         weightInKg: 0,
@@ -76,7 +76,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
       const updatedWorkout = await addExerciseToWorkoutUsecase.execute({
         userId: userTestProps.userId,
         workoutId: workoutTestProps.validWorkoutProps.id,
-        exerciseId: exerciseTestProps.validExerciseProps.id,
+        exerciseId: exercise.id,
         setNumber: 1,
         reps: 10,
         weightInKg: 0,
@@ -93,7 +93,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
       await addExerciseToWorkoutUsecase.execute({
         userId: userTestProps.userId,
         workoutId: workoutTestProps.validWorkoutProps.id,
-        exerciseId: exerciseTestProps.validExerciseProps.id,
+        exerciseId: exercise.id,
         setNumber: 1,
         reps: 12,
         weightInKg: 5,
@@ -103,7 +103,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
       const updatedWorkout = await addExerciseToWorkoutUsecase.execute({
         userId: userTestProps.userId,
         workoutId: workoutTestProps.validWorkoutProps.id,
-        exerciseId: exerciseTestProps.validExerciseProps.id,
+        exerciseId: exercise.id,
         setNumber: 2,
         reps: 12,
         weightInKg: 5,
@@ -113,7 +113,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
       expect(updatedWorkout.exercises[1]).toEqual({
         id: updatedWorkout.exercises[1].id,
         workoutId: workout.id,
-        exerciseId: exerciseTestProps.validExerciseProps.id,
+        exerciseId: exercise.id,
         setNumber: 2,
         reps: 12,
         weightInKg: 5,
@@ -128,7 +128,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
       const request = {
         userId: userTestProps.userId,
         workoutId: 'non-existent',
-        exerciseId: exerciseTestProps.validExerciseProps.id,
+        exerciseId: exercise.id,
         setNumber: 1,
         reps: 10,
         weightInKg: 0,
@@ -168,18 +168,12 @@ describe('AddExerciseToWorkoutUsecase', () => {
         exercises: [],
       });
 
-      const exercise = Exercise.create({
-        ...exerciseTestProps.validExerciseProps,
-        name: 'Push Up',
-      });
-
       await workoutsRepo.saveWorkout(workout);
-      await exercisesRepo.saveExercise(exercise);
 
       const request = {
         userId: 'non-existent',
         workoutId: workoutTestProps.validWorkoutProps.id,
-        exerciseId: exerciseTestProps.validExerciseProps.id,
+        exerciseId: exercise.id,
         setNumber: 1,
         reps: 10,
         weightInKg: 0,
@@ -204,7 +198,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
       const request = {
         userId: anotherUser.id,
         workoutId: workoutTestProps.validWorkoutProps.id,
-        exerciseId: exerciseTestProps.validExerciseProps.id,
+        exerciseId: exercise.id,
         setNumber: 1,
         reps: 10,
         weightInKg: 0,

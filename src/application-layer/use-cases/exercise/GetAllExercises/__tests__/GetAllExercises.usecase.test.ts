@@ -16,15 +16,9 @@ describe('GetAllExercisesUsecase', () => {
 
   describe('Found', () => {
     it('should return all exercises', async () => {
-      const exercise1 = Exercise.create({
-        ...exerciseTestProps.validExerciseProps,
-        id: '1',
-        name: 'Push Up',
-      });
-      const exercise2 = Exercise.create({
-        ...exerciseTestProps.validExerciseProps,
+      const exercise1 = exerciseTestProps.createTestExercise();
+      const exercise2 = exerciseTestProps.createTestExercise({
         id: '2',
-        name: 'Squat',
       });
 
       await exercisesRepo.saveExercise(exercise1);
@@ -40,13 +34,9 @@ describe('GetAllExercisesUsecase', () => {
     });
 
     it('should return an array of ExerciseDTO', async () => {
-      const exercise1 = Exercise.create({
-        ...exerciseTestProps.validExerciseProps,
-      });
-      const exercise2 = Exercise.create({
-        ...exerciseTestProps.validExerciseProps,
+      const exercise1 = exerciseTestProps.createTestExercise();
+      const exercise2 = exerciseTestProps.createTestExercise({
         id: '2',
-        name: 'Squat',
       });
 
       await exercisesRepo.saveExercise(exercise1);

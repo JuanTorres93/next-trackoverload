@@ -1,6 +1,6 @@
 import { Exercise } from '@/domain/entities/exercise/Exercise';
-import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
 import { Workout } from '@/domain/entities/workout/Workout';
+import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import * as exerciseTestProps from '../../../../../tests/createProps/exerciseTestProps';
 import * as workoutTestProps from '../../../../../tests/createProps/workoutTestProps';
@@ -32,8 +32,7 @@ describe('MongoWorkoutsRepo', () => {
     repo = new MongoWorkoutsRepo();
 
     // Create and save an exercise first (needed for workout lines)
-    exercise = Exercise.create(exerciseTestProps.validExerciseProps);
-    await exercisesRepo.saveExercise(exercise);
+    exercise = exerciseTestProps.createTestExercise();
 
     // Create a workout with workout lines
     const workoutLine = WorkoutLine.create({
@@ -49,6 +48,7 @@ describe('MongoWorkoutsRepo', () => {
       exercises: [workoutLine],
     });
 
+    await exercisesRepo.saveExercise(exercise);
     await repo.saveWorkout(workout);
   });
 
@@ -57,10 +57,8 @@ describe('MongoWorkoutsRepo', () => {
   });
 
   it('should save a workout with its workout lines', async () => {
-    const newExercise = Exercise.create({
-      ...exerciseTestProps.validExerciseProps,
+    const newExercise = exerciseTestProps.createTestExercise({
       id: 'exercise-2',
-      name: 'Squat',
     });
     await exercisesRepo.saveExercise(newExercise);
 
@@ -79,7 +77,6 @@ describe('MongoWorkoutsRepo', () => {
       id: 'workout-2',
       name: 'Leg Day',
       exercises: [workoutLine],
-      updatedAt: new Date('2023-01-02'),
     });
     await repo.saveWorkout(newWorkout);
 
@@ -107,8 +104,7 @@ describe('MongoWorkoutsRepo', () => {
     expect(existingWorkout!.exercises).toHaveLength(1);
 
     // Create a new exercise and add it to the workout
-    const newExercise = Exercise.create({
-      ...exerciseTestProps.validExerciseProps,
+    const newExercise = exerciseTestProps.createTestExercise({
       id: 'exercise-3',
       name: 'Bench Press',
     });
@@ -449,8 +445,7 @@ describe('MongoWorkoutsRepo', () => {
           name: 'Updated Workout Name',
         });
 
-        const anotherExercise = Exercise.create({
-          ...exerciseTestProps.validExerciseProps,
+        const anotherExercise = exerciseTestProps.createTestExercise({
           id: 'exercise-2',
           name: 'Deadlift',
         });
@@ -489,8 +484,7 @@ describe('MongoWorkoutsRepo', () => {
           name: 'Updated Workout Name',
         });
 
-        const anotherExercise = Exercise.create({
-          ...exerciseTestProps.validExerciseProps,
+        const anotherExercise = exerciseTestProps.createTestExercise({
           id: 'exercise-2',
           name: 'Deadlift',
         });

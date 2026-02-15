@@ -9,7 +9,7 @@ describe('MemoryExercisesRepo', () => {
 
   beforeEach(async () => {
     repo = new MemoryExercisesRepo();
-    exercise = Exercise.create(exerciseTestProps.validExerciseProps);
+    exercise = exerciseTestProps.createTestExercise();
 
     await repo.saveExercise(exercise);
   });
@@ -29,26 +29,18 @@ describe('MemoryExercisesRepo', () => {
   });
 
   it('should retrieve an exercise by ID', async () => {
-    const fetchedExercise = await repo.getExerciseById(
-      exerciseTestProps.validExerciseProps.id,
-    );
+    const fetchedExercise = await repo.getExerciseById(exercise.id);
     expect(fetchedExercise).not.toBeNull();
-    expect(fetchedExercise?.name).toBe(
-      exerciseTestProps.validExerciseProps.name,
-    );
+    expect(fetchedExercise?.name).toBe(exercise.name);
   });
 
   it('should update an existing exercise', async () => {
-    const updatedExercise = Exercise.create({
-      ...exerciseTestProps.validExerciseProps,
+    const updatedExercise = exerciseTestProps.createTestExercise({
       name: 'Updated Push Up',
-      updatedAt: new Date('2023-01-03'),
     });
     await repo.saveExercise(updatedExercise);
 
-    const fetchedExercise = await repo.getExerciseById(
-      exerciseTestProps.validExerciseProps.id,
-    );
+    const fetchedExercise = await repo.getExerciseById(exercise.id);
     expect(fetchedExercise).not.toBeNull();
     expect(fetchedExercise?.name).toBe('Updated Push Up');
   });
@@ -62,7 +54,7 @@ describe('MemoryExercisesRepo', () => {
     const allExercises = await repo.getAllExercises();
     expect(allExercises.length).toBe(1);
 
-    await repo.deleteExercise(exerciseTestProps.validExerciseProps.id);
+    await repo.deleteExercise(exercise.id);
 
     const allExercisesAfterDeletion = await repo.getAllExercises();
     expect(allExercisesAfterDeletion.length).toBe(0);

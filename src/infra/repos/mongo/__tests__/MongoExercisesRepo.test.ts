@@ -20,7 +20,7 @@ describe('MongoExercisesRepo', () => {
     await clearMongoTestDB();
 
     repo = new MongoExercisesRepo();
-    exercise = Exercise.create(exerciseTestProps.validExerciseProps);
+    exercise = exerciseTestProps.createTestExercise();
     await repo.saveExercise(exercise);
   });
 
@@ -29,11 +29,9 @@ describe('MongoExercisesRepo', () => {
   });
 
   it('should save an exercise', async () => {
-    const newExercise = Exercise.create({
-      ...exerciseTestProps.validExerciseProps,
+    const newExercise = exerciseTestProps.createTestExercise({
       id: 'ex-2',
       name: 'Bench Press',
-      updatedAt: new Date('2023-01-02'),
     });
     await repo.saveExercise(newExercise);
 
@@ -43,9 +41,7 @@ describe('MongoExercisesRepo', () => {
   });
 
   it('should update an existing exercise', async () => {
-    const existingExercise = await repo.getExerciseById(
-      exerciseTestProps.validExerciseProps.id,
-    );
+    const existingExercise = await repo.getExerciseById(exercise.id);
     existingExercise!.update({
       name: 'Updated Exercise Name',
     });
@@ -57,15 +53,11 @@ describe('MongoExercisesRepo', () => {
   });
 
   it('should retrieve an exercise by ID', async () => {
-    const fetchedExercise = await repo.getExerciseById(
-      exerciseTestProps.validExerciseProps.id,
-    );
+    const fetchedExercise = await repo.getExerciseById(exercise.id);
 
     expect(fetchedExercise).not.toBeNull();
-    expect(fetchedExercise!.id).toBe(exerciseTestProps.validExerciseProps.id);
-    expect(fetchedExercise!.name).toBe(
-      exerciseTestProps.validExerciseProps.name,
-    );
+    expect(fetchedExercise!.id).toBe(exercise.id);
+    expect(fetchedExercise!.name).toBe(exercise.name);
   });
 
   it('should return null for non-existent exercise ID', async () => {
@@ -75,13 +67,11 @@ describe('MongoExercisesRepo', () => {
   });
 
   it('should retrieve all exercises', async () => {
-    const exercise2 = Exercise.create({
-      ...exerciseTestProps.validExerciseProps,
+    const exercise2 = exerciseTestProps.createTestExercise({
       id: 'ex-2',
       name: 'Squats',
     });
-    const exercise3 = Exercise.create({
-      ...exerciseTestProps.validExerciseProps,
+    const exercise3 = exerciseTestProps.createTestExercise({
       id: 'ex-3',
       name: 'Deadlift',
     });
@@ -97,7 +87,7 @@ describe('MongoExercisesRepo', () => {
     const allExercises = await repo.getAllExercises();
     expect(allExercises.length).toBe(1);
 
-    await repo.deleteExercise(exerciseTestProps.validExerciseProps.id);
+    await repo.deleteExercise(exercise.id);
 
     const allExercisesAfterDeletion = await repo.getAllExercises();
     expect(allExercisesAfterDeletion.length).toBe(0);

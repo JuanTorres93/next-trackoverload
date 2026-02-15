@@ -8,7 +8,7 @@ describe('ExerciseDTO', () => {
   let exerciseDTO: ExerciseDTO;
 
   beforeEach(() => {
-    exercise = Exercise.create(exerciseTestProps.validExerciseProps);
+    exercise = exerciseTestProps.createTestExercise();
   });
 
   describe('toExerciseDTO', () => {

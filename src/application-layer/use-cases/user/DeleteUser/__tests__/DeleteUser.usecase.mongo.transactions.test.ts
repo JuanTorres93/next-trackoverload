@@ -1,4 +1,3 @@
-import { Exercise } from '@/domain/entities/exercise/Exercise';
 import { User } from '@/domain/entities/user/User';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
@@ -20,7 +19,7 @@ import { MongoWorkoutTemplatesRepo } from '@/infra/repos/mongo/MongoWorkoutTempl
 import { MongoTransactionContext } from '@/infra/transaction-context/MongoTransactionContext/MongoTransactionContext';
 import { beforeEach, describe } from 'vitest';
 import * as dayTestProps from '../../../../../../tests/createProps/dayTestProps';
-import { validExerciseProps } from '../../../../../../tests/createProps/exerciseTestProps';
+import { createTestExercise } from '../../../../../../tests/createProps/exerciseTestProps';
 import * as fakeMealTestProps from '../../../../../../tests/createProps/fakeMealTestProps';
 import { createTestMeal } from '../../../../../../tests/createProps/mealTestProps';
 import { createTestRecipe } from '../../../../../../tests/createProps/recipeTestProps';
@@ -94,15 +93,9 @@ describe('DeleteUserUsecase', () => {
     const day = dayTestProps.createEmptyTestDay();
 
     // Create exercises needed for workouts and templates
-    const exercise1 = Exercise.create({
-      ...validExerciseProps,
-      id: 'ex1',
-    });
-
-    const exercise2 = Exercise.create({
-      ...validExerciseProps,
+    const exercise1 = createTestExercise();
+    const exercise2 = createTestExercise({
       id: 'ex2',
-      name: 'Test Exercise 2',
     });
 
     const workout = Workout.create({

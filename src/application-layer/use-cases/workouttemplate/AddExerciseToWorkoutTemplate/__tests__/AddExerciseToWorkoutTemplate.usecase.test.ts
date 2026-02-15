@@ -1,15 +1,14 @@
-import * as workoutTemplateTestProps from '../../../../../../tests/createProps/workoutTemplateTestProps';
-import * as exerciseTestProps from '../../../../../../tests/createProps/exerciseTestProps';
-import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { NotFoundError } from '@/domain/common/errors';
-import { Exercise } from '@/domain/entities/exercise/Exercise';
 import { User } from '@/domain/entities/user/User';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import { MemoryExercisesRepo } from '@/infra/repos/memory/MemoryExercisesRepo';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { MemoryWorkoutTemplatesRepo } from '@/infra/repos/memory/MemoryWorkoutTemplatesRepo';
 import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
+import * as exerciseTestProps from '../../../../../../tests/createProps/exerciseTestProps';
+import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
+import * as workoutTemplateTestProps from '../../../../../../tests/createProps/workoutTemplateTestProps';
 import { AddExerciseToWorkoutTemplateUsecase } from '../AddExerciseToWorkoutTemplate.usecase';
 
 describe('AddExerciseToWorkoutTemplateUsecase', () => {
@@ -32,27 +31,22 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
     );
 
     user = userTestProps.createTestUser();
-    await usersRepo.saveUser(user);
 
     // Create the exercises that will be used in tests
-    const benchPressExercise = Exercise.create({
-      ...exerciseTestProps.validExerciseProps,
-      id: 'bench-press',
-    });
+    const benchPressExercise = exerciseTestProps.createTestExercise();
 
-    const shoulderPressExercise = Exercise.create({
-      ...exerciseTestProps.validExerciseProps,
+    const shoulderPressExercise = exerciseTestProps.createTestExercise({
       id: 'shoulder-press',
     });
-
-    await exercisesRepo.saveExercise(benchPressExercise);
-    await exercisesRepo.saveExercise(shoulderPressExercise);
 
     // Create a template with one existing exercise
     existingTemplate = WorkoutTemplate.create({
       ...workoutTemplateTestProps.validWorkoutTemplateProps(),
     });
 
+    await usersRepo.saveUser(user);
+    await exercisesRepo.saveExercise(benchPressExercise);
+    await exercisesRepo.saveExercise(shoulderPressExercise);
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
   });
 
