@@ -22,10 +22,7 @@ describe('DeleteWorkoutUsecase', () => {
 
     user = userTestProps.createTestUser();
 
-    workout = Workout.create({
-      ...workoutTestProps.validWorkoutProps,
-      exercises: [],
-    });
+    workout = workoutTestProps.createTestWorkout();
 
     await usersRepo.saveUser(user);
     await workoutsRepo.saveWorkout(workout);
@@ -34,20 +31,16 @@ describe('DeleteWorkoutUsecase', () => {
   describe('Execute', () => {
     it('should delete workout when it exists', async () => {
       // Verify workout exists
-      const existingWorkout = await workoutsRepo.getWorkoutById(
-        workoutTestProps.validWorkoutProps.id,
-      );
+      const existingWorkout = await workoutsRepo.getWorkoutById(workout.id);
       expect(existingWorkout).toBe(workout);
 
       await deleteWorkoutUsecase.execute({
-        id: workoutTestProps.validWorkoutProps.id,
-        userId: workoutTestProps.validWorkoutProps.userId,
+        id: workout.id,
+        userId: workout.userId,
       });
 
       // Verify workout is deleted
-      const deletedWorkout = await workoutsRepo.getWorkoutById(
-        workoutTestProps.validWorkoutProps.id,
-      );
+      const deletedWorkout = await workoutsRepo.getWorkoutById(workout.id);
       expect(deletedWorkout).toBeNull();
     });
   });
@@ -56,7 +49,7 @@ describe('DeleteWorkoutUsecase', () => {
     it('should throw NotFoundError when workout does not exist', async () => {
       const request = {
         id: 'non-existent',
-        userId: workoutTestProps.validWorkoutProps.userId,
+        userId: workout.userId,
       };
 
       await expect(deleteWorkoutUsecase.execute(request)).rejects.toThrow(
@@ -70,7 +63,7 @@ describe('DeleteWorkoutUsecase', () => {
 
     it('should throw error if user does not exist', async () => {
       const request = {
-        id: workoutTestProps.validWorkoutProps.id,
+        id: workout.id,
         userId: 'non-existent',
       };
 
@@ -91,7 +84,7 @@ describe('DeleteWorkoutUsecase', () => {
       await usersRepo.saveUser(anotherUser);
 
       const request = {
-        id: workoutTestProps.validWorkoutProps.id,
+        id: workout.id,
         userId: anotherUser.id,
       };
 

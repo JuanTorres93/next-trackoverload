@@ -7,6 +7,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { GetWorkoutsByTemplateForUserUsecase } from '../GetWorkoutsByTemplateForUser.usecase';
 
 import * as workoutTestProps from '../../../../../../tests/createProps/workoutTestProps';
+import * as workoutTemplateTestProps from '../../../../../../tests/createProps/workoutTemplateTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 
@@ -29,26 +30,17 @@ describe('GetWorkoutsByTemplateUsecase', () => {
 
     user = userTestProps.createTestUser();
 
-    workout1 = Workout.create({
-      ...workoutTestProps.validWorkoutProps,
+    workout1 = workoutTestProps.createTestWorkout({
       id: '1',
-      name: 'Push Day #1',
-      exercises: [],
     });
 
-    workout2 = Workout.create({
-      ...workoutTestProps.validWorkoutProps,
+    workout2 = workoutTestProps.createTestWorkout({
       id: '2',
-      name: 'Pull Day #1',
       workoutTemplateId: 'template-2',
-      exercises: [],
     });
 
-    workout3 = Workout.create({
-      ...workoutTestProps.validWorkoutProps,
+    workout3 = workoutTestProps.createTestWorkout({
       id: '3',
-      name: 'Push Day #2',
-      exercises: [],
     });
 
     await usersRepo.saveUser(user);
@@ -60,7 +52,7 @@ describe('GetWorkoutsByTemplateUsecase', () => {
   describe('Execution', () => {
     it('should return workouts filtered by template id', async () => {
       const workouts = await getWorkoutsByTemplateUsecase.execute({
-        templateId: 'template-1',
+        templateId: workoutTemplateTestProps.validWorkoutTemplateProps().id,
         userId: userTestProps.userId,
       });
 

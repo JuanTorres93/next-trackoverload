@@ -147,6 +147,7 @@ export class Workout {
     const line = this.props.exercises.find(
       (line) => line.exerciseId === exerciseId,
     );
+
     if (!line) {
       throw new ValidationError('Workout: Exercise not found');
     }

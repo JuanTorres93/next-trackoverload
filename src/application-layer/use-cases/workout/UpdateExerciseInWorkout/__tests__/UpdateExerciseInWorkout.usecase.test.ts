@@ -18,12 +18,9 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
   let workout: Workout;
 
   beforeEach(async () => {
-    workoutLine = WorkoutLine.create({
-      ...workoutTestProps.validWorkoutLineProps,
-    });
-
     workoutsRepo = new MemoryWorkoutsRepo();
     usersRepo = new MemoryUsersRepo();
+
     updateExerciseInWorkoutUsecase = new UpdateExerciseInWorkoutUsecase(
       workoutsRepo,
       usersRepo,
@@ -31,10 +28,8 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
 
     user = userTestProps.createTestUser();
 
-    workout = Workout.create({
-      ...workoutTestProps.validWorkoutPropsNoExercises(),
-      exercises: [workoutLine],
-    });
+    workout = workoutTestProps.createTestWorkout();
+    workoutLine = workout.exercises[0];
 
     await usersRepo.saveUser(user);
     await workoutsRepo.saveWorkout(workout);
@@ -42,30 +37,31 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
 
   describe('Execution', () => {
     it('should update exercise reps in workout', async () => {
+      const originalValues =
+        workoutTestProps.validWorkoutPropsWithExercises().exercises[0];
+
       const updatedWorkout = await updateExerciseInWorkoutUsecase.execute({
         userId: userTestProps.userId,
-        workoutId: workoutTestProps.validWorkoutProps.id,
+        workoutId: workout.id,
         exerciseId: workoutLine.exerciseId,
         reps: 15,
       });
 
       expect(updatedWorkout.exercises[0].reps).toBe(15);
-      expect(updatedWorkout.exercises[0].reps).not.toBe(
-        workoutTestProps.validWorkoutLineProps.reps,
-      );
+      expect(updatedWorkout.exercises[0].reps).not.toBe(originalValues.reps);
       expect(updatedWorkout.exercises[0].setNumber).toBe(
-        workoutTestProps.validWorkoutLineProps.setNumber,
+        originalValues.setNumber,
       );
       expect(updatedWorkout.exercises[0].weightInKg).toBe(
-        workoutTestProps.validWorkoutLineProps.weightInKg,
+        originalValues.weightInKg,
       );
     });
 
     it('should return WorkoutDTO', async () => {
       const updatedWorkout = await updateExerciseInWorkoutUsecase.execute({
         userId: userTestProps.userId,
-        workoutId: workoutTestProps.validWorkoutProps.id,
-        exerciseId: workoutTestProps.validWorkoutLineProps.exerciseId,
+        workoutId: workout.id,
+        exerciseId: workoutLine.exerciseId,
         reps: 15,
       });
 
@@ -78,8 +74,8 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
     it('should update exercise weight in workout', async () => {
       const updatedWorkout = await updateExerciseInWorkoutUsecase.execute({
         userId: userTestProps.userId,
-        workoutId: workoutTestProps.validWorkoutProps.id,
-        exerciseId: workoutTestProps.validWorkoutLineProps.exerciseId,
+        workoutId: workout.id,
+        exerciseId: workoutLine.exerciseId,
         weightInKg: 25.5,
       });
 
@@ -98,8 +94,8 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
     it('should update exercise set number in workout', async () => {
       const updatedWorkout = await updateExerciseInWorkoutUsecase.execute({
         userId: userTestProps.userId,
-        workoutId: workoutTestProps.validWorkoutProps.id,
-        exerciseId: workoutTestProps.validWorkoutLineProps.exerciseId,
+        workoutId: workout.id,
+        exerciseId: workoutLine.exerciseId,
         setNumber: 2,
       });
 
@@ -111,15 +107,16 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
         workoutTestProps.validWorkoutLineProps.reps,
       );
       expect(updatedWorkout.exercises[0].weightInKg).toBe(
-        workoutTestProps.validWorkoutLineProps.weightInKg,
+        workoutTestProps.validWorkoutPropsWithExercises().exercises[0]
+          .weightInKg,
       );
     });
 
     it('should update multiple properties at once', async () => {
       const updatedWorkout = await updateExerciseInWorkoutUsecase.execute({
         userId: userTestProps.userId,
-        workoutId: workoutTestProps.validWorkoutProps.id,
-        exerciseId: workoutTestProps.validWorkoutLineProps.exerciseId,
+        workoutId: workout.id,
+        exerciseId: workoutLine.exerciseId,
         setNumber: 3,
         reps: 12,
         weightInKg: 30,
@@ -152,7 +149,7 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
     it('should throw error if user does not exist', async () => {
       const request = {
         userId: 'non-existent',
-        workoutId: workoutTestProps.validWorkoutProps.id,
+        workoutId: workout.id,
         exerciseId: workoutTestProps.validWorkoutLineProps.exerciseId,
         reps: 15,
       };
@@ -175,7 +172,7 @@ describe('UpdateExerciseInWorkoutUsecase', () => {
 
       const request = {
         userId: anotherUser.id,
-        workoutId: workoutTestProps.validWorkoutProps.id,
+        workoutId: workout.id,
         exerciseId: workoutTestProps.validWorkoutLineProps.exerciseId,
         reps: 20,
       };

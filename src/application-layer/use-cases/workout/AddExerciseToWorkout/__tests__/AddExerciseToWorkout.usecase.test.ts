@@ -36,8 +36,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
     user = userTestProps.createTestUser();
 
-    workout = Workout.create({
-      ...workoutTestProps.validWorkoutProps,
+    workout = workoutTestProps.createTestWorkout({
       exercises: [],
     });
 
@@ -52,7 +51,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
     it('should add exercise to workout', async () => {
       const updatedWorkout = await addExerciseToWorkoutUsecase.execute({
         userId: userTestProps.userId,
-        workoutId: workoutTestProps.validWorkoutProps.id,
+        workoutId: workout.id,
         exerciseId: exercise.id,
         setNumber: 1,
         reps: 10,
@@ -75,7 +74,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
     it('should return WorkoutDTO', async () => {
       const updatedWorkout = await addExerciseToWorkoutUsecase.execute({
         userId: userTestProps.userId,
-        workoutId: workoutTestProps.validWorkoutProps.id,
+        workoutId: workout.id,
         exerciseId: exercise.id,
         setNumber: 1,
         reps: 10,
@@ -92,7 +91,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
       // First set
       await addExerciseToWorkoutUsecase.execute({
         userId: userTestProps.userId,
-        workoutId: workoutTestProps.validWorkoutProps.id,
+        workoutId: workout.id,
         exerciseId: exercise.id,
         setNumber: 1,
         reps: 12,
@@ -102,7 +101,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
       // Second set
       const updatedWorkout = await addExerciseToWorkoutUsecase.execute({
         userId: userTestProps.userId,
-        workoutId: workoutTestProps.validWorkoutProps.id,
+        workoutId: workout.id,
         exerciseId: exercise.id,
         setNumber: 2,
         reps: 12,
@@ -146,7 +145,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
     it('should throw NotFoundError when exercise does not exist', async () => {
       const request = {
         userId: userTestProps.userId,
-        workoutId: workoutTestProps.validWorkoutProps.id,
+        workoutId: workout.id,
         exerciseId: 'non-existent',
         setNumber: 1,
         reps: 10,
@@ -163,8 +162,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
     });
 
     it('should throw error if user does not exist', async () => {
-      const workout = Workout.create({
-        ...workoutTestProps.validWorkoutProps,
+      const workout = workoutTestProps.createTestWorkout({
         exercises: [],
       });
 
@@ -172,7 +170,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
       const request = {
         userId: 'non-existent',
-        workoutId: workoutTestProps.validWorkoutProps.id,
+        workoutId: workout.id,
         exerciseId: exercise.id,
         setNumber: 1,
         reps: 10,
@@ -197,7 +195,7 @@ describe('AddExerciseToWorkoutUsecase', () => {
 
       const request = {
         userId: anotherUser.id,
-        workoutId: workoutTestProps.validWorkoutProps.id,
+        workoutId: workout.id,
         exerciseId: exercise.id,
         setNumber: 1,
         reps: 10,

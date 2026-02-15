@@ -29,16 +29,9 @@ describe('GetAllWorkoutsUsecase', () => {
 
   describe('Execution', () => {
     it('should return all workouts', async () => {
-      const workout1 = Workout.create({
-        ...workoutTestProps.validWorkoutProps,
-        name: 'Push Day',
-        exercises: [],
-      });
-      const workout2 = Workout.create({
-        ...workoutTestProps.validWorkoutProps,
+      const workout1 = workoutTestProps.createTestWorkout();
+      const workout2 = workoutTestProps.createTestWorkout({
         id: 'another-workout-id',
-        name: 'Pull Day',
-        exercises: [],
       });
 
       await workoutsRepo.saveWorkout(workout1);
@@ -57,16 +50,11 @@ describe('GetAllWorkoutsUsecase', () => {
     });
 
     it('should return an array of WorkoutDTO', async () => {
-      const workout1 = Workout.create({
-        ...workoutTestProps.validWorkoutProps,
+      const workout1 = workoutTestProps.createTestWorkout({
         name: 'Push Day',
-        exercises: [],
       });
-      const workout2 = Workout.create({
-        ...workoutTestProps.validWorkoutProps,
+      const workout2 = workoutTestProps.createTestWorkout({
         id: 'another-workout-id',
-        name: 'Pull Day',
-        exercises: [],
       });
 
       await workoutsRepo.saveWorkout(workout1);

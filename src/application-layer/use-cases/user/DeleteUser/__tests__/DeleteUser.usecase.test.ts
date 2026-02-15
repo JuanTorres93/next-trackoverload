@@ -8,7 +8,6 @@ import * as workoutTemplateTestProps from '../../../../../../tests/createProps/w
 import * as workoutTestProps from '../../../../../../tests/createProps/workoutTestProps';
 
 // Import entities
-import { Workout } from '@/domain/entities/workout/Workout';
 
 // Import in-memory repositories
 import { MemoryDaysRepo } from '@/infra/repos/memory/MemoryDaysRepo';
@@ -61,15 +60,9 @@ describe('DeleteUserUsecase', () => {
     const fakeMeal = fakeMealTestProps.createTestFakeMeal();
     const meal = mealTestProps.createTestMeal();
     const recipe = recipeTestProps.createTestRecipe();
-
-    const workout = Workout.create({
-      ...workoutTestProps.validWorkoutPropsWithExercises(),
-      userId: user.id,
-    });
-
+    const workout = workoutTestProps.createTestWorkout();
     const workoutTemplate =
       workoutTemplateTestProps.createTestWorkoutTemplate();
-
     const day = dayTestProps.createEmptyTestDay();
 
     // Save all to their respective repos

@@ -30,15 +30,12 @@ describe('GetWorkoutByIdUsecase', () => {
 
   describe('Execution', () => {
     it('should return workout when it exists', async () => {
-      const workout = Workout.create({
-        ...workoutTestProps.validWorkoutProps,
-        exercises: [],
-      });
+      const workout = workoutTestProps.createTestWorkout();
 
       await workoutsRepo.saveWorkout(workout);
 
       const result = await getWorkoutByIdUsecase.execute({
-        id: workoutTestProps.validWorkoutProps.id,
+        id: workout.id,
         userId: userTestProps.userId,
       });
 
@@ -46,16 +43,12 @@ describe('GetWorkoutByIdUsecase', () => {
     });
 
     it('should return WorkoutDTO', async () => {
-      const workout = Workout.create({
-        ...workoutTestProps.validWorkoutProps,
-        name: 'Push Day',
-        exercises: [],
-      });
+      const workout = workoutTestProps.createTestWorkout();
 
       await workoutsRepo.saveWorkout(workout);
 
       const result = await getWorkoutByIdUsecase.execute({
-        id: workoutTestProps.validWorkoutProps.id,
+        id: workout.id,
         userId: userTestProps.userId,
       });
 
@@ -81,15 +74,12 @@ describe('GetWorkoutByIdUsecase', () => {
       });
       await usersRepo.saveUser(anotherUser);
 
-      const workout = Workout.create({
-        ...workoutTestProps.validWorkoutProps,
-        exercises: [],
-      });
+      const workout = workoutTestProps.createTestWorkout();
 
       await workoutsRepo.saveWorkout(workout);
 
       const result = await getWorkoutByIdUsecase.execute({
-        id: workoutTestProps.validWorkoutProps.id,
+        id: workout.id,
         userId: anotherUser.id,
       });
 

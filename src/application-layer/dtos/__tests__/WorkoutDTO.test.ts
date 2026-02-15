@@ -1,20 +1,14 @@
-import { toWorkoutDTO, WorkoutDTO } from '../WorkoutDTO';
-import { Workout } from '@/domain/entities/workout/Workout';
-import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
-import * as workoutTestProps from '../../../../tests/createProps/workoutTestProps';
 import * as dto from '@/../tests/dtoProperties';
+import { Workout } from '@/domain/entities/workout/Workout';
+import * as workoutTestProps from '../../../../tests/createProps/workoutTestProps';
+import { toWorkoutDTO, WorkoutDTO } from '../WorkoutDTO';
 
 describe('WorkoutDTO', () => {
   let workout: Workout;
-  let workoutLine: WorkoutLine;
   let workoutDTO: WorkoutDTO;
 
   beforeEach(() => {
-    workoutLine = WorkoutLine.create(workoutTestProps.validWorkoutLineProps);
-    workout = Workout.create({
-      ...workoutTestProps.validWorkoutPropsNoExercises(),
-      exercises: [workoutLine],
-    });
+    workout = workoutTestProps.createTestWorkout();
   });
 
   describe('toWorkoutDTO', () => {
@@ -57,7 +51,7 @@ describe('WorkoutDTO', () => {
     });
 
     it('should include nested exercise line DTOs', () => {
-      expect(workoutDTO.exercises).toHaveLength(1);
+      expect(workoutDTO.exercises).toHaveLength(2);
       const workoutLineDTO = workoutDTO.exercises[0];
 
       for (const getter of dto.workoutLineDTOProperties) {

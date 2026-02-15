@@ -34,19 +34,7 @@ describe('MongoWorkoutsRepo', () => {
     // Create and save an exercise first (needed for workout lines)
     exercise = exerciseTestProps.createTestExercise();
 
-    // Create a workout with workout lines
-    const workoutLine = WorkoutLine.create({
-      ...workoutTestProps.validWorkoutLineProps,
-      id: 'line-1',
-      workoutId: 'workout-1',
-      exerciseId: exercise.id,
-    });
-
-    workout = Workout.create({
-      ...workoutTestProps.validWorkoutPropsNoExercises(),
-      id: 'workout-1',
-      exercises: [workoutLine],
-    });
+    workout = workoutTestProps.createTestWorkout();
 
     await exercisesRepo.saveExercise(exercise);
     await repo.saveWorkout(workout);
@@ -72,8 +60,7 @@ describe('MongoWorkoutsRepo', () => {
       weightInKg: 100,
     });
 
-    const newWorkout = Workout.create({
-      ...workoutTestProps.validWorkoutPropsNoExercises(),
+    const newWorkout = workoutTestProps.createTestWorkout({
       id: 'workout-2',
       name: 'Leg Day',
       exercises: [workoutLine],
@@ -134,9 +121,7 @@ describe('MongoWorkoutsRepo', () => {
     const fetchedWorkout = await repo.getWorkoutById('workout-1');
 
     expect(fetchedWorkout!.id).toBe('workout-1');
-    expect(fetchedWorkout!.name).toBe(
-      workoutTestProps.validWorkoutPropsNoExercises().name,
-    );
+    expect(fetchedWorkout!.name).toBe(workout.name);
     expect(fetchedWorkout!.exercises).toHaveLength(1);
     expect(fetchedWorkout!.exercises[0].exerciseId).toBe(exercise.id);
   });
@@ -148,10 +133,8 @@ describe('MongoWorkoutsRepo', () => {
   });
 
   it('should retrieve all workouts for a specific user', async () => {
-    const workout2 = Workout.create({
-      ...workoutTestProps.validWorkoutPropsNoExercises(),
+    const workout2 = workoutTestProps.createTestWorkout({
       id: 'workout-2',
-      name: 'Another Workout',
       exercises: [
         WorkoutLine.create({
           ...workoutTestProps.validWorkoutLineProps,
@@ -163,11 +146,9 @@ describe('MongoWorkoutsRepo', () => {
       ],
     });
 
-    const workoutOtherUser = Workout.create({
-      ...workoutTestProps.validWorkoutPropsNoExercises(),
+    const workoutOtherUser = workoutTestProps.createTestWorkout({
       id: 'workout-3',
       userId: 'other-user',
-      name: 'Other User Workout',
       exercises: [
         WorkoutLine.create({
           ...workoutTestProps.validWorkoutLineProps,
@@ -182,30 +163,21 @@ describe('MongoWorkoutsRepo', () => {
     await repo.saveWorkout(workout2);
     await repo.saveWorkout(workoutOtherUser);
 
-    const userWorkouts = await repo.getAllWorkoutsByUserId(
-      workoutTestProps.validWorkoutPropsNoExercises().userId,
-    );
+    const userWorkouts = await repo.getAllWorkoutsByUserId(workout.userId);
 
     expect(userWorkouts).toHaveLength(2);
-    expect(
-      userWorkouts.every(
-        (w) =>
-          w.userId === workoutTestProps.validWorkoutPropsNoExercises().userId,
-      ),
-    ).toBe(true);
+    expect(userWorkouts.every((w) => w.userId === workout.userId)).toBe(true);
   });
 
   it('should retrieve a workout by ID and user ID', async () => {
     const fetchedWorkout = await repo.getWorkoutByIdAndUserId(
       'workout-1',
-      workoutTestProps.validWorkoutPropsNoExercises().userId,
+      workout.userId,
     );
 
     expect(fetchedWorkout).not.toBeNull();
     expect(fetchedWorkout!.id).toBe('workout-1');
-    expect(fetchedWorkout!.userId).toBe(
-      workoutTestProps.validWorkoutPropsNoExercises().userId,
-    );
+    expect(fetchedWorkout!.userId).toBe(workout.userId);
   });
 
   it('should return null when workout ID and user ID do not match', async () => {
@@ -218,12 +190,10 @@ describe('MongoWorkoutsRepo', () => {
   });
 
   it('should retrieve workouts by template ID and user ID', async () => {
-    const workout2 = Workout.create({
-      ...workoutTestProps.validWorkoutPropsNoExercises(),
+    const workout2 = workoutTestProps.createTestWorkout({
       id: 'workout-2',
       name: 'Same Template Workout',
-      workoutTemplateId:
-        workoutTestProps.validWorkoutPropsNoExercises().workoutTemplateId,
+      workoutTemplateId: workout.workoutTemplateId,
       exercises: [
         WorkoutLine.create({
           ...workoutTestProps.validWorkoutLineProps,
@@ -235,10 +205,8 @@ describe('MongoWorkoutsRepo', () => {
       ],
     });
 
-    const workoutDifferentTemplate = Workout.create({
-      ...workoutTestProps.validWorkoutPropsNoExercises(),
+    const workoutDifferentTemplate = workoutTestProps.createTestWorkout({
       id: 'workout-3',
-      name: 'Different Template Workout',
       workoutTemplateId: 'different-template-id',
       exercises: [
         WorkoutLine.create({
@@ -255,28 +223,24 @@ describe('MongoWorkoutsRepo', () => {
     await repo.saveWorkout(workoutDifferentTemplate);
 
     const workoutsFromTemplate = await repo.getWorkoutsByTemplateIdAndUserId(
-      workoutTestProps.validWorkoutPropsNoExercises().workoutTemplateId,
-      workoutTestProps.validWorkoutPropsNoExercises().userId,
+      workout.workoutTemplateId,
+      workout.userId,
     );
 
     expect(workoutsFromTemplate).toHaveLength(2);
     expect(
       workoutsFromTemplate.every(
-        (w) =>
-          w.workoutTemplateId ===
-          workoutTestProps.validWorkoutPropsNoExercises().workoutTemplateId,
+        (w) => w.workoutTemplateId === workout.workoutTemplateId,
       ),
     ).toBe(true);
   });
 
   it('should retrieve workouts by template ID', async () => {
-    const workout2 = Workout.create({
-      ...workoutTestProps.validWorkoutPropsNoExercises(),
+    const workout2 = workoutTestProps.createTestWorkout({
       id: 'workout-2',
       name: 'Same Template, Different User',
       userId: 'other-user',
-      workoutTemplateId:
-        workoutTestProps.validWorkoutPropsNoExercises().workoutTemplateId,
+      workoutTemplateId: workout.workoutTemplateId,
       exercises: [
         WorkoutLine.create({
           ...workoutTestProps.validWorkoutLineProps,
@@ -291,24 +255,20 @@ describe('MongoWorkoutsRepo', () => {
     await repo.saveWorkout(workout2);
 
     const workoutsFromTemplate = await repo.getWorkoutsByTemplateId(
-      workoutTestProps.validWorkoutPropsNoExercises().workoutTemplateId,
+      workout.workoutTemplateId,
     );
 
     expect(workoutsFromTemplate).toHaveLength(2);
     expect(
       workoutsFromTemplate.every(
-        (w) =>
-          w.workoutTemplateId ===
-          workoutTestProps.validWorkoutPropsNoExercises().workoutTemplateId,
+        (w) => w.workoutTemplateId === workout.workoutTemplateId,
       ),
     ).toBe(true);
   });
 
   it('should retrieve all workouts', async () => {
-    const workout2 = Workout.create({
-      ...workoutTestProps.validWorkoutPropsNoExercises(),
+    const workout2 = workoutTestProps.createTestWorkout({
       id: 'workout-2',
-      name: 'Workout 2',
       exercises: [
         WorkoutLine.create({
           ...workoutTestProps.validWorkoutLineProps,
@@ -319,10 +279,8 @@ describe('MongoWorkoutsRepo', () => {
         }),
       ],
     });
-    const workout3 = Workout.create({
-      ...workoutTestProps.validWorkoutPropsNoExercises(),
+    const workout3 = workoutTestProps.createTestWorkout({
       id: 'workout-3',
-      name: 'Workout 3',
       exercises: [
         WorkoutLine.create({
           ...workoutTestProps.validWorkoutLineProps,
@@ -348,7 +306,7 @@ describe('MongoWorkoutsRepo', () => {
     const workoutLinesBeforeDeletion = await WorkoutLineMongo.find({
       workoutId: 'workout-1',
     });
-    expect(workoutLinesBeforeDeletion).toHaveLength(1);
+    expect(workoutLinesBeforeDeletion).toHaveLength(2);
 
     await repo.deleteWorkout('workout-1');
 
@@ -398,20 +356,18 @@ describe('MongoWorkoutsRepo', () => {
     await repo.saveWorkout(workoutOtherUser);
 
     const workoutLinesBeforeDeletion = await WorkoutLineMongo.find({
-      workoutId: 'workout-1',
+      workoutId: workout.id,
     });
-    expect(workoutLinesBeforeDeletion).toHaveLength(1);
+    expect(workoutLinesBeforeDeletion).toHaveLength(2);
 
-    await repo.deleteAllWorkoutsForUser(
-      workoutTestProps.validWorkoutPropsNoExercises().userId,
-    );
+    await repo.deleteAllWorkoutsForUser(workout.userId);
 
     const allWorkouts = await repo.getAllWorkouts();
     expect(allWorkouts).toHaveLength(1);
     expect(allWorkouts[0].userId).toBe('other-user');
 
     const workoutLinesAfterDeletion = await WorkoutLineMongo.find({
-      workoutId: 'workout-1',
+      workoutId: workout.id,
     });
     expect(workoutLinesAfterDeletion).toHaveLength(0);
   });
@@ -432,9 +388,7 @@ describe('MongoWorkoutsRepo', () => {
         );
 
         const notUpdatedWorkout = await repo.getWorkoutById('workout-1');
-        expect(notUpdatedWorkout!.name).toBe(
-          workoutTestProps.validWorkoutPropsNoExercises().name,
-        );
+        expect(notUpdatedWorkout!.name).toBe(workout.name);
       });
 
       it('should rollback changes if error in deleteMany workout lines', async () => {
@@ -469,9 +423,7 @@ describe('MongoWorkoutsRepo', () => {
         );
 
         const notUpdatedWorkout = await repo.getWorkoutById('workout-1');
-        expect(notUpdatedWorkout!.name).toBe(
-          workoutTestProps.validWorkoutPropsNoExercises().name,
-        );
+        expect(notUpdatedWorkout!.name).toBe(workout.name);
         expect(notUpdatedWorkout!.exercises).toHaveLength(1);
         expect(notUpdatedWorkout!.exercises[0].exerciseId).toBe(exercise.id);
       });
@@ -508,9 +460,7 @@ describe('MongoWorkoutsRepo', () => {
         );
 
         const notUpdatedWorkout = await repo.getWorkoutById('workout-1');
-        expect(notUpdatedWorkout!.name).toBe(
-          workoutTestProps.validWorkoutPropsNoExercises().name,
-        );
+        expect(notUpdatedWorkout!.name).toBe(workout.name);
         expect(notUpdatedWorkout!.exercises).toHaveLength(1);
         expect(notUpdatedWorkout!.exercises[0].exerciseId).toBe(exercise.id);
       });
@@ -588,7 +538,7 @@ describe('MongoWorkoutsRepo', () => {
       it('should rollback changes if error occurs when deleting workout lines', async () => {
         mockForThrowingError(WorkoutLineMongo, 'deleteMany');
 
-        const userId = workoutTestProps.validWorkoutPropsNoExercises().userId;
+        const userId = workout.userId;
 
         const initialWorkouts = await repo.getAllWorkoutsByUserId(userId);
         expect(initialWorkouts).toHaveLength(1);
@@ -618,7 +568,7 @@ describe('MongoWorkoutsRepo', () => {
       it('should rollback changes if error occurs when deleting workouts', async () => {
         mockForThrowingError(WorkoutMongo, 'deleteMany');
 
-        const userId = workoutTestProps.validWorkoutPropsNoExercises().userId;
+        const userId = workout.userId;
 
         const initialWorkouts = await repo.getAllWorkoutsByUserId(userId);
         expect(initialWorkouts).toHaveLength(1);

@@ -1,5 +1,4 @@
 import { User } from '@/domain/entities/user/User';
-import { Workout } from '@/domain/entities/workout/Workout';
 import { mockForThrowingError } from '@/infra/repos/mongo/__tests__/mockForThrowingError';
 import {
   clearMongoTestDB,
@@ -24,7 +23,7 @@ import { createTestMeal } from '../../../../../../tests/createProps/mealTestProp
 import { createTestRecipe } from '../../../../../../tests/createProps/recipeTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import { createTestWorkoutTemplate } from '../../../../../../tests/createProps/workoutTemplateTestProps';
-import { validWorkoutPropsWithExercises } from '../../../../../../tests/createProps/workoutTestProps';
+import { createTestWorkout } from '../../../../../../tests/createProps/workoutTestProps';
 import { DeleteUserUsecase } from '../DeleteUser.usecase';
 
 describe('DeleteUserUsecase', () => {
@@ -98,10 +97,7 @@ describe('DeleteUserUsecase', () => {
     });
     const workoutTemplate = createTestWorkoutTemplate();
 
-    const workout = Workout.create({
-      ...validWorkoutPropsWithExercises(),
-      userId: user.id,
-    });
+    const workout = createTestWorkout();
 
     await usersRepo.saveUser(user);
     await exercisesRepo.saveExercise(exercise1);

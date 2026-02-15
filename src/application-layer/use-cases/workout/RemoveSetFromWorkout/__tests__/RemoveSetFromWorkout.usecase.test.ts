@@ -31,9 +31,8 @@ describe('RemoveSetFromWorkoutUsecase', () => {
 
     user = userTestProps.createTestUser();
 
-    workout = Workout.create({
-      ...workoutTestProps.validWorkoutPropsNoExercises(),
-      name: 'Push Day',
+    workout = workoutTestProps.createTestWorkout({
+      exercises: [], // Start with no exercises, will add lines below
     });
 
     workoutLine1 = WorkoutLine.create({
@@ -97,7 +96,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
     it('should return WorkoutDTO', async () => {
       const updatedWorkout = await removeSetFromWorkoutUsecase.execute({
         userId: userTestProps.userId,
-        workoutId: workoutTestProps.validWorkoutProps.id,
+        workoutId: workout.id,
         exerciseId: 'exercise-1',
         setNumber: 1,
       });
@@ -125,7 +124,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
 
       const updatedWorkout = await removeSetFromWorkoutUsecase.execute({
         userId: userTestProps.userId,
-        workoutId: workoutTestProps.validWorkoutProps.id,
+        workoutId: workout.id,
         exerciseId: 'exercise-1',
         setNumber: 2,
       });
@@ -134,9 +133,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
     });
 
     it('should not modify workout when set does not exist', async () => {
-      const workout = Workout.create({
-        ...workoutTestProps.validWorkoutProps,
-        name: 'Push Day',
+      const workout = workoutTestProps.createTestWorkout({
         exercises: [workoutLine1],
       });
 
@@ -144,7 +141,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
 
       const updatedWorkout = await removeSetFromWorkoutUsecase.execute({
         userId: userTestProps.userId,
-        workoutId: workoutTestProps.validWorkoutProps.id,
+        workoutId: workout.id,
         exerciseId: 'exercise-1',
         setNumber: 99, // Non-existent set number
       });
