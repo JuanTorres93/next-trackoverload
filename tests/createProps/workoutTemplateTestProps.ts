@@ -1,5 +1,9 @@
 import { WorkoutTemplateLine } from '@/domain/entities/workouttemplateline/WorkoutTemplateLine';
 import { userId } from './userTestProps';
+import {
+  WorkoutTemplate,
+  WorkoutTemplateCreateProps,
+} from '@/domain/entities/workouttemplate/WorkoutTemplate';
 
 export function validWorkoutTemplateProps() {
   const templateId = '1';
@@ -40,3 +44,19 @@ export const validWorkoutTemplateLineProps = {
   createdAt: new Date(),
   updatedAt: new Date(),
 };
+
+export function createTestWorkoutTemplate(
+  props?: Partial<WorkoutTemplateCreateProps>,
+): WorkoutTemplate {
+  const validProps = validWorkoutTemplateProps();
+
+  return WorkoutTemplate.create({
+    id: props?.id || validProps.id,
+    userId: props?.userId || validProps.userId,
+    name: props?.name || validProps.name,
+    exercises: props?.exercises || validProps.exercises,
+    createdAt: props?.createdAt || validProps.createdAt,
+    updatedAt: props?.updatedAt || validProps.updatedAt,
+    deletedAt: props?.deletedAt || undefined,
+  });
+}

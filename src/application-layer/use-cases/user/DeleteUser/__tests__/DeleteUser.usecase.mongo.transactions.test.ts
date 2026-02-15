@@ -1,6 +1,5 @@
 import { User } from '@/domain/entities/user/User';
 import { Workout } from '@/domain/entities/workout/Workout';
-import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 import { mockForThrowingError } from '@/infra/repos/mongo/__tests__/mockForThrowingError';
 import {
   clearMongoTestDB,
@@ -24,7 +23,7 @@ import * as fakeMealTestProps from '../../../../../../tests/createProps/fakeMeal
 import { createTestMeal } from '../../../../../../tests/createProps/mealTestProps';
 import { createTestRecipe } from '../../../../../../tests/createProps/recipeTestProps';
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
-import { validWorkoutTemplateProps } from '../../../../../../tests/createProps/workoutTemplateTestProps';
+import { createTestWorkoutTemplate } from '../../../../../../tests/createProps/workoutTemplateTestProps';
 import { validWorkoutPropsWithExercises } from '../../../../../../tests/createProps/workoutTestProps';
 import { DeleteUserUsecase } from '../DeleteUser.usecase';
 
@@ -97,14 +96,10 @@ describe('DeleteUserUsecase', () => {
     const exercise2 = createTestExercise({
       id: 'ex2',
     });
+    const workoutTemplate = createTestWorkoutTemplate();
 
     const workout = Workout.create({
       ...validWorkoutPropsWithExercises(),
-      userId: user.id,
-    });
-
-    const workoutTemplate = WorkoutTemplate.create({
-      ...validWorkoutTemplateProps(),
       userId: user.id,
     });
 

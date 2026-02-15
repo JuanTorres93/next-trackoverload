@@ -11,9 +11,8 @@ describe('WorkoutTemplateLineDTO', () => {
   let workoutTemplateLineDTO: WorkoutTemplateLineDTO;
 
   beforeEach(() => {
-    workoutTemplateLine = WorkoutTemplateLine.create(
-      workoutTemplateTestProps.validWorkoutTemplateLineProps,
-    );
+    workoutTemplateLine =
+      workoutTemplateTestProps.createTestWorkoutTemplate().exercises[0];
   });
 
   describe('toWorkoutTemplateLineDTO', () => {

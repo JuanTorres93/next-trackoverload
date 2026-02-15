@@ -25,9 +25,7 @@ describe('UpdateExerciseInWorkoutTemplateUsecase', () => {
     );
 
     user = userTestProps.createTestUser();
-    existingTemplate = WorkoutTemplate.create({
-      ...workoutTemplateTestProps.validWorkoutTemplateProps(),
-    });
+    existingTemplate = workoutTemplateTestProps.createTestWorkoutTemplate();
 
     await usersRepo.saveUser(user);
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
@@ -37,8 +35,7 @@ describe('UpdateExerciseInWorkoutTemplateUsecase', () => {
     it('should update exercise sets in workout template', async () => {
       const request = {
         userId: userTestProps.userId,
-        workoutTemplateId:
-          workoutTemplateTestProps.validWorkoutTemplateProps().id,
+        workoutTemplateId: existingTemplate.id,
         exerciseId: existingTemplate.exercises[0].exerciseId,
         sets: 55,
       };
@@ -75,8 +72,7 @@ describe('UpdateExerciseInWorkoutTemplateUsecase', () => {
     it('should return WorkoutTemplateDTO', async () => {
       const request = {
         userId: userTestProps.userId,
-        workoutTemplateId:
-          workoutTemplateTestProps.validWorkoutTemplateProps().id,
+        workoutTemplateId: existingTemplate.id,
         exerciseId: existingTemplate.exercises[0].exerciseId,
         sets: 5,
       };
@@ -111,8 +107,7 @@ describe('UpdateExerciseInWorkoutTemplateUsecase', () => {
       await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
       const request = {
-        workoutTemplateId:
-          workoutTemplateTestProps.validWorkoutTemplateProps().id,
+        workoutTemplateId: existingTemplate.id,
         userId: userTestProps.userId,
         exerciseId: 'bench-press',
         sets: 5,
@@ -127,11 +122,8 @@ describe('UpdateExerciseInWorkoutTemplateUsecase', () => {
     it('should throw error if user does not exist', async () => {
       const request = {
         userId: 'non-existent',
-        workoutTemplateId:
-          workoutTemplateTestProps.validWorkoutTemplateProps().id,
-        exerciseId:
-          workoutTemplateTestProps.validWorkoutTemplateProps().exercises[0]
-            .exerciseId,
+        workoutTemplateId: existingTemplate.id,
+        exerciseId: existingTemplate.exercises[0].exerciseId,
         sets: 5,
       };
 
@@ -149,8 +141,7 @@ describe('UpdateExerciseInWorkoutTemplateUsecase', () => {
       await usersRepo.saveUser(anotherUser);
 
       const request = {
-        workoutTemplateId:
-          workoutTemplateTestProps.validWorkoutTemplateProps().id,
+        workoutTemplateId: existingTemplate.id,
         userId: anotherUser.id,
         exerciseId: existingTemplate.exercises[0].exerciseId,
         sets: 5,

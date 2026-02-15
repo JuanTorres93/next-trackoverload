@@ -22,9 +22,7 @@ describe('DeleteWorkoutTemplateUsecase', () => {
 
     user = userTestProps.createTestUser();
 
-    existingTemplate = WorkoutTemplate.create({
-      ...workoutTemplateTestProps.validWorkoutTemplateProps(),
-    });
+    existingTemplate = workoutTemplateTestProps.createTestWorkoutTemplate();
 
     await usersRepo.saveUser(user);
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);

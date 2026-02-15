@@ -40,9 +40,7 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
     });
 
     // Create a template with one existing exercise
-    existingTemplate = WorkoutTemplate.create({
-      ...workoutTemplateTestProps.validWorkoutTemplateProps(),
-    });
+    existingTemplate = workoutTemplateTestProps.createTestWorkoutTemplate();
 
     await usersRepo.saveUser(user);
     await exercisesRepo.saveExercise(benchPressExercise);

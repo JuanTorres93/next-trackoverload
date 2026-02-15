@@ -27,16 +27,12 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
 
     user = userTestProps.createTestUser();
 
-    template1 = WorkoutTemplate.create({
-      ...workoutTemplateTestProps.validWorkoutTemplateProps(),
+    template1 = workoutTemplateTestProps.createTestWorkoutTemplate({
       id: 'user1-template1-id',
-      exercises: [],
     });
 
-    template2 = WorkoutTemplate.create({
-      ...workoutTemplateTestProps.validWorkoutTemplateProps(),
+    template2 = workoutTemplateTestProps.createTestWorkoutTemplate({
       id: 'user1-template2-id',
-      exercises: [],
     });
 
     await usersRepo.saveUser(user);
@@ -46,12 +42,9 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
 
   describe('Execution', () => {
     it('should return all workout templates for a specific user', async () => {
-      const user2Template = WorkoutTemplate.create({
-        ...workoutTemplateTestProps.validWorkoutTemplateProps(),
+      const user2Template = workoutTemplateTestProps.createTestWorkoutTemplate({
         id: 'user2-template-id',
         userId: 'user2-id',
-        name: 'Leg Day',
-        exercises: [],
       });
 
       await workoutTemplatesRepo.saveWorkoutTemplate(user2Template);

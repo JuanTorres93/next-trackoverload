@@ -9,7 +9,6 @@ import * as workoutTestProps from '../../../../../../tests/createProps/workoutTe
 
 // Import entities
 import { Workout } from '@/domain/entities/workout/Workout';
-import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 
 // Import in-memory repositories
 import { MemoryDaysRepo } from '@/infra/repos/memory/MemoryDaysRepo';
@@ -68,10 +67,8 @@ describe('DeleteUserUsecase', () => {
       userId: user.id,
     });
 
-    const workoutTemplate = WorkoutTemplate.create({
-      ...workoutTemplateTestProps.validWorkoutTemplateProps(),
-      userId: user.id,
-    });
+    const workoutTemplate =
+      workoutTemplateTestProps.createTestWorkoutTemplate();
 
     const day = dayTestProps.createEmptyTestDay();
 

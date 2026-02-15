@@ -31,26 +31,10 @@ describe('MongoWorkoutTemplatesRepo', () => {
     exercisesRepo = new MongoExercisesRepo();
     repo = new MongoWorkoutTemplatesRepo();
 
-    // Create and save an exercise first (needed for template lines)
     exercise = exerciseTestProps.createTestExercise();
     await exercisesRepo.saveExercise(exercise);
 
-    // Create a workout template with template lines
-    const templateLine = WorkoutTemplateLine.create({
-      ...workoutTemplateTestProps.validWorkoutTemplateLineProps,
-      id: 'line-1',
-      templateId: 'template-1',
-      exerciseId: exercise.id,
-    });
-
-    template = WorkoutTemplate.create({
-      id: 'template-1',
-      userId: workoutTemplateTestProps.validWorkoutTemplateProps().userId,
-      name: 'Test Template',
-      exercises: [templateLine],
-      createdAt: new Date('2023-01-01'),
-      updatedAt: new Date('2023-01-01'),
-    });
+    template = workoutTemplateTestProps.createTestWorkoutTemplate();
 
     await repo.saveWorkoutTemplate(template);
   });
@@ -74,9 +58,8 @@ describe('MongoWorkoutTemplatesRepo', () => {
         sets: 4,
       });
 
-      const newTemplate = WorkoutTemplate.create({
+      const newTemplate = workoutTemplateTestProps.createTestWorkoutTemplate({
         id: 'template-2',
-        userId: workoutTemplateTestProps.validWorkoutTemplateProps().userId,
         name: 'Leg Day Template',
         exercises: [templateLine],
       });
@@ -90,7 +73,7 @@ describe('MongoWorkoutTemplatesRepo', () => {
     });
 
     it('should update an existing workout template', async () => {
-      const existingTemplate = await repo.getWorkoutTemplateById('template-1');
+      const existingTemplate = await repo.getWorkoutTemplateById('1');
       existingTemplate!.update({
         name: 'Updated Template Name',
       });
@@ -102,7 +85,7 @@ describe('MongoWorkoutTemplatesRepo', () => {
     });
 
     it('should update template lines when saving', async () => {
-      const existingTemplate = await repo.getWorkoutTemplateById('template-1');
+      const existingTemplate = await repo.getWorkoutTemplateById('1');
       expect(existingTemplate!.exercises).toHaveLength(1);
 
       const newExercise = exerciseTestProps.createTestExercise({
@@ -133,10 +116,8 @@ describe('MongoWorkoutTemplatesRepo', () => {
 
   describe('getAllWorkoutTemplates', () => {
     it('should retrieve all workout templates', async () => {
-      const template2 = WorkoutTemplate.create({
+      const template2 = workoutTemplateTestProps.createTestWorkoutTemplate({
         id: 'template-2',
-        userId: workoutTemplateTestProps.validWorkoutTemplateProps().userId,
-        name: 'Template 2',
         exercises: [
           WorkoutTemplateLine.create({
             ...workoutTemplateTestProps.validWorkoutTemplateLineProps,
@@ -147,10 +128,8 @@ describe('MongoWorkoutTemplatesRepo', () => {
           }),
         ],
       });
-      const template3 = WorkoutTemplate.create({
+      const template3 = workoutTemplateTestProps.createTestWorkoutTemplate({
         id: 'template-3',
-        userId: workoutTemplateTestProps.validWorkoutTemplateProps().userId,
-        name: 'Template 3',
         exercises: [
           WorkoutTemplateLine.create({
             ...workoutTemplateTestProps.validWorkoutTemplateLineProps,
@@ -179,10 +158,8 @@ describe('MongoWorkoutTemplatesRepo', () => {
 
   describe('getAllWorkoutTemplatesByUserId', () => {
     it('should retrieve all workout templates for a specific user', async () => {
-      const template2 = WorkoutTemplate.create({
+      const template2 = workoutTemplateTestProps.createTestWorkoutTemplate({
         id: 'template-2',
-        userId: workoutTemplateTestProps.validWorkoutTemplateProps().userId,
-        name: 'Another Template',
         exercises: [
           WorkoutTemplateLine.create({
             ...workoutTemplateTestProps.validWorkoutTemplateLineProps,
@@ -194,36 +171,33 @@ describe('MongoWorkoutTemplatesRepo', () => {
         ],
       });
 
-      const templateOtherUser = WorkoutTemplate.create({
-        id: 'template-3',
-        userId: 'other-user',
-        name: 'Other User Template',
-        exercises: [
-          WorkoutTemplateLine.create({
-            ...workoutTemplateTestProps.validWorkoutTemplateLineProps,
-            id: 'line-t3',
-            templateId: 'template-3',
-            exerciseId: exercise.id,
-            sets: 5,
-          }),
-        ],
-      });
+      const templateOtherUser =
+        workoutTemplateTestProps.createTestWorkoutTemplate({
+          id: 'template-3',
+          userId: 'other-user',
+          name: 'Other User Template',
+          exercises: [
+            WorkoutTemplateLine.create({
+              ...workoutTemplateTestProps.validWorkoutTemplateLineProps,
+              id: 'line-t3',
+              templateId: 'template-3',
+              exerciseId: exercise.id,
+              sets: 5,
+            }),
+          ],
+        });
 
       await repo.saveWorkoutTemplate(template2);
       await repo.saveWorkoutTemplate(templateOtherUser);
 
       const userTemplates = await repo.getAllWorkoutTemplatesByUserId(
-        workoutTemplateTestProps.validWorkoutTemplateProps().userId,
+        template.userId,
       );
 
       expect(userTemplates).toHaveLength(2);
-      expect(
-        userTemplates.every(
-          (t) =>
-            t.userId ===
-            workoutTemplateTestProps.validWorkoutTemplateProps().userId,
-        ),
-      ).toBe(true);
+      expect(userTemplates.every((t) => t.userId === template.userId)).toBe(
+        true,
+      );
     });
 
     it('should return empty array if user has no templates', async () => {
@@ -234,38 +208,38 @@ describe('MongoWorkoutTemplatesRepo', () => {
     });
 
     it('should not include templates from other users', async () => {
-      const templateOtherUser = WorkoutTemplate.create({
-        id: 'template-other',
-        userId: 'other-user',
-        name: 'Other User Template',
-        exercises: [
-          WorkoutTemplateLine.create({
-            ...workoutTemplateTestProps.validWorkoutTemplateLineProps,
-            id: 'line-other',
-            templateId: 'template-other',
-            exerciseId: exercise.id,
-            sets: 3,
-          }),
-        ],
-      });
+      const templateOtherUser =
+        workoutTemplateTestProps.createTestWorkoutTemplate({
+          id: 'template-other',
+          userId: 'other-user',
+          exercises: [
+            WorkoutTemplateLine.create({
+              ...workoutTemplateTestProps.validWorkoutTemplateLineProps,
+              id: 'line-other',
+              templateId: 'template-other',
+              exerciseId: exercise.id,
+              sets: 3,
+            }),
+          ],
+        });
 
       await repo.saveWorkoutTemplate(templateOtherUser);
 
       const userTemplates = await repo.getAllWorkoutTemplatesByUserId(
-        workoutTemplateTestProps.validWorkoutTemplateProps().userId,
+        template.userId,
       );
 
       expect(userTemplates).toHaveLength(1);
-      expect(userTemplates[0].id).toBe('template-1');
+      expect(userTemplates[0].id).toBe('1');
     });
   });
 
   describe('getWorkoutTemplateById', () => {
     it('should retrieve a workout template by ID with its template lines', async () => {
-      const fetchedTemplate = await repo.getWorkoutTemplateById('template-1');
+      const fetchedTemplate = await repo.getWorkoutTemplateById('1');
 
-      expect(fetchedTemplate!.id).toBe('template-1');
-      expect(fetchedTemplate!.name).toBe('Test Template');
+      expect(fetchedTemplate!.id).toBe('1');
+      expect(fetchedTemplate!.name).toBe('Test workout template');
       expect(fetchedTemplate!.exercises).toHaveLength(1);
       expect(fetchedTemplate!.exercises[0].exerciseId).toBe(exercise.id);
     });
@@ -281,20 +255,18 @@ describe('MongoWorkoutTemplatesRepo', () => {
   describe('getWorkoutTemplateByIdAndUserId', () => {
     it('should retrieve a workout template by ID and user ID', async () => {
       const fetchedTemplate = await repo.getWorkoutTemplateByIdAndUserId(
-        'template-1',
-        workoutTemplateTestProps.validWorkoutTemplateProps().userId,
+        '1',
+        template.userId,
       );
 
       expect(fetchedTemplate).not.toBeNull();
-      expect(fetchedTemplate!.id).toBe('template-1');
-      expect(fetchedTemplate!.userId).toBe(
-        workoutTemplateTestProps.validWorkoutTemplateProps().userId,
-      );
+      expect(fetchedTemplate!.id).toBe('1');
+      expect(fetchedTemplate!.userId).toBe(template.userId);
     });
 
     it('should return null when template ID and user ID do not match', async () => {
       const fetchedTemplate = await repo.getWorkoutTemplateByIdAndUserId(
-        'template-1',
+        '1',
         'wrong-user-id',
       );
 
@@ -304,7 +276,7 @@ describe('MongoWorkoutTemplatesRepo', () => {
     it('should return null for non-existent template ID', async () => {
       const fetchedTemplate = await repo.getWorkoutTemplateByIdAndUserId(
         'non-existent-id',
-        workoutTemplateTestProps.validWorkoutTemplateProps().userId,
+        template.userId,
       );
 
       expect(fetchedTemplate).toBeNull();
@@ -313,10 +285,8 @@ describe('MongoWorkoutTemplatesRepo', () => {
 
   describe('deleteAllWorkoutTemplatesForUser', () => {
     it('should delete all workout templates and their template lines for a user', async () => {
-      const template2 = WorkoutTemplate.create({
+      const template2 = workoutTemplateTestProps.createTestWorkoutTemplate({
         id: 'template-2',
-        userId: workoutTemplateTestProps.validWorkoutTemplateProps().userId,
-        name: 'Template 2',
         exercises: [
           WorkoutTemplateLine.create({
             ...workoutTemplateTestProps.validWorkoutTemplateLineProps,
@@ -327,67 +297,63 @@ describe('MongoWorkoutTemplatesRepo', () => {
           }),
         ],
       });
-      const templateOtherUser = WorkoutTemplate.create({
-        id: 'template-3',
-        userId: 'other-user',
-        name: 'Other User Template',
-        exercises: [
-          WorkoutTemplateLine.create({
-            ...workoutTemplateTestProps.validWorkoutTemplateLineProps,
-            id: 'line-3',
-            templateId: 'template-3',
-            exerciseId: exercise.id,
-            sets: 5,
-          }),
-        ],
-      });
+      const templateOtherUser =
+        workoutTemplateTestProps.createTestWorkoutTemplate({
+          id: 'template-3',
+          userId: 'other-user',
+          exercises: [
+            WorkoutTemplateLine.create({
+              ...workoutTemplateTestProps.validWorkoutTemplateLineProps,
+              id: 'line-3',
+              templateId: 'template-3',
+              exerciseId: exercise.id,
+              sets: 5,
+            }),
+          ],
+        });
 
       await repo.saveWorkoutTemplate(template2);
       await repo.saveWorkoutTemplate(templateOtherUser);
 
       const templateLinesBeforeDeletion = await WorkoutTemplateLineMongo.find({
-        templateId: 'template-1',
+        templateId: '1',
       });
-      expect(templateLinesBeforeDeletion).toHaveLength(1);
+      expect(templateLinesBeforeDeletion).toHaveLength(2);
 
-      await repo.deleteAllWorkoutTemplatesForUser(
-        workoutTemplateTestProps.validWorkoutTemplateProps().userId,
-      );
+      await repo.deleteAllWorkoutTemplatesForUser(template.userId);
 
       const allTemplates = await repo.getAllWorkoutTemplates();
       expect(allTemplates).toHaveLength(1);
       expect(allTemplates[0].userId).toBe('other-user');
 
       const templateLinesAfterDeletion = await WorkoutTemplateLineMongo.find({
-        templateId: 'template-1',
+        templateId: '1',
       });
       expect(templateLinesAfterDeletion).toHaveLength(0);
     });
 
     it('should not affect templates from other users', async () => {
-      const templateOtherUser = WorkoutTemplate.create({
-        id: 'template-other',
-        userId: 'other-user',
-        name: 'Other User Template',
-        exercises: [
-          WorkoutTemplateLine.create({
-            ...workoutTemplateTestProps.validWorkoutTemplateLineProps,
-            id: 'line-other',
-            templateId: 'template-other',
-            exerciseId: exercise.id,
-            sets: 3,
-          }),
-        ],
-      });
+      const templateOtherUser =
+        workoutTemplateTestProps.createTestWorkoutTemplate({
+          id: 'template-other',
+          userId: 'other-user',
+          exercises: [
+            WorkoutTemplateLine.create({
+              ...workoutTemplateTestProps.validWorkoutTemplateLineProps,
+              id: 'line-other',
+              templateId: 'template-other',
+              exerciseId: exercise.id,
+              sets: 3,
+            }),
+          ],
+        });
 
       await repo.saveWorkoutTemplate(templateOtherUser);
 
       const allTemplatesBefore = await repo.getAllWorkoutTemplates();
       expect(allTemplatesBefore).toHaveLength(2);
 
-      await repo.deleteAllWorkoutTemplatesForUser(
-        workoutTemplateTestProps.validWorkoutTemplateProps().userId,
-      );
+      await repo.deleteAllWorkoutTemplatesForUser(template.userId);
 
       const allTemplatesAfter = await repo.getAllWorkoutTemplates();
       expect(allTemplatesAfter).toHaveLength(1);
@@ -400,8 +366,7 @@ describe('MongoWorkoutTemplatesRepo', () => {
       it('should rollback changes if error in template find and update', async () => {
         mockForThrowingError(WorkoutTemplateMongo, 'findOneAndUpdate');
 
-        const existingTemplate =
-          await repo.getWorkoutTemplateById('template-1');
+        const existingTemplate = await repo.getWorkoutTemplateById('1');
         existingTemplate!.update({
           name: 'Updated Template Name',
         });
@@ -411,16 +376,14 @@ describe('MongoWorkoutTemplatesRepo', () => {
           repo.saveWorkoutTemplate(existingTemplate!),
         ).rejects.toThrow(/Mocked error.*findOneAndUpdate/i);
 
-        const notUpdatedTemplate =
-          await repo.getWorkoutTemplateById('template-1');
-        expect(notUpdatedTemplate!.name).toBe('Test Template');
+        const notUpdatedTemplate = await repo.getWorkoutTemplateById('1');
+        expect(notUpdatedTemplate!.name).toBe('Test workout template');
       });
 
       it('should rollback changes if error in deleteMany template lines', async () => {
         mockForThrowingError(WorkoutTemplateLineMongo, 'deleteMany');
 
-        const existingTemplate =
-          await repo.getWorkoutTemplateById('template-1');
+        const existingTemplate = await repo.getWorkoutTemplateById('1');
         existingTemplate!.update({
           name: 'Updated Template Name',
         });
@@ -445,9 +408,8 @@ describe('MongoWorkoutTemplatesRepo', () => {
           repo.saveWorkoutTemplate(existingTemplate!),
         ).rejects.toThrow(/Mocked error.*deleteMany/i);
 
-        const notUpdatedTemplate =
-          await repo.getWorkoutTemplateById('template-1');
-        expect(notUpdatedTemplate!.name).toBe('Test Template');
+        const notUpdatedTemplate = await repo.getWorkoutTemplateById('1');
+        expect(notUpdatedTemplate!.name).toBe('Test workout template');
         expect(notUpdatedTemplate!.exercises).toHaveLength(1);
         expect(notUpdatedTemplate!.exercises[0].exerciseId).toBe(exercise.id);
       });
@@ -455,8 +417,7 @@ describe('MongoWorkoutTemplatesRepo', () => {
       it('should rollback changes if error in insertMany template lines', async () => {
         mockForThrowingError(WorkoutTemplateLineMongo, 'insertMany');
 
-        const existingTemplate =
-          await repo.getWorkoutTemplateById('template-1');
+        const existingTemplate = await repo.getWorkoutTemplateById('1');
         existingTemplate!.update({
           name: 'Updated Template Name',
         });
@@ -481,9 +442,8 @@ describe('MongoWorkoutTemplatesRepo', () => {
           repo.saveWorkoutTemplate(existingTemplate!),
         ).rejects.toThrow(/Mocked error.*insertMany/i);
 
-        const notUpdatedTemplate =
-          await repo.getWorkoutTemplateById('template-1');
-        expect(notUpdatedTemplate!.name).toBe('Test Template');
+        const notUpdatedTemplate = await repo.getWorkoutTemplateById('1');
+        expect(notUpdatedTemplate!.name).toBe('Test workout template');
         expect(notUpdatedTemplate!.exercises).toHaveLength(1);
         expect(notUpdatedTemplate!.exercises[0].exerciseId).toBe(exercise.id);
       });
@@ -493,8 +453,7 @@ describe('MongoWorkoutTemplatesRepo', () => {
       it('should rollback changes if error occurs when deleting template lines', async () => {
         mockForThrowingError(WorkoutTemplateLineMongo, 'deleteMany');
 
-        const userId =
-          workoutTemplateTestProps.validWorkoutTemplateProps().userId;
+        const userId = template.userId;
 
         const initialTemplates =
           await repo.getAllWorkoutTemplatesByUserId(userId);
@@ -513,7 +472,7 @@ describe('MongoWorkoutTemplatesRepo', () => {
         expect(templatesAfterFailedDelete).toHaveLength(1);
 
         const templateAfterFailedDelete = templatesAfterFailedDelete[0];
-        expect(templateAfterFailedDelete.id).toBe('template-1');
+        expect(templateAfterFailedDelete.id).toBe('1');
 
         // Verify that the template lines still exist
         expect(templateAfterFailedDelete.exercises).toHaveLength(1);
@@ -525,8 +484,7 @@ describe('MongoWorkoutTemplatesRepo', () => {
       it('should rollback changes if error occurs when deleting templates', async () => {
         mockForThrowingError(WorkoutTemplateMongo, 'deleteMany');
 
-        const userId =
-          workoutTemplateTestProps.validWorkoutTemplateProps().userId;
+        const userId = template.userId;
 
         const initialTemplates =
           await repo.getAllWorkoutTemplatesByUserId(userId);
@@ -545,7 +503,7 @@ describe('MongoWorkoutTemplatesRepo', () => {
         expect(templatesAfterFailedDelete).toHaveLength(1);
 
         const templateAfterFailedDelete = templatesAfterFailedDelete[0];
-        expect(templateAfterFailedDelete.id).toBe('template-1');
+        expect(templateAfterFailedDelete.id).toBe('1');
 
         // Verify that the template lines still exist
         expect(templateAfterFailedDelete.exercises).toHaveLength(1);

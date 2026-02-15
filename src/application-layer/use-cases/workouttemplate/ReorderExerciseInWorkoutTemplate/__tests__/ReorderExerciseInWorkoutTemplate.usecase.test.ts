@@ -29,9 +29,7 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
     user = userTestProps.createTestUser();
     await usersRepo.saveUser(user);
 
-    testTemplate = WorkoutTemplate.create(
-      workoutTemplateTestProps.validWorkoutTemplateProps(),
-    );
+    testTemplate = workoutTemplateTestProps.createTestWorkoutTemplate();
 
     // testTemplate already has two exercises
     additionalWorkoutTemplateLine = WorkoutTemplateLine.create({
@@ -50,8 +48,7 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
   describe('Execution', () => {
     it('should reorder exercise in workout template', async () => {
       const request = {
-        workoutTemplateId:
-          workoutTemplateTestProps.validWorkoutTemplateProps().id,
+        workoutTemplateId: testTemplate.id,
         exerciseId: 'ex3',
         userId: userTestProps.userId,
         newIndex: 0,
@@ -74,8 +71,7 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
 
     it('should return WorkoutTemplateDTO', async () => {
       const request = {
-        workoutTemplateId:
-          workoutTemplateTestProps.validWorkoutTemplateProps().id,
+        workoutTemplateId: testTemplate.id,
         exerciseId: 'ex3',
         newIndex: 0,
         userId: userTestProps.userId,
@@ -91,8 +87,7 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
 
     it('should reorder exercise to middle position', async () => {
       const request = {
-        workoutTemplateId:
-          workoutTemplateTestProps.validWorkoutTemplateProps().id,
+        workoutTemplateId: testTemplate.id,
         exerciseId: 'ex1',
         newIndex: 1,
         userId: userTestProps.userId,
@@ -129,8 +124,7 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
       await workoutTemplatesRepo.saveWorkoutTemplate(testTemplate);
 
       const request = {
-        workoutTemplateId:
-          workoutTemplateTestProps.validWorkoutTemplateProps().id,
+        workoutTemplateId: testTemplate.id,
         userId: userTestProps.userId,
         exerciseId: 'ex3',
         newIndex: 0,
@@ -145,8 +139,7 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
 
     it('should throw error if user does not exist', async () => {
       const request = {
-        workoutTemplateId:
-          workoutTemplateTestProps.validWorkoutTemplateProps().id,
+        workoutTemplateId: testTemplate.id,
         exerciseId: 'ex1',
         userId: 'non-existent',
         newIndex: 0,
@@ -166,8 +159,7 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
       await usersRepo.saveUser(anotherUser);
 
       const request = {
-        workoutTemplateId:
-          workoutTemplateTestProps.validWorkoutTemplateProps().id,
+        workoutTemplateId: testTemplate.id,
         userId: anotherUser.id,
         exerciseId: 'ex1',
         newIndex: 0,

@@ -27,10 +27,7 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
 
     user = userTestProps.createTestUser();
 
-    originalTemplate = WorkoutTemplate.create({
-      ...workoutTemplateTestProps.validWorkoutTemplateProps(),
-      name: 'Push Day',
-    });
+    originalTemplate = workoutTemplateTestProps.createTestWorkoutTemplate();
 
     await usersRepo.saveUser(user);
     await workoutTemplatesRepo.saveWorkoutTemplate(originalTemplate);
@@ -46,7 +43,7 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
       const result = await usecase.execute(request);
 
       expect(result.userId).toBe(userTestProps.userId);
-      expect(result.name).toBe('Push Day (Copy)');
+      expect(result.name).toBe('Test workout template (Copy)');
       expect(result.id).not.toBe(originalTemplate.id);
       expect(result.createdAt).not.toEqual(originalTemplate.createdAt);
       expect(result.updatedAt).not.toEqual(originalTemplate.updatedAt);
@@ -56,14 +53,13 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
         result.id,
       );
       expect(savedTemplate).not.toBeNull();
-      expect(savedTemplate!.name).toBe('Push Day (Copy)');
+      expect(savedTemplate!.name).toBe('Test workout template (Copy)');
     });
 
     it('should have different id than original template', async () => {
       const request = {
         userId: userTestProps.userId,
-        originalTemplateId:
-          workoutTemplateTestProps.validWorkoutTemplateProps().id,
+        originalTemplateId: originalTemplate.id,
       };
 
       const result = await usecase.execute(request);
@@ -74,8 +70,7 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
     it('should create new template lines (exercises) for duplicated template', async () => {
       const request = {
         userId: userTestProps.userId,
-        originalTemplateId:
-          workoutTemplateTestProps.validWorkoutTemplateProps().id,
+        originalTemplateId: originalTemplate.id,
       };
 
       const result = await usecase.execute(request);
@@ -91,8 +86,7 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
     it('should return WorkoutTemplateDTO', async () => {
       const request = {
         userId: userTestProps.userId,
-        originalTemplateId:
-          workoutTemplateTestProps.validWorkoutTemplateProps().id,
+        originalTemplateId: originalTemplate.id,
       };
 
       const result = await usecase.execute(request);
@@ -106,14 +100,13 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
     it('should duplicate workout template with custom name', async () => {
       const request = {
         userId: userTestProps.userId,
-        originalTemplateId:
-          workoutTemplateTestProps.validWorkoutTemplateProps().id,
-        newTemplateName: 'Push Day CUSTOM',
+        originalTemplateId: originalTemplate.id,
+        newTemplateName: 'Test workout template CUSTOM',
       };
 
       const result = await usecase.execute(request);
 
-      expect(result.name).toBe('Push Day CUSTOM');
+      expect(result.name).toBe('Test workout template CUSTOM');
       expect(result.id).not.toBe(originalTemplate.id);
 
       // Verify template was saved
@@ -121,14 +114,13 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
         result.id,
       );
       expect(savedTemplate).not.toBeNull();
-      expect(savedTemplate!.name).toBe('Push Day CUSTOM');
+      expect(savedTemplate!.name).toBe('Test workout template CUSTOM');
     });
 
     it('should correctly assign parent template to all template lines', async () => {
       const request = {
         userId: userTestProps.userId,
-        originalTemplateId:
-          workoutTemplateTestProps.validWorkoutTemplateProps().id,
+        originalTemplateId: originalTemplate.id,
       };
 
       const result = await usecase.execute(request);
@@ -139,18 +131,17 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
     });
 
     it('should duplicate template with empty exercises', async () => {
-      const templateWithNoExercises = WorkoutTemplate.create({
-        ...workoutTemplateTestProps.validWorkoutTemplateProps(),
-        name: 'Empty Template',
-        exercises: [],
-      });
+      const templateWithNoExercises =
+        workoutTemplateTestProps.createTestWorkoutTemplate({
+          name: 'Empty Template',
+          exercises: [],
+        });
 
       await workoutTemplatesRepo.saveWorkoutTemplate(templateWithNoExercises);
 
       const request = {
         userId: userTestProps.userId,
-        originalTemplateId:
-          workoutTemplateTestProps.validWorkoutTemplateProps().id,
+        originalTemplateId: originalTemplate.id,
       };
 
       const result = await usecase.execute(request);
@@ -192,8 +183,7 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
 
       const request = {
         userId: userTestProps.userId,
-        originalTemplateId:
-          workoutTemplateTestProps.validWorkoutTemplateProps().id,
+        originalTemplateId: originalTemplate.id,
       };
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
@@ -211,8 +201,7 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
 
       const request = {
         userId: 'other-user',
-        originalTemplateId:
-          workoutTemplateTestProps.validWorkoutTemplateProps().id,
+        originalTemplateId: originalTemplate.id,
       };
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
@@ -225,16 +214,14 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
       await expect(
         usecase.execute({
           userId: 'non-existent',
-          originalTemplateId:
-            workoutTemplateTestProps.validWorkoutTemplateProps().id,
+          originalTemplateId: originalTemplate.id,
         }),
       ).rejects.toThrow(NotFoundError);
 
       await expect(
         usecase.execute({
           userId: 'non-existent',
-          originalTemplateId:
-            workoutTemplateTestProps.validWorkoutTemplateProps().id,
+          originalTemplateId: originalTemplate.id,
         }),
       ).rejects.toThrow(/DuplicateWorkoutTemplateUsecase.*User.*not.*found/);
     });

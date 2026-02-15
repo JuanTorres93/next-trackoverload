@@ -11,8 +11,7 @@ describe('WorkoutTemplateDTO', () => {
   let workoutTemplateDTO: WorkoutTemplateDTO;
 
   beforeEach(() => {
-    const validProps = workoutTemplateTestProps.validWorkoutTemplateProps();
-    workoutTemplate = WorkoutTemplate.create(validProps);
+    workoutTemplate = workoutTemplateTestProps.createTestWorkoutTemplate();
   });
 
   describe('toWorkoutTemplateDTO', () => {
@@ -63,10 +62,10 @@ describe('WorkoutTemplateDTO', () => {
     });
 
     it('should handle optional deletedAt', () => {
-      const workoutTemplateWithDeletedAt = WorkoutTemplate.create({
-        ...workoutTemplateTestProps.validWorkoutTemplateProps(),
-        deletedAt: new Date('2023-12-01'),
-      });
+      const workoutTemplateWithDeletedAt =
+        workoutTemplateTestProps.createTestWorkoutTemplate({
+          deletedAt: new Date('2023-12-01'),
+        });
 
       const dto = toWorkoutTemplateDTO(workoutTemplateWithDeletedAt);
       expect(dto.deletedAt).toBe(

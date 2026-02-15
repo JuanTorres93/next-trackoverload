@@ -26,10 +26,7 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
 
     user = userTestProps.createTestUser();
 
-    template = WorkoutTemplate.create({
-      ...workoutTemplateTestProps.validWorkoutTemplateProps(),
-      name: 'Push Day',
-    });
+    template = workoutTemplateTestProps.createTestWorkoutTemplate();
 
     await usersRepo.saveUser(user);
     await workoutTemplatesRepo.saveWorkoutTemplate(template);
@@ -45,7 +42,7 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
       expect(result).not.toBeNull();
       expect(result!.id).toBe(template.id);
       expect(result!.userId).toBe(userTestProps.userId);
-      expect(result!.name).toBe('Push Day');
+      expect(result!.name).toBe('Test workout template');
     });
 
     it('should return WorkoutTemplateDTO', async () => {
@@ -67,7 +64,7 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
       await usersRepo.saveUser(user2);
 
       const result = await usecase.execute({
-        id: workoutTemplateTestProps.validWorkoutTemplateProps().id,
+        id: template.id,
         userId: 'user2',
       });
       expect(result).toBeNull();
@@ -99,14 +96,14 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
     it('should throw error if user does not exist', async () => {
       await expect(
         usecase.execute({
-          id: workoutTemplateTestProps.validWorkoutTemplateProps().id,
+          id: template.id,
           userId: 'non-existent',
         }),
       ).rejects.toThrow(NotFoundError);
 
       await expect(
         usecase.execute({
-          id: workoutTemplateTestProps.validWorkoutTemplateProps().id,
+          id: template.id,
           userId: 'non-existent',
         }),
       ).rejects.toThrow(
