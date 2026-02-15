@@ -21,9 +21,7 @@ describe('UpdateMealUsecase', () => {
     usersRepo = new MemoryUsersRepo();
     updateMealUsecase = new UpdateMealUsecase(mealsRepo, usersRepo);
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
+    user = userTestProps.createTestUser();
 
     meal = mealTestProps.createTestMeal();
 
@@ -99,8 +97,7 @@ describe('UpdateMealUsecase', () => {
     });
 
     it("should throw error when trying to read another user's meal", async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'another-user-id',
         email: 'anotheruser@example.com',
       });

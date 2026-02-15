@@ -42,11 +42,8 @@ describe('UpdateIngredientLineUsecase', () => {
       usersRepo,
     );
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
-    anotherUser = User.create({
-      ...userTestProps.validUserProps,
+    user = userTestProps.createTestUser();
+    anotherUser = userTestProps.createTestUser({
       id: anotherUserId,
     });
 

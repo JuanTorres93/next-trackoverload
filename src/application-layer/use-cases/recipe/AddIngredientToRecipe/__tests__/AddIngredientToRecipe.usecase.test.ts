@@ -46,9 +46,7 @@ describe('AddIngredientToRecipeUsecase', () => {
       new MemoryTransactionContext(),
     );
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
+    user = userTestProps.createTestUser();
 
     testRecipe = recipeTestProps.createTestRecipe({}, 1);
 
@@ -223,8 +221,7 @@ describe('AddIngredientToRecipeUsecase', () => {
     });
 
     it("should throw error when trying to add ingredient another user's recipe", async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'another-user-id',
       });
       await usersRepo.saveUser(anotherUser);

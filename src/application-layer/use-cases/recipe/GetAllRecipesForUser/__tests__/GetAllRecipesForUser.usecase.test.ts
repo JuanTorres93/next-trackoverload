@@ -27,12 +27,9 @@ describe('GetAllRecipesForUserUsecase', () => {
       usersRepo,
     );
 
-    user1 = User.create({
-      ...userTestProps.validUserProps,
-    });
+    user1 = userTestProps.createTestUser();
 
-    user2 = User.create({
-      ...userTestProps.validUserProps,
+    user2 = userTestProps.createTestUser({
       id: userId2,
     });
 

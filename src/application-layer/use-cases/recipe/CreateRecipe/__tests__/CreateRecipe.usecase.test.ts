@@ -51,9 +51,7 @@ describe('CreateRecipeUsecase', () => {
       new MemoryTransactionContext(),
     );
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
+    user = userTestProps.createTestUser();
 
     await usersRepo.saveUser(user);
 

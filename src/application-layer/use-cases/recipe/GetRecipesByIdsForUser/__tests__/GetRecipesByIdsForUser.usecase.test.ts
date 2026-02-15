@@ -25,9 +25,7 @@ describe('GetRecipesByIdsForUserUsecase', () => {
       usersRepo,
     );
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
+    user = userTestProps.createTestUser();
 
     testRecipes = [
       recipeTestProps.createTestRecipe({}, 1),
@@ -113,8 +111,7 @@ describe('GetRecipesByIdsForUserUsecase', () => {
     });
 
     it("should return empty array when trying to get another user's recipes", async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'another-user-id',
       });
       await usersRepo.saveUser(anotherUser);

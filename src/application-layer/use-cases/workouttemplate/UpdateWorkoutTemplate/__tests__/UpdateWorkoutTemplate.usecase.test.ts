@@ -21,7 +21,7 @@ describe('UpdateWorkoutTemplateUsecase', () => {
     usersRepo = new MemoryUsersRepo();
     usecase = new UpdateWorkoutTemplateUsecase(workoutTemplatesRepo, usersRepo);
 
-    user = User.create({ ...userTestProps.validUserProps });
+    user = userTestProps.createTestUser();
     existingTemplate = WorkoutTemplate.create({
       ...workoutTemplateTestProps.validWorkoutTemplateProps(),
     });
@@ -123,8 +123,7 @@ describe('UpdateWorkoutTemplateUsecase', () => {
     });
 
     it("should throw error when trying to update another user's workout template", async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'user-2',
       });
       await usersRepo.saveUser(anotherUser);

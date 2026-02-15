@@ -17,10 +17,7 @@ describe('UpdateUserUsecase', () => {
 
   describe('Execute', () => {
     it('should update user name successfully', async () => {
-      const user = User.create({
-        ...userTestProps.validUserProps,
-        name: 'Old Name',
-      });
+      const user = userTestProps.createTestUser();
 
       await usersRepo.saveUser(user);
 
@@ -36,10 +33,7 @@ describe('UpdateUserUsecase', () => {
     });
 
     it('should return UserDTO', async () => {
-      const user = User.create({
-        ...userTestProps.validUserProps,
-        name: 'Old Name',
-      });
+      const user = userTestProps.createTestUser();
 
       await usersRepo.saveUser(user);
 
@@ -56,10 +50,7 @@ describe('UpdateUserUsecase', () => {
     });
 
     it('should update user and persist changes', async () => {
-      const user = User.create({
-        ...userTestProps.validUserProps,
-        name: 'Original Name',
-      });
+      const user = userTestProps.createTestUser();
 
       await usersRepo.saveUser(user);
 

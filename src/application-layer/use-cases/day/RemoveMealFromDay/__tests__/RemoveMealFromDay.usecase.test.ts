@@ -37,13 +37,11 @@ describe('RemoveMealFromDayUsecase', () => {
       new MemoryTransactionContext(),
     );
 
+    user = userTestProps.createTestUser();
+
     meal = mealTestProps.createTestMeal();
 
     day = dayTestProps.createEmptyTestDay();
-
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
 
     day.addMeal(meal.id);
 
@@ -144,8 +142,7 @@ describe('RemoveMealFromDayUsecase', () => {
     });
 
     it("should throw error when trying to remove meal another user's day", async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'another-user-id',
         email: 'another-user@example.com',
       });

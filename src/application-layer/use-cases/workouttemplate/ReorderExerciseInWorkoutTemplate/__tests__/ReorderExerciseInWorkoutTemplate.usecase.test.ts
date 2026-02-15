@@ -26,7 +26,7 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
       usersRepo,
     );
 
-    user = User.create({ ...userTestProps.validUserProps });
+    user = userTestProps.createTestUser();
     await usersRepo.saveUser(user);
 
     testTemplate = WorkoutTemplate.create(
@@ -160,8 +160,7 @@ describe('ReorderExerciseInWorkoutTemplateUsecase', () => {
     });
 
     it("should throw error when trying to reorder exercise in another user's workout template", async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'user-2',
       });
       await usersRepo.saveUser(anotherUser);

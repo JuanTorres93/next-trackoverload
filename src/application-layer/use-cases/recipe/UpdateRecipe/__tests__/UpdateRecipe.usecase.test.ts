@@ -21,9 +21,7 @@ describe('UpdateRecipeUsecase', () => {
     usersRepo = new MemoryUsersRepo();
     updateRecipeUsecase = new UpdateRecipeUsecase(recipesRepo, usersRepo);
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
+    user = userTestProps.createTestUser();
 
     await usersRepo.saveUser(user);
 
@@ -101,8 +99,7 @@ describe('UpdateRecipeUsecase', () => {
     });
 
     it("should throw error if trying to modify another user's recipe", async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'another-user-id',
       });
       await usersRepo.saveUser(anotherUser);

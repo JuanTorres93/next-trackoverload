@@ -21,7 +21,7 @@ describe('MongoUsersRepo', () => {
 
     repo = new MongoUsersRepo();
 
-    user = User.create(userTestProps.validUserProps);
+    user = userTestProps.createTestUser();
     await repo.saveUser(user);
   });
 
@@ -30,11 +30,9 @@ describe('MongoUsersRepo', () => {
   });
 
   it('should save a user', async () => {
-    const newUser = User.create({
-      ...userTestProps.validUserProps,
+    const newUser = userTestProps.createTestUser({
       id: 'user-2',
       email: 'anotheruser@example.com',
-      updatedAt: new Date('2023-01-02'),
     });
     await repo.saveUser(newUser);
 
@@ -44,9 +42,7 @@ describe('MongoUsersRepo', () => {
   });
 
   it('should update an existing user', async () => {
-    const existingUser = await repo.getUserById(
-      userTestProps.validUserProps.id,
-    );
+    const existingUser = await repo.getUserById(user.id);
     existingUser!.update({
       name: 'Updated Name',
     });
@@ -58,11 +54,11 @@ describe('MongoUsersRepo', () => {
   });
 
   it('should retrieve a user by ID', async () => {
-    const fetchedUser = await repo.getUserById(userTestProps.validUserProps.id);
+    const fetchedUser = await repo.getUserById(user.id);
 
     expect(fetchedUser).not.toBeNull();
-    expect(fetchedUser!.id).toBe(userTestProps.validUserProps.id);
-    expect(fetchedUser!.email).toBe(userTestProps.validUserProps.email);
+    expect(fetchedUser!.id).toBe(user.id);
+    expect(fetchedUser!.email).toBe(user.email);
   });
 
   it('should return null for non-existent user ID', async () => {
@@ -72,13 +68,11 @@ describe('MongoUsersRepo', () => {
   });
 
   it('should retrieve a user by email', async () => {
-    const fetchedUser = await repo.getUserByEmail(
-      userTestProps.validUserProps.email,
-    );
+    const fetchedUser = await repo.getUserByEmail(user.email);
 
     expect(fetchedUser).not.toBeNull();
-    expect(fetchedUser!.id).toBe(userTestProps.validUserProps.id);
-    expect(fetchedUser!.email).toBe(userTestProps.validUserProps.email);
+    expect(fetchedUser!.id).toBe(user.id);
+    expect(fetchedUser!.email).toBe(user.email);
   });
 
   it('should return null for non-existent email', async () => {
@@ -88,15 +82,11 @@ describe('MongoUsersRepo', () => {
   });
 
   it('should retrieve a user by customer ID', async () => {
-    const fetchedUser = await repo.getUserByCustomerId(
-      userTestProps.validUserProps.customerId!,
-    );
+    const fetchedUser = await repo.getUserByCustomerId(user.customerId!);
 
     expect(fetchedUser).not.toBeNull();
-    expect(fetchedUser!.id).toBe(userTestProps.validUserProps.id);
-    expect(fetchedUser!.customerId).toBe(
-      userTestProps.validUserProps.customerId,
-    );
+    expect(fetchedUser!.id).toBe(user.id);
+    expect(fetchedUser!.customerId).toBe(user.customerId);
   });
 
   it('should return null for non-existent customer ID', async () => {
@@ -106,13 +96,11 @@ describe('MongoUsersRepo', () => {
   });
 
   it('should retrieve all users', async () => {
-    const user2 = User.create({
-      ...userTestProps.validUserProps,
+    const user2 = userTestProps.createTestUser({
       id: 'user-2',
       email: 'user2@example.com',
     });
-    const user3 = User.create({
-      ...userTestProps.validUserProps,
+    const user3 = userTestProps.createTestUser({
       id: 'user-3',
       email: 'user3@example.com',
     });
@@ -128,7 +116,7 @@ describe('MongoUsersRepo', () => {
     const allUsers = await repo.getAllUsers();
     expect(allUsers.length).toBe(1);
 
-    await repo.deleteUser(userTestProps.validUserProps.id);
+    await repo.deleteUser(user.id);
 
     const allUsersAfterDeletion = await repo.getAllUsers();
     expect(allUsersAfterDeletion.length).toBe(0);

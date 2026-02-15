@@ -65,9 +65,7 @@ describe('AddMealToDayUsecase', () => {
 
     recipe = recipeTestProps.createTestRecipe();
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
+    user = userTestProps.createTestUser();
 
     await daysRepo.saveDay(day);
     await usersRepo.saveUser(user);

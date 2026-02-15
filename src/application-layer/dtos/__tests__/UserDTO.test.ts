@@ -8,7 +8,7 @@ describe('UserDTO', () => {
   let userDTO: UserDTO;
 
   beforeEach(() => {
-    user = User.create(userTestProps.validUserProps);
+    user = userTestProps.createTestUser();
   });
 
   describe('toUserDTO', () => {

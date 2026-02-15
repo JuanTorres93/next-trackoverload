@@ -29,9 +29,7 @@ describe('DeleteRecipeUsecase', () => {
       usersRepo,
     );
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
+    user = userTestProps.createTestUser();
 
     testRecipe = recipeTestProps.createTestRecipe({}, 1);
 
@@ -125,8 +123,7 @@ describe('DeleteRecipeUsecase', () => {
     });
 
     it("should throw error when trying to delete another user's recipe", async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'another-user-id',
         email: 'anotheruser@example.com',
       });

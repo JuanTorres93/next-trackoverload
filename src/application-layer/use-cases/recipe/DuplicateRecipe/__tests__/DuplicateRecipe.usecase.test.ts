@@ -40,9 +40,7 @@ describe('DuplicateRecipeUsecase', () => {
       imagesRepo,
     );
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
+    user = userTestProps.createTestUser();
 
     const testImage = await createTestImage();
     const imageMetadata = createFakeMetadata();
@@ -276,8 +274,7 @@ describe('DuplicateRecipeUsecase', () => {
     });
 
     it("should throw error when trying to duplicate another user's recipe", async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'another-user-id',
         email: 'anotheruser@example.com',
       });

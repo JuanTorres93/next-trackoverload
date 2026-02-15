@@ -65,9 +65,7 @@ describe('DeleteDayUsecase', () => {
     day.addMeal(meal.id);
     day.addFakeMeal(fakeMeal.id);
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
+    user = userTestProps.createTestUser();
 
     // Save ingredients first (required by meal ingredient lines)
     for (const line of meal.ingredientLines) {

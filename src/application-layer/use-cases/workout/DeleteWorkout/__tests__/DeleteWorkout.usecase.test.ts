@@ -20,9 +20,7 @@ describe('DeleteWorkoutUsecase', () => {
     usersRepo = new MemoryUsersRepo();
     deleteWorkoutUsecase = new DeleteWorkoutUsecase(workoutsRepo, usersRepo);
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
+    user = userTestProps.createTestUser();
 
     workout = Workout.create({
       ...workoutTestProps.validWorkoutProps,
@@ -85,8 +83,7 @@ describe('DeleteWorkoutUsecase', () => {
     });
 
     it("should throw error when trying to remove another user's workout", async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'another-user-id',
         email: 'another-user@example.com',
       });

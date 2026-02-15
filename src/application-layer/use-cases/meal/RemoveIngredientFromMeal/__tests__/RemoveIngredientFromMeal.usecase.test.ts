@@ -30,9 +30,7 @@ describe('RemoveIngredientFromMealUsecase', () => {
       usersRepo,
     );
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
+    user = userTestProps.createTestUser();
 
     await usersRepo.saveUser(user);
 
@@ -132,8 +130,7 @@ describe('RemoveIngredientFromMealUsecase', () => {
     });
 
     it('should throw error when trying to remove an ingredient from other users meal', async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'other-user-id',
       });
       await usersRepo.saveUser(anotherUser);

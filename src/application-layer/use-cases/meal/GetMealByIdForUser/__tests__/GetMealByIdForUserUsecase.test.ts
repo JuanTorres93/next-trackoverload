@@ -21,7 +21,7 @@ describe('GetMealByIdForUserUsecase', () => {
     usersRepo = new MemoryUsersRepo();
     usecase = new GetMealByIdForUserUsecase(mealsRepo, usersRepo);
 
-    user = User.create({ ...userTestProps.validUserProps });
+    user = userTestProps.createTestUser();
     await usersRepo.saveUser(user);
 
     meal = mealTestProps.createTestMeal();
@@ -52,8 +52,7 @@ describe('GetMealByIdForUserUsecase', () => {
     });
 
     it('should return null if meal does not belong to user', async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'another-user-id',
       });
       await usersRepo.saveUser(anotherUser);

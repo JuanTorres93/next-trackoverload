@@ -30,7 +30,7 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
       new Uuidv4IdGenerator(),
     );
 
-    user = User.create({ ...userTestProps.validUserProps });
+    user = userTestProps.createTestUser();
 
     template = WorkoutTemplate.create({
       ...workoutTemplateTestProps.validWorkoutTemplateProps(),
@@ -207,8 +207,7 @@ describe('CreateWorkoutFromTemplateUsecase', () => {
     });
 
     it("should throw error when trying to create workout from another user's workout template", async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'user-2',
       });
       await usersRepo.saveUser(anotherUser);

@@ -20,9 +20,7 @@ describe('DeleteWorkoutTemplateUsecase', () => {
     usersRepo = new MemoryUsersRepo();
     usecase = new DeleteWorkoutTemplateUsecase(workoutTemplatesRepo, usersRepo);
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
+    user = userTestProps.createTestUser();
 
     existingTemplate = WorkoutTemplate.create({
       ...workoutTemplateTestProps.validWorkoutTemplateProps(),
@@ -94,8 +92,7 @@ describe('DeleteWorkoutTemplateUsecase', () => {
     });
 
     it("should throw error when trying to delete another user's template", async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'user-2',
       });
       await usersRepo.saveUser(anotherUser);

@@ -29,10 +29,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
       usersRepo,
     );
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
-    await usersRepo.saveUser(user);
+    user = userTestProps.createTestUser();
 
     workout = Workout.create({
       ...workoutTestProps.validWorkoutPropsNoExercises(),
@@ -70,7 +67,8 @@ describe('RemoveSetFromWorkoutUsecase', () => {
     workout.addExercise(workoutLine2);
     workout.addExercise(workoutLine3);
 
-    workoutsRepo.saveWorkout(workout);
+    await usersRepo.saveUser(user);
+    await workoutsRepo.saveWorkout(workout);
   });
 
   describe('Execution', () => {
@@ -193,8 +191,7 @@ describe('RemoveSetFromWorkoutUsecase', () => {
     });
 
     it("should throw error when trying to remove a set from another user's workout", async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'another-user-id',
       });
       await usersRepo.saveUser(anotherUser);

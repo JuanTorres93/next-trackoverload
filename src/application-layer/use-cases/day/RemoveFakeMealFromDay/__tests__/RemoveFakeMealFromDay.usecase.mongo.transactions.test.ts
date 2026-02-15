@@ -47,15 +47,12 @@ describe('RemoveFakeMealFromDayUsecase', () => {
       new MongoTransactionContext(),
     );
 
+    user = userTestProps.createTestUser();
     fakeMeal = fakeMealTestProps.createTestFakeMeal();
 
     day = dayTestProps.createEmptyTestDay();
 
     day.addMeal(fakeMeal.id);
-
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
 
     await usersRepo.saveUser(user);
     await fakeMealsRepo.saveFakeMeal(fakeMeal);

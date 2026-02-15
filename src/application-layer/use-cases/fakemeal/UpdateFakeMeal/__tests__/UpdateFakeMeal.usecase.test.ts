@@ -21,9 +21,7 @@ describe('UpdateFakeMealUsecase', () => {
     usersRepo = new MemoryUsersRepo();
     usecase = new UpdateFakeMealUsecase(fakeMealsRepo, usersRepo);
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
+    user = userTestProps.createTestUser();
 
     fakeMeal = fakeMealTestProps.createTestFakeMeal();
 
@@ -126,8 +124,7 @@ describe('UpdateFakeMealUsecase', () => {
     });
 
     it("should throw error when trying to update another user's fake meal", async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'another-user-id',
         email: 'anotheruser@example.com',
       });

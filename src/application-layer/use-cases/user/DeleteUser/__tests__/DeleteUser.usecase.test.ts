@@ -8,7 +8,6 @@ import * as workoutTemplateTestProps from '../../../../../../tests/createProps/w
 import * as workoutTestProps from '../../../../../../tests/createProps/workoutTestProps';
 
 // Import entities
-import { User } from '@/domain/entities/user/User';
 import { Workout } from '@/domain/entities/workout/Workout';
 import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
 
@@ -56,11 +55,7 @@ describe('DeleteUserUsecase', () => {
       new MemoryTransactionContext(),
     );
 
-    // Create user
-    const user = User.create({
-      ...userTestProps.validUserProps,
-      name: 'Test User',
-    });
+    const user = userTestProps.createTestUser();
     await usersRepo.saveUser(user);
 
     // Create associated resources
@@ -70,12 +65,12 @@ describe('DeleteUserUsecase', () => {
 
     const workout = Workout.create({
       ...workoutTestProps.validWorkoutPropsWithExercises(),
-      userId: userTestProps.userId,
+      userId: user.id,
     });
 
     const workoutTemplate = WorkoutTemplate.create({
       ...workoutTemplateTestProps.validWorkoutTemplateProps(),
-      userId: userTestProps.userId,
+      userId: user.id,
     });
 
     const day = dayTestProps.createEmptyTestDay();
@@ -229,8 +224,7 @@ describe('DeleteUserUsecase', () => {
     });
 
     it('should throw error if a user is trying to delete another user', async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'another-user-id',
         name: 'Another User',
       });

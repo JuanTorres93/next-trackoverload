@@ -37,9 +37,7 @@ describe('AddIngredientToMealUsecase', () => {
       new Uuidv4IdGenerator(),
     );
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
+    user = userTestProps.createTestUser();
 
     testMeal = mealTestProps.createTestMeal();
 
@@ -149,8 +147,7 @@ describe('AddIngredientToMealUsecase', () => {
     });
 
     it("should throw error when adding ingredient to another user's meal", async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'another-user-id',
       });
       await usersRepo.saveUser(anotherUser);

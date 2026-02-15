@@ -24,7 +24,7 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
       usersRepo,
     );
 
-    user = User.create({ ...userTestProps.validUserProps });
+    user = userTestProps.createTestUser();
 
     template = WorkoutTemplate.create({
       ...workoutTemplateTestProps.validWorkoutTemplateProps(),
@@ -61,8 +61,7 @@ describe('GetWorkoutTemplateByIdForUserUsecase', () => {
     });
 
     it('should return null if template belongs to different user', async () => {
-      const user2 = User.create({
-        ...userTestProps.validUserProps,
+      const user2 = userTestProps.createTestUser({
         id: 'user2',
       });
       await usersRepo.saveUser(user2);

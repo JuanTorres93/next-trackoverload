@@ -50,15 +50,13 @@ describe('RemoveMealFromDayUsecase', () => {
       new MongoTransactionContext(),
     );
 
+    user = userTestProps.createTestUser();
+
     meal = createTestMeal();
 
     day = dayTestProps.createEmptyTestDay();
 
     day.addMeal(meal.id);
-
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
 
     // Save ingredients first (required by meal ingredient lines)
     for (const line of meal.ingredientLines) {

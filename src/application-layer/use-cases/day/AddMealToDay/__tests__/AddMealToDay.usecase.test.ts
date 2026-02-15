@@ -41,13 +41,11 @@ describe('AddMealToDayUsecase', () => {
       new MemoryTransactionContext(),
     );
 
-    day = dayTestProps.createEmptyTestDay();
+    user = userTestProps.createTestUser();
 
     recipe = recipeTestProps.createTestRecipe({}, 1);
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
+    day = dayTestProps.createEmptyTestDay();
 
     await daysRepo.saveDay(day);
     await usersRepo.saveUser(user);

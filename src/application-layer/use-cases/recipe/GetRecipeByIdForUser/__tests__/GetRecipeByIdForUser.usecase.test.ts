@@ -25,9 +25,7 @@ describe('GetRecipeByIdForUserUsecase', () => {
       usersRepo,
     );
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
+    user = userTestProps.createTestUser();
 
     testRecipe = recipeTestProps.createTestRecipe({}, 1);
 
@@ -61,8 +59,7 @@ describe('GetRecipeByIdForUserUsecase', () => {
     });
 
     it("should return null when trying to get another user's recipe", async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'another-user-id',
       });
       await usersRepo.saveUser(anotherUser);

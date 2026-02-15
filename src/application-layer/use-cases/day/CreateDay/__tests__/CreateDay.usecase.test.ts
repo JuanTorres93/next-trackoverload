@@ -25,9 +25,7 @@ describe('CreateDayUsecase', () => {
     usersRepo = new MemoryUsersRepo();
     createDayUsecase = new CreateDayUsecase(daysRepo, usersRepo);
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
+    user = userTestProps.createTestUser();
 
     await usersRepo.saveUser(user);
   });

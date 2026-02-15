@@ -23,9 +23,7 @@ describe('CreateWorkoutTemplateUsecase', () => {
       new Uuidv4IdGenerator(),
     );
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
+    user = userTestProps.createTestUser();
     await usersRepo.saveUser(user);
   });
 

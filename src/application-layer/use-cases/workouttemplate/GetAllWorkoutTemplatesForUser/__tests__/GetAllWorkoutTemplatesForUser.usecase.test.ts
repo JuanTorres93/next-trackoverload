@@ -25,7 +25,7 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
       usersRepo,
     );
 
-    user = User.create({ ...userTestProps.validUserProps });
+    user = userTestProps.createTestUser();
 
     template1 = WorkoutTemplate.create({
       ...workoutTemplateTestProps.validWorkoutTemplateProps(),
@@ -84,8 +84,7 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
     });
 
     it('should return empty array if user has no templates', async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'another-user-id',
         email: 'another-user@example.com',
       });
@@ -127,8 +126,7 @@ describe('GetAllWorkoutTemplatesForUserUsecase', () => {
     });
 
     it('should throw error when trying to get another users workout templates', async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'another-user-id',
       });
 

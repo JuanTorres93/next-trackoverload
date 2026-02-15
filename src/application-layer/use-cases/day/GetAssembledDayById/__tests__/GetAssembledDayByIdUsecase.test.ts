@@ -38,9 +38,7 @@ describe('GetAssembledDayByIdUsecase', () => {
 
     day = dayTestProps.createEmptyTestDay();
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
+    user = userTestProps.createTestUser();
 
     await daysRepo.saveDay(day);
     await usersRepo.saveUser(user);
@@ -95,8 +93,7 @@ describe('GetAssembledDayByIdUsecase', () => {
     });
 
     it('should return null if day exists but belongs to another user', async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'another-user-id',
       });
 

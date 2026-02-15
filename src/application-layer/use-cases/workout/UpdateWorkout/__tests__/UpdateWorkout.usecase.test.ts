@@ -21,9 +21,7 @@ describe('UpdateWorkoutUsecase', () => {
     usersRepo = new MemoryUsersRepo();
     updateWorkoutUsecase = new UpdateWorkoutUsecase(workoutsRepo, usersRepo);
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
+    user = userTestProps.createTestUser();
 
     workout = Workout.create({
       ...workoutTestProps.validWorkoutProps,
@@ -105,8 +103,7 @@ describe('UpdateWorkoutUsecase', () => {
     });
 
     it("should throw error when trying to update another user's workout", async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'another-user-id',
       });
 

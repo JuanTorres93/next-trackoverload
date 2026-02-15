@@ -73,10 +73,7 @@ describe('DeleteUserUsecase', () => {
       new MongoTransactionContext(),
     );
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
-    await usersRepo.saveUser(user);
+    user = userTestProps.createTestUser();
 
     // Create associated resources
     const fakeMeal = fakeMealTestProps.createTestFakeMeal();
@@ -108,9 +105,6 @@ describe('DeleteUserUsecase', () => {
       name: 'Test Exercise 2',
     });
 
-    await exercisesRepo.saveExercise(exercise1);
-    await exercisesRepo.saveExercise(exercise2);
-
     const workout = Workout.create({
       ...validWorkoutPropsWithExercises(),
       userId: user.id,
@@ -121,6 +115,9 @@ describe('DeleteUserUsecase', () => {
       userId: user.id,
     });
 
+    await usersRepo.saveUser(user);
+    await exercisesRepo.saveExercise(exercise1);
+    await exercisesRepo.saveExercise(exercise2);
     await fakeMealsRepo.saveFakeMeal(fakeMeal);
     await mealsRepo.saveMeal(meal);
     await recipesRepo.saveRecipe(recipe);

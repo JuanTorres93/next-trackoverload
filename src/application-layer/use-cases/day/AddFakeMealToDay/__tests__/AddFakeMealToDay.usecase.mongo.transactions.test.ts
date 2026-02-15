@@ -50,11 +50,9 @@ describe('AddFakeMealToDayUsecase', () => {
       new MongoTransactionContext(),
     );
 
-    day = dayTestProps.createEmptyTestDay();
+    user = userTestProps.createTestUser();
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
+    day = dayTestProps.createEmptyTestDay();
 
     await daysRepo.saveDay(day);
     await usersRepo.saveUser(user);

@@ -23,9 +23,7 @@ describe('GetAllWorkoutsUsecase', () => {
       usersRepo,
     );
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
+    user = userTestProps.createTestUser();
     await usersRepo.saveUser(user);
   });
 
@@ -114,8 +112,7 @@ describe('GetAllWorkoutsUsecase', () => {
     });
 
     it('should throw error when trying to get another users workouts', async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'another-user-id',
       });
 

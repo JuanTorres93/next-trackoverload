@@ -37,9 +37,7 @@ describe('DeleteDayUsecase', () => {
 
     day = dayTestProps.createEmptyTestDay();
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
+    user = userTestProps.createTestUser();
 
     await usersRepo.saveUser(user);
     await daysRepo.saveDay(day);
@@ -92,8 +90,7 @@ describe('DeleteDayUsecase', () => {
     });
 
     it("should throw error when trying to delete another user's Day", async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'another-user-id',
         email: 'another-user@example.com',
       });

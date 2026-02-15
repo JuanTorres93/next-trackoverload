@@ -31,7 +31,7 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
       new Uuidv4IdGenerator(),
     );
 
-    user = User.create({ ...userTestProps.validUserProps });
+    user = userTestProps.createTestUser();
     await usersRepo.saveUser(user);
 
     // Create the exercises that will be used in tests
@@ -187,8 +187,7 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
     });
 
     it("should throw error when trying to add exercise to another user's workout template", async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'user-2',
       });
       await usersRepo.saveUser(anotherUser);

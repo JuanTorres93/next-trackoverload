@@ -25,7 +25,7 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
       new Uuidv4IdGenerator(),
     );
 
-    user = User.create({ ...userTestProps.validUserProps });
+    user = userTestProps.createTestUser();
 
     originalTemplate = WorkoutTemplate.create({
       ...workoutTemplateTestProps.validWorkoutTemplateProps(),
@@ -203,8 +203,7 @@ describe('DuplicateWorkoutTemplateUsecase', () => {
     });
 
     it('should throw NotFoundError when trying to duplicate template from different user', async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'other-user',
         email: 'other@test.com',
       });

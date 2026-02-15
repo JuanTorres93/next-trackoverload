@@ -27,9 +27,7 @@ describe('GetWorkoutsByTemplateUsecase', () => {
       usersRepo,
     );
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
+    user = userTestProps.createTestUser();
 
     workout1 = Workout.create({
       ...workoutTestProps.validWorkoutProps,
@@ -99,8 +97,7 @@ describe('GetWorkoutsByTemplateUsecase', () => {
     });
 
     it('should return empty array when trying to get workouts from another user', async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'user-2',
       });
 

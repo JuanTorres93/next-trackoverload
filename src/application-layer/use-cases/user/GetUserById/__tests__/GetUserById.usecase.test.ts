@@ -18,30 +18,26 @@ describe('GetUserByIdUsecase', () => {
 
   describe('Execute', () => {
     it('should return user when found', async () => {
-      const user = User.create({
-        ...userTestProps.validUserProps,
-      });
+      const user = userTestProps.createTestUser();
 
       await usersRepo.saveUser(user);
 
       const result = await getUserByIdUsecase.execute({
-        actorUserId: userTestProps.validUserProps.id,
-        targetUserId: userTestProps.validUserProps.id,
+        actorUserId: user.id,
+        targetUserId: user.id,
       });
 
       expect(result).toEqual(toUserDTO(user));
     });
 
     it('should return user DTO when found', async () => {
-      const user = User.create({
-        ...userTestProps.validUserProps,
-      });
+      const user = userTestProps.createTestUser();
 
       await usersRepo.saveUser(user);
 
       const result = await getUserByIdUsecase.execute({
-        actorUserId: userTestProps.validUserProps.id,
-        targetUserId: userTestProps.validUserProps.id,
+        actorUserId: user.id,
+        targetUserId: user.id,
       });
 
       for (const prop of dto.userDTOProperties) {

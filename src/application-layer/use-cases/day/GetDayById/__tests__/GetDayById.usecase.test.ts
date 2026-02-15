@@ -22,9 +22,7 @@ describe('GetDayByIdUsecase', () => {
     usersRepo = new MemoryUsersRepo();
     getDayByIdUsecase = new GetDayByIdUsecase(daysRepo, usersRepo);
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
+    user = userTestProps.createTestUser();
 
     day = dayTestProps.createEmptyTestDay();
 
@@ -116,8 +114,7 @@ describe('GetDayByIdUsecase', () => {
     });
 
     it("should return null when trying to get another user's day", async () => {
-      const anotherUser = User.create({
-        ...userTestProps.validUserProps,
+      const anotherUser = userTestProps.createTestUser({
         id: 'another-user-id',
         email: 'another-user@example.com',
       });

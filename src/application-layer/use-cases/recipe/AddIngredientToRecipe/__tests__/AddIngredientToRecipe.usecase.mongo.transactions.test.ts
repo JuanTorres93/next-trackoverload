@@ -52,9 +52,7 @@ describe('AddIngredientToRecipeUsecase', () => {
       new MongoTransactionContext(),
     );
 
-    user = User.create({
-      ...userTestProps.validUserProps,
-    });
+    user = userTestProps.createTestUser();
 
     const testExternalIngredientRef =
       externalIngredientRefTestProps.createTestExternalIngredientRef();
