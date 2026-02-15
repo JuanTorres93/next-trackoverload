@@ -20,9 +20,10 @@ describe('MongoExternalIngredientsRefRepo', () => {
     await clearMongoTestDB();
 
     repo = new MongoExternalIngredientsRefRepo();
-    externalIngredientRef = ExternalIngredientRef.create(
-      externalIngredientRefTestProps.validExternalIngredientRefProps,
-    );
+
+    externalIngredientRef =
+      externalIngredientRefTestProps.createTestExternalIngredientRef();
+
     await repo.save(externalIngredientRef);
   });
 
@@ -31,10 +32,11 @@ describe('MongoExternalIngredientsRefRepo', () => {
   });
 
   it('should save an external ingredient ref', async () => {
-    const newExternalIngredientRef = ExternalIngredientRef.create({
-      ...externalIngredientRefTestProps.validExternalIngredientRefProps,
-      externalId: 'ext-ing-2',
-    });
+    const newExternalIngredientRef =
+      externalIngredientRefTestProps.createTestExternalIngredientRef({
+        externalId: 'ext-ing-2',
+      });
+
     await repo.save(newExternalIngredientRef);
 
     const fetched = await repo.getByExternalIdAndSource(
@@ -47,16 +49,16 @@ describe('MongoExternalIngredientsRefRepo', () => {
 
   it('should update an existing external ingredient ref', async () => {
     // Create a new ref with the same external ID and source but different ingredient ID
-    const updatedRef = ExternalIngredientRef.create({
-      ...externalIngredientRefTestProps.validExternalIngredientRefProps,
-      ingredientId: 'new-ingredient-id',
-    });
+    const updatedRef =
+      externalIngredientRefTestProps.createTestExternalIngredientRef({
+        ingredientId: 'new-ingredient-id',
+      });
 
     await repo.save(updatedRef);
 
     const fetched = await repo.getByExternalIdAndSource(
-      externalIngredientRefTestProps.validExternalIngredientRefProps.externalId,
-      externalIngredientRefTestProps.validExternalIngredientRefProps.source,
+      externalIngredientRef.externalId,
+      externalIngredientRef.source,
     );
 
     expect(fetched).not.toBeNull();
@@ -65,21 +67,14 @@ describe('MongoExternalIngredientsRefRepo', () => {
 
   it('should retrieve an external ingredient ref by external ID and source', async () => {
     const fetched = await repo.getByExternalIdAndSource(
-      externalIngredientRefTestProps.validExternalIngredientRefProps.externalId,
-      externalIngredientRefTestProps.validExternalIngredientRefProps.source,
+      externalIngredientRef.externalId,
+      externalIngredientRef.source,
     );
 
     expect(fetched).not.toBeNull();
-    expect(fetched!.externalId).toBe(
-      externalIngredientRefTestProps.validExternalIngredientRefProps.externalId,
-    );
-    expect(fetched!.source).toBe(
-      externalIngredientRefTestProps.validExternalIngredientRefProps.source,
-    );
-    expect(fetched!.ingredientId).toBe(
-      externalIngredientRefTestProps.validExternalIngredientRefProps
-        .ingredientId,
-    );
+    expect(fetched!.externalId).toBe(externalIngredientRef.externalId);
+    expect(fetched!.source).toBe(externalIngredientRef.source);
+    expect(fetched!.ingredientId).toBe(externalIngredientRef.ingredientId);
   });
 
   it('should return null for non-existent external ingredient ref', async () => {
@@ -97,20 +92,17 @@ describe('MongoExternalIngredientsRefRepo', () => {
       repo = new MongoExternalIngredientsRefRepo();
 
       const refs = [
-        ExternalIngredientRef.create({
-          ...externalIngredientRefTestProps.validExternalIngredientRefProps,
+        externalIngredientRefTestProps.createTestExternalIngredientRef({
           externalId: 'ext-id-1',
           ingredientId: 'ing-id-1',
         }),
 
-        ExternalIngredientRef.create({
-          ...externalIngredientRefTestProps.validExternalIngredientRefProps,
+        externalIngredientRefTestProps.createTestExternalIngredientRef({
           externalId: 'ext-id-2',
           ingredientId: 'ing-id-2',
         }),
 
-        ExternalIngredientRef.create({
-          ...externalIngredientRefTestProps.validExternalIngredientRefProps,
+        externalIngredientRefTestProps.createTestExternalIngredientRef({
           externalId: 'ext-id-3',
           ingredientId: 'ing-id-3',
         }),
@@ -195,18 +187,15 @@ describe('MongoExternalIngredientsRefRepo', () => {
       await clearMongoTestDB();
 
       const refs = [
-        ExternalIngredientRef.create({
-          ...externalIngredientRefTestProps.validExternalIngredientRefProps,
+        externalIngredientRefTestProps.createTestExternalIngredientRef({
           externalId: 'ext-id-1',
           ingredientId: 'ing-id-1',
         }),
-        ExternalIngredientRef.create({
-          ...externalIngredientRefTestProps.validExternalIngredientRefProps,
+        externalIngredientRefTestProps.createTestExternalIngredientRef({
           externalId: 'ext-id-2',
           ingredientId: 'ing-id-2',
         }),
-        ExternalIngredientRef.create({
-          ...externalIngredientRefTestProps.validExternalIngredientRefProps,
+        externalIngredientRefTestProps.createTestExternalIngredientRef({
           externalId: 'ext-id-3',
           ingredientId: 'ing-id-3',
         }),
@@ -232,18 +221,17 @@ describe('MongoExternalIngredientsRefRepo', () => {
   });
   it('should delete an external ingredient ref by external ID', async () => {
     const fetchedBefore = await repo.getByExternalIdAndSource(
-      externalIngredientRefTestProps.validExternalIngredientRefProps.externalId,
-      externalIngredientRefTestProps.validExternalIngredientRefProps.source,
+      externalIngredientRef.externalId,
+      externalIngredientRef.source,
     );
+
     expect(fetchedBefore).not.toBeNull();
 
-    await repo.delete(
-      externalIngredientRefTestProps.validExternalIngredientRefProps.externalId,
-    );
+    await repo.delete(externalIngredientRef.externalId);
 
     const fetchedAfter = await repo.getByExternalIdAndSource(
-      externalIngredientRefTestProps.validExternalIngredientRefProps.externalId,
-      externalIngredientRefTestProps.validExternalIngredientRefProps.source,
+      externalIngredientRef.externalId,
+      externalIngredientRef.source,
     );
     expect(fetchedAfter).toBeNull();
   });

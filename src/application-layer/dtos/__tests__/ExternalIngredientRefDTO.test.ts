@@ -12,9 +12,8 @@ describe('ExternalIngredientRefDTO', () => {
   let externalIngredientRefDTO: ExternalIngredientRefDTO;
 
   beforeEach(() => {
-    externalIngredientRef = ExternalIngredientRef.create(
-      externalIngredientRefTestProps.validExternalIngredientRefProps,
-    );
+    externalIngredientRef =
+      externalIngredientRefTestProps.createTestExternalIngredientRef();
   });
 
   describe('toExternalIngredientRefDTO', () => {

@@ -9,9 +9,10 @@ describe('MemoryExternalIngredientsRefRepo', () => {
 
   beforeEach(async () => {
     repo = new MemoryExternalIngredientsRefRepo();
-    externalIngredientRef = ExternalIngredientRef.create(
-      externalIngredientRefTestProps.validExternalIngredientRefProps,
-    );
+
+    externalIngredientRef =
+      externalIngredientRefTestProps.createTestExternalIngredientRef();
+
     await repo.save(externalIngredientRef);
   });
 
@@ -22,10 +23,11 @@ describe('MemoryExternalIngredientsRefRepo', () => {
     });
 
     it('should update an existing external ingredient ref', async () => {
-      const updatedRef = ExternalIngredientRef.create({
-        ...externalIngredientRefTestProps.validExternalIngredientRefProps,
-        ingredientId: 'updated-ing',
-      });
+      const updatedRef =
+        externalIngredientRefTestProps.createTestExternalIngredientRef({
+          ingredientId: 'updated-ing',
+        });
+
       await repo.save(updatedRef);
 
       const allRefs = repo.getAllForTesting();
@@ -37,19 +39,13 @@ describe('MemoryExternalIngredientsRefRepo', () => {
   describe('getByExternalIdAndSource', () => {
     it('should retrieve an external ingredient ref by externalId and source', async () => {
       const fetched = await repo.getByExternalIdAndSource(
-        externalIngredientRefTestProps.validExternalIngredientRefProps
-          .externalId,
-        externalIngredientRefTestProps.validExternalIngredientRefProps.source,
+        externalIngredientRef.externalId,
+        externalIngredientRef.source,
       );
 
       expect(fetched).not.toBeNull();
-      expect(fetched!.externalId).toBe(
-        externalIngredientRefTestProps.validExternalIngredientRefProps
-          .externalId,
-      );
-      expect(fetched!.source).toBe(
-        externalIngredientRefTestProps.validExternalIngredientRefProps.source,
-      );
+      expect(fetched!.externalId).toBe(externalIngredientRef.externalId);
+      expect(fetched!.source).toBe(externalIngredientRef.source);
     });
 
     it('should return null for non-existent external ingredient ref', async () => {
@@ -62,8 +58,7 @@ describe('MemoryExternalIngredientsRefRepo', () => {
 
     it('should return null if externalId matches but source does not', async () => {
       const fetched = await repo.getByExternalIdAndSource(
-        externalIngredientRefTestProps.validExternalIngredientRefProps
-          .externalId,
+        externalIngredientRef.externalId,
         'DifferentSource',
       );
       expect(fetched).toBeNull();
@@ -72,7 +67,7 @@ describe('MemoryExternalIngredientsRefRepo', () => {
     it('should return null if source matches but externalId does not', async () => {
       const fetched = await repo.getByExternalIdAndSource(
         'different-id',
-        externalIngredientRefTestProps.validExternalIngredientRefProps.source,
+        externalIngredientRef.source,
       );
       expect(fetched).toBeNull();
     });
@@ -80,33 +75,29 @@ describe('MemoryExternalIngredientsRefRepo', () => {
 
   describe('getByExternalIdsAndSource', () => {
     it('should retrieve multiple external ingredient refs by externalIds and source', async () => {
-      const ref2 = ExternalIngredientRef.create({
-        ...externalIngredientRefTestProps.validExternalIngredientRefProps,
-        externalId: 'ext-id-2',
-        ingredientId: 'ing-id-2',
-      });
-      const ref3 = ExternalIngredientRef.create({
-        ...externalIngredientRefTestProps.validExternalIngredientRefProps,
-        externalId: 'ext-id-3',
-        ingredientId: 'ing-id-3',
-      });
+      const ref2 =
+        externalIngredientRefTestProps.createTestExternalIngredientRef({
+          externalId: 'ext-id-2',
+          ingredientId: 'ing-id-2',
+        });
+
+      const ref3 =
+        externalIngredientRefTestProps.createTestExternalIngredientRef({
+          externalId: 'ext-id-3',
+          ingredientId: 'ing-id-3',
+        });
+
       await repo.save(ref2);
       await repo.save(ref3);
 
       const fetched = await repo.getByExternalIdsAndSource(
-        [
-          externalIngredientRefTestProps.validExternalIngredientRefProps
-            .externalId,
-          'ext-id-2',
-          'ext-id-3',
-        ],
-        externalIngredientRefTestProps.validExternalIngredientRefProps.source,
+        [externalIngredientRef.externalId, 'ext-id-2', 'ext-id-3'],
+        externalIngredientRef.source,
       );
 
       expect(fetched.length).toBe(3);
       expect(fetched.map((r) => r.externalId)).toContain(
-        externalIngredientRefTestProps.validExternalIngredientRefProps
-          .externalId,
+        externalIngredientRef.externalId,
       );
       expect(fetched.map((r) => r.externalId)).toContain('ext-id-2');
       expect(fetched.map((r) => r.externalId)).toContain('ext-id-3');
@@ -115,7 +106,7 @@ describe('MemoryExternalIngredientsRefRepo', () => {
     it('should return empty array when no external ingredient refs match', async () => {
       const fetched = await repo.getByExternalIdsAndSource(
         ['non-existent-1', 'non-existent-2'],
-        externalIngredientRefTestProps.validExternalIngredientRefProps.source,
+        externalIngredientRef.source,
       );
 
       expect(fetched).toEqual([]);
@@ -123,27 +114,17 @@ describe('MemoryExternalIngredientsRefRepo', () => {
 
     it('should return only matching refs when some externalIds do not exist', async () => {
       const fetched = await repo.getByExternalIdsAndSource(
-        [
-          externalIngredientRefTestProps.validExternalIngredientRefProps
-            .externalId,
-          'non-existent-id',
-        ],
-        externalIngredientRefTestProps.validExternalIngredientRefProps.source,
+        [externalIngredientRef.externalId, 'non-existent-id'],
+        externalIngredientRef.source,
       );
 
       expect(fetched.length).toBe(1);
-      expect(fetched[0].externalId).toBe(
-        externalIngredientRefTestProps.validExternalIngredientRefProps
-          .externalId,
-      );
+      expect(fetched[0].externalId).toBe(externalIngredientRef.externalId);
     });
 
     it('should return empty array when source does not match', async () => {
       const fetched = await repo.getByExternalIdsAndSource(
-        [
-          externalIngredientRefTestProps.validExternalIngredientRefProps
-            .externalId,
-        ],
+        [externalIngredientRef.externalId],
         'DifferentSource',
       );
 
@@ -153,7 +134,7 @@ describe('MemoryExternalIngredientsRefRepo', () => {
     it('should return empty array for empty externalIds array', async () => {
       const fetched = await repo.getByExternalIdsAndSource(
         [],
-        externalIngredientRefTestProps.validExternalIngredientRefProps.source,
+        externalIngredientRef.source,
       );
 
       expect(fetched).toEqual([]);
@@ -162,16 +143,18 @@ describe('MemoryExternalIngredientsRefRepo', () => {
 
   describe('getAllExternalIngredientsRef', () => {
     it('should return all external ingredient refs', async () => {
-      const ref2 = ExternalIngredientRef.create({
-        ...externalIngredientRefTestProps.validExternalIngredientRefProps,
-        externalId: 'ext-id-2',
-        ingredientId: 'ing-id-2',
-      });
-      const ref3 = ExternalIngredientRef.create({
-        ...externalIngredientRefTestProps.validExternalIngredientRefProps,
-        externalId: 'ext-id-3',
-        ingredientId: 'ing-id-3',
-      });
+      const ref2 =
+        externalIngredientRefTestProps.createTestExternalIngredientRef({
+          externalId: 'ext-id-2',
+          ingredientId: 'ing-id-2',
+        });
+
+      const ref3 =
+        externalIngredientRefTestProps.createTestExternalIngredientRef({
+          externalId: 'ext-id-3',
+          ingredientId: 'ing-id-3',
+        });
+
       await repo.save(ref2);
       await repo.save(ref3);
 
@@ -179,8 +162,7 @@ describe('MemoryExternalIngredientsRefRepo', () => {
 
       expect(allRefs.length).toBe(3);
       expect(allRefs.map((r) => r.externalId)).toContain(
-        externalIngredientRefTestProps.validExternalIngredientRefProps
-          .externalId,
+        externalIngredientRef.externalId,
       );
       expect(allRefs.map((r) => r.externalId)).toContain('ext-id-2');
       expect(allRefs.map((r) => r.externalId)).toContain('ext-id-3');
@@ -195,8 +177,7 @@ describe('MemoryExternalIngredientsRefRepo', () => {
     it('should return a copy of the array (not modify original)', async () => {
       const allRefs = await repo.getAllExternalIngredientsRef();
       allRefs.push(
-        ExternalIngredientRef.create({
-          ...externalIngredientRefTestProps.validExternalIngredientRefProps,
+        externalIngredientRefTestProps.createTestExternalIngredientRef({
           externalId: 'should-not-be-saved',
         }),
       );
@@ -208,10 +189,7 @@ describe('MemoryExternalIngredientsRefRepo', () => {
 
   describe('delete', () => {
     it('should delete an external ingredient ref by externalId', async () => {
-      await repo.delete(
-        externalIngredientRefTestProps.validExternalIngredientRefProps
-          .externalId,
-      );
+      await repo.delete(externalIngredientRef.externalId);
 
       const allRefs = repo.getAllForTesting();
       expect(allRefs.length).toBe(0);

@@ -57,9 +57,8 @@ describe('CreateRecipeUsecase', () => {
 
     await usersRepo.saveUser(user);
 
-    testExternalIngredientRef = ExternalIngredientRef.create({
-      ...externalIngredientRefTestProps.validExternalIngredientRefProps,
-    });
+    testExternalIngredientRef =
+      externalIngredientRefTestProps.createTestExternalIngredientRef();
 
     testIngredientLineInfo = {
       externalIngredientId: testExternalIngredientRef.externalId,
@@ -121,21 +120,17 @@ describe('CreateRecipeUsecase', () => {
     });
 
     it('should create recipe if ingredient already exists', async () => {
-      const anotherExternalIngredientRef = ExternalIngredientRef.create({
-        ...externalIngredientRefTestProps.validExternalIngredientRefProps,
-        externalId: 'existing-external-ing-456',
-        ingredientId: 'existing-ingredient-id',
-      });
-
-      await externalIngredientsRefRepo.save(anotherExternalIngredientRef);
+      const anotherExternalIngredientRef =
+        externalIngredientRefTestProps.createTestExternalIngredientRef({
+          externalId: 'existing-external-ing',
+          ingredientId: 'existing-ingredient-id',
+        });
 
       const testIngredient = ingredientTestProps.createTestIngredient({
         id: 'existing-ingredient-id',
-        name: 'Chicken Breast',
-        calories: 165,
-        protein: 31,
       });
 
+      await externalIngredientsRefRepo.save(anotherExternalIngredientRef);
       await ingredientsRepo.saveIngredient(testIngredient);
 
       const ingredientsLineInfo: CreateIngredientLineData = {

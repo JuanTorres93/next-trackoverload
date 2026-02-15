@@ -1,4 +1,3 @@
-import { ExternalIngredientRef } from '@/domain/entities/externalingredientref/ExternalIngredientRef';
 import { Recipe } from '@/domain/entities/recipe/Recipe';
 import { User } from '@/domain/entities/user/User';
 import { mockForThrowingError } from '@/infra/repos/mongo/__tests__/mockForThrowingError';
@@ -57,9 +56,8 @@ describe('AddIngredientToRecipeUsecase', () => {
       ...userTestProps.validUserProps,
     });
 
-    const testExternalIngredientRef = ExternalIngredientRef.create({
-      ...externalIngredientRefTestProps.validExternalIngredientRefProps,
-    });
+    const testExternalIngredientRef =
+      externalIngredientRefTestProps.createTestExternalIngredientRef();
 
     const testIngredient = ingredientTestProps.createTestIngredient();
 
