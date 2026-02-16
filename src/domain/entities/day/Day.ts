@@ -85,20 +85,21 @@ export class Day {
 
   removeFakeMealById(fakeMealId: string): void {
     const validFakeMealId = Id.create(fakeMealId);
-    const initialLength = this.props.fakeMealIds.length;
+
+    const fakeMealExists = this.props.fakeMealIds.find((mealId) =>
+      mealId.equals(validFakeMealId),
+    );
+
+    if (!fakeMealExists) {
+      throw new ValidationError(
+        `Day: No fake meal found with id ${fakeMealId}`,
+      );
+    }
 
     this.props.fakeMealIds = this.props.fakeMealIds.filter(
       (mealId) => !mealId.equals(validFakeMealId),
     );
 
-    if (
-      this.props.fakeMealIds.length === initialLength ||
-      initialLength === 0
-    ) {
-      throw new ValidationError(
-        `Day: No fake meal found with id ${fakeMealId}`,
-      );
-    }
     this.props.updatedAt = DomainDate.create(new Date());
   }
 
