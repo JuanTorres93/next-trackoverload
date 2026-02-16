@@ -68,7 +68,16 @@ async function setup() {
     'nutritional-summary-delete-button',
   );
 
-  return { assembledDayDTO, addFoodButton, meal, fakeMeal, deleteMealButton };
+  const deleteFakeMealButton = screen.getByTestId('remove-fake-meal');
+
+  return {
+    assembledDayDTO,
+    addFoodButton,
+    meal,
+    fakeMeal,
+    deleteMealButton,
+    deleteFakeMealButton,
+  };
 }
 
 describe('DaySummary', () => {
@@ -158,6 +167,20 @@ describe('DaySummary', () => {
     await waitFor(() => {
       const mealsAfter = mealsRepo.countForTesting();
       expect(mealsAfter).toBe(0);
+    });
+  });
+
+  it('should remove fake meal on button click', async () => {
+    const { deleteFakeMealButton } = await setup();
+
+    const fakeMealsBefore = fakeMealsRepo.countForTesting();
+    expect(fakeMealsBefore).toBe(1);
+
+    await userEvent.click(deleteFakeMealButton);
+
+    await waitFor(() => {
+      const fakeMealsAfter = fakeMealsRepo.countForTesting();
+      expect(fakeMealsAfter).toBe(0);
     });
   });
 

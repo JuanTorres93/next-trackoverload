@@ -1,11 +1,11 @@
 'use client';
 import Input from '@/app/_ui/Input';
-import NutritionalInfoValue from '@/app/_ui/NutritionalInfoValue';
 import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import Image from 'next/image';
-import TextSmall from './typography/TextSmall';
+import CaloriesAndProtein from '../_features/common/CaloriesAndProtein';
 import ButtonX from './ButtonX';
+import LoggedMealContainer from '../_features/common/LoggedMealContainer';
 
 const quantityStyle = 'w-full text-right border-none outline-none';
 
@@ -32,9 +32,7 @@ function NutritionSummary({
     : line.ingredientLines.reduce((sum, il) => sum + il.quantityInGrams, 0);
 
   return (
-    <div
-      className={`grid grid-rows-[1fr_auto] h-full max-h-48 overflow-hidden rounded-xl ${className}`}
-    >
+    <LoggedMealContainer className={className}>
       <div className="grid grid-cols-[40px_1fr_5rem_min-content] p-2  gap-4 items-center bg-surface-card">
         <div className="relative h-12 overflow-hidden rounded-md aspect-square">
           <Image
@@ -44,7 +42,9 @@ function NutritionSummary({
             className="object-cover"
           />
         </div>
+
         <span className="font-semibold">{name}</span>
+
         <div className="relative flex items-center text-text-minor-emphasis">
           {onQuantityChange && (
             <Input
@@ -72,19 +72,8 @@ function NutritionSummary({
         )}
       </div>
 
-      <TextSmall className="grid grid-cols-2 p-2 text-center bg-surface-dark ">
-        <NutritionalInfoValue
-          lightText={true}
-          number={line.calories}
-          label="Calorías"
-        />
-        <NutritionalInfoValue
-          lightText={true}
-          number={line.protein}
-          label="Proteínas"
-        />
-      </TextSmall>
-    </div>
+      <CaloriesAndProtein calories={line.calories} protein={line.protein} />
+    </LoggedMealContainer>
   );
 }
 
