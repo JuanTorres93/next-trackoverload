@@ -52,7 +52,7 @@ describe('RemoveFakeMealFromDayUsecase', () => {
 
     day = dayTestProps.createEmptyTestDay();
 
-    day.addMeal(fakeMeal.id);
+    day.addFakeMeal(fakeMeal.id);
 
     await usersRepo.saveUser(user);
     await fakeMealsRepo.saveFakeMeal(fakeMeal);
@@ -65,7 +65,7 @@ describe('RemoveFakeMealFromDayUsecase', () => {
       const allDays = await daysRepo.getAllDays();
       expect(allDays).toHaveLength(1);
 
-      expect(allDays[0].mealIds).toHaveLength(1);
+      expect(allDays[0].fakeMealIds).toHaveLength(1);
     };
   });
 

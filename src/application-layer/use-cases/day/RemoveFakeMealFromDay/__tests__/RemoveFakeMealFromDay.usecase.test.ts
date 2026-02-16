@@ -14,12 +14,13 @@ import * as dto from '@/../tests/dtoProperties';
 import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
 import { MemoryFakeMealsRepo } from '@/infra/repos/memory/MemoryFakeMealsRepo';
 
-describe('RemoveMealFromDayUsecase', () => {
+describe('RemoveFakeMealFromDayUsecase', () => {
   let daysRepo: MemoryDaysRepo;
   let usersRepo: MemoryUsersRepo;
   let fakeMealsRepo: MemoryFakeMealsRepo;
 
   let removeFakeMealFromDayUsecase: RemoveFakeMealFromDayUsecase;
+
   let user: User;
   let fakeMeal: FakeMeal;
   let day: Day;
@@ -41,11 +42,14 @@ describe('RemoveMealFromDayUsecase', () => {
 
     day = dayTestProps.createEmptyTestDay();
 
-    day.addMeal(fakeMeal.id);
+    day.addFakeMeal(fakeMeal.id);
 
     await usersRepo.saveUser(user);
     await fakeMealsRepo.saveFakeMeal(fakeMeal);
     await daysRepo.saveDay(day);
+
+    expect(day.mealIds).toHaveLength(0);
+    expect(day.fakeMealIds).toHaveLength(1);
   });
 
   describe('Removal', () => {
@@ -56,7 +60,7 @@ describe('RemoveMealFromDayUsecase', () => {
         fakeMealId: fakeMeal.id,
       });
 
-      expect(result.mealIds).toHaveLength(0);
+      expect(result.fakeMealIds).toHaveLength(0);
     });
 
     it('should not affect meals', async () => {
@@ -107,8 +111,8 @@ describe('RemoveMealFromDayUsecase', () => {
 
   describe('Side effects', () => {
     it('should remove fakeMeal from repo', async () => {
-      const initialMeals = await fakeMealsRepo.getAllFakeMeals();
-      expect(initialMeals).toHaveLength(1);
+      const initialFakeMeals = await fakeMealsRepo.getAllFakeMeals();
+      expect(initialFakeMeals).toHaveLength(1);
 
       await removeFakeMealFromDayUsecase.execute({
         dayId: day.id,

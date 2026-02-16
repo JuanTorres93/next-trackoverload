@@ -38,7 +38,7 @@ export class RemoveFakeMealFromDayUsecase {
       );
     }
 
-    day.removeMealById(request.fakeMealId);
+    day.removeFakeMealById(request.fakeMealId);
 
     await this.transactionContext.run(async () => {
       await this.fakeMealsRepo.deleteFakeMeal(request.fakeMealId);
