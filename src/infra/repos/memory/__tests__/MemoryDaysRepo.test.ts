@@ -94,4 +94,57 @@ describe('MemoryDaysRepo', () => {
     expect(allDaysAfter.length).toBe(1);
     expect(allDaysAfter[0].userId).toBe('user-2');
   });
+
+  it('should retrieve multiple days by IDs and user ID', async () => {
+    const day2 = dayTestProps.createEmptyTestDay({
+      day: 2,
+      month: 10,
+      year: 2023,
+    });
+
+    const day3 = dayTestProps.createEmptyTestDay({
+      day: 3,
+      month: 10,
+      year: 2023,
+    });
+
+    const day4OtherUser = dayTestProps.createEmptyTestDay({
+      userId: 'user-2',
+      day: 4,
+      month: 10,
+      year: 2023,
+    });
+
+    await repo.saveDay(day2);
+    await repo.saveDay(day3);
+    await repo.saveDay(day4OtherUser);
+
+    const days = await repo.getMultipleDaysByIdsAndUserId(
+      ['20231001', '20231002', '20231004'],
+      userTestProps.userId,
+    );
+
+    expect(days.length).toBe(2);
+    expect(days.map((d) => d.id)).toContain('20231001');
+    expect(days.map((d) => d.id)).toContain('20231002');
+    expect(days.every((d) => d.userId === userTestProps.userId)).toBe(true);
+  });
+
+  it('should return empty array when no days match the IDs and user ID', async () => {
+    const days = await repo.getMultipleDaysByIdsAndUserId(
+      ['20231101', '20231102'],
+      userTestProps.userId,
+    );
+
+    expect(days.length).toBe(0);
+  });
+
+  it('should return empty array when IDs match but user ID does not', async () => {
+    const days = await repo.getMultipleDaysByIdsAndUserId(
+      ['20231001'],
+      'other-user',
+    );
+
+    expect(days.length).toBe(0);
+  });
 });

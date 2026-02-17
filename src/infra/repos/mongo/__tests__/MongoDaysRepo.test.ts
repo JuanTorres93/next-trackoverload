@@ -346,4 +346,73 @@ describe('MongoDaysRepo', () => {
       ).resolves.not.toThrow();
     });
   });
+
+  describe('getMultipleDaysByIdsAndUserId', () => {
+    beforeEach(async () => {
+      // Add more days for testing
+      const day2 = dayTestProps.createEmptyTestDay({
+        day: 2,
+        userId: day.userId,
+      });
+      const day3 = dayTestProps.createEmptyTestDay({
+        day: 3,
+        userId: day.userId,
+      });
+      const day4OtherUser = dayTestProps.createEmptyTestDay({
+        day: 4,
+        userId: 'user-other',
+      });
+
+      await repo.saveDay(day2);
+      await repo.saveDay(day3);
+      await repo.saveDay(day4OtherUser);
+    });
+
+    it('should retrieve multiple days by IDs and user ID', async () => {
+      const days = await repo.getMultipleDaysByIdsAndUserId(
+        ['20231001', '20231002', '20231004'],
+        day.userId,
+      );
+
+      expect(days).toHaveLength(2);
+      const dayIds = days.map((d) => d.id);
+      expect(dayIds).toContain('20231001');
+      expect(dayIds).toContain('20231002');
+      expect(days.every((d) => d.userId === day.userId)).toBe(true);
+    });
+
+    it('should return empty array when no days match the IDs and user ID', async () => {
+      const days = await repo.getMultipleDaysByIdsAndUserId(
+        ['20251201', '20251202'],
+        day.userId,
+      );
+
+      expect(days).toHaveLength(0);
+    });
+
+    it('should return empty array when IDs match but user ID does not', async () => {
+      const days = await repo.getMultipleDaysByIdsAndUserId(
+        ['20231001', '20231002'],
+        'other-user',
+      );
+
+      expect(days).toHaveLength(0);
+    });
+
+    it('should handle single ID', async () => {
+      const days = await repo.getMultipleDaysByIdsAndUserId(
+        ['20231002'],
+        day.userId,
+      );
+
+      expect(days).toHaveLength(1);
+      expect(days[0].id).toBe('20231002');
+    });
+
+    it('should handle empty array of IDs', async () => {
+      const days = await repo.getMultipleDaysByIdsAndUserId([], day.userId);
+
+      expect(days).toHaveLength(0);
+    });
+  });
 });

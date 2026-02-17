@@ -1,7 +1,7 @@
 import { Day } from '@/domain/entities/day/Day';
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
-import DayMongo, { DayMongoProps } from './models/DayMongo';
 import { withTransaction } from './common/withTransaction';
+import DayMongo, { DayMongoProps } from './models/DayMongo';
 
 export class MongoDaysRepo implements DaysRepo {
   async saveDay(day: Day): Promise<void> {
@@ -40,9 +40,7 @@ export class MongoDaysRepo implements DaysRepo {
     // Parse the id (YYYYMMDD format) to get day, month, year
     const { year, month, day } = this.parseId(id);
 
-    const doc = await DayMongo.findOne({ year, month, day }).lean({
-      virtuals: true,
-    });
+    const doc = await DayMongo.findOne({ year, month, day }).lean();
 
     return doc ? this.toDayEntity(doc) : null;
   }
@@ -51,11 +49,30 @@ export class MongoDaysRepo implements DaysRepo {
     // Parse the id (YYYYMMDD format) to get day, month, year
     const { year, month, day } = this.parseId(id);
 
-    const doc = await DayMongo.findOne({ year, month, day, userId }).lean({
-      virtuals: true,
-    });
+    const doc = await DayMongo.findOne({ year, month, day, userId }).lean();
 
     return doc ? this.toDayEntity(doc) : null;
+  }
+
+  async getMultipleDaysByIdsAndUserId(
+    ids: string[],
+    userId: string,
+  ): Promise<Day[]> {
+    if (ids.length === 0) {
+      return [];
+    }
+
+    // Parse all ids and create query conditions
+    const conditions = ids.map((id) => {
+      const { year, month, day } = this.parseId(id);
+      return { year, month, day, userId };
+    });
+
+    const dayDocs = await DayMongo.find({
+      $or: conditions,
+    }).lean();
+
+    return dayDocs.map((doc) => this.toDayEntity(doc));
   }
 
   async getDaysByDateRange(

@@ -32,9 +32,18 @@ export class MemoryDaysRepo implements DaysRepo {
     return day || null;
   }
 
+  async getMultipleDaysByIdsAndUserId(
+    ids: string[],
+    userId: string,
+  ): Promise<Day[]> {
+    return this.days.filter(
+      (day) => ids.includes(day.id) && day.userId === userId,
+    );
+  }
+
   async getDaysByDateRange(
     startDayId: string,
-    endDayId: string
+    endDayId: string,
   ): Promise<Day[]> {
     return this.days.filter((day) => {
       const dayTime = day.id;
@@ -45,7 +54,7 @@ export class MemoryDaysRepo implements DaysRepo {
   async getDaysByDateRangeAndUserId(
     startDayId: string,
     endDayId: string,
-    userId: string
+    userId: string,
   ): Promise<Day[]> {
     return this.days.filter((day) => {
       const dayTime = day.id;
@@ -57,7 +66,7 @@ export class MemoryDaysRepo implements DaysRepo {
 
   async deleteDayForUser(id: string, userId: string): Promise<void> {
     const index = this.days.findIndex(
-      (d) => d.id === id && d.userId === userId
+      (d) => d.id === id && d.userId === userId,
     );
 
     if (index !== -1) {
