@@ -45,7 +45,7 @@ const daySchema = new mongoose.Schema<DayMongoProps>({
 
 // Indexes for efficient queries
 daySchema.index({ userId: 1 });
-daySchema.index({ userId: 1, year: 1, month: 1, day: 1 });
+daySchema.index({ userId: 1, year: 1, month: 1, day: 1 }, { unique: true });
 
 const DayMongo =
   mongoose.models.Day || mongoose.model<DayMongoProps>('Day', daySchema);
