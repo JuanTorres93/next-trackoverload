@@ -51,7 +51,7 @@ export async function removeMealFromDay(
 ): Promise<void> {
   await AppRemoveMealFromDayUsecase.execute({
     dayId: dayId,
-    userId: 'dev-user', // TODO: Replace with auth userId
+    userId: 'dev-user', // TODO IMPORTANT: Replace with auth userId
     mealId,
   });
 

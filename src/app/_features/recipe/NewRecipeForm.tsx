@@ -1,11 +1,11 @@
 'use client';
 
+import { useFormSetup } from '@/app/_hooks/useFormSetup';
 import ButtonNew from '@/app/_ui/ButtonNew';
 import FormRow from '@/app/_ui/form/FormRow';
 import ImagePicker from '@/app/_ui/ImagePicker';
 import NutritionalInfoValue from '@/app/_ui/NutritionalInfoValue';
 import { formatToInteger } from '@/app/_utils/format/formatToInteger';
-import { useFormSetup } from '@/app/_hooks/useFormSetup';
 import { CreateIngredientLineData } from '@/application-layer/use-cases/recipe/common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
@@ -16,6 +16,7 @@ import IngredientSearch, {
 } from './IngredientSearch';
 
 import { AppClientImageProcessor } from '@/interface-adapters/app/services/AppClientImageProcessor';
+import BarcodeScanner from '../ingredient/BarcodeScanner';
 
 export type NewRecipeFormState = {
   name: string;
@@ -131,8 +132,27 @@ function NewRecipeForm() {
     }
   };
 
+  const onNewScanResult = (decodedText, decodedResult) => {
+    // TODO DELETE THESE DEBUG LOGS
+    console.log('decodedText');
+    console.log(decodedText);
+
+    // TODO DELETE THESE DEBUG LOGS
+    console.log('decodedResult');
+    console.log(decodedResult);
+  };
+
   return (
     <IngredientSearch>
+      <div className="m-6">
+        <BarcodeScanner
+          fps={10}
+          qrbox={250}
+          disableFlip={false}
+          qrCodeSuccessCallback={onNewScanResult}
+        />
+      </div>
+
       <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">
         <FormRow className="grid items-start justify-center grid-cols-2 gap-8">
           <div
