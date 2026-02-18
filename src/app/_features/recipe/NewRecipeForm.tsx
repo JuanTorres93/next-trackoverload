@@ -132,7 +132,7 @@ function NewRecipeForm() {
     }
   };
 
-  const onNewScanResult = (decodedText, decodedResult) => {
+  const onNewScanResult = (decodedText: string, decodedResult: unknown) => {
     // TODO DELETE THESE DEBUG LOGS
     console.log('decodedText');
     console.log(decodedText);
