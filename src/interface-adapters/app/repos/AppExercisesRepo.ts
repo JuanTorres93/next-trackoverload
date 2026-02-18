@@ -7,12 +7,13 @@ let AppExercisesRepo: MemoryExercisesRepo | MongoExercisesRepo;
 
 if (process.env.NODE_ENV === 'test') {
   AppExercisesRepo = new MemoryExercisesRepo();
-} else if (process.env.NODE_ENV === 'development') {
+} else if (
+  process.env.NODE_ENV === 'development' ||
+  process.env.NODE_ENV === 'production'
+) {
   await mongooseInitPromise;
   AppExercisesRepo = new MongoExercisesRepo();
-}
-// TODO implement production
-else {
+} else {
   throw new AdapterError(
     "AppExercisesRepo: NODE_ENV must be one of 'production', 'development', or 'test'",
   );

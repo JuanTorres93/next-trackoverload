@@ -7,6 +7,7 @@ export const mongooseInitPromise = (async () => {
     await getMongooseDevelopmentInstance();
   }
   if (process.env.NODE_ENV === 'production') {
-    // TODO: Implement production connection
+    // TODO IMPORTANT: Implement production connection
+    await getMongooseDevelopmentInstance();
   }
 })();

@@ -7,12 +7,13 @@ let AppFakeMealsRepo: MemoryFakeMealsRepo | MongoFakeMealsRepo;
 
 if (process.env.NODE_ENV === 'test') {
   AppFakeMealsRepo = new MemoryFakeMealsRepo();
-} else if (process.env.NODE_ENV === 'development') {
+} else if (
+  process.env.NODE_ENV === 'development' ||
+  process.env.NODE_ENV === 'production'
+) {
   await mongooseInitPromise;
   AppFakeMealsRepo = new MongoFakeMealsRepo();
-}
-// TODO implement production
-else {
+} else {
   throw new AdapterError(
     "AppFakeMealsRepo: NODE_ENV must be one of 'production', 'development', or 'test'",
   );

@@ -7,12 +7,13 @@ let AppIngredientsRepo: MemoryIngredientsRepo | MongoIngredientsRepo;
 
 if (process.env.NODE_ENV === 'test') {
   AppIngredientsRepo = new MemoryIngredientsRepo();
-} else if (process.env.NODE_ENV === 'development') {
+} else if (
+  process.env.NODE_ENV === 'development' ||
+  process.env.NODE_ENV === 'production'
+) {
   await mongooseInitPromise;
   AppIngredientsRepo = new MongoIngredientsRepo();
-}
-// TODO implement production
-else {
+} else {
   throw new AdapterError(
     "AppIngredientsRepo: NODE_ENV must be one of 'production', 'development', or 'test'",
   );

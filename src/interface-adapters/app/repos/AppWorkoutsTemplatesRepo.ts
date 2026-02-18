@@ -9,12 +9,13 @@ let AppWorkoutsTemplatesRepo:
 
 if (process.env.NODE_ENV === 'test') {
   AppWorkoutsTemplatesRepo = new MemoryWorkoutTemplatesRepo();
-} else if (process.env.NODE_ENV === 'development') {
+} else if (
+  process.env.NODE_ENV === 'development' ||
+  process.env.NODE_ENV === 'production'
+) {
   await mongooseInitPromise;
   AppWorkoutsTemplatesRepo = new MongoWorkoutTemplatesRepo();
-}
-// TODO implement production
-else {
+} else {
   throw new AdapterError(
     "AppWorkoutsTemplatesRepo: NODE_ENV must be one of 'production', 'development', or 'test'",
   );

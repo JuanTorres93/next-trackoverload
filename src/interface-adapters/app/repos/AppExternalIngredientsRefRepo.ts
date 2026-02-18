@@ -9,12 +9,13 @@ let AppExternalIngredientsRefRepo:
 
 if (process.env.NODE_ENV === 'test') {
   AppExternalIngredientsRefRepo = new MemoryExternalIngredientsRefRepo();
-} else if (process.env.NODE_ENV === 'development') {
+} else if (
+  process.env.NODE_ENV === 'development' ||
+  process.env.NODE_ENV === 'production'
+) {
   await mongooseInitPromise;
   AppExternalIngredientsRefRepo = new MongoExternalIngredientsRefRepo();
-}
-// TODO implement production
-else {
+} else {
   throw new AdapterError(
     "AppExternalIngredientsRefRepo: NODE_ENV must be one of 'production', 'development', or 'test'",
   );
