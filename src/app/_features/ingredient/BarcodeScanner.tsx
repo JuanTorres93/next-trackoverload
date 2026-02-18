@@ -3,17 +3,27 @@ import { Html5QrcodeScanner } from 'html5-qrcode';
 import { useEffect } from 'react';
 
 const qrcodeRegionId = 'html5qr-code-full-region';
+type ScannerConfig = ConstructorParameters<typeof Html5QrcodeScanner>[1];
+
+type BarcodeScannerProps = {
+  fps?: number;
+  qrbox?: number;
+  aspectRatio?: number;
+  disableFlip?: boolean;
+  verbose?: boolean;
+  qrCodeSuccessCallback: (decodedText: string, decodedResult: unknown) => void;
+  qrCodeErrorCallback?: (errorMessage: string, error: unknown) => void;
+};
 
 // Creates the configuration object for Html5QrcodeScanner.
-const createConfig = (props) => {
-  const config = {};
-  if (props.fps) {
-    config.fps = props.fps;
-  }
-  if (props.qrbox) {
+const createConfig = (props: BarcodeScannerProps) => {
+  const config: ScannerConfig = {
+    fps: props.fps ?? 10,
+  };
+  if (props.qrbox !== undefined) {
     config.qrbox = props.qrbox;
   }
-  if (props.aspectRatio) {
+  if (props.aspectRatio !== undefined) {
     config.aspectRatio = props.aspectRatio;
   }
   if (props.disableFlip !== undefined) {
@@ -22,15 +32,11 @@ const createConfig = (props) => {
   return config;
 };
 
-function BarcodeScanner(props) {
+function BarcodeScanner(props: BarcodeScannerProps) {
   useEffect(() => {
     // when component mounts
     const config = createConfig(props);
     const verbose = props.verbose === true;
-    // Suceess callback is required.
-    if (!props.qrCodeSuccessCallback) {
-      throw 'qrCodeSuccessCallback is required callback.';
-    }
     const html5QrcodeScanner = new Html5QrcodeScanner(
       qrcodeRegionId,
       config,
@@ -47,7 +53,7 @@ function BarcodeScanner(props) {
         console.error('Failed to clear BarcodeScanner. ', error);
       });
     };
-  }, []);
+  }, [props]);
 
   return <div id={qrcodeRegionId} />;
 }
