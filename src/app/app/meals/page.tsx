@@ -6,6 +6,8 @@ import DaySummary from '@/app/_features/day/DaySummary';
 import PageWrapper from '../../_ui/PageWrapper';
 import { getAssembledDaysByIds } from '@/app/_features/day/actions';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'Comidas',
   description: 'Planificación de comidas',

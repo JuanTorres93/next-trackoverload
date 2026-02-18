@@ -4,6 +4,8 @@ import ButtonNew from '@/app/_ui/ButtonNew';
 import PageWrapper from '@/app/_ui/PageWrapper';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'Recetas',
   description: 'Todas tus recetas',
