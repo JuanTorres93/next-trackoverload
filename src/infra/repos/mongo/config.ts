@@ -54,6 +54,16 @@ export async function getMongooseDevelopmentInstance() {
   await startMongooseConnection(MONGODB_URI_DEV);
 }
 
+export async function getMongooseProductionInstance() {
+  if (process.env.NODE_ENV !== 'production')
+    throw new InfrastructureError(
+      'getMongooseProductionInstance: Not in production environment',
+    );
+
+  // TODO IMPORTANT!!!: Implement actual production connection
+  await startMongooseConnection(MONGODB_URI_DEV);
+}
+
 export async function initMongoModels() {
   const models = [
     mongoose.model('Day'),
