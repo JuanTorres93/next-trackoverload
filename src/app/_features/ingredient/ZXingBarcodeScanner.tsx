@@ -5,14 +5,16 @@ import {
   NotFoundException,
 } from '@zxing/library';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import type { RefObject } from 'react';
+import ScanButton from './ScanButton';
+import Modal from '@/app/_ui/Modal';
 
 function ZXingBarcodeScanner() {
   const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
+  const videoHtmlElementRef = useRef<HTMLVideoElement | null>(null);
 
   const [scannerResult, setScannerResult] = useState<string | null>(null);
   const [scannerError, setScannerError] = useState<string | null>(null);
-
-  const videoSourceRef = useRef<HTMLDivElement>(null);
 
   const hints = new Map();
   const formats = [
@@ -40,37 +42,81 @@ function ZXingBarcodeScanner() {
     setupScanner();
   }, [reader]);
 
-  function startScanner() {
-    reader.decodeFromVideoDevice(selectedDeviceId, 'video', (result, err) => {
-      if (result) {
-        console.log(result.getText());
-        setScannerResult(result.getText());
-      }
-      if (err && !(err instanceof NotFoundException)) {
-        console.error(err);
-        setScannerError(err.message);
-      }
-    });
+  return (
+    <Modal>
+      <div>
+        {scannerResult && <div>Result: {scannerResult}</div>}
+        {/* TODO make message user-friendly */}
+        {scannerError && <div>Error: {scannerError}</div>}
 
-    console.log('Scanner started with device ID:', selectedDeviceId);
-  }
+        <Modal.Open opens="scanner">
+          <ScanButton />
+        </Modal.Open>
+      </div>
+
+      <Modal.Window name="scanner">
+        <ScannerModal
+          ref={videoHtmlElementRef}
+          reader={reader}
+          selectedDeviceId={selectedDeviceId}
+          onScanResult={setScannerResult}
+          onScanError={setScannerError}
+          scannerResult={scannerResult}
+        />
+      </Modal.Window>
+    </Modal>
+  );
+}
+
+type ScannerModalProps = {
+  ref: RefObject<HTMLVideoElement | null>;
+  reader: BrowserMultiFormatReader;
+  selectedDeviceId: string | null;
+  onScanResult: (result: string) => void;
+  onScanError: (error: string) => void;
+  scannerResult: string | null;
+  onCloseModal?: () => void;
+};
+
+function ScannerModal({
+  ref,
+  reader,
+  selectedDeviceId,
+  onScanResult,
+  onScanError,
+  scannerResult,
+  onCloseModal,
+}: ScannerModalProps) {
+  // Start the scanner when the component mounts and stop it when it unmounts
+  useEffect(() => {
+    reader.decodeFromVideoDevice(
+      selectedDeviceId,
+      ref.current,
+      (result, err) => {
+        if (result) {
+          onScanResult(result.getText());
+        }
+        if (err && !(err instanceof NotFoundException)) {
+          onScanError(err.message);
+        }
+      },
+    );
+
+    return () => reader.reset();
+  }, [reader, selectedDeviceId, ref, onScanResult, onScanError]);
+
+  // Close the modal when a scan result is obtained
+  useEffect(() => {
+    if (scannerResult) {
+      onCloseModal?.();
+    }
+  }, [scannerResult, onCloseModal]);
 
   return (
-    <div>
-      <div ref={videoSourceRef}>Change video source</div>
-      Scanner
-      {scannerResult && <div>Result: {scannerResult}</div>}
-      {scannerError && <div>Error: {scannerError}</div>}
-      <button onClick={startScanner}>Start</button>
-      <div>
-        <video
-          id="video"
-          width="300"
-          height="200"
-          style={{ border: '1px solid gray' }}
-        ></video>
-      </div>
-    </div>
+    <video
+      ref={ref}
+      className="w-[300px] h-[200px] border border-border rounded-lg"
+    ></video>
   );
 }
 
