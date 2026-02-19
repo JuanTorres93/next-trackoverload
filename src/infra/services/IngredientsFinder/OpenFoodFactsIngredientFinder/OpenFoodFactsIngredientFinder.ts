@@ -9,6 +9,7 @@ import { MemoryTokenBucketRateLimiter } from '../../RateLimiter/MemoryTokenBucke
 type OpenFoodFactProduct = {
   _id: string;
   product_name: string;
+  product_name_en?: string;
   nutriments: {
     'energy-kcal_100g': number;
     proteins_100g: number;
@@ -54,29 +55,36 @@ if (process.env.NODE_ENV === 'production')
 
 if (!authHeader) {
   throw new InfrastructureError(
-    'OpenFoodFactsIngredientFinder: Missing Authorization header configuration. Is NODE_ENV set correctly?'
+    'OpenFoodFactsIngredientFinder: Missing Authorization header configuration. Is NODE_ENV set correctly?',
   );
 }
 
 export class OpenFoodFactsIngredientFinder implements IngredientFinder {
+  // TODO IMPORTANT Set rate limiter on client side
   private searchRateLimiter: RateLimiter;
+  private barcodeRateLimiter: RateLimiter;
 
   constructor() {
     this.searchRateLimiter = new MemoryTokenBucketRateLimiter(
       READ_RATE_LIMITS.searchQueries.requests,
-      READ_RATE_LIMITS.searchQueries.perMinutes
+      READ_RATE_LIMITS.searchQueries.perMinutes,
+    );
+
+    this.barcodeRateLimiter = new MemoryTokenBucketRateLimiter(
+      READ_RATE_LIMITS.productQueries.requests,
+      READ_RATE_LIMITS.productQueries.perMinutes,
     );
   }
 
   async findIngredientsByFuzzyName(name: string) {
     if (await this.searchRateLimiter.isRateLimited()) {
       throw new InfrastructureError(
-        'OpenFoodFactsIngredientFinder: Rate limit exceeded for search queries'
+        'OpenFoodFactsIngredientFinder: Rate limit exceeded for search queries',
       );
     }
 
     const url = `${BASE_URL}/cgi/search.pl?search_terms=${encodeURIComponent(
-      name
+      name,
     )}&search_simple=1&action=process&json=1`;
 
     const response = await fetch(url, {
@@ -88,34 +96,67 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
 
     if (!response.ok) {
       throw new InfrastructureError(
-        `OpenFoodFactsIngredientFinder: Failed to fetch ingredients by name "${name}". Status: ${response.status}`
+        `OpenFoodFactsIngredientFinder: Failed to fetch ingredients by name "${name}". Status: ${response.status}`,
       );
     }
 
     const json = await response.json();
 
-    const filteredProducts = json.products
-      // Has nutriments
-      .filter(
-        (product: OpenFoodFactProduct) =>
-          product.nutriments && Object.keys(product.nutriments).length > 0
-      )
+    return this.mapOpenFoodFactProductToIngredientResult(json.products || []);
+  }
+
+  async findIngredientsByBarcode(barcode: string) {
+    if (await this.barcodeRateLimiter.isRateLimited()) {
+      throw new InfrastructureError(
+        'OpenFoodFactsIngredientFinder: Rate limit exceeded for barcode queries',
+      );
+    }
+
+    const url = `${BASE_URL}/api/v2/product/${encodeURIComponent(barcode)}`;
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: { ...authHeader! },
+    });
+
+    this.barcodeRateLimiter.recordRequest();
+
+    if (!response.ok) {
+      throw new InfrastructureError(
+        `OpenFoodFactsIngredientFinder: Failed to fetch ingredients by barcode "${barcode}". Status: ${response.status}`,
+      );
+    }
+
+    const json = await response.json();
+
+    return this.mapOpenFoodFactProductToIngredientResult([json.product]);
+  }
+
+  private mapOpenFoodFactProductToIngredientResult(
+    products: OpenFoodFactProduct[],
+  ): IngredientFinderResult[] {
+    const filteredProducts = products
       // Has name
       .filter(
         (product: OpenFoodFactProduct) =>
-          product.product_name && product.product_name.trim().length > 0
+          (product.product_name && product.product_name.trim().length > 0) ||
+          (product.product_name_en &&
+            product.product_name_en.trim().length > 0),
       );
 
     const ingredients: IngredientFinderResult[] = filteredProducts.map(
       (product: OpenFoodFactProduct) => {
-        // DOC: Go to this data page for a sample product and see all available fields: https://world.openfoodfacts.org/cgi/search.pl?search_terms=banania&search_simple=1&action=process&json=1
-
         const ingredient = {
-          name: product.product_name,
+          name:
+            product.product_name ||
+            product.product_name_en ||
+            'Ingrediente desconocido',
+
           nutritionalInfoPer100g: {
-            calories: product.nutriments['energy-kcal_100g'] || 0,
-            protein: product.nutriments['proteins_100g'] || 0,
+            calories: product?.nutriments?.['energy-kcal_100g'] || 0,
+            protein: product?.nutriments?.['proteins_100g'] || 0,
           },
+
           imageUrl: product.image_thumb_url || product.image_front_url,
         };
 
@@ -128,14 +169,9 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
           ingredient,
           externalRef,
         };
-      }
+      },
     );
 
     return ingredients || [];
-  }
-
-  async findIngredientsByBarcode() {
-    // TODO IMPLEMTENT
-    return [];
   }
 }
