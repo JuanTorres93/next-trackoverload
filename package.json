@@ -17,6 +17,7 @@
   "dependencies": {
     "@testing-library/user-event": "^14.6.1",
     "@vitejs/plugin-react": "^5.1.1",
+    "@zxing/library": "^0.21.3",
     "bcrypt": "^6.0.0",
     "browser-image-compression": "^2.0.2",
     "cloudinary": "^2.9.0",

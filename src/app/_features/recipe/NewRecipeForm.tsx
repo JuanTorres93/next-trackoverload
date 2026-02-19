@@ -16,7 +16,7 @@ import IngredientSearch, {
 } from './IngredientSearch';
 
 import { AppClientImageProcessor } from '@/interface-adapters/app/services/AppClientImageProcessor';
-import BarcodeScanner from '../ingredient/BarcodeScanner';
+import ZXingBarcodeScanner from '../ingredient/ZXingBarcodeScanner';
 
 export type NewRecipeFormState = {
   name: string;
@@ -132,46 +132,10 @@ function NewRecipeForm() {
     }
   };
 
-  const [scanDebugInfo, setScanDebugInfo] = useState<{
-    decodedText: string;
-    decodedResult: unknown;
-    timestamp: string;
-  } | null>(null);
-
-  const onNewScanResult = (decodedText: string, decodedResult: unknown) => {
-    setScanDebugInfo({
-      decodedText,
-      decodedResult,
-      timestamp: new Date().toISOString(),
-    });
-  };
-
   return (
     <IngredientSearch>
       <div className="m-6">
-        <BarcodeScanner
-          fps={10}
-          qrbox={250}
-          disableFlip={false}
-          qrCodeSuccessCallback={onNewScanResult}
-        />
-        {scanDebugInfo && (
-          <div className="mt-4 p-4 rounded-lg bg-yellow-100 border border-yellow-400 text-black text-sm break-all">
-            <p className="font-bold mb-1">
-              🔍 Scan result ({scanDebugInfo.timestamp}):
-            </p>
-            <p>
-              <span className="font-semibold">decodedText:</span>{' '}
-              {scanDebugInfo.decodedText}
-            </p>
-            <p className="mt-1">
-              <span className="font-semibold">decodedResult:</span>
-            </p>
-            <pre className="mt-1 text-xs overflow-auto bg-yellow-50 p-2 rounded">
-              {JSON.stringify(scanDebugInfo.decodedResult, null, 2)}
-            </pre>
-          </div>
-        )}
+        <ZXingBarcodeScanner />
       </div>
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">
