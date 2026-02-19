@@ -11,8 +11,7 @@ const nextConfig: NextConfig = {
             { protocol: 'http', hostname: '**' },
           ]
         : // Restrict to specific host in production
-          // TODO: change when production storage is set up
-          [{ protocol: 'https', hostname: 'mi-dominio.com' }],
+          [{ protocol: 'https', hostname: 'res.cloudinary.com' }],
   },
 };
 
