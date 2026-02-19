@@ -1,5 +1,7 @@
 import '@testing-library/jest-dom';
-import { expect, afterEach } from 'vitest';
+import { expect, afterEach, vi } from 'vitest';
+
+vi.mock('@zxing/library', () => import('./mocks/zxing'));
 import { cleanup } from '@testing-library/react';
 import * as matchers from '@testing-library/jest-dom/matchers';
 // These next 2 imports are for removing default behaviors of react-testing-library of showing HTML in failed tests
