@@ -61,7 +61,6 @@ function ZXingBarcodeScanner() {
           selectedDeviceId={selectedDeviceId}
           onScanResult={setScannerResult}
           onScanError={setScannerError}
-          scannerResult={scannerResult}
         />
       </Modal.Window>
     </Modal>
@@ -74,7 +73,6 @@ type ScannerModalProps = {
   selectedDeviceId: string | null;
   onScanResult: (result: string | null) => void;
   onScanError: (error: string) => void;
-  scannerResult: string | null;
   onCloseModal?: () => void;
 };
 
@@ -84,7 +82,6 @@ function ScannerModal({
   selectedDeviceId,
   onScanResult,
   onScanError,
-  scannerResult,
   onCloseModal,
 }: ScannerModalProps) {
   // Start the scanner when the component mounts and stop it when it unmounts
@@ -97,6 +94,7 @@ function ScannerModal({
       (result, err) => {
         if (result) {
           onScanResult(result.getText());
+          onCloseModal?.();
         }
         if (err && !(err instanceof NotFoundException)) {
           onScanError(err.message);
@@ -105,14 +103,7 @@ function ScannerModal({
     );
 
     return () => reader.reset();
-  }, [reader, selectedDeviceId, ref, onScanResult, onScanError]);
-
-  // Close the modal when a scan result is obtained
-  useEffect(() => {
-    if (scannerResult) {
-      onCloseModal?.();
-    }
-  }, [scannerResult, onCloseModal]);
+  }, [reader, selectedDeviceId, ref, onScanResult, onScanError, onCloseModal]);
 
   return (
     <video
