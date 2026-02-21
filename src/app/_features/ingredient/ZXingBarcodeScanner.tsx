@@ -72,7 +72,7 @@ type ScannerModalProps = {
   ref: RefObject<HTMLVideoElement | null>;
   reader: BrowserMultiFormatReader;
   selectedDeviceId: string | null;
-  onScanResult: (result: string) => void;
+  onScanResult: (result: string | null) => void;
   onScanError: (error: string) => void;
   scannerResult: string | null;
   onCloseModal?: () => void;
@@ -89,6 +89,8 @@ function ScannerModal({
 }: ScannerModalProps) {
   // Start the scanner when the component mounts and stop it when it unmounts
   useEffect(() => {
+    onScanResult(null);
+
     reader.decodeFromVideoDevice(
       selectedDeviceId,
       ref.current,
