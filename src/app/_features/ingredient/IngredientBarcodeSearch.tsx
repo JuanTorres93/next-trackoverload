@@ -2,20 +2,17 @@ import { IngredientFinderResult } from '@/domain/services/IngredientFinder.port'
 import BarcodeScanner from './ZXingBarcodeScanner';
 import { useState } from 'react';
 
-function IngredientBarcodeSearch() {
+function IngredientBarcodeSearch({
+  onIngredientFound,
+}: {
+  onIngredientFound?: (ingredient: IngredientFinderResult) => void;
+}) {
   const [foundIngredientsResults, setFoundIngredientsResults] = useState<
     IngredientFinderResult[]
   >([]);
   const [isLoading, setIsLoading] = useState(false);
 
   async function onScanResult(result: string | null) {
-    // TODO DELETE THESE DEBUG LOGS
-    console.log('CALLBACK');
-
-    // TODO DELETE THESE DEBUG LOGS
-    console.log('result');
-    console.log(result);
-
     if (result) {
       // TODO handle scanned barcode result, e.g. by searching for the ingredient and allowing the user to add it to the recipe
       setIsLoading(true);
@@ -31,10 +28,7 @@ function IngredientBarcodeSearch() {
         const data: IngredientFinderResult[] =
           await fetchedIngredientsResult.json();
 
-        // TODO DELETE THESE DEBUG LOGS
-        console.log('data');
-        console.log(data);
-
+        onIngredientFound?.(data[0]);
         setFoundIngredientsResults(data);
       } catch {
         setFoundIngredientsResults([]);

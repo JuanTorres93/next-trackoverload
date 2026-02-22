@@ -362,18 +362,10 @@ export function handleIngredientSelection(
   >,
 ) {
   if (isSelected) {
-    const {
-      ingredientLine: newIngredientLine,
-      ingredientExternalRef,
-    }: {
-      ingredientLine: IngredientLineDTO;
-      ingredientExternalRef: IngredientFinderResult['externalRef'];
-    } = createInMemoryRecipeIngredientLine(ingredientFinderResult);
-
-    const ingredientLineInfo: IngredientLineWithExternalRef = {
-      ingredientLine: newIngredientLine,
-      ingredientExternalRef: ingredientExternalRef,
-    };
+    const ingredientLineInfo =
+      ingredientFinderResultToIngredientLineWithExternalRef(
+        ingredientFinderResult,
+      );
 
     setIngredientLinesInfo((prev) => [...prev, ingredientLineInfo]);
   } else {
@@ -386,4 +378,21 @@ export function handleIngredientSelection(
       ),
     );
   }
+}
+
+export function ingredientFinderResultToIngredientLineWithExternalRef(
+  ingredientFinderResult: IngredientFinderResult,
+): IngredientLineWithExternalRef {
+  const {
+    ingredientLine: newIngredientLine,
+    ingredientExternalRef,
+  }: {
+    ingredientLine: IngredientLineDTO;
+    ingredientExternalRef: IngredientFinderResult['externalRef'];
+  } = createInMemoryRecipeIngredientLine(ingredientFinderResult);
+
+  return {
+    ingredientLine: newIngredientLine,
+    ingredientExternalRef: ingredientExternalRef,
+  };
 }

@@ -17,6 +17,9 @@ import { createRecipe } from './actions';
 
 import { AppClientImageProcessor } from '@/interface-adapters/app/services/AppClientImageProcessor';
 import IngredientBarcodeSearch from '../ingredient/IngredientBarcodeSearch';
+import { IngredientFinderResult } from '@/domain/services/IngredientFinder.port';
+import { ingredientFinderResultToIngredientLineWithExternalRef } from '../ingredient/IngredientSearch';
+import IngredientItemMini from '../ingredient/IngredientItemMini';
 
 export type NewRecipeFormState = {
   name: string;
@@ -39,6 +42,9 @@ function NewRecipeForm() {
     resetForm,
     setIsLoading,
   } = useFormSetup<NewRecipeFormState>(INITIAL_FORM_STATE);
+
+  const [foundCodebarIngredient, setFoundCodebarIngredient] =
+    useState<IngredientLineWithExternalRef | null>(null);
 
   // Separate state needed due to implementation of IngredientSearch component
   const [
@@ -132,10 +138,26 @@ function NewRecipeForm() {
     }
   };
 
+  function onBarcodeIngredientFound(
+    ingredientFinderResult: IngredientFinderResult,
+  ) {
+    const ingredientLineWithExternalRef =
+      ingredientFinderResultToIngredientLineWithExternalRef(
+        ingredientFinderResult,
+      );
+    setFoundCodebarIngredient(ingredientLineWithExternalRef);
+  }
+
   return (
     <IngredientSearch>
       <div className="m-6">
-        <IngredientBarcodeSearch />
+        <IngredientBarcodeSearch onIngredientFound={onBarcodeIngredientFound} />
+
+        {foundCodebarIngredient && (
+          <IngredientItemMini
+            ingredient={foundCodebarIngredient.ingredientLine.ingredient}
+          />
+        )}
       </div>
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">

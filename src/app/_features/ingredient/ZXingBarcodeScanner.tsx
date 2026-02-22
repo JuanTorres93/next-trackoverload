@@ -61,8 +61,7 @@ function BarcodeScanner({
 }
 
 function ZXingBarcodeScanner() {
-  const { setSelectedDeviceId, scannerResult, scannerError } =
-    useBarcodeScannerContext();
+  const { setSelectedDeviceId } = useBarcodeScannerContext();
 
   const hints = new Map();
   const formats = [
@@ -92,10 +91,6 @@ function ZXingBarcodeScanner() {
   return (
     <Modal>
       <div>
-        {scannerResult && <div>Result: {scannerResult}</div>}
-        {/* TODO make message user-friendly */}
-        {scannerError && <div>Error: {scannerError}</div>}
-
         <Modal.Open opens="scanner">
           <ScanButton />
         </Modal.Open>
