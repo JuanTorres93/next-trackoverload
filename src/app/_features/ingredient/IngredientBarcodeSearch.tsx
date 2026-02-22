@@ -24,9 +24,7 @@ function IngredientBarcodeSearch() {
       console.log('Scanned barcode:', result);
 
       const fetchedIngredientsResult: Response = await fetch(
-        // `/api/ingredient/barcode/${result}`,
-        // TODO IMPORTANT: REPLACE WITH ACTUAL CODE
-        `/api/ingredient/barcode/5056329509972`,
+        `/api/ingredient/barcode/${result}`,
       );
 
       try {
