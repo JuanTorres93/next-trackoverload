@@ -6,7 +6,7 @@ import { formatToInteger } from '@/app/_utils/format/formatToInteger';
 import { useOutsideClick } from '@/app/_hooks/useOutsideClick';
 import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
 import { IngredientFinderResult } from '@/domain/services/IngredientFinder.port';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import IngredientItemMini from './IngredientItemMini';
 import IngredientLineItem from './IngredientLineItem';
 import { createInMemoryRecipeIngredientLine } from '../recipe/utils';
@@ -27,12 +27,25 @@ type IngredientSearchContextType = {
   isLoading: boolean;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   toggleIngredientSelection: (externalIngredientId: string) => void;
+  ingredientLinesWithExternalRefs: IngredientLineWithExternalRef[];
+  handleIngredientLineQuantityChange: (
+    ingredientLineId: string,
+  ) => (newQuantity: number) => void;
+  handleIngredientLineRemove: (ingredientLineId: string) => void;
 };
 
 const IngredientSearchContext =
   createContext<IngredientSearchContextType | null>(null);
 
-function IngredientSearch({ children }: { children: React.ReactNode }) {
+function IngredientSearch({
+  children,
+  onIngredientSelection,
+}: {
+  children: React.ReactNode;
+  onIngredientSelection?: (
+    ingredientLinesWithExternalRefs: IngredientLineWithExternalRef[],
+  ) => void;
+}) {
   const [showFoundIngredients, setShowList] = useState(false);
   const [ingredientSearchTerm, setIngredientSearchTerm] = useState('');
   const [foundIngredientsResults, setFoundIngredientsResults] = useState<
@@ -41,9 +54,37 @@ function IngredientSearch({ children }: { children: React.ReactNode }) {
   const [selectedExternalIngredientIds, setSelectedExternalIngredientIds] =
     useState<string[]>([]);
 
+  const [ingredientLinesWithExternalRefs, setIngredientLinesWithExternalRefs] =
+    useState<IngredientLineWithExternalRef[]>([]);
+
   const [isLoading, setIsLoading] = useState(false);
 
+  // Keep a stable ref to the callback so effects never depend on its identity
+  const onIngredientSelectionRef = useRef(onIngredientSelection);
+  onIngredientSelectionRef.current = onIngredientSelection;
+
   const outsideClickRef = useOutsideClick<HTMLDivElement>(handleHideList);
+
+  useEffect(() => {
+    setIngredientLinesWithExternalRefs((prev) => {
+      const existingLines = new Map(
+        prev.map((item) => [item.ingredientExternalRef.externalId, item]),
+      );
+      return foundIngredientsResults
+        .filter((result) =>
+          selectedExternalIngredientIds.includes(result.externalRef.externalId),
+        )
+        .map(
+          (result) =>
+            existingLines.get(result.externalRef.externalId) ??
+            ingredientFinderResultToIngredientLineWithExternalRef(result),
+        );
+    });
+  }, [selectedExternalIngredientIds, foundIngredientsResults]);
+
+  useEffect(() => {
+    onIngredientSelectionRef.current?.(ingredientLinesWithExternalRefs);
+  }, [ingredientLinesWithExternalRefs]);
 
   function handleShowList() {
     if (!showFoundIngredients) setShowList(true);
@@ -70,6 +111,59 @@ function IngredientSearch({ children }: { children: React.ReactNode }) {
     }
   }
 
+  function handleIngredientLineQuantityChange(ingredientLineId: string) {
+    return (newQuantity: number) => {
+      const ingredientLineWithExternalRef =
+        ingredientLinesWithExternalRefs.find(
+          (ingLineWithExternalRef) =>
+            ingLineWithExternalRef.ingredientLine.id === ingredientLineId,
+        );
+
+      if (!ingredientLineWithExternalRef) return;
+
+      const ingredientLine = ingredientLineWithExternalRef.ingredientLine;
+
+      const quantityInGrams = newQuantity;
+      const calories = formatToInteger(
+        (ingredientLine.ingredient.nutritionalInfoPer100g.calories *
+          quantityInGrams) /
+          100,
+      );
+      const protein = formatToInteger(
+        (ingredientLine.ingredient.nutritionalInfoPer100g.protein *
+          quantityInGrams) /
+          100,
+      );
+
+      const updatedIngredientLine: IngredientLineDTO = {
+        ...ingredientLine,
+        quantityInGrams,
+        calories,
+        protein,
+      };
+
+      setIngredientLinesWithExternalRefs((prev) =>
+        prev.map((ingLineWithExternalRef) =>
+          ingLineWithExternalRef.ingredientLine.id === ingredientLineId
+            ? {
+                ...ingLineWithExternalRef,
+                ingredientLine: updatedIngredientLine,
+              }
+            : ingLineWithExternalRef,
+        ),
+      );
+    };
+  }
+
+  function handleIngredientLineRemove(ingredientLineId: string) {
+    setIngredientLinesWithExternalRefs((prev) =>
+      prev.filter(
+        (ingLineWithExternalRef) =>
+          ingLineWithExternalRef.ingredientLine.id !== ingredientLineId,
+      ),
+    );
+  }
+
   const contextValue = {
     showFoundIngredients,
     ingredientSearchTerm,
@@ -83,6 +177,9 @@ function IngredientSearch({ children }: { children: React.ReactNode }) {
     isLoading,
     setIsLoading,
     toggleIngredientSelection,
+    ingredientLinesWithExternalRefs,
+    handleIngredientLineQuantityChange,
+    handleIngredientLineRemove,
   };
 
   return (
@@ -148,14 +245,9 @@ function Search({ className }: { className?: string }) {
 }
 
 function FoundIngredientsList({
-  onSelectFoundIngredient,
   className,
   containerClassName,
 }: {
-  onSelectFoundIngredient?: (
-    ingredientFinderResult: IngredientFinderResult,
-    isSelected: boolean,
-  ) => void;
   className?: string;
   containerClassName?: string;
 }) {
@@ -164,23 +256,14 @@ function FoundIngredientsList({
     ingredientSearchTerm,
     foundIngredientsResults,
     isSelected,
-    selectedExternalIngredientIds,
     isLoading,
-    toggleIngredientSelection: selectIngredient,
+    toggleIngredientSelection,
   } = useIngredientSearchContext();
 
   function selectIngredientFinderResult(
     ingredientFinderResult: IngredientFinderResult,
   ) {
-    selectIngredient(ingredientFinderResult.externalRef.externalId);
-
-    const wasSelected = selectedExternalIngredientIds.includes(
-      ingredientFinderResult.externalRef.externalId,
-    );
-
-    if (onSelectFoundIngredient) {
-      onSelectFoundIngredient(ingredientFinderResult, !wasSelected);
-    }
+    toggleIngredientSelection(ingredientFinderResult.externalRef.externalId);
   }
 
   return (
@@ -225,74 +308,21 @@ function FoundIngredientsList({
 }
 
 function SelectedIngredientsList({
-  ingredientLinesWithExternalRefs,
-  setIngredientLinesWithExternalRefs,
   className,
   containerClassName,
   showIngredientLabel = true,
 }: {
-  ingredientLinesWithExternalRefs: IngredientLineWithExternalRef[];
-  setIngredientLinesWithExternalRefs: React.Dispatch<
-    React.SetStateAction<IngredientLineWithExternalRef[]>
-  >;
   className?: string;
   containerClassName?: string;
   showIngredientLabel?: boolean;
 }) {
+  const {
+    ingredientLinesWithExternalRefs,
+    handleIngredientLineQuantityChange,
+    handleIngredientLineRemove,
+  } = useIngredientSearchContext();
+
   const numberOfSelectedIngredients = ingredientLinesWithExternalRefs.length;
-
-  function handleIngredientLineQuantityChange(ingredientLineId: string) {
-    return (newQuantity: number) => {
-      const ingredientLineWithExternalRef =
-        ingredientLinesWithExternalRefs.find(
-          (ingLineWithExternalRef) =>
-            ingLineWithExternalRef.ingredientLine.id === ingredientLineId,
-        );
-
-      if (!ingredientLineWithExternalRef) return;
-
-      const ingredientLine = ingredientLineWithExternalRef.ingredientLine;
-
-      const quantityInGrams = newQuantity;
-      const calories = formatToInteger(
-        (ingredientLine.ingredient.nutritionalInfoPer100g.calories *
-          quantityInGrams) /
-          100,
-      );
-      const protein = formatToInteger(
-        (ingredientLine.ingredient.nutritionalInfoPer100g.protein *
-          quantityInGrams) /
-          100,
-      );
-
-      const updatedIngredientLine: IngredientLineDTO = {
-        ...ingredientLine,
-        quantityInGrams,
-        calories,
-        protein,
-      };
-
-      setIngredientLinesWithExternalRefs((prev) =>
-        prev.map((ingLineWithExternalRef) =>
-          ingLineWithExternalRef.ingredientLine.id === ingredientLineId
-            ? {
-                ...ingLineWithExternalRef,
-                ingredientLine: updatedIngredientLine,
-              }
-            : ingLineWithExternalRef,
-        ),
-      );
-    };
-  }
-
-  function handleIngredientLineRemove(ingredientLineId: string) {
-    setIngredientLinesWithExternalRefs((prev) =>
-      prev.filter(
-        (ingLineWithExternalRef) =>
-          ingLineWithExternalRef.ingredientLine.id !== ingredientLineId,
-      ),
-    );
-  }
 
   return (
     <div className={`${containerClassName}`}>
@@ -353,38 +383,10 @@ function useIngredientSearchContext() {
 
 export default IngredientSearch;
 
-// Export the most common handler to be used in NewRecipeForm
-// NOTE: it requires the setIngredientLines state setter to be passed from the parent component
 export type IngredientLineWithExternalRef = {
   ingredientLine: IngredientLineDTO;
   ingredientExternalRef: IngredientFinderResult['externalRef'];
 };
-
-export function handleIngredientSelection(
-  ingredientFinderResult: IngredientFinderResult,
-  isSelected: boolean,
-  setIngredientLinesInfo: React.Dispatch<
-    React.SetStateAction<IngredientLineWithExternalRef[]>
-  >,
-) {
-  if (isSelected) {
-    const ingredientLineInfo =
-      ingredientFinderResultToIngredientLineWithExternalRef(
-        ingredientFinderResult,
-      );
-
-    setIngredientLinesInfo((prev) => [...prev, ingredientLineInfo]);
-  } else {
-    setIngredientLinesInfo((prev) =>
-      prev.filter(
-        (ingLineInfo) =>
-          !ingLineInfo.ingredientLine.ingredient.id.endsWith(
-            ingredientFinderResult.externalRef.externalId,
-          ),
-      ),
-    );
-  }
-}
 
 export function ingredientFinderResultToIngredientLineWithExternalRef(
   ingredientFinderResult: IngredientFinderResult,

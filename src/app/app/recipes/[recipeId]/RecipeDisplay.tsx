@@ -12,7 +12,6 @@ import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { HiOutlineDuplicate, HiOutlineTrash } from 'react-icons/hi';
 
 import IngredientSearch, {
-  handleIngredientSelection,
   IngredientLineWithExternalRef,
 } from '@/app/_features/ingredient/IngredientSearch';
 import ButtonNew from '@/app/_ui/ButtonNew';
@@ -103,27 +102,16 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
 
       <form className="flex flex-col gap-4">
         <h3>Añadir ingredientes</h3>
-        <IngredientSearch>
+        <IngredientSearch
+          onIngredientSelection={setNewIngredientLinesWithExternalRefs}
+        >
           <IngredientSearch.Search />
 
-          <IngredientSearch.FoundIngredientsList
-            className="my-4"
-            onSelectFoundIngredient={(ingredientFinderResult, isSelected) =>
-              handleIngredientSelection(
-                ingredientFinderResult,
-                isSelected,
-                setNewIngredientLinesWithExternalRefs,
-              )
-            }
-          />
+          <IngredientSearch.FoundIngredientsList className="my-4" />
 
           <IngredientSearch.SelectedIngredientsList
             containerClassName="mt-8"
             className="max-h-80!"
-            ingredientLinesWithExternalRefs={newIngredientLinesWithExternalRefs}
-            setIngredientLinesWithExternalRefs={
-              setNewIngredientLinesWithExternalRefs
-            }
             showIngredientLabel={newIngredientLinesWithExternalRefs.length > 0}
           />
         </IngredientSearch>

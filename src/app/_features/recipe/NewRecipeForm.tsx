@@ -8,18 +8,17 @@ import NutritionalInfoValue from '@/app/_ui/NutritionalInfoValue';
 import { formatToInteger } from '@/app/_utils/format/formatToInteger';
 import { CreateIngredientLineData } from '@/application-layer/use-cases/recipe/common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import IngredientSearch, {
-  handleIngredientSelection,
   IngredientLineWithExternalRef,
 } from '../ingredient/IngredientSearch';
 import { createRecipe } from './actions';
 
+import { IngredientFinderResult } from '@/domain/services/IngredientFinder.port';
 import { AppClientImageProcessor } from '@/interface-adapters/app/services/AppClientImageProcessor';
 import IngredientBarcodeSearch from '../ingredient/IngredientBarcodeSearch';
-import { IngredientFinderResult } from '@/domain/services/IngredientFinder.port';
-import { ingredientFinderResultToIngredientLineWithExternalRef } from '../ingredient/IngredientSearch';
 import IngredientItemMini from '../ingredient/IngredientItemMini';
+import { ingredientFinderResultToIngredientLineWithExternalRef } from '../ingredient/IngredientSearch';
 
 export type NewRecipeFormState = {
   name: string;
@@ -34,34 +33,20 @@ const INITIAL_FORM_STATE: NewRecipeFormState = {
 };
 
 function NewRecipeForm() {
-  const {
-    formState,
-    setFormState,
-    setField,
-    isLoading,
-    resetForm,
-    setIsLoading,
-  } = useFormSetup<NewRecipeFormState>(INITIAL_FORM_STATE);
+  const { formState, setField, isLoading, resetForm, setIsLoading } =
+    useFormSetup<NewRecipeFormState>(INITIAL_FORM_STATE);
 
   const [foundCodebarIngredient, setFoundCodebarIngredient] =
     useState<IngredientLineWithExternalRef | null>(null);
 
-  // Separate state needed due to implementation of IngredientSearch component
-  const [
-    ingredientLinesWithExternalRefsIngredientComponent,
-    setIngredientLinesWithExternalRefsIngredientComponent,
-  ] = useState<IngredientLineWithExternalRef[]>([
-    ...INITIAL_FORM_STATE.ingredientLinesWithExternalRefs,
-  ]);
-
-  // Sync ingredient lines with form state
-  useEffect(() => {
-    setFormState((prev) => ({
-      ...prev,
-      ingredientLinesWithExternalRefs:
-        ingredientLinesWithExternalRefsIngredientComponent,
-    }));
-  }, [ingredientLinesWithExternalRefsIngredientComponent, setFormState]);
+  function onIngredientSelection(
+    ingredientLinesWithExternalRefs: IngredientLineWithExternalRef[],
+  ) {
+    setField(
+      'ingredientLinesWithExternalRefs',
+      ingredientLinesWithExternalRefs,
+    );
+  }
 
   const invalidForm =
     formState.ingredientLinesWithExternalRefs.length === 0 ||
@@ -153,7 +138,7 @@ function NewRecipeForm() {
   }
 
   return (
-    <IngredientSearch>
+    <IngredientSearch onIngredientSelection={onIngredientSelection}>
       <div className="m-6">
         <IngredientBarcodeSearch
           onIngredientFound={onBarcodeIngredientFound}
@@ -211,28 +196,12 @@ function NewRecipeForm() {
           <FormRow className="flex-col items-center gap-6">
             <IngredientSearch.Search className="w-full max-w-120" />
 
-            <IngredientSearch.FoundIngredientsList
-              containerClassName="max-w-120"
-              onSelectFoundIngredient={(ingredientFinderResult, isSelected) =>
-                handleIngredientSelection(
-                  ingredientFinderResult,
-                  isSelected,
-                  setIngredientLinesWithExternalRefsIngredientComponent,
-                )
-              }
-            />
+            <IngredientSearch.FoundIngredientsList containerClassName="max-w-120" />
           </FormRow>
         </FormRow>
 
         <FormRow className="flex-col items-center justify-center mx-auto max-w-150">
-          <IngredientSearch.SelectedIngredientsList
-            ingredientLinesWithExternalRefs={
-              formState.ingredientLinesWithExternalRefs
-            }
-            setIngredientLinesWithExternalRefs={
-              setIngredientLinesWithExternalRefsIngredientComponent
-            }
-          />
+          <IngredientSearch.SelectedIngredientsList />
 
           {/* Summary */}
           {formState.ingredientLinesWithExternalRefs.length > 0 && (
