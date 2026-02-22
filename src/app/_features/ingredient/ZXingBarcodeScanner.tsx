@@ -121,6 +121,13 @@ function ScannerModal({ reader, onCloseModal }: ScannerModalProps) {
     videoHtmlElementRef,
     onScanResult,
   } = useBarcodeScannerContext();
+
+  // Keep latest callback references without adding them to effect deps
+  const onCloseModalRef = useRef(onCloseModal);
+  onCloseModalRef.current = onCloseModal;
+  const onScanResultRef = useRef(onScanResult);
+  onScanResultRef.current = onScanResult;
+
   // Start the scanner when the component mounts and stop it when it unmounts
   useEffect(() => {
     setScannerResult(null);
@@ -131,8 +138,8 @@ function ScannerModal({ reader, onCloseModal }: ScannerModalProps) {
       (result, err) => {
         if (result) {
           setScannerResult(result.getText());
-          onScanResult?.(result.getText());
-          onCloseModal?.();
+          onScanResultRef.current?.(result.getText());
+          onCloseModalRef.current?.();
         }
         if (err && !(err instanceof NotFoundException)) {
           setScannerError(err.message);
@@ -147,8 +154,6 @@ function ScannerModal({ reader, onCloseModal }: ScannerModalProps) {
     videoHtmlElementRef,
     setScannerResult,
     setScannerError,
-    onCloseModal,
-    onScanResult,
   ]);
 
   return (
