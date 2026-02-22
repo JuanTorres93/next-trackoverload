@@ -1,16 +1,17 @@
 'use client';
+import { useOutsideClick } from '@/app/_hooks/useOutsideClick';
 import ButtonSearch from '@/app/_ui/ButtonSearch';
 import Input from '@/app/_ui/Input';
 import Spinner from '@/app/_ui/Spinner';
+import TextSmall from '@/app/_ui/typography/TextSmall';
 import { formatToInteger } from '@/app/_utils/format/formatToInteger';
-import { useOutsideClick } from '@/app/_hooks/useOutsideClick';
 import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
 import { IngredientFinderResult } from '@/domain/services/IngredientFinder.port';
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { createInMemoryRecipeIngredientLine } from '../recipe/utils';
 import IngredientItemMini from './IngredientItemMini';
 import IngredientLineItem from './IngredientLineItem';
-import { createInMemoryRecipeIngredientLine } from '../recipe/utils';
-import TextSmall from '@/app/_ui/typography/TextSmall';
+import BarcodeScanner from './ZXingBarcodeScanner';
 
 type IngredientSearchContextType = {
   showFoundIngredients: boolean;
@@ -244,6 +245,54 @@ function Search({ className }: { className?: string }) {
   );
 }
 
+function BarcodeSearch() {
+  const {
+    setFoundIngredientsResults,
+    isLoading,
+    setIsLoading,
+    handleShowList,
+  } = useIngredientSearchContext();
+
+  async function onScanResult(result: string | null) {
+    if (result) {
+      setIsLoading(true);
+
+      console.log('Searching in food API');
+      console.log('Scanned barcode:', result);
+
+      try {
+        const fetchedIngredientsResult: Response = await fetch(
+          `/api/ingredient/barcode/${result}`,
+        );
+
+        const data: IngredientFinderResult[] =
+          await fetchedIngredientsResult.json();
+
+        setFoundIngredientsResults(data);
+        handleShowList();
+      } catch {
+        setFoundIngredientsResults([]);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  }
+
+  async function onScanError() {
+    setFoundIngredientsResults([]);
+  }
+
+  return (
+    <div>
+      <BarcodeScanner onScanResult={onScanResult} onScanError={onScanError}>
+        <BarcodeScanner.ZXing />
+
+        {isLoading && <Spinner />}
+      </BarcodeScanner>
+    </div>
+  );
+}
+
 function FoundIngredientsList({
   className,
   containerClassName,
@@ -253,7 +302,6 @@ function FoundIngredientsList({
 }) {
   const {
     showFoundIngredients,
-    ingredientSearchTerm,
     foundIngredientsResults,
     isSelected,
     isLoading,
@@ -276,8 +324,7 @@ function FoundIngredientsList({
 
       {!isLoading &&
         showFoundIngredients &&
-        foundIngredientsResults.length > 0 &&
-        ingredientSearchTerm && (
+        foundIngredientsResults.length > 0 && (
           <div
             data-testid="ingredient-list"
             className={`flex flex-col space-y-2 overflow-y-scroll overflow-x-hidden py-2 pl-2 pr-4 max-h-57 ${className}`}
@@ -368,6 +415,7 @@ function SelectedIngredientsList({
 IngredientSearch.Search = Search;
 IngredientSearch.FoundIngredientsList = FoundIngredientsList;
 IngredientSearch.SelectedIngredientsList = SelectedIngredientsList;
+IngredientSearch.BarcodeSearch = BarcodeSearch;
 
 function useIngredientSearchContext() {
   const value = useContext(IngredientSearchContext);

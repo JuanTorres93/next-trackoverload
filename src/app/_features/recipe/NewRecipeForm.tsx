@@ -8,17 +8,12 @@ import NutritionalInfoValue from '@/app/_ui/NutritionalInfoValue';
 import { formatToInteger } from '@/app/_utils/format/formatToInteger';
 import { CreateIngredientLineData } from '@/application-layer/use-cases/recipe/common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
 import Image from 'next/image';
-import { useState } from 'react';
 import IngredientSearch, {
   IngredientLineWithExternalRef,
 } from '../ingredient/IngredientSearch';
 import { createRecipe } from './actions';
 
-import { IngredientFinderResult } from '@/domain/services/IngredientFinder.port';
 import { AppClientImageProcessor } from '@/interface-adapters/app/services/AppClientImageProcessor';
-import IngredientBarcodeSearch from '../ingredient/IngredientBarcodeSearch';
-import IngredientItemMini from '../ingredient/IngredientItemMini';
-import { ingredientFinderResultToIngredientLineWithExternalRef } from '../ingredient/IngredientSearch';
 
 export type NewRecipeFormState = {
   name: string;
@@ -35,9 +30,6 @@ const INITIAL_FORM_STATE: NewRecipeFormState = {
 function NewRecipeForm() {
   const { formState, setField, isLoading, resetForm, setIsLoading } =
     useFormSetup<NewRecipeFormState>(INITIAL_FORM_STATE);
-
-  const [foundCodebarIngredient, setFoundCodebarIngredient] =
-    useState<IngredientLineWithExternalRef | null>(null);
 
   function onIngredientSelection(
     ingredientLinesWithExternalRefs: IngredientLineWithExternalRef[],
@@ -123,33 +115,10 @@ function NewRecipeForm() {
     }
   };
 
-  function onBarcodeIngredientFound(
-    ingredientFinderResult: IngredientFinderResult,
-  ) {
-    const ingredientLineWithExternalRef =
-      ingredientFinderResultToIngredientLineWithExternalRef(
-        ingredientFinderResult,
-      );
-    setFoundCodebarIngredient(ingredientLineWithExternalRef);
-  }
-
-  function onBarcodeIngredientNotFound() {
-    setFoundCodebarIngredient(null);
-  }
-
   return (
     <IngredientSearch onIngredientSelection={onIngredientSelection}>
       <div className="m-6">
-        <IngredientBarcodeSearch
-          onIngredientFound={onBarcodeIngredientFound}
-          onIngredientNotFound={onBarcodeIngredientNotFound}
-        />
-
-        {foundCodebarIngredient && (
-          <IngredientItemMini
-            ingredient={foundCodebarIngredient.ingredientLine.ingredient}
-          />
-        )}
+        <IngredientSearch.BarcodeSearch />
       </div>
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">
