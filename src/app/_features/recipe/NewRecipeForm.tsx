@@ -117,10 +117,6 @@ function NewRecipeForm() {
 
   return (
     <IngredientSearch onIngredientSelection={onIngredientSelection}>
-      <div className="m-6">
-        <IngredientSearch.BarcodeSearch />
-      </div>
-
       <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">
         <FormRow className="grid items-start justify-center grid-cols-2 gap-8">
           <div
@@ -163,7 +159,10 @@ function NewRecipeForm() {
           </div>
 
           <FormRow className="flex-col items-center gap-6">
-            <IngredientSearch.Search className="w-full max-w-120" />
+            <div className="flex items-center justify-center gap-4">
+              <IngredientSearch.Search className="w-full max-w-120" />
+              <IngredientSearch.BarcodeSearch />
+            </div>
 
             <IngredientSearch.FoundIngredientsList containerClassName="max-w-120" />
           </FormRow>
