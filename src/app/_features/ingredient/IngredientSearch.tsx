@@ -20,31 +20,17 @@ type IngredientSearchContextType = {
   setFoundIngredientsResults: React.Dispatch<
     React.SetStateAction<IngredientFinderResult[]>
   >;
-  selectedExternalIngredientIds: Set<string>;
-  setSelectedExternalIngredientIds: React.Dispatch<
-    React.SetStateAction<Set<string>>
-  >;
+  selectedExternalIngredientIds: string[];
   handleShowList: () => void;
   handleHideList: () => void;
-  fetchIngredients: (term?: string) => Promise<void>;
   isSelected: (externalIngredientId: string) => boolean;
   isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  selectIngredient: (externalIngredientId: string) => void;
 };
 
 const IngredientSearchContext =
   createContext<IngredientSearchContextType | null>(null);
-
-function useIngredientSearchContext() {
-  const value = useContext(IngredientSearchContext);
-
-  if (value === undefined || value === null) {
-    throw new Error(
-      'useIngredientSearch must be used within a IngredientSearchProvider',
-    );
-  }
-
-  return value;
-}
 
 function IngredientSearch({ children }: { children: React.ReactNode }) {
   const [showFoundIngredients, setShowList] = useState(false);
@@ -53,9 +39,10 @@ function IngredientSearch({ children }: { children: React.ReactNode }) {
     IngredientFinderResult[]
   >([]);
   const [selectedExternalIngredientIds, setSelectedExternalIngredientIds] =
-    useState<Set<string>>(new Set());
-  const outsideClickRef = useOutsideClick<HTMLDivElement>(handleHideList);
+    useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const outsideClickRef = useOutsideClick<HTMLDivElement>(handleHideList);
 
   function handleShowList() {
     if (!showFoundIngredients) setShowList(true);
@@ -65,31 +52,21 @@ function IngredientSearch({ children }: { children: React.ReactNode }) {
     if (showFoundIngredients) setShowList(false);
   }
 
-  async function fetchIngredients(term: string = ''): Promise<void> {
-    // Use case is used behind the scenes in the API route. It can't be called directly from the client.
-    if (!term.trim()) {
-      setFoundIngredientsResults([]);
-      return;
-    }
-    setIsLoading(true);
-
-    const fetchedIngredientsResult: Response = await fetch(
-      `/api/ingredient/fuzzy/${term}`,
-    );
-
-    try {
-      const data: IngredientFinderResult[] =
-        await fetchedIngredientsResult.json();
-
-      setFoundIngredientsResults(data);
-      setIsLoading(false);
-    } catch {
-      setFoundIngredientsResults([]);
-    }
+  function isSelected(externalIngredientId: string) {
+    return selectedExternalIngredientIds.includes(externalIngredientId);
   }
 
-  function isSelected(externalIngredientId: string) {
-    return selectedExternalIngredientIds.has(externalIngredientId);
+  function selectIngredient(externalIngredientId: string) {
+    if (isSelected(externalIngredientId)) {
+      setSelectedExternalIngredientIds((prev) =>
+        prev.filter((id) => id !== externalIngredientId),
+      );
+    } else {
+      setSelectedExternalIngredientIds((prev) => [
+        ...prev,
+        externalIngredientId,
+      ]);
+    }
   }
 
   const contextValue = {
@@ -99,12 +76,12 @@ function IngredientSearch({ children }: { children: React.ReactNode }) {
     foundIngredientsResults,
     setFoundIngredientsResults,
     selectedExternalIngredientIds,
-    setSelectedExternalIngredientIds,
     handleShowList,
     handleHideList,
-    fetchIngredients,
     isSelected,
     isLoading,
+    setIsLoading,
+    selectIngredient,
   };
 
   return (
@@ -119,9 +96,33 @@ function Search({ className }: { className?: string }) {
     handleShowList,
     ingredientSearchTerm,
     setIngredientSearchTerm,
-    fetchIngredients,
+    setFoundIngredientsResults,
     isLoading,
+    setIsLoading,
   } = useIngredientSearchContext();
+
+  async function fetchIngredients(term: string = ''): Promise<void> {
+    if (!term.trim()) {
+      setFoundIngredientsResults([]);
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const fetchedIngredientsResult: Response = await fetch(
+        `/api/ingredient/fuzzy/${term}`,
+      );
+
+      const data: IngredientFinderResult[] =
+        await fetchedIngredientsResult.json();
+
+      setFoundIngredientsResults(data);
+      setIsLoading(false);
+    } catch {
+      setFoundIngredientsResults([]);
+    }
+  }
 
   return (
     <div className={`grid grid-cols-[1fr_min-content] gap-4  ${className}`}>
@@ -163,26 +164,18 @@ function FoundIngredientsList({
     foundIngredientsResults,
     isSelected,
     selectedExternalIngredientIds,
-    setSelectedExternalIngredientIds,
     isLoading,
+    selectIngredient,
   } = useIngredientSearchContext();
 
   function selectIngredientFinderResult(
     ingredientFinderResult: IngredientFinderResult,
   ) {
-    const wasSelected = selectedExternalIngredientIds.has(
+    selectIngredient(ingredientFinderResult.externalRef.externalId);
+
+    const wasSelected = selectedExternalIngredientIds.includes(
       ingredientFinderResult.externalRef.externalId,
     );
-
-    setSelectedExternalIngredientIds((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(ingredientFinderResult.externalRef.externalId)) {
-        newSet.delete(ingredientFinderResult.externalRef.externalId);
-      } else {
-        newSet.add(ingredientFinderResult.externalRef.externalId);
-      }
-      return newSet;
-    });
 
     if (onSelectFoundIngredient) {
       onSelectFoundIngredient(ingredientFinderResult, !wasSelected);
@@ -344,6 +337,18 @@ function SelectedIngredientsList({
 IngredientSearch.Search = Search;
 IngredientSearch.FoundIngredientsList = FoundIngredientsList;
 IngredientSearch.SelectedIngredientsList = SelectedIngredientsList;
+
+function useIngredientSearchContext() {
+  const value = useContext(IngredientSearchContext);
+
+  if (value === undefined || value === null) {
+    throw new Error(
+      'useIngredientSearch must be used within a IngredientSearchProvider',
+    );
+  }
+
+  return value;
+}
 
 export default IngredientSearch;
 
