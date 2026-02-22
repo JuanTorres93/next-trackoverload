@@ -26,7 +26,7 @@ type IngredientSearchContextType = {
   isSelected: (externalIngredientId: string) => boolean;
   isLoading: boolean;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  selectIngredient: (externalIngredientId: string) => void;
+  toggleIngredientSelection: (externalIngredientId: string) => void;
 };
 
 const IngredientSearchContext =
@@ -40,6 +40,7 @@ function IngredientSearch({ children }: { children: React.ReactNode }) {
   >([]);
   const [selectedExternalIngredientIds, setSelectedExternalIngredientIds] =
     useState<string[]>([]);
+
   const [isLoading, setIsLoading] = useState(false);
 
   const outsideClickRef = useOutsideClick<HTMLDivElement>(handleHideList);
@@ -56,7 +57,7 @@ function IngredientSearch({ children }: { children: React.ReactNode }) {
     return selectedExternalIngredientIds.includes(externalIngredientId);
   }
 
-  function selectIngredient(externalIngredientId: string) {
+  function toggleIngredientSelection(externalIngredientId: string) {
     if (isSelected(externalIngredientId)) {
       setSelectedExternalIngredientIds((prev) =>
         prev.filter((id) => id !== externalIngredientId),
@@ -81,7 +82,7 @@ function IngredientSearch({ children }: { children: React.ReactNode }) {
     isSelected,
     isLoading,
     setIsLoading,
-    selectIngredient,
+    toggleIngredientSelection,
   };
 
   return (
@@ -165,7 +166,7 @@ function FoundIngredientsList({
     isSelected,
     selectedExternalIngredientIds,
     isLoading,
-    selectIngredient,
+    toggleIngredientSelection: selectIngredient,
   } = useIngredientSearchContext();
 
   function selectIngredientFinderResult(
