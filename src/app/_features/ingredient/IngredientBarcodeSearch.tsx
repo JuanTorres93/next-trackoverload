@@ -1,6 +1,7 @@
 import { IngredientFinderResult } from '@/domain/services/IngredientFinder.port';
 import BarcodeScanner from './ZXingBarcodeScanner';
 import { useState } from 'react';
+import Spinner from '@/app/_ui/Spinner';
 
 function IngredientBarcodeSearch({
   onIngredientFound,
@@ -14,10 +15,9 @@ function IngredientBarcodeSearch({
 
   async function onScanResult(result: string | null) {
     if (result) {
-      // TODO handle scanned barcode result, e.g. by searching for the ingredient and allowing the user to add it to the recipe
       setIsLoading(true);
 
-      console.log('BUSCAR EN API');
+      console.log('Searching in food API');
       console.log('Scanned barcode:', result);
 
       const fetchedIngredientsResult: Response = await fetch(
@@ -42,6 +42,8 @@ function IngredientBarcodeSearch({
     <div>
       <BarcodeScanner onScanResult={onScanResult}>
         <BarcodeScanner.ZXing />
+
+        {isLoading && <Spinner />}
       </BarcodeScanner>
     </div>
   );
