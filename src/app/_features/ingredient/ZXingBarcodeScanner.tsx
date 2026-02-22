@@ -25,6 +25,7 @@ type BarcodeContextType = {
   setScannerError: (error: string | null) => void;
   scannerError: string | null;
   onScanResult?: (result: string | null) => void;
+  onScanError?: () => void;
 };
 
 const BarcodeContext = createContext<BarcodeContextType | null>(null);
@@ -32,9 +33,11 @@ const BarcodeContext = createContext<BarcodeContextType | null>(null);
 function BarcodeScanner({
   children,
   onScanResult,
+  onScanError,
 }: {
   children: React.ReactNode;
   onScanResult?: (result: string | null) => void;
+  onScanError?: () => void;
 }) {
   const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
   const videoHtmlElementRef = useRef<HTMLVideoElement | null>(null);
@@ -53,6 +56,7 @@ function BarcodeScanner({
         scannerError,
         setScannerError,
         onScanResult,
+        onScanError,
       }}
     >
       {children}
@@ -122,10 +126,13 @@ function ScannerModal({ reader, onCloseModal }: ScannerModalProps) {
   onCloseModalRef.current = onCloseModal;
   const onScanResultRef = useRef(onScanResult);
   onScanResultRef.current = onScanResult;
+  const onScanErrorRef = useRef(useBarcodeScannerContext().onScanError);
+  onScanErrorRef.current = useBarcodeScannerContext().onScanError;
 
   // Start the scanner when the component mounts and stop it when it unmounts
   useEffect(() => {
     setScannerResult(null);
+    setScannerError(null);
 
     reader.decodeFromVideoDevice(
       selectedDeviceId,
@@ -138,6 +145,7 @@ function ScannerModal({ reader, onCloseModal }: ScannerModalProps) {
         }
         if (err && !(err instanceof NotFoundException)) {
           setScannerError(err.message);
+          onScanErrorRef.current?.();
         }
       },
     );

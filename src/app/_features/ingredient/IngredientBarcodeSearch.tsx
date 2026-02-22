@@ -5,8 +5,10 @@ import Spinner from '@/app/_ui/Spinner';
 
 function IngredientBarcodeSearch({
   onIngredientFound,
+  onIngredientNotFound,
 }: {
   onIngredientFound?: (ingredient: IngredientFinderResult) => void;
+  onIngredientNotFound?: () => void;
 }) {
   const [foundIngredientsResults, setFoundIngredientsResults] = useState<
     IngredientFinderResult[]
@@ -28,19 +30,25 @@ function IngredientBarcodeSearch({
         const data: IngredientFinderResult[] =
           await fetchedIngredientsResult.json();
 
-        onIngredientFound?.(data[0]);
         setFoundIngredientsResults(data);
+        onIngredientFound?.(data[0]);
       } catch {
         setFoundIngredientsResults([]);
+        onIngredientNotFound?.();
       } finally {
         setIsLoading(false);
       }
     }
   }
 
+  async function onScanError() {
+    setFoundIngredientsResults([]);
+    onIngredientNotFound?.();
+  }
+
   return (
     <div>
-      <BarcodeScanner onScanResult={onScanResult}>
+      <BarcodeScanner onScanResult={onScanResult} onScanError={onScanError}>
         <BarcodeScanner.ZXing />
 
         {isLoading && <Spinner />}

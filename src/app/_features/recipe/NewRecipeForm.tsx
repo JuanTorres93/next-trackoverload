@@ -148,10 +148,17 @@ function NewRecipeForm() {
     setFoundCodebarIngredient(ingredientLineWithExternalRef);
   }
 
+  function onBarcodeIngredientNotFound() {
+    setFoundCodebarIngredient(null);
+  }
+
   return (
     <IngredientSearch>
       <div className="m-6">
-        <IngredientBarcodeSearch onIngredientFound={onBarcodeIngredientFound} />
+        <IngredientBarcodeSearch
+          onIngredientFound={onBarcodeIngredientFound}
+          onIngredientNotFound={onBarcodeIngredientNotFound}
+        />
 
         {foundCodebarIngredient && (
           <IngredientItemMini
