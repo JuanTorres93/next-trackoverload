@@ -7,9 +7,9 @@ import { useOutsideClick } from '@/app/_hooks/useOutsideClick';
 import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
 import { IngredientFinderResult } from '@/domain/services/IngredientFinder.port';
 import { createContext, useContext, useState } from 'react';
-import IngredientItemMini from '../ingredient/IngredientItemMini';
-import IngredientLineItem from '../ingredient/IngredientLineItem';
-import { createInMemoryRecipeIngredientLine } from './utils';
+import IngredientItemMini from './IngredientItemMini';
+import IngredientLineItem from './IngredientLineItem';
+import { createInMemoryRecipeIngredientLine } from '../recipe/utils';
 import TextSmall from '@/app/_ui/typography/TextSmall';
 
 type IngredientSearchContextType = {

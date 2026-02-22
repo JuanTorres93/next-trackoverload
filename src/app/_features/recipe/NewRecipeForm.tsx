@@ -13,7 +13,7 @@ import { createRecipe } from './actions';
 import IngredientSearch, {
   handleIngredientSelection,
   IngredientLineWithExternalRef,
-} from './IngredientSearch';
+} from '../ingredient/IngredientSearch';
 
 import { AppClientImageProcessor } from '@/interface-adapters/app/services/AppClientImageProcessor';
 import BarcodeScanner from '../ingredient/ZXingBarcodeScanner';

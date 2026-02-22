@@ -14,7 +14,7 @@ import { HiOutlineDuplicate, HiOutlineTrash } from 'react-icons/hi';
 import IngredientSearch, {
   handleIngredientSelection,
   IngredientLineWithExternalRef,
-} from '@/app/_features/recipe/IngredientSearch';
+} from '@/app/_features/ingredient/IngredientSearch';
 import ButtonNew from '@/app/_ui/ButtonNew';
 import { useDebounce } from '@/app/_hooks/useDebounce';
 import { useState } from 'react';
