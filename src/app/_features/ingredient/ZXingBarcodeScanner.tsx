@@ -4,17 +4,65 @@ import {
   DecodeHintType,
   NotFoundException,
 } from '@zxing/library';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import type { RefObject } from 'react';
 import ScanButton from './ScanButton';
 import Modal from '@/app/_ui/Modal';
 
-function ZXingBarcodeScanner() {
+type BarcodeContextType = {
+  selectedDeviceId: string | null;
+  setSelectedDeviceId: (deviceId: string | null) => void;
+  videoHtmlElementRef: RefObject<HTMLVideoElement | null>;
+  scannerResult: string | null;
+  setScannerResult: (result: string | null) => void;
+  setScannerError: (error: string | null) => void;
+  scannerError: string | null;
+  onScanResult?: (result: string | null) => void;
+};
+
+const BarcodeContext = createContext<BarcodeContextType | null>(null);
+
+function BarcodeScanner({
+  children,
+  onScanResult,
+}: {
+  children: React.ReactNode;
+  onScanResult?: (result: string | null) => void;
+}) {
   const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
   const videoHtmlElementRef = useRef<HTMLVideoElement | null>(null);
 
   const [scannerResult, setScannerResult] = useState<string | null>(null);
   const [scannerError, setScannerError] = useState<string | null>(null);
+
+  return (
+    <BarcodeContext.Provider
+      value={{
+        selectedDeviceId,
+        setSelectedDeviceId,
+        videoHtmlElementRef,
+        scannerResult,
+        setScannerResult,
+        scannerError,
+        setScannerError,
+        onScanResult,
+      }}
+    >
+      {children}
+    </BarcodeContext.Provider>
+  );
+}
+
+function ZXingBarcodeScanner() {
+  const { setSelectedDeviceId, scannerResult, scannerError } =
+    useBarcodeScannerContext();
 
   const hints = new Map();
   const formats = [
@@ -32,7 +80,6 @@ function ZXingBarcodeScanner() {
   useEffect(() => {
     async function setupScanner() {
       const videoInputDevices = await reader.listVideoInputDevices();
-      console.log(videoInputDevices);
 
       setSelectedDeviceId(videoInputDevices[0].deviceId);
 
@@ -40,7 +87,7 @@ function ZXingBarcodeScanner() {
     }
 
     setupScanner();
-  }, [reader]);
+  }, [reader, setSelectedDeviceId]);
 
   return (
     <Modal>
@@ -55,62 +102,72 @@ function ZXingBarcodeScanner() {
       </div>
 
       <Modal.Window name="scanner">
-        <ScannerModal
-          ref={videoHtmlElementRef}
-          reader={reader}
-          selectedDeviceId={selectedDeviceId}
-          onScanResult={setScannerResult}
-          onScanError={setScannerError}
-        />
+        <ScannerModal reader={reader} />
       </Modal.Window>
     </Modal>
   );
 }
 
 type ScannerModalProps = {
-  ref: RefObject<HTMLVideoElement | null>;
   reader: BrowserMultiFormatReader;
-  selectedDeviceId: string | null;
-  onScanResult: (result: string | null) => void;
-  onScanError: (error: string) => void;
   onCloseModal?: () => void;
 };
 
-function ScannerModal({
-  ref,
-  reader,
-  selectedDeviceId,
-  onScanResult,
-  onScanError,
-  onCloseModal,
-}: ScannerModalProps) {
+function ScannerModal({ reader, onCloseModal }: ScannerModalProps) {
+  const {
+    selectedDeviceId,
+    setScannerResult,
+    setScannerError,
+    videoHtmlElementRef,
+  } = useBarcodeScannerContext();
   // Start the scanner when the component mounts and stop it when it unmounts
   useEffect(() => {
-    onScanResult(null);
+    setScannerResult(null);
 
     reader.decodeFromVideoDevice(
       selectedDeviceId,
-      ref.current,
+      videoHtmlElementRef.current,
       (result, err) => {
         if (result) {
-          onScanResult(result.getText());
+          setScannerResult(result.getText());
           onCloseModal?.();
         }
         if (err && !(err instanceof NotFoundException)) {
-          onScanError(err.message);
+          setScannerError(err.message);
         }
       },
     );
 
     return () => reader.reset();
-  }, [reader, selectedDeviceId, ref, onScanResult, onScanError, onCloseModal]);
+  }, [
+    reader,
+    selectedDeviceId,
+    videoHtmlElementRef,
+    setScannerResult,
+    setScannerError,
+    onCloseModal,
+  ]);
 
   return (
     <video
-      ref={ref}
+      ref={videoHtmlElementRef}
       className="w-[300px] h-[200px] border border-border rounded-lg"
     ></video>
   );
 }
 
-export default ZXingBarcodeScanner;
+function useBarcodeScannerContext() {
+  const contextValue = useContext(BarcodeContext);
+
+  if (!contextValue) {
+    throw new Error(
+      'useBarcodeScannerContext must be used within a BarcodeScannerProvider',
+    );
+  }
+
+  return contextValue;
+}
+
+BarcodeScanner.ZXing = ZXingBarcodeScanner;
+
+export default BarcodeScanner;

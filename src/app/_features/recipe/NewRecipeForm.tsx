@@ -16,7 +16,7 @@ import IngredientSearch, {
 } from './IngredientSearch';
 
 import { AppClientImageProcessor } from '@/interface-adapters/app/services/AppClientImageProcessor';
-import ZXingBarcodeScanner from '../ingredient/ZXingBarcodeScanner';
+import BarcodeScanner from '../ingredient/ZXingBarcodeScanner';
 
 export type NewRecipeFormState = {
   name: string;
@@ -135,7 +135,9 @@ function NewRecipeForm() {
   return (
     <IngredientSearch>
       <div className="m-6">
-        <ZXingBarcodeScanner />
+        <BarcodeScanner>
+          <BarcodeScanner.ZXing />
+        </BarcodeScanner>
       </div>
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">
