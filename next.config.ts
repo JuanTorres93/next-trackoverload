@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
         : // Restrict to specific host in production
           [
             { protocol: 'https', hostname: 'res.cloudinary.com' },
-            { protocol: 'https', hostname: 'openfoodfacts.org' },
+            { protocol: 'https', hostname: 'images.openfoodfacts.org' },
           ],
   },
 };
