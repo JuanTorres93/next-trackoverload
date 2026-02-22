@@ -9,14 +9,14 @@ import { formatToInteger } from '@/app/_utils/format/formatToInteger';
 import { CreateIngredientLineData } from '@/application-layer/use-cases/recipe/common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { createRecipe } from './actions';
 import IngredientSearch, {
   handleIngredientSelection,
   IngredientLineWithExternalRef,
 } from '../ingredient/IngredientSearch';
+import { createRecipe } from './actions';
 
 import { AppClientImageProcessor } from '@/interface-adapters/app/services/AppClientImageProcessor';
-import BarcodeScanner from '../ingredient/ZXingBarcodeScanner';
+import IngredientBarcodeSearch from '../ingredient/IngredientBarcodeSearch';
 
 export type NewRecipeFormState = {
   name: string;
@@ -135,9 +135,7 @@ function NewRecipeForm() {
   return (
     <IngredientSearch>
       <div className="m-6">
-        <BarcodeScanner>
-          <BarcodeScanner.ZXing />
-        </BarcodeScanner>
+        <IngredientBarcodeSearch />
       </div>
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">

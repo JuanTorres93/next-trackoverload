@@ -61,11 +61,8 @@ function BarcodeScanner({
 }
 
 function ZXingBarcodeScanner() {
-  const {
-    setSelectedDeviceId,
-    scannerResult,
-    scannerError,
-  } = useBarcodeScannerContext();
+  const { setSelectedDeviceId, scannerResult, scannerError } =
+    useBarcodeScannerContext();
 
   const hints = new Map();
   const formats = [
@@ -122,6 +119,7 @@ function ScannerModal({ reader, onCloseModal }: ScannerModalProps) {
     setScannerResult,
     setScannerError,
     videoHtmlElementRef,
+    onScanResult,
   } = useBarcodeScannerContext();
   // Start the scanner when the component mounts and stop it when it unmounts
   useEffect(() => {
@@ -133,6 +131,7 @@ function ScannerModal({ reader, onCloseModal }: ScannerModalProps) {
       (result, err) => {
         if (result) {
           setScannerResult(result.getText());
+          onScanResult?.(result.getText());
           onCloseModal?.();
         }
         if (err && !(err instanceof NotFoundException)) {
@@ -149,6 +148,7 @@ function ScannerModal({ reader, onCloseModal }: ScannerModalProps) {
     setScannerResult,
     setScannerError,
     onCloseModal,
+    onScanResult,
   ]);
 
   return (
