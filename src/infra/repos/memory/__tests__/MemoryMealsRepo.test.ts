@@ -224,4 +224,60 @@ describe('MemoryMealsRepo', () => {
     expect(allMealsAfter.length).toBe(1);
     expect(allMealsAfter[0].userId).toBe(meal3.userId);
   });
+
+  describe('saveMultipleMeals', () => {
+    it('should save multiple new meals', async () => {
+      const meal2 = mealTestProps.createTestMeal({
+        id: 'meal-2',
+        name: 'Pasta',
+      });
+      const meal3 = mealTestProps.createTestMeal({
+        id: 'meal-3',
+        name: 'Salad',
+      });
+
+      await repo.saveMultipleMeals([meal2, meal3]);
+
+      const allMeals = await repo.getAllMeals();
+      expect(allMeals.length).toBe(3);
+      expect(allMeals.map((m) => m.name)).toContain('Pasta');
+      expect(allMeals.map((m) => m.name)).toContain('Salad');
+    });
+
+    it('should update existing meals when saving multiple', async () => {
+      const updatedMeal = mealTestProps.createTestMeal({
+        name: 'Updated Chicken Meal',
+      });
+
+      await repo.saveMultipleMeals([updatedMeal]);
+
+      const allMeals = await repo.getAllMeals();
+      expect(allMeals.length).toBe(1);
+      expect(allMeals[0].name).toBe('Updated Chicken Meal');
+    });
+
+    it('should handle a mix of new and existing meals', async () => {
+      const updatedMeal = mealTestProps.createTestMeal({
+        name: 'Updated Chicken Meal',
+      });
+      const newMeal = mealTestProps.createTestMeal({
+        id: 'meal-new',
+        name: 'New Meal',
+      });
+
+      await repo.saveMultipleMeals([updatedMeal, newMeal]);
+
+      const allMeals = await repo.getAllMeals();
+      expect(allMeals.length).toBe(2);
+      expect(allMeals.map((m) => m.name)).toContain('Updated Chicken Meal');
+      expect(allMeals.map((m) => m.name)).toContain('New Meal');
+    });
+
+    it('should do nothing when saving an empty array', async () => {
+      await repo.saveMultipleMeals([]);
+
+      const allMeals = await repo.getAllMeals();
+      expect(allMeals.length).toBe(1);
+    });
+  });
 });

@@ -14,6 +14,10 @@ export class MemoryMealsRepo implements MealsRepo {
     }
   }
 
+  async saveMultipleMeals(meals: Meal[]): Promise<void> {
+    await Promise.all(meals.map((meal) => this.saveMeal(meal)));
+  }
+
   async getAllMeals(): Promise<Meal[]> {
     return [...this.meals];
   }
@@ -38,10 +42,10 @@ export class MemoryMealsRepo implements MealsRepo {
 
   async getMealsByRecipeIdAndUserId(
     recipeId: string,
-    userId: string
+    userId: string,
   ): Promise<Meal[]> {
     return this.meals.filter(
-      (meal) => meal.createdFromRecipeId === recipeId && meal.userId === userId
+      (meal) => meal.createdFromRecipeId === recipeId && meal.userId === userId,
     );
   }
 

@@ -53,6 +53,48 @@ export class MongoMealsRepo implements MealsRepo {
     });
   }
 
+  async saveMultipleMeals(meals: Meal[]): Promise<void> {
+    if (meals.length === 0) return;
+
+    await withTransaction(async (session) => {
+      // Upsert all meals in a single bulkWrite
+      await MealMongo.bulkWrite(
+        meals.map((meal) => ({
+          updateOne: {
+            filter: { id: meal.id },
+            update: { $set: meal.toCreateProps() },
+            upsert: true,
+          },
+        })),
+        { session },
+      );
+
+      const mealIds = meals.map((meal) => meal.id);
+
+      // Delete all existing meal lines for these meals in one operation
+      await MealLineMongo.deleteMany(
+        { parentId: { $in: mealIds } },
+        { session },
+      );
+
+      // Collect and insert all meal lines in one operation
+      const allMealLines = meals.flatMap((meal) =>
+        meal.ingredientLines.map((line) => ({
+          id: line.id,
+          parentId: meal.id,
+          ingredientId: line.ingredient.id,
+          quantityInGrams: line.quantityInGrams,
+          createdAt: line.createdAt,
+          updatedAt: line.updatedAt,
+        })),
+      );
+
+      if (allMealLines.length > 0) {
+        await MealLineMongo.insertMany(allMealLines, { session });
+      }
+    });
+  }
+
   async getAllMeals(): Promise<Meal[]> {
     const mealDocs = await MealMongo.find({})
       .populate({

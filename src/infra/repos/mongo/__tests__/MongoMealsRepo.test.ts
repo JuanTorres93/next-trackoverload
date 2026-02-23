@@ -770,4 +770,149 @@ describe('MongoMealsRepo', () => {
       );
     });
   });
+
+  describe('saveMultipleMeals', () => {
+    it('should save multiple new meals with their ingredient lines', async () => {
+      const meal2Id = 'meal-2';
+      const meal2 = mealTestProps.createTestMeal({
+        id: meal2Id,
+        name: 'Pasta',
+        ingredientLines: [
+          IngredientLine.create({
+            ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
+            id: 'line-2',
+            parentId: meal2Id,
+            parentType: 'meal',
+            ingredient,
+          }),
+        ],
+      });
+
+      const meal3Id = 'meal-3';
+      const meal3 = mealTestProps.createTestMeal({
+        id: meal3Id,
+        name: 'Salad',
+        ingredientLines: [
+          IngredientLine.create({
+            ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
+            id: 'line-3',
+            parentId: meal3Id,
+            parentType: 'meal',
+            ingredient,
+          }),
+        ],
+      });
+
+      await repo.saveMultipleMeals([meal2, meal3]);
+
+      const allMeals = await repo.getAllMeals();
+      expect(allMeals).toHaveLength(3);
+      expect(allMeals.map((m) => m.name)).toContain('Pasta');
+      expect(allMeals.map((m) => m.name)).toContain('Salad');
+    });
+
+    it('should update existing meals when saving multiple', async () => {
+      const existingMeal = await repo.getMealById(meal.id);
+      existingMeal!.update({ name: 'Updated Chicken Meal' });
+
+      await repo.saveMultipleMeals([existingMeal!]);
+
+      const allMeals = await repo.getAllMeals();
+      expect(allMeals).toHaveLength(1);
+      expect(allMeals[0].name).toBe('Updated Chicken Meal');
+    });
+
+    it('should handle a mix of new and existing meals', async () => {
+      const existingMeal = await repo.getMealById(meal.id);
+      existingMeal!.update({ name: 'Updated Chicken Meal' });
+
+      const newMealId = 'meal-new';
+      const newMeal = mealTestProps.createTestMeal({
+        id: newMealId,
+        name: 'New Meal',
+        ingredientLines: [
+          IngredientLine.create({
+            ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
+            id: 'line-new',
+            parentId: newMealId,
+            parentType: 'meal',
+            ingredient,
+          }),
+        ],
+      });
+
+      await repo.saveMultipleMeals([existingMeal!, newMeal]);
+
+      const allMeals = await repo.getAllMeals();
+      expect(allMeals).toHaveLength(2);
+      expect(allMeals.map((m) => m.name)).toContain('Updated Chicken Meal');
+      expect(allMeals.map((m) => m.name)).toContain('New Meal');
+    });
+
+    it('should do nothing when saving an empty array', async () => {
+      await repo.saveMultipleMeals([]);
+
+      const allMeals = await repo.getAllMeals();
+      expect(allMeals).toHaveLength(1);
+    });
+
+    describe('transactions', () => {
+      it('should rollback all changes if error occurs in bulkWrite', async () => {
+        mockForThrowingError(MealMongo, 'bulkWrite');
+
+        const meal2Id = 'meal-2';
+        const meal2 = mealTestProps.createTestMeal({
+          id: meal2Id,
+          name: 'New Meal',
+          ingredientLines: [
+            IngredientLine.create({
+              ...recipeTestProps.ingredientLineRecipePropsNoIngredient,
+              id: 'line-2',
+              parentId: meal2Id,
+              parentType: 'meal',
+              ingredient,
+            }),
+          ],
+        });
+
+        await expect(repo.saveMultipleMeals([meal2])).rejects.toThrow(
+          /Mocked error.*bulkWrite/i,
+        );
+
+        const allMeals = await repo.getAllMeals();
+        expect(allMeals).toHaveLength(1);
+        expect(allMeals[0].id).toBe(meal.id);
+      });
+
+      it('should rollback all changes if error occurs in deleteMany meal lines', async () => {
+        mockForThrowingError(MealLineMongo, 'deleteMany');
+
+        const existingMeal = await repo.getMealById(meal.id);
+        existingMeal!.update({ name: 'Updated Meal Name' });
+
+        await expect(repo.saveMultipleMeals([existingMeal!])).rejects.toThrow(
+          /Mocked error.*deleteMany/i,
+        );
+
+        const notUpdatedMeal = await repo.getMealById(meal.id);
+        expect(notUpdatedMeal!.name).toBe(meal.name);
+        expect(notUpdatedMeal!.ingredientLines).toHaveLength(1);
+      });
+
+      it('should rollback all changes if error occurs in insertMany meal lines', async () => {
+        mockForThrowingError(MealLineMongo, 'insertMany');
+
+        const existingMeal = await repo.getMealById(meal.id);
+        existingMeal!.update({ name: 'Updated Meal Name' });
+
+        await expect(repo.saveMultipleMeals([existingMeal!])).rejects.toThrow(
+          /Mocked error.*insertMany/i,
+        );
+
+        const notUpdatedMeal = await repo.getMealById(meal.id);
+        expect(notUpdatedMeal!.name).toBe(meal.name);
+        expect(notUpdatedMeal!.ingredientLines).toHaveLength(1);
+      });
+    });
+  });
 });

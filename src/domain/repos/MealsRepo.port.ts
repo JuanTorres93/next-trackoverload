@@ -8,9 +8,12 @@ export interface MealsRepo {
   getMealByIdForUser(id: string, userId: string): Promise<Meal | null>;
   getMealsByRecipeIdAndUserId(
     recipeId: string,
-    userId: string
+    userId: string,
   ): Promise<Meal[]>;
+
   saveMeal(meal: Meal): Promise<void>;
+  saveMultipleMeals(meals: Meal[]): Promise<void>;
+
   deleteMeal(id: string): Promise<void>;
   deleteMultipleMeals(ids: string[]): Promise<void>;
   deleteAllMealsForUser(userId: string): Promise<void>;
