@@ -27,22 +27,22 @@ import DaySummary from '../DaySummary';
 
 const { mockRecipes } = await createMockRecipes();
 
-createServer([
-  {
-    path: '/api/recipe/getAll',
-    method: 'get',
-    response: () => {
-      const allRecipes: RecipeDTO[] = [...mockRecipes];
+createServer(
+  [
+    {
+      path: '/api/recipe/getAll',
+      method: 'get',
+      response: () => {
+        const allRecipes: RecipeDTO[] = [...mockRecipes];
 
-      return allRecipes;
+        return allRecipes;
+      },
     },
-  },
+  ],
   {
-    path: '/api/day/addMeal',
-    method: 'post',
-    response: () => {},
+    onUnhandledRequest: 'bypass',
   },
-]);
+);
 
 async function setup() {
   const day = createEmptyTestDay({
@@ -217,7 +217,7 @@ describe('DaySummary', () => {
       expect.objectContaining({
         userId: 'dev-user', // TODO IMPORTANT Change when authentication is implemented. The value is hardocoded and the test will fail
         dayId: assembledDayDTO.id,
-        recipeId: mockRecipes[0].id,
+        recipeIds: [mockRecipes[0].id],
       }),
     );
   });

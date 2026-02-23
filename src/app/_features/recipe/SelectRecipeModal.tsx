@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import RecipesGrid from './RecipesGrid';
 
+// TODO Add ability to filter (and sort) recipes
+
 function SelectRecipeModal({
   dayId,
   onCloseModal,
@@ -53,25 +55,18 @@ function SelectRecipeModal({
   async function handleCreateMeals() {
     setIsLoading(true);
 
-    const addMealPromises = [];
     try {
-      for (const recipeId of selectedRecipesIds) {
-        const response = fetch('/api/day/addMeal', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            dayId,
-            userId: 'dev-user', // TODO get user id from session
-            recipeId,
-          }),
-        });
-
-        addMealPromises.push(response);
-      }
-
-      await Promise.all(addMealPromises);
+      await fetch('/api/day/addMultipleMeals', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          dayId,
+          userId: 'dev-user', // TODO get user id from session
+          recipeIds: selectedRecipesIds,
+        }),
+      });
 
       router.refresh();
     } catch (error) {
