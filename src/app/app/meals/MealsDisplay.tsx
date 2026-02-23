@@ -47,7 +47,7 @@ function MealsDisplay({
   return (
     <Modal>
       <Modal.Open opens="add-food-to-days-modal">
-        <ButtonNew className="w-full m-2" disabled={selectedDaysIds.length < 1}>
+        <ButtonNew className="mb-8 " disabled={selectedDaysIds.length < 1}>
           Añadir comidas a varios días
         </ButtonNew>
       </Modal.Open>

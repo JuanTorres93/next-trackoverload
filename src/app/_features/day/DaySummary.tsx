@@ -90,7 +90,7 @@ function DaySummary({
           <DateTitle day={day} month={month} year={year} />
         </div>
 
-        <div className="grid grid-cols-1 overflow-x-scroll max-h-100">
+        <div className="grid grid-cols-1 gap-3 overflow-x-scroll max-h-100">
           {meals.length > 0 &&
             meals.map((meal) => (
               <MealLine
