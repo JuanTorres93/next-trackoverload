@@ -13,6 +13,7 @@ export { AppGetMultipleAssembledDaysByIds } from './GetMultipleAssembledDaysById
 // UPDATE Operations
 export { AppAddMealToDayUsecase } from './AddMealToDay/addMealToDay';
 export { AppAddMultipleMealsToDayUsecase } from './AddMultipleMealsToDay/addMultipleMealsToDay';
+export { AppAddMultipleMealsToMultipleDaysUsecase } from './AddMultipleMealsToMultipleDays/addMultipleMealsToMultipleDays';
 export { AppAddFakeMealToDayUsecase } from './AddFakeMealToDay/addFakeMealToDay';
 export { AppRemoveMealFromDayUsecase } from './RemoveMealFromDay/removeMealFromDay';
 
