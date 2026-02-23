@@ -4,9 +4,9 @@ import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import Image from 'next/image';
 import CaloriesAndProtein from '../_features/common/CaloriesAndProtein';
-import ButtonX from './ButtonX';
+import LoadingOverlay from '../_features/common/LoadingOverlay';
 import LoggedMealContainer from '../_features/common/LoggedMealContainer';
-import Spinner from './Spinner';
+import ButtonX from './ButtonX';
 
 const quantityStyle = 'w-full text-right border-none outline-none';
 
@@ -40,11 +40,7 @@ function NutritionSummary({
 
   return (
     <LoggedMealContainer className={className}>
-      {isLoading && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-surface-light/30 backdrop-blur-[2px]">
-          <Spinner />
-        </div>
-      )}
+      {isLoading && <LoadingOverlay />}
 
       <div className="grid grid-cols-[40px_1fr_5rem_min-content] p-2  gap-4 items-center bg-surface-card">
         <div className="relative h-12 overflow-hidden rounded-md aspect-square">
