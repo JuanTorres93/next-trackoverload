@@ -1,3 +1,4 @@
+'use client';
 import {
   BarcodeFormat,
   BrowserMultiFormatReader,
@@ -65,8 +66,6 @@ function BarcodeScanner({
 }
 
 function ZXingBarcodeScanner() {
-  const { setSelectedDeviceId } = useBarcodeScannerContext();
-
   const hints = new Map();
   const formats = [
     BarcodeFormat.UPC_A,
@@ -79,18 +78,6 @@ function ZXingBarcodeScanner() {
   hints.set(DecodeHintType.POSSIBLE_FORMATS, formats);
 
   const reader = useMemo(() => new BrowserMultiFormatReader(), []);
-
-  useEffect(() => {
-    async function setupScanner() {
-      const videoInputDevices = await reader.listVideoInputDevices();
-
-      setSelectedDeviceId(videoInputDevices[0].deviceId);
-
-      // TODO: Handle more than one video input device and allow user to select which one to use
-    }
-
-    setupScanner();
-  }, [reader, setSelectedDeviceId]);
 
   return (
     <Modal>
@@ -115,11 +102,21 @@ type ScannerModalProps = {
 function ScannerModal({ reader, onCloseModal }: ScannerModalProps) {
   const {
     selectedDeviceId,
+    setSelectedDeviceId,
     setScannerResult,
     setScannerError,
     videoHtmlElementRef,
     onScanResult,
   } = useBarcodeScannerContext();
+
+  useEffect(() => {
+    async function setupScanner() {
+      const videoInputDevices = await reader.listVideoInputDevices();
+      setSelectedDeviceId(videoInputDevices[0].deviceId);
+      // TODO: Handle more than one video input device and allow user to select which one to use
+    }
+    setupScanner();
+  }, [reader, setSelectedDeviceId]);
 
   // Keep latest callback references without adding them to effect deps
   const onCloseModalRef = useRef(onCloseModal);

@@ -105,7 +105,10 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
         <IngredientSearch
           onIngredientSelection={setNewIngredientLinesWithExternalRefs}
         >
-          <IngredientSearch.Search />
+          <div className="flex items-center justify-center gap-4">
+            <IngredientSearch.Search className="w-full max-w-120" />
+            <IngredientSearch.BarcodeSearch />
+          </div>
 
           <IngredientSearch.FoundIngredientsList className="my-4" />
 

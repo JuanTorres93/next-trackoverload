@@ -20,23 +20,28 @@ import { IngredientFinderResult } from '@/domain/services/IngredientFinder.port'
 await createMockIngredients();
 await createMockUser();
 
-createServer([
-  {
-    path: '/api/ingredient/fuzzy/:term',
-    method: 'get',
-    response: ({ params }) => {
-      const term = params.term as string;
-      const results = mockIngredientsForIngredientFinder;
+createServer(
+  [
+    {
+      path: '/api/ingredient/fuzzy/:term',
+      method: 'get',
+      response: ({ params }) => {
+        const term = params.term as string;
+        const results = mockIngredientsForIngredientFinder;
 
-      const filteredIngredients: IngredientFinderResult[] = results.filter(
-        (result) =>
-          result.ingredient.name.toLowerCase().includes(term.toLowerCase()),
-      );
+        const filteredIngredients: IngredientFinderResult[] = results.filter(
+          (result) =>
+            result.ingredient.name.toLowerCase().includes(term.toLowerCase()),
+        );
 
-      return filteredIngredients;
+        return filteredIngredients;
+      },
     },
+  ],
+  {
+    onUnhandledRequest: 'bypass',
   },
-]);
+);
 
 async function setup() {
   render(<NewRecipeForm />);

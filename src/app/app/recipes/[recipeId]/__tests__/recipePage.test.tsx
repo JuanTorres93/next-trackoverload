@@ -22,27 +22,33 @@ vi.mock('@/interface-adapters/app/services/AppClientImageProcessor', () => ({
 
 import RecipePage from '../page';
 import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
+import { mockDecodeFromVideoDevice } from '../../../../../../tests/mocks/zxing';
 
 const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
 const usersRepo = AppUsersRepo as MemoryUsersRepo;
 let mockRecipes: RecipeDTO[] = [];
 
-createServer([
-  {
-    path: '/api/ingredient/fuzzy/:term',
-    method: 'get',
-    response: ({ params }) => {
-      const term = params.term as string;
-      const ingredients = mockIngredientsForIngredientFinder;
+createServer(
+  [
+    {
+      path: '/api/ingredient/fuzzy/:term',
+      method: 'get',
+      response: ({ params }) => {
+        const term = params.term as string;
+        const ingredients = mockIngredientsForIngredientFinder;
 
-      const filteredIngredients = ingredients.filter((ingredient) =>
-        ingredient.ingredient.name.toLowerCase().includes(term.toLowerCase()),
-      );
+        const filteredIngredients = ingredients.filter((ingredient) =>
+          ingredient.ingredient.name.toLowerCase().includes(term.toLowerCase()),
+        );
 
-      return filteredIngredients;
+        return filteredIngredients;
+      },
     },
+  ],
+  {
+    onUnhandledRequest: 'bypass',
   },
-]);
+);
 
 async function setup() {
   // Recreate mock recipes for each test to ensure a clean state
@@ -57,7 +63,9 @@ async function setup() {
   });
   render(ui);
 
-  return { renderedRecipe };
+  const barcodeScannerButton = screen.getByTestId('open-scanner-button');
+
+  return { renderedRecipe, barcodeScannerButton };
 }
 
 afterEach(() => {
@@ -184,6 +192,36 @@ describe('RecipePage', () => {
           parseInt(newQuantity),
         );
       });
+    });
+
+    it('fetches ingredients through barcode', async () => {
+      await waitFor(async () => {
+        mockDecodeFromVideoDevice.mockImplementation(
+          (
+            _deviceId: unknown,
+            _videoEl: unknown,
+            callback: (
+              result: { getText: () => string } | null,
+              err: null,
+            ) => void,
+          ) => {
+            // Codebar for Consum Avena Integral ingredient
+            callback({ getText: () => '8414807558305' }, null);
+          },
+        );
+
+        const { barcodeScannerButton } = await setup();
+
+        await userEvent.click(barcodeScannerButton);
+
+        // Get list again to avoid stale reference
+        const ingredientList = await screen.findByTestId('ingredient-list');
+
+        expect(ingredientList.children.length).toBe(1);
+      });
+
+      const ingredientElement = screen.getByText(/avena/i);
+      expect(ingredientElement).toBeInTheDocument();
     });
 
     it('duplicates recipe', async () => {
