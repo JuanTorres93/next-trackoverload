@@ -246,12 +246,8 @@ function Search({ className }: { className?: string }) {
 }
 
 function BarcodeSearch() {
-  const {
-    setFoundIngredientsResults,
-    isLoading,
-    setIsLoading,
-    handleShowList,
-  } = useIngredientSearchContext();
+  const { setFoundIngredientsResults, setIsLoading, handleShowList } =
+    useIngredientSearchContext();
 
   async function onScanResult(result: string | null) {
     if (result) {
@@ -286,8 +282,6 @@ function BarcodeSearch() {
     <div>
       <BarcodeScanner onScanResult={onScanResult} onScanError={onScanError}>
         <BarcodeScanner.ZXing />
-
-        {isLoading && <Spinner />}
       </BarcodeScanner>
     </div>
   );

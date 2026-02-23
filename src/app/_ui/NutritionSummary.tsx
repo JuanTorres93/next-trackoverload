@@ -6,6 +6,7 @@ import Image from 'next/image';
 import CaloriesAndProtein from '../_features/common/CaloriesAndProtein';
 import ButtonX from './ButtonX';
 import LoggedMealContainer from '../_features/common/LoggedMealContainer';
+import Spinner from './Spinner';
 
 const quantityStyle = 'w-full text-right border-none outline-none';
 
@@ -14,11 +15,15 @@ function NutritionSummary({
   onQuantityChange,
   onRemove,
   className,
+  disabled = false,
+  isLoading = false,
 }: {
   line: IngredientLineDTO | RecipeDTO;
   onQuantityChange?: (quantity: number) => void;
   onRemove?: () => void;
   className?: string;
+  disabled?: boolean;
+  isLoading?: boolean;
 }) {
   const isIngredientLine = 'ingredient' in line;
   const defaultImageUrl = '/ingredient-no-picture.png';
@@ -31,8 +36,16 @@ function NutritionSummary({
     ? line.quantityInGrams
     : line.ingredientLines.reduce((sum, il) => sum + il.quantityInGrams, 0);
 
+  const isDisabled = disabled || isLoading;
+
   return (
     <LoggedMealContainer className={className}>
+      {isLoading && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-surface-light/30 backdrop-blur-[2px]">
+          <Spinner />
+        </div>
+      )}
+
       <div className="grid grid-cols-[40px_1fr_5rem_min-content] p-2  gap-4 items-center bg-surface-card">
         <div className="relative h-12 overflow-hidden rounded-md aspect-square">
           <Image
@@ -49,6 +62,7 @@ function NutritionSummary({
           {onQuantityChange && (
             <Input
               className={quantityStyle}
+              disabled={isDisabled}
               containerClassName="border-0"
               type="number"
               defaultValue={quantity}
@@ -68,6 +82,7 @@ function NutritionSummary({
           <ButtonX
             data-testid="nutritional-summary-delete-button"
             onClick={onRemove}
+            disabled={isDisabled}
           />
         )}
       </div>
