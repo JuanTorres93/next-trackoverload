@@ -2,9 +2,9 @@ import { eachDayOfInterval, endOfWeek, startOfWeek } from 'date-fns';
 
 import { DayId } from '@/domain/value-objects/DayId/DayId';
 
-import DaySummary from '@/app/_features/day/DaySummary';
-import PageWrapper from '../../_ui/PageWrapper';
 import { getAssembledDaysByIds } from '@/app/_features/day/actions';
+import PageWrapper from '../../_ui/PageWrapper';
+import MealsDisplay from './MealsDisplay';
 
 export const dynamic = 'force-dynamic';
 
@@ -35,11 +35,7 @@ export default async function MealsPage() {
 
   return (
     <PageWrapper>
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(5rem,20rem))] gap-4">
-        {assembledDays.map(({ dayId, assembledDay }) => (
-          <DaySummary key={dayId} dayId={dayId} assembledDay={assembledDay} />
-        ))}
-      </div>
+      <MealsDisplay assembledDays={assembledDays} />
     </PageWrapper>
   );
 }

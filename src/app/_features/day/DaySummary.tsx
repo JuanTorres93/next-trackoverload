@@ -37,9 +37,13 @@ const computeIsPast = (day: number, month: number, year: number) => {
 function DaySummary({
   dayId,
   assembledDay,
+  onSelectDay,
+  isSelected,
 }: {
   dayId: string; // dayId represented as string in DayId value object
   assembledDay?: AssembledDayDTO | null;
+  onSelectDay?: (dayId: string) => void;
+  isSelected?: boolean;
 }) {
   const { day, month, year } = dayIdToDayMonthYear(dayId);
 
@@ -58,12 +62,15 @@ function DaySummary({
   return (
     <Modal>
       <div
-        className={`border-2 rounded-xl border-surface-dark overflow-x-hidden ${
+        className={`border-2 rounded-xl border-surface-dark overflow-x-hidden transition ${
           isToday ? 'border-3! shadow-md border-primary-light!' : ''
-        } ${isPast ? 'opacity-60' : ''}`}
+        } ${isPast ? 'opacity-60' : ''} ${isSelected ? 'border-selected!' : ''}`}
       >
         <div
-          className={`flex flex-col p-2 items-center bg-text-minor-emphasis justify-center gap-.5 ${isToday ? 'bg-primary-light!' : ''}`}
+          onClick={() => onSelectDay?.(dayId)}
+          className={`flex flex-col p-2 items-center bg-text-minor-emphasis justify-center transition gap-.5 ${isToday ? 'bg-primary-light!' : ''} ${
+            isSelected ? 'bg-selected!' : ''
+          }`}
         >
           <DayTitle dayName={dayName} isToday={isToday} />
           <DateTitle day={day} month={month} year={year} />

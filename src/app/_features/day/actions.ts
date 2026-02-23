@@ -5,7 +5,7 @@ import { AppGetMultipleAssembledDaysByIds } from '@/interface-adapters/app/use-c
 import { AppRemoveMealFromDayUsecase } from '@/interface-adapters/app/use-cases/day';
 import { revalidatePath } from 'next/cache';
 
-type AssembledDayResult = {
+export type AssembledDayResult = {
   dayId: string;
   assembledDay: AssembledDayDTO | null;
 };
