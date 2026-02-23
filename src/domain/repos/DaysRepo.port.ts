@@ -16,6 +16,7 @@ export interface DaysRepo {
   ): Promise<Day[]>;
 
   saveDay(day: Day): Promise<void>;
+  saveMultipleDays(days: Day[]): Promise<void>;
 
   deleteDayForUser(id: string, userId: string): Promise<void>;
   deleteAllDaysForUser(userId: string): Promise<void>;

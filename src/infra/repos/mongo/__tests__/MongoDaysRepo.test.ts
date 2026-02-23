@@ -2,6 +2,8 @@ import { Day } from '@/domain/entities/day/Day';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import * as dayTestProps from '../../../../../tests/createProps/dayTestProps';
 import { MongoDaysRepo } from '../MongoDaysRepo';
+import DayMongo from '../models/DayMongo';
+import { mockForThrowingError } from './mockForThrowingError';
 import {
   clearMongoTestDB,
   setupMongoTestDB,
@@ -413,6 +415,77 @@ describe('MongoDaysRepo', () => {
       const days = await repo.getMultipleDaysByIdsAndUserId([], day.userId);
 
       expect(days).toHaveLength(0);
+    });
+  });
+
+  describe('saveMultipleDays', () => {
+    it('should save multiple new days', async () => {
+      const day2 = dayTestProps.createEmptyTestDay({ day: 2 });
+      day2.addMeal('meal-day2');
+
+      const day3 = dayTestProps.createEmptyTestDay({ day: 3 });
+      day3.addMeal('meal-day3');
+
+      await repo.saveMultipleDays([day2, day3]);
+
+      const allDays = await repo.getAllDays();
+      expect(allDays).toHaveLength(3);
+      expect(allDays.map((d) => d.day)).toContain(2);
+      expect(allDays.map((d) => d.day)).toContain(3);
+
+      const savedDay2 = allDays.find((d) => d.day === 2);
+      expect(savedDay2!.mealIds).toContain('meal-day2');
+    });
+
+    it('should update existing days when saving multiple', async () => {
+      const existingDay = await repo.getDayById(day.id);
+      existingDay!.addMeal('new-meal-id');
+
+      await repo.saveMultipleDays([existingDay!]);
+
+      const allDays = await repo.getAllDays();
+      expect(allDays).toHaveLength(1);
+      expect(allDays[0].mealIds).toContain('meal-1');
+      expect(allDays[0].mealIds).toContain('new-meal-id');
+    });
+
+    it('should handle a mix of new and existing days', async () => {
+      const existingDay = await repo.getDayById(day.id);
+      existingDay!.addMeal('extra-meal');
+
+      const newDay = dayTestProps.createEmptyTestDay({ day: 5 });
+
+      await repo.saveMultipleDays([existingDay!, newDay]);
+
+      const allDays = await repo.getAllDays();
+      expect(allDays).toHaveLength(2);
+
+      const savedExisting = allDays.find((d) => d.day === day.day);
+      expect(savedExisting!.mealIds).toContain('extra-meal');
+    });
+
+    it('should do nothing when saving an empty array', async () => {
+      await repo.saveMultipleDays([]);
+
+      const allDays = await repo.getAllDays();
+      expect(allDays).toHaveLength(1);
+    });
+
+    describe('transactions', () => {
+      it('should rollback all changes if bulkWrite fails', async () => {
+        mockForThrowingError(DayMongo, 'bulkWrite');
+
+        const day2 = dayTestProps.createEmptyTestDay({ day: 2 });
+        day2.addMeal('meal-day2');
+
+        await expect(repo.saveMultipleDays([day2])).rejects.toThrow(
+          /Mocked error.*bulkWrite/i,
+        );
+
+        const allDays = await repo.getAllDays();
+        expect(allDays).toHaveLength(1);
+        expect(allDays[0].id).toBe(day.id);
+      });
     });
   });
 });

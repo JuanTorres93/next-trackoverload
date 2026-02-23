@@ -147,4 +147,53 @@ describe('MemoryDaysRepo', () => {
 
     expect(days.length).toBe(0);
   });
+
+  describe('saveMultipleDays', () => {
+    it('should save multiple new days', async () => {
+      const day2 = dayTestProps.createEmptyTestDay({ day: 2 });
+      const day3 = dayTestProps.createEmptyTestDay({ day: 3 });
+
+      await repo.saveMultipleDays([day2, day3]);
+
+      const allDays = await repo.getAllDays();
+      expect(allDays.length).toBe(3);
+      expect(allDays.map((d) => d.day)).toContain(2);
+      expect(allDays.map((d) => d.day)).toContain(3);
+    });
+
+    it('should update existing days when saving multiple', async () => {
+      const updatedDay = dayTestProps.createEmptyTestDay();
+      updatedDay.addMeal('new-meal-id');
+
+      await repo.saveMultipleDays([updatedDay]);
+
+      const allDays = await repo.getAllDays();
+      expect(allDays.length).toBe(1);
+      expect(allDays[0].mealIds).toContain('new-meal-id');
+    });
+
+    it('should handle a mix of new and existing days', async () => {
+      const updatedDay = dayTestProps.createEmptyTestDay();
+      updatedDay.addMeal('updated-meal-id');
+
+      const newDay = dayTestProps.createEmptyTestDay({ day: 5 });
+
+      await repo.saveMultipleDays([updatedDay, newDay]);
+
+      const allDays = await repo.getAllDays();
+      expect(allDays.length).toBe(2);
+      expect(allDays.map((d) => d.day)).toContain(1);
+      expect(allDays.map((d) => d.day)).toContain(5);
+
+      const savedUpdatedDay = allDays.find((d) => d.day === 1);
+      expect(savedUpdatedDay!.mealIds).toContain('updated-meal-id');
+    });
+
+    it('should do nothing when saving an empty array', async () => {
+      await repo.saveMultipleDays([]);
+
+      const allDays = await repo.getAllDays();
+      expect(allDays.length).toBe(1);
+    });
+  });
 });

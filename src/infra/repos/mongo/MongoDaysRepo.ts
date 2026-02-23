@@ -24,6 +24,34 @@ export class MongoDaysRepo implements DaysRepo {
     });
   }
 
+  async saveMultipleDays(days: Day[]): Promise<void> {
+    if (days.length === 0) return;
+
+    await withTransaction(async (session) => {
+      await DayMongo.bulkWrite(
+        days.map((day) => ({
+          updateOne: {
+            filter: {
+              day: day.day,
+              month: day.month,
+              year: day.year,
+              userId: day.userId,
+            },
+            update: {
+              $set: {
+                ...day.toCreateProps(),
+                mealIds: day.mealIds,
+                fakeMealIds: day.fakeMealIds,
+              },
+            },
+            upsert: true,
+          },
+        })),
+        { session },
+      );
+    });
+  }
+
   async getAllDays(): Promise<Day[]> {
     const dayDocs = await DayMongo.find({}).lean({ virtuals: true });
 

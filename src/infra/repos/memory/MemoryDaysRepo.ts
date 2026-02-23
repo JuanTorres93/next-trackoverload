@@ -14,6 +14,10 @@ export class MemoryDaysRepo implements DaysRepo {
     }
   }
 
+  async saveMultipleDays(days: Day[]): Promise<void> {
+    await Promise.all(days.map((day) => this.saveDay(day)));
+  }
+
   async getAllDays(): Promise<Day[]> {
     return [...this.days];
   }
