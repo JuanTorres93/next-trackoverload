@@ -37,6 +37,20 @@ createServer(
         return filteredIngredients;
       },
     },
+    {
+      path: '/api/ingredient/barcode/:barcode',
+      method: 'get',
+      response: () => [
+        {
+          ingredient: {
+            name: 'Avena Integral',
+            nutritionalInfoPer100g: { calories: 370, protein: 13 },
+            imageUrl: undefined,
+          },
+          externalRef: { externalId: '8414807558305', source: 'openfoodfacts' },
+        },
+      ],
+    },
   ],
   {
     onUnhandledRequest: 'bypass',

@@ -44,6 +44,20 @@ createServer(
         return filteredIngredients;
       },
     },
+    {
+      path: '/api/ingredient/barcode/:barcode',
+      method: 'get',
+      response: () => [
+        {
+          ingredient: {
+            name: 'Avena Integral',
+            nutritionalInfoPer100g: { calories: 370, protein: 13 },
+            imageUrl: undefined,
+          },
+          externalRef: { externalId: '8414807558305', source: 'openfoodfacts' },
+        },
+      ],
+    },
   ],
   {
     onUnhandledRequest: 'bypass',
@@ -195,25 +209,25 @@ describe('RecipePage', () => {
     });
 
     it('fetches ingredients through barcode', async () => {
+      mockDecodeFromVideoDevice.mockImplementation(
+        (
+          _deviceId: unknown,
+          _videoEl: unknown,
+          callback: (
+            result: { getText: () => string } | null,
+            err: null,
+          ) => void,
+        ) => {
+          // Codebar for Consum Avena Integral ingredient
+          callback({ getText: () => '8414807558305' }, null);
+        },
+      );
+
+      const { barcodeScannerButton } = await setup();
+
+      await userEvent.click(barcodeScannerButton);
+
       await waitFor(async () => {
-        mockDecodeFromVideoDevice.mockImplementation(
-          (
-            _deviceId: unknown,
-            _videoEl: unknown,
-            callback: (
-              result: { getText: () => string } | null,
-              err: null,
-            ) => void,
-          ) => {
-            // Codebar for Consum Avena Integral ingredient
-            callback({ getText: () => '8414807558305' }, null);
-          },
-        );
-
-        const { barcodeScannerButton } = await setup();
-
-        await userEvent.click(barcodeScannerButton);
-
         // Get list again to avoid stale reference
         const ingredientList = await screen.findByTestId('ingredient-list');
 
