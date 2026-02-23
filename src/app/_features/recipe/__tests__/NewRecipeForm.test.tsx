@@ -1,6 +1,6 @@
 import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 import { AppRecipesRepo } from '@/interface-adapters/app/repos/AppRecipesRepo';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
   createMockIngredients,
@@ -8,7 +8,7 @@ import {
 } from '../../../../../tests/mocks/ingredients';
 import { createServer } from '../../../../../tests/mocks/server';
 import { createMockUser } from '../../../../../tests/mocks/user';
-
+import { mockDecodeFromVideoDevice } from '../../../../../tests/mocks/zxing';
 const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
 
 // Mock before importing the component that uses next/navigation
@@ -43,6 +43,7 @@ async function setup() {
 
   const searchBar = screen.getByPlaceholderText(/ingred/i);
   const searchButton = screen.getByTestId('search-ingredient-button');
+  const barcodeScannerButton = screen.getByTestId('open-scanner-button');
 
   await userEvent.type(searchBar, 'c');
   await userEvent.click(searchButton);
@@ -53,7 +54,14 @@ async function setup() {
 
   const createButton = screen.getByRole('button', { name: /crear receta/i });
 
-  return { ingredientList, ingredientLineList, searchBar, createButton };
+  return {
+    ingredientList,
+    ingredientLineList,
+    searchBar,
+    createButton,
+    searchButton,
+    barcodeScannerButton,
+  };
 }
 
 describe('NewRecipeForm', () => {
@@ -64,6 +72,33 @@ describe('NewRecipeForm', () => {
 
     // expect ingredientList to have 3 children (data in mock handler)
     expect(ingredientList.children.length).toBe(3);
+  });
+
+  it('fetches ingredients through barcode', async () => {
+    mockDecodeFromVideoDevice.mockImplementation(
+      (
+        _deviceId: unknown,
+        _videoEl: unknown,
+        callback: (result: { getText: () => string } | null, err: null) => void,
+      ) => {
+        // Codebar for Consum Avena Integral ingredient
+        callback({ getText: () => '8414807558305' }, null);
+      },
+    );
+
+    const { barcodeScannerButton } = await setup();
+
+    await userEvent.click(barcodeScannerButton);
+
+    // Get list again to avoid stale reference
+    const ingredientList = await screen.findByTestId('ingredient-list');
+
+    await waitFor(() => {
+      expect(ingredientList.children.length).toBe(1);
+    });
+
+    const ingredientElement = screen.getByText(/avena/i);
+    expect(ingredientElement).toBeInTheDocument();
   });
 
   it('does not show ingredient lines if not selected', async () => {

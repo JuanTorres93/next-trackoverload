@@ -96,7 +96,7 @@ function ZXingBarcodeScanner() {
     <Modal>
       <div>
         <Modal.Open opens="scanner">
-          <ScanButton />
+          <ScanButton data-testid="open-scanner-button" />
         </Modal.Open>
       </div>
 
