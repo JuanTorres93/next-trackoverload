@@ -2,17 +2,17 @@ import ButtonNew from '@/app/_ui/ButtonNew';
 import Spinner from '@/app/_ui/Spinner';
 import SectionHeading from '@/app/_ui/typography/SectionHeading';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import RecipesGrid from './RecipesGrid';
 
 // TODO Add ability to filter (and sort) recipes
 
 function SelectRecipeModal({
-  dayId,
+  addMealsRequest,
   onCloseModal,
 }: {
-  dayId: string;
+  addMealsRequest: (recipesIds: string[]) => Promise<void>;
   onCloseModal?: () => void;
 }) {
   const router = useRouter();
@@ -56,17 +56,7 @@ function SelectRecipeModal({
     setIsLoading(true);
 
     try {
-      await fetch('/api/day/addMultipleMeals', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          dayId,
-          userId: 'dev-user', // TODO get user id from session
-          recipeIds: selectedRecipesIds,
-        }),
-      });
+      await addMealsRequest(selectedRecipesIds);
 
       router.refresh();
     } catch (error) {

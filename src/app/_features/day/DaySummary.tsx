@@ -59,6 +59,20 @@ function DaySummary({
   const isToday = computeIsToday(day, month, year);
   const isPast = computeIsPast(day, month, year);
 
+  async function addMealsRequest(recipesIds: string[]) {
+    await fetch('/api/day/addMultipleMeals', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        dayId,
+        userId: 'dev-user', // TODO get user id from session
+        recipeIds: recipesIds,
+      }),
+    });
+  }
+
   return (
     <Modal>
       <div
@@ -110,7 +124,7 @@ function DaySummary({
       </div>
 
       <Modal.Window name="add-food-modal">
-        <SelectRecipeModal dayId={dayId} />
+        <SelectRecipeModal addMealsRequest={addMealsRequest} />
       </Modal.Window>
 
       <Modal.Window name="add-fake-meal-modal">
