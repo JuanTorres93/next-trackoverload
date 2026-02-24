@@ -1,26 +1,33 @@
 'use client';
 import { useFormSetup } from '@/app/_hooks/useFormSetup';
 import ButtonPrimary from '@/app/_ui/ButtonPrimary';
+import Checkbox from '@/app/_ui/Checkbox';
 import FormEntry from '@/app/_ui/form/FormEntry';
 import Input from '@/app/_ui/Input';
 import AuthLink from '@/app/auth/common/AuthLink';
 import AuthSpinner from '@/app/auth/common/AuthSpinner';
 
-export type LoginFormState = {
+export type RegisterFormState = {
   email: string;
   password: string;
+  acceptTerms: boolean;
 };
 
-const INITIAL_FORM_STATE: LoginFormState = {
+const INITIAL_FORM_STATE: RegisterFormState = {
   email: '',
   password: '',
+  acceptTerms: false,
 };
 
-function LoginForm() {
+function RegisterForm() {
   const { formState, setField, isLoading, setIsLoading, resetForm } =
-    useFormSetup<LoginFormState>(INITIAL_FORM_STATE);
+    useFormSetup<RegisterFormState>(INITIAL_FORM_STATE);
 
-  const isFormInvalid = !formState.email || !formState.password || isLoading;
+  const isFormInvalid =
+    !formState.email ||
+    !formState.password ||
+    !formState.acceptTerms ||
+    isLoading;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -28,7 +35,7 @@ function LoginForm() {
     setIsLoading(true);
 
     try {
-      // TODO: Run login logic
+      // TODO: Run registration logic
 
       resetForm();
     } catch (error) {
@@ -40,14 +47,7 @@ function LoginForm() {
   return (
     <div className="w-full p-10 rounded-xl max-w-110 bg-text-light">
       <header className="mb-6 text-center">
-        <h2 className="mb-2 text-2xl font-semibold">Inicia sesión</h2>
-
-        <h3 className="text-sm ">
-          ¿No tienes una cuenta?{' '}
-          <AuthLink className="inline" href="/auth/register">
-            Regístrate
-          </AuthLink>
-        </h3>
+        <h2 className="mb-2 text-2xl font-semibold">Crea tu cuenta</h2>
       </header>
 
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
@@ -73,13 +73,34 @@ function LoginForm() {
           />
         </FormEntry>
 
+        <FormEntry
+          labelText="Acepto los términos y condiciones"
+          htmlFor="acceptTerms"
+          setHorizontal
+          reverseLabelOrder
+        >
+          <Checkbox
+            id="acceptTerms"
+            checked={formState.acceptTerms}
+            onChange={(e) => setField('acceptTerms', e.target.checked)}
+            required
+          />
+        </FormEntry>
+
         <ButtonPrimary className="mt-2" type="submit" disabled={isFormInvalid}>
           {isLoading && <AuthSpinner />}
-          {!isLoading && 'Iniciar sesión'}
+          {!isLoading && 'Registrarse'}
         </ButtonPrimary>
       </form>
+
+      <h3 className="mt-4 text-sm text-center">
+        ¿Ya tienes una cuenta?{' '}
+        <AuthLink className="inline" href="/auth/login">
+          Inicia sesión
+        </AuthLink>
+      </h3>
     </div>
   );
 }
 
-export default LoginForm;
+export default RegisterForm;
