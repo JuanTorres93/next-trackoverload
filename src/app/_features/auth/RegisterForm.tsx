@@ -50,17 +50,24 @@ function RegisterForm() {
       });
 
       if (!response.ok) {
-        // TODO IMPORTANT: Handle errors properly once JSEND is implemented
-        showErrorToast(
-          'Error al crear la cuenta. Por favor, inténtalo de nuevo.',
-        );
+        const jsonResponse = await response.json();
+
+        const errorMessage =
+          jsonResponse.status === 'fail'
+            ? Object.values(jsonResponse.data).join(' ')
+            : jsonResponse.message || 'Error al crear el usuario.';
+
+        showErrorToast(errorMessage);
 
         return;
       }
 
       resetForm();
       router.push('/app');
-    } catch (error) {
+    } catch {
+      showErrorToast(
+        'Error al crear el usuario. Por favor, inténtalo de nuevo.',
+      );
     } finally {
       setIsLoading(false);
     }

@@ -1,10 +1,14 @@
-import { AppCreateUserUsecase } from '@/interface-adapters/app/use-cases/user';
 import { AppAuthService } from '@/interface-adapters/app/services/AppAuthService';
+import { AppCreateUserUsecase } from '@/interface-adapters/app/use-cases/user';
 
+import { JSENDResponse } from '@/app/_types/JSEND';
+import { ValidationError } from '@/domain/common/errors';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-export async function POST(_req: NextRequest) {
+export async function POST(
+  _req: NextRequest,
+): Promise<NextResponse<JSENDResponse<string>>> {
   try {
     const body = await _req.json();
     const { email, plainPassword, name } = body;
@@ -18,7 +22,10 @@ export async function POST(_req: NextRequest) {
     const token = AppAuthService.generateToken(newUser.id);
 
     const response = NextResponse.json(
-      { message: 'User created successfully' },
+      {
+        status: 'success' as const,
+        data: 'User created successfully',
+      },
       { status: 201 },
     );
 
@@ -31,9 +38,52 @@ export async function POST(_req: NextRequest) {
     return response;
   } catch (error) {
     console.log('app/api/auth/register: Error creating user:', error);
+
+    return handleErrors(error as Error);
+  }
+}
+
+function handleErrors(error: Error): NextResponse<JSENDResponse<string>> {
+  if (error instanceof ValidationError) {
+    const errorMessage = error.message;
+    let passwordErrorMessage = 'Error al crear el usuario.';
+
+    if (/Password.*at least.*characters/i.test(errorMessage)) {
+      passwordErrorMessage = 'La contraseña debe tener al menos 8 caracteres.';
+    }
+    if (/Password.*one.*uppercase.*letter/i.test(errorMessage)) {
+      passwordErrorMessage =
+        'La contraseña debe contener al menos una letra mayúscula.';
+    }
+    if (/Password.*one.*lowercase.*letter/i.test(errorMessage)) {
+      passwordErrorMessage =
+        'La contraseña debe contener al menos una letra minúscula.';
+    }
+    if (/Password.*one.*number/i.test(errorMessage)) {
+      passwordErrorMessage = 'La contraseña debe contener al menos un número.';
+    }
+    if (/Password.*one.*special.*character/i.test(errorMessage)) {
+      passwordErrorMessage =
+        'La contraseña debe contener al menos un carácter especial.';
+    }
+
     return NextResponse.json(
-      { error: 'Failed to create user' },
+      {
+        status: 'fail' as const,
+        data: {
+          password: passwordErrorMessage,
+        },
+      },
       { status: 500 },
     );
   }
+
+  // Unhandled errors
+  return NextResponse.json(
+    {
+      status: 'error' as const,
+      message: 'Error al crear el usuario.',
+    },
+    { status: 500 },
+  );
 }
