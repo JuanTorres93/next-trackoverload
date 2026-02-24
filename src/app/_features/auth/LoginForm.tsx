@@ -4,24 +4,28 @@ import ButtonPrimary from '@/app/_ui/ButtonPrimary';
 import FormEntry from '@/app/_ui/form/FormEntry';
 import Input from '@/app/_ui/Input';
 import PasswordInput from '@/app/_ui/PasswordInput';
+import { showErrorToast } from '@/app/_ui/showErrorToast';
 import AuthLink from '@/app/auth/common/AuthLink';
 import AuthSpinner from '@/app/auth/common/AuthSpinner';
+import { useRouter } from 'next/navigation';
 
 export type LoginFormState = {
   email: string;
-  password: string;
+  plainPassword: string;
 };
 
 const INITIAL_FORM_STATE: LoginFormState = {
   email: '',
-  password: '',
+  plainPassword: '',
 };
 
 function LoginForm() {
+  const router = useRouter();
   const { formState, setField, isLoading, setIsLoading, resetForm } =
     useFormSetup<LoginFormState>(INITIAL_FORM_STATE);
 
-  const isFormInvalid = !formState.email || !formState.password || isLoading;
+  const isFormInvalid =
+    !formState.email || !formState.plainPassword || isLoading;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -29,9 +33,28 @@ function LoginForm() {
     setIsLoading(true);
 
     try {
-      // TODO: Run login logic
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formState),
+      });
+
+      if (!response.ok) {
+        const jsonResponse = await response.json();
+
+        const errorMessage =
+          jsonResponse.status === 'fail'
+            ? Object.values(jsonResponse.data).join(' ')
+            : jsonResponse.message || 'Error al iniciar sesión.';
+
+        showErrorToast(errorMessage);
+        return;
+      }
 
       resetForm();
+      router.push('/app');
     } catch (error) {
     } finally {
       setIsLoading(false);
@@ -68,8 +91,8 @@ function LoginForm() {
             id="password"
             type="password"
             placeholder="Contr@s3ña"
-            value={formState.password}
-            onChange={(e) => setField('password', e.target.value)}
+            value={formState.plainPassword}
+            onChange={(e) => setField('plainPassword', e.target.value)}
             required
           />
         </FormEntry>

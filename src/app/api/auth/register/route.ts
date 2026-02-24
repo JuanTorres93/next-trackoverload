@@ -5,6 +5,7 @@ import { JSENDResponse } from '@/app/_types/JSEND';
 import { AlreadyExistsError, ValidationError } from '@/domain/common/errors';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import { cookieSessionName } from '../cookie';
 
 export async function POST(
   _req: NextRequest,
@@ -29,7 +30,7 @@ export async function POST(
       { status: 201 },
     );
 
-    response.cookies.set('token', token, {
+    response.cookies.set(cookieSessionName, token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',

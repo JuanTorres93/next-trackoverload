@@ -2,9 +2,10 @@ import { NextResponse, NextRequest } from 'next/server';
 
 import { AppAuthService } from './interface-adapters/app/services/AppAuthService';
 import { AuthError } from './domain/common/errors';
+import { cookieSessionName } from './app/api/auth/cookie';
 
 export async function middleware(request: NextRequest) {
-  const token = request.cookies.get('token')?.value;
+  const token = request.cookies.get(cookieSessionName)?.value;
 
   if (!token) {
     return NextResponse.redirect(new URL('/auth/login', request.url));
