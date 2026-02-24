@@ -17,6 +17,7 @@ import { FiLogOut } from 'react-icons/fi';
 import TextRegular from './typography/TextRegular';
 import { useState } from 'react';
 import AuthSpinner from '../auth/common/AuthSpinner';
+import Logo from './Logo';
 
 function SideNav() {
   const pathname = usePathname();
@@ -54,10 +55,13 @@ function SideNav() {
   }
 
   return (
-    <nav>
-      <ul className="flex flex-col w-full gap-1 p-4">
-        {/* TODO: PONER EL LOGO Arriba de la navbar */}
-        <li>LOGO</li>
+    <nav className="h-full ">
+      <ul className="flex flex-col w-full h-full gap-1 p-4">
+        <li className="flex items-center justify-center mb-4">
+          <Link href="/app">
+            <Logo />
+          </Link>
+        </li>
 
         {links.map((link) => (
           <li key={link.href}>
@@ -69,7 +73,7 @@ function SideNav() {
           </li>
         ))}
 
-        <li className="mt-40">
+        <li className="mt-auto">
           <NavItem
             icon={isLoading ? <AuthSpinner /> : <FiLogOut />}
             isActive={false}
