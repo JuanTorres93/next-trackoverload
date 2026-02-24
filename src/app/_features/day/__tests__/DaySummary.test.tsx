@@ -20,6 +20,7 @@ const daysRepo = AppDaysRepo as MemoryDaysRepo;
 
 // Mock before importing the component that uses next/cache
 import '@/../tests/mocks/nextjs';
+import { TEST_USER_ID } from '@/../tests/mocks/nextjs';
 
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { createServer } from '../../../../../tests/mocks/server';
@@ -46,7 +47,7 @@ createServer(
 
 async function setup() {
   const day = createEmptyTestDay({
-    userId: 'dev-user', // TODO IMPORTANT Change when authentication is implemented. The value is hardocoded and the test will fail
+    userId: TEST_USER_ID,
   });
 
   const { assembledDayDTO, meal, fakeMeal } = getValidAssembledDayDTO();
@@ -215,7 +216,6 @@ describe('DaySummary', () => {
 
     expect(body).toEqual(
       expect.objectContaining({
-        userId: 'dev-user', // TODO IMPORTANT Change when authentication is implemented. The value is hardocoded and the test will fail
         dayId: assembledDayDTO.id,
         recipeIds: [mockRecipes[0].id],
       }),

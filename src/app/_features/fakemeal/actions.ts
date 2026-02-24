@@ -3,6 +3,7 @@ import { revalidatePath } from 'next/cache';
 
 import { AppAddFakeMealToDayUsecase } from '@/interface-adapters/app/use-cases/day';
 import { AppRemoveFakeMealFromDayUsecase } from '@/interface-adapters/app/use-cases/day/RemoveFakeMealFromDay/removeFakeMealFromDay';
+import { getCurrentUserId } from '@/app/_utils/auth/getCurrentUserId';
 
 export async function addFakeMealToDay(
   dayId: string,
@@ -15,7 +16,7 @@ export async function addFakeMealToDay(
     name,
     calories,
     protein,
-    userId: 'dev-user', // TODO IMPORTANT Change when authentication is implemented.
+    userId: await getCurrentUserId(),
   });
 
   revalidatePath(`/app/meals`);
@@ -28,7 +29,7 @@ export async function removeFakeMealFromDay(
   await AppRemoveFakeMealFromDayUsecase.execute({
     dayId,
     fakeMealId,
-    userId: 'dev-user', // TODO IMPORTANT Change when authentication is implemented.
+    userId: await getCurrentUserId(),
   });
 
   revalidatePath(`/app/meals`);

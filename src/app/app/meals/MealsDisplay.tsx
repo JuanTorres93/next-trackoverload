@@ -36,7 +36,6 @@ function MealsDisplay({
       },
       body: JSON.stringify({
         dayIds: selectedDaysIds,
-        userId: 'dev-user', // TODO get user id from session
         recipeIds: recipesIds,
       }),
     });

@@ -67,7 +67,6 @@ function DaySummary({
       },
       body: JSON.stringify({
         dayId,
-        userId: 'dev-user', // TODO get user id from session
         recipeIds: recipesIds,
       }),
     });

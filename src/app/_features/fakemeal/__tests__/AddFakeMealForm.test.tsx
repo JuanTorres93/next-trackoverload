@@ -13,6 +13,7 @@ const daysRepo = AppDaysRepo as MemoryDaysRepo;
 
 // Mock before importing the component that uses next/navigation
 import '@/../tests/mocks/nextjs';
+import { TEST_USER_ID } from '@/../tests/mocks/nextjs';
 
 import { createEmptyTestDay } from '../../../../../tests/createProps/dayTestProps';
 import AddFakeMealForm from '../AddFakeMealForm';
@@ -24,7 +25,7 @@ async function setup() {
   fakeMealsRepo.clearForTesting();
 
   const day = createEmptyTestDay({
-    userId: 'dev-user',
+    userId: TEST_USER_ID,
   });
   await daysRepo.saveDay(day);
 

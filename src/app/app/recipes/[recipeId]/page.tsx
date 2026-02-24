@@ -7,6 +7,7 @@ import RecipeDisplay from './RecipeDisplay';
 import UpdateRecipeImage from './UpdateRecipeImage';
 import UpdateRecipeTitle from './UpdateRecipeTitle';
 import SectionHeading from '@/app/_ui/typography/SectionHeading';
+import { getCurrentUserId } from '@/app/_utils/auth/getCurrentUserId';
 
 export async function generateMetadata({
   params,
@@ -16,7 +17,7 @@ export async function generateMetadata({
   const { recipeId } = await params;
   const recipe = await AppGetRecipeByIdForUserUsecase.execute({
     id: recipeId,
-    userId: 'dev-user', // TODO IMPORTANT: Replace with actual user ID from authenticated user
+    userId: await getCurrentUserId(),
   });
 
   if (!recipe) {
@@ -40,7 +41,7 @@ export default async function RecipePage({
   const recipe: RecipeDTO | null = await AppGetRecipeByIdForUserUsecase.execute(
     {
       id: recipeId,
-      userId: 'dev-user', // TODO IMPORTANT: Replace with actual user ID from authenticated user
+      userId: await getCurrentUserId(),
     },
   );
 

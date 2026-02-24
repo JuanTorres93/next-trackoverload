@@ -1,4 +1,4 @@
-import { getAllRecipesForUser } from '@/app/_features/recipe/actions';
+import { getAllRecipesForLoggedInUser } from '@/app/_features/recipe/actions';
 import RecipesGrid from '@/app/_features/recipe/RecipesGrid';
 import ButtonNew from '@/app/_ui/ButtonNew';
 import PageWrapper from '@/app/_ui/PageWrapper';
@@ -12,7 +12,7 @@ export const metadata = {
 };
 
 export default async function RecipesPage() {
-  const recipes: RecipeDTO[] = await getAllRecipesForUser('dev-user'); // TODO get user id from session
+  const recipes: RecipeDTO[] = await getAllRecipesForLoggedInUser();
 
   return (
     <PageWrapper>

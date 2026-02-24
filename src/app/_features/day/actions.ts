@@ -4,6 +4,7 @@ import { AppGetAssembledDayById } from '@/interface-adapters/app/use-cases/day';
 import { AppGetMultipleAssembledDaysByIds } from '@/interface-adapters/app/use-cases/day';
 import { AppRemoveMealFromDayUsecase } from '@/interface-adapters/app/use-cases/day';
 import { revalidatePath } from 'next/cache';
+import { getCurrentUserId } from '@/app/_utils/auth/getCurrentUserId';
 
 export type AssembledDayResult = {
   dayId: string;
@@ -16,7 +17,7 @@ export async function getAssembledDayById(
   // TODO handle errors
   const assembledDay = await AppGetAssembledDayById.execute({
     dayId,
-    userId: 'dev-user', // TODO IMPORTANT: Replace with auth userId
+    userId: await getCurrentUserId(),
   });
 
   return {
@@ -31,7 +32,7 @@ export async function getAssembledDaysByIds(
   // TODO handle errors
   const assembledDays = await AppGetMultipleAssembledDaysByIds.execute({
     dayIds,
-    userId: 'dev-user', // TODO IMPORTANT: Replace with auth userId
+    userId: await getCurrentUserId(),
   });
 
   const assembledDaysMap = new Map<string, AssembledDayDTO>();
@@ -51,7 +52,7 @@ export async function removeMealFromDay(
 ): Promise<void> {
   await AppRemoveMealFromDayUsecase.execute({
     dayId: dayId,
-    userId: 'dev-user', // TODO IMPORTANT: Replace with auth userId
+    userId: await getCurrentUserId(),
     mealId,
   });
 

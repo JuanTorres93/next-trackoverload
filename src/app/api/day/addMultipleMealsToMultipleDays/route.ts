@@ -1,10 +1,12 @@
 import { AppAddMultipleMealsToMultipleDaysUsecase } from '@/interface-adapters/app/use-cases/day';
 import type { NextRequest } from 'next/server';
+import { getCurrentUserId } from '@/app/_utils/auth/getCurrentUserId';
 
 export async function POST(_req: NextRequest) {
   try {
     const body = await _req.json();
-    const { dayIds, userId, recipeIds } = body;
+    const { dayIds, recipeIds } = body;
+    const userId = await getCurrentUserId();
 
     const result = await AppAddMultipleMealsToMultipleDaysUsecase.execute({
       dayIds,

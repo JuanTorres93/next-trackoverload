@@ -104,7 +104,6 @@ function NewRecipeForm() {
 
     try {
       await createRecipe({
-        userId: 'dev-user', // TODO IMPORTANT: Replace with actual user ID
         name: formState.name,
         imageFile: compressedImageFile,
         ingredientLinesInfo: ingredientLinesInfo,

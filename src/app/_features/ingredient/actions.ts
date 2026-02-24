@@ -1,6 +1,7 @@
 'use server';
 import { AppUpdateIngredientLineUsecase } from '@/interface-adapters/app/use-cases/ingredientline';
 import { revalidatePath } from 'next/cache';
+import { getCurrentUserId } from '@/app/_utils/auth/getCurrentUserId';
 
 export async function updateIngredientLineQuantity(
   parentEntityType: 'recipe' | 'meal',
@@ -9,7 +10,7 @@ export async function updateIngredientLineQuantity(
   newQuantityInGrams: number,
 ) {
   await AppUpdateIngredientLineUsecase.execute({
-    userId: 'dev-user', // TODO: get current user id from session
+    userId: await getCurrentUserId(),
     parentEntityType,
     parentEntityId,
     ingredientLineId,

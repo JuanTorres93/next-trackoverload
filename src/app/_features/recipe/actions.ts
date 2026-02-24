@@ -14,8 +14,10 @@ import { CreateIngredientLineData } from '@/application-layer/use-cases/recipe/c
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
+import { getCurrentUserId } from '@/app/_utils/auth/getCurrentUserId';
 
-export async function getAllRecipesForUser(userId: string) {
+export async function getAllRecipesForLoggedInUser() {
+  const userId = await getCurrentUserId();
   const recipes: RecipeDTO[] = await AppGetAllRecipesForUserUsecase.execute({
     actorUserId: userId,
     targetUserId: userId,
@@ -25,16 +27,15 @@ export async function getAllRecipesForUser(userId: string) {
 }
 
 export async function createRecipe({
-  userId,
   name,
   ingredientLinesInfo,
   imageFile,
 }: {
-  userId: string;
   name: string;
   ingredientLinesInfo: CreateIngredientLineData[];
   imageFile?: File;
 }) {
+  const userId = await getCurrentUserId();
   let imageBuffer: Buffer | undefined;
 
   if (imageFile && imageFile.size > 0) {
@@ -61,7 +62,7 @@ export async function createRecipe({
 
 export async function deleteRecipe(recipeId: string) {
   await AppDeleteRecipeUsecase.execute({
-    userId: 'dev-user', // TODO get current user id
+    userId: await getCurrentUserId(),
     id: recipeId,
   });
 
@@ -75,7 +76,7 @@ export async function removeIngredientFromRecipe(
 ) {
   await AppRemoveIngredientFromRecipeUsecase.execute({
     recipeId,
-    userId: 'dev-user', // TODO get current user id
+    userId: await getCurrentUserId(),
     ingredientId,
   });
 
@@ -85,7 +86,7 @@ export async function removeIngredientFromRecipe(
 
 export async function duplicateRecipe(recipeId: string, newName?: string) {
   const duplicatedRecipe = await AppDuplicateRecipeUsecase.execute({
-    userId: 'dev-user', // TODO get current user id
+    userId: await getCurrentUserId(),
     recipeId,
     ...(newName && { newName }),
   });
@@ -96,7 +97,7 @@ export async function duplicateRecipe(recipeId: string, newName?: string) {
 
 export async function renameRecipe(recipeId: string, newName: string) {
   const updatedRecipe = await AppUpdateRecipeUsecase.execute({
-    userId: 'dev-user', // TODO get current user id
+    userId: await getCurrentUserId(),
     id: recipeId,
     name: newName,
   });
@@ -116,7 +117,7 @@ export async function updateRecipeImage(
   const imageBuffer: Buffer = Buffer.from(arrayBuffer);
 
   await AppUpdateRecipeImageUsecase.execute({
-    userId: 'dev-user', // TODO get current user id
+    userId: await getCurrentUserId(),
     recipeId,
     imageData: imageBuffer,
   });
@@ -136,7 +137,7 @@ export async function addIngredientToRecipe(
   quantityInGrams: number,
 ) {
   await AppAddIngredientToRecipeUsecase.execute({
-    userId: 'dev-user', // TODO get current user id
+    userId: await getCurrentUserId(),
     recipeId,
     externalIngredientId: externalIngredientId,
     source: source,
