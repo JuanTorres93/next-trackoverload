@@ -4,6 +4,7 @@ import ButtonPrimary from '@/app/_ui/ButtonPrimary';
 import Checkbox from '@/app/_ui/Checkbox';
 import FormEntry from '@/app/_ui/form/FormEntry';
 import Input from '@/app/_ui/Input';
+import PasswordInput from '@/app/_ui/PasswordInput';
 import { showErrorToast } from '@/app/_ui/showErrorToast';
 import AuthLink from '@/app/auth/common/AuthLink';
 import AuthSpinner from '@/app/auth/common/AuthSpinner';
@@ -102,11 +103,11 @@ function RegisterForm() {
           />
         </FormEntry>
 
-        <FormEntry labelText="Password" htmlFor="plainPassword">
-          <Input
+        <FormEntry labelText="Contraseña" htmlFor="plainPassword">
+          <PasswordInput
             id="plainPassword"
             type="password"
-            placeholder="Contraseña"
+            placeholder="Contr@s3ña"
             value={formState.plainPassword}
             onChange={(e) => setField('plainPassword', e.target.value)}
             required

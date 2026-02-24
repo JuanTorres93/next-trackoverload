@@ -3,6 +3,7 @@ import { useFormSetup } from '@/app/_hooks/useFormSetup';
 import ButtonPrimary from '@/app/_ui/ButtonPrimary';
 import FormEntry from '@/app/_ui/form/FormEntry';
 import Input from '@/app/_ui/Input';
+import PasswordInput from '@/app/_ui/PasswordInput';
 import AuthLink from '@/app/auth/common/AuthLink';
 import AuthSpinner from '@/app/auth/common/AuthSpinner';
 
@@ -62,11 +63,11 @@ function LoginForm() {
           />
         </FormEntry>
 
-        <FormEntry labelText="Password" htmlFor="password">
-          <Input
+        <FormEntry labelText="Contraseña" htmlFor="password">
+          <PasswordInput
             id="password"
             type="password"
-            placeholder="Contraseña"
+            placeholder="Contr@s3ña"
             value={formState.password}
             onChange={(e) => setField('password', e.target.value)}
             required
