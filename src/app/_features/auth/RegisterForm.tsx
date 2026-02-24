@@ -4,6 +4,7 @@ import ButtonPrimary from '@/app/_ui/ButtonPrimary';
 import Checkbox from '@/app/_ui/Checkbox';
 import FormEntry from '@/app/_ui/form/FormEntry';
 import Input from '@/app/_ui/Input';
+import { showErrorToast } from '@/app/_ui/showErrorToast';
 import AuthLink from '@/app/auth/common/AuthLink';
 import AuthSpinner from '@/app/auth/common/AuthSpinner';
 import { useRouter } from 'next/navigation';
@@ -48,7 +49,14 @@ function RegisterForm() {
         body: JSON.stringify(formState),
       });
 
-      if (!response.ok) return;
+      if (!response.ok) {
+        // TODO IMPORTANT: Handle errors properly once JSEND is implemented
+        showErrorToast(
+          'Error al crear la cuenta. Por favor, inténtalo de nuevo.',
+        );
+
+        return;
+      }
 
       resetForm();
       router.push('/app');

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import TextRegular from './_ui/typography/TextRegular';
+import { Providers } from './_providers/Providers';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -24,12 +25,14 @@ export default function RootLayout({
       <body
         className={`${inter.className} antialiased overflow-y-scroll text-text bg-background`}
       >
-        <TextRegular
-          id="wrapper-all-always"
-          className="w-full overflow-x-hidden"
-        >
-          {children}
-        </TextRegular>
+        <Providers>
+          <TextRegular
+            id="wrapper-all-always"
+            className="w-full overflow-x-hidden"
+          >
+            {children}
+          </TextRegular>
+        </Providers>
       </body>
     </html>
   );
