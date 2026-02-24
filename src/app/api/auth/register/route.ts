@@ -2,7 +2,7 @@ import { AppAuthService } from '@/interface-adapters/app/services/AppAuthService
 import { AppCreateUserUsecase } from '@/interface-adapters/app/use-cases/user';
 
 import { JSENDResponse } from '@/app/_types/JSEND';
-import { ValidationError } from '@/domain/common/errors';
+import { AlreadyExistsError, ValidationError } from '@/domain/common/errors';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
@@ -37,13 +37,23 @@ export async function POST(
 
     return response;
   } catch (error) {
-    console.log('app/api/auth/register: Error creating user:', error);
+    console.error('app/api/auth/register: Error creating user:', error);
 
     return handleErrors(error as Error);
   }
 }
 
 function handleErrors(error: Error): NextResponse<JSENDResponse<string>> {
+  if (error instanceof AlreadyExistsError) {
+    return NextResponse.json(
+      {
+        status: 'fail' as const,
+        data: { email: 'Este email ya está registrado.' },
+      },
+      { status: 409 },
+    );
+  }
+
   if (error instanceof ValidationError) {
     const errorMessage = error.message;
     let passwordErrorMessage = 'Error al crear el usuario.';
@@ -74,7 +84,7 @@ function handleErrors(error: Error): NextResponse<JSENDResponse<string>> {
           password: passwordErrorMessage,
         },
       },
-      { status: 500 },
+      { status: 422 },
     );
   }
 
