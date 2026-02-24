@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import { jwtVerify, SignJWT } from 'jose';
 import { AuthService, AuthToken } from '@/domain/services/AuthService.port';
 
 type JwtPayload = {
@@ -6,28 +6,33 @@ type JwtPayload = {
 };
 
 export class JwtAuthService implements AuthService {
-  constructor(
-    private readonly secret: string,
-    private readonly expiresIn: string | number = '7d',
-  ) {}
+  private readonly secretKey: Uint8Array;
 
-  generateToken(userId: string): AuthToken {
-    return jwt.sign({ userId } satisfies JwtPayload, this.secret, {
-      expiresIn: this.expiresIn,
-    } as jwt.SignOptions);
+  constructor(
+    secret: string,
+    private readonly expiresIn: string | number = '7d',
+  ) {
+    this.secretKey = new TextEncoder().encode(secret);
   }
 
-  validateToken(token: AuthToken): boolean {
+  async generateToken(userId: string): Promise<AuthToken> {
+    return new SignJWT({ userId } satisfies JwtPayload)
+      .setProtectedHeader({ alg: 'HS256' })
+      .setExpirationTime(this.expiresIn)
+      .sign(this.secretKey);
+  }
+
+  async validateToken(token: AuthToken): Promise<boolean> {
     try {
-      jwt.verify(token, this.secret);
+      await jwtVerify(token, this.secretKey);
       return true;
     } catch {
       return false;
     }
   }
 
-  getCurrentUserIdFromToken(token: AuthToken): string {
-    const payload = jwt.verify(token, this.secret) as JwtPayload;
-    return payload.userId;
+  async getCurrentUserIdFromToken(token: AuthToken): Promise<string> {
+    const { payload } = await jwtVerify(token, this.secretKey);
+    return (payload as unknown as JwtPayload).userId;
   }
 }

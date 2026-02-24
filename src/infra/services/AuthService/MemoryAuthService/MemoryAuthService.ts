@@ -9,7 +9,7 @@ type TokenData = {
 export class MemoryAuthService implements AuthService {
   private revokedTokens: Set<string> = new Set();
 
-  generateToken(userId: string): AuthToken {
+  async generateToken(userId: string): Promise<AuthToken> {
     const tokenData: TokenData = {
       userId,
       createdAt: Date.now(),
@@ -19,7 +19,7 @@ export class MemoryAuthService implements AuthService {
     return Buffer.from(JSON.stringify(tokenData)).toString('base64');
   }
 
-  validateToken(token: AuthToken): boolean {
+  async validateToken(token: AuthToken): Promise<boolean> {
     if (this.revokedTokens.has(token)) {
       return false;
     }
@@ -36,8 +36,8 @@ export class MemoryAuthService implements AuthService {
     this.revokedTokens.add(token);
   }
 
-  getCurrentUserIdFromToken(token: AuthToken): string {
-    if (!this.validateToken(token)) {
+  async getCurrentUserIdFromToken(token: AuthToken): Promise<string> {
+    if (!(await this.validateToken(token))) {
       throw new Error('Invalid or revoked token');
     }
 

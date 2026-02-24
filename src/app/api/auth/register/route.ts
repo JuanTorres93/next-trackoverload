@@ -19,7 +19,7 @@ export async function POST(
       name,
     });
 
-    const token = AppAuthService.generateToken(newUser.id);
+    const token = await AppAuthService.generateToken(newUser.id);
 
     const response = NextResponse.json(
       {
