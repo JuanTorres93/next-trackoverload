@@ -6,26 +6,31 @@ import FormEntry from '@/app/_ui/form/FormEntry';
 import Input from '@/app/_ui/Input';
 import AuthLink from '@/app/auth/common/AuthLink';
 import AuthSpinner from '@/app/auth/common/AuthSpinner';
+import { useRouter } from 'next/navigation';
 
 export type RegisterFormState = {
+  name: string;
   email: string;
-  password: string;
+  plainPassword: string;
   acceptTerms: boolean;
 };
 
 const INITIAL_FORM_STATE: RegisterFormState = {
+  name: '',
   email: '',
-  password: '',
+  plainPassword: '',
   acceptTerms: false,
 };
 
 function RegisterForm() {
+  const router = useRouter();
   const { formState, setField, isLoading, setIsLoading, resetForm } =
     useFormSetup<RegisterFormState>(INITIAL_FORM_STATE);
 
   const isFormInvalid =
+    !formState.name ||
     !formState.email ||
-    !formState.password ||
+    !formState.plainPassword ||
     !formState.acceptTerms ||
     isLoading;
 
@@ -35,9 +40,18 @@ function RegisterForm() {
     setIsLoading(true);
 
     try {
-      // TODO: Run registration logic
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formState),
+      });
+
+      if (!response.ok) return;
 
       resetForm();
+      router.push('/app');
     } catch (error) {
     } finally {
       setIsLoading(false);
@@ -51,6 +65,17 @@ function RegisterForm() {
       </header>
 
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+        <FormEntry labelText="Nombre" htmlFor="name">
+          <Input
+            id="name"
+            type="text"
+            value={formState.name}
+            placeholder="Nombre"
+            onChange={(e) => setField('name', e.target.value)}
+            required
+          />
+        </FormEntry>
+
         <FormEntry labelText="Email" htmlFor="email">
           <Input
             id="email"
@@ -62,13 +87,13 @@ function RegisterForm() {
           />
         </FormEntry>
 
-        <FormEntry labelText="Password" htmlFor="password">
+        <FormEntry labelText="Password" htmlFor="plainPassword">
           <Input
-            id="password"
+            id="plainPassword"
             type="password"
             placeholder="Contraseña"
-            value={formState.password}
-            onChange={(e) => setField('password', e.target.value)}
+            value={formState.plainPassword}
+            onChange={(e) => setField('plainPassword', e.target.value)}
             required
           />
         </FormEntry>
