@@ -5,6 +5,7 @@ import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { Email } from '@/domain/value-objects/Email/Email';
 import { IdGenerator } from '@/domain/services/IdGenerator.port';
 import { PasswordEncryptorService } from '@/domain/services/PasswordEncryptorService.port';
+import { Password } from '@/domain/value-objects/Password/Password';
 
 export type CreateUserUsecaseRequest = {
   name: string;
@@ -23,6 +24,7 @@ export class CreateUserUsecase {
   async execute(request: CreateUserUsecaseRequest): Promise<UserDTO> {
     // Validate email
     const email = Email.create(request.email).value;
+    const validatedPassword = Password.create(request.plainPassword).value;
 
     // Check for existing user with same email or customerId
     const existingEmailPromise = this.usersRepo.getUserByEmail(email);
@@ -48,9 +50,8 @@ export class CreateUserUsecase {
       );
     }
 
-    const hashedPassword = await this.passwordEncryptor.hashPassword(
-      request.plainPassword,
-    );
+    const hashedPassword =
+      await this.passwordEncryptor.hashPassword(validatedPassword);
 
     const newUser = User.create({
       id: this.idGenerator.generateId(),
