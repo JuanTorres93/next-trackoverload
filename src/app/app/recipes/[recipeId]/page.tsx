@@ -45,7 +45,7 @@ export default async function RecipePage({
   if (!recipe) return <PageWrapper>No se encontró la receta</PageWrapper>;
 
   return (
-    <PageWrapper>
+    <PageWrapper className="max-w-7xl ">
       <div className="grid grid-cols-1 gap-20">
         <header className="grid items-center w-full rounded-2xl gap-8 p-2 pr-6 grid-cols-[max-content_minmax(1rem,1fr)] grid-rows-[max-content_min-content] bg-surface-dark text-text-light">
           <UpdateRecipeImage recipe={recipe} className="row-span-2 " />

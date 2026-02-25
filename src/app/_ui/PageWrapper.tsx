@@ -5,7 +5,7 @@ function PageWrapper({
   const { className, ...rest } = props;
 
   return (
-    <div className={`p-6 max-w-7xl ${className}`} {...rest}>
+    <div className={`p-6 ${className}`} {...rest}>
       {children}
     </div>
   );

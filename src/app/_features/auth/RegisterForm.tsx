@@ -63,8 +63,8 @@ function RegisterForm() {
         return;
       }
 
-      resetForm();
       router.push('/app');
+      resetForm();
     } catch {
       showErrorToast(
         'Error al crear el usuario. Por favor, inténtalo de nuevo.',
