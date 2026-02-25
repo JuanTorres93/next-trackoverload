@@ -3,10 +3,9 @@ import { eachDayOfInterval, endOfWeek, startOfWeek } from 'date-fns';
 import { DayId } from '@/domain/value-objects/DayId/DayId';
 
 import { getAssembledDaysByIds } from '@/app/_features/day/actions';
+import { parseFilterValueToDate } from '@/app/_features/day/utils/parseFilterValueToDate';
 import PageWrapper from '../../_ui/PageWrapper';
 import MealsDisplay from './MealsDisplay';
-import WeekSelector from '@/app/_features/day/WeekSelector';
-import { parseFilterValueToDate } from '@/app/_features/day/utils/parseFilterValueToDate';
 
 export const dynamic = 'force-dynamic';
 
@@ -48,7 +47,6 @@ export default async function MealsPage({
 
   return (
     <PageWrapper>
-      <WeekSelector className="mb-10" />
       <MealsDisplay assembledDays={assembledDays} />
     </PageWrapper>
   );

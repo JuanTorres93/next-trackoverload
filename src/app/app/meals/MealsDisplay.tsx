@@ -2,6 +2,7 @@
 
 import { AssembledDayResult } from '@/app/_features/day/actions';
 import DaySummary from '@/app/_features/day/DaySummary';
+import WeekSelector from '@/app/_features/day/WeekSelector';
 import SelectRecipeModal from '@/app/_features/recipe/SelectRecipeModal';
 import ButtonNew from '@/app/_ui/ButtonNew';
 import ButtonPrimary from '@/app/_ui/ButtonPrimary';
@@ -54,24 +55,27 @@ function MealsDisplay({
 
   return (
     <Modal>
-      <div className="flex gap-4 mb-8">
-        <Modal.Open opens="add-food-to-days-modal">
-          <ButtonNew disabled={selectedDaysIds.length < 1}>
-            Añadir comidas a varios días
-          </ButtonNew>
-        </Modal.Open>
+      <div className="fixed top-0 z-10 flex flex-col w-full gap-4 py-4 bg-background">
+        <WeekSelector />
+        <div className="flex gap-4">
+          <Modal.Open opens="add-food-to-days-modal">
+            <ButtonNew disabled={selectedDaysIds.length < 1}>
+              Añadir comidas a varios días
+            </ButtonNew>
+          </Modal.Open>
 
-        {areDaysSelected && (
-          <ButtonPrimary
-            className="text-selected border-selected hover:bg-selected"
-            onClick={clearSelectedDays}
-          >
-            Limpiar selección
-          </ButtonPrimary>
-        )}
+          {areDaysSelected && (
+            <ButtonPrimary
+              className="text-selected border-selected hover:bg-selected"
+              onClick={clearSelectedDays}
+            >
+              Limpiar selección
+            </ButtonPrimary>
+          )}
+        </div>
       </div>
 
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(5rem,20rem))] gap-4">
+      <div className="grid pl-1 mt-33 grid-cols-[repeat(auto-fill,minmax(5rem,20rem))] gap-4">
         {assembledDays.map(({ dayId, assembledDay }) => (
           <DaySummary
             key={dayId}
