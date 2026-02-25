@@ -116,8 +116,11 @@ function NewRecipeForm() {
 
   return (
     <IngredientSearch onIngredientSelection={onIngredientSelection}>
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">
-        <FormRow className="grid items-start justify-center grid-cols-2 gap-8">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col items-center max-w-2xl gap-4"
+      >
+        <FormRow>
           <div
             id="image-and-name-container"
             className="relative flex flex-col items-center justify-center p-4 mx-auto mb-2 overflow-hidden w-80 text-text-light rounded-2xl aspect-square"
@@ -156,15 +159,15 @@ function NewRecipeForm() {
               accept="image/jpeg,image/png,image/webp"
             />
           </div>
+        </FormRow>
 
-          <FormRow className="flex-col items-center gap-6">
-            <div className="flex items-center justify-center gap-4">
-              <IngredientSearch.Search className="w-full max-w-120" />
-              <IngredientSearch.BarcodeSearch />
-            </div>
+        <FormRow className="flex-col items-center gap-6">
+          <div className="flex items-center justify-center gap-4">
+            <IngredientSearch.Search className="w-full max-w-120" />
+            <IngredientSearch.BarcodeSearch />
+          </div>
 
-            <IngredientSearch.FoundIngredientsList containerClassName="max-w-120" />
-          </FormRow>
+          <IngredientSearch.FoundIngredientsList containerClassName="max-w-120" />
         </FormRow>
 
         <FormRow className="flex-col items-center justify-center mx-auto max-w-150">
