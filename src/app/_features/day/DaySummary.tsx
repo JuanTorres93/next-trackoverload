@@ -75,7 +75,7 @@ function DaySummary({
   return (
     <Modal>
       <div
-        className={`border-2 rounded-xl border-surface-dark overflow-x-hidden transition ${
+        className={`grid grid-cols-1 gap-4 grid-rows-[min-content_1fr_min-content] border-2 rounded-xl border-surface-dark overflow-x-hidden transition ${
           isToday ? 'border-3! shadow-md border-primary-light!' : ''
         } ${isPast ? 'opacity-60' : ''} ${isSelected ? 'border-selected!' : ''}`}
       >
@@ -89,11 +89,11 @@ function DaySummary({
           <DateTitle day={day} month={month} year={year} />
         </div>
 
-        <div className="grid grid-cols-1 gap-3 overflow-x-scroll max-h-100">
+        <div className="grid items-start grid-cols-1 gap-3 overflow-y-scroll auto-rows-min max-h-90">
           {meals.length > 0 &&
             meals.map((meal) => (
               <MealLine
-                className="m-3"
+                className="mx-3"
                 key={meal.id}
                 meal={meal}
                 dayId={dayId}
@@ -103,7 +103,7 @@ function DaySummary({
           {fakeMeals.length > 0 &&
             fakeMeals.map((fakeMeal) => (
               <FakeMeal
-                className="m-3"
+                className="mx-3"
                 key={fakeMeal.id}
                 fakeMeal={fakeMeal}
                 dayId={dayId}
@@ -111,7 +111,7 @@ function DaySummary({
             ))}
         </div>
 
-        <div className="flex mt-3">
+        <div className="flex">
           <Modal.Open opens="add-food-modal">
             <ButtonNew className="w-full m-2">Comida</ButtonNew>
           </Modal.Open>

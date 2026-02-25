@@ -6,7 +6,7 @@ function LoggedMealContainer({
 
   return (
     <div
-      className={`grid relative grid-rows-[1fr_auto] h-full max-h-48 overflow-hidden rounded-xl ${className}`}
+      className={`grid relative grid-rows-[1fr_auto] max-h-48 overflow-hidden rounded-xl border border-border ${className}`}
       {...rest}
     >
       {children}
