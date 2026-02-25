@@ -8,6 +8,7 @@ import UpdateRecipeImage from './UpdateRecipeImage';
 import UpdateRecipeTitle from './UpdateRecipeTitle';
 import SectionHeading from '@/app/_ui/typography/SectionHeading';
 import { getCurrentUserId } from '@/app/_utils/auth/getCurrentUserId';
+import { getRecipeByIdForLoggedInUser } from '@/app/_features/recipe/actions';
 
 export async function generateMetadata({
   params,
@@ -38,12 +39,8 @@ export default async function RecipePage({
   params: Promise<{ recipeId: string }>;
 }) {
   const { recipeId } = await params;
-  const recipe: RecipeDTO | null = await AppGetRecipeByIdForUserUsecase.execute(
-    {
-      id: recipeId,
-      userId: await getCurrentUserId(),
-    },
-  );
+
+  const recipe: RecipeDTO | null = await getRecipeByIdForLoggedInUser(recipeId);
 
   if (!recipe) return <PageWrapper>No se encontró la receta</PageWrapper>;
 

@@ -1,10 +1,11 @@
 'use server';
 import {
+  AppGetAllRecipesForUserUsecase,
+  AppGetRecipeByIdForUserUsecase,
   AppAddIngredientToRecipeUsecase,
   AppCreateRecipeUsecase,
   AppDeleteRecipeUsecase,
   AppDuplicateRecipeUsecase,
-  AppGetAllRecipesForUserUsecase,
   AppRemoveIngredientFromRecipeUsecase,
   AppUpdateRecipeImageUsecase,
   AppUpdateRecipeUsecase,
@@ -24,6 +25,19 @@ export async function getAllRecipesForLoggedInUser() {
   });
 
   return recipes;
+}
+
+export async function getRecipeByIdForLoggedInUser(recipeId: string) {
+  const userId = await getCurrentUserId();
+
+  const recipe: RecipeDTO | null = await AppGetRecipeByIdForUserUsecase.execute(
+    {
+      id: recipeId,
+      userId,
+    },
+  );
+
+  return recipe;
 }
 
 export async function createRecipe({
