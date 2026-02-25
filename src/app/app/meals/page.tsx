@@ -5,6 +5,7 @@ import { DayId } from '@/domain/value-objects/DayId/DayId';
 import { getAssembledDaysByIds } from '@/app/_features/day/actions';
 import PageWrapper from '../../_ui/PageWrapper';
 import MealsDisplay from './MealsDisplay';
+import WeekSelector from '@/app/_features/day/WeekSelector';
 
 export const dynamic = 'force-dynamic';
 
@@ -35,6 +36,7 @@ export default async function MealsPage() {
 
   return (
     <PageWrapper>
+      <WeekSelector />
       <MealsDisplay assembledDays={assembledDays} />
     </PageWrapper>
   );
