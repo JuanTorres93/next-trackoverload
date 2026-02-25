@@ -2,9 +2,11 @@ import { HiMiniPencilSquare } from 'react-icons/hi2';
 
 function ButtonEditImage({
   onImageUpload,
+  disabled = false,
   ...props
 }: {
   onImageUpload: (imageFile: File) => void;
+  disabled?: boolean;
 } & React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div {...props}>
@@ -23,6 +25,7 @@ function ButtonEditImage({
         name="new-recipe-image"
         accept="image/*"
         multiple={false}
+        disabled={disabled}
         onChange={(e) => {
           const files = e.target.files;
           if (!files || files.length === 0) return;
