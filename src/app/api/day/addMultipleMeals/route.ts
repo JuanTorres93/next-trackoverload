@@ -4,15 +4,6 @@ import { getCurrentUserId } from '@/app/_utils/auth/getCurrentUserId';
 
 export async function POST(request: NextRequest) {
   try {
-    const text = await request.text();
-
-    if (!text) {
-      return Response.json(
-        { error: 'Request body is required' },
-        { status: 400 },
-      );
-    }
-
     const body = await request.json();
 
     const { dayId, recipeIds } = body;
