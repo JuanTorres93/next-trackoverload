@@ -35,7 +35,11 @@ export class UpdateRecipeImageUsecase {
     // Get image
     const currentImageUrl = recipe.imageUrl;
 
-    const oldImage = await this.imagesRepo.getByUrl(currentImageUrl!);
+    let oldImage = undefined;
+
+    if (currentImageUrl) {
+      oldImage = await this.imagesRepo.getByUrl(currentImageUrl);
+    }
 
     // Delete old image if exists
     if (oldImage) {
