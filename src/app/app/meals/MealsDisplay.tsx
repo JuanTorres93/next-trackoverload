@@ -4,6 +4,7 @@ import { AssembledDayResult } from '@/app/_features/day/actions';
 import DaySummary from '@/app/_features/day/DaySummary';
 import SelectRecipeModal from '@/app/_features/recipe/SelectRecipeModal';
 import ButtonNew from '@/app/_ui/ButtonNew';
+import ButtonPrimary from '@/app/_ui/ButtonPrimary';
 import Modal from '@/app/_ui/Modal';
 import { useState } from 'react';
 
@@ -13,6 +14,8 @@ function MealsDisplay({
   assembledDays: AssembledDayResult[];
 }) {
   const [selectedDaysIds, setSelectedDaysIds] = useState<string[]>([]);
+
+  const areDaysSelected = selectedDaysIds.length > 0;
 
   function handleSelectDay(dayId: string) {
     setSelectedDaysIds((prevSelectedDaysIds) => {
@@ -26,6 +29,12 @@ function MealsDisplay({
 
   function isDaySelected(dayId: string) {
     return selectedDaysIds.includes(dayId);
+  }
+
+  function clearSelectedDays() {
+    if (!areDaysSelected) return;
+
+    setSelectedDaysIds([]);
   }
 
   async function addMealsRequest(recipesIds: string[]) {
@@ -45,11 +54,22 @@ function MealsDisplay({
 
   return (
     <Modal>
-      <Modal.Open opens="add-food-to-days-modal">
-        <ButtonNew className="mb-8 " disabled={selectedDaysIds.length < 1}>
-          Añadir comidas a varios días
-        </ButtonNew>
-      </Modal.Open>
+      <div className="flex gap-4 mb-8">
+        <Modal.Open opens="add-food-to-days-modal">
+          <ButtonNew disabled={selectedDaysIds.length < 1}>
+            Añadir comidas a varios días
+          </ButtonNew>
+        </Modal.Open>
+
+        {areDaysSelected && (
+          <ButtonPrimary
+            className="text-selected border-selected hover:bg-selected"
+            onClick={clearSelectedDays}
+          >
+            Limpiar selección
+          </ButtonPrimary>
+        )}
+      </div>
 
       <div className="grid grid-cols-[repeat(auto-fill,minmax(5rem,20rem))] gap-4">
         {assembledDays.map(({ dayId, assembledDay }) => (
