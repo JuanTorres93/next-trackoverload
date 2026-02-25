@@ -6,6 +6,7 @@ import { getAssembledDaysByIds } from '@/app/_features/day/actions';
 import PageWrapper from '../../_ui/PageWrapper';
 import MealsDisplay from './MealsDisplay';
 import WeekSelector from '@/app/_features/day/WeekSelector';
+import { parseFilterValueToDate } from '@/app/_features/day/utils/parseFilterValueToDate';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,10 +15,21 @@ export const metadata = {
   description: 'Planificación de comidas',
 };
 
-export default async function MealsPage() {
-  const now = new Date();
-  const dayStartWeek = startOfWeek(now, { weekStartsOn: 1 });
-  const dayEndWeek = endOfWeek(now, { weekStartsOn: 1 });
+export default async function MealsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ week?: string }>;
+}) {
+  const params = await searchParams;
+
+  let currentDate = new Date();
+
+  if (params.week) {
+    currentDate = parseFilterValueToDate(params.week);
+  }
+
+  const dayStartWeek = startOfWeek(currentDate, { weekStartsOn: 1 });
+  const dayEndWeek = endOfWeek(currentDate, { weekStartsOn: 1 });
   const daysOfWeek = eachDayOfInterval({
     start: dayStartWeek,
     end: dayEndWeek,

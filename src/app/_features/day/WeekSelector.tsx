@@ -1,18 +1,12 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import {
-  format,
-  startOfWeek,
-  endOfWeek,
-  addWeeks,
-  subWeeks,
-  parse,
-  isValid,
-} from 'date-fns';
+import { format, startOfWeek, endOfWeek, addWeeks, subWeeks } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
+import { parseFilterValueToDate } from './utils/parseFilterValueToDate';
+import ButtonPrimary from '@/app/_ui/ButtonPrimary';
 
 function WeekSelector({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
@@ -30,6 +24,13 @@ function WeekSelector({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
     weekStartsOn: weekStartsOnMonday,
   });
   const weekEnd = endOfWeek(currentDate, { weekStartsOn: weekStartsOnMonday });
+
+  const isCurrentWeek =
+    format(weekStart, 'yyyy_M_d') ===
+    format(
+      startOfWeek(new Date(), { weekStartsOn: weekStartsOnMonday }),
+      'yyyy_M_d',
+    );
 
   function handleShowPreviousWeek() {
     const previousWeek = subWeeks(currentDate, 1);
@@ -63,6 +64,15 @@ function WeekSelector({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
         <span>&mdash;</span>
         <Day date={weekEnd} />
       </div>
+
+      {!isCurrentWeek && (
+        <ButtonPrimary
+          className="p-1! px-2! text-sm"
+          onClick={() => handleFilter(defaultFilterValue())}
+        >
+          Ir a semana actual
+        </ButtonPrimary>
+      )}
     </div>
   );
 }
@@ -99,11 +109,6 @@ function defaultFilterValue() {
 
 function formatDateToFilterValue(date: Date) {
   return format(date, 'yyyy_M_d');
-}
-
-function parseFilterValueToDate(filterValue: string) {
-  const parsed = parse(filterValue, 'yyyy_M_d', new Date());
-  return isValid(parsed) ? parsed : new Date();
 }
 
 export default WeekSelector;
