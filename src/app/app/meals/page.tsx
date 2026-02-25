@@ -48,7 +48,7 @@ export default async function MealsPage({
 
   return (
     <PageWrapper>
-      <WeekSelector />
+      <WeekSelector className="mb-10" />
       <MealsDisplay assembledDays={assembledDays} />
     </PageWrapper>
   );
