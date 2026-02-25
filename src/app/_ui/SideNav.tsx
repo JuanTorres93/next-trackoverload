@@ -26,9 +26,12 @@ function SideNav() {
 
   const links = [
     { href: '/app', label: 'Inicio', icon: <HiHome /> },
-    // { href: '/app/ingredients', label: 'Ingredientes', icon: <HiBeaker /> },
     { href: '/app/recipes', label: 'Recetas', icon: <HiBookOpen /> },
     { href: '/app/meals', label: 'Comidas', icon: <HiCalendarDays /> },
+  ];
+
+  // TODO IMPORTANT: Move unimplemented links to links once they are implemented
+  const unimplementedLinks = [
     { href: '/app/templates', label: 'Plantillas', icon: <HiSquares2X2 /> },
     { href: '/app/workouts', label: 'Entrenos', icon: <HiFire /> },
     {
@@ -39,6 +42,10 @@ function SideNav() {
     { href: '/app/profile', label: 'Perfil', icon: <HiUserCircle /> },
     { href: '/subscription', label: 'Suscripción', icon: <HiCreditCard /> },
   ];
+
+  if (process.env.NODE_ENV !== 'production') {
+    links.push(...unimplementedLinks);
+  }
 
   async function handleLogout() {
     setIsLoading(true);
