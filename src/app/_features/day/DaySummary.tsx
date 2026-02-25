@@ -13,6 +13,7 @@ import DayTitle from './DayTitle';
 import MealLine from '../meal/MealLine';
 import AddFakeMealModal from '../fakemeal/AddFakeMealModal';
 import FakeMeal from '../fakemeal/FakeMeal';
+import CaloriesAndProtein from '../common/CaloriesAndProtein';
 
 const computeIsToday = (day: number, month: number, year: number) => {
   const today = new Date();
@@ -49,6 +50,13 @@ function DaySummary({
 
   const meals = assembledDay?.meals || [];
   const fakeMeals = assembledDay?.fakeMeals || [];
+
+  const dayTotalCalories =
+    meals.reduce((total, meal) => total + meal.calories, 0) +
+    fakeMeals.reduce((total, fakeMeal) => total + fakeMeal.calories, 0);
+  const dayTotalProtein =
+    meals.reduce((total, meal) => total + meal.protein, 0) +
+    fakeMeals.reduce((total, fakeMeal) => total + fakeMeal.protein, 0);
 
   // Compute day name And capitalize first letter
   const date = new Date(year, month - 1, day);
@@ -119,6 +127,16 @@ function DaySummary({
           <Modal.Open opens="add-fake-meal-modal">
             <ButtonNew className="w-full m-2">Rápido</ButtonNew>
           </Modal.Open>
+        </div>
+
+        <div className="pt-2 bg-surface-dark ">
+          <h4 className="text-lg font-semibold text-center text-text-light">
+            Total{' '}
+          </h4>
+          <CaloriesAndProtein
+            calories={dayTotalCalories}
+            protein={dayTotalProtein}
+          />
         </div>
       </div>
 
