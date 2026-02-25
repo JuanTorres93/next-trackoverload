@@ -2,10 +2,21 @@ import { AppAddMultipleMealsToDayUsecase } from '@/interface-adapters/app/use-ca
 import type { NextRequest } from 'next/server';
 import { getCurrentUserId } from '@/app/_utils/auth/getCurrentUserId';
 
-export async function POST(_req: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    const body = await _req.json();
+    const text = await request.text();
+
+    if (!text) {
+      return Response.json(
+        { error: 'Request body is required' },
+        { status: 400 },
+      );
+    }
+
+    const body = await request.json();
+
     const { dayId, recipeIds } = body;
+
     const userId = await getCurrentUserId();
 
     await AppAddMultipleMealsToDayUsecase.execute({
