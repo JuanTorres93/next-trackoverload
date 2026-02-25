@@ -16,7 +16,7 @@ import { FiLogOut } from 'react-icons/fi';
 
 import TextRegular from './typography/TextRegular';
 import { useState } from 'react';
-import AuthSpinner from '../auth/common/AuthSpinner';
+import AuthSpinner from '../_features/auth/AuthSpinner';
 import Logo from './Logo';
 
 function SideNav() {

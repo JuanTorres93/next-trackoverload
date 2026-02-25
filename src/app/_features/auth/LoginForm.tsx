@@ -5,8 +5,8 @@ import FormEntry from '@/app/_ui/form/FormEntry';
 import Input from '@/app/_ui/Input';
 import PasswordInput from '@/app/_ui/PasswordInput';
 import { showErrorToast } from '@/app/_ui/showErrorToast';
-import AuthLink from '@/app/auth/common/AuthLink';
-import AuthSpinner from '@/app/auth/common/AuthSpinner';
+import AuthLink from '@/app/_features/auth/AuthLink';
+import AuthSpinner from '@/app/_features/auth/AuthSpinner';
 import { useRouter } from 'next/navigation';
 
 export type LoginFormState = {
