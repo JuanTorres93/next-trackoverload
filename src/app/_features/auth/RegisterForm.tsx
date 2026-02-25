@@ -1,4 +1,6 @@
 'use client';
+import AuthLink from '@/app/_features/auth/AuthLink';
+import AuthSpinner from '@/app/_features/auth/AuthSpinner';
 import { useFormSetup } from '@/app/_hooks/useFormSetup';
 import ButtonPrimary from '@/app/_ui/ButtonPrimary';
 import Checkbox from '@/app/_ui/Checkbox';
@@ -6,8 +8,6 @@ import FormEntry from '@/app/_ui/form/FormEntry';
 import Input from '@/app/_ui/Input';
 import PasswordInput from '@/app/_ui/PasswordInput';
 import { showErrorToast } from '@/app/_ui/showErrorToast';
-import AuthLink from '@/app/_features/auth/AuthLink';
-import AuthSpinner from '@/app/_features/auth/AuthSpinner';
 import { useRouter } from 'next/navigation';
 
 export type RegisterFormState = {
@@ -115,7 +115,14 @@ function RegisterForm() {
         </FormEntry>
 
         <FormEntry
-          labelText="Acepto los términos y condiciones"
+          labelText={
+            <span>
+              Acepto los{' '}
+              <AuthLink href="/legal/terms-and-conditions">
+                términos y condiciones
+              </AuthLink>
+            </span>
+          }
           htmlFor="acceptTerms"
           setHorizontal
           reverseLabelOrder

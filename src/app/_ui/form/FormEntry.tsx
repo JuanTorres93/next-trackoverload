@@ -11,7 +11,7 @@ function FormEntry({
   children,
   ...props
 }: {
-  labelText: string;
+  labelText: string | React.ReactNode;
   htmlFor: string;
   setHorizontal?: boolean;
   reverseLabelOrder?: boolean;
