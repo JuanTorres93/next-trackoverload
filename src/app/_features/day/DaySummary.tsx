@@ -51,6 +51,8 @@ function DaySummary({
   const meals = assembledDay?.meals || [];
   const fakeMeals = assembledDay?.fakeMeals || [];
 
+  const hasMeals = meals.length > 0 || fakeMeals.length > 0;
+
   const dayTotalCalories =
     meals.reduce((total, meal) => total + meal.calories, 0) +
     fakeMeals.reduce((total, fakeMeal) => total + fakeMeal.calories, 0);
@@ -129,15 +131,17 @@ function DaySummary({
           </Modal.Open>
         </div>
 
-        <div className="pt-2 bg-surface-dark ">
-          <h4 className="text-lg font-semibold text-center text-text-light">
-            Total{' '}
-          </h4>
-          <CaloriesAndProtein
-            calories={dayTotalCalories}
-            protein={dayTotalProtein}
-          />
-        </div>
+        {hasMeals && (
+          <div className="pt-2 bg-surface-dark ">
+            <h4 className="text-lg font-semibold text-center text-text-light">
+              Total{' '}
+            </h4>
+            <CaloriesAndProtein
+              calories={dayTotalCalories}
+              protein={dayTotalProtein}
+            />
+          </div>
+        )}
       </div>
 
       <Modal.Window name="add-food-modal">
