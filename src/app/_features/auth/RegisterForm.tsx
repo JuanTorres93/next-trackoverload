@@ -141,11 +141,7 @@ function RegisterForm() {
           />
         </FormEntry>
 
-        <ButtonPrimary
-          className="mt-2"
-          type="submit"
-          disabled={isFormInvalid || isLoading}
-        >
+        <ButtonPrimary className="mt-2" type="submit" disabled={isFormInvalid}>
           {isLoading && <AuthSpinner />}
           {!isLoading && 'Registrarse'}
         </ButtonPrimary>

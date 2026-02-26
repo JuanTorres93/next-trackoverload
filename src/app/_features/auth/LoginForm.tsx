@@ -81,6 +81,7 @@ function LoginForm() {
             id="email"
             type="email"
             value={formState.email}
+            disabled={isLoading}
             placeholder="Email"
             onChange={(e) => setField('email', e.target.value)}
             required
@@ -92,6 +93,7 @@ function LoginForm() {
             id="password"
             type="password"
             placeholder="Contr@s3ña"
+            disabled={isLoading}
             value={formState.plainPassword}
             onChange={(e) => setField('plainPassword', e.target.value)}
             required
