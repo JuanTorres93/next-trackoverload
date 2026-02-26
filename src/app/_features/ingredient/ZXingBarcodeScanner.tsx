@@ -65,7 +65,7 @@ function BarcodeScanner({
   );
 }
 
-function ZXingBarcodeScanner() {
+function ZXingBarcodeScanner({ disabled = false }: { disabled?: boolean }) {
   const hints = new Map();
   const formats = [
     BarcodeFormat.UPC_A,
@@ -83,7 +83,7 @@ function ZXingBarcodeScanner() {
     <Modal>
       <div>
         <Modal.Open opens="scanner">
-          <ScanButton data-testid="open-scanner-button" />
+          <ScanButton data-testid="open-scanner-button" disabled={disabled} />
         </Modal.Open>
       </div>
 

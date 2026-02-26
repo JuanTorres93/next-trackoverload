@@ -14,6 +14,8 @@ import IngredientSearch, {
 import { createRecipe } from './actions';
 
 import { AppClientImageProcessor } from '@/interface-adapters/app/services/AppClientImageProcessor';
+import AuthSpinner from '../auth/AuthSpinner';
+import LoadingOverlay from '../common/LoadingOverlay';
 
 export type NewRecipeFormState = {
   name: string;
@@ -125,10 +127,14 @@ function NewRecipeForm() {
             id="image-and-name-container"
             className="relative flex flex-col items-center justify-center p-4 mx-auto mb-2 overflow-hidden w-80 text-text-light rounded-2xl aspect-square"
           >
+            {isLoading && (
+              <LoadingOverlay className="bg-surface-dark/20! backdrop-blur-sm z-14!" />
+            )}
             <textarea
-              className="z-10 resize-none text-center text-3xl  font-extrabold w-[90%] outline-none overflow-x-hidden max-h-[90%]"
+              className="z-15 resize-none text-center text-3xl  font-extrabold w-[90%] outline-none overflow-x-hidden max-h-[90%]"
               spellCheck={false}
               value={formState.name}
+              disabled={isLoading}
               onChange={(e) => setField('name', e.target.value)}
               placeholder="Nombre receta"
               onInput={(e) => {
@@ -163,8 +169,11 @@ function NewRecipeForm() {
 
         <FormRow className="flex-col items-center gap-6">
           <div className="flex items-center justify-center gap-4">
-            <IngredientSearch.Search className="w-full max-w-120" />
-            <IngredientSearch.BarcodeSearch />
+            <IngredientSearch.Search
+              className="w-full max-w-120"
+              disabled={isLoading}
+            />
+            <IngredientSearch.BarcodeSearch disabled={isLoading} />
           </div>
 
           <IngredientSearch.FoundIngredientsList containerClassName="max-w-120" />
@@ -189,8 +198,17 @@ function NewRecipeForm() {
             </div>
           )}
 
-          <ButtonNew className="w-full mt-6" disabled={invalidForm}>
-            Crear receta
+          <ButtonNew
+            className="flex items-center justify-center w-full mt-6"
+            disabled={invalidForm}
+          >
+            {!isLoading && 'Crear receta'}
+            {isLoading && (
+              <div className="flex items-center gap-4">
+                <AuthSpinner />
+                <span>Creando receta</span>
+              </div>
+            )}
           </ButtonNew>
         </FormRow>
       </form>

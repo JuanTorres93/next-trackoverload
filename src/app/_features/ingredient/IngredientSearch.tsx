@@ -12,6 +12,7 @@ import { createInMemoryRecipeIngredientLine } from '../recipe/utils';
 import IngredientItemMini from './IngredientItemMini';
 import IngredientLineItem from './IngredientLineItem';
 import BarcodeScanner from './ZXingBarcodeScanner';
+import { showErrorToast } from '@/app/_ui/showErrorToast';
 
 type IngredientSearchContextType = {
   showFoundIngredients: boolean;
@@ -71,6 +72,12 @@ function IngredientSearch({
       const existingLines = new Map(
         prev.map((item) => [item.ingredientExternalRef.externalId, item]),
       );
+
+      // TODO DELETE THESE DEBUG LOGS
+      console.log('foundIngredientsResults');
+      console.log(foundIngredientsResults);
+      // Object { error: "Failed to fetch ingredients" }
+
       return foundIngredientsResults
         .filter((result) =>
           selectedExternalIngredientIds.includes(result.externalRef.externalId),
@@ -190,7 +197,13 @@ function IngredientSearch({
   );
 }
 
-function Search({ className }: { className?: string }) {
+function Search({
+  className,
+  disabled = false,
+}: {
+  className?: string;
+  disabled?: boolean;
+}) {
   const {
     handleShowList,
     ingredientSearchTerm,
@@ -231,30 +244,27 @@ function Search({ className }: { className?: string }) {
           setIngredientSearchTerm(e.target.value);
           handleShowList();
         }}
-        disabled={isLoading}
+        disabled={isLoading || disabled}
         onClick={handleShowList}
         placeholder="Buscar ingredientes..."
       />
 
       <ButtonSearch
         onClick={() => fetchIngredients(ingredientSearchTerm)}
-        disabled={isLoading}
+        disabled={isLoading || disabled}
         data-testid="search-ingredient-button"
       />
     </div>
   );
 }
 
-function BarcodeSearch() {
+function BarcodeSearch({ disabled = false }: { disabled?: boolean }) {
   const { setFoundIngredientsResults, setIsLoading, handleShowList } =
     useIngredientSearchContext();
 
   async function onScanResult(result: string | null) {
     if (result) {
       setIsLoading(true);
-
-      console.log('Searching in food API');
-      console.log('Scanned barcode:', result);
 
       try {
         const fetchedIngredientsResult: Response = await fetch(
@@ -263,6 +273,15 @@ function BarcodeSearch() {
 
         const data: IngredientFinderResult[] =
           await fetchedIngredientsResult.json();
+
+        // TODO NEXT: Usar JSEND en api barcode
+        // TODO Arreglar: ahora mismo se muestra varias veces el toast
+        if ('error' in data) {
+          showErrorToast(
+            'No se encontraron ingredientes para el código de barras escaneado.',
+          );
+          return;
+        }
 
         setFoundIngredientsResults(data);
         handleShowList();
@@ -281,7 +300,7 @@ function BarcodeSearch() {
   return (
     <div>
       <BarcodeScanner onScanResult={onScanResult} onScanError={onScanError}>
-        <BarcodeScanner.ZXing />
+        <BarcodeScanner.ZXing disabled={disabled} />
       </BarcodeScanner>
     </div>
   );
