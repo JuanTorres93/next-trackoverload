@@ -32,6 +32,9 @@
 
   /* blue from tailwind */
   --color-selected: #2563eb;
+
+  /* Breakpoints */
+  --breakpoint-bp-navbar-mobile: 748px;
 }
 
 @layer base {

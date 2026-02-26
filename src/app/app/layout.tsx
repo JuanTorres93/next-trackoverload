@@ -1,5 +1,8 @@
 import type { Metadata } from 'next';
-import SideNav from '../_ui/SideNav';
+import SideNav, {
+  NavBar as SideNavNavBar,
+  ToggleButton as SideNavToggle,
+} from '../_ui/SideNav';
 
 // TODO: Update metadata
 export const metadata: Metadata = {
@@ -15,10 +18,13 @@ export default function SidebarLayout({
   return (
     <div
       id="sidebar-layout"
-      className="grid grid-cols-[12rem_1fr] h-screen gap-4"
+      className="grid grid-cols-[12rem_1fr] h-screen gap-4 max-bp-navbar-mobile:flex max-bp-navbar-mobile:flex-col"
     >
-      <aside>
-        <SideNav />
+      <aside className="max-bp-navbar-mobile:absolute">
+        <SideNav>
+          <SideNavNavBar />
+          <SideNavToggle className="fixed top-2 right-4" />
+        </SideNav>
       </aside>
       <main className="h-full overflow-y-auto">{children}</main>
     </div>

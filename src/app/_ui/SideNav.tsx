@@ -11,18 +11,76 @@ import {
   HiHome,
   HiSquares2X2,
   HiUserCircle,
+  HiBars3,
 } from 'react-icons/hi2';
 import { FiLogOut } from 'react-icons/fi';
 
 import TextRegular from './typography/TextRegular';
-import { useState } from 'react';
+import { createContext, useCallback, useContext, useState } from 'react';
 import AuthSpinner from '../_features/auth/AuthSpinner';
 import Logo from './Logo';
+import { useScreenResize } from '../_hooks/useScreenResize';
 
-function SideNav() {
+type SideNavContextType = {
+  showNavBar: boolean;
+  setShowNavBar: React.Dispatch<React.SetStateAction<boolean>>;
+  toggleNavBar: () => void;
+  isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  isMobileLayout: boolean;
+};
+
+const SideNavContext = createContext<SideNavContextType | null>(null);
+
+function SideNav({ children }: { children: React.ReactNode }) {
+  const [showNavBar, setShowNavBar] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isMobileLayout, setIsMobileLayout] = useState(false);
+
+  const toggleNavBar = () => {
+    setShowNavBar((prev) => !prev);
+  };
+
+  // Read from the single source of truth: --breakpoint-bp-navbar-mobile in globals.css
+  const getNavbarMobileBreakpoint = useCallback((): number => {
+    if (typeof window === 'undefined') return 0;
+
+    const raw = getComputedStyle(document.documentElement)
+      .getPropertyValue('--breakpoint-bp-navbar-mobile')
+      .trim();
+
+    return parseInt(raw, 10);
+  }, []);
+
+  useScreenResize(getNavbarMobileBreakpoint(), (width) => {
+    // Automatically hide navbar if we go above the mobile breakpoint, and show it if we go below
+    if (width >= getNavbarMobileBreakpoint()) {
+      setShowNavBar(true);
+      setIsMobileLayout(false);
+    } else {
+      setShowNavBar(false);
+      setIsMobileLayout(true);
+    }
+  });
+
+  const value = {
+    showNavBar,
+    setShowNavBar,
+    toggleNavBar,
+    isLoading,
+    setIsLoading,
+    isMobileLayout,
+  };
+
+  return (
+    <SideNavContext.Provider value={value}>{children}</SideNavContext.Provider>
+  );
+}
+
+function NavBar() {
   const pathname = usePathname();
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  const { isLoading, setIsLoading, showNavBar } = useSideNavContext();
 
   const links = [
     { href: '/app', label: 'Inicio', icon: <HiHome /> },
@@ -61,8 +119,12 @@ function SideNav() {
     }
   }
 
+  if (!showNavBar) {
+    return null;
+  }
+
   return (
-    <nav className="h-full ">
+    <nav className="h-full max-bp-navbar-mobile:fixed max-bp-navbar-mobile:inset-0 max-bp-navbar-mobile:z-30 max-bp-navbar-mobile:backdrop-blur-md max-bp-navbar-mobile:h-dvh max-bp-navbar-mobile:bg-background/80">
       <ul className="flex flex-col w-full h-full gap-1 p-4">
         <li className="flex items-center justify-center mb-4">
           <Link href="/app">
@@ -94,6 +156,25 @@ function SideNav() {
   );
 }
 
+function ToggleButton({
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+  const { className, ...rest } = props;
+
+  const { toggleNavBar } = useSideNavContext();
+
+  // TODO NEXT: Dar estilo al botón
+  return (
+    <button
+      {...rest}
+      className={`z-40 hidden p-2 rounded-full cursor-pointer bg-surface-light text-text max-bp-navbar-mobile:block ${className}`}
+      onClick={toggleNavBar}
+    >
+      <HiBars3 size={30} />
+    </button>
+  );
+}
+
 function NavItem({
   icon,
   isActive,
@@ -105,12 +186,21 @@ function NavItem({
   children?: React.ReactNode;
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
+  const { isMobileLayout, toggleNavBar } = useSideNavContext();
+
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isMobileLayout) {
+      toggleNavBar();
+    }
+  };
+
   return (
     <TextRegular
       {...rest}
       className={`flex rounded-lg p-2 w-full items-center text-text-minor-emphasis hover:text-text hover:bg-surface-light cursor-pointer transition ${
         isActive ? 'bg-surface-dark! text-text-light!' : ''
       } ${className}`}
+      onClick={handleClick}
     >
       <span className="mr-2">{icon}</span>
       {children}
@@ -118,4 +208,18 @@ function NavItem({
   );
 }
 
+function useSideNavContext() {
+  const contextValue = useContext(SideNavContext);
+
+  if (!contextValue) {
+    throw new Error('useSideNavContext must be used within a SideNavProvider');
+  }
+
+  return contextValue;
+}
+
+SideNav.NavBar = NavBar;
+SideNav.ToggleButton = ToggleButton;
+
+export { NavBar, ToggleButton };
 export default SideNav;
