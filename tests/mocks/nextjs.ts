@@ -21,6 +21,7 @@ vi.mock('@/app/_utils/auth/getCurrentUserId', () => {
 vi.mock('next/navigation', () => {
   return {
     redirect: vi.fn(),
+    usePathname: vi.fn(() => '/'),
     useRouter: vi.fn(() => ({
       push: vi.fn(),
       refresh: vi.fn(),

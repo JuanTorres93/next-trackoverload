@@ -85,6 +85,7 @@ function NavBar() {
     isLoading,
     setIsLoading,
     navbarShown: showNavBar,
+    toggleNavBar,
   } = useSideNavContext();
 
   const links = [
@@ -151,7 +152,13 @@ function NavBar() {
           <NavItem
             icon={isLoading ? <AuthSpinner /> : <FiLogOut />}
             isActive={false}
-            onClick={handleLogout}
+            onClick={() => {
+              // Logout user
+              handleLogout();
+              // Keep the navbar open on mobile so the user can see the spinner and that the logout is processing (NavItem onClick will close automatically the navbar)
+              toggleNavBar();
+            }}
+            data-testid="logout-button"
           >
             Cerrar sesión
           </NavItem>
@@ -192,13 +199,15 @@ function NavItem({
   isActive: boolean;
   children?: React.ReactNode;
 } & React.HTMLAttributes<HTMLDivElement>) {
-  const { className, ...rest } = props;
+  const { className, onClick, ...rest } = props;
   const { isMobileLayout, toggleNavBar } = useSideNavContext();
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (isMobileLayout) {
       toggleNavBar();
     }
+
+    onClick?.(e);
   };
 
   return (
