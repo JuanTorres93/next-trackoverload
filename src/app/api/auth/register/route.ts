@@ -7,11 +7,9 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { cookieSessionName } from '../cookie';
 
-export async function POST(
-  _req: NextRequest,
-): Promise<NextResponse<JSENDResponse<string>>> {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
-    const body = await _req.json();
+    const body = await request.json();
     const { email, plainPassword, name } = body;
 
     const newUser = await AppCreateUserUsecase.execute({
@@ -22,13 +20,7 @@ export async function POST(
 
     const token = await AppAuthService.generateToken(newUser.id);
 
-    const response = NextResponse.json(
-      {
-        status: 'success' as const,
-        data: 'User created successfully',
-      },
-      { status: 201 },
-    );
+    const response = NextResponse.redirect(new URL('/app', request.url));
 
     response.cookies.set(cookieSessionName, token, {
       httpOnly: true,
