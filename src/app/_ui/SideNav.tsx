@@ -12,6 +12,7 @@ import {
   HiSquares2X2,
   HiUserCircle,
   HiBars3,
+  HiMiniXMark,
 } from 'react-icons/hi2';
 import { FiLogOut } from 'react-icons/fi';
 
@@ -22,8 +23,8 @@ import Logo from './Logo';
 import { useScreenResize } from '../_hooks/useScreenResize';
 
 type SideNavContextType = {
-  showNavBar: boolean;
-  setShowNavBar: React.Dispatch<React.SetStateAction<boolean>>;
+  navbarShown: boolean;
+  setNavbarShown: React.Dispatch<React.SetStateAction<boolean>>;
   toggleNavBar: () => void;
   isLoading: boolean;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -33,12 +34,12 @@ type SideNavContextType = {
 const SideNavContext = createContext<SideNavContextType | null>(null);
 
 function SideNav({ children }: { children: React.ReactNode }) {
-  const [showNavBar, setShowNavBar] = useState(false);
+  const [navbarShown, setNavbarShown] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isMobileLayout, setIsMobileLayout] = useState(false);
 
   const toggleNavBar = () => {
-    setShowNavBar((prev) => !prev);
+    setNavbarShown((prev) => !prev);
   };
 
   // Read from the single source of truth: --breakpoint-bp-navbar-mobile in globals.css
@@ -55,17 +56,17 @@ function SideNav({ children }: { children: React.ReactNode }) {
   useScreenResize(getNavbarMobileBreakpoint(), (width) => {
     // Automatically hide navbar if we go above the mobile breakpoint, and show it if we go below
     if (width >= getNavbarMobileBreakpoint()) {
-      setShowNavBar(true);
+      setNavbarShown(true);
       setIsMobileLayout(false);
     } else {
-      setShowNavBar(false);
+      setNavbarShown(false);
       setIsMobileLayout(true);
     }
   });
 
   const value = {
-    showNavBar,
-    setShowNavBar,
+    navbarShown,
+    setNavbarShown,
     toggleNavBar,
     isLoading,
     setIsLoading,
@@ -80,7 +81,11 @@ function SideNav({ children }: { children: React.ReactNode }) {
 function NavBar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { isLoading, setIsLoading, showNavBar } = useSideNavContext();
+  const {
+    isLoading,
+    setIsLoading,
+    navbarShown: showNavBar,
+  } = useSideNavContext();
 
   const links = [
     { href: '/app', label: 'Inicio', icon: <HiHome /> },
@@ -161,16 +166,18 @@ function ToggleButton({
 }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   const { className, ...rest } = props;
 
-  const { toggleNavBar } = useSideNavContext();
+  const { toggleNavBar, navbarShown } = useSideNavContext();
 
-  // TODO NEXT: Dar estilo al botón
   return (
     <button
       {...rest}
-      className={`z-40 hidden p-2 rounded-full cursor-pointer bg-surface-light text-text max-bp-navbar-mobile:block ${className}`}
+      className={`z-40 hidden p-2 rounded-full shadow-sm cursor-pointer bg-surface-light text-surface-dark max-bp-navbar-mobile:block transition duration-200 ${
+        navbarShown && 'bg-surface-dark! text-surface-light!'
+      } ${className}`}
       onClick={toggleNavBar}
     >
-      <HiBars3 size={30} />
+      {!navbarShown && <HiBars3 size={30} />}
+      {navbarShown && <HiMiniXMark size={30} strokeWidth={0.1} />}
     </button>
   );
 }
@@ -188,7 +195,7 @@ function NavItem({
   const { className, ...rest } = props;
   const { isMobileLayout, toggleNavBar } = useSideNavContext();
 
-  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleClick = () => {
     if (isMobileLayout) {
       toggleNavBar();
     }
@@ -199,7 +206,8 @@ function NavItem({
       {...rest}
       className={`flex rounded-lg p-2 w-full items-center text-text-minor-emphasis hover:text-text hover:bg-surface-light cursor-pointer transition ${
         isActive ? 'bg-surface-dark! text-text-light!' : ''
-      } ${className}`}
+      }
+       ${className}`}
       onClick={handleClick}
     >
       <span className="mr-2">{icon}</span>
