@@ -20,7 +20,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     const token = await AppAuthService.generateToken(newUser.id);
 
-    const response = NextResponse.redirect(new URL('/app', request.url));
+    const response = NextResponse.json(
+      {
+        status: 'success' as const,
+        data: 'User created successfully',
+      },
+      { status: 201 },
+    );
 
     response.cookies.set(cookieSessionName, token, {
       httpOnly: true,

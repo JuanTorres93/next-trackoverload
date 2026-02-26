@@ -8,6 +8,7 @@ import FormEntry from '@/app/_ui/form/FormEntry';
 import Input from '@/app/_ui/Input';
 import PasswordInput from '@/app/_ui/PasswordInput';
 import { showErrorToast } from '@/app/_ui/showErrorToast';
+import { useRouter } from 'next/navigation';
 
 export type RegisterFormState = {
   name: string;
@@ -24,6 +25,7 @@ const INITIAL_FORM_STATE: RegisterFormState = {
 };
 
 function RegisterForm() {
+  const router = useRouter();
   const { formState, setField, isLoading, setIsLoading, resetForm } =
     useFormSetup<RegisterFormState>(INITIAL_FORM_STATE);
 
@@ -62,6 +64,9 @@ function RegisterForm() {
       }
 
       resetForm();
+      // Refresh for cookies to be correctly updated
+      router.refresh();
+      router.push('/app');
     } catch {
       showErrorToast(
         'Error al crear el usuario. Por favor, inténtalo de nuevo.',
