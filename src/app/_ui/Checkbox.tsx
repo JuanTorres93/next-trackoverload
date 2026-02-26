@@ -30,6 +30,9 @@ function Checkbox({ label, ...props }: CheckboxProps) {
           peer-checked:bg-primary-light
           peer-checked:border-primary-light
           peer-checked:[&>svg]:opacity-100
+          peer-disabled:cursor-not-allowed
+          peer-disabled:bg-text-minor-emphasis/50
+          peer-disabled:border-border/50
         `}
       >
         <HiOutlineCheck size={24} strokeWidth={3} className="opacity-0" />
