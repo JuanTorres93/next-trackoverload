@@ -120,7 +120,7 @@ function RegisterForm() {
           labelText={
             <span>
               Acepto los{' '}
-              <AuthLink href="/legal/terms-and-conditions">
+              <AuthLink href="/legal/terms-and-conditions" target="_blank">
                 términos y condiciones
               </AuthLink>
             </span>

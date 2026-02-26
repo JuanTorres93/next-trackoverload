@@ -5,7 +5,7 @@ function AuthLink({ children, ...props }: React.ComponentProps<typeof Link>) {
 
   return (
     <Link
-      className={`inline font-bold text-surface-dark transition hover:text-primary ${className}`}
+      className={`inline font-bold transition text-primary hover:text-primary-light ${className}`}
       {...rest}
     >
       {children}
