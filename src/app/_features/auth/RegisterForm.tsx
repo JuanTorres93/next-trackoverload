@@ -87,6 +87,7 @@ function RegisterForm() {
           <Input
             id="name"
             type="text"
+            disabled={isLoading}
             value={formState.name}
             placeholder="Nombre"
             onChange={(e) => setField('name', e.target.value)}
@@ -99,6 +100,7 @@ function RegisterForm() {
             id="email"
             type="email"
             value={formState.email}
+            disabled={isLoading}
             placeholder="Email"
             onChange={(e) => setField('email', e.target.value)}
             required
@@ -110,6 +112,7 @@ function RegisterForm() {
             id="plainPassword"
             type="password"
             placeholder="Contr@s3ña"
+            disabled={isLoading}
             value={formState.plainPassword}
             onChange={(e) => setField('plainPassword', e.target.value)}
             required
@@ -132,12 +135,17 @@ function RegisterForm() {
           <Checkbox
             id="acceptTerms"
             checked={formState.acceptTerms}
+            disabled={isLoading}
             onChange={(e) => setField('acceptTerms', e.target.checked)}
             required
           />
         </FormEntry>
 
-        <ButtonPrimary className="mt-2" type="submit" disabled={isFormInvalid}>
+        <ButtonPrimary
+          className="mt-2"
+          type="submit"
+          disabled={isFormInvalid || isLoading}
+        >
           {isLoading && <AuthSpinner />}
           {!isLoading && 'Registrarse'}
         </ButtonPrimary>
