@@ -14,7 +14,7 @@ import IngredientSearch, {
 import { createRecipe } from './actions';
 
 import { AppClientImageProcessor } from '@/interface-adapters/app/services/AppClientImageProcessor';
-import AuthSpinner from '../auth/AuthSpinner';
+import SpinnerMini from '../../_ui/SpinnerMini';
 import LoadingOverlay from '../common/LoadingOverlay';
 
 export type NewRecipeFormState = {
@@ -205,7 +205,7 @@ function NewRecipeForm() {
             {!isLoading && 'Crear receta'}
             {isLoading && (
               <div className="flex items-center gap-4">
-                <AuthSpinner />
+                <SpinnerMini />
                 <span>Creando receta</span>
               </div>
             )}

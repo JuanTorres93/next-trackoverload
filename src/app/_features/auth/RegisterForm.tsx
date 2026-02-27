@@ -1,6 +1,6 @@
 'use client';
 import AuthLink from '@/app/_features/auth/AuthLink';
-import AuthSpinner from '@/app/_features/auth/AuthSpinner';
+import SpinnerMini from '@/app/_ui/SpinnerMini';
 import { useFormSetup } from '@/app/_hooks/useFormSetup';
 import ButtonPrimary from '@/app/_ui/ButtonPrimary';
 import Checkbox from '@/app/_ui/Checkbox';
@@ -142,7 +142,7 @@ function RegisterForm() {
         </FormEntry>
 
         <ButtonPrimary className="mt-2" type="submit" disabled={isFormInvalid}>
-          {isLoading && <AuthSpinner />}
+          {isLoading && <SpinnerMini />}
           {!isLoading && 'Registrarse'}
         </ButtonPrimary>
       </form>

@@ -6,7 +6,7 @@ import Input from '@/app/_ui/Input';
 import PasswordInput from '@/app/_ui/PasswordInput';
 import { showErrorToast } from '@/app/_ui/showErrorToast';
 import AuthLink from '@/app/_features/auth/AuthLink';
-import AuthSpinner from '@/app/_features/auth/AuthSpinner';
+import SpinnerMini from '@/app/_ui/SpinnerMini';
 import { useRouter } from 'next/navigation';
 
 export type LoginFormState = {
@@ -101,7 +101,7 @@ function LoginForm() {
         </FormEntry>
 
         <ButtonPrimary className="mt-2" type="submit" disabled={isFormInvalid}>
-          {isLoading && <AuthSpinner />}
+          {isLoading && <SpinnerMini />}
           {!isLoading && 'Iniciar sesión'}
         </ButtonPrimary>
       </form>

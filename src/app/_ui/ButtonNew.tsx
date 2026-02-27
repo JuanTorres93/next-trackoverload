@@ -1,6 +1,6 @@
 import { HiPlus } from 'react-icons/hi2';
 import ButtonPrimary from './ButtonPrimary';
-import AuthSpinner from '../_features/auth/AuthSpinner';
+import SpinnerMini from './SpinnerMini';
 
 function ButtonNew({
   children,
@@ -24,7 +24,7 @@ function ButtonNew({
       {!isLoading && (
         <HiPlus className="inline transition-transform duration-500 stroke-1 group-hover:rotate-90 group-disabled:group-hover:rotate-0" />
       )}
-      {isLoading && <AuthSpinner className="inline " />}
+      {isLoading && <SpinnerMini className="inline " />}
 
       {children}
     </div>

@@ -23,7 +23,7 @@ import {
   useEffect,
   useState,
 } from 'react';
-import AuthSpinner from '../_features/auth/AuthSpinner';
+import SpinnerMini from './SpinnerMini';
 import { useScreenResize } from '../_hooks/useScreenResize';
 import Logo from './Logo';
 import TextRegular from './typography/TextRegular';
@@ -169,7 +169,7 @@ function NavBar() {
 
         <li className="mt-auto">
           <NavItem
-            icon={isLoading ? <AuthSpinner /> : <FiLogOut />}
+            icon={isLoading ? <SpinnerMini /> : <FiLogOut />}
             isCurrentItem={false}
             onClick={() => {
               // Logout user
@@ -252,7 +252,7 @@ function NavItem({
       onClick={handleClick}
     >
       <span className="mr-2">
-        {isNavigating && isCurrentItem && <AuthSpinner />}
+        {isNavigating && isCurrentItem && <SpinnerMini />}
         {(!isNavigating || !isCurrentItem) && icon}
       </span>
       {children}
