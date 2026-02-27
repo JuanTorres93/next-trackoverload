@@ -14,7 +14,6 @@ import IngredientSearch, {
 import { createRecipe } from './actions';
 
 import { AppClientImageProcessor } from '@/interface-adapters/app/services/AppClientImageProcessor';
-import SpinnerMini from '../../_ui/SpinnerMini';
 import LoadingOverlay from '../common/LoadingOverlay';
 
 export type NewRecipeFormState = {
@@ -76,6 +75,8 @@ function NewRecipeForm() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    setIsLoading(true);
+
     const ingredientLinesInfo: CreateIngredientLineData[] =
       formState.ingredientLinesWithExternalRefs.map(
         (info: IngredientLineWithExternalRef) => {
@@ -97,8 +98,8 @@ function NewRecipeForm() {
       );
 
     let compressedImageFile: File | undefined = undefined;
+
     if (formState.imageFile) {
-      setIsLoading(true);
       compressedImageFile = await AppClientImageProcessor.compressToMaxMB(
         formState.imageFile,
       );
@@ -110,6 +111,7 @@ function NewRecipeForm() {
         imageFile: compressedImageFile,
         ingredientLinesInfo: ingredientLinesInfo,
       });
+
       resetForm();
     } finally {
       setIsLoading(false);
@@ -201,14 +203,9 @@ function NewRecipeForm() {
           <ButtonNew
             className="flex items-center justify-center w-full mt-6"
             disabled={invalidForm}
+            isLoading={isLoading}
           >
-            {!isLoading && 'Crear receta'}
-            {isLoading && (
-              <div className="flex items-center gap-4">
-                <SpinnerMini />
-                <span>Creando receta</span>
-              </div>
-            )}
+            Crear receta
           </ButtonNew>
         </FormRow>
       </form>
