@@ -219,14 +219,24 @@ function NavItem({
   children?: React.ReactNode;
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, onClick, ...rest } = props;
+
+  const [queueToggleNavBar, setQueueToggleNavBar] = useState(false);
+
   const { isMobileLayout, toggleNavBar, setIsNavigating, isNavigating } =
     useSideNavContext();
+
+  useEffect(() => {
+    if (queueToggleNavBar && isMobileLayout && !isNavigating) {
+      toggleNavBar();
+      setQueueToggleNavBar(false);
+    }
+  }, [queueToggleNavBar, toggleNavBar, isMobileLayout, isNavigating]);
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     setIsNavigating(true);
 
     if (isMobileLayout) {
-      toggleNavBar();
+      setQueueToggleNavBar(true);
     }
 
     onClick?.(e);
