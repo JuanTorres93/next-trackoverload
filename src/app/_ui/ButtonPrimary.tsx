@@ -9,21 +9,32 @@ function ButtonPrimary({
   children?: React.ReactNode;
   href?: string;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
-  const { className, ...restProps } = props;
+  const { className, disabled, ...restProps } = props;
 
-  const buttonStyle = `p-3 font-medium text-primary transition border-2 border-primary rounded-md  hover:cursor-pointer hover:bg-primary hover:text-text-light disabled:text-text-minor-emphasis disabled:border-text-minor-emphasis disabled:hover:bg-transparent disabled:cursor-not-allowed ${className}`;
+  const disabledStyle =
+    'text-text-minor-emphasis! border-text-minor-emphasis hover:bg-transparent cursor-not-allowed';
+
+  const buttonDisabledStyle = disabledStyle
+    .split(' ')
+    .map((tailwindClass) => `disabled:${tailwindClass}`)
+    .join(' ');
+
+  const buttonStyle = `p-3 font-medium text-primary transition border-2 border-primary rounded-md hover:cursor-pointer hover:bg-primary hover:text-text-light ${buttonDisabledStyle} ${className}`;
 
   if (href) {
     return (
       <TextRegular>
-        <Link href={href} className={`${buttonStyle} inline-block`}>
+        <Link
+          href={href}
+          className={`${buttonStyle} ${disabled && disabledStyle} inline-block`}
+        >
           {children}
         </Link>
       </TextRegular>
     );
   }
   return (
-    <button className={buttonStyle} {...restProps}>
+    <button className={buttonStyle} disabled={disabled} {...restProps}>
       {children}
     </button>
   );
