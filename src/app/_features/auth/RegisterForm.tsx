@@ -142,7 +142,7 @@ function RegisterForm() {
         </FormEntry>
 
         <ButtonPrimary className="mt-2" type="submit" disabled={isFormInvalid}>
-          {isLoading && <SpinnerMini />}
+          {isLoading && <SpinnerMini className="mx-auto" />}
           {!isLoading && 'Registrarse'}
         </ButtonPrimary>
       </form>

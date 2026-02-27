@@ -81,7 +81,12 @@ function AddFakeMealForm({
         />
       </FormEntry>
 
-      <ButtonNew type="submit" className="mt-8" disabled={invalidForm}>
+      <ButtonNew
+        type="submit"
+        className="mt-8"
+        isLoading={isLoading}
+        disabled={invalidForm}
+      >
         Añadir comida
       </ButtonNew>
     </form>

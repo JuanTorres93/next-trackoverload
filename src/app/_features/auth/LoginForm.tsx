@@ -101,7 +101,7 @@ function LoginForm() {
         </FormEntry>
 
         <ButtonPrimary className="mt-2" type="submit" disabled={isFormInvalid}>
-          {isLoading && <SpinnerMini />}
+          {isLoading && <SpinnerMini className="mx-auto" />}
           {!isLoading && 'Iniciar sesión'}
         </ButtonPrimary>
       </form>

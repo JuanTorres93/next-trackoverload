@@ -24,7 +24,7 @@ function ButtonNew({
       {!isLoading && (
         <HiPlus className="inline transition-transform duration-500 stroke-1 group-hover:rotate-90 group-disabled:group-hover:rotate-0" />
       )}
-      {isLoading && <SpinnerMini className="inline " />}
+      {isLoading && <SpinnerMini className="inline" />}
 
       {children}
     </div>
