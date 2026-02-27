@@ -1,5 +1,5 @@
 import ButtonNew from '@/app/_ui/ButtonNew';
-import Spinner from '@/app/_ui/Spinner';
+import { showErrorToast } from '@/app/_ui/showErrorToast';
 import SectionHeading from '@/app/_ui/typography/SectionHeading';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { useRouter } from 'next/navigation';
@@ -18,7 +18,7 @@ function SelectRecipeModal({
   const router = useRouter();
   const [recipes, setRecipes] = useState<RecipeDTO[]>([]);
   const [selectedRecipesIds, setSelectedRecipesIds] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const numberOfSelectedRecipes = selectedRecipesIds.length;
   const invalidForm = numberOfSelectedRecipes === 0 || isLoading;
@@ -42,8 +42,8 @@ function SelectRecipeModal({
 
         const data: RecipeDTO[] = await response.json();
         setRecipes(data);
-      } catch (error) {
-        console.error('Error fetching recipes:', error);
+      } catch {
+        showErrorToast('Error al cargar las recetas.');
       } finally {
         setIsLoading(false);
       }
@@ -59,9 +59,8 @@ function SelectRecipeModal({
       await addMealsRequest(selectedRecipesIds);
 
       router.refresh();
-    } catch (error) {
-      // TODO Toast error
-      console.error('Error adding meals to day:', error);
+    } catch {
+      showErrorToast('Error al añadir las comidas.');
     } finally {
       setIsLoading(false);
       onCloseModal?.();
@@ -75,13 +74,14 @@ function SelectRecipeModal({
         <ButtonNew
           className="ml-14 max-h-13"
           disabled={invalidForm}
+          isLoading={isLoading}
           onClick={handleCreateMeals}
         >
           Añadir comidas
         </ButtonNew>
       </div>
 
-      {isLoading && <Spinner className="mx-auto" />}
+      {isLoading && <span>Añadiendo comidas</span>}
 
       {!isLoading && (
         <RecipesGrid
