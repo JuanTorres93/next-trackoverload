@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import LoadingOverlay from '../common/LoadingOverlay';
+import { showErrorToast } from '@/app/_ui/showErrorToast';
 
 function RecipeCard({
   recipe,
@@ -20,11 +21,29 @@ function RecipeCard({
   isSelected?: boolean;
 }) {
   const [isNavigating, setIsNavigating] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const Wrapper = asLink ? Link : 'div';
 
   function handleNavigationClick() {
     setIsNavigating(true);
+  }
+
+  async function handleDelete() {
+    setIsDeleting(true);
+
+    try {
+      await deleteRecipe(recipe.id);
+    } catch (error) {
+      // Do not show error toast if next is trying to redirect to current page
+      if (error instanceof Error) {
+        if (error.message.match(/.*NEXT_REDIRECT.*/i)) return;
+      }
+
+      showErrorToast('Error al eliminar la receta.');
+    } finally {
+      setIsDeleting(false);
+    }
   }
 
   return (
@@ -33,15 +52,9 @@ function RecipeCard({
       className={`p-3 min-w-52 rounded-lg grid grid-cols-2 grid-rows-[max-content_min-content_min-content] gap-4 bg-surface-card relative shadow-md hover:cursor-pointer hover:shadow-lg transition hover:bg-surface-light ${isSelected ? 'bg-surface-dark! [&_*]:text-text-light!' : ''}`}
       onClick={asLink ? handleNavigationClick : onClick}
     >
-      {isNavigating && asLink && <LoadingOverlay className="z-20" />}
+      {(isNavigating || isDeleting) && <LoadingOverlay className="z-20" />}
 
-      {asLink && (
-        <ButtonDeleteHover
-          onClick={async () => {
-            await deleteRecipe(recipe.id);
-          }}
-        />
-      )}
+      {asLink && <ButtonDeleteHover onClick={handleDelete} />}
 
       <div className="relative h-32 col-span-2 overflow-hidden rounded-lg">
         <Image
