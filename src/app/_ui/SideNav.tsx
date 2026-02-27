@@ -2,25 +2,31 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { FiLogOut } from 'react-icons/fi';
 import {
+  HiBars3,
   HiBookOpen,
   HiCalendarDays,
   HiClipboardDocumentList,
   HiCreditCard,
   HiFire,
   HiHome,
+  HiMiniXMark,
   HiSquares2X2,
   HiUserCircle,
-  HiBars3,
-  HiMiniXMark,
 } from 'react-icons/hi2';
-import { FiLogOut } from 'react-icons/fi';
 
-import TextRegular from './typography/TextRegular';
-import { createContext, useCallback, useContext, useState } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import AuthSpinner from '../_features/auth/AuthSpinner';
-import Logo from './Logo';
 import { useScreenResize } from '../_hooks/useScreenResize';
+import Logo from './Logo';
+import TextRegular from './typography/TextRegular';
 
 type SideNavContextType = {
   navbarShown: boolean;
@@ -29,14 +35,24 @@ type SideNavContextType = {
   isLoading: boolean;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   isMobileLayout: boolean;
+  pathname: string;
+  isNavigating: boolean;
+  setIsNavigating: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const SideNavContext = createContext<SideNavContextType | null>(null);
 
 function SideNav({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+
   const [navbarShown, setNavbarShown] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
   const [isMobileLayout, setIsMobileLayout] = useState(false);
+
+  useEffect(() => {
+    setIsNavigating(false);
+  }, [pathname]);
 
   const toggleNavBar = () => {
     setNavbarShown((prev) => !prev);
@@ -71,6 +87,9 @@ function SideNav({ children }: { children: React.ReactNode }) {
     isLoading,
     setIsLoading,
     isMobileLayout,
+    pathname,
+    isNavigating,
+    setIsNavigating,
   };
 
   return (
@@ -79,13 +98,13 @@ function SideNav({ children }: { children: React.ReactNode }) {
 }
 
 function NavBar() {
-  const pathname = usePathname();
   const router = useRouter();
   const {
     isLoading,
     setIsLoading,
     navbarShown: showNavBar,
     toggleNavBar,
+    pathname,
   } = useSideNavContext();
 
   const links = [
@@ -141,7 +160,7 @@ function NavBar() {
         {links.map((link) => (
           <li key={link.href}>
             <Link href={link.href}>
-              <NavItem icon={link.icon} isActive={pathname === link.href}>
+              <NavItem icon={link.icon} isCurrentItem={pathname === link.href}>
                 {link.label}
               </NavItem>
             </Link>
@@ -151,7 +170,7 @@ function NavBar() {
         <li className="mt-auto">
           <NavItem
             icon={isLoading ? <AuthSpinner /> : <FiLogOut />}
-            isActive={false}
+            isCurrentItem={false}
             onClick={() => {
               // Logout user
               handleLogout();
@@ -191,18 +210,21 @@ function ToggleButton({
 
 function NavItem({
   icon,
-  isActive,
+  isCurrentItem,
   children,
   ...props
 }: {
   icon: React.ReactNode;
-  isActive: boolean;
+  isCurrentItem: boolean;
   children?: React.ReactNode;
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, onClick, ...rest } = props;
-  const { isMobileLayout, toggleNavBar } = useSideNavContext();
+  const { isMobileLayout, toggleNavBar, setIsNavigating, isNavigating } =
+    useSideNavContext();
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    setIsNavigating(true);
+
     if (isMobileLayout) {
       toggleNavBar();
     }
@@ -214,12 +236,15 @@ function NavItem({
     <TextRegular
       {...rest}
       className={`flex rounded-lg p-2 w-full items-center text-text-minor-emphasis hover:text-text hover:bg-surface-light cursor-pointer transition ${
-        isActive ? 'bg-surface-dark! text-text-light!' : ''
+        isCurrentItem ? 'bg-surface-dark! text-text-light!' : ''
       }
        ${className}`}
       onClick={handleClick}
     >
-      <span className="mr-2">{icon}</span>
+      <span className="mr-2">
+        {isNavigating && isCurrentItem && <AuthSpinner />}
+        {(!isNavigating || !isCurrentItem) && icon}
+      </span>
       {children}
     </TextRegular>
   );
