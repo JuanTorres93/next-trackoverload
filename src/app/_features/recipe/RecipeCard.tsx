@@ -5,6 +5,8 @@ import { deleteRecipe } from './actions';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
+import LoadingOverlay from '../common/LoadingOverlay';
 
 function RecipeCard({
   recipe,
@@ -17,14 +19,22 @@ function RecipeCard({
   onClick?: () => void;
   isSelected?: boolean;
 }) {
+  const [isNavigating, setIsNavigating] = useState(false);
+
   const Wrapper = asLink ? Link : 'div';
+
+  function handleNavigationClick() {
+    setIsNavigating(true);
+  }
 
   return (
     <Wrapper
       href={`/app/recipes/${recipe.id}`}
       className={`p-3 min-w-52 rounded-lg grid grid-cols-2 grid-rows-[max-content_min-content_min-content] gap-4 bg-surface-card relative shadow-md hover:cursor-pointer hover:shadow-lg transition hover:bg-surface-light ${isSelected ? 'bg-surface-dark! [&_*]:text-text-light!' : ''}`}
-      onClick={asLink ? undefined : onClick}
+      onClick={asLink ? handleNavigationClick : onClick}
     >
+      {isNavigating && asLink && <LoadingOverlay className="z-20" />}
+
       {asLink && (
         <ButtonDeleteHover
           onClick={async () => {
