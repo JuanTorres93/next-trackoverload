@@ -1,8 +1,7 @@
 import { getAllRecipesForLoggedInUser } from '@/app/_features/recipe/actions';
-import RecipesGrid from '@/app/_features/recipe/RecipesGrid';
-import ButtonNew from '@/app/_ui/ButtonNew';
 import PageWrapper from '@/app/_ui/PageWrapper';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
+import RecipesDisplay from './RecipesDisplay';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,15 +15,7 @@ export default async function RecipesPage() {
 
   return (
     <PageWrapper>
-      <ButtonNew href="/app/recipes/new" className="mb-4">
-        Nueva Receta
-      </ButtonNew>
-
-      {recipes.length === 0 ? (
-        <p className="text-center text-text-minor-emphasis">No hay recetas</p>
-      ) : (
-        <RecipesGrid data-testid="recipes-container" recipes={recipes} />
-      )}
+      <RecipesDisplay recipes={recipes} />
     </PageWrapper>
   );
 }
