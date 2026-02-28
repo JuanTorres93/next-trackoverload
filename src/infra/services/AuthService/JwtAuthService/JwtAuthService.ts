@@ -1,5 +1,6 @@
 import { jwtVerify, SignJWT } from 'jose';
 import { AuthService, AuthToken } from '@/domain/services/AuthService.port';
+import { SESSION_DURATION_IN_DAYS } from '@/domain/services/AuthService.port';
 
 type JwtPayload = {
   userId: string;
@@ -10,7 +11,9 @@ export class JwtAuthService implements AuthService {
 
   constructor(
     secret: string,
-    private readonly expiresIn: string | number = '7d',
+    private readonly expiresIn:
+      | string
+      | number = `${SESSION_DURATION_IN_DAYS}d`,
   ) {
     this.secretKey = new TextEncoder().encode(secret);
   }

@@ -3,7 +3,7 @@ import { AppLoginUsecase } from '@/interface-adapters/app/use-cases/auth/Login/l
 import { JSENDResponse } from '@/app/_types/JSEND';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { cookieSessionName } from '../cookie';
+import { cookieSessionName, cookieSessionMaxAgeInSeconds } from '../cookie';
 import { AuthError } from '@/domain/common/errors';
 
 export async function POST(
@@ -32,6 +32,7 @@ export async function POST(
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
+      maxAge: cookieSessionMaxAgeInSeconds,
     });
 
     return response;

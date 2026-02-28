@@ -5,7 +5,7 @@ import { JSENDResponse } from '@/app/_types/JSEND';
 import { AlreadyExistsError, ValidationError } from '@/domain/common/errors';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { cookieSessionName } from '../cookie';
+import { cookieSessionName, cookieSessionMaxAgeInSeconds } from '../cookie';
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
@@ -32,6 +32,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
+      maxAge: cookieSessionMaxAgeInSeconds,
     });
 
     return response;
