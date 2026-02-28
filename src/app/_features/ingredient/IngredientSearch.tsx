@@ -57,8 +57,9 @@ function IngredientSearch({
   const [selectedExternalIngredientIds, setSelectedExternalIngredientIds] =
     useState<string[]>([]);
 
-  const [ingredientLinesWithExternalRefs, setIngredientLinesWithExternalRefs] =
-    useState<IngredientLineWithExternalRef[]>([]);
+  const [selectedIngredientLines, setSelectedIngredientLines] = useState<
+    IngredientLineWithExternalRef[]
+  >([]);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -69,26 +70,40 @@ function IngredientSearch({
   const outsideClickRef = useOutsideClick<HTMLDivElement>(handleHideList);
 
   useEffect(() => {
-    setIngredientLinesWithExternalRefs((prev) => {
-      const existingLines = new Map(
-        prev.map((item) => [item.ingredientExternalRef.externalId, item]),
+    setSelectedIngredientLines((prev) => {
+      const alreadyCreatedLines: IngredientLineWithExternalRef[] = prev.filter(
+        (line) =>
+          selectedExternalIngredientIds.includes(
+            line.ingredientExternalRef.externalId,
+          ),
       );
 
-      return foundIngredientsResults
-        .filter((result) =>
-          selectedExternalIngredientIds.includes(result.externalRef.externalId),
-        )
-        .map(
-          (result) =>
-            existingLines.get(result.externalRef.externalId) ??
-            ingredientFinderResultToIngredientLineWithExternalRef(result),
-        );
+      const externalIdsForExistingLines = new Set<string>(
+        alreadyCreatedLines.map(
+          (line) => line.ingredientExternalRef.externalId,
+        ),
+      );
+
+      const linesFromNewFoundIngredients = foundIngredientsResults
+        .filter((foundIngredient) => {
+          const externalId = foundIngredient.externalRef.externalId;
+
+          const isIngredientSelected =
+            selectedExternalIngredientIds.includes(externalId);
+          const ingredientHasLineCreated =
+            externalIdsForExistingLines.has(externalId);
+
+          return isIngredientSelected && !ingredientHasLineCreated;
+        })
+        .map(ingredientFinderResultToIngredientLineWithExternalRef);
+
+      return [...alreadyCreatedLines, ...linesFromNewFoundIngredients];
     });
   }, [selectedExternalIngredientIds, foundIngredientsResults]);
 
   useEffect(() => {
-    onIngredientSelectionRef.current?.(ingredientLinesWithExternalRefs);
-  }, [ingredientLinesWithExternalRefs]);
+    onIngredientSelectionRef.current?.(selectedIngredientLines);
+  }, [selectedIngredientLines]);
 
   function handleShowList() {
     if (!showFoundIngredients) setShowList(true);
@@ -117,11 +132,10 @@ function IngredientSearch({
 
   function handleIngredientLineQuantityChange(ingredientLineId: string) {
     return (newQuantity: number) => {
-      const ingredientLineWithExternalRef =
-        ingredientLinesWithExternalRefs.find(
-          (ingLineWithExternalRef) =>
-            ingLineWithExternalRef.ingredientLine.id === ingredientLineId,
-        );
+      const ingredientLineWithExternalRef = selectedIngredientLines.find(
+        (ingLineWithExternalRef) =>
+          ingLineWithExternalRef.ingredientLine.id === ingredientLineId,
+      );
 
       if (!ingredientLineWithExternalRef) return;
 
@@ -146,7 +160,7 @@ function IngredientSearch({
         protein,
       };
 
-      setIngredientLinesWithExternalRefs((prev) =>
+      setSelectedIngredientLines((prev) =>
         prev.map((ingLineWithExternalRef) =>
           ingLineWithExternalRef.ingredientLine.id === ingredientLineId
             ? {
@@ -160,7 +174,7 @@ function IngredientSearch({
   }
 
   function handleIngredientLineRemove(ingredientLineId: string) {
-    setIngredientLinesWithExternalRefs((prev) =>
+    setSelectedIngredientLines((prev) =>
       prev.filter(
         (ingLineWithExternalRef) =>
           ingLineWithExternalRef.ingredientLine.id !== ingredientLineId,
@@ -181,7 +195,7 @@ function IngredientSearch({
     isLoading,
     setIsLoading,
     toggleIngredientSelection,
-    ingredientLinesWithExternalRefs,
+    ingredientLinesWithExternalRefs: selectedIngredientLines,
     handleIngredientLineQuantityChange,
     handleIngredientLineRemove,
   };
