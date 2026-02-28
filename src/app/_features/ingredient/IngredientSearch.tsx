@@ -13,6 +13,7 @@ import IngredientItemMini from './IngredientItemMini';
 import IngredientLineItem from './IngredientLineItem';
 import BarcodeScanner from './ZXingBarcodeScanner';
 import { showErrorToast } from '@/app/_ui/showErrorToast';
+import { JSENDResponse } from '@/app/_types/JSEND';
 
 type IngredientSearchContextType = {
   showFoundIngredients: boolean;
@@ -72,11 +73,6 @@ function IngredientSearch({
       const existingLines = new Map(
         prev.map((item) => [item.ingredientExternalRef.externalId, item]),
       );
-
-      // TODO DELETE THESE DEBUG LOGS
-      console.log('foundIngredientsResults');
-      console.log(foundIngredientsResults);
-      // Object { error: "Failed to fetch ingredients" }
 
       return foundIngredientsResults
         .filter((result) =>
@@ -271,19 +267,18 @@ function BarcodeSearch({ disabled = false }: { disabled?: boolean }) {
           `/api/ingredient/barcode/${result}`,
         );
 
-        const data: IngredientFinderResult[] =
+        const data: JSENDResponse<IngredientFinderResult[]> =
           await fetchedIngredientsResult.json();
 
-        // TODO NEXT: Usar JSEND en api barcode
         // TODO Arreglar: ahora mismo se muestra varias veces el toast
-        if ('error' in data) {
+        if (data.status === 'fail' || data.status === 'error') {
           showErrorToast(
             'No se encontraron ingredientes para el código de barras escaneado.',
           );
           return;
         }
 
-        setFoundIngredientsResults(data);
+        setFoundIngredientsResults(data.data);
         handleShowList();
       } catch {
         setFoundIngredientsResults([]);
