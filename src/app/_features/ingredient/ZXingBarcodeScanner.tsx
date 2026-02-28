@@ -116,7 +116,7 @@ function ScannerModal({ reader, onCloseModal }: ScannerModalProps) {
     setScannerError(null);
 
     reader.decodeFromConstraints(
-      { video: { facingMode: 'user' } },
+      { video: { facingMode: 'environment' } },
       videoHtmlElementRef.current!,
       (result, err) => {
         if (result) {
