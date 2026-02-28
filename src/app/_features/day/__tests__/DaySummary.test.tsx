@@ -36,7 +36,7 @@ createServer(
       response: () => {
         const allRecipes: RecipeDTO[] = [...mockRecipes];
 
-        return allRecipes;
+        return { status: 'success', data: allRecipes };
       },
     },
   ],

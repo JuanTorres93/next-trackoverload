@@ -1,19 +1,30 @@
-import type { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { AppGetAllRecipesForUserUsecase } from '@/interface-adapters/app/use-cases/recipe';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { getCurrentUserId } from '@/app/_utils/auth/getCurrentUserId';
+import { JSENDResponse } from '@/app/_types/JSEND';
 
-export async function GET(_req: NextRequest) {
+export async function GET(
+  request: NextRequest,
+): Promise<NextResponse<JSENDResponse<RecipeDTO[]>>> {
   try {
     const userId = await getCurrentUserId();
+
     const recipes: RecipeDTO[] = await AppGetAllRecipesForUserUsecase.execute({
       targetUserId: userId,
       actorUserId: userId,
     });
 
-    return Response.json(recipes, { status: 200 });
+    return NextResponse.json(
+      { status: 'success', data: recipes },
+      { status: 200 },
+    );
   } catch (error) {
-    console.log('app/api/recipe/GET: Error fetching recipes:', error);
-    return Response.json({ error: 'Failed to fetch recipes' }, { status: 500 });
+    console.log('app/api/recipe/getAll: Error fetching recipes:', error);
+
+    return NextResponse.json(
+      { status: 'fail', data: { message: 'Failed to fetch recipes' } },
+      { status: 500 },
+    );
   }
 }

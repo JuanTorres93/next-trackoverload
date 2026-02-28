@@ -5,6 +5,8 @@ import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import RecipesGrid from './RecipesGrid';
+import { JSENDResponse } from '@/app/_types/JSEND';
+import { InfrastructureError } from '@/domain/common/errors';
 
 // TODO Add ability to filter (and sort) recipes
 
@@ -36,12 +38,23 @@ function SelectRecipeModal({
       setIsLoading(true);
       try {
         const response = await fetch('/api/recipe/getAll');
+
         if (!response.ok) {
           throw new Error('Failed to fetch recipes');
         }
 
-        const data: RecipeDTO[] = await response.json();
-        setRecipes(data);
+        const jsendResponse: JSENDResponse<RecipeDTO[]> = await response.json();
+
+        if (
+          jsendResponse.status === 'fail' ||
+          jsendResponse.status === 'error'
+        ) {
+          throw new InfrastructureError();
+        }
+
+        const recipes: RecipeDTO[] = jsendResponse.data;
+
+        setRecipes(recipes);
       } catch {
         showErrorToast('Error al cargar las recetas.');
       } finally {
