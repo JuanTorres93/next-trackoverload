@@ -30,10 +30,12 @@ const validate = (
     const typeOk = acceptedMimes.some((a) =>
       a.endsWith('/*') ? f.type.startsWith(a.slice(0, -1)) : f.type === a,
     );
+
     if (!typeOk) {
       setError(`Tipo no permitido: ${f.type}`);
       continue;
     }
+
     if (f.size > maxBytes) {
       setError(
         `Archivo demasiado grande: ${(f.size / 1024 / 1024).toFixed(
@@ -42,6 +44,7 @@ const validate = (
       );
       continue;
     }
+
     okFiles.push(f);
   }
 

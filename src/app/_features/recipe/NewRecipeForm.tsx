@@ -162,7 +162,7 @@ function NewRecipeForm() {
 
             <ImagePicker
               onFiles={handleImageSelection}
-              maxSizeMB={2}
+              maxSizeMB={200} // Image is compressed on submit, so we can allow bigger sizes
               borderTailwindColor="gray"
               accept="image/jpeg,image/png,image/webp"
             />
