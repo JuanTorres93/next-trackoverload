@@ -8,7 +8,7 @@ import {
 } from '../../../../../tests/mocks/ingredients';
 import { createServer } from '../../../../../tests/mocks/server';
 import { createMockUser } from '../../../../../tests/mocks/user';
-import { mockDecodeFromVideoDevice } from '../../../../../tests/mocks/zxing';
+import { mockDecodeFromConstraints } from '../../../../../tests/mocks/zxing';
 const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
 
 // Mock before importing the component that uses next/navigation
@@ -100,9 +100,9 @@ describe('NewRecipeForm', () => {
   });
 
   it('fetches ingredients through barcode', async () => {
-    mockDecodeFromVideoDevice.mockImplementation(
+    mockDecodeFromConstraints.mockImplementation(
       (
-        _deviceId: unknown,
+        _constraints: unknown,
         _videoEl: unknown,
         callback: (result: { getText: () => string } | null, err: null) => void,
       ) => {

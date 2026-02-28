@@ -18,8 +18,6 @@ import ScanButton from './ScanButton';
 import Modal from '@/app/_ui/Modal';
 
 type BarcodeContextType = {
-  selectedDeviceId: string | null;
-  setSelectedDeviceId: (deviceId: string | null) => void;
   videoHtmlElementRef: RefObject<HTMLVideoElement | null>;
   scannerResult: string | null;
   setScannerResult: (result: string | null) => void;
@@ -40,7 +38,6 @@ function BarcodeScanner({
   onScanResult?: (result: string | null) => void;
   onScanError?: () => void;
 }) {
-  const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
   const videoHtmlElementRef = useRef<HTMLVideoElement | null>(null);
 
   const [scannerResult, setScannerResult] = useState<string | null>(null);
@@ -49,8 +46,6 @@ function BarcodeScanner({
   return (
     <BarcodeContext.Provider
       value={{
-        selectedDeviceId,
-        setSelectedDeviceId,
         videoHtmlElementRef,
         scannerResult,
         setScannerResult,
@@ -101,22 +96,11 @@ type ScannerModalProps = {
 
 function ScannerModal({ reader, onCloseModal }: ScannerModalProps) {
   const {
-    selectedDeviceId,
-    setSelectedDeviceId,
     setScannerResult,
     setScannerError,
     videoHtmlElementRef,
     onScanResult,
   } = useBarcodeScannerContext();
-
-  useEffect(() => {
-    async function setupScanner() {
-      const videoInputDevices = await reader.listVideoInputDevices();
-      setSelectedDeviceId(videoInputDevices[0].deviceId);
-      // TODO: Handle more than one video input device and allow user to select which one to use
-    }
-    setupScanner();
-  }, [reader, setSelectedDeviceId]);
 
   // Keep latest callback references without adding them to effect deps
   const onCloseModalRef = useRef(onCloseModal);
@@ -131,9 +115,9 @@ function ScannerModal({ reader, onCloseModal }: ScannerModalProps) {
     setScannerResult(null);
     setScannerError(null);
 
-    reader.decodeFromVideoDevice(
-      selectedDeviceId,
-      videoHtmlElementRef.current,
+    reader.decodeFromConstraints(
+      { video: { facingMode: 'user' } },
+      videoHtmlElementRef.current!,
       (result, err) => {
         if (result) {
           setScannerResult(result.getText());
@@ -148,13 +132,7 @@ function ScannerModal({ reader, onCloseModal }: ScannerModalProps) {
     );
 
     return () => reader.reset();
-  }, [
-    reader,
-    selectedDeviceId,
-    videoHtmlElementRef,
-    setScannerResult,
-    setScannerError,
-  ]);
+  }, [reader, videoHtmlElementRef, setScannerResult, setScannerError]);
 
   return (
     <video

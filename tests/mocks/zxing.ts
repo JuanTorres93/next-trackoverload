@@ -1,14 +1,10 @@
 import { vi } from 'vitest';
 
-export const mockListVideoInputDevices = vi
-  .fn()
-  .mockResolvedValue([{ deviceId: 'mock-device-id', label: 'Mock Camera' }]);
-export const mockDecodeFromVideoDevice = vi.fn();
+export const mockDecodeFromConstraints = vi.fn();
 export const mockReset = vi.fn();
 
 export const BrowserMultiFormatReader = vi.fn().mockImplementation(() => ({
-  listVideoInputDevices: mockListVideoInputDevices,
-  decodeFromVideoDevice: mockDecodeFromVideoDevice,
+  decodeFromConstraints: mockDecodeFromConstraints,
   reset: mockReset,
 }));
 

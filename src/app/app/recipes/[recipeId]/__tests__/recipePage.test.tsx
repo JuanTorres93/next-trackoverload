@@ -22,7 +22,7 @@ vi.mock('@/interface-adapters/app/services/AppClientImageProcessor', () => ({
 
 import RecipePage from '../page';
 import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
-import { mockDecodeFromVideoDevice } from '../../../../../../tests/mocks/zxing';
+import { mockDecodeFromConstraints } from '../../../../../../tests/mocks/zxing';
 
 const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
 const usersRepo = AppUsersRepo as MemoryUsersRepo;
@@ -215,9 +215,9 @@ describe('RecipePage', () => {
     });
 
     it('fetches ingredients through barcode', async () => {
-      mockDecodeFromVideoDevice.mockImplementation(
+      mockDecodeFromConstraints.mockImplementation(
         (
-          _deviceId: unknown,
+          _constraints: unknown,
           _videoEl: unknown,
           callback: (
             result: { getText: () => string } | null,
