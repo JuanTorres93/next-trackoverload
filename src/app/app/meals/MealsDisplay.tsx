@@ -7,7 +7,8 @@ import SelectRecipeModal from '@/app/_features/recipe/SelectRecipeModal';
 import ButtonNew from '@/app/_ui/ButtonNew';
 import ButtonPrimary from '@/app/_ui/ButtonPrimary';
 import Modal from '@/app/_ui/Modal';
-import { useState } from 'react';
+import { DayId } from '@/domain/value-objects/DayId/DayId';
+import { useEffect, useState } from 'react';
 
 function MealsDisplay({
   assembledDays,
@@ -17,6 +18,19 @@ function MealsDisplay({
   const [selectedDaysIds, setSelectedDaysIds] = useState<string[]>([]);
 
   const areDaysSelected = selectedDaysIds.length > 0;
+
+  useEffect(() => {
+    const today = new Date();
+    const todayDayId = DayId.create({
+      day: today.getDate(),
+      month: today.getMonth() + 1,
+      year: today.getFullYear(),
+    }).value;
+
+    document
+      .getElementById(todayDayId)
+      ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, [assembledDays]);
 
   function handleSelectDay(dayId: string) {
     setSelectedDaysIds((prevSelectedDaysIds) => {

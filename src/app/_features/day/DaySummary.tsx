@@ -85,6 +85,7 @@ function DaySummary({
   return (
     <Modal>
       <div
+        id={dayId}
         className={`grid grid-cols-1 gap-4 grid-rows-[min-content_1fr_min-content] border-2 rounded-xl border-surface-dark overflow-x-hidden transition ${
           isToday ? 'border-3! shadow-md border-primary-light!' : ''
         } ${isPast ? 'opacity-60' : ''} ${isSelected ? 'border-selected!' : ''}`}
