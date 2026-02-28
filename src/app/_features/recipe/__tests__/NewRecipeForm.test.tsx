@@ -34,7 +34,7 @@ createServer(
             result.ingredient.name.toLowerCase().includes(term.toLowerCase()),
         );
 
-        return filteredIngredients;
+        return { status: 'success', data: filteredIngredients };
       },
     },
     {

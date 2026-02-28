@@ -218,17 +218,30 @@ function Search({
     setIsLoading(true);
 
     try {
-      const fetchedIngredientsResult: Response = await fetch(
-        `/api/ingredient/fuzzy/${term}`,
-      );
+      const response: Response = await fetch(`/api/ingredient/fuzzy/${term}`);
 
-      const data: IngredientFinderResult[] =
-        await fetchedIngredientsResult.json();
+      const jsendResponse: JSENDResponse<IngredientFinderResult[]> =
+        await response.json();
 
-      setFoundIngredientsResults(data);
-      setIsLoading(false);
+      if (
+        jsendResponse.status === 'fail' ||
+        jsendResponse.status === 'error' ||
+        jsendResponse.data.length === 0
+      ) {
+        showErrorToast(
+          `No se encontraron ingredientes para el término de búsqueda ${term}`,
+        );
+
+        return;
+      }
+
+      const foundIngredientsResults = jsendResponse.data;
+
+      setFoundIngredientsResults(foundIngredientsResults);
     } catch {
       setFoundIngredientsResults([]);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -263,22 +276,27 @@ function BarcodeSearch({ disabled = false }: { disabled?: boolean }) {
       setIsLoading(true);
 
       try {
-        const fetchedIngredientsResult: Response = await fetch(
+        const response: Response = await fetch(
           `/api/ingredient/barcode/${result}`,
         );
 
-        const data: JSENDResponse<IngredientFinderResult[]> =
-          await fetchedIngredientsResult.json();
+        const jsendResponse: JSENDResponse<IngredientFinderResult[]> =
+          await response.json();
 
         // TODO Arreglar: ahora mismo se muestra varias veces el toast
-        if (data.status === 'fail' || data.status === 'error') {
+        if (
+          jsendResponse.status === 'fail' ||
+          jsendResponse.status === 'error'
+        ) {
           showErrorToast(
             'No se encontraron ingredientes para el código de barras escaneado.',
           );
           return;
         }
 
-        setFoundIngredientsResults(data.data);
+        const foundIngredientsResults = jsendResponse.data;
+
+        setFoundIngredientsResults(foundIngredientsResults);
         handleShowList();
       } catch {
         setFoundIngredientsResults([]);
