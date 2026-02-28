@@ -174,10 +174,17 @@ function IngredientSearch({
   }
 
   function handleIngredientLineRemove(ingredientLineId: string) {
-    setSelectedIngredientLines((prev) =>
+    const ingredientLineToRemove = selectedIngredientLines.find(
+      (ingLineWithExternalRef) =>
+        ingLineWithExternalRef.ingredientLine.id === ingredientLineId,
+    );
+
+    if (!ingredientLineToRemove) return;
+
+    // Deselect the ingredient in the search results, line removal is handled in the effect
+    setSelectedExternalIngredientIds((prev) =>
       prev.filter(
-        (ingLineWithExternalRef) =>
-          ingLineWithExternalRef.ingredientLine.id !== ingredientLineId,
+        (id) => id !== ingredientLineToRemove.ingredientExternalRef.externalId,
       ),
     );
   }
