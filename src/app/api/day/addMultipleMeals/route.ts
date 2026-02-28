@@ -34,7 +34,7 @@ export async function POST(
       error,
     );
     return NextResponse.json(
-      { status: 'error', message: 'Failed to add meals to day' },
+      { status: 'fail', data: { message: 'Failed to add meals to day' } },
       { status: 500 },
     );
   }

@@ -27,8 +27,9 @@ export async function POST(
     );
   } catch (error) {
     console.log('app/api/day/addMeal: Error adding meal to day:', error);
+
     return NextResponse.json(
-      { status: 'error', message: 'Failed to add meal to day' },
+      { status: 'fail', data: { message: 'Failed to add meal to day' } },
       { status: 500 },
     );
   }

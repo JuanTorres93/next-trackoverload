@@ -31,8 +31,9 @@ export async function POST(
       'app/api/day/addMultipleMealsToMultipleDays: Error adding meals to days:',
       error,
     );
+
     return NextResponse.json(
-      { status: 'error', message: 'Failed to add meals to days' },
+      { status: 'fail', data: { message: 'Failed to add meals to days' } },
       { status: 500 },
     );
   }
