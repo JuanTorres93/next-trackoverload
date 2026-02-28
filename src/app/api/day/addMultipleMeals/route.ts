@@ -1,8 +1,11 @@
 import { AppAddMultipleMealsToDayUsecase } from '@/interface-adapters/app/use-cases/day';
-import type { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUserId } from '@/app/_utils/auth/getCurrentUserId';
+import { JSENDResponse } from '@/app/_types/JSEND';
 
-export async function POST(request: NextRequest) {
+export async function POST(
+  request: NextRequest,
+): Promise<NextResponse<JSENDResponse<{ message: string }>>> {
   try {
     const body = await request.json();
 
@@ -16,8 +19,13 @@ export async function POST(request: NextRequest) {
       recipeIds,
     });
 
-    return Response.json(
-      { message: 'Meals added successfully' },
+    return NextResponse.json(
+      {
+        status: 'success',
+        data: {
+          message: 'Meals added successfully',
+        },
+      },
       { status: 201 },
     );
   } catch (error) {
@@ -25,8 +33,8 @@ export async function POST(request: NextRequest) {
       'app/api/day/addMultipleMeals: Error adding meals to day:',
       error,
     );
-    return Response.json(
-      { error: 'Failed to add meals to day' },
+    return NextResponse.json(
+      { status: 'error', message: 'Failed to add meals to day' },
       { status: 500 },
     );
   }
