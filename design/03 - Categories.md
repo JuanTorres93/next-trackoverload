@@ -13,19 +13,19 @@
 - [ ] ¿Repositorio común de recetas?
 - [x] Repositorio privado de recetas
 - [x] Guardar info recetas
-- [ ] Editar info recetas sin afectar a comidas pasadas
+- [x] Editar info recetas sin afectar a comidas pasadas
 - [x] Ver info recetas
-- [ ] Borrar recetas sin afectar a comidas pasadas
+- [x] Borrar recetas sin afectar a comidas pasadas
 - [ ] 2 (o X) versiones de cada receta: Weight gain y Weight loss
 - [x] Sólo info necesaria de las recetas: calorías y proteínas
 
 # Meals
 
-- [ ] Loggear en batch para el conjunto de días que seleccione el usuario
-- [ ] Guardar info comidas
+- [x] Loggear en batch para el conjunto de días que seleccione el usuario
+- [x] Guardar info comidas
 - [ ] Editar info comidas
-- [ ] Ver info comidas
-- [ ] Borrar comidas
+- [x] Ver info comidas
+- [x] Borrar comidas
 
 # Progreso con el tiempo
 
