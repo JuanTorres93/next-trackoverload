@@ -33,7 +33,10 @@ function UpdateRecipeImage({
   }
 
   return (
-    <div className={`relative ${className}`} {...props}>
+    <div
+      className={`relative h-full flex items-center justify-center ${className}`}
+      {...props}
+    >
       {isLoading && <LoadingOverlay />}
 
       <Image
@@ -41,11 +44,11 @@ function UpdateRecipeImage({
         alt={recipe.name}
         width={300}
         height={200}
-        className="rounded-2xl"
+        className="object-cover object-center w-full"
       />
 
       <ButtonEditImage
-        className="absolute bottom-2 right-2"
+        className="absolute top-2 left-2"
         onImageUpload={handleImageUpload}
         disabled={isLoading}
       />

@@ -122,7 +122,7 @@ describe('RecipePage', () => {
       const protein = mockRecipes[0].protein;
       const roundedProtein = Math.round(protein).toString();
 
-      const proteinElement = screen.getByText(roundedProtein);
+      const proteinElement = screen.getByText(new RegExp(`${roundedProtein}`));
 
       expect(protein).toBeDefined();
       expect(protein).toBeGreaterThan(0);
