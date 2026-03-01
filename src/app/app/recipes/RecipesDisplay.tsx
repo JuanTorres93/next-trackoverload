@@ -13,10 +13,9 @@ function RecipesDisplay({ recipes }: { recipes: RecipeDTO[] }) {
   }
 
   return (
-    <>
+    <div className="flex flex-col gap-6 max-bp-navbar-mobile:items-center max-bp-navbar-mobile:w-full">
       <ButtonNew
         href="/app/recipes/new"
-        className="mb-4"
         onClick={handleNavigate}
         isLoading={isNavigating}
       >
@@ -26,9 +25,13 @@ function RecipesDisplay({ recipes }: { recipes: RecipeDTO[] }) {
       {recipes.length === 0 ? (
         <p className="text-center text-text-minor-emphasis">No hay recetas</p>
       ) : (
-        <RecipesGrid data-testid="recipes-container" recipes={recipes} />
+        <RecipesGrid
+          className="justify-center w-full"
+          data-testid="recipes-container"
+          recipes={recipes}
+        />
       )}
-    </>
+    </div>
   );
 }
 
