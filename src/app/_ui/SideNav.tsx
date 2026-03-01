@@ -104,17 +104,16 @@ function NavBar() {
     setIsLoading,
     navbarShown: showNavBar,
     toggleNavBar,
-    pathname,
   } = useSideNavContext();
 
-  const links = [
+  const links: NavbarLink[] = [
     { href: '/app', label: 'Inicio', icon: <HiHome /> },
     { href: '/app/recipes', label: 'Recetas', icon: <HiBookOpen /> },
     { href: '/app/meals', label: 'Comidas', icon: <HiCalendarDays /> },
   ];
 
   // TODO IMPORTANT: Move unimplemented links to links once they are implemented
-  const unimplementedLinks = [
+  const unimplementedLinks: NavbarLink[] = [
     { href: '/app/templates', label: 'Plantillas', icon: <HiSquares2X2 /> },
     { href: '/app/workouts', label: 'Entrenos', icon: <HiFire /> },
     {
@@ -159,11 +158,7 @@ function NavBar() {
 
         {links.map((link) => (
           <li key={link.href}>
-            <Link href={link.href}>
-              <NavItem icon={link.icon} isCurrentItem={pathname === link.href}>
-                {link.label}
-              </NavItem>
-            </Link>
+            <NavLink link={link} />
           </li>
         ))}
 
@@ -208,22 +203,21 @@ function ToggleButton({
   );
 }
 
-function NavItem({
-  icon,
-  isCurrentItem,
-  children,
-  ...props
+function NavLink({
+  link,
+  onClick,
 }: {
-  icon: React.ReactNode;
-  isCurrentItem: boolean;
-  children?: React.ReactNode;
-} & React.HTMLAttributes<HTMLDivElement>) {
-  const { className, onClick, ...rest } = props;
-
+  link: NavbarLink;
+  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
+}) {
+  const {
+    pathname,
+    toggleNavBar,
+    isMobileLayout,
+    isNavigating,
+    setIsNavigating,
+  } = useSideNavContext();
   const [queueToggleNavBar, setQueueToggleNavBar] = useState(false);
-
-  const { isMobileLayout, toggleNavBar, setIsNavigating, isNavigating } =
-    useSideNavContext();
 
   useEffect(() => {
     if (queueToggleNavBar && isMobileLayout && !isNavigating) {
@@ -242,6 +236,34 @@ function NavItem({
     onClick?.(e);
   };
 
+  const icon =
+    isNavigating && pathname === link.href ? <SpinnerMini /> : link.icon;
+
+  return (
+    <Link href={link.href}>
+      <NavItem
+        icon={icon}
+        isCurrentItem={pathname === link.href}
+        onClick={handleClick}
+      >
+        {link.label}
+      </NavItem>
+    </Link>
+  );
+}
+
+function NavItem({
+  icon,
+  isCurrentItem,
+  children,
+  ...props
+}: {
+  icon: React.ReactNode;
+  isCurrentItem: boolean;
+  children?: React.ReactNode;
+} & React.HTMLAttributes<HTMLDivElement>) {
+  const { className, ...rest } = props;
+
   return (
     <TextRegular
       {...rest}
@@ -249,12 +271,8 @@ function NavItem({
         isCurrentItem ? 'bg-surface-dark! text-text-light!' : ''
       }
        ${className}`}
-      onClick={handleClick}
     >
-      <span className="mr-2">
-        {isNavigating && isCurrentItem && <SpinnerMini />}
-        {(!isNavigating || !isCurrentItem) && icon}
-      </span>
+      <span className="mr-2">{icon}</span>
       {children}
     </TextRegular>
   );
@@ -269,6 +287,12 @@ function useSideNavContext() {
 
   return contextValue;
 }
+
+type NavbarLink = {
+  href: string;
+  label: string;
+  icon: React.ReactNode;
+};
 
 SideNav.NavBar = NavBar;
 SideNav.ToggleButton = ToggleButton;
