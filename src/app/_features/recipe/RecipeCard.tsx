@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import LoadingOverlay from '../common/LoadingOverlay';
 import { showErrorToast } from '@/app/_ui/showErrorToast';
+import { isNextRedirectError } from '../common/handleNextRedirectError';
 
 function RecipeCard({
   recipe,
@@ -35,10 +36,7 @@ function RecipeCard({
     try {
       await deleteRecipe(recipe.id);
     } catch (error) {
-      // Do not show error toast if next is trying to redirect to current page
-      if (error instanceof Error) {
-        if (error.message.match(/.*NEXT_REDIRECT.*/i)) return;
-      }
+      if (isNextRedirectError(error)) return;
 
       showErrorToast('Error al eliminar la receta.');
     } finally {
