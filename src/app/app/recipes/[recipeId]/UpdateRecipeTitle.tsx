@@ -29,7 +29,7 @@ function UpdateRecipeTitle({
 
   return (
     <textarea
-      className={`text-4xl pr-6 font-medium ${className}`}
+      className={`text-4xl outline-none resize-none font-medium focus:bg-input-background/10 ${className}`}
       defaultValue={originalTitle}
       onChange={handleTitleChange}
       {...rest}

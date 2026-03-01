@@ -52,7 +52,11 @@ export default async function RecipePage({
             recipe={recipe}
           />
 
-          <UpdateRecipeTitle originalTitle={recipe.name} recipeId={recipe.id} />
+          <UpdateRecipeTitle
+            className="mr-6"
+            originalTitle={recipe.name}
+            recipeId={recipe.id}
+          />
 
           <div className="absolute flex justify-center gap-4 -bottom-4 right-1/6 z-5">
             <MacroData
