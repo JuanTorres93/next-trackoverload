@@ -83,9 +83,7 @@ async function setup() {
   });
   render(ui);
 
-  const barcodeScannerButton = screen.getByTestId('open-scanner-button');
-
-  return { renderedRecipe, barcodeScannerButton };
+  return { renderedRecipe };
 }
 
 afterEach(() => {
@@ -229,8 +227,16 @@ describe('RecipePage', () => {
         },
       );
 
-      const { barcodeScannerButton } = await setup();
+      await setup();
 
+      const addIngredientButton = screen.getByTestId(
+        'add-ingredient-modal-button',
+      );
+      await userEvent.click(addIngredientButton);
+
+      const barcodeScannerButton = await screen.findByTestId(
+        'open-scanner-button',
+      );
       await userEvent.click(barcodeScannerButton);
 
       await waitFor(async () => {
@@ -340,7 +346,12 @@ describe('RecipePage', () => {
       const initialIngredientLinesCount =
         existingLinesContainer.childElementCount;
 
-      const searchIngredientInput = screen.getByPlaceholderText(
+      const addIngredientButton = screen.getByTestId(
+        'add-ingredient-modal-button',
+      );
+      await userEvent.click(addIngredientButton);
+
+      const searchIngredientInput = await screen.findByPlaceholderText(
         'Buscar ingredientes...',
       );
 
@@ -358,7 +369,7 @@ describe('RecipePage', () => {
       const searchResultItem = await screen.findByText(/celery/i);
       await userEvent.click(searchResultItem);
 
-      const addButton = screen.getByRole('button', { name: /añadir/i });
+      const addButton = screen.getByRole('button', { name: /^añadir$/i });
       await userEvent.click(addButton);
 
       await waitFor(() => {
