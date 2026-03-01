@@ -156,9 +156,9 @@ function NavBar() {
     <nav className="h-full max-bp-navbar-mobile:fixed max-bp-navbar-mobile:inset-0 max-bp-navbar-mobile:z-30 max-bp-navbar-mobile:backdrop-blur-md max-bp-navbar-mobile:h-dvh max-bp-navbar-mobile:bg-background/80">
       <ul className="flex flex-col w-full h-full gap-1 p-4">
         <li className="flex items-center justify-center mb-4">
-          <Link href="/app">
-            <Logo />
-          </Link>
+          {/* <Link href="/app"> */}
+          <Logo />
+          {/* </Link> */}
         </li>
 
         {links.map((link) => (
@@ -226,6 +226,8 @@ function NavLink({
   } = useSideNavContext();
   const [queueToggleNavBar, setQueueToggleNavBar] = useState(false);
 
+  const wantsToNavigateToCurrentRoute = nextRoute === link.href;
+
   useEffect(() => {
     if (queueToggleNavBar && isMobileLayout && !isNavigating) {
       toggleNavBar();
@@ -234,8 +236,10 @@ function NavLink({
   }, [queueToggleNavBar, toggleNavBar, isMobileLayout, isNavigating]);
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    setIsNavigating(true);
-    setNextRoute(link.href);
+    if (!wantsToNavigateToCurrentRoute) {
+      setIsNavigating(true);
+      setNextRoute(link.href);
+    }
 
     if (isMobileLayout) {
       setQueueToggleNavBar(true);
