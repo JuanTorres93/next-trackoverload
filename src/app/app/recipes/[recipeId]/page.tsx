@@ -1,15 +1,13 @@
-import NutritionalInfoValue from '@/app/_ui/NutritionalInfoValue';
+import { getRecipeByIdForLoggedInUser } from '@/app/_features/recipe/actions';
 import PageWrapper from '@/app/_ui/PageWrapper';
+import { getCurrentUserId } from '@/app/_utils/auth/getCurrentUserId';
 import { formatToInteger } from '@/app/_utils/format/formatToInteger';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { AppGetRecipeByIdForUserUsecase } from '@/interface-adapters/app/use-cases/recipe';
+import MacroData from './MacroData';
 import RecipeDisplay from './RecipeDisplay';
 import UpdateRecipeImage from './UpdateRecipeImage';
 import UpdateRecipeTitle from './UpdateRecipeTitle';
-import SectionHeading from '@/app/_ui/typography/SectionHeading';
-import { getCurrentUserId } from '@/app/_utils/auth/getCurrentUserId';
-import { getRecipeByIdForLoggedInUser } from '@/app/_features/recipe/actions';
-import MacroData from './MacroData';
 
 export async function generateMetadata({
   params,
@@ -68,14 +66,8 @@ export default async function RecipePage({
           </div>
         </header>
 
-        <div>
-          <SectionHeading>
-            <h2>Ingredientes</h2>
-          </SectionHeading>
-
-          {/* Needs to be a separate component for interactivity through event handlers */}
-          <RecipeDisplay recipe={recipe} />
-        </div>
+        {/* Needs to be a separate component for interactivity through event handlers */}
+        <RecipeDisplay recipe={recipe} />
       </div>
     </PageWrapper>
   );

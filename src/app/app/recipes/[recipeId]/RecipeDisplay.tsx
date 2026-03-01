@@ -17,6 +17,8 @@ import IngredientSearch, {
 import ButtonNew from '@/app/_ui/ButtonNew';
 import { useDebounce } from '@/app/_hooks/useDebounce';
 import { useState } from 'react';
+import SectionHeading from '@/app/_ui/typography/SectionHeading';
+import ButtonPrimary from '@/app/_ui/ButtonPrimary';
 
 interface RecipeDisplayProps {
   recipe: RecipeDTO;
@@ -28,6 +30,7 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
     newIngredientLinesWithExternalRefs,
     setNewIngredientLinesWithExternalRefs,
   ] = useState<IngredientLineWithExternalRef[]>([]);
+  // TODO handle loading state
 
   const debouncedUpdateQuantity = useDebounce(handleQuantityChange, 250);
 
@@ -46,7 +49,6 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
   }
 
   async function handleAddIngredients(e: React.FormEvent) {
-    // TODO handle loading state
     e.preventDefault();
 
     for (const line of newIngredientLinesWithExternalRefs) {
@@ -70,65 +72,81 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
   }
 
   return (
-    <div className="grid grid-cols-[1fr_min-content] gap-10 grid-rows-[min-content_1fr]">
-      <div
-        data-testid="ingredient-lines-container"
-        className="grid row-span-2 gap-4 grid-cols-[repeat(auto-fit,minmax(18rem,1fr))] auto-rows-min"
-      >
-        {recipe.ingredientLines.map((line) => (
-          <IngredientLineItem
-            key={line.id}
-            ingredientLine={line}
-            onRemove={() => handleRemoveIngredient(line.ingredient.id)}
-            onQuantityChange={(quantity) =>
-              debouncedUpdateQuantity(line.id, quantity)
-            }
-          />
-        ))}
-      </div>
+    <div>
+      <SectionHeading>
+        <h2>Ingredientes</h2>
+      </SectionHeading>
 
-      <div className="flex justify-end gap-4 text-4xl">
-        <HiOutlineDuplicate
+      <div className="flex gap-4 mb-6">
+        <ButtonNew>Agregar ingrediente</ButtonNew>
+        <ButtonPrimary
+          className="flex items-center gap-2"
           data-testid="duplicate-recipe-button"
-          className="transition cursor-pointer hover:text-primary-light"
           onClick={() => duplicateRecipe(recipe.id)}
-        />
-        <HiOutlineTrash
+        >
+          <HiOutlineDuplicate />
+          <span>Duplicar receta</span>
+        </ButtonPrimary>
+
+        <ButtonPrimary
+          className="flex items-center gap-2 border-error! text-error! hover:bg-error! hover:text-text-light! hover:border-error!"
           data-testid="delete-recipe-button"
-          className="transition cursor-pointer hover:text-error"
           onClick={() => deleteRecipe(recipe.id)}
-        />
+        >
+          <HiOutlineTrash />
+          <span>Eliminar receta</span>
+        </ButtonPrimary>
       </div>
 
-      <form className="flex flex-col gap-4">
-        <h3>Añadir ingredientes</h3>
-        <IngredientSearch
-          onIngredientSelection={setNewIngredientLinesWithExternalRefs}
+      <div className="grid grid-cols-[1fr_min-content] gap-10 grid-rows-[min-content_1fr]">
+        <div
+          data-testid="ingredient-lines-container"
+          className="grid row-span-2 gap-4 grid-cols-[repeat(auto-fit,minmax(18rem,1fr))] auto-rows-min"
         >
-          <div className="flex items-center justify-center gap-4">
-            <IngredientSearch.Search className="w-full max-w-120" />
-            <IngredientSearch.BarcodeSearch />
-          </div>
+          {recipe.ingredientLines.map((line) => (
+            <IngredientLineItem
+              key={line.id}
+              ingredientLine={line}
+              onRemove={() => handleRemoveIngredient(line.ingredient.id)}
+              onQuantityChange={(quantity) =>
+                debouncedUpdateQuantity(line.id, quantity)
+              }
+            />
+          ))}
+        </div>
 
-          <IngredientSearch.FoundIngredientsList className="my-4" />
+        <form className="flex flex-col gap-4">
+          <h3>Añadir ingredientes</h3>
+          <IngredientSearch
+            onIngredientSelection={setNewIngredientLinesWithExternalRefs}
+          >
+            <div className="flex items-center justify-center gap-4">
+              <IngredientSearch.Search className="w-full max-w-120" />
+              <IngredientSearch.BarcodeSearch />
+            </div>
 
-          <IngredientSearch.SelectedIngredientsList
-            containerClassName="mt-8"
-            className="max-h-80!"
-            showIngredientLabel={newIngredientLinesWithExternalRefs.length > 0}
-          />
-        </IngredientSearch>
+            <IngredientSearch.FoundIngredientsList className="my-4" />
 
-        <ButtonNew
-          type="submit"
-          className={`${
-            newIngredientLinesWithExternalRefs.length <= 0 ? 'hidden' : ''
-          }`}
-          onClick={handleAddIngredients}
-        >
-          Añadir
-        </ButtonNew>
-      </form>
+            <IngredientSearch.SelectedIngredientsList
+              containerClassName="mt-8"
+              className="max-h-80!"
+              showIngredientLabel={
+                newIngredientLinesWithExternalRefs.length > 0
+              }
+            />
+          </IngredientSearch>
+
+          <ButtonNew
+            type="submit"
+            className={`${
+              newIngredientLinesWithExternalRefs.length <= 0 ? 'hidden' : ''
+            }`}
+            onClick={handleAddIngredients}
+          >
+            Añadir
+          </ButtonNew>
+        </form>
+      </div>
     </div>
   );
 }
