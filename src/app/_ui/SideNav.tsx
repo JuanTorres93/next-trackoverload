@@ -38,6 +38,8 @@ type SideNavContextType = {
   pathname: string;
   isNavigating: boolean;
   setIsNavigating: React.Dispatch<React.SetStateAction<boolean>>;
+  nextRoute: string | null;
+  setNextRoute: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 const SideNavContext = createContext<SideNavContextType | null>(null);
@@ -49,6 +51,7 @@ function SideNav({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
   const [isMobileLayout, setIsMobileLayout] = useState(false);
+  const [nextRoute, setNextRoute] = useState<string | null>(null);
 
   useEffect(() => {
     setIsNavigating(false);
@@ -90,6 +93,8 @@ function SideNav({ children }: { children: React.ReactNode }) {
     pathname,
     isNavigating,
     setIsNavigating,
+    nextRoute,
+    setNextRoute,
   };
 
   return (
@@ -216,6 +221,8 @@ function NavLink({
     isMobileLayout,
     isNavigating,
     setIsNavigating,
+    nextRoute,
+    setNextRoute,
   } = useSideNavContext();
   const [queueToggleNavBar, setQueueToggleNavBar] = useState(false);
 
@@ -228,6 +235,7 @@ function NavLink({
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     setIsNavigating(true);
+    setNextRoute(link.href);
 
     if (isMobileLayout) {
       setQueueToggleNavBar(true);
@@ -237,7 +245,7 @@ function NavLink({
   };
 
   const icon =
-    isNavigating && pathname === link.href ? <SpinnerMini /> : link.icon;
+    isNavigating && nextRoute === link.href ? <SpinnerMini /> : link.icon;
 
   return (
     <Link href={link.href}>
