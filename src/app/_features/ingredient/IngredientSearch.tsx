@@ -304,7 +304,6 @@ function BarcodeSearch({ disabled = false }: { disabled?: boolean }) {
         const jsendResponse: JSENDResponse<IngredientFinderResult[]> =
           await response.json();
 
-        // TODO Arreglar: ahora mismo se muestra varias veces el toast
         if (
           jsendResponse.status === 'fail' ||
           jsendResponse.status === 'error'

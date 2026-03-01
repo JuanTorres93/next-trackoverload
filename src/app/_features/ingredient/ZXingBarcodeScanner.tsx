@@ -1,10 +1,5 @@
 'use client';
-import {
-  BarcodeFormat,
-  BrowserMultiFormatReader,
-  DecodeHintType,
-  NotFoundException,
-} from '@zxing/library';
+import { BrowserMultiFormatReader, NotFoundException } from '@zxing/library';
 import {
   createContext,
   useContext,
@@ -61,19 +56,6 @@ function BarcodeScanner({
 }
 
 function ZXingBarcodeScanner({ disabled = false }: { disabled?: boolean }) {
-  const hints = new Map();
-  const formats = [
-    BarcodeFormat.UPC_A,
-    BarcodeFormat.UPC_E,
-    BarcodeFormat.EAN_13,
-    BarcodeFormat.EAN_8,
-    BarcodeFormat.CODE_39,
-  ];
-
-  hints.set(DecodeHintType.POSSIBLE_FORMATS, formats);
-
-  const reader = useMemo(() => new BrowserMultiFormatReader(), []);
-
   return (
     <Modal>
       <div>
@@ -83,50 +65,65 @@ function ZXingBarcodeScanner({ disabled = false }: { disabled?: boolean }) {
       </div>
 
       <Modal.Window name="scanner">
-        <ScannerModal reader={reader} />
+        <ScannerModal />
       </Modal.Window>
     </Modal>
   );
 }
 
 type ScannerModalProps = {
-  reader: BrowserMultiFormatReader;
   onCloseModal?: () => void;
 };
 
-function ScannerModal({ reader, onCloseModal }: ScannerModalProps) {
+function ScannerModal({ onCloseModal }: ScannerModalProps) {
   const {
     setScannerResult,
     setScannerError,
     videoHtmlElementRef,
     onScanResult,
+    onScanError,
   } = useBarcodeScannerContext();
+  const reader = useMemo(() => new BrowserMultiFormatReader(), []);
 
   // Keep latest callback references without adding them to effect deps
   const onCloseModalRef = useRef(onCloseModal);
   onCloseModalRef.current = onCloseModal;
   const onScanResultRef = useRef(onScanResult);
   onScanResultRef.current = onScanResult;
-  const onScanErrorRef = useRef(useBarcodeScannerContext().onScanError);
-  onScanErrorRef.current = useBarcodeScannerContext().onScanError;
+  const onScanErrorRef = useRef(onScanError);
+  onScanErrorRef.current = onScanError;
+
+  // Prevent the continuous ZXing callback from processing more than one result/error per modal session.
+  const hasHandledScanRef = useRef(false);
 
   // Start the scanner when the component mounts and stop it when it unmounts
   useEffect(() => {
     setScannerResult(null);
     setScannerError(null);
+    hasHandledScanRef.current = false;
 
     reader.decodeFromConstraints(
       { video: { facingMode: 'environment' } },
       videoHtmlElementRef.current!,
       (result, err) => {
+        if (hasHandledScanRef.current) return;
+
         if (result) {
+          hasHandledScanRef.current = true;
+
+          reader.reset(); // stop further callbacks immediately
+
           setScannerResult(result.getText());
           onScanResultRef.current?.(result.getText());
           onCloseModalRef.current?.();
-        }
-        if (err && !(err instanceof NotFoundException)) {
+        } else if (err && !(err instanceof NotFoundException)) {
+          hasHandledScanRef.current = true;
+          reader.reset(); // stop the error-callback loop
+
           setScannerError(err.message);
+
           onScanErrorRef.current?.();
+          onCloseModalRef.current?.(); // close so the user can retry
         }
       },
     );
