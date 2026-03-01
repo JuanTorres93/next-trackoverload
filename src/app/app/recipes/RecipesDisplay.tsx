@@ -26,7 +26,7 @@ function RecipesDisplay({ recipes }: { recipes: RecipeDTO[] }) {
         <p className="text-center text-text-minor-emphasis">No hay recetas</p>
       ) : (
         <RecipesGrid
-          className="justify-center w-full"
+          className="w-full max-bp-navbar-mobile:justify-center"
           data-testid="recipes-container"
           recipes={recipes}
         />
