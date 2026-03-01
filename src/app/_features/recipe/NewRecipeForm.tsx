@@ -15,6 +15,7 @@ import { createRecipe } from './actions';
 
 import { AppClientImageProcessor } from '@/interface-adapters/app/services/AppClientImageProcessor';
 import LoadingOverlay from '../common/LoadingOverlay';
+import { showErrorToast } from '@/app/_ui/showErrorToast';
 
 export type NewRecipeFormState = {
   name: string;
@@ -113,6 +114,10 @@ function NewRecipeForm() {
       });
 
       resetForm();
+    } catch {
+      showErrorToast(
+        'Error al crear la receta. Por favor, inténtalo de nuevo.',
+      );
     } finally {
       setIsLoading(false);
     }

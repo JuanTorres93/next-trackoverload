@@ -58,7 +58,7 @@ function LoginForm() {
       router.refresh();
       router.push('/app');
     } catch {
-      showErrorToast('Error al iniciar sesión. ');
+      showErrorToast('Error al iniciar sesión.');
     } finally {
       setIsLoading(false);
     }
