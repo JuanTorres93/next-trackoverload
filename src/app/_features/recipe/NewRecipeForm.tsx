@@ -130,29 +130,27 @@ function NewRecipeForm() {
     <IngredientSearch onIngredientSelection={onIngredientSelection}>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col items-center max-w-2xl gap-4"
+        className="flex flex-col items-center max-w-2xl gap-4 max-bp-new-recipe-page:max-w-full"
       >
         <FormRow>
           <div
             id="image-and-name-container"
-            className="relative flex flex-col items-center justify-center p-4 mx-auto mb-2 overflow-hidden w-80 text-text-light rounded-2xl aspect-square"
+            className="relative grid grid-rows-[1fr_5rem] items-center gap-4 p-4 mx-auto mb-2 overflow-hidden w-80 text-text-light rounded-2xl aspect-square max-bp-new-recipe-page:w-60"
           >
             {isLoading && (
               <LoadingOverlay className="bg-surface-dark/20! backdrop-blur-sm z-14!" />
             )}
+
             <textarea
-              className="z-15 resize-none text-center text-3xl  font-extrabold w-[90%] outline-none overflow-x-hidden max-h-[90%]"
+              className="w-full h-full overflow-x-hidden overflow-y-scroll text-3xl font-extrabold text-center outline-none resize-none z-15 max-bp-new-recipe-page:text-2xl"
               spellCheck={false}
               value={formState.name}
               disabled={isLoading}
               onChange={(e) => setField('name', e.target.value)}
               placeholder="Nombre receta"
-              onInput={(e) => {
-                e.currentTarget.style.height = 'auto';
-                e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;
-              }}
               required
             ></textarea>
+
             <Image
               src={
                 formState.imageFile
@@ -161,7 +159,6 @@ function NewRecipeForm() {
               }
               alt="Imagen de la receta"
               fill
-              // className="object-contain"
               className="object-cover"
             />
 

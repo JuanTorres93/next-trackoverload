@@ -39,6 +39,10 @@
 
   /* Breakpoints */
   --breakpoint-bp-navbar-mobile: 748px;
+
+  --breakpoint-bp-new-recipe-page: 530px;
+
+  --breakpoint-bp-ingredient-search: 400px;
 }
 
 @layer base {

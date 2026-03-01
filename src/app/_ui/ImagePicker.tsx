@@ -115,15 +115,10 @@ export default function ImagePicker({
       >
         {images.length === 0 ? (
           <>
-            <p>
+            <p className="text-sm">
               Arrastra tu{multiple ? 's' : ''} im{multiple ? 'á' : 'a'}gen
-              {multiple ? 'es' : ''} aquí
+              {multiple ? 'es' : ''}
             </p>
-            <TextSmall>
-              <p className="font-medium opacity-70">
-                o haz clic para seleccionar — Máx: {maxSizeMB}MB
-              </p>
-            </TextSmall>
           </>
         ) : (
           <div className="space-y-2">

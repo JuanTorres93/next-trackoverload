@@ -64,7 +64,10 @@ function ZXingBarcodeScanner({ disabled = false }: { disabled?: boolean }) {
         </Modal.Open>
       </div>
 
-      <Modal.Window name="scanner">
+      <Modal.Window
+        className="flex items-center justify-center aspect-video w-120 max-bp-navbar-mobile:w-[90dvw]"
+        name="scanner"
+      >
         <ScannerModal />
       </Modal.Window>
     </Modal>
@@ -134,7 +137,7 @@ function ScannerModal({ onCloseModal }: ScannerModalProps) {
   return (
     <video
       ref={videoHtmlElementRef}
-      className="w-[300px] h-[200px] border border-border rounded-lg"
+      className="w-full h-full border rounded-lg border-border"
     ></video>
   );
 }
