@@ -38,6 +38,9 @@
   --color-selected: #2563eb;
 
   /* Breakpoints */
+  --breakpoint-bp-recipe-page: 863px;
+  --breakpoint-bp-recipe-page-second: 445px;
+
   --breakpoint-bp-navbar-mobile: 748px;
 
   --breakpoint-bp-new-recipe-page: 530px;

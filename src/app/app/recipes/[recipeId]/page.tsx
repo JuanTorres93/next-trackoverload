@@ -45,20 +45,20 @@ export default async function RecipePage({
 
   return (
     <PageWrapper className="max-w-7xl ">
-      <div className="grid grid-cols-1 gap-20">
-        <header className="grid relative items-center w-full bg-gradient-to-l border border-border from-surface-dark to-surface-dark/60 rounded-2xl grid-cols-[20rem_1fr] grid-rows-[15rem] gap-6 text-text-light">
+      <div className="grid grid-cols-1 gap-10 max-bp-recipe-page:gap-16 max-bp-recipe-page-second:gap-6">
+        <header className="grid relative items-center w-full bg-gradient-to-l border border-border from-surface-dark to-surface-dark/60 rounded-2xl grid-cols-[20rem_1fr] grid-rows-[15rem] gap-6 text-text-light max-bp-recipe-page:grid-cols-1 max-bp-recipe-page:grid-rows-[12rem_1fr]">
           <UpdateRecipeImage
-            className="overflow-hidden rounded-tl-2xl rounded-bl-2xl"
+            className="overflow-hidden rounded-tl-2xl rounded-bl-2xl max-bp-recipe-page:rounded-tr-2xl max-bp-recipe-page:rounded-bl-none"
             recipe={recipe}
           />
 
           <UpdateRecipeTitle
-            className="mr-6"
+            className="mr-6 max-bp-recipe-page:mr-0 max-bp-recipe-page:text-center max-bp-recipe-page:mx-2 max-bp-recipe-page:mb-12 max-bp-recipe-page-second:mb-0"
             originalTitle={recipe.name}
             recipeId={recipe.id}
           />
 
-          <div className="absolute flex justify-center gap-4 -bottom-4 right-1/6 z-5">
+          <div className="absolute flex justify-center gap-4 -bottom-4 right-1/6 z-5 max-bp-recipe-page:left-1/2 max-bp-recipe-page:-translate-x-1/2 max-bp-recipe-page:-bottom-8 max-bp-recipe-page-second:static max-bp-recipe-page-second:translate-x-0  max-bp-recipe-page-second:grid max-bp-recipe-page-second:grid-cols-[min-content] max-bp-recipe-page-second:gap-2 max-bp-recipe-page-second:mb-2">
             <MacroData
               value={formatToInteger(recipe.calories)}
               label="Calorías"

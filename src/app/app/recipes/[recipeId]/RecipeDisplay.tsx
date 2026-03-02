@@ -134,8 +134,40 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
   }
 
   return (
-    <div>
+    <div className="flex flex-col">
       <Modal>
+        <div className="flex gap-4 mb-12 ml-auto max-bp-recipe-page:mx-auto">
+          <ButtonPrimary
+            className="flex items-center gap-2"
+            data-testid="duplicate-recipe-button"
+            onClick={handleDuplicateRecipe}
+            disabled={buttonsDisabled}
+          >
+            {isDuplicatingRecipe && <SpinnerMini />}
+            {!isDuplicatingRecipe && <HiOutlineDuplicate />}
+            <p>
+              Duplicar{' '}
+              <span className="max-bp-recipe-page-second:hidden">receta</span>
+            </p>
+          </ButtonPrimary>
+
+          <ButtonPrimary
+            className="flex items-center gap-2 border-error! text-error! hover:bg-error! hover:text-text-light! hover:border-error! disabled:border-text-minor-emphasis! disabled:hover:bg-transparent! disabled:text-text-minor-emphasis!"
+            data-testid="delete-recipe-button"
+            onClick={handleDeleteRecipe}
+            disabled={buttonsDisabled}
+          >
+            {isDeletingRecipe && <SpinnerMini />}
+            {!isDeletingRecipe && <HiOutlineTrash />}
+            <p>
+              Eliminar{' '}
+              <span className="max-bp-recipe-page-second:hidden">
+                ingredientes
+              </span>
+            </p>
+          </ButtonPrimary>
+        </div>
+
         <SectionHeading>
           <h2>Ingredientes</h2>
         </SectionHeading>
@@ -147,31 +179,9 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
               data-testid="add-ingredient-modal-button"
               isLoading={isAddingIngredients}
             >
-              Añadir ingredientes
+              <p>Añadir ingredientes</p>
             </ButtonNew>
           </Modal.Open>
-
-          <ButtonPrimary
-            className="flex items-center gap-2"
-            data-testid="duplicate-recipe-button"
-            onClick={handleDuplicateRecipe}
-            disabled={buttonsDisabled}
-          >
-            {isDuplicatingRecipe && <SpinnerMini />}
-            {!isDuplicatingRecipe && <HiOutlineDuplicate />}
-            <span>Duplicar receta</span>
-          </ButtonPrimary>
-
-          <ButtonPrimary
-            className="flex items-center gap-2 border-error! text-error! hover:bg-error! hover:text-text-light! hover:border-error! disabled:border-text-minor-emphasis! disabled:hover:bg-transparent! disabled:text-text-minor-emphasis!"
-            data-testid="delete-recipe-button"
-            onClick={handleDeleteRecipe}
-            disabled={buttonsDisabled}
-          >
-            {isDeletingRecipe && <SpinnerMini />}
-            {!isDeletingRecipe && <HiOutlineTrash />}
-            <span>Eliminar receta</span>
-          </ButtonPrimary>
         </div>
 
         <div className="grid grid-cols-[1fr_min-content] gap-10 grid-rows-[min-content_1fr]">
