@@ -142,6 +142,10 @@ function NavBar() {
         method: 'POST',
       });
 
+      // Wait for the session cookie to be cleared before refreshing and redirecting
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      router.refresh();
       router.push('/auth/login');
     } finally {
       setIsLoading(false);
