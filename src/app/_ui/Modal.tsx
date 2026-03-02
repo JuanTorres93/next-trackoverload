@@ -65,7 +65,7 @@ function Window({
     >
       <div
         ref={ref}
-        className={`fixed top-[50%] left-[50%] translate-[-50%] translate-y-[-50%] bg-surface-card rounded-lg shadow-2xl shadow-black/50 px-6 py-10 transition ${className}`}
+        className={`fixed top-[50%] left-[50%] translate-[-50%] translate-y-[-50%] bg-surface-card rounded-lg shadow-2xl shadow-black/50 px-6 py-10 transition max-bp-navbar-mobile:w-[90dvw] ${className}`}
         {...rest}
       >
         <ButtonX className="absolute top-3 right-3" onClick={close} />

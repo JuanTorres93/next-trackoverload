@@ -23,6 +23,7 @@ import { showErrorToast } from '@/app/_ui/showErrorToast';
 import SpinnerMini from '@/app/_ui/SpinnerMini';
 import SectionHeading from '@/app/_ui/typography/SectionHeading';
 import { useState } from 'react';
+import ArrangedIngredientSearch from '@/app/_features/ingredient/ArrangedIngredientSearch';
 
 interface RecipeDisplayProps {
   recipe: RecipeDTO;
@@ -234,11 +235,7 @@ function AddIngredientModal({
       <IngredientSearch
         onIngredientSelection={setNewIngredientLinesWithExternalRefs}
       >
-        <div className="flex items-center justify-center gap-4">
-          <IngredientSearch.SearchTermInput className="w-full max-w-120" />
-          <IngredientSearch.SearchButton />
-          <IngredientSearch.BarcodeSearch />
-        </div>
+        <ArrangedIngredientSearch isLoading={isLoading} />
 
         <IngredientSearch.FoundIngredientsList className="my-4" />
 
