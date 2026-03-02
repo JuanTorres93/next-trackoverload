@@ -235,7 +235,8 @@ function AddIngredientModal({
         onIngredientSelection={setNewIngredientLinesWithExternalRefs}
       >
         <div className="flex items-center justify-center gap-4">
-          <IngredientSearch.Search className="w-full max-w-120" />
+          <IngredientSearch.SearchTermInput className="w-full max-w-120" />
+          <IngredientSearch.SearchButton />
           <IngredientSearch.BarcodeSearch />
         </div>
 

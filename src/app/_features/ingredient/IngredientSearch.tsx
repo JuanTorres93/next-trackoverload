@@ -1,19 +1,25 @@
 'use client';
 import { useOutsideClick } from '@/app/_hooks/useOutsideClick';
+import { JSENDResponse } from '@/app/_types/JSEND';
 import ButtonSearch from '@/app/_ui/ButtonSearch';
 import Input from '@/app/_ui/Input';
+import { showErrorToast } from '@/app/_ui/showErrorToast';
 import Spinner from '@/app/_ui/Spinner';
 import TextSmall from '@/app/_ui/typography/TextSmall';
 import { formatToInteger } from '@/app/_utils/format/formatToInteger';
 import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
 import { IngredientFinderResult } from '@/domain/services/IngredientFinder.port';
-import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { createInMemoryRecipeIngredientLine } from '../recipe/utils';
 import IngredientItemMini from './IngredientItemMini';
 import IngredientLineItem from './IngredientLineItem';
 import BarcodeScanner from './ZXingBarcodeScanner';
-import { showErrorToast } from '@/app/_ui/showErrorToast';
-import { JSENDResponse } from '@/app/_types/JSEND';
 
 type IngredientSearchContextType = {
   showFoundIngredients: boolean;
@@ -214,19 +220,43 @@ function IngredientSearch({
   );
 }
 
-function Search({
-  className,
-  disabled = false,
-}: {
-  className?: string;
-  disabled?: boolean;
-}) {
+function SearchTermInput({
+  ...props
+}: React.InputHTMLAttributes<HTMLInputElement>) {
+  const { disabled, className, ...rest } = props;
+
   const {
     handleShowList,
     ingredientSearchTerm,
     setIngredientSearchTerm,
-    setFoundIngredientsResults,
     isLoading,
+  } = useIngredientSearchContext();
+
+  return (
+    <div className={`${className}`} {...rest}>
+      <Input
+        value={ingredientSearchTerm}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          setIngredientSearchTerm(e.target.value);
+          handleShowList();
+        }}
+        disabled={isLoading || disabled}
+        onClick={handleShowList}
+        placeholder="Buscar ingredientes..."
+      />
+    </div>
+  );
+}
+
+function SearchButton({
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+  const { disabled, ...rest } = props;
+
+  const {
+    ingredientSearchTerm,
+    isLoading,
+    setFoundIngredientsResults,
     setIsLoading,
   } = useIngredientSearchContext();
 
@@ -267,24 +297,12 @@ function Search({
   }
 
   return (
-    <div className={`grid grid-cols-[1fr_min-content] gap-4  ${className}`}>
-      <Input
-        value={ingredientSearchTerm}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          setIngredientSearchTerm(e.target.value);
-          handleShowList();
-        }}
-        disabled={isLoading || disabled}
-        onClick={handleShowList}
-        placeholder="Buscar ingredientes..."
-      />
-
-      <ButtonSearch
-        onClick={() => fetchIngredients(ingredientSearchTerm)}
-        disabled={isLoading || disabled}
-        data-testid="search-ingredient-button"
-      />
-    </div>
+    <ButtonSearch
+      onClick={() => fetchIngredients(ingredientSearchTerm)}
+      disabled={isLoading || disabled}
+      data-testid="search-ingredient-button"
+      {...rest}
+    />
   );
 }
 
@@ -458,7 +476,8 @@ function SelectedIngredientsList({
   );
 }
 
-IngredientSearch.Search = Search;
+IngredientSearch.SearchTermInput = SearchTermInput;
+IngredientSearch.SearchButton = SearchButton;
 IngredientSearch.FoundIngredientsList = FoundIngredientsList;
 IngredientSearch.SelectedIngredientsList = SelectedIngredientsList;
 IngredientSearch.BarcodeSearch = BarcodeSearch;

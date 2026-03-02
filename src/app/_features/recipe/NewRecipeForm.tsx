@@ -176,10 +176,13 @@ function NewRecipeForm() {
 
         <FormRow className="flex-col items-center gap-6">
           <div className="flex items-center justify-center gap-4">
-            <IngredientSearch.Search
+            <IngredientSearch.SearchTermInput
               className="w-full max-w-120"
               disabled={isLoading}
             />
+
+            <IngredientSearch.SearchButton disabled={isLoading} />
+
             <IngredientSearch.BarcodeSearch disabled={isLoading} />
           </div>
 
