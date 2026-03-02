@@ -7,6 +7,8 @@ import { es } from 'date-fns/locale';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 import { parseFilterValueToDate } from './utils/parseFilterValueToDate';
 import ButtonPrimary from '@/app/_ui/ButtonPrimary';
+import { useEffect, useState } from 'react';
+import SpinnerMini from '@/app/_ui/SpinnerMini';
 
 function WeekSelector({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
@@ -15,6 +17,11 @@ function WeekSelector({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [filterToBeApplied, setFilterToBeApplied] = useState<string | null>(
+    null,
+  );
 
   const activeFilter = searchParams?.get(filterKey) || defaultFilterValue();
   const currentDate = parseFilterValueToDate(activeFilter);
@@ -32,6 +39,10 @@ function WeekSelector({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       'yyyy_M_d',
     );
 
+  useEffect(() => {
+    if (filterToBeApplied === activeFilter) setIsLoading(false);
+  }, [filterToBeApplied, activeFilter]);
+
   function handleShowPreviousWeek() {
     const previousWeek = subWeeks(currentDate, 1);
     handleFilter(formatDateToFilterValue(previousWeek));
@@ -43,6 +54,9 @@ function WeekSelector({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   }
 
   function handleFilter(filterValue: string) {
+    setFilterToBeApplied(filterValue);
+    setIsLoading(true);
+
     const params = new URLSearchParams(searchParams);
     params.set(filterKey, filterValue);
 
@@ -55,20 +69,33 @@ function WeekSelector({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       {...rest}
     >
       <div className="flex gap-3">
-        <ArrowButton direction="left" onClick={handleShowPreviousWeek} />
-        <ArrowButton direction="right" onClick={handleShowNextWeek} />
+        <ArrowButton
+          direction="left"
+          onClick={handleShowPreviousWeek}
+          isLoading={isLoading}
+        />
+        <ArrowButton
+          direction="right"
+          onClick={handleShowNextWeek}
+          isLoading={isLoading}
+        />
       </div>
 
-      <div className="flex gap-3">
-        <Day date={weekStart} />
-        <span>&mdash;</span>
-        <Day date={weekEnd} />
-      </div>
+      {!isLoading && (
+        <div className="flex gap-3">
+          <Day date={weekStart} />
+          <span>&mdash;</span>
+          <Day date={weekEnd} />
+        </div>
+      )}
+
+      {isLoading && <SpinnerMini />}
 
       {!isCurrentWeek && (
         <ButtonPrimary
           className="p-1! px-2! text-sm"
           onClick={() => handleFilter(defaultFilterValue())}
+          disabled={isLoading}
         >
           Ir a semana actual
         </ButtonPrimary>
@@ -80,22 +107,29 @@ function WeekSelector({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
 function ArrowButton({
   direction,
   onClick,
+  isLoading,
 }: {
   direction: 'left' | 'right';
   onClick: () => void;
+  isLoading: boolean;
 }) {
   const iconOptions = {
     size: 35,
     strokeWidth: 0.1,
   };
 
-  const style =
-    'text-text-minor-emphasis transition rounded-full p-1 cursor-pointer hover:bg-border/20';
+  const style = `text-text-minor-emphasis transition rounded-full p-1 cursor-pointer hover:bg-border/20 ${isLoading ? 'opacity-50 cursor-not-allowed! bg-border/20' : ''}`;
+
+  function handleClick() {
+    if (isLoading) return;
+
+    onClick();
+  }
 
   return direction === 'left' ? (
-    <HiChevronLeft className={style} {...iconOptions} onClick={onClick} />
+    <HiChevronLeft className={style} {...iconOptions} onClick={handleClick} />
   ) : (
-    <HiChevronRight className={style} {...iconOptions} onClick={onClick} />
+    <HiChevronRight className={style} {...iconOptions} onClick={handleClick} />
   );
 }
 
