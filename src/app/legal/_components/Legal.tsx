@@ -12,12 +12,19 @@ export function LegalPage({
   children: ReactNode;
 } & React.HTMLAttributes<HTMLElement>) {
   return (
-    <main
-      className={cx('max-w-3xl p-6 mx-auto leading-7', className)}
-      {...props}
-    >
-      {children}
-    </main>
+    <div className="min-h-screen px-4 py-10 bg-background">
+      <main
+        className={cx(
+          'max-w-3xl mx-auto leading-7 text-text',
+          'bg-surface-card border border-border rounded-2xl shadow-sm',
+          'px-8 py-10 sm:px-12 sm:py-12',
+          className,
+        )}
+        {...props}
+      >
+        {children}
+      </main>
+    </div>
   );
 }
 
@@ -29,7 +36,13 @@ export function LegalTitle({
   children: ReactNode;
 } & React.HTMLAttributes<HTMLHeadingElement>) {
   return (
-    <h1 className={cx('text-3xl font-semibold', className)} {...props}>
+    <h1
+      className={cx(
+        'text-3xl font-bold text-text pb-4 border-b border-border',
+        className,
+      )}
+      {...props}
+    >
       {children}
     </h1>
   );
@@ -44,7 +57,7 @@ export function LegalMeta({
 } & React.HTMLAttributes<HTMLParagraphElement>) {
   return (
     <p
-      className={cx('mt-2 text-sm text-text-minor-emphasis', className)}
+      className={cx('mt-3 text-sm text-text-minor-emphasis', className)}
       {...props}
     >
       {children}
@@ -60,7 +73,10 @@ export function LegalSection({
   children: ReactNode;
 } & React.HTMLAttributes<HTMLElement>) {
   return (
-    <section className={cx('mt-8', className)} {...props}>
+    <section
+      className={cx('mt-8 pt-8 border-t border-border/60', className)}
+      {...props}
+    >
       {children}
     </section>
   );
@@ -74,7 +90,13 @@ export function LegalH2({
   children: ReactNode;
 } & React.HTMLAttributes<HTMLHeadingElement>) {
   return (
-    <h2 className={cx('text-xl font-semibold', className)} {...props}>
+    <h2
+      className={cx(
+        'text-lg font-semibold text-primary pl-3 border-l-4 border-primary',
+        className,
+      )}
+      {...props}
+    >
       {children}
     </h2>
   );
@@ -88,7 +110,10 @@ export function LegalH3({
   children: ReactNode;
 } & React.HTMLAttributes<HTMLHeadingElement>) {
   return (
-    <h3 className={cx('mt-4 text-lg font-semibold', className)} {...props}>
+    <h3
+      className={cx('mt-5 text-base font-semibold text-text', className)}
+      {...props}
+    >
       {children}
     </h3>
   );
@@ -102,7 +127,10 @@ export function LegalP({
   children: ReactNode;
 } & React.HTMLAttributes<HTMLParagraphElement>) {
   return (
-    <p className={cx('mt-2', className)} {...props}>
+    <p
+      className={cx('mt-3 text-sm text-text leading-relaxed', className)}
+      {...props}
+    >
       {children}
     </p>
   );
@@ -116,7 +144,13 @@ export function LegalList({
   children: ReactNode;
 } & React.HTMLAttributes<HTMLUListElement>) {
   return (
-    <ul className={cx('pl-6 mt-2 list-disc', className)} {...props}>
+    <ul
+      className={cx(
+        'pl-5 mt-3 space-y-1.5 list-disc marker:text-primary text-sm leading-relaxed',
+        className,
+      )}
+      {...props}
+    >
       {children}
     </ul>
   );
@@ -130,7 +164,13 @@ export function LegalExternalLink({
   children: ReactNode;
 } & React.AnchorHTMLAttributes<HTMLAnchorElement>) {
   return (
-    <a className={cx('underline', className)} {...props}>
+    <a
+      className={cx(
+        'text-primary underline underline-offset-2 hover:text-primary-shade transition-colors',
+        className,
+      )}
+      {...props}
+    >
       {children}
     </a>
   );

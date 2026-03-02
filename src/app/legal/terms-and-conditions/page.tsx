@@ -203,7 +203,7 @@ export default function TermsAndConditionsPage() {
         </LegalP>
         <LegalP>
           La prueba se ofrece para que evalúes el Servicio. Al finalizar el
-          periodo de prueba, <strong>no se te cobrará automáticamente</strong>
+          periodo de prueba, <strong>no se te cobrará automáticamente</strong>{' '}
           salvo que completes de forma expresa el proceso de suscripción de pago
           (por ejemplo, introduciendo un método de pago y confirmando la
           compra).
