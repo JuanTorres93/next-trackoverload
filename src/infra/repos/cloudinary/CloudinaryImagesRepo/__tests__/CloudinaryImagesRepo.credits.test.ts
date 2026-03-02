@@ -8,9 +8,9 @@ import { CloudinaryImagesRepo } from '../CloudinaryImagesRepo';
 
 // Check if Cloudinary credentials are available
 const hasCloudinaryCredentials = Boolean(
-  process.env.CLOUDINARY_CLOUD_NAME &&
-  process.env.CLOUDINARY_API_KEY &&
-  process.env.CLOUDINARY_API_SECRET,
+  process.env.CLOUDINARY_CLOUD_NAME_DEV &&
+  process.env.CLOUDINARY_API_KEY_DEV &&
+  process.env.CLOUDINARY_API_SECRET_DEV,
 );
 
 // Skip tests in CI/CD if credentials are not available

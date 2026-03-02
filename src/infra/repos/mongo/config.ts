@@ -23,6 +23,12 @@ const MONGODB_DB_NAME_DEV = process.env.MONGODB_DB_NAME_DEV;
 
 export const MONGODB_URI_DEV = `mongodb+srv://${MONGODB_USERNAME_DEV}:${MONGODB_PASSWORD_DEV}@cluster0.pjn69gs.mongodb.net/${MONGODB_DB_NAME_DEV}?appName=Cluster0`;
 
+const MONGODB_USERNAME_PROD = process.env.MONGODB_USERNAME_PROD;
+const MONGODB_PASSWORD_PROD = process.env.MONGODB_PASSWORD_PROD;
+const MONGODB_DB_NAME_PROD = process.env.MONGODB_DB_NAME_PROD;
+
+const MONGODB_URI_PROD = `mongodb+srv://${MONGODB_USERNAME_PROD}:${MONGODB_PASSWORD_PROD}@cluster0.pjn69gs.mongodb.net/${MONGODB_DB_NAME_PROD}?appName=Cluster0`;
+
 // Prevent multiple connections in development when Next.js does hot reload
 // Use global so the promise persists across recompilations
 declare global {
@@ -60,8 +66,7 @@ export async function getMongooseProductionInstance() {
       'getMongooseProductionInstance: Not in production environment',
     );
 
-  // TODO IMPORTANT!!!: Implement actual production connection
-  await startMongooseConnection(MONGODB_URI_DEV);
+  await startMongooseConnection(MONGODB_URI_PROD);
 }
 
 export async function initMongoModels() {
