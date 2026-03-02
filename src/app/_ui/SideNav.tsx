@@ -118,6 +118,7 @@ function NavBar() {
 
   // TODO IMPORTANT: Move unimplemented links to links once they are implemented
   const unimplementedLinks: NavbarLink[] = [
+    // TODO once /app is implemented change redirects in LoginForm and RegisterForm to /app instead of /app/recipes
     { href: '/app', label: 'Inicio', icon: <HiHome /> },
     { href: '/app/templates', label: 'Plantillas', icon: <HiSquares2X2 /> },
     { href: '/app/workouts', label: 'Entrenos', icon: <HiFire /> },

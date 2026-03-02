@@ -59,7 +59,7 @@ function LoginForm() {
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       router.refresh();
-      router.push('/app');
+      router.push('/app/recipes');
     } catch {
       showErrorToast('Error al iniciar sesión.');
     } finally {

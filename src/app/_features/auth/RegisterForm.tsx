@@ -69,7 +69,7 @@ function RegisterForm() {
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       router.refresh();
-      router.push('/app');
+      router.push('/app/recipes');
     } catch {
       showErrorToast(
         'Error al crear el usuario. Por favor, inténtalo de nuevo.',
