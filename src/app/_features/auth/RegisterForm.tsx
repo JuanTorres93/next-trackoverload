@@ -64,7 +64,10 @@ function RegisterForm() {
       }
 
       resetForm();
-      // Refresh for cookies to be correctly updated
+
+      // Wait for the new session cookie to be set before refreshing and redirecting
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       router.refresh();
       router.push('/app');
     } catch {

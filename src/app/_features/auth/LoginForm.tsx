@@ -55,6 +55,9 @@ function LoginForm() {
 
       resetForm();
 
+      // Wait for the new session cookie to be set before refreshing and redirecting
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       router.refresh();
       router.push('/app');
     } catch {
