@@ -1,11 +1,14 @@
 import { IngredientFinderResult } from '@/domain/services/IngredientFinder.port';
 import { OpenFoodFactsIngredientFinder } from '../OpenFoodFactsIngredientFinder';
+import { MemoryTokenBucketRateLimiter } from '@/infra/services/RateLimiter/MemoryTokenBucketRateLimiter/MemoryTokenBucketRateLimiter';
 
 describe('OpenFoodFactsIngredientFinder', () => {
   let ingredientFinder: OpenFoodFactsIngredientFinder;
 
   beforeAll(() => {
-    ingredientFinder = new OpenFoodFactsIngredientFinder();
+    ingredientFinder = new OpenFoodFactsIngredientFinder(
+      MemoryTokenBucketRateLimiter,
+    );
   });
 
   describe('Find by name', () => {

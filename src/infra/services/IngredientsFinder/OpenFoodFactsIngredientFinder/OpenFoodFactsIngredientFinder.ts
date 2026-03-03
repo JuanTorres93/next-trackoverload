@@ -4,7 +4,6 @@ import {
   IngredientFinderResult,
 } from '@/domain/services/IngredientFinder.port';
 import { RateLimiter } from '@/domain/services/RateLimiter.port';
-import { MemoryTokenBucketRateLimiter } from '../../RateLimiter/MemoryTokenBucketRateLimiter/MemoryTokenBucketRateLimiter';
 
 type OpenFoodFactProduct = {
   _id: string;
@@ -64,13 +63,15 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
   private searchRateLimiter: RateLimiter;
   private barcodeRateLimiter: RateLimiter;
 
-  constructor() {
-    this.searchRateLimiter = new MemoryTokenBucketRateLimiter(
+  constructor(
+    rateLimiterClass: new (requests: number, perMinutes: number) => RateLimiter,
+  ) {
+    this.searchRateLimiter = new rateLimiterClass(
       READ_RATE_LIMITS.searchQueries.requests,
       READ_RATE_LIMITS.searchQueries.perMinutes,
     );
 
-    this.barcodeRateLimiter = new MemoryTokenBucketRateLimiter(
+    this.barcodeRateLimiter = new rateLimiterClass(
       READ_RATE_LIMITS.productQueries.requests,
       READ_RATE_LIMITS.productQueries.perMinutes,
     );
