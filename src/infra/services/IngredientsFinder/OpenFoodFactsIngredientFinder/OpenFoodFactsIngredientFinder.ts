@@ -6,7 +6,7 @@ import {
 import { RateLimiter } from '@/domain/services/RateLimiter.port';
 
 type OpenFoodFactProduct = {
-  _id: string;
+  code: string;
   product_name: string;
   product_name_en?: string;
   nutriments: {
@@ -65,7 +65,7 @@ if (!authHeader) {
 }
 
 const fields =
-  '_id,product_name,product_name_en,nutriments,image_thumb_url,image_front_url';
+  'code,product_name,product_name_en,nutriments,image_thumb_url,image_front_url';
 
 export class OpenFoodFactsIngredientFinder implements IngredientFinder {
   private readonly searchRateLimiter: RateLimiter;
@@ -167,7 +167,7 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
         };
 
         const externalRef = {
-          externalId: product._id,
+          externalId: product.code,
           source: 'openfoodfacts',
         };
 

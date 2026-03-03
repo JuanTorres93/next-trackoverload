@@ -2,7 +2,7 @@ import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
 import { IngredientFinderResult } from '@/domain/services/IngredientFinder.port';
 
 export function createInMemoryRecipeIngredientLine(
-  ingredientFinderResult: IngredientFinderResult
+  ingredientFinderResult: IngredientFinderResult,
 ): {
   ingredientLine: IngredientLineDTO;
   ingredientExternalRef: IngredientFinderResult['externalRef'];
