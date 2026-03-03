@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { AppIngredientFinder } from '@/interface-adapters/app/services/AppIngredientFinder';
+import { createAppIngredientFinder } from '@/interface-adapters/app/services/AppIngredientFinder';
 import { IngredientFinderResult } from '@/domain/services/IngredientFinder.port';
 import { JSENDResponse } from '@/app/_types/JSEND';
+import { getClientId } from '@/app/api/_common/getClientId';
 
 export async function GET(
   request: NextRequest,
@@ -10,6 +11,11 @@ export async function GET(
   try {
     const { name } = await params;
     const term = decodeURIComponent(name || '').trim();
+    const clientId = getClientId(request);
+
+    // TODO IMPORTANT DELETE THESE DEBUG LOGS. I NEED TO INCLUDE THEM TO SEE THE LOGS IN THE DEPLOYMENT
+    console.log('clientId');
+    console.log(clientId);
 
     if (!term) {
       return NextResponse.json(
@@ -19,7 +25,9 @@ export async function GET(
     }
 
     const foundIngredients: IngredientFinderResult[] =
-      await AppIngredientFinder.findIngredientsByFuzzyName(term);
+      await createAppIngredientFinder(clientId).findIngredientsByFuzzyName(
+        term,
+      );
 
     return NextResponse.json(
       { status: 'success', data: foundIngredients },

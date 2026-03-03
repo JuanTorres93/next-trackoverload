@@ -3,6 +3,7 @@ import { BottleneckRateLimiter } from '../BottleneckRateLimiter';
 describe('BottleneckRateLimiter', () => {
   const REQUESTS = 5;
   const PER_MINUTES = 1;
+  const TEST_CLIENT_ID = 'test-client';
 
   let rateLimiter: BottleneckRateLimiter;
 
@@ -10,16 +11,25 @@ describe('BottleneckRateLimiter', () => {
     rateLimiter = new BottleneckRateLimiter(REQUESTS, PER_MINUTES);
   });
 
+  it('should keep separate limits per client', async () => {
+    for (let i = 0; i < REQUESTS; i++) {
+      await rateLimiter.recordRequest('client-a');
+    }
+
+    expect(await rateLimiter.isRateLimited('client-a')).toBe(true);
+    expect(await rateLimiter.isRateLimited('client-b')).toBe(false);
+  });
+
   it('should not be rate limited initially', async () => {
-    expect(await rateLimiter.isRateLimited()).toBe(false);
+    expect(await rateLimiter.isRateLimited(TEST_CLIENT_ID)).toBe(false);
   });
 
   it('should be rate limited after exceeding requests', async () => {
     for (let i = 0; i < REQUESTS; i++) {
-      await rateLimiter.recordRequest();
+      await rateLimiter.recordRequest(TEST_CLIENT_ID);
     }
 
-    expect(await rateLimiter.isRateLimited()).toBe(true);
+    expect(await rateLimiter.isRateLimited(TEST_CLIENT_ID)).toBe(true);
   });
 
   it('should refill tokens after the refresh interval', async () => {
@@ -31,21 +41,21 @@ describe('BottleneckRateLimiter', () => {
     );
 
     for (let i = 0; i < REQUESTS; i++) {
-      await fastLimiter.recordRequest();
+      await fastLimiter.recordRequest(TEST_CLIENT_ID);
     }
 
-    expect(await fastLimiter.isRateLimited()).toBe(true);
+    expect(await fastLimiter.isRateLimited(TEST_CLIENT_ID)).toBe(true);
 
     await new Promise((resolve) => setTimeout(resolve, 600));
 
-    expect(await fastLimiter.isRateLimited()).toBe(false);
+    expect(await fastLimiter.isRateLimited(TEST_CLIENT_ID)).toBe(false);
   });
 
   it('should handle multiple rapid requests correctly', async () => {
     for (let i = 0; i < REQUESTS; i++) {
-      await rateLimiter.recordRequest();
+      await rateLimiter.recordRequest(TEST_CLIENT_ID);
     }
 
-    expect(await rateLimiter.isRateLimited()).toBe(true);
+    expect(await rateLimiter.isRateLimited(TEST_CLIENT_ID)).toBe(true);
   });
 });

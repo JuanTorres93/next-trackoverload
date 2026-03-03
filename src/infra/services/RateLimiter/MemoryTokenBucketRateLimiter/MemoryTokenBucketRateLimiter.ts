@@ -1,42 +1,56 @@
 import { RateLimiter } from '@/domain/services/RateLimiter.port';
 
+type Bucket = {
+  requests: number;
+  lastRefill: number;
+};
+
 export class MemoryTokenBucketRateLimiter implements RateLimiter {
-  private requests: number;
   private readonly capacity: number;
-  private lastRefill: number;
-  private refillRatePerMinute: number;
+  private readonly refillRatePerMinute: number;
+  private readonly clientBuckets: Map<string, Bucket> = new Map();
 
   constructor(requests: number, perMinutes: number) {
-    this.requests = requests;
     this.capacity = requests;
     this.refillRatePerMinute = requests / perMinutes;
-    this.lastRefill = Date.now();
   }
 
-  async isRateLimited(): Promise<boolean> {
-    this._refillTokens();
-    return this.requests <= 0;
+  private _getBucket(clientId: string): Bucket {
+    if (!this.clientBuckets.has(clientId)) {
+      this.clientBuckets.set(clientId, {
+        requests: this.capacity,
+        lastRefill: Date.now(),
+      });
+    }
+    return this.clientBuckets.get(clientId)!;
   }
 
-  async recordRequest(): Promise<void> {
-    this._refillTokens();
+  async isRateLimited(clientId: string): Promise<boolean> {
+    const bucket = this._getBucket(clientId);
+    this._refillTokens(bucket);
+    return bucket.requests <= 0;
+  }
 
-    if (this.requests > 0) {
-      this.requests -= 1;
+  async recordRequest(clientId: string): Promise<void> {
+    const bucket = this._getBucket(clientId);
+    this._refillTokens(bucket);
+
+    if (bucket.requests > 0) {
+      bucket.requests -= 1;
     }
   }
 
-  private _refillTokens() {
+  private _refillTokens(bucket: Bucket) {
     const now = Date.now();
-    const minutesPassed = (now - this.lastRefill) / 60000;
+    const minutesPassed = (now - bucket.lastRefill) / 60000;
 
     const extraTokens = Math.floor(minutesPassed * this.refillRatePerMinute);
 
     if (extraTokens > 0) {
-      this.lastRefill = now;
+      bucket.lastRefill = now;
 
-      const updatedTokens = this.requests + extraTokens;
-      this.requests =
+      const updatedTokens = bucket.requests + extraTokens;
+      bucket.requests =
         updatedTokens > this.capacity ? this.capacity : updatedTokens;
     }
   }

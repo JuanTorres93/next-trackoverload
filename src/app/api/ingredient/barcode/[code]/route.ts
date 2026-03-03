@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { AppIngredientFinder } from '@/interface-adapters/app/services/AppIngredientFinder';
+import { createAppIngredientFinder } from '@/interface-adapters/app/services/AppIngredientFinder';
 import { IngredientFinderResult } from '@/domain/services/IngredientFinder.port';
 import { JSENDResponse } from '@/app/_types/JSEND';
+import { getClientId } from '@/app/api/_common/getClientId';
 
 export async function GET(
   request: NextRequest,
@@ -9,6 +10,7 @@ export async function GET(
 ): Promise<NextResponse<JSENDResponse<IngredientFinderResult[]>>> {
   try {
     const { code } = await params;
+    const clientId = getClientId(request);
 
     if (!code) {
       return NextResponse.json(
@@ -18,7 +20,7 @@ export async function GET(
     }
 
     const foundIngredients: IngredientFinderResult[] =
-      await AppIngredientFinder.findIngredientsByBarcode(code);
+      await createAppIngredientFinder(clientId).findIngredientsByBarcode(code);
 
     return NextResponse.json(
       { status: 'success', data: foundIngredients },

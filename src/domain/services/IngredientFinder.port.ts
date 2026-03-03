@@ -8,9 +8,9 @@ export type IngredientFinderResult = {
 
 export interface IngredientFinder {
   findIngredientsByFuzzyName(
-    name: string
+    name: string,
   ): Promise<IngredientFinderResult[] | []>;
   findIngredientsByBarcode(
-    barcode: string
+    barcode: string,
   ): Promise<IngredientFinderResult[] | []>;
 }

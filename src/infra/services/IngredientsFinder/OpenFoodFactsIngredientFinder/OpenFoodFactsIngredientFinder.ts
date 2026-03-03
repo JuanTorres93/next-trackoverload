@@ -18,7 +18,7 @@ type OpenFoodFactProduct = {
 };
 
 // DOCS: https://openfoodfacts.github.io/openfoodfacts-server/api/
-const READ_RATE_LIMITS = {
+export const READ_RATE_LIMITS = {
   // GET /api/v*/product
   productQueries: {
     requests: 100,
@@ -59,26 +59,23 @@ if (!authHeader) {
 }
 
 export class OpenFoodFactsIngredientFinder implements IngredientFinder {
-  // TODO IMPORTANT Set rate limiter on client side
-  private searchRateLimiter: RateLimiter;
-  private barcodeRateLimiter: RateLimiter;
+  private readonly searchRateLimiter: RateLimiter;
+  private readonly barcodeRateLimiter: RateLimiter;
+  private readonly clientId: string;
 
   constructor(
-    rateLimiterClass: new (requests: number, perMinutes: number) => RateLimiter,
+    searchRateLimiter: RateLimiter,
+    barcodeRateLimiter: RateLimiter,
+    clientId: string,
   ) {
-    this.searchRateLimiter = new rateLimiterClass(
-      READ_RATE_LIMITS.searchQueries.requests,
-      READ_RATE_LIMITS.searchQueries.perMinutes,
-    );
-
-    this.barcodeRateLimiter = new rateLimiterClass(
-      READ_RATE_LIMITS.productQueries.requests,
-      READ_RATE_LIMITS.productQueries.perMinutes,
-    );
+    this.searchRateLimiter = searchRateLimiter;
+    this.barcodeRateLimiter = barcodeRateLimiter;
+    this.clientId = clientId;
   }
 
   async findIngredientsByFuzzyName(name: string) {
-    if (await this.searchRateLimiter.isRateLimited()) {
+    if (await this.searchRateLimiter.isRateLimited(this.clientId)) {
+      // TODO throw RateLimitError instead
       throw new InfrastructureError(
         'OpenFoodFactsIngredientFinder: Rate limit exceeded for search queries',
       );
@@ -93,7 +90,7 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
       headers: { ...authHeader! },
     });
 
-    this.searchRateLimiter.recordRequest();
+    this.searchRateLimiter.recordRequest(this.clientId);
 
     if (!response.ok) {
       throw new InfrastructureError(
@@ -107,7 +104,8 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
   }
 
   async findIngredientsByBarcode(barcode: string) {
-    if (await this.barcodeRateLimiter.isRateLimited()) {
+    if (await this.barcodeRateLimiter.isRateLimited(this.clientId)) {
+      // TODO throw RateLimitError instead
       throw new InfrastructureError(
         'OpenFoodFactsIngredientFinder: Rate limit exceeded for barcode queries',
       );
@@ -120,7 +118,7 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
       headers: { ...authHeader! },
     });
 
-    this.barcodeRateLimiter.recordRequest();
+    this.barcodeRateLimiter.recordRequest(this.clientId);
 
     if (!response.ok) {
       throw new InfrastructureError(

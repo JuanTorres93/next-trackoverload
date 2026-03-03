@@ -1,13 +1,26 @@
 import { IngredientFinderResult } from '@/domain/services/IngredientFinder.port';
 import { OpenFoodFactsIngredientFinder } from '../OpenFoodFactsIngredientFinder';
 import { MemoryTokenBucketRateLimiter } from '@/infra/services/RateLimiter/MemoryTokenBucketRateLimiter/MemoryTokenBucketRateLimiter';
+import { READ_RATE_LIMITS } from '../OpenFoodFactsIngredientFinder';
 
 describe('OpenFoodFactsIngredientFinder', () => {
   let ingredientFinder: OpenFoodFactsIngredientFinder;
 
   beforeAll(() => {
+    const searchRateLimiter = new MemoryTokenBucketRateLimiter(
+      READ_RATE_LIMITS.searchQueries.requests,
+      READ_RATE_LIMITS.searchQueries.perMinutes,
+    );
+
+    const barcodeRateLimiter = new MemoryTokenBucketRateLimiter(
+      READ_RATE_LIMITS.productQueries.requests,
+      READ_RATE_LIMITS.productQueries.perMinutes,
+    );
+
     ingredientFinder = new OpenFoodFactsIngredientFinder(
-      MemoryTokenBucketRateLimiter,
+      searchRateLimiter,
+      barcodeRateLimiter,
+      'test-client',
     );
   });
 
