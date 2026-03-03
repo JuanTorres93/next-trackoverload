@@ -21,7 +21,7 @@ const INITIAL_FORM_STATE: LoginFormState = {
 
 function LoginForm() {
   const router = useRouter();
-  const { formState, setField, isLoading, setIsLoading, resetForm } =
+  const { formState, setField, isLoading, setIsLoading } =
     useFormSetup<LoginFormState>(INITIAL_FORM_STATE);
 
   const isFormInvalid =
@@ -52,8 +52,6 @@ function LoginForm() {
         showErrorToast(errorMessage);
         return;
       }
-
-      resetForm();
 
       // Wait for the new session cookie to be set before refreshing and redirecting
       await new Promise((resolve) => setTimeout(resolve, 500));

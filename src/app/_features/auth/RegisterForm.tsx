@@ -26,7 +26,7 @@ const INITIAL_FORM_STATE: RegisterFormState = {
 
 function RegisterForm() {
   const router = useRouter();
-  const { formState, setField, isLoading, setIsLoading, resetForm } =
+  const { formState, setField, isLoading, setIsLoading } =
     useFormSetup<RegisterFormState>(INITIAL_FORM_STATE);
 
   const isFormInvalid =
@@ -62,8 +62,6 @@ function RegisterForm() {
 
         return;
       }
-
-      resetForm();
 
       // Wait for the new session cookie to be set before refreshing and redirecting
       await new Promise((resolve) => setTimeout(resolve, 500));

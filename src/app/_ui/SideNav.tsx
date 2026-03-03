@@ -1,8 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { FiLogOut } from 'react-icons/fi';
+import { usePathname } from 'next/navigation';
 import {
   HiBars3,
   HiBookOpen,
@@ -23,9 +22,10 @@ import {
   useEffect,
   useState,
 } from 'react';
-import SpinnerMini from './SpinnerMini';
+import LogoutButton from '../_features/auth/LogoutButton';
 import { useScreenResize } from '../_hooks/useScreenResize';
 import Logo from './Logo';
+import SpinnerMini from './SpinnerMini';
 import TextRegular from './typography/TextRegular';
 
 type SideNavContextType = {
@@ -103,13 +103,7 @@ function SideNav({ children }: { children: React.ReactNode }) {
 }
 
 function NavBar() {
-  const router = useRouter();
-  const {
-    isLoading,
-    setIsLoading,
-    navbarShown: showNavBar,
-    toggleNavBar,
-  } = useSideNavContext();
+  const { navbarShown: showNavBar } = useSideNavContext();
 
   const links: NavbarLink[] = [
     { href: '/app/recipes', label: 'Recetas', icon: <HiBookOpen /> },
@@ -135,24 +129,6 @@ function NavBar() {
     links.push(...unimplementedLinks);
   }
 
-  async function handleLogout() {
-    setIsLoading(true);
-
-    try {
-      await fetch('/api/auth/logout', {
-        method: 'POST',
-      });
-
-      // Wait for the session cookie to be cleared before refreshing and redirecting
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      router.refresh();
-      router.push('/auth/login');
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
   if (!showNavBar) {
     return null;
   }
@@ -173,19 +149,7 @@ function NavBar() {
         ))}
 
         <li className="mt-auto">
-          <NavItem
-            icon={isLoading ? <SpinnerMini /> : <FiLogOut />}
-            isCurrentItem={false}
-            onClick={() => {
-              // Logout user
-              handleLogout();
-              // Keep the navbar open on mobile so the user can see the spinner and that the logout is processing (NavItem onClick will close automatically the navbar)
-              toggleNavBar();
-            }}
-            data-testid="logout-button"
-          >
-            Cerrar sesión
-          </NavItem>
+          <LogoutButton />
         </li>
       </ul>
     </nav>
