@@ -18,15 +18,17 @@ type OpenFoodFactProduct = {
 };
 
 // DOCS: https://openfoodfacts.github.io/openfoodfacts-server/api/
+// SEARCH DOCS: https://search.openfoodfacts.org/docs
 export const READ_RATE_LIMITS = {
   // GET /api/v*/product
   productQueries: {
     requests: 100,
     perMinutes: 1,
   },
-  // GET /api/v*/search or GET /cgi/search.pl
+  // GET https://search.openfoodfacts.org/search (// The 10 req/min limit in the official docs only applies to legacy /cgi/search.pl and /api/v*/search.
+  // We keep a conservative limit here as good practice.
   searchQueries: {
-    requests: 10,
+    requests: 25, // 10
     perMinutes: 1,
   },
   // such as /categories, /label/organic, /ingredient/salt, /category/breads,...
@@ -36,10 +38,14 @@ export const READ_RATE_LIMITS = {
   },
 };
 
+// Used for product lookups (barcode)
 const BASE_URL =
   process.env.NODE_ENV === 'production'
     ? 'https://world.openfoodfacts.org'
     : 'https://world.openfoodfacts.net';
+
+// Dedicated Elasticsearch-based search service — much faster than legacy BASE_URL/cgi/search.pl
+const SEARCH_URL = 'https://search.openfoodfacts.org/search';
 
 let authHeader;
 if (['test', 'development'].includes(process.env.NODE_ENV))
@@ -57,6 +63,9 @@ if (!authHeader) {
     'OpenFoodFactsIngredientFinder: Missing Authorization header configuration. Is NODE_ENV set correctly?',
   );
 }
+
+const fields =
+  '_id,product_name,product_name_en,nutriments,image_thumb_url,image_front_url';
 
 export class OpenFoodFactsIngredientFinder implements IngredientFinder {
   private readonly searchRateLimiter: RateLimiter;
@@ -81,9 +90,7 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
       );
     }
 
-    const url = `${BASE_URL}/cgi/search.pl?search_terms=${encodeURIComponent(
-      name,
-    )}&search_simple=1&action=process&json=1`;
+    const url = `${SEARCH_URL}?q=${encodeURIComponent(name)}&page_size=24&fields=${fields}`;
 
     const response = await fetch(url, {
       method: 'GET',
@@ -100,7 +107,7 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
 
     const json = await response.json();
 
-    return this.mapOpenFoodFactProductToIngredientResult(json.products || []);
+    return this.mapOpenFoodFactProductToIngredientResult(json.hits || []);
   }
 
   async findIngredientsByBarcode(barcode: string) {
@@ -111,7 +118,7 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
       );
     }
 
-    const url = `${BASE_URL}/api/v2/product/${encodeURIComponent(barcode)}`;
+    const url = `${BASE_URL}/api/v2/product/${encodeURIComponent(barcode)}?fields=${fields}`;
 
     const response = await fetch(url, {
       method: 'GET',

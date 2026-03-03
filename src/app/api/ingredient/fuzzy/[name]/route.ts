@@ -13,10 +13,6 @@ export async function GET(
     const term = decodeURIComponent(name || '').trim();
     const clientId = getClientId(request);
 
-    // TODO IMPORTANT DELETE THESE DEBUG LOGS. I NEED TO INCLUDE THEM TO SEE THE LOGS IN THE DEPLOYMENT
-    console.log('clientId');
-    console.log(clientId);
-
     if (!term) {
       return NextResponse.json(
         { status: 'fail', data: { message: 'Missing ingredient name' } },
