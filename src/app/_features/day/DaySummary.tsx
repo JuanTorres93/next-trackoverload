@@ -82,6 +82,7 @@ function DaySummary({
         dayId,
         recipeIds: recipesIds,
       }),
+      cache: 'no-store',
     });
 
     // Refresh the page to show the new meals (the didn't show up in mobile devices)
