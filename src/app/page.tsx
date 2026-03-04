@@ -2,11 +2,6 @@ import LandingSection from './_features/marketing/landing/LandingSection';
 import LandingSubhead from './_features/marketing/landing/LandingSubhead';
 import ButtonPrimary from './_ui/ButtonPrimary';
 
-export const metadata = {
-  title: 'Home',
-  description: 'Home page',
-};
-
 export default function LandingPage() {
   return (
     <div>
