@@ -14,6 +14,7 @@ import MealLine from '../meal/MealLine';
 import AddFakeMealModal from '../fakemeal/AddFakeMealModal';
 import FakeMeal from '../fakemeal/FakeMeal';
 import CaloriesAndProtein from '../common/CaloriesAndProtein';
+import { useRouter } from 'next/navigation';
 
 const computeIsToday = (day: number, month: number, year: number) => {
   const today = new Date();
@@ -48,6 +49,8 @@ function DaySummary({
 }) {
   const { day, month, year } = dayIdToDayMonthYear(dayId);
 
+  const router = useRouter();
+
   const meals = assembledDay?.meals || [];
   const fakeMeals = assembledDay?.fakeMeals || [];
 
@@ -80,6 +83,9 @@ function DaySummary({
         recipeIds: recipesIds,
       }),
     });
+
+    // Refresh the page to show the new meals (the didn't show up in mobile devices)
+    router.refresh();
   }
 
   return (
