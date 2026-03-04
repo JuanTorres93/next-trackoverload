@@ -5,7 +5,10 @@ function LandingSubhead({
   const { className, ...rest } = props;
 
   return (
-    <h2 {...rest} className={`${className} `}>
+    <h2
+      {...rest}
+      className={`text-primary-shade text-5xl font-semibold tracking-wide ${className}`}
+    >
       {children}
     </h2>
   );
