@@ -31,7 +31,10 @@ async function NavBar({ ...props }: React.HTMLAttributes<HTMLElement>) {
 
       <div></div>
 
-      {isLoggedIn && <ButtonPrimary href="/app">Ir a la app</ButtonPrimary>}
+      {/* TODO IMPORTANT: change to /app once dashboard is implemented */}
+      {isLoggedIn && (
+        <ButtonPrimary href="/app/recipes">Ir a la app</ButtonPrimary>
+      )}
       {!isLoggedIn && (
         <div className="grid gap-4 grid-cols-[max-content_min-content]">
           <ButtonPrimary href="/auth/login">Inicia sesión</ButtonPrimary>
