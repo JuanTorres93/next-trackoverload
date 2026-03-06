@@ -12,37 +12,35 @@ export default function LandingPage() {
           <ButtonPrimary href="/auth/register">Registrase</ButtonPrimary>
 
           <LandingSection>
-            <LandingSubhead>Qué te hace sentir incapaz</LandingSubhead>
-          </LandingSection>
-
-          <LandingSection>
-            <LandingSubhead>Construye una nueva identidad</LandingSubhead>
-          </LandingSection>
-
-          <LandingSection>
-            <LandingSubhead>Por qué no hay que hacerlo perfecto</LandingSubhead>
+            <LandingSubhead>¿Qué hay bajo la inseguridad?</LandingSubhead>
           </LandingSection>
 
           <LandingSection>
             <LandingSubhead>
-              Crea tu propio método durante el camino
+              Cómo saber si tus cimientos son frágiles
             </LandingSubhead>
           </LandingSection>
 
           <LandingSection>
-            <LandingSubhead>Construye disciplina paso a paso</LandingSubhead>
+            <LandingSubhead>Los pilares de la felicidad</LandingSubhead>
           </LandingSection>
 
           <LandingSection>
-            <LandingSubhead>Forja tu propio camino</LandingSubhead>
+            <LandingSubhead>Cómo superar el odio a entrenar</LandingSubhead>
           </LandingSection>
 
           <LandingSection>
-            <LandingSubhead>Diseñada para ser simple</LandingSubhead>
+            <LandingSubhead>
+              Mi razón para mejorar mi alimentación
+            </LandingSubhead>
           </LandingSection>
 
           <LandingSection>
-            <LandingSubhead>El fracaso no existe</LandingSubhead>
+            <LandingSubhead>Pero... ¿esto funciona?</LandingSubhead>
+          </LandingSection>
+
+          <LandingSection>
+            <LandingSubhead>Qué esperar de Cimientos</LandingSubhead>
           </LandingSection>
 
           <LandingSection>
