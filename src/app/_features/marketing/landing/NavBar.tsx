@@ -20,7 +20,7 @@ async function NavBar({ ...props }: React.HTMLAttributes<HTMLElement>) {
 
   return (
     <nav
-      className={`grid grid-rows-1 grid-cols-[min-content_1fr_max-content] px-8 py-4 backdrop-blur-xs shadow-sm bg-surface-card/90 ${className}`}
+      className={`grid grid-rows-1 grid-cols-[min-content_1fr_max-content] px-8 py-4 backdrop-blur-xs shadow-sm z-20 bg-surface-card/90 ${className}`}
       {...rest}
     >
       <div className="w-[45px]">
