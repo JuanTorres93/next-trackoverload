@@ -16,8 +16,8 @@ function Transformation() {
         <BeforeAfter
           beforeImage={beforeImage}
           afterImage={afterImage}
-          beforeLabel="Antes (2019)"
-          afterLabel="Después (2023)"
+          beforeLabel="Antes (2021)"
+          afterLabel="Después (2025)"
           className="mb-8"
         />
 

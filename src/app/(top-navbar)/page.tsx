@@ -6,6 +6,7 @@ import Amplify from '@/app/_features/marketing/landing/sections/Amplify';
 import Offer from '@/app/_features/marketing/landing/sections/Offer';
 import Problem from '@/app/_features/marketing/landing/sections/Problem';
 import Response from '@/app/_features/marketing/landing/sections/Response';
+import Testimonial from '@/app/_features/marketing/landing/sections/Testimonial';
 
 export default function LandingPage() {
   return (
@@ -17,6 +18,8 @@ export default function LandingPage() {
       <Amplify />
 
       <Story />
+
+      <Testimonial />
 
       <Transformation />
 
