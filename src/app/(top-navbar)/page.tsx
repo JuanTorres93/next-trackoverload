@@ -5,7 +5,7 @@ import LandingSubhead from '@/app/_features/marketing/landing/LandingSubhead';
 export default function LandingPage() {
   return (
     <div>
-      <main className="mx-auto max-w-[90rem] bg-surface-light">
+      <main className="mx-auto w-full max-w-[110rem] bg-surface-light">
         <div className="grid h-screen grid-cols-1 gap-0 auto-rows-min">
           <Hero />
 
