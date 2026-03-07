@@ -36,12 +36,22 @@ async function NavBar({ ...props }: React.HTMLAttributes<HTMLElement>) {
         <ButtonPrimary href="/app/recipes">Ir a la app</ButtonPrimary>
       )}
       {!isLoggedIn && (
-        <div className="grid gap-4 grid-cols-[max-content_min-content]">
-          <ButtonPrimary href="/auth/login">Inicia sesión</ButtonPrimary>
+        <div className="grid gap-4 grid-cols-[max-content_min-content] max-bp-marketing-navbar-mobile:gap-2">
+          <ButtonPrimary
+            href="/auth/login"
+            className="maxp-bp-marketing-navbar-mobile:px-4 max-bp-marketing-navbar-mobile:py-2 max-bp-marketing-navbar-mobile:text-sm"
+          >
+            <span className="hidden max-bp-marketing-navbar-mobile:inline">
+              Login
+            </span>
+            <span className="inline max-bp-marketing-navbar-mobile:hidden">
+              Inicia sesión
+            </span>
+          </ButtonPrimary>
 
           <ButtonCTA
             href="/auth/register"
-            className="bg-primary text-text-light hover:bg-primary-light hover:border-primary-light"
+            className="bg-primary text-text-light hover:bg-primary-light hover:border-primary-light maxp-bp-marketing-navbar-mobile:px-4 max-bp-marketing-navbar-mobile:py-2 max-bp-marketing-navbar-mobile:text-sm"
           >
             Regístrate
           </ButtonCTA>
