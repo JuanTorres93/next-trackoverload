@@ -35,7 +35,7 @@ function Offer() {
       <Section className="bg-gradient-to-b from-white to-surface-light">
         <div className="max-w-5xl mx-auto">
           <SectionHeading subtitle="Trabajo sólo en este proyecto y quiero vivir de él, así que los únicos gastos que tengo son de infraestructura y de vida.">
-            Precio transparente
+            ¿Cuánto cuesta?
           </SectionHeading>
 
           <div className="flex justify-center mt-12">

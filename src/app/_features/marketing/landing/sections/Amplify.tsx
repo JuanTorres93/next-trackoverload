@@ -51,7 +51,7 @@ function Amplify() {
               ]}
               variant="check"
             />
-            <p className="mt-4 text-sm text-green-600/80">
+            <p className="mt-4 text-sm text-green-600">
               Estas acciones alimentan las creencias de que eres alguien que
               merece la pena, de que eres alguien capaz de superar problemas.
             </p>

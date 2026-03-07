@@ -4,7 +4,7 @@ import ButtonCTA from './ButtonCTA';
 
 function Hero() {
   return (
-    <section className="relative w-full min-h-[90dvh] flex items-center justify-center overflow-hidden">
+    <section className="relative w-full min-h-[85dvh] flex items-center justify-center overflow-hidden">
       {/* Background Image with subtle zoom animation */}
       <div className="absolute inset-0">
         <Image

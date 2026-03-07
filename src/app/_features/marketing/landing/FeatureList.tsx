@@ -63,7 +63,7 @@ export default function FeatureList({
             {variant === 'check' ? (
               <FaCheckCircle className="w-5 h-5 transition-transform text-primary group-hover:scale-110" />
             ) : (
-              <span className="w-2 h-2 transition-transform rounded-full bg-primary group-hover:scale-125" />
+              <span className="w-2 h-2 transition-transform rounded-full bg-error group-hover:scale-125" />
             )}
           </span>
           <span className="flex-1 transition-colors text-text-minor-emphasis group-hover:text-text">

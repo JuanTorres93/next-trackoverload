@@ -23,7 +23,7 @@ function Transformation() {
 
         <div className="mx-auto prose prose-lg text-left text-text-minor-emphasis">
           <p>
-            Sí funciona. Y lo hace porque está basado en la ciencia y en
+            Pero te digo que sí. Y lo hace porque está basado en la ciencia y en
             experiencias reales. Se fundamenta en estudios y años de ensayo y
             error.
           </p>
@@ -37,9 +37,8 @@ function Transformation() {
           </p>
 
           <p>
-            El método que uso funciona, eso te lo puedo garantizar. Pero tienes
-            que seguirlo, y es ahí donde entra Cimientos. Es mi forma de
-            ponértelo lo más fácil que pueda.
+            El método que uso funciona, pero tienes que seguirlo. Y es ahí donde
+            entra Cimientos. Es mi forma de ponértelo lo más fácil que pueda.
           </p>
 
           <p>

@@ -161,8 +161,10 @@ function Story() {
               energía de sobra. Así podrá gastarla en crear músculo, pues tus
               necesidades vitales estarán ya cubiertas. Las proteínas, por su
               parte, son para tener los bloques de construcción necesarios para
-              crear músculo.
+              crear músculo. Si te falta una, o te falta la otra, entonces no se
+              pueden dar las condiciones para construir músculo.
             </p>
+            <p>Interesante... 🧐</p>
 
             <p>
               Empecé a pesar todo lo que comía, pero me aburrí más pronto que
@@ -187,6 +189,12 @@ function Story() {
                 pesarlo todo.
               </p>
             </div>
+
+            <p>
+              Dos vasos de arroz, dos pimientos, o dos muslos de pollo van a
+              tener siempre valores similares entre sí. Nunca van a ser
+              exactamente iguales, pero... aproximaciones, ¿recuerdas? 😄
+            </p>
 
             <p>
               Ahora lo único que quedaba por hacer era planificar estas comidas
