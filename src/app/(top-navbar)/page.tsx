@@ -8,6 +8,7 @@ import Problem from '@/app/_features/marketing/landing/sections/Problem';
 import Response from '@/app/_features/marketing/landing/sections/Response';
 import Testimonial from '@/app/_features/marketing/landing/sections/Testimonial';
 import Lead from '@/app/_features/marketing/landing/sections/Lead';
+import Roadmap from '@/app/_features/marketing/landing/sections/Roadmap';
 
 export default function LandingPage() {
   return (
@@ -28,6 +29,7 @@ export default function LandingPage() {
       <Transformation />
 
       <Offer />
+      <Roadmap />
 
       <Response />
     </main>
