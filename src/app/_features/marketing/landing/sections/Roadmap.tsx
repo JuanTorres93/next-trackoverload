@@ -93,7 +93,7 @@ export default function Roadmap() {
           <RoadmapItem
             icon={<FaClipboardList />}
             title="Entrenamientos"
-            description="Rutinas seguimiento de series y repeticiones, y el método 'una repetición más' integrado."
+            description="Rutinas, seguimiento de series y repeticiones, y el método 'una repetición más' integrado."
             status="upcoming"
           />
 
