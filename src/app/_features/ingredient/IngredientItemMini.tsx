@@ -25,7 +25,7 @@ function IngredientItemMini({
 
   return (
     <div
-      className={`grid p-2 rounded-xl max-w-75 grid-cols-[3rem_1fr_min-content] bg-surface-card gap-4 items-center hover:bg-surface-light cursor-pointer transition 
+      className={`grid p-2 rounded-xl max-w-75 grid-cols-[3.5rem_1fr_min-content] bg-surface-card gap-4 items-center hover:bg-surface-light cursor-pointer transition 
         ${isSelected ? 'bg-surface-light text-text-minor-emphasis' : ''}`}
       {...props}
     >
