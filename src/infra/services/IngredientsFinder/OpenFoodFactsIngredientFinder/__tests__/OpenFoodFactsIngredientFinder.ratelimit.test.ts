@@ -52,7 +52,10 @@ describe('OpenFoodFactsIngredientFinder', () => {
       const { externalRef } = results[0];
 
       expect(externalRef).toHaveProperty('externalId');
+      expect(externalRef.externalId).toBeDefined();
+
       expect(externalRef).toHaveProperty('source');
+      expect(externalRef.source).toBeDefined();
     });
   });
 
