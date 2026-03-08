@@ -2,7 +2,11 @@ import { AppAuthService } from '@/interface-adapters/app/services/AppAuthService
 import { AppCreateUserUsecase } from '@/interface-adapters/app/use-cases/user';
 
 import { JSENDResponse } from '@/app/_types/JSEND';
-import { AlreadyExistsError, ValidationError } from '@/domain/common/errors';
+import {
+  AlreadyExistsError,
+  MaxUsersExceededError,
+  ValidationError,
+} from '@/domain/common/errors';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { cookieSessionName, cookieSessionMaxAgeInSeconds } from '../cookie';
@@ -85,6 +89,19 @@ function handleErrors(error: Error): NextResponse<JSENDResponse<string>> {
         },
       },
       { status: 422 },
+    );
+  }
+
+  //TODO: delete this when beta-testing is done
+  if (error instanceof MaxUsersExceededError) {
+    return NextResponse.json(
+      {
+        status: 'fail' as const,
+        data: {
+          email: 'El límite de usuarios beta ha sido alcanzado.',
+        },
+      },
+      { status: 403 },
     );
   }
 

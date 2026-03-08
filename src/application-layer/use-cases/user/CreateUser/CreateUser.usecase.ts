@@ -1,5 +1,8 @@
 import { UserDTO, toUserDTO } from '@/application-layer/dtos/UserDTO';
-import { AlreadyExistsError } from '@/domain/common/errors';
+import {
+  AlreadyExistsError,
+  MaxUsersExceededError,
+} from '@/domain/common/errors';
 import { User } from '@/domain/entities/user/User';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
 import { Email } from '@/domain/value-objects/Email/Email';
@@ -22,6 +25,14 @@ export class CreateUserUsecase {
   ) {}
 
   async execute(request: CreateUserUsecaseRequest): Promise<UserDTO> {
+    //TODO: delete this when beta-testing is done
+    const totalUsers = await this.usersRepo.getAllUsers();
+    if (totalUsers.length >= 6) {
+      throw new MaxUsersExceededError(
+        'CreateUserUsecase: Maximum number of users exceeded',
+      );
+    }
+
     // Validate email
     const email = Email.create(request.email).value;
     const validatedPassword = Password.create(request.plainPassword).value;

@@ -1,6 +1,5 @@
 'use client';
 import AuthLink from '@/app/_features/auth/AuthLink';
-import SpinnerMini from '@/app/_ui/SpinnerMini';
 import { useFormSetup } from '@/app/_hooks/useFormSetup';
 import ButtonPrimary from '@/app/_ui/ButtonPrimary';
 import Checkbox from '@/app/_ui/Checkbox';
@@ -8,7 +7,12 @@ import FormEntry from '@/app/_ui/form/FormEntry';
 import Input from '@/app/_ui/Input';
 import PasswordInput from '@/app/_ui/PasswordInput';
 import { showErrorToast } from '@/app/_ui/showErrorToast';
+import SpinnerMini from '@/app/_ui/SpinnerMini';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { FiUsers } from 'react-icons/fi';
+import { GiPartyPopper } from 'react-icons/gi';
+import { IoMdHeart } from 'react-icons/io';
 
 export type RegisterFormState = {
   name: string;
@@ -25,6 +29,10 @@ const INITIAL_FORM_STATE: RegisterFormState = {
 };
 
 function RegisterForm() {
+  // TODO: delete this when beta-testing is done
+  const [showBetaUserLimitError, setShowMaxUsersExceededError] =
+    useState(false);
+
   const router = useRouter();
   const { formState, setField, isLoading, setIsLoading } =
     useFormSetup<RegisterFormState>(INITIAL_FORM_STATE);
@@ -58,6 +66,12 @@ function RegisterForm() {
             ? Object.values(jsonResponse.data).join(' ')
             : jsonResponse.message || 'Error al crear el usuario.';
 
+        // TODO: delete this when beta-testing is done
+        if (errorMessage.includes('beta')) {
+          setShowMaxUsersExceededError(true);
+          return;
+        }
+
         showErrorToast(errorMessage);
 
         return;
@@ -78,7 +92,8 @@ function RegisterForm() {
   }
 
   return (
-    <div className="w-full p-10 rounded-xl max-w-110 bg-text-light">
+    // TODO: delete this when beta-testing is done (relative and overflow-hidden)
+    <div className="relative w-full p-10 overflow-hidden rounded-xl max-w-110 bg-text-light">
       <header className="mb-6 text-center">
         <h2 className="mb-2 text-2xl font-semibold">Crea tu cuenta</h2>
       </header>
@@ -154,6 +169,40 @@ function RegisterForm() {
           Inicia sesión
         </AuthLink>
       </h3>
+
+      {/* TODO: delete this when beta-testing is done */}
+      {showBetaUserLimitError && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center p-6 bg-gradient-to-br from-error to-error/80 text-text-light">
+          <div className="max-w-md p-8 text-center border shadow-2xl bg-white/10 backdrop-blur-sm rounded-2xl border-white/20">
+            <div className="flex justify-center mb-6">
+              <div className="relative p-4 rounded-full bg-white/20">
+                <FiUsers className="text-6xl" />
+                <GiPartyPopper className="absolute text-4xl text-yellow-300 -top-2 -right-2" />
+              </div>
+            </div>
+
+            <h3 className="mb-3 text-2xl font-bold">
+              ¡Fase de pruebas en curso! 🎉
+            </h3>
+
+            <p className="mb-4 text-lg opacity-90">
+              Ya se han registrado todos los usuarios de prueba que necesitaba.
+            </p>
+
+            <p className="mb-6 text-lg font-light">
+              <span className="italic">
+                Espero verte cuando haya terminado esta fase
+              </span>{' '}
+              😄
+            </p>
+
+            <div className="flex items-center justify-center gap-3 px-6 py-3 text-base bg-white/15 rounded-xl">
+              <IoMdHeart className="text-xl text-red-200" />
+              <span>¡Gracias por tu interés!</span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
