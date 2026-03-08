@@ -1,3 +1,4 @@
+import { formatToInteger } from '@/app/_utils/format/formatToInteger';
 import { IngredientDTO } from '@/application-layer/dtos/IngredientDTO';
 import Image from 'next/image';
 
@@ -19,13 +20,16 @@ function IngredientItemMini({
   ingredient: IngredientDTO;
   isSelected?: boolean;
 } & React.HTMLAttributes<HTMLDivElement>) {
+  const calories = formatToInteger(ingredient.nutritionalInfoPer100g.calories);
+  const protein = formatToInteger(ingredient.nutritionalInfoPer100g.protein);
+
   return (
     <div
-      className={`grid p-2 rounded-xl grid-cols-[40px_1fr_min-content] bg-surface-card  gap-8 items-center hover:bg-surface-light cursor-pointer transition 
+      className={`grid p-2 rounded-xl max-w-75 grid-cols-[3rem_1fr_min-content] bg-surface-card gap-4 items-center hover:bg-surface-light cursor-pointer transition 
         ${isSelected ? 'bg-surface-light text-text-minor-emphasis' : ''}`}
       {...props}
     >
-      <div className="relative overflow-hidden rounded-md h-14 aspect-square">
+      <div className="relative overflow-hidden rounded-md aspect-square">
         <Image
           fill
           src={ingredient.imageUrl || '/ingredient-no-picture.png'}
@@ -37,7 +41,22 @@ function IngredientItemMini({
           }`}
         />
       </div>
+
       <span className="font-semibold">{ingredient.name}</span>
+
+      <div className="flex flex-col items-end gap-1 min-w-[70px]">
+        <div className="flex items-center gap-1">
+          <span className="text-sm font-medium text-text-minor-emphasis">
+            {calories}
+          </span>
+          <span className="text-xs text-text-minor-emphasis">kcal</span>
+        </div>
+
+        <div className="flex items-center gap-1">
+          <span className="text-sm font-medium text-primary">{protein}g</span>
+          <span className="text-xs text-text-minor-emphasis">prot</span>
+        </div>
+      </div>
     </div>
   );
 }
