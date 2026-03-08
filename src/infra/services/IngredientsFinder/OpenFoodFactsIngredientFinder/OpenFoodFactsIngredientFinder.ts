@@ -80,7 +80,7 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
       );
     }
 
-    const url = `${SEARCH_URL}?q=${encodeURIComponent(name)}&page_size=24&fields=${fields}`;
+    const url = `${SEARCH_URL}?q=${encodeURIComponent(name)}&page_size=50&fields=${fields}`;
 
     const response = await fetch(url, {
       method: 'GET',
@@ -138,6 +138,13 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
           (product.product_name && product.product_name.trim().length > 0) ||
           (product.product_name_en &&
             product.product_name_en.trim().length > 0),
+      )
+      // Has at least calories or protein
+      .filter(
+        (product: OpenFoodFactProduct) =>
+          product.nutriments &&
+          (product?.nutriments?.['energy-kcal_100g'] > 0 ||
+            product?.nutriments?.['proteins_100g'] > 0),
       );
 
     const ingredients: IngredientFinderResult[] = filteredProducts.map(

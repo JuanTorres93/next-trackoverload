@@ -64,7 +64,7 @@ describe('OpenFoodFactsIngredientFinder', () => {
 
     beforeAll(async () => {
       results =
-        await ingredientFinder.findIngredientsByBarcode('5056329509972');
+        await ingredientFinder.findIngredientsByBarcode('8414807558305');
     });
 
     it('returns ingredient and externalRef properties', async () => {
