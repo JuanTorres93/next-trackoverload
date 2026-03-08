@@ -1,7 +1,10 @@
 import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
 import * as dto from '@/../tests/dtoProperties';
 import { toUserDTO, UserDTO } from '@/application-layer/dtos/UserDTO';
-import { AlreadyExistsError } from '@/domain/common/errors';
+import {
+  AlreadyExistsError,
+  MaxUsersExceededError,
+} from '@/domain/common/errors';
 import { User } from '@/domain/entities/user/User';
 import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
 import { DummyPasswordEncryptorService } from '@/infra/services/PasswordEncryptorService/DummyPasswordEncryptorService/DummyPasswordEncryptorService';
@@ -150,6 +153,37 @@ describe('CreateUserUsecase', () => {
 
       await expect(createUserUsecase.execute(request)).rejects.toThrow(
         /CreateUserUsecase.*User.*customerId.*already exists/,
+      );
+    });
+
+    //TODO: delete this when beta-testing is done
+    it('should throw error if there are more than 6 users in repo', async () => {
+      usersRepo.clearForTesting();
+
+      expect(await usersRepo.getAllUsers()).toEqual([]);
+
+      // Create 6 users
+      for (let i = 0; i < 6; i++) {
+        await createUserUsecase.execute({
+          name: `User ${i}`,
+          email: `user${i}@example.com`,
+          plainPassword,
+        });
+      }
+
+      // Attempt to create 7th user
+      const request = {
+        name: 'Seventh User',
+        email: 'seventhuser@example.com',
+        plainPassword,
+      };
+
+      await expect(createUserUsecase.execute(request)).rejects.toThrow(
+        MaxUsersExceededError,
+      );
+
+      await expect(createUserUsecase.execute(request)).rejects.toThrow(
+        /CreateUserUsecase.*Maximum number of users.*exceeded/,
       );
     });
   });
