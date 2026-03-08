@@ -5,18 +5,6 @@ import {
 } from '@/domain/services/IngredientFinder.port';
 import { RateLimiter } from '@/domain/services/RateLimiter.port';
 
-type OpenFoodFactProduct = {
-  code: string;
-  product_name: string;
-  product_name_en?: string;
-  nutriments: {
-    'energy-kcal_100g': number;
-    proteins_100g: number;
-  };
-  image_thumb_url?: string;
-  image_front_url?: string;
-};
-
 // DOCS: https://openfoodfacts.github.io/openfoodfacts-server/api/
 // SEARCH DOCS: https://search.openfoodfacts.org/docs
 export const READ_RATE_LIMITS = {
@@ -47,6 +35,8 @@ const BASE_URL =
 // Dedicated Elasticsearch-based search service — much faster than legacy BASE_URL/cgi/search.pl
 const SEARCH_URL = 'https://search.openfoodfacts.org/search';
 
+const IMAGES_BASE_URL = 'https://images.openfoodfacts.org/images/products';
+
 let authHeader;
 if (['test', 'development'].includes(process.env.NODE_ENV))
   authHeader = {
@@ -65,7 +55,7 @@ if (!authHeader) {
 }
 
 const fields =
-  'code,product_name,product_name_en,nutriments,image_thumb_url,image_front_url';
+  'code,product_name,product_name_en,nutriments,image_thumb_url,image_front_url,images';
 
 export class OpenFoodFactsIngredientFinder implements IngredientFinder {
   private readonly searchRateLimiter: RateLimiter;
@@ -163,7 +153,10 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
             protein: product?.nutriments?.['proteins_100g'] || 0,
           },
 
-          imageUrl: product.image_thumb_url || product.image_front_url,
+          imageUrl:
+            product.image_thumb_url ||
+            product.image_front_url ||
+            computeImageUrlFromArray(product.code, product.images),
         };
 
         const externalRef = {
@@ -180,4 +173,89 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
 
     return ingredients || [];
   }
+}
+
+type OpenFoodFactImageSizes = {
+  [size: string]: { w: number; h: number };
+};
+
+type OpenFoodFactNamedImage = {
+  imgid: string;
+  sizes: OpenFoodFactImageSizes;
+};
+
+type OpenFoodFactRawImage = {
+  sizes: OpenFoodFactImageSizes;
+  uploaded_t?: number | string;
+  uploader?: string;
+};
+
+type OpenFoodFactImages = {
+  [key: string]: OpenFoodFactNamedImage | OpenFoodFactRawImage;
+};
+
+type OpenFoodFactProduct = {
+  code: string;
+  product_name: string;
+  product_name_en?: string;
+  nutriments: {
+    'energy-kcal_100g': number;
+    proteins_100g: number;
+  };
+  image_thumb_url?: string;
+  image_front_url?: string;
+  images?: OpenFoodFactImages;
+};
+
+function isNamedImage(
+  image: OpenFoodFactNamedImage | OpenFoodFactRawImage,
+): image is OpenFoodFactNamedImage {
+  return (
+    'imgid' in image &&
+    typeof (image as OpenFoodFactNamedImage).imgid === 'string'
+  );
+}
+
+// Splits barcode into path segments used by the OpenFoodFacts image CDN.
+// e.g. '3017620422003' → '301/762/042/2003'
+function formatBarcodeForImagePath(barcode: string): string {
+  if (barcode.length >= 9) {
+    const parts = [
+      barcode.slice(0, 3),
+      barcode.slice(3, 6),
+      barcode.slice(6, 9),
+    ];
+    const rest = barcode.slice(9);
+    if (rest) parts.push(rest);
+    return parts.join('/');
+  }
+  return barcode;
+}
+
+function computeImageUrlFromArray(
+  barcode: string,
+  images?: OpenFoodFactImages,
+): string | undefined {
+  if (!images || !barcode) return undefined;
+
+  const barcodePath = formatBarcodeForImagePath(barcode);
+  const keys = Object.keys(images);
+
+  // Prefer front image (any language), then any other named image
+  const namedKey =
+    keys.find((k) => k.startsWith('front_')) ??
+    keys.find((k) => !/^\d+$/.test(k) && isNamedImage(images[k]));
+
+  if (namedKey && isNamedImage(images[namedKey])) {
+    const { imgid } = images[namedKey] as OpenFoodFactNamedImage;
+    return `${IMAGES_BASE_URL}/${barcodePath}/${imgid}.400.jpg`;
+  }
+
+  // Fall back to first raw numeric image
+  const numericKey = keys.find((k) => /^\d+$/.test(k));
+  if (numericKey) {
+    return `${IMAGES_BASE_URL}/${barcodePath}/${numericKey}.400.jpg`;
+  }
+
+  return undefined;
 }
