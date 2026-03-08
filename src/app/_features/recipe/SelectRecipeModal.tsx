@@ -21,9 +21,12 @@ function SelectRecipeModal({
   const [recipes, setRecipes] = useState<RecipeDTO[]>([]);
   const [selectedRecipesIds, setSelectedRecipesIds] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isFetching, setIsFetching] = useState<boolean>(false);
+  const [isAddingMeals, setIsAddingMeals] = useState<boolean>(false);
 
   const numberOfSelectedRecipes = selectedRecipesIds.length;
-  const invalidForm = numberOfSelectedRecipes === 0 || isLoading;
+  const invalidForm =
+    numberOfSelectedRecipes === 0 || isLoading || isFetching || isAddingMeals;
 
   function handleClickRecipe(recipeId: string) {
     if (selectedRecipesIds.includes(recipeId)) {
@@ -36,6 +39,8 @@ function SelectRecipeModal({
   useEffect(() => {
     const fetchRecipes = async () => {
       setIsLoading(true);
+      setIsFetching(true);
+
       try {
         const response = await fetch('/api/recipe/getAll');
 
@@ -59,6 +64,7 @@ function SelectRecipeModal({
         showErrorToast('Error al cargar las recetas.');
       } finally {
         setIsLoading(false);
+        setIsFetching(false);
       }
     };
 
@@ -67,6 +73,7 @@ function SelectRecipeModal({
 
   async function handleCreateMeals() {
     setIsLoading(true);
+    setIsAddingMeals(true);
 
     try {
       await addMealsRequest(selectedRecipesIds);
@@ -76,25 +83,39 @@ function SelectRecipeModal({
       showErrorToast('Error al añadir las comidas.');
     } finally {
       setIsLoading(false);
+      setIsAddingMeals(false);
       onCloseModal?.();
     }
   }
 
   return (
     <div className="max-w-200 max-h-160 overflow-y-scroll w-[80dvw] p-4">
-      <div className="flex ">
-        <SectionHeading>Tus recetas</SectionHeading>
+      <div className="flex items-center justify-between gap-2 mb-8">
+        <SectionHeading className="p-0! m-0! max-bp-add-multiple-meals-modal:text-3xl!">
+          Tus recetas
+        </SectionHeading>
+
         <ButtonNew
-          className="ml-14 max-h-13"
+          className="max-h-13 max-bp-add-multiple-meals-modal:text-sm!
+          max-bp-add-multiple-meals-modal:px-2!
+          max-bp-add-multiple-meals-modal:py-2!
+          "
           disabled={invalidForm}
           isLoading={isLoading}
           onClick={handleCreateMeals}
         >
-          Añadir comidas
+          <span className="inline max-bp-add-multiple-meals-modal:hidden">
+            Añadir comidas
+          </span>
+          <span className="hidden max-bp-add-multiple-meals-modal:inline">
+            Añadir
+          </span>
         </ButtonNew>
       </div>
 
-      {isLoading && <span>Añadiendo comidas</span>}
+      {isLoading && isAddingMeals && <span>Añadiendo comidas</span>}
+
+      {isLoading && isFetching && <span>Cargando recetas</span>}
 
       {!isLoading && (
         <RecipesGrid
