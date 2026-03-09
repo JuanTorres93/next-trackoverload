@@ -82,7 +82,7 @@ export function dayIdToDayMonthYear(dayId: string): {
 } {
   if (!/^\d{8}$/.test(dayId)) {
     throw new ValidationError(
-      'stringToDayMonthYear: dayId must be in YYYYMMDD format'
+      'stringToDayMonthYear: dayId must be in YYYYMMDD format',
     );
   }
 
@@ -91,4 +91,12 @@ export function dayIdToDayMonthYear(dayId: string): {
   const day = parseInt(dayId.slice(6, 8), 10);
 
   return { day, month, year };
+}
+
+export function dateToDayId(date: Date): DayId {
+  const day = date.getDate();
+  const month = date.getMonth() + 1; // Months are zero-indexed
+  const year = date.getFullYear();
+
+  return DayId.create({ day, month, year });
 }
