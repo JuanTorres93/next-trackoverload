@@ -53,6 +53,11 @@
   --breakpoint-bp-ingredient-search: 400px;
 }
 
+::selection {
+  background-color: var(--color-primary-light);
+  color: white;
+}
+
 @layer base {
   /* Remove arrows from number inputs */
   input[type='number']::-webkit-inner-spin-button,

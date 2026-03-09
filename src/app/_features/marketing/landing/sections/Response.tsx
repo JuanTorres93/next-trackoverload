@@ -43,7 +43,7 @@ function Response() {
           Espero que te sirva y te ayude a ser más feliz.
         </p>
 
-        <p className="mt-4 text-3xl font-semibold">Un abrazo! 🤗</p>
+        <p className="mt-4 text-3xl font-semibold">Un abrazo! 😄</p>
       </div>
     </Section>
   );

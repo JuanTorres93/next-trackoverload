@@ -67,7 +67,7 @@ export default function Roadmap() {
   return (
     <Section className="bg-white">
       <div className="max-w-6xl mx-auto">
-        <SectionHeading subtitle="Cimientos está creciendo. Esto es lo que ya tenemos y lo que viene.">
+        <SectionHeading subtitle="Cimientos está creciendo. Esto es lo que ya existe y lo que viene.">
           Hoja de ruta
         </SectionHeading>
 
@@ -109,9 +109,12 @@ export default function Roadmap() {
         {/* Nota a pie */}
         <p className="mt-12 text-sm text-center text-text-minor-emphasis">
           ¿Echas de menos alguna funcionalidad?{' '}
-          <button className="font-medium text-primary hover:underline">
+          <a
+            href="mailto:juan@juantorres.me"
+            className="font-medium text-primary hover:underline"
+          >
             Escríbeme al mail de la newsletter
-          </button>
+          </a>
         </p>
       </div>
     </Section>
