@@ -22,7 +22,7 @@ describe('RecipesPage', () => {
     await setup();
 
     expect(
-      screen.getByRole('link', { name: /nueva receta/i })
+      screen.getByRole('link', { name: /nueva receta/i }),
     ).toBeInTheDocument();
   });
 
@@ -34,7 +34,7 @@ describe('RecipesPage', () => {
 
       for (const recipe of mockRecipes) {
         expect(
-          screen.getByRole('heading', { name: recipe.name })
+          screen.getByRole('heading', { name: recipe.name }),
         ).toBeInTheDocument();
       }
     });
@@ -50,6 +50,9 @@ describe('RecipesPage', () => {
       expect(recipesBefore).toBeGreaterThan(0);
 
       await userEvent.click(deleteButtons[0]);
+
+      const confirmButton = screen.getByRole('button', { name: /eliminar/i });
+      await userEvent.click(confirmButton);
 
       const recipesAfter = recipesRepo.countForTesting();
       expect(recipesAfter).toBe(recipesBefore - 1);

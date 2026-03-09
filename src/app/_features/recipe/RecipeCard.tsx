@@ -9,6 +9,8 @@ import { useState } from 'react';
 import LoadingOverlay from '../common/LoadingOverlay';
 import { showErrorToast } from '@/app/_ui/showErrorToast';
 import { isNextRedirectError } from '../common/handleNextRedirectError';
+import Modal from '@/app/_ui/Modal';
+import ConfirmDelete from '@/app/_ui/ConfirmDeleteModal';
 
 function RecipeCard({
   recipe,
@@ -50,23 +52,39 @@ function RecipeCard({
       className={`p-3 min-w-52 rounded-lg grid grid-cols-2 grid-rows-[max-content_min-content_min-content] gap-4 bg-surface-card relative shadow-md hover:cursor-pointer hover:shadow-lg transition hover:bg-surface-light ${isSelected ? 'bg-surface-dark! [&_*]:text-text-light!' : ''}`}
       onClick={asLink ? handleNavigationClick : onClick}
     >
-      {(isNavigating || isDeleting) && <LoadingOverlay className="z-20" />}
+      <Modal>
+        {(isNavigating || isDeleting) && <LoadingOverlay className="z-20" />}
 
-      {asLink && <ButtonDeleteHover onClick={handleDelete} />}
+        {asLink && (
+          <Modal.Open opens="confirm-delete-recipe-modal">
+            <ButtonDeleteHover />
+          </Modal.Open>
+        )}
 
-      <div className="relative h-32 col-span-2 overflow-hidden rounded-lg">
-        <Image
-          src={recipe.imageUrl ? recipe.imageUrl : '/recipe-no-picture.png'}
-          alt={recipe.name}
-          fill
-          className="object-cover"
-        />
-      </div>
-      <h2 className="col-span-2 text-center">{recipe.name}</h2>
+        <div className="relative h-32 col-span-2 overflow-hidden rounded-lg">
+          <Image
+            src={recipe.imageUrl ? recipe.imageUrl : '/recipe-no-picture.png'}
+            alt={recipe.name}
+            fill
+            className="object-cover"
+          />
+        </div>
+        <h2 className="col-span-2 text-center">{recipe.name}</h2>
 
-      <NutritionalInfoValue number={recipe.calories} label="Calorías" />
+        <NutritionalInfoValue number={recipe.calories} label="Calorías" />
 
-      <NutritionalInfoValue number={recipe.protein} label="Proteínas" />
+        <NutritionalInfoValue number={recipe.protein} label="Proteínas" />
+
+        <Modal.Window name="confirm-delete-recipe-modal">
+          <ConfirmDelete
+            onConfirm={handleDelete}
+            onCloseModal={() => {}}
+            resourceName={recipe.name}
+            resourceType="receta"
+            disabled={isDeleting}
+          />
+        </Modal.Window>
+      </Modal>
     </Wrapper>
   );
 }

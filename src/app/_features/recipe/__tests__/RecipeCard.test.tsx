@@ -48,6 +48,9 @@ describe('RecipeCard', () => {
     const recipesBeforeDelete = await recipesRepo.countForTesting();
     await userEvent.click(deleteButton);
 
+    const confirmButton = screen.getByRole('button', { name: /eliminar/i });
+    await userEvent.click(confirmButton);
+
     expect(recipesRepo.countForTesting()).toBe(recipesBeforeDelete - 1);
   });
 

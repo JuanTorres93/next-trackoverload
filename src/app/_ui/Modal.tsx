@@ -62,6 +62,7 @@ function Window({
   return createPortal(
     <div
       className={`fixed inset-0 transition bg-overlay/80 z-1000 backdrop-blur-xs`}
+      onClick={(e) => e.stopPropagation()}
     >
       <div
         ref={ref}
