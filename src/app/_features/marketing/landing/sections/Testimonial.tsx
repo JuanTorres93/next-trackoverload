@@ -1,6 +1,7 @@
 import { FaQuoteLeft } from 'react-icons/fa';
 import Section from '../Section';
 import SectionHeading from '../SectionHeading';
+import Strong from '../Strong';
 
 export default function Testimonial() {
   return (
@@ -34,11 +35,7 @@ export default function Testimonial() {
                 fundamentos de la hipertrofia: desde cómo estructurar mis
                 entrenamientos y ajustar las series y repeticiones, hasta cómo
                 enfocarme en el principio de
-                <span className="font-semibold text-primary">
-                  {' '}
-                  &apos;una repetición más&apos;
-                </span>
-                .
+                <Strong> &apos;una repetición más&apos;</Strong>.
               </p>
 
               <p className="text-lg leading-relaxed md:text-xl">
@@ -51,9 +48,10 @@ export default function Testimonial() {
               <p className="text-lg leading-relaxed md:text-xl">
                 Gracias a su ayuda, ahora sigo una rutina completa que incluye
                 tanto ejercicios básicos como específicos para cada grupo
-                muscular, y que me reta constantemente. Estoy muy agradecido de
-                tener a alguien que me haya mostrado el camino de forma tan
-                práctica y motivadora.&quot;
+                muscular, y que me reta constantemente.{' '}
+                <Strong>Estoy muy agradecido</Strong> de tener a alguien que me
+                haya mostrado el camino de forma tan práctica y
+                motivadora.&quot;
               </p>
             </div>
 

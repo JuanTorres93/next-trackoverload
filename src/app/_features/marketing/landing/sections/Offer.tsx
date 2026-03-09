@@ -1,6 +1,7 @@
 import PricingCard from '../PricingCard';
 import Section from '../Section';
 import SectionHeading from '../SectionHeading';
+import Strong from '../Strong';
 
 function Offer() {
   return (
@@ -13,19 +14,21 @@ function Offer() {
           </SectionHeading>
 
           <div className="mx-auto prose prose-lg text-text-minor-emphasis">
+            <p>La he diseñado para que sea sencilla y rápida de utilizar. </p>
+
             <p>
-              La he diseñado para que sea sencilla y rápida de utilizar. Si
-              quieres dar un paso hacia tu felicidad, un muy buen paso para
-              empezar es cuidar tu cuerpo. Al fin y al cabo es donde vas a vivir
-              el resto de tu vida. Cuanto mejor sea su condición, más potencial
-              tendrás para crecer y ser feliz.
+              Si quieres dar un paso hacia tu <Strong>felicidad</Strong>, un muy
+              buen paso para empezar es <Strong>cuidar tu cuerpo</Strong>. Al
+              fin y al cabo es donde vas a vivir el resto de tu vida. Cuanto
+              mejor sea su condición, más potencial tendrás para crecer y ser
+              feliz.
             </p>
 
             <p>
-              Quiero que si te decides a usar Cimientos, que sea porque te
-              aporta valor. Quiero también que no tengas nada que perder por
-              darle una oportunidad. Por eso te doy 14 días gratis, sin pedir
-              ningún método de pago.
+              Quiero que si te decides a usar <Strong>Cimientos</Strong>, que
+              sea porque te <Strong>aporta valor</Strong>. Quiero también que no
+              tengas nada que perder por darle una oportunidad. Por eso te doy{' '}
+              <Strong>14 días gratis</Strong>, sin pedir ningún método de pago.
             </p>
           </div>
         </div>
@@ -34,7 +37,7 @@ function Offer() {
       {/* Pricing */}
       <Section className="bg-gradient-to-b from-white to-surface-light">
         <div className="max-w-5xl mx-auto">
-          <SectionHeading subtitle="Trabajo sólo en este proyecto y quiero vivir de él, así que los únicos gastos que tengo son de infraestructura y de vida.">
+          <SectionHeading subtitle="Trabajo sólo en este proyecto, así que los únicos gastos que tengo son de infraestructura. Esto hace que pueda ofrecer un precio muy bajo.">
             ¿Cuánto cuesta?
           </SectionHeading>
 
@@ -49,6 +52,7 @@ function Offer() {
                   'Escaneo de códigos de barras',
                   'Planificador de comidas semanal',
                   'Recetario personal',
+                  'Rutinas de entrenamiento personales',
                   'Seguimiento de progreso',
                   '14 días gratis, sin tarjeta',
                 ]}
