@@ -25,6 +25,7 @@ import SectionHeading from '@/app/_ui/typography/SectionHeading';
 import { useState } from 'react';
 import ArrangedIngredientSearch from '@/app/_features/ingredient/ArrangedIngredientSearch';
 import ButtonDanger from '@/app/_ui/ButtonDanger';
+import ConfirmDelete from '@/app/_ui/ConfirmDeleteModal';
 
 interface RecipeDisplayProps {
   recipe: RecipeDTO;
@@ -152,19 +153,20 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
             </p>
           </ButtonPrimary>
 
-          <ButtonDanger
-            data-testid="delete-recipe-button"
-            onClick={handleDeleteRecipe}
-            disabled={buttonsDisabled}
-          >
-            {isDeletingRecipe && <SpinnerMini />}
-            {!isDeletingRecipe && <HiOutlineTrash />}
+          <Modal.Open opens="confirm-delete-recipe-modal">
+            <ButtonDanger
+              data-testid="delete-recipe-button"
+              disabled={buttonsDisabled}
+            >
+              {isDeletingRecipe && <SpinnerMini />}
+              {!isDeletingRecipe && <HiOutlineTrash />}
 
-            <p>
-              Eliminar{' '}
-              <span className="max-bp-recipe-page-second:hidden">receta</span>
-            </p>
-          </ButtonDanger>
+              <p>
+                Eliminar{' '}
+                <span className="max-bp-recipe-page-second:hidden">receta</span>
+              </p>
+            </ButtonDanger>
+          </Modal.Open>
         </div>
 
         <SectionHeading>
@@ -211,6 +213,16 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
             }
             handleAddIngredients={handleAddIngredients}
             isLoading={isLoading}
+          />
+        </Modal.Window>
+
+        <Modal.Window name="confirm-delete-recipe-modal">
+          <ConfirmDelete
+            onConfirm={handleDeleteRecipe}
+            onCloseModal={() => {}}
+            resourceName={recipe.name}
+            resourceType="receta"
+            disabled={buttonsDisabled}
           />
         </Modal.Window>
       </Modal>

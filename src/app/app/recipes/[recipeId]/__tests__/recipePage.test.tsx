@@ -271,8 +271,12 @@ describe('RecipePage', () => {
       const initialRecipes = recipesRepo.countForTesting();
 
       const deleteButton = screen.getByTestId('delete-recipe-button');
-
       await userEvent.click(deleteButton);
+
+      const confirmButton = await screen.findByRole('button', {
+        name: 'Eliminar',
+      });
+      await userEvent.click(confirmButton);
 
       await waitFor(() => {
         const allRecipes = recipesRepo.countForTesting();
