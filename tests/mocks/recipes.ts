@@ -6,6 +6,10 @@ import { createMockUser } from './user';
 import { createMockIngredients } from './ingredients';
 
 export const createMockRecipes = async () => {
+  if (process.env.NODE_ENV !== 'test') {
+    throw new Error('createMockRecipes should only be used in tests');
+  }
+
   const mockIngredients = await createMockIngredients();
   const mockUser = await createMockUser();
 

@@ -36,10 +36,14 @@ export const mockIngredientsForIngredientFinder = ingredientPropsForUseCase.map(
         source: 'openfoodfacts',
       },
     };
-  }
+  },
 );
 
 export const createMockIngredients = async () => {
+  if (process.env.NODE_ENV !== 'test') {
+    throw new Error('createMockIngredients should only be used in tests');
+  }
+
   const createdIngredients = [];
 
   for (const props of ingredientPropsForUseCase) {

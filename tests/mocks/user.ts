@@ -4,6 +4,10 @@ import { AppUsersRepo } from '@/interface-adapters/app/repos/AppUsersRepo';
 export const testUserId = 'dev-user';
 
 export const createMockUser = async () => {
+  if (process.env.NODE_ENV !== 'test') {
+    throw new Error('createMockUser should only be used in tests');
+  }
+
   const user = User.create({
     id: testUserId,
     name: 'test user',
