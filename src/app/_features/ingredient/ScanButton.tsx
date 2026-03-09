@@ -1,6 +1,6 @@
 import { FaBarcode } from 'react-icons/fa6';
 
-import { disabledStyle } from '@/app/_ui/ButtonSearch';
+import { disabledStyle } from '@/app/_ui/buttons/ButtonSearch';
 
 function ScanButton({
   ...props

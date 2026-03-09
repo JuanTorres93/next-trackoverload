@@ -16,15 +16,15 @@ import IngredientSearch, {
   IngredientLineWithExternalRef,
 } from '@/app/_features/ingredient/IngredientSearch';
 import { useDebounce } from '@/app/_hooks/useDebounce';
-import ButtonNew from '@/app/_ui/ButtonNew';
-import ButtonPrimary from '@/app/_ui/ButtonPrimary';
+import ButtonNew from '@/app/_ui/buttons/ButtonNew';
+import ButtonPrimary from '@/app/_ui/buttons/ButtonPrimary';
 import Modal from '@/app/_ui/Modal';
 import { showErrorToast } from '@/app/_ui/showErrorToast';
 import SpinnerMini from '@/app/_ui/SpinnerMini';
 import SectionHeading from '@/app/_ui/typography/SectionHeading';
 import { useState } from 'react';
 import ArrangedIngredientSearch from '@/app/_features/ingredient/ArrangedIngredientSearch';
-import ButtonDanger from '@/app/_ui/ButtonDanger';
+import ButtonDanger from '@/app/_ui/buttons/ButtonDanger';
 import ConfirmDelete from '@/app/_ui/ConfirmDeleteModal';
 
 interface RecipeDisplayProps {

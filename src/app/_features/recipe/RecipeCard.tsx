@@ -1,5 +1,5 @@
 'use client';
-import ButtonDeleteHover from '@/app/_ui/ButtonDeleteHover';
+import ButtonDeleteHover from '@/app/_ui/buttons/ButtonDeleteHover';
 import NutritionalInfoValue from '@/app/_ui/NutritionalInfoValue';
 import { deleteRecipe } from './actions';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';

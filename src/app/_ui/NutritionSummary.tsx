@@ -6,7 +6,7 @@ import Image from 'next/image';
 import CaloriesAndProtein from '../_features/common/CaloriesAndProtein';
 import LoadingOverlay from '../_features/common/LoadingOverlay';
 import LoggedMealContainer from '../_features/common/LoggedMealContainer';
-import ButtonX from './ButtonX';
+import ButtonX from './buttons/ButtonX';
 
 const quantityStyle = 'w-full text-right border-none outline-none';
 

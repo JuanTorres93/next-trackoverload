@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import TextRegular from './typography/TextRegular';
+import TextRegular from '../typography/TextRegular';
 
 function ButtonPrimary({
   children,

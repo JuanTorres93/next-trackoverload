@@ -1,6 +1,6 @@
 'use client';
 import { useFormSetup } from '@/app/_hooks/useFormSetup';
-import ButtonPrimary from '@/app/_ui/ButtonPrimary';
+import ButtonPrimary from '@/app/_ui/buttons/ButtonPrimary';
 import FormEntry from '@/app/_ui/form/FormEntry';
 import Input from '@/app/_ui/Input';
 import PasswordInput from '@/app/_ui/PasswordInput';

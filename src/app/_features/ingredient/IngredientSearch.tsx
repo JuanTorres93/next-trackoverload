@@ -1,7 +1,7 @@
 'use client';
 import { useOutsideClick } from '@/app/_hooks/useOutsideClick';
 import { JSENDResponse } from '@/app/_types/JSEND';
-import ButtonSearch from '@/app/_ui/ButtonSearch';
+import ButtonSearch from '@/app/_ui/buttons/ButtonSearch';
 import Input from '@/app/_ui/Input';
 import { showErrorToast } from '@/app/_ui/showErrorToast';
 import Spinner from '@/app/_ui/Spinner';

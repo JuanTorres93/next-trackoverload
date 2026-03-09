@@ -1,7 +1,7 @@
 import { FakeMealDTO } from '@/application-layer/dtos/FakeMealDTO';
 import CaloriesAndProtein from '../common/CaloriesAndProtein';
 import LoggedMealContainer from '../common/LoggedMealContainer';
-import ButtonX from '@/app/_ui/ButtonX';
+import ButtonX from '@/app/_ui/buttons/ButtonX';
 import { removeFakeMealFromDay } from './actions';
 import { useState } from 'react';
 import LoadingOverlay from '../common/LoadingOverlay';

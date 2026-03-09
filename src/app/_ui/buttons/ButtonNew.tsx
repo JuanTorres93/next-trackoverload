@@ -1,6 +1,6 @@
 import { HiPlus } from 'react-icons/hi2';
 import ButtonPrimary from './ButtonPrimary';
-import SpinnerMini from './SpinnerMini';
+import SpinnerMini from '../SpinnerMini';
 
 function ButtonNew({
   children,

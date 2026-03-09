@@ -1,4 +1,4 @@
-import ButtonNew from '@/app/_ui/ButtonNew';
+import ButtonNew from '@/app/_ui/buttons/ButtonNew';
 import { showErrorToast } from '@/app/_ui/showErrorToast';
 import SectionHeading from '@/app/_ui/typography/SectionHeading';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';

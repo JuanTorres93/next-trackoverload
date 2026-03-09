@@ -1,7 +1,7 @@
 'use client';
 
 import RecipesGrid from '@/app/_features/recipe/RecipesGrid';
-import ButtonNew from '@/app/_ui/ButtonNew';
+import ButtonNew from '@/app/_ui/buttons/ButtonNew';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { useState } from 'react';
 

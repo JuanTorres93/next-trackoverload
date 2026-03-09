@@ -1,5 +1,5 @@
 'use client';
-import ButtonEditImage from '@/app/_ui/ButtonEditImage';
+import ButtonEditImage from '@/app/_ui/buttons/ButtonEditImage';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import Image from 'next/image';
 import { updateRecipeImage } from '@/app/_features/recipe/actions';

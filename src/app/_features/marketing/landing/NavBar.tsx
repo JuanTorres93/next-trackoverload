@@ -1,6 +1,6 @@
 'use server';
 
-import ButtonPrimary from '@/app/_ui/ButtonPrimary';
+import ButtonPrimary from '@/app/_ui/buttons/ButtonPrimary';
 import Logo from '@/app/_ui/Logo';
 import { getCurrentUserId } from '@/app/_utils/auth/getCurrentUserId';
 import ButtonCTA from './ButtonCTA';

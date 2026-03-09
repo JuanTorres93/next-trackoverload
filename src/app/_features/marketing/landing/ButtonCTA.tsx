@@ -1,4 +1,4 @@
-import ButtonPrimary from '@/app/_ui/ButtonPrimary';
+import ButtonPrimary from '@/app/_ui/buttons/ButtonPrimary';
 
 type ButtonCTAProps = React.ComponentProps<typeof ButtonPrimary>;
 

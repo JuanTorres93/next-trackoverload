@@ -2,7 +2,7 @@ import toast from 'react-hot-toast';
 
 import AlertTriangle from './AlertTriangle';
 import TextSmall from './typography/TextSmall';
-import ButtonX from './ButtonX';
+import ButtonX from './buttons/ButtonX';
 
 export function showErrorToast(message: string) {
   toast.custom((handledToast) => (

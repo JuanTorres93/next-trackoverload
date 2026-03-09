@@ -1,4 +1,4 @@
-import ButtonNew from '@/app/_ui/ButtonNew';
+import ButtonNew from '@/app/_ui/buttons/ButtonNew';
 import FormEntry from '@/app/_ui/form/FormEntry';
 import Input from '@/app/_ui/Input';
 import { useFormSetup } from '@/app/_hooks/useFormSetup';

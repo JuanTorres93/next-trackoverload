@@ -6,7 +6,7 @@ import { es } from 'date-fns/locale';
 
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 import { parseFilterValueToDate } from './utils/parseFilterValueToDate';
-import ButtonPrimary from '@/app/_ui/ButtonPrimary';
+import ButtonPrimary from '@/app/_ui/buttons/ButtonPrimary';
 import { useEffect, useState } from 'react';
 import SpinnerMini from '@/app/_ui/SpinnerMini';
 

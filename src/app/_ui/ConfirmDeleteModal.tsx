@@ -1,7 +1,7 @@
 import { HiOutlineTrash } from 'react-icons/hi';
 
-import ButtonDanger from './ButtonDanger';
-import ButtonSecondary from './ButtonSecondary';
+import ButtonDanger from './buttons/ButtonDanger';
+import ButtonSecondary from './buttons/ButtonSecondary';
 
 function ConfirmDelete({
   resourceType,

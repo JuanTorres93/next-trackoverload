@@ -3,7 +3,7 @@
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-import ButtonNew from '@/app/_ui/ButtonNew';
+import ButtonNew from '@/app/_ui/buttons/ButtonNew';
 import Modal from '@/app/_ui/Modal';
 import { AssembledDayDTO } from '@/application-layer/dtos/DayDTO';
 import { dayIdToDayMonthYear } from '@/domain/value-objects/DayId/DayId';

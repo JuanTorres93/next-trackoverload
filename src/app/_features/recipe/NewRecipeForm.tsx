@@ -1,7 +1,7 @@
 'use client';
 
 import { useFormSetup } from '@/app/_hooks/useFormSetup';
-import ButtonNew from '@/app/_ui/ButtonNew';
+import ButtonNew from '@/app/_ui/buttons/ButtonNew';
 import FormRow from '@/app/_ui/form/FormRow';
 import ImagePicker from '@/app/_ui/ImagePicker';
 import NutritionalInfoValue from '@/app/_ui/NutritionalInfoValue';

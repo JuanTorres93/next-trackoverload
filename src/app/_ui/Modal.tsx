@@ -3,7 +3,7 @@
 import { cloneElement, createContext, useContext, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useOutsideClick } from '../_hooks/useOutsideClick';
-import ButtonX from './ButtonX';
+import ButtonX from './buttons/ButtonX';
 
 type ModalContextType = {
   close: () => void;

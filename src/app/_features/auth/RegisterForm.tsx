@@ -1,7 +1,7 @@
 'use client';
 import AuthLink from '@/app/_features/auth/AuthLink';
 import { useFormSetup } from '@/app/_hooks/useFormSetup';
-import ButtonPrimary from '@/app/_ui/ButtonPrimary';
+import ButtonPrimary from '@/app/_ui/buttons/ButtonPrimary';
 import Checkbox from '@/app/_ui/Checkbox';
 import FormEntry from '@/app/_ui/form/FormEntry';
 import Input from '@/app/_ui/Input';
