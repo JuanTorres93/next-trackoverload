@@ -24,6 +24,7 @@ import SpinnerMini from '@/app/_ui/SpinnerMini';
 import SectionHeading from '@/app/_ui/typography/SectionHeading';
 import { useState } from 'react';
 import ArrangedIngredientSearch from '@/app/_features/ingredient/ArrangedIngredientSearch';
+import ButtonDanger from '@/app/_ui/ButtonDanger';
 
 interface RecipeDisplayProps {
   recipe: RecipeDTO;
@@ -151,21 +152,19 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
             </p>
           </ButtonPrimary>
 
-          <ButtonPrimary
-            className="flex items-center gap-2 border-error! text-error! hover:bg-error! hover:text-text-light! hover:border-error! disabled:border-text-minor-emphasis! disabled:hover:bg-transparent! disabled:text-text-minor-emphasis!"
+          <ButtonDanger
             data-testid="delete-recipe-button"
             onClick={handleDeleteRecipe}
             disabled={buttonsDisabled}
           >
             {isDeletingRecipe && <SpinnerMini />}
             {!isDeletingRecipe && <HiOutlineTrash />}
+
             <p>
               Eliminar{' '}
-              <span className="max-bp-recipe-page-second:hidden">
-                ingredientes
-              </span>
+              <span className="max-bp-recipe-page-second:hidden">receta</span>
             </p>
-          </ButtonPrimary>
+          </ButtonDanger>
         </div>
 
         <SectionHeading>
