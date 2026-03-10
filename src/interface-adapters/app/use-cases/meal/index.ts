@@ -10,3 +10,4 @@ export { AppGetAllMealsInDayForUserUsecase } from './GetAllMealsInDayForUser/get
 export { AppUpdateMealUsecase } from './UpdateMeal/updateMeal';
 export { AppAddIngredientToMealUsecase } from './AddIngredientToMeal/addIngredientToMeal';
 export { AppRemoveIngredientFromMealUsecase } from './RemoveIngredientFromMeal/removeIngredientFromMeal';
+export { AppToggleIsEatenUsecase } from './ToggleIsEaten/toggleIsEaten';
