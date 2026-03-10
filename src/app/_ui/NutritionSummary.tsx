@@ -26,10 +26,12 @@ function NutritionSummary({
   isLoading?: boolean;
 }) {
   const isIngredientLine = 'ingredient' in line;
-  const defaultImageUrl = '/ingredient-no-picture.png';
+  const defaultImageUrlIngredient = '/ingredient-no-picture.png';
+  const defaultImageUrlRecipe = '/recipe-no-picture.png';
+
   const imageUrl = isIngredientLine
-    ? line.ingredient.imageUrl || defaultImageUrl
-    : line.imageUrl || defaultImageUrl;
+    ? line.ingredient.imageUrl || defaultImageUrlIngredient
+    : line.imageUrl || defaultImageUrlRecipe;
 
   const name = isIngredientLine ? line.ingredient.name : line.name;
   const quantity = isIngredientLine
