@@ -52,6 +52,26 @@ describe('Meal', () => {
         now.getTime(),
       );
     });
+
+    it('may have isEaten property', async () => {
+      const mealWithIsEaten = Meal.create({
+        ...validMealProps,
+        isEaten: true,
+      });
+
+      expect(mealWithIsEaten).toBeInstanceOf(Meal);
+
+      expect(mealWithIsEaten.isEaten).toBe(true);
+    });
+
+    it('should not throw error if trying to acces non-specified isEaten', async () => {
+      const mealWithoutIsEaten = Meal.create({
+        ...validMealProps,
+        isEaten: undefined,
+      });
+
+      expect(mealWithoutIsEaten.isEaten).toBeUndefined();
+    });
   });
 
   describe('Functionality', () => {

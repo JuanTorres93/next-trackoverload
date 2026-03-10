@@ -14,6 +14,7 @@ export type MealDTO = {
   protein: number;
   createdFromRecipeId: string;
   imageUrl?: string;
+  isEaten?: boolean;
   createdAt: string;
   updatedAt: string;
 };
@@ -28,6 +29,7 @@ export function toMealDTO(meal: Meal): MealDTO {
     protein: meal.protein,
     createdFromRecipeId: meal.createdFromRecipeId,
     imageUrl: meal.imageUrl,
+    isEaten: meal.isEaten,
     createdAt: meal.createdAt.toISOString(),
     updatedAt: meal.updatedAt.toISOString(),
   };
@@ -41,6 +43,7 @@ export function fromMealDTO(dto: MealDTO): Meal {
     ingredientLines: dto.ingredientLines.map(fromIngredientLineDTO),
     createdFromRecipeId: dto.createdFromRecipeId,
     imageUrl: dto.imageUrl,
+    isEaten: dto.isEaten,
     createdAt: new Date(dto.createdAt),
     updatedAt: new Date(dto.updatedAt),
   });

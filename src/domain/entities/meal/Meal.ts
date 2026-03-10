@@ -6,6 +6,7 @@ import { ValidationError } from '../../common/errors';
 import { Calories } from '../../interfaces/Calories';
 import { Protein } from '../../interfaces/Protein';
 import { IngredientLine } from '../ingredientline/IngredientLine';
+import { Bool } from '@/domain/value-objects/Boolean/Boolean';
 
 export type MealCreateProps = {
   id: string;
@@ -13,6 +14,7 @@ export type MealCreateProps = {
   name: string;
   ingredientLines: IngredientLine[];
   createdFromRecipeId: string;
+  isEaten?: boolean;
   imageUrl?: string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -28,6 +30,7 @@ export type MealProps = {
   name: Text;
   ingredientLines: IngredientLine[];
   createdFromRecipeId: Id;
+  isEaten?: Bool;
   imageUrl?: Text;
   createdAt: DomainDate;
   updatedAt: DomainDate;
@@ -58,6 +61,7 @@ export class Meal implements Calories, Protein {
       name: Text.create(props.name, nameTextOptions),
       ingredientLines: props.ingredientLines,
       createdFromRecipeId: Id.create(props.createdFromRecipeId),
+      isEaten: props.isEaten ? Bool.create(props.isEaten) : undefined,
       imageUrl: props.imageUrl ? Text.create(props.imageUrl) : undefined,
       createdAt: DomainDate.create(props.createdAt),
       updatedAt: DomainDate.create(props.updatedAt),
@@ -168,6 +172,10 @@ export class Meal implements Calories, Protein {
 
   get ingredientLines() {
     return [...this.props.ingredientLines];
+  }
+
+  get isEaten() {
+    return this.props.isEaten?.value;
   }
 
   get createdFromRecipeId() {
