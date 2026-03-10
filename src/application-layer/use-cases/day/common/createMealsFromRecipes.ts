@@ -28,6 +28,7 @@ export function createMealsFromRecipes(
       createdFromRecipeId: recipe.id,
       ingredientLines: mealIngredientLines,
       imageUrl: recipe.imageUrl,
+      isEaten: false,
     });
   });
 }
