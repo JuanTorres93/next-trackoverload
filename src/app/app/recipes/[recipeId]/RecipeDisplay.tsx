@@ -26,6 +26,7 @@ import { useState } from 'react';
 import ArrangedIngredientSearch from '@/app/_features/ingredient/ArrangedIngredientSearch';
 import ButtonDanger from '@/app/_ui/buttons/ButtonDanger';
 import ConfirmDelete from '@/app/_ui/ConfirmDeleteModal';
+import GridAutoCols from '@/app/_ui/GridAutoCols';
 
 interface RecipeDisplayProps {
   recipe: RecipeDTO;
@@ -186,9 +187,12 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
         </div>
 
         <div className="grid grid-cols-[1fr_min-content] gap-10 grid-rows-[min-content_1fr]">
-          <div
+          <GridAutoCols
             data-testid="ingredient-lines-container"
-            className="grid row-span-2 gap-4 grid-cols-[repeat(auto-fit,minmax(18rem,1fr))] auto-rows-min"
+            className="row-span-2 gap-4 auto-rows-min"
+            fitOrFill="fit"
+            min="18rem"
+            max="1fr"
           >
             {recipe.ingredientLines.map((line) => (
               <IngredientLineItem
@@ -200,7 +204,7 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
                 }
               />
             ))}
-          </div>
+          </GridAutoCols>
         </div>
 
         <Modal.Window name="add-ingredient-modal">

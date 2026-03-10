@@ -1,5 +1,6 @@
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import RecipeCard from './RecipeCard';
+import GridAutoCols from '@/app/_ui/GridAutoCols';
 
 function RecipesGrid({
   recipes,
@@ -16,8 +17,11 @@ function RecipesGrid({
   const { className, ...rest } = props;
 
   return (
-    <div
-      className={`grid grid-cols-[repeat(auto-fit,minmax(15rem,2rem))] gap-4 ${className}`}
+    <GridAutoCols
+      className={`gap-4 ${className}`}
+      fitOrFill="fit"
+      min="15rem"
+      max="2rem"
       {...rest}
     >
       {recipes.map((recipe) => (
@@ -29,7 +33,7 @@ function RecipesGrid({
           isSelected={selectedRecipesIds?.includes(recipe.id) ?? false}
         />
       ))}
-    </div>
+    </GridAutoCols>
   );
 }
 

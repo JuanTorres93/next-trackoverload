@@ -6,6 +6,7 @@ import WeekSelector from '@/app/_features/day/WeekSelector';
 import SelectRecipeModal from '@/app/_features/recipe/SelectRecipeModal';
 import ButtonNew from '@/app/_ui/buttons/ButtonNew';
 import ButtonPrimary from '@/app/_ui/buttons/ButtonPrimary';
+import GridAutoCols from '@/app/_ui/GridAutoCols';
 import Modal from '@/app/_ui/Modal';
 import { DayId } from '@/domain/value-objects/DayId/DayId';
 import { useEffect, useState } from 'react';
@@ -89,7 +90,12 @@ function MealsDisplay({
         </div>
       </div>
 
-      <div className="grid pl-1 mt-33 grid-cols-[repeat(auto-fill,minmax(5rem,20rem))] gap-4">
+      <GridAutoCols
+        className="gap-4 pl-1 mt-33"
+        fitOrFill="fill"
+        min="5rem"
+        max="20rem"
+      >
         {assembledDays.map(({ dayId, assembledDay }) => (
           <DaySummary
             key={dayId}
@@ -99,7 +105,7 @@ function MealsDisplay({
             isSelected={isDaySelected(dayId)}
           />
         ))}
-      </div>
+      </GridAutoCols>
 
       <Modal.Window name="add-food-to-days-modal">
         <SelectRecipeModal addMealsRequest={addMealsRequest} />
