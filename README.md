@@ -1,74 +1,107 @@
-# 💪 Next Trackoverload (provisional name)
+<h1>
+  <img src="./public/logo.svg" alt="Cimientos logo" width="34" /> 🧱 Cimientos
+</h1>
 
-A full-stack web application designed to help getting the body you want.
+Track the few things that actually matter if you want to change your body: calories, protein, and training.
 
-<!-- ## Demo / Screenshots -->
-<!--  -->
-<!-- Demo: currently not available. -->
+Live app: https://cimientos.app
 
-## 🌟 Why this project exists
+This is a full-stack TypeScript project I am building around a simple idea: most fitness apps ask for too much, show too much, and make consistency harder than it needs to be. I wanted the opposite. Something focused, fast, and opinionated.
 
-This project was created to implement the method that I follow to gain muscle and lose fat. It combines both exercise and nutrition in one user-focused app.
+## 🧱 What this project is
 
-- Ease of batch meal logging.
-- Tracking only important nutritional information.
-- Tracking of workout sessions.
+Cimientos is a nutrition-first fitness tracker built with Next.js and a Clean Architecture core.
 
-## 🔧 Problem it solves
+Right now, the app is centered on:
 
-Every nutrition app that I have used is cumbersome. They provide lots of irrelevant data and make the tracking process tedious. This app aims to make it easy.
+- user registration and login
+- weekly meal planning
+- recipe creation and management
+- ingredient search by name and barcode
+- a dashboard focused on the current day
 
-## 🏗️ Architecture
+There is also workout-related domain and application logic in the codebase, because I want food and training to live in the same product instead of pretending they are separate problems.
 
-The project follows Clean Architecture principles:
+## 🎯 Why I built it
 
-- **Domain**: entities, value objects, errors, service interfaces and repo interfaces.
-- **Application**: use cases and DTOs.
-- **Infrastructure**: implementation of the interfaces. Currently:
-  - Memory repos and image management.
-  - Filesystem repos and image management.
-  - (To come) Supabase repos and image management.
-  - Next.js app router.
-- **Interface-adapters**: Dependency injection of repos and services to Next.js app. It selects between Filesystem implementation for development and Memory implementation for integration testing.
+I care a lot about physical health, long-term progress, and tools that remove friction instead of adding it.
 
-## 🎩 Tech stack
+When I started taking nutrition seriously, I ran into the same problem over and over again: logging food was slow, noisy, and mentally expensive. Most apps felt like data warehouses. I do not want a data warehouse. I want a tool that helps me stay consistent.
 
-- Next.js (React)
-- (In the future) PostgreSQL powered by Supabase
-- Docker container for development.
+That is the idea behind this project.
 
-The stack was chosen for security and long-term maintainability.
+## ⚙️ What is interesting here from an engineering point of view
 
-## 🗝️ Key technical decisions.
+- Clean Architecture with clear boundaries between domain, application, infrastructure, and Next.js-specific code
+- domain rules enforced with value objects instead of scattering validation across the UI and API layer
+- framework-agnostic business logic that can be tested without booting the app
+- custom auth flow using JWT and bcrypt
+- MongoDB repositories for persistence
+- Cloudinary integration for image storage
+- OpenFoodFacts integration for ingredient lookup
+- image processing pipeline for uploads
+- broad automated test coverage across domain, application, UI, and infrastructure
 
-- Value Objects are used for data validation in domain entities.
-- No third party code is allowed in the application and domain layers.
-- Business and application rules throw errors.
-- Domain, application and presentation layers are fully testable without infrastructure.
-  - Some integration test will be needed when implementing external services, but they will be independent.
+This is not a toy repo where everything important lives in page components. The main effort is in keeping business logic explicit, isolated, and replaceable.
 
-## 🕵️ Testing
+## 🛠️ Current stack
 
-- Unit tests for domain layer.
-- Unit tests for application layer.
-- Integration tests for presentation layer.
+- Next.js 15
+- React 19
+- TypeScript
+- Tailwind CSS 4
+- MongoDB with Mongoose
+- Cloudinary
+- Vitest + Testing Library
+- ESLint
 
-## 👨‍🎓 What you can learn from this project
+## 🗂️ Project structure
 
-- How to structure a project using Clean Architecture
-- How to design value objects in TypeScript
-- How to avoid framework coupling
+```text
+src/
+  domain/               Core entities, value objects, repo contracts
+  application-layer/    Use cases and DTOs
+  infra/                Mongo, Cloudinary, auth, external services
+  interface-adapters/   Wiring from the app into the use cases
+  app/                  Next.js App Router UI and API routes
+```
 
-<!-- ## Running the project -->
-<!--  -->
-<!-- ``` -->
-<!-- npm install -->
-<!-- npm run dev -->
-<!-- ``` -->
+## 🚀 Running it locally
 
-## 🕺 About the author
+1. Install dependencies.
+2. Copy `env.env.example` into your local env file.
+3. Fill in MongoDB, Cloudinary, JWT, and OpenFoodFacts credentials.
+4. Start the dev server.
 
-I am a full-stack developer focused on clean design, maintainability and scalable software. I love growth, personal develpment and salsa dancing 😘.
+```bash
+npm install
+npm run dev
+```
+
+Useful scripts:
+
+```bash
+npm run test
+npm run test:watch
+npm run lint
+npm run build
+```
+
+## 🚧 Status
+
+This project is still in progress.
+
+The nutrition flow is the most mature part of the product today. Some broader ideas in the domain, especially around training, are already modelled in code but not fully exposed through the current UI yet.
+
+That is intentional. I prefer building the core properly before pretending the surface is finished.
+
+## 💼 Why this repo matters to me
+
+I built this project to practice the kind of software engineering I want to be hired for: clear architecture, strong validation, good tests, and product decisions that come from real use rather than feature inflation.
+
+If you are hiring for full-stack TypeScript work and you care about maintainability, separation of concerns, and shipping with intent, this repo is a good representation of how I think.
+
+## 🤝 Contact
 
 - Website: https://www.juantorres.me/
 - LinkedIn: https://www.linkedin.com/in/juantorresnavarro/
