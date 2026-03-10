@@ -7,6 +7,7 @@ import MealReminder from '../_features/meal/MealReminder';
 import GridAutoCols from '../_ui/GridAutoCols';
 import SectionHeading from '../_ui/typography/SectionHeading';
 import ButtonPrimary from '../_ui/buttons/ButtonPrimary';
+import EatenMealsNutritionTracker from '../_features/meal/EatenMealsNutritionTracker';
 
 export const metadata = {
   title: 'Dashboard',
@@ -27,11 +28,20 @@ export default async function Dashboard() {
       </SectionHeading>
 
       {todayHasMeals && (
-        <GridAutoCols className="gap-4" fitOrFill="fill" min="18rem" max="1fr">
-          {mealsForToday.map((meal) => (
-            <MealReminder key={meal.id} meal={meal} />
-          ))}
-        </GridAutoCols>
+        <div className="flex flex-col gap-4">
+          <EatenMealsNutritionTracker meals={mealsForToday} />
+
+          <GridAutoCols
+            className="gap-4"
+            fitOrFill="fill"
+            min="18rem"
+            max="1fr"
+          >
+            {mealsForToday.map((meal) => (
+              <MealReminder key={meal.id} meal={meal} />
+            ))}
+          </GridAutoCols>
+        </div>
       )}
 
       {!todayHasMeals && (
