@@ -129,6 +129,11 @@ export class Meal implements Calories, Protein {
     this.props.updatedAt = DomainDate.create();
   }
 
+  toggleIsEaten(): void {
+    this.props.isEaten = Bool.create(!this.isEaten);
+    this.props.updatedAt = DomainDate.create();
+  }
+
   toCreateProps(): MealCreateProps {
     return {
       id: this.props.id.value,

@@ -178,6 +178,20 @@ describe('Meal', () => {
         meal.removeIngredientLineByIngredientId(ingredientIdToRemove),
       ).toThrow(/Meal:.*At least one.*ingredient.*line.*exist/i);
     });
+
+    it('should toggle isEaten', async () => {
+      const newMeal = Meal.create({
+        ...validMealProps,
+      });
+
+      expect(newMeal.isEaten).toBeUndefined();
+
+      newMeal.toggleIsEaten();
+      expect(newMeal.isEaten).toBe(true);
+
+      newMeal.toggleIsEaten();
+      expect(newMeal.isEaten).toBe(false);
+    });
   });
 
   describe('Errors', () => {
