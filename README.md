@@ -1,5 +1,5 @@
 <h1>
-  <img src="./public/logo.svg" alt="Cimientos logo" width="34" /> 🧱 Cimientos
+  <img src="./public/logo.svg" alt="Cimientos logo" width="34" /> Cimientos
 </h1>
 
 Track the few things that actually matter if you want to change your body: calories, protein, and training.
