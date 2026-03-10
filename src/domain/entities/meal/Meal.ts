@@ -141,6 +141,7 @@ export class Meal implements Calories, Protein {
       name: this.props.name.value,
       ingredientLines: this.props.ingredientLines,
       createdFromRecipeId: this.props.createdFromRecipeId.value,
+      isEaten: this.props.isEaten?.value,
       imageUrl: this.props.imageUrl?.value,
       createdAt: this.props.createdAt.value,
       updatedAt: this.props.updatedAt.value,

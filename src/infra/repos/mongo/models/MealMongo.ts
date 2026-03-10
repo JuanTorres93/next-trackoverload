@@ -21,6 +21,10 @@ const mealSchema = new mongoose.Schema<MealCreateProps>({
     type: String,
     required: true,
   },
+  isEaten: {
+    type: Boolean,
+    required: false,
+  },
   imageUrl: {
     type: String,
     required: false,
