@@ -8,7 +8,7 @@ function SectionHeading({
 
   return (
     <div
-      className={`pb-3 mb-6 text-4xl font-bold ${className || ''}`}
+      className={`pb-3 mb-6 text-4xl font-bold max-bp-navbar-mobile:text-center ${className || ''}`}
       {...rest}
     >
       {children}
