@@ -31,10 +31,7 @@ async function NavBar({ ...props }: React.HTMLAttributes<HTMLElement>) {
 
       <div></div>
 
-      {/* TODO IMPORTANT: change to /app once dashboard is implemented */}
-      {isLoggedIn && (
-        <ButtonPrimary href="/app/recipes">Ir a la app</ButtonPrimary>
-      )}
+      {isLoggedIn && <ButtonPrimary href="/app">Ir a la app</ButtonPrimary>}
       {!isLoggedIn && (
         <div className="grid gap-4 grid-cols-[max-content_min-content] max-bp-marketing-navbar-mobile:gap-2">
           <ButtonPrimary

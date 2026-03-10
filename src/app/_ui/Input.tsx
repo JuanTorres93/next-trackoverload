@@ -22,6 +22,7 @@ function Input({
         disabled={disabled}
         {...rest}
       />
+
       {children}
     </TextRegular>
   );

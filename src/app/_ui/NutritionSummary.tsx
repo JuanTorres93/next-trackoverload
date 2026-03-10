@@ -44,7 +44,7 @@ function NutritionSummary({
     <LoggedMealContainer className={className}>
       {isLoading && <LoadingOverlay />}
 
-      <div className="grid grid-cols-[40px_1fr_5rem_min-content] p-2  gap-4 items-center bg-surface-card">
+      <div className="grid grid-cols-[40px_1fr_max-content_min-content] p-2 gap-4 items-center bg-surface-card">
         <div className="relative h-12 overflow-hidden rounded-md aspect-square">
           <Image
             fill
@@ -54,20 +54,20 @@ function NutritionSummary({
           />
         </div>
 
-        <span className="font-semibold">{name}</span>
+        <span className="font-semibold hyphens-auto">{name}</span>
 
         <div className="relative flex items-center text-text-minor-emphasis">
           {onQuantityChange && (
             <Input
               className={quantityStyle}
               disabled={isDisabled}
-              containerClassName="border-0"
+              containerClassName="border-0 gap-2"
               type="number"
               defaultValue={quantity}
               onChange={(e) => onQuantityChange(Number(e.target.value))}
               placeholder="gramos"
             >
-              <span className="ml-1">g</span>
+              <span>g</span>
             </Input>
           )}
 
