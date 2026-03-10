@@ -7,8 +7,11 @@ import { toggleIsEaten } from './actions';
 import { useState } from 'react';
 import { showErrorToast } from '@/app/_ui/showErrorToast';
 import LoadingOverlay from '../common/LoadingOverlay';
+import { useRouter } from 'next/navigation';
 
 function MealReminder({ meal }: { meal: MealDTO }) {
+  const router = useRouter();
+
   const [isTogglingEaten, setIsTogglingEaten] = useState(false);
 
   const defaultImageUrl = '/recipe-no-picture.png';
@@ -20,6 +23,8 @@ function MealReminder({ meal }: { meal: MealDTO }) {
 
     try {
       await toggleIsEaten(meal.id);
+
+      router.refresh();
     } catch {
       showErrorToast(
         'No se ha podido marcar la comida como "' +
