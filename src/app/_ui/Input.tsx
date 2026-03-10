@@ -15,7 +15,7 @@ function Input({
 
   return (
     <TextRegular
-      className={`flex items-center justify-start border border-border py-1 px-4 rounded-lg bg-input-background text-input-text ${disabled ? disabledStyle : ''} ${containerClassName}`}
+      className={`flex items-center min-w-22 justify-start border border-border py-1 px-4 rounded-lg bg-input-background text-input-text ${disabled ? disabledStyle : ''} ${containerClassName}`}
     >
       <input
         className={`outline-none w-full disabled:cursor-not-allowed disabled:text-text-minor-emphasis! ${className ?? ''}`}

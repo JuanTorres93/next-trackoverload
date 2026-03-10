@@ -34,6 +34,7 @@ function NutritionSummary({
     : line.imageUrl || defaultImageUrlRecipe;
 
   const name = isIngredientLine ? line.ingredient.name : line.name;
+
   const quantity = isIngredientLine
     ? line.quantityInGrams
     : line.ingredientLines.reduce((sum, il) => sum + il.quantityInGrams, 0);
@@ -44,7 +45,7 @@ function NutritionSummary({
     <LoggedMealContainer className={className}>
       {isLoading && <LoadingOverlay />}
 
-      <div className="grid grid-cols-[40px_1fr_max-content_min-content] p-2 gap-4 items-center bg-surface-card">
+      <div className="grid grid-cols-[40px_1fr_min-content_min-content] p-2 gap-4 items-center bg-surface-card">
         <div className="relative h-12 overflow-hidden rounded-md aspect-square">
           <Image
             fill
@@ -72,7 +73,10 @@ function NutritionSummary({
           )}
 
           {!onQuantityChange && (
-            <span className={quantityStyle}>{quantity} g</span>
+            <span className={`flex gap-1 ${quantityStyle}`}>
+              <span>{quantity}</span>
+              <span>g</span>
+            </span>
           )}
         </div>
 
