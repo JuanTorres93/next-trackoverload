@@ -53,7 +53,7 @@ export default async function Dashboard() {
         <ButtonPrimary href="/app/meals">¡Añádelas!</ButtonPrimary>
       )}
 
-      <WeightTracker days={daysHistory} />
+      {/* <WeightTracker days={daysHistory} /> */}
     </PageWrapper>
   );
 }
