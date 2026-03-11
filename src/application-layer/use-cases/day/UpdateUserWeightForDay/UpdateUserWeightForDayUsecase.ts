@@ -1,7 +1,10 @@
 import { DayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
 import { NotFoundError } from '@/domain/common/errors';
+import { Day } from '@/domain/entities/day/Day';
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { UsersRepo } from '@/domain/repos/UsersRepo.port';
+import { dayIdToDayMonthYear } from '@/domain/value-objects/DayId/DayId';
+import { createDayNoSaveInRepo } from '../common/createDayNoSaveInRepo';
 
 export type UpdateUserWeightForDayUsecaseRequest = {
   userId: string;
@@ -25,20 +28,31 @@ export class UpdateUserWeightForDayUsecase {
       );
     }
 
-    const day = await this.daysRepo.getDayByIdAndUserId(
+    let dayToChangeWeight: Day | null = await this.daysRepo.getDayByIdAndUserId(
       request.dayId,
       request.userId,
     );
-    if (!day) {
-      throw new NotFoundError(
-        `UpdateUserWeightForDayUsecase: Day not found for dayId ${request.dayId} and userId ${request.userId}`,
+
+    if (!dayToChangeWeight) {
+      const { day, month, year } = dayIdToDayMonthYear(request.dayId);
+
+      dayToChangeWeight = await createDayNoSaveInRepo(
+        this.usersRepo,
+        this.daysRepo,
+        {
+          day,
+          month,
+          year,
+          actorUserId: request.userId,
+          targetUserId: request.userId,
+        },
       );
     }
 
-    day.updateUserWeightInKg(request.newWeightInKg);
+    dayToChangeWeight.updateUserWeightInKg(request.newWeightInKg);
 
-    await this.daysRepo.saveDay(day);
+    await this.daysRepo.saveDay(dayToChangeWeight);
 
-    return toDayDTO(day);
+    return toDayDTO(dayToChangeWeight);
   }
 }

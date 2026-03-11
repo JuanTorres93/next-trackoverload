@@ -53,7 +53,9 @@ describe('UpdateUserWeightForDayUsecase', () => {
 
       expect(result.userWeightInKg).toBe(80);
     });
+  });
 
+  describe('Side effects', () => {
     it('should persist the updated weight in the repo', async () => {
       await usecase.execute({
         dayId: day.id,
@@ -66,6 +68,28 @@ describe('UpdateUserWeightForDayUsecase', () => {
         userTestProps.userId,
       );
       expect(updatedDay!.userWeightInKg).toBe(90);
+    });
+
+    it('should create a new day if it does not exist', async () => {
+      const initialDayCount = daysRepo.countForTesting();
+
+      await usecase.execute({
+        dayId: '19900101',
+        userId: userTestProps.userId,
+        newWeightInKg: 70,
+      });
+
+      expect(daysRepo.countForTesting()).toBe(initialDayCount + 1);
+    });
+
+    it('should set weight on newly created day', async () => {
+      const result = await usecase.execute({
+        dayId: '19900102',
+        userId: userTestProps.userId,
+        newWeightInKg: 70,
+      });
+
+      expect(result.userWeightInKg).toBe(70);
     });
   });
 
@@ -86,48 +110,6 @@ describe('UpdateUserWeightForDayUsecase', () => {
           newWeightInKg: 75,
         }),
       ).rejects.toThrow(/UpdateUserWeightForDayUsecase.*User.*not found/);
-    });
-
-    it('should throw NotFoundError if day does not exist', async () => {
-      await expect(
-        usecase.execute({
-          dayId: 'non-existent-day',
-          userId: userTestProps.userId,
-          newWeightInKg: 75,
-        }),
-      ).rejects.toThrow(NotFoundError);
-
-      await expect(
-        usecase.execute({
-          dayId: 'non-existent-day',
-          userId: userTestProps.userId,
-          newWeightInKg: 75,
-        }),
-      ).rejects.toThrow(/UpdateUserWeightForDayUsecase.*Day not found/);
-    });
-
-    it("should throw NotFoundError when updating another user's day", async () => {
-      const anotherUser = userTestProps.createTestUser({
-        id: 'another-user-id',
-        email: 'another@example.com',
-      });
-      await usersRepo.saveUser(anotherUser);
-
-      await expect(
-        usecase.execute({
-          dayId: day.id,
-          userId: anotherUser.id,
-          newWeightInKg: 75,
-        }),
-      ).rejects.toThrow(NotFoundError);
-
-      await expect(
-        usecase.execute({
-          dayId: day.id,
-          userId: anotherUser.id,
-          newWeightInKg: 75,
-        }),
-      ).rejects.toThrow(/UpdateUserWeightForDayUsecase.*Day not found/);
     });
   });
 });
