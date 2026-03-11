@@ -38,7 +38,7 @@ function MealReminder({ meal }: { meal: MealDTO }) {
 
   return (
     <div
-      className={`grid relative grid-cols-[5rem_1fr] bg-surface-card shadow-sm p-2 rounded-xl overflow-hidden items-center gap-4 max-bp-navbar-mobile:grid-cols-[4rem_1fr] transition ${meal.isEaten ? 'bg-primary! text-text-light shadow-xs! scale-97' : ''}`}
+      className={`grid relative grid-cols-[5rem_1fr] bg-surface-card shadow-sm p-2 rounded-xl overflow-hidden items-center gap-4 hover:scale-102 cursor-pointer max-bp-navbar-mobile:grid-cols-[4rem_1fr] transition ${meal.isEaten ? 'bg-primary! text-text-light shadow-xs! scale-97!' : ''}`}
       onClick={handleToggleIsEaten}
     >
       {isTogglingEaten && <LoadingOverlay />}
