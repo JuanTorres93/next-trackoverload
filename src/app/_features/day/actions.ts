@@ -3,6 +3,7 @@ import { AssembledDayDTO } from '@/application-layer/dtos/DayDTO';
 import { AppGetAssembledDayById } from '@/interface-adapters/app/use-cases/day';
 import { AppGetMultipleAssembledDaysByIds } from '@/interface-adapters/app/use-cases/day';
 import { AppRemoveMealFromDayUsecase } from '@/interface-adapters/app/use-cases/day';
+import { AppUpdateUserWeightForDayUsecase } from '@/interface-adapters/app/use-cases/day';
 import { revalidatePath } from 'next/cache';
 import { getCurrentUserId } from '@/app/_utils/auth/getCurrentUserId';
 
@@ -57,4 +58,17 @@ export async function removeMealFromDay(
   });
 
   revalidatePath(`/app/meals`);
+}
+
+export async function updateUserWeightForDay(
+  dayId: string,
+  newWeightInKg: number,
+): Promise<void> {
+  await AppUpdateUserWeightForDayUsecase.execute({
+    dayId,
+    userId: await getCurrentUserId(),
+    newWeightInKg,
+  });
+
+  revalidatePath(`/app`);
 }
