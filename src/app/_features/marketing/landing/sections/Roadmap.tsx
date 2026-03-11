@@ -101,7 +101,7 @@ export default function Roadmap() {
           <RoadmapItem
             icon={<FaChartLine />}
             title="Seguimiento de progreso"
-            description="Gráficas de evolución, fotos de progreso, y métricas de fuerza."
+            description="Gráficas de evolución."
             status="upcoming"
           />
         </div>
