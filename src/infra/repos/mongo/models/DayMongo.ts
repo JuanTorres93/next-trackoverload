@@ -33,6 +33,10 @@ const daySchema = new mongoose.Schema<DayMongoProps>({
     required: true,
     default: [],
   },
+  userWeightInKg: {
+    type: Number,
+    required: false,
+  },
   createdAt: {
     type: Date,
     required: true,

@@ -9,6 +9,7 @@ export type DayDTO = {
   mealIds: string[];
   fakeMealIds: string[];
   createdAt: string;
+  userWeightInKg?: number;
   day: number;
   month: number;
   year: number;
@@ -27,6 +28,7 @@ export function toDayDTO(day: Day): DayDTO {
     userId: day.userId,
     mealIds: [...day.mealIds],
     fakeMealIds: [...day.fakeMealIds],
+    userWeightInKg: day.userWeightInKg,
     day: day.day,
     month: day.month,
     year: day.year,
@@ -38,6 +40,7 @@ export function toDayDTO(day: Day): DayDTO {
 export function fromDayDTO(dto: DayDTO): Day {
   const day = Day.create({
     ...dayIdToDayMonthYear(dto.id),
+    userWeightInKg: dto.userWeightInKg,
     userId: dto.userId,
     createdAt: new Date(dto.createdAt),
     updatedAt: new Date(dto.updatedAt),

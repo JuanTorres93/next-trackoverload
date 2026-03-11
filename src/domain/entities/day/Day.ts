@@ -2,12 +2,14 @@ import { DayId } from '@/domain/value-objects/DayId/DayId';
 import { DomainDate } from '@/domain/value-objects/DomainDate/DomainDate';
 import { Id } from '@/domain/value-objects/Id/Id';
 import { ValidationError } from '../../common/errors';
+import { WeightInKg } from '@/domain/value-objects/WeightInKg/WeightInKg';
 
 export type DayCreateProps = {
   day: number;
   month: number;
   year: number;
   userId: string;
+  userWeightInKg?: number;
   createdAt?: Date;
   updatedAt?: Date;
 };
@@ -17,6 +19,7 @@ export type DayProps = {
   userId: Id;
   mealIds: Id[];
   fakeMealIds: Id[];
+  userWeightInKg?: WeightInKg;
   createdAt: DomainDate;
   updatedAt: DomainDate;
 };
@@ -34,6 +37,9 @@ export class Day {
       userId: Id.create(props.userId),
       mealIds: [],
       fakeMealIds: [],
+      userWeightInKg: props.userWeightInKg
+        ? WeightInKg.create(props.userWeightInKg)
+        : undefined,
       createdAt: DomainDate.create(props.createdAt),
       updatedAt: DomainDate.create(props.updatedAt),
     };
@@ -141,6 +147,10 @@ export class Day {
 
   get fakeMealIds() {
     return this.props.fakeMealIds?.map((id) => id.value);
+  }
+
+  get userWeightInKg() {
+    return this.props.userWeightInKg?.value;
   }
 
   get createdAt() {

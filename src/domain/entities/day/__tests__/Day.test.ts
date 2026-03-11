@@ -37,6 +37,16 @@ describe('Day', () => {
         now.getTime(),
       );
     });
+
+    it('may have userWeightInKg property', async () => {
+      const dayWithWeight = Day.create({
+        ...dayTestProps.validDayProps(),
+        userWeightInKg: 75,
+      });
+
+      expect(dayWithWeight).toHaveProperty('userWeightInKg');
+      expect(dayWithWeight.userWeightInKg).toBe(75);
+    });
   });
 
   describe('meal management', () => {
