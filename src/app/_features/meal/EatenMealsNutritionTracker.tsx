@@ -17,6 +17,8 @@ function EatenMealsNutritionTracker({ meals }: { meals: MealDTO[] }) {
     eatenMeals.reduce((acc, meal) => acc + meal.protein, 0),
   );
 
+  const allMealsAreEaten = eatenMeals.length === meals.length;
+
   if (eatenMeals.length === 0) {
     return (
       <div className="p-4 rounded bg-info/30">
@@ -26,39 +28,76 @@ function EatenMealsNutritionTracker({ meals }: { meals: MealDTO[] }) {
   }
 
   return (
-    <div className="p-4 border shadow-sm rounded-xl bg-surface-card border-border/30">
-      <div className="grid grid-cols-2 gap-6">
-        <div className="flex flex-col">
-          <span className="text-xs tracking-wide uppercase text-text-minor-emphasis">
-            Calorías
-          </span>
+    <div className="overflow-hidden border shadow-sm rounded-xl bg-surface-card border-border/30">
+      <div className="grid grid-cols-[1fr_min-content_1fr]">
+        <NutrientStat
+          label="Calorías"
+          eaten={eatenCalories}
+          total={totalCalories}
+          isCompleted={allMealsAreEaten}
+          valueClassName="text-primary"
+        />
 
-          <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-semibold text-primary">
-              {eatenCalories}
-            </span>
-
-            <span className="text-sm text-text-minor-emphasis">
-              / {totalCalories}
-            </span>
-          </div>
+        {/* vertical line separator */}
+        <div
+          className={`flex items-center justify-center bg-surface-card ${allMealsAreEaten ? 'bg-primary!' : ''}`}
+        >
+          <div
+            className={`border-l border-border/50 h-[60%]  ${allMealsAreEaten ? 'border-text-light/50!' : ''}`}
+          ></div>
         </div>
 
-        <div className="flex flex-col pl-6 border-l border-border/40">
-          <span className="text-xs tracking-wide uppercase text-text-minor-emphasis">
-            Proteína
-          </span>
+        <NutrientStat
+          label="Proteína"
+          eaten={eatenProtein}
+          total={totalProtein}
+          isCompleted={allMealsAreEaten}
+          unit="g"
+        />
+      </div>
+    </div>
+  );
+}
 
-          <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-semibold text-text">
-              {eatenProtein}g
-            </span>
+function NutrientStat({
+  label,
+  eaten,
+  total,
+  isCompleted,
+  unit = '',
+  className = '',
+  valueClassName = 'text-text',
+}: {
+  label: string;
+  eaten: number;
+  total: number;
+  isCompleted: boolean;
+  unit?: string;
+  className?: string;
+  valueClassName?: string;
+}) {
+  return (
+    <div
+      className={`flex p-4 flex-col  text-text-minor-emphasis ${
+        isCompleted && 'bg-primary text-text-light!'
+      } ${className}`}
+    >
+      <span className="text-xs tracking-wide uppercase">{label}</span>
 
-            <span className="text-sm text-text-minor-emphasis">
-              / {totalProtein}g
-            </span>
-          </div>
-        </div>
+      <div className="flex items-baseline gap-1">
+        <span
+          className={`text-2xl font-semibold ${valueClassName} ${
+            isCompleted && 'text-text-light!'
+          }`}
+        >
+          {eaten}
+          {unit}
+        </span>
+
+        <span className="text-sm">
+          / {total}
+          {unit}
+        </span>
       </div>
     </div>
   );
