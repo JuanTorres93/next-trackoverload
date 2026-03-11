@@ -161,7 +161,7 @@ describe('WorkoutLine', () => {
         ...validWorkoutLineProps,
         weightInKg: -20,
       });
-    }).toThrowError(/Float.*be positive/);
+    }).toThrowError(/Float.*positive/);
   });
 
   it('can update setNumber', async () => {

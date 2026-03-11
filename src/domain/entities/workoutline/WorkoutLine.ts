@@ -1,7 +1,7 @@
 import { DomainDate } from '@/domain/value-objects/DomainDate/DomainDate';
-import { Float } from '@/domain/value-objects/Float/Float';
 import { Id } from '@/domain/value-objects/Id/Id';
 import { Integer } from '@/domain/value-objects/Integer/Integer';
+import { WeightInKg } from '@/domain/value-objects/WeightInKg/WeightInKg';
 
 export type WorkoutLineCreateProps = {
   id: string;
@@ -26,7 +26,7 @@ export type WorkoutLineProps = {
   exerciseId: Id;
   setNumber: Integer;
   reps: Integer;
-  weightInKg: Float;
+  weightInKg: WeightInKg;
   createdAt: DomainDate;
   updatedAt: DomainDate;
 };
@@ -40,10 +40,6 @@ const repsIntegerOptions = {
   onlyPositive: true,
 };
 
-const weightFloatOptions = {
-  onlyPositive: true,
-};
-
 export class WorkoutLine {
   private constructor(private readonly props: WorkoutLineProps) {}
 
@@ -54,7 +50,7 @@ export class WorkoutLine {
       exerciseId: Id.create(props.exerciseId),
       setNumber: Integer.create(props.setNumber, setNumberIntegerOptions),
       reps: Integer.create(props.reps, repsIntegerOptions),
-      weightInKg: Float.create(props.weightInKg, weightFloatOptions),
+      weightInKg: WeightInKg.create(props.weightInKg),
       createdAt: DomainDate.create(props.createdAt),
       updatedAt: DomainDate.create(props.updatedAt),
     };
@@ -73,10 +69,7 @@ export class WorkoutLine {
       this.props.reps = Integer.create(patch.reps, repsIntegerOptions);
     }
     if (patch.weightInKg !== undefined) {
-      this.props.weightInKg = Float.create(
-        patch.weightInKg,
-        weightFloatOptions,
-      );
+      this.props.weightInKg = WeightInKg.create(patch.weightInKg);
     }
     this.props.updatedAt = DomainDate.create();
   }
