@@ -1,6 +1,8 @@
 'use server';
 import { AssembledDayDTO } from '@/application-layer/dtos/DayDTO';
+import { DayEntry } from '@/application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase';
 import { AppGetAssembledDayById } from '@/interface-adapters/app/use-cases/day';
+import { AppGetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays } from '@/interface-adapters/app/use-cases/day';
 import { AppGetMultipleAssembledDaysByIds } from '@/interface-adapters/app/use-cases/day';
 import { AppRemoveMealFromDayUsecase } from '@/interface-adapters/app/use-cases/day';
 import { AppUpdateUserWeightForDayUsecase } from '@/interface-adapters/app/use-cases/day';
@@ -71,4 +73,13 @@ export async function updateUserWeightForDay(
   });
 
   revalidatePath(`/app`);
+}
+
+export async function getLastNumberOfDaysIncludingToday(
+  numberOfDays: number,
+): Promise<DayEntry[]> {
+  return AppGetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays.execute({
+    numberOfDays,
+    userId: await getCurrentUserId(),
+  });
 }

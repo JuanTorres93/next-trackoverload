@@ -9,6 +9,7 @@ export { AppCreateDayUsecase } from './CreateDay/createDay';
 export { AppGetDayByIdUsecase } from './GetDayById/getDayById';
 export { AppGetAssembledDayById } from './GetAssembledDayById/getAssembledDayById';
 export { AppGetMultipleAssembledDaysByIds } from './GetMultipleAssembledDaysByIds/getMultipleAssembledDaysByIds';
+export { AppGetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays } from './GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/getLastNumberOfDaysForUserIncludingTodayAndNonExistentDays';
 
 // UPDATE Operations
 export { AppAddMultipleMealsToDayUsecase } from './AddMultipleMealsToDay/addMultipleMealsToDay';
