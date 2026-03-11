@@ -109,12 +109,19 @@ export class Day {
     this.props.updatedAt = DomainDate.create(new Date());
   }
 
+  updateUserWeightInKg(newWeightInKg: number): void {
+    this.props.userWeightInKg = WeightInKg.create(newWeightInKg);
+
+    this.props.updatedAt = DomainDate.create(new Date());
+  }
+
   toCreateProps(): DayCreateProps {
     return {
       day: this.day,
       month: this.month,
       year: this.year,
       userId: this.userId,
+      userWeightInKg: this.userWeightInKg,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
     };

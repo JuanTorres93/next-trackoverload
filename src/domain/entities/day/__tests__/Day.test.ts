@@ -150,4 +150,24 @@ describe('Day', () => {
       );
     });
   });
+
+  describe('weight management', () => {
+    let dayWithWeight: Day;
+    const USER_WEIGHT = 80;
+
+    beforeEach(() => {
+      dayWithWeight = Day.create({
+        ...dayTestProps.validDayProps(),
+        userWeightInKg: USER_WEIGHT,
+      });
+    });
+
+    it('should update weight', async () => {
+      expect(dayWithWeight.userWeightInKg).toBe(USER_WEIGHT);
+
+      dayWithWeight.updateUserWeightInKg(85);
+
+      expect(dayWithWeight.userWeightInKg).toBe(85);
+    });
+  });
 });
