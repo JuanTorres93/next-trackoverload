@@ -8,6 +8,8 @@ import GridAutoCols from '../_ui/GridAutoCols';
 import SectionHeading from '../_ui/typography/SectionHeading';
 import ButtonPrimary from '../_ui/buttons/ButtonPrimary';
 import EatenMealsNutritionTracker from '../_features/meal/EatenMealsNutritionTracker';
+import WeightTracker from '../_features/weight/WeightTracker';
+import { getLastNumberOfDaysIncludingToday } from '../_features/day/actions';
 
 export const metadata = {
   title: 'Dashboard',
@@ -17,6 +19,9 @@ export const metadata = {
 export default async function Dashboard() {
   const todayId = dateToDayId(new Date());
   const mealsForToday: MealDTO[] = await getAllMealsInDayForUser(todayId.value);
+
+  // TODO IMPORTANT: allow user to configure days, maybe with a URL query param like ?days=14 or something like that
+  const daysHistory = await getLastNumberOfDaysIncludingToday(7);
 
   const todayHasMeals = mealsForToday.length > 0;
 
@@ -47,6 +52,8 @@ export default async function Dashboard() {
       {!todayHasMeals && (
         <ButtonPrimary href="/app/meals">¡Añádelas!</ButtonPrimary>
       )}
+
+      <WeightTracker days={daysHistory} />
     </PageWrapper>
   );
 }
