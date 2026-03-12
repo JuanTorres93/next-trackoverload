@@ -54,7 +54,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      // Apple PWA: Set background color for the splash screen and when the app is launched
+      style={{ backgroundColor: '#fafafa' }}
+    >
       <body
         className={`${inter.className} antialiased overflow-y-scroll text-text bg-background`}
       >
