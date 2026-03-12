@@ -78,8 +78,10 @@ export async function updateUserWeightForDay(
 export async function getLastNumberOfDaysIncludingToday(
   numberOfDays: number,
 ): Promise<DayEntry[]> {
-  return AppGetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays.execute({
-    numberOfDays,
-    userId: await getCurrentUserId(),
-  });
+  return await AppGetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays.execute(
+    {
+      numberOfDays,
+      userId: await getCurrentUserId(),
+    },
+  );
 }

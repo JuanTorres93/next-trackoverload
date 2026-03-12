@@ -1,16 +1,38 @@
+'use client';
+
+import Input from '@/app/_ui/Input';
 import { DayEntry } from '@/application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase';
 
+import { updateUserWeightForDay } from '../day/actions';
+import { useDebounce } from '@/app/_hooks/useDebounce';
+
 function WeightTracker({ days }: { days: DayEntry[] }) {
+  const lastDay = days[days.length - 1];
+
   return (
     <div>
-      <WeightInput />
+      <WeightInput lastDay={lastDay} />
       <WeightHistory />
     </div>
   );
 }
 
-function WeightInput() {
-  return <div>Input peso</div>;
+function WeightInput({ lastDay }: { lastDay: DayEntry }) {
+  const debouncedHandleWeightChange = useDebounce(handleWeightChange, 250);
+
+  function handleWeightChange(newWeight: string) {
+    updateUserWeightForDay(lastDay.date, Number(newWeight));
+  }
+
+  return (
+    <Input
+      placeholder="Tu peso hoy"
+      defaultValue={lastDay.day?.userWeightInKg}
+      onChange={(e) => debouncedHandleWeightChange(e.target.value)}
+    >
+      <span>kg</span>
+    </Input>
+  );
 }
 
 function WeightHistory() {
