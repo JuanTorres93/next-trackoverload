@@ -22,6 +22,7 @@ import {
   useEffect,
   useState,
 } from 'react';
+import { extractCssVariable } from '../_common/extractCssVariableFromGlobalsCssFile';
 import LogoutButton from '../_features/auth/LogoutButton';
 import { useScreenResize } from '../_hooks/useScreenResize';
 import Logo from './Logo';
@@ -63,13 +64,9 @@ function SideNav({ children }: { children: React.ReactNode }) {
 
   // Read from the single source of truth: --breakpoint-bp-navbar-mobile in globals.css
   const getNavbarMobileBreakpoint = useCallback((): number => {
-    if (typeof window === 'undefined') return 0;
+    const raw = extractCssVariable('--breakpoint-bp-navbar-mobile');
 
-    const raw = getComputedStyle(document.documentElement)
-      .getPropertyValue('--breakpoint-bp-navbar-mobile')
-      .trim();
-
-    return parseInt(raw, 10);
+    return raw ? parseInt(raw, 10) : 0;
   }, []);
 
   useScreenResize(getNavbarMobileBreakpoint(), (width) => {
