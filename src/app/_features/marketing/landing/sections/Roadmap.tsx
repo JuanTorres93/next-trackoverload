@@ -86,7 +86,7 @@ export default function Roadmap() {
             icon={<FaWeight />}
             title="Seguimiento de peso"
             description="Registro y seguimiento de tu peso a lo largo del tiempo."
-            status="upcoming"
+            status="current"
           />
 
           {/* Entrenamientos - Próximamente */}
