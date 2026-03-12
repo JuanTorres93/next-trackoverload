@@ -26,11 +26,14 @@ function WeightInput({ lastDay }: { lastDay: DayEntry }) {
 
   return (
     <Input
+      containerClassName="border-0 bg-background gap-2 items-end"
+      className="text-3xl text-right"
       placeholder="Tu peso hoy"
       defaultValue={lastDay.day?.userWeightInKg}
       onChange={(e) => debouncedHandleWeightChange(e.target.value)}
+      disabled={false}
     >
-      <span>kg</span>
+      <span className="mb-1 text-sm text-text-minor-emphasis ">kg</span>
     </Input>
   );
 }
