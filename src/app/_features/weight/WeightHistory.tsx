@@ -1,5 +1,6 @@
 'use client';
 
+import InfoBox from '@/app/_ui/InfoBox';
 import { DayEntry } from '@/application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase';
 import { dayIdToDayMonthYear } from '@/domain/value-objects/DayId/DayId';
 import {
@@ -19,7 +20,21 @@ const NEUTRAL_COLOR = '#9ca3af';
 function WeightHistory({ days }: { days: DayEntry[] }) {
   const data = processWeightHistoryForChart(days);
 
-  if (data.length < 2) return null;
+  if (data.length < 2) {
+    const remainingDays = 2 - data.length;
+    const isPlural = remainingDays > 1;
+
+    return (
+      <InfoBox>
+        <span>
+          Registra tu peso durante al menos 2 días para ver la evolución aquí
+        </span>{' '}
+        <span>
+          (Te queda {remainingDays} {isPlural ? 'días' : 'día'}).
+        </span>
+      </InfoBox>
+    );
+  }
 
   return (
     <ResponsiveContainer className="text-primary" width="100%" height={180}>

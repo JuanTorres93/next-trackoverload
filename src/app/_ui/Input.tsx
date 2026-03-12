@@ -22,7 +22,10 @@ function Input({
       )}
     >
       <input
-        className={`outline-none w-full disabled:cursor-not-allowed disabled:text-text-minor-emphasis! ${className ?? ''}`}
+        className={twMerge(
+          `outline-none w-full disabled:cursor-not-allowed disabled:text-text-minor-emphasis!}`,
+          className,
+        )}
         disabled={disabled}
         {...rest}
       />

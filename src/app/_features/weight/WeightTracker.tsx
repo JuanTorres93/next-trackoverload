@@ -38,12 +38,12 @@ function WeightInput({ lastDay }: { lastDay: DayEntry }) {
   }
 
   return (
-    <div className="flex items-center text-3xl ">
+    <div className="grid gap-1 grid-cols-[max-content_min-content] items-center text-3xl ">
       <label htmlFor="input-weight">Tu peso hoy:</label>
       <Input
         id="input-weight"
-        containerClassName="border-0 bg-background gap-2 max-w-32 items-end"
-        className="text-3xl text-right rounded-sm placeholder:bg-primary-light/20"
+        containerClassName="border-0 bg-background gap-2 min-w-22 items-end p-0"
+        className="text-3xl text-right rounded-sm text-primary placeholder:bg-info/20 placeholder:text-text-minor-emphasis/65"
         placeholder="KG"
         defaultValue={lastDay.day?.userWeightInKg}
         onChange={(e) => debouncedHandleWeightChange(e.target.value)}

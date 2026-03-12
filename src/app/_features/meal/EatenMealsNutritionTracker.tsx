@@ -1,3 +1,4 @@
+import InfoBox from '@/app/_ui/InfoBox';
 import { MealDTO } from '@/application-layer/dtos/MealDTO';
 
 function EatenMealsNutritionTracker({ meals }: { meals: MealDTO[] }) {
@@ -21,9 +22,9 @@ function EatenMealsNutritionTracker({ meals }: { meals: MealDTO[] }) {
 
   if (eatenMeals.length === 0) {
     return (
-      <div className="p-4 rounded bg-info/30">
+      <InfoBox>
         <span>Marca comidas para ver el progreso de hoy</span>
-      </div>
+      </InfoBox>
     );
   }
 
