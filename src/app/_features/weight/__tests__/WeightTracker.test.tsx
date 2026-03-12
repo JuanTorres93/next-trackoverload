@@ -66,7 +66,7 @@ describe('WeightTracker', () => {
     expect(input).toBeInTheDocument();
     expect(input).toHaveValue('');
 
-    expect(input.getAttribute('placeholder')).toMatch(/peso/i);
+    expect(input.getAttribute('placeholder')).toMatch(/kg/i);
   });
 
   it('should update user weight in repo', async () => {
