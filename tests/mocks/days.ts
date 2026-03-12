@@ -15,6 +15,7 @@ import { CreateDayUsecaseRequest } from '@/application-layer/use-cases/day/Creat
 
 import { AddMultipleMealsToDayUsecaseRequest } from '@/application-layer/use-cases/day/AddMultipleMealsToDay/AddMultipleMealsToDay.usecase';
 import { AppAddMultipleMealsToDayUsecase } from '@/interface-adapters/app/use-cases/day';
+import { AppUpdateUserWeightForDayUsecase } from '@/interface-adapters/app/use-cases/day';
 
 import { createMockRecipes } from './recipes';
 import { createMockUser } from './user';
@@ -83,4 +84,42 @@ export async function createMockDayWithMeal(
   });
 
   return mockDayWithMeal!;
+}
+
+export async function createMultipleMockDaysWithWeights(
+  numberOfDays: number,
+): Promise<DayDTO[]> {
+  if (process.env.NODE_ENV !== 'test') {
+    throw new Error(
+      'createMultipleMockDaysWithWeights should only be used in tests',
+    );
+  }
+
+  const mockUser = await createMockUser();
+
+  const createdDays: DayDTO[] = [];
+
+  for (let i = 0; i < numberOfDays; i++) {
+    const day = i + 1;
+    const month = 1;
+    const year = 2000;
+
+    const createdDay = await createMockDay(day, month, year);
+
+    const weightForDay = 70 + i; // Just an example weight that changes each day
+
+    const dayWithWeight = await AppUpdateUserWeightForDayUsecase.execute({
+      dayId: createdDay.id,
+      userId: mockUser.id,
+      newWeightInKg: weightForDay,
+    });
+
+    createdDays.push(dayWithWeight);
+  }
+
+  afterAll(() => {
+    daysRepo.clearForTesting();
+  });
+
+  return createdDays;
 }

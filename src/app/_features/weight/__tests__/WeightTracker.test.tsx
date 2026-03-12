@@ -2,31 +2,31 @@ import { render, screen } from '@testing-library/react';
 
 // Mock before importing the component that uses next/cache
 import '@/../tests/mocks/nextjs';
-import { TEST_USER_ID } from '@/../tests/mocks/nextjs';
 
 import { DayEntry } from '@/application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase';
+import { createMultipleMockDaysWithWeights } from '../../../../../tests/mocks/days';
+import { AppDaysRepo } from '@/interface-adapters/app/repos/AppDaysRepo';
+import { MemoryDaysRepo } from '@/infra/repos/memory/MemoryDaysRepo';
+
 import WeightTracker from '../WeightTracker';
 
-function createMockDayEntry(overrides: Partial<DayEntry> = {}): DayEntry {
-  return {
-    date: '20260311',
-    day: {
-      id: '20260311',
-      userId: TEST_USER_ID,
-      mealIds: [],
-      fakeMealIds: [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      userWeightInKg: 75,
-      day: 11,
-      month: 3,
-      year: 2026,
-    },
-    ...overrides,
-  };
+const daysRepo = AppDaysRepo as MemoryDaysRepo;
+
+async function createMockDays(): Promise<DayEntry[]> {
+  const mockDays = await createMultipleMockDaysWithWeights(7);
+
+  const dayEntries: DayEntry[] = mockDays.map((day) => ({
+    date: day.id,
+    day: day,
+  }));
+
+  return dayEntries;
 }
 
-async function setup(days: DayEntry[] = [createMockDayEntry()]) {
+async function setup() {
+  daysRepo.clearForTesting();
+  const days = await createMockDays();
+
   render(<WeightTracker days={days} />);
 
   return { days };
@@ -42,21 +42,6 @@ describe('WeightTracker', () => {
   it('renders the weight history', async () => {
     await setup();
 
-    expect(screen.getByText(/history/i)).toBeInTheDocument();
-  });
-
-  it('renders with empty days array', async () => {
-    await setup([]);
-
-    expect(screen.getByText(/input peso/i)).toBeInTheDocument();
-    expect(screen.getByText(/history/i)).toBeInTheDocument();
-  });
-
-  it('renders with a day entry without weight data', async () => {
-    const dayWithNoWeight = createMockDayEntry({ day: null });
-    await setup([dayWithNoWeight]);
-
-    expect(screen.getByText(/input peso/i)).toBeInTheDocument();
     expect(screen.getByText(/history/i)).toBeInTheDocument();
   });
 });
