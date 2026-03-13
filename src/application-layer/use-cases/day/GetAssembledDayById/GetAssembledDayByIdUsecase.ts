@@ -5,6 +5,8 @@ import {
 } from '@/application-layer/dtos/FakeMealDTO';
 import { MealDTO, toMealDTO } from '@/application-layer/dtos/MealDTO';
 import { NotFoundError } from '@/domain/common/errors';
+import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { Meal } from '@/domain/entities/meal/Meal';
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
 import { MealsRepo } from '@/domain/repos/MealsRepo.port';
@@ -43,13 +45,16 @@ export class GetAssembledDayByIdUsecase {
 
     const dayDTO = toDayDTO(day);
 
-    const mealsDTOS: MealDTO[] = (
-      await this.mealsRepo.getMealByIds(day.mealIds)
-    ).map(toMealDTO);
+    const promises = [
+      this.mealsRepo.getMealByIds(day.mealIds),
+      this.fakeMealsRepo.getFakeMealByIds(day.fakeMealIds),
+    ] as const;
 
-    const fakeMealsDTOS: FakeMealDTO[] = (
-      await this.fakeMealsRepo.getFakeMealByIds(day.fakeMealIds)
-    ).map(toFakeMealDTO);
+    const [meals, fakeMeals]: [Meal[], FakeMeal[]] =
+      await Promise.all(promises);
+
+    const mealsDTOS: MealDTO[] = meals.map(toMealDTO);
+    const fakeMealsDTOS: FakeMealDTO[] = fakeMeals.map(toFakeMealDTO);
 
     const assembledDay: AssembledDayDTO = {
       ...dayDTO,
