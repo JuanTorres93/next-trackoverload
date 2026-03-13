@@ -4,7 +4,6 @@
 
 // READ Operations
 export { AppGetMealByIdForUserUsecase } from './GetMealByIdForUser/getMealByIdForUser';
-export { AppGetAllMealsInDayForUserUsecase } from './GetAllMealsInDayForUser/getAllMealsInDayForUser';
 
 // UPDATE Operations
 export { AppUpdateMealUsecase } from './UpdateMeal/updateMeal';

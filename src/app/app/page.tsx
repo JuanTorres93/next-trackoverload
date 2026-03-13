@@ -1,15 +1,18 @@
 import PageWrapper from '../_ui/PageWrapper';
 
-import { dateToDayId } from '@/domain/value-objects/DayId/DayId';
-import { getAllMealsInDayForUser } from '../_features/meal/actions';
+import { FakeMealDTO } from '@/application-layer/dtos/FakeMealDTO';
 import { MealDTO } from '@/application-layer/dtos/MealDTO';
+import { dateToDayId } from '@/domain/value-objects/DayId/DayId';
+import {
+  getAssembledDayById,
+  getLastNumberOfDaysIncludingToday,
+} from '../_features/day/actions';
+import EatenMealsNutritionTracker from '../_features/meal/EatenMealsNutritionTracker';
 import MealReminder from '../_features/meal/MealReminder';
+import WeightTracker from '../_features/weight/WeightTracker';
+import ButtonPrimary from '../_ui/buttons/ButtonPrimary';
 import GridAutoCols from '../_ui/GridAutoCols';
 import SectionHeading from '../_ui/typography/SectionHeading';
-import ButtonPrimary from '../_ui/buttons/ButtonPrimary';
-import EatenMealsNutritionTracker from '../_features/meal/EatenMealsNutritionTracker';
-import WeightTracker from '../_features/weight/WeightTracker';
-import { getLastNumberOfDaysIncludingToday } from '../_features/day/actions';
 
 export const metadata = {
   title: 'Dashboard',
@@ -18,7 +21,14 @@ export const metadata = {
 
 export default async function Dashboard() {
   const todayId = dateToDayId(new Date());
-  const mealsForToday: MealDTO[] = await getAllMealsInDayForUser(todayId.value);
+
+  const assembledDayResult = await getAssembledDayById(todayId.value);
+
+  const mealsForToday: MealDTO[] = assembledDayResult.assembledDay?.meals || [];
+  const fakeMealsForToday: FakeMealDTO[] =
+    assembledDayResult.assembledDay?.fakeMeals || [];
+  // TODO NEXT: añadir fake meals como ya comidas directamente.
+  // TODO NEXT (después de el de arriba): paralelizar las llamadas
 
   // TODO IMPORTANT: allow user to configure days, maybe with a URL query param like ?days=14 or something like that
   const daysHistory = await getLastNumberOfDaysIncludingToday(7);
