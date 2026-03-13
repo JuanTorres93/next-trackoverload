@@ -22,9 +22,7 @@ export class SharpServerImageProcessor implements ImageProcessor {
     while (minQuality <= maxQuality) {
       const quality = Math.floor((minQuality + maxQuality) / 2);
 
-      const output = await sharp(imageData)
-        .jpeg({ quality, mozjpeg: true })
-        .toBuffer();
+      const output = await sharp(imageData).webp({ quality }).toBuffer();
 
       const currentSizeInBytes = output.length;
 
@@ -38,10 +36,7 @@ export class SharpServerImageProcessor implements ImageProcessor {
       }
     }
 
-    return (
-      bestCandidate ??
-      sharp(imageData).jpeg({ quality: 10, mozjpeg: true }).toBuffer()
-    );
+    return bestCandidate ?? sharp(imageData).webp({ quality: 10 }).toBuffer();
   }
 
   resizeToSquare(
