@@ -17,6 +17,7 @@ export { AppAddMultipleMealsToMultipleDaysUsecase } from './AddMultipleMealsToMu
 export { AppAddFakeMealToDayUsecase } from './AddFakeMealToDay/addFakeMealToDay';
 export { AppRemoveMealFromDayUsecase } from './RemoveMealFromDay/removeMealFromDay';
 export { AppReplaceFakeMealByAnotherFakeMealForUserInDayUsecase } from './ReplaceFakeMealByAnotherFakeMealForUserInDay/replaceFakeMealByAnotherFakeMealForUserInDay';
+export { AppReplaceFakeMealByMealForUserInDayUsecase } from './ReplaceFakeMealByMealForUserInDay/replaceFakeMealByMealForUserInDay';
 export { AppReplaceMealByAnotherMealForUserInDayUsecase } from './ReplaceMealByAnotherMealForUserInDay/replaceMealByAnotherMealForUserInDay';
 export { AppReplaceMealByFakeMealForUserInDayUsecase } from './ReplaceMealByFakeMealForUserInDay/replaceMealByFakeMealForUserInDay';
 export { AppUpdateUserWeightForDayUsecase } from './UpdateUserWeightForDay/updateUserWeightForDay';
