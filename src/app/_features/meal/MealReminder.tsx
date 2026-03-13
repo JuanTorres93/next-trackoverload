@@ -48,15 +48,15 @@ function MealReminder({ meal, dayId }: { meal: MealDTO; dayId: string }) {
 
   const replacement = {
     replaceMealRequest: (recipeId: string) =>
-      replaceMealByAnotherMealForUserInDay(dayId, meal.id, recipeId),
+      replaceMealByAnotherMealForUserInDay(meal.id, recipeId, dayId),
 
     replaceFakeMealRequest: (name: string, calories: number, protein: number) =>
       replaceMealByFakeMealForUserInDay(
-        dayId,
         meal.id,
         name,
         calories,
         protein,
+        dayId,
       ),
   };
 

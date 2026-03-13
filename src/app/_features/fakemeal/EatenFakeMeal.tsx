@@ -16,15 +16,15 @@ function EatenFakeMeal({
 }) {
   const replacement = {
     replaceMealRequest: (recipeId: string) =>
-      replaceFakeMealByMealForUserInDay(dayId, fakeMeal.id, recipeId),
+      replaceFakeMealByMealForUserInDay(fakeMeal.id, recipeId, dayId),
 
     replaceFakeMealRequest: (name: string, calories: number, protein: number) =>
       replaceFakeMealByAnotherFakeMealForUserInDay(
-        dayId,
         fakeMeal.id,
         name,
         calories,
         protein,
+        dayId,
       ),
   };
 
