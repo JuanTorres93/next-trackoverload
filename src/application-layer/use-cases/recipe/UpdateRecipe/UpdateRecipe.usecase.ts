@@ -12,22 +12,27 @@ export type UpdateRecipeUsecaseRequest = {
 };
 
 export class UpdateRecipeUsecase {
-  constructor(private recipesRepo: RecipesRepo, private usersRepo: UsersRepo) {}
+  constructor(
+    private recipesRepo: RecipesRepo,
+    private usersRepo: UsersRepo,
+  ) {}
 
   async execute(request: UpdateRecipeUsecaseRequest): Promise<RecipeDTO> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, existingRecipe] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.recipesRepo.getRecipeByIdAndUserId(request.id, request.userId),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
-        `UpdateRecipeUsecase: user with id ${request.userId} not found`
+        `UpdateRecipeUsecase: user with id ${request.userId} not found`,
       );
     }
-    const existingRecipe = await this.recipesRepo.getRecipeByIdAndUserId(
-      request.id,
-      request.userId
-    );
+
     if (!existingRecipe) {
       throw new NotFoundError(
-        `UpdateRecipeUsecase: Recipe with id ${request.id} not found`
+        `UpdateRecipeUsecase: Recipe with id ${request.id} not found`,
       );
     }
 

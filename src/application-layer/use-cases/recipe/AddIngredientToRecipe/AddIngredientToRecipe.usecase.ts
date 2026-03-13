@@ -35,17 +35,17 @@ export class AddIngredientToRecipeUsecase {
   async execute(
     request: AddIngredientToRecipeUsecaseRequest,
   ): Promise<RecipeDTO> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, existingRecipe] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.recipesRepo.getRecipeByIdAndUserId(request.recipeId, request.userId),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
         `AddIngredientToRecipeUsecase: user with id ${request.userId} not found`,
       );
     }
-    const existingRecipe: Recipe | null =
-      await this.recipesRepo.getRecipeByIdAndUserId(
-        request.recipeId,
-        request.userId,
-      );
 
     if (!existingRecipe) {
       throw new NotFoundError(

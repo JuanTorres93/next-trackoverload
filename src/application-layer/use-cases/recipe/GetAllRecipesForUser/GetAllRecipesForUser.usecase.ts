@@ -23,15 +23,17 @@ export class GetAllRecipesForUserUsecase {
       );
     }
 
-    const user = await this.usersRepo.getUserById(request.targetUserId);
+    const [user, recipes] = await Promise.all([
+      this.usersRepo.getUserById(request.targetUserId),
+
+      this.recipesRepo.getAllRecipesByUserId(request.targetUserId),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
         `GetAllRecipesForUserUsecase: user with id ${request.targetUserId} not found`,
       );
     }
-    const recipes = await this.recipesRepo.getAllRecipesByUserId(
-      request.targetUserId,
-    );
 
     return recipes.map(toRecipeDTO) || [];
   }

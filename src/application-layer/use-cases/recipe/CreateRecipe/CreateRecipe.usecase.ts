@@ -43,24 +43,30 @@ export class CreateRecipeUsecase {
       );
     }
 
-    const user = await this.usersRepo.getUserById(request.targetUserId);
+    const [
+      user,
+      {
+        createdIngredients: missingIngredients,
+        createdExternalIngredients: missingExternalIngredients,
+        allIngredients: allIngredientsInRecipe,
+        quantitiesMapByExternalId,
+      },
+    ] = await Promise.all([
+      this.usersRepo.getUserById(request.targetUserId),
+
+      createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo(
+        request.ingredientLinesInfo,
+        this.ingredientsRepo,
+        this.externalIngredientsRefRepo,
+        this.idGenerator,
+      ),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
         `CreateRecipeUsecase: user with id ${request.targetUserId} not found`,
       );
     }
-
-    const {
-      createdIngredients: missingIngredients,
-      createdExternalIngredients: missingExternalIngredients,
-      allIngredients: allIngredientsInRecipe,
-      quantitiesMapByExternalId,
-    } = await createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo(
-      request.ingredientLinesInfo,
-      this.ingredientsRepo,
-      this.externalIngredientsRefRepo,
-      this.idGenerator,
-    );
 
     const ingredientLines: IngredientLine[] = [];
     const newRecipeId = this.idGenerator.generateId();

@@ -9,31 +9,36 @@ export type GetRecipesByIdsForUserUsecaseRequest = {
 };
 
 export class GetRecipesByIdsForUserUsecase {
-  constructor(private recipesRepo: RecipesRepo, private usersRepo: UsersRepo) {}
+  constructor(
+    private recipesRepo: RecipesRepo,
+    private usersRepo: UsersRepo,
+  ) {}
 
   async execute(
-    request: GetRecipesByIdsForUserUsecaseRequest
+    request: GetRecipesByIdsForUserUsecaseRequest,
   ): Promise<RecipeDTO[]> {
-    const user = await this.usersRepo.getUserById(request.userId);
-    if (!user) {
-      throw new NotFoundError(
-        `GetRecipesByIdsForUserUsecase: user with id ${request.userId} not found`
-      );
-    }
-
     if (!Array.isArray(request.ids) || request.ids.length === 0) {
       throw new ValidationError(
-        'GetRecipesByIdsForUserUsecase: ids must be a non-empty array'
+        'GetRecipesByIdsForUserUsecase: ids must be a non-empty array',
       );
     }
 
     const uniqueIds = Array.from(new Set(request.ids));
 
-    const recipes = await Promise.all(
-      uniqueIds.map((id) =>
-        this.recipesRepo.getRecipeByIdAndUserId(id, request.userId)
-      )
-    );
+    const [user, ...recipes] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      // TODO IMPORTANT: create a new method in the repo and perform just a single query
+      ...uniqueIds.map((id) =>
+        this.recipesRepo.getRecipeByIdAndUserId(id, request.userId),
+      ),
+    ]);
+
+    if (!user) {
+      throw new NotFoundError(
+        `GetRecipesByIdsForUserUsecase: user with id ${request.userId} not found`,
+      );
+    }
 
     // Filter out null values (recipes that weren't found) and convert to DTOs
     return recipes.filter((recipe) => recipe !== null).map(toRecipeDTO);

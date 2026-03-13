@@ -13,24 +13,25 @@ export class DeleteRecipeUsecase {
   constructor(
     private recipesRepo: RecipesRepo,
     private imagesRepo: ImagesRepo,
-    private usersRepo: UsersRepo
+    private usersRepo: UsersRepo,
   ) {}
 
   async execute(request: DeleteRecipeUsecaseRequest): Promise<void> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, existingRecipe] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.recipesRepo.getRecipeByIdAndUserId(request.id, request.userId),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
-        `DeleteRecipeUsecase: user with id ${request.userId} not found`
+        `DeleteRecipeUsecase: user with id ${request.userId} not found`,
       );
     }
-    const existingRecipe = await this.recipesRepo.getRecipeByIdAndUserId(
-      request.id,
-      request.userId
-    );
 
     if (!existingRecipe) {
       throw new NotFoundError(
-        `DeleteRecipeUsecase: Recipe with id ${request.id} not found`
+        `DeleteRecipeUsecase: Recipe with id ${request.id} not found`,
       );
     }
 

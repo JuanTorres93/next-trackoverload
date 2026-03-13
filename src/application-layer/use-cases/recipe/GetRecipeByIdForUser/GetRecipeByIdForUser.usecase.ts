@@ -9,21 +9,26 @@ export type GetRecipeByIdForUserUsecaseRequest = {
 };
 
 export class GetRecipeByIdForUserUsecase {
-  constructor(private recipesRepo: RecipesRepo, private usersRepo: UsersRepo) {}
+  constructor(
+    private recipesRepo: RecipesRepo,
+    private usersRepo: UsersRepo,
+  ) {}
 
   async execute(
-    request: GetRecipeByIdForUserUsecaseRequest
+    request: GetRecipeByIdForUserUsecaseRequest,
   ): Promise<RecipeDTO | null> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, recipe] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.recipesRepo.getRecipeByIdAndUserId(request.id, request.userId),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
-        `GetRecipeByIdForUserUsecase: user with id ${request.userId} not found`
+        `GetRecipeByIdForUserUsecase: user with id ${request.userId} not found`,
       );
     }
-    const recipe = await this.recipesRepo.getRecipeByIdAndUserId(
-      request.id,
-      request.userId
-    );
+
     return recipe ? toRecipeDTO(recipe) : null;
   }
 }

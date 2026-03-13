@@ -23,16 +23,18 @@ export class DuplicateRecipeUsecase {
   ) {}
 
   async execute(request: DuplicateRecipeUsecaseRequest): Promise<RecipeDTO> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, originalRecipe] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.recipesRepo.getRecipeByIdAndUserId(request.recipeId, request.userId),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
         `DuplicateRecipeUsecase: user with id ${request.userId} not found`,
       );
     }
-    const originalRecipe = await this.recipesRepo.getRecipeByIdAndUserId(
-      request.recipeId,
-      request.userId,
-    );
+
     if (!originalRecipe) {
       throw new NotFoundError(
         `DuplicateRecipeUsecase: Recipe with id ${request.recipeId} not found`,

@@ -10,24 +10,29 @@ export type RemoveIngredientFromRecipeUsecaseRequest = {
 };
 
 export class RemoveIngredientFromRecipeUsecase {
-  constructor(private recipesRepo: RecipesRepo, private usersRepo: UsersRepo) {}
+  constructor(
+    private recipesRepo: RecipesRepo,
+    private usersRepo: UsersRepo,
+  ) {}
 
   async execute(
-    request: RemoveIngredientFromRecipeUsecaseRequest
+    request: RemoveIngredientFromRecipeUsecaseRequest,
   ): Promise<RecipeDTO> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, existingRecipe] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.recipesRepo.getRecipeByIdAndUserId(request.recipeId, request.userId),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
-        `RemoveIngredientFromRecipeUsecase: user with id ${request.userId} not found`
+        `RemoveIngredientFromRecipeUsecase: user with id ${request.userId} not found`,
       );
     }
-    const existingRecipe = await this.recipesRepo.getRecipeByIdAndUserId(
-      request.recipeId,
-      request.userId
-    );
+
     if (!existingRecipe) {
       throw new NotFoundError(
-        `RemoveIngredientFromRecipeUsecase: Recipe with id ${request.recipeId} not found`
+        `RemoveIngredientFromRecipeUsecase: Recipe with id ${request.recipeId} not found`,
       );
     }
 
