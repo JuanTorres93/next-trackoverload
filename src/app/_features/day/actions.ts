@@ -1,6 +1,7 @@
 'use server';
 import { AssembledDayDTO } from '@/application-layer/dtos/DayDTO';
 import { DayEntry } from '@/application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase';
+import { AppAddMultipleMealsToDayUsecase } from '@/interface-adapters/app/use-cases/day';
 import { AppGetAssembledDayById } from '@/interface-adapters/app/use-cases/day';
 import { AppGetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays } from '@/interface-adapters/app/use-cases/day';
 import { AppGetMultipleAssembledDaysByIds } from '@/interface-adapters/app/use-cases/day';
@@ -161,4 +162,17 @@ export async function getLastNumberOfDaysIncludingToday(
       userId: await getCurrentUserId(),
     },
   );
+}
+
+export async function addMealsToDay(
+  dayId: string,
+  recipeIds: string[],
+): Promise<void> {
+  await AppAddMultipleMealsToDayUsecase.execute({
+    dayId,
+    recipeIds,
+    userId: await getCurrentUserId(),
+  });
+
+  revalidatePath(`/app`);
 }

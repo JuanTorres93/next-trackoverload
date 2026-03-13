@@ -14,6 +14,7 @@ import ButtonPrimary from '../_ui/buttons/ButtonPrimary';
 import GridAutoCols from '../_ui/GridAutoCols';
 import SectionHeading from '../_ui/typography/SectionHeading';
 import EatenFakeMeal from '../_features/fakemeal/EatenFakeMeal';
+import AddFoodButton from '../_features/common/AddFoodButton';
 
 export const metadata = {
   title: 'Dashboard',
@@ -81,6 +82,8 @@ export default async function Dashboard() {
                 />
               ))}
             </GridAutoCols>
+
+            <AddFoodButton dayId={assembledDayResult.assembledDay!.id} />
           </div>
         )}
 
