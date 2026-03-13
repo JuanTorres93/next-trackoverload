@@ -1,14 +1,23 @@
 import InfoBox from '@/app/_ui/InfoBox';
+import { FakeMealDTO } from '@/application-layer/dtos/FakeMealDTO';
 import { MealDTO } from '@/application-layer/dtos/MealDTO';
 
-function EatenMealsNutritionTracker({ meals }: { meals: MealDTO[] }) {
-  const eatenMeals = meals.filter((meal) => meal.isEaten);
+function EatenMealsNutritionTracker({
+  meals,
+  fakeMeals,
+}: {
+  meals: MealDTO[];
+  fakeMeals: FakeMealDTO[];
+}) {
+  const eatenMeals = [...meals.filter((meal) => meal.isEaten), ...fakeMeals];
 
   const totalCalories = Math.round(
-    meals.reduce((acc, meal) => acc + meal.calories, 0),
+    meals.reduce((acc, meal) => acc + meal.calories, 0) +
+      fakeMeals.reduce((acc, meal) => acc + meal.calories, 0),
   );
   const totalProtein = Math.round(
-    meals.reduce((acc, meal) => acc + meal.protein, 0),
+    meals.reduce((acc, meal) => acc + meal.protein, 0) +
+      fakeMeals.reduce((acc, meal) => acc + meal.protein, 0),
   );
 
   const eatenCalories = Math.round(
@@ -18,7 +27,8 @@ function EatenMealsNutritionTracker({ meals }: { meals: MealDTO[] }) {
     eatenMeals.reduce((acc, meal) => acc + meal.protein, 0),
   );
 
-  const allMealsAreEaten = eatenMeals.length === meals.length;
+  const allMealsAreEaten =
+    eatenMeals.length === meals.length + fakeMeals.length;
 
   if (eatenMeals.length === 0) {
     return (

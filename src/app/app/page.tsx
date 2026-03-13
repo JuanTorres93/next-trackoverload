@@ -13,6 +13,7 @@ import WeightTracker from '../_features/weight/WeightTracker';
 import ButtonPrimary from '../_ui/buttons/ButtonPrimary';
 import GridAutoCols from '../_ui/GridAutoCols';
 import SectionHeading from '../_ui/typography/SectionHeading';
+import EatenFakeMeal from '../_features/fakemeal/EatenFakeMeal';
 
 export const metadata = {
   title: 'Dashboard',
@@ -41,7 +42,7 @@ export default async function Dashboard() {
   // TODO IMPORTANT: allow user to configure days, maybe with a URL query param like ?days=14 or something like that
   const daysHistory = await getLastNumberOfDaysIncludingToday(7);
 
-  const todayHasMeals = mealsForToday.length > 0;
+  const todayHasMeals = [...mealsForToday, ...fakeMealsForToday].length > 0;
 
   return (
     <PageWrapper className="flex flex-col gap-10">
@@ -53,7 +54,10 @@ export default async function Dashboard() {
 
         {todayHasMeals && (
           <div className="flex flex-col gap-4">
-            <EatenMealsNutritionTracker meals={mealsForToday} />
+            <EatenMealsNutritionTracker
+              meals={mealsForToday}
+              fakeMeals={fakeMealsForToday}
+            />
 
             <GridAutoCols
               className="gap-4"
@@ -63,6 +67,10 @@ export default async function Dashboard() {
             >
               {mealsForToday.map((meal) => (
                 <MealReminder key={meal.id} meal={meal} />
+              ))}
+
+              {fakeMealsForToday.map((fakeMeal) => (
+                <EatenFakeMeal key={fakeMeal.id} fakeMeal={fakeMeal} />
               ))}
             </GridAutoCols>
           </div>
