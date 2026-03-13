@@ -5,6 +5,8 @@ import {
 } from '@/application-layer/dtos/FakeMealDTO';
 import { MealDTO, toMealDTO } from '@/application-layer/dtos/MealDTO';
 import { NotFoundError } from '@/domain/common/errors';
+import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
+import { Meal } from '@/domain/entities/meal/Meal';
 import { DaysRepo } from '@/domain/repos/DaysRepo.port';
 import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
 import { MealsRepo } from '@/domain/repos/MealsRepo.port';
@@ -53,10 +55,14 @@ export class GetMultipleAssembledDaysByIdsUsecase {
     });
 
     // Fetch all meals and fake meals in one query each
-    const meals = await this.mealsRepo.getMealByIds([...allMealIds]);
-    const fakeMeals = await this.fakeMealsRepo.getFakeMealByIds([
-      ...allFakeMealIds,
-    ]);
+    const mealsAndFakeMealsPromises = [
+      this.mealsRepo.getMealByIds([...allMealIds]),
+      this.fakeMealsRepo.getFakeMealByIds([...allFakeMealIds]),
+    ] as const;
+
+    const [meals, fakeMeals]: [Meal[], FakeMeal[]] = await Promise.all(
+      mealsAndFakeMealsPromises,
+    );
 
     // Map to DTOs
     const mealDTOs = new Map<string, MealDTO>();
