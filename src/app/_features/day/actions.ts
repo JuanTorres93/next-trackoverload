@@ -6,6 +6,7 @@ import { AppGetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays } from '@
 import { AppGetMultipleAssembledDaysByIds } from '@/interface-adapters/app/use-cases/day';
 import { AppRemoveMealFromDayUsecase } from '@/interface-adapters/app/use-cases/day';
 import { AppReplaceMealByAnotherMealForUserInDayUsecase } from '@/interface-adapters/app/use-cases/day';
+import { AppReplaceMealByFakeMealForUserInDayUsecase } from '@/interface-adapters/app/use-cases/day';
 import { AppUpdateUserWeightForDayUsecase } from '@/interface-adapters/app/use-cases/day';
 import { revalidatePath } from 'next/cache';
 import { getCurrentUserId } from '@/app/_utils/auth/getCurrentUserId';
@@ -74,6 +75,26 @@ export async function replaceMealByAnotherMealForUserInDay(
     userId: await getCurrentUserId(),
     mealToReplaceId,
     recipeId,
+  });
+
+  revalidatePath(`/app/meals`);
+  revalidatePath(`/app`);
+}
+
+export async function replaceMealByFakeMealForUserInDay(
+  dayId: string,
+  mealIdToReplace: string,
+  name: string,
+  calories: number,
+  protein: number,
+): Promise<void> {
+  await AppReplaceMealByFakeMealForUserInDayUsecase.execute({
+    dayId,
+    userId: await getCurrentUserId(),
+    mealIdToReplace,
+    name,
+    calories,
+    protein,
   });
 
   revalidatePath(`/app/meals`);
