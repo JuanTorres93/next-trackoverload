@@ -5,6 +5,7 @@ import { AppGetAssembledDayById } from '@/interface-adapters/app/use-cases/day';
 import { AppGetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays } from '@/interface-adapters/app/use-cases/day';
 import { AppGetMultipleAssembledDaysByIds } from '@/interface-adapters/app/use-cases/day';
 import { AppRemoveMealFromDayUsecase } from '@/interface-adapters/app/use-cases/day';
+import { AppReplaceMealByAnotherMealForUserInDayUsecase } from '@/interface-adapters/app/use-cases/day';
 import { AppUpdateUserWeightForDayUsecase } from '@/interface-adapters/app/use-cases/day';
 import { revalidatePath } from 'next/cache';
 import { getCurrentUserId } from '@/app/_utils/auth/getCurrentUserId';
@@ -57,6 +58,22 @@ export async function removeMealFromDay(
     dayId: dayId,
     userId: await getCurrentUserId(),
     mealId,
+  });
+
+  revalidatePath(`/app/meals`);
+  revalidatePath(`/app`);
+}
+
+export async function replaceMealByAnotherMealForUserInDay(
+  dayId: string,
+  mealToReplaceId: string,
+  recipeId: string,
+): Promise<void> {
+  await AppReplaceMealByAnotherMealForUserInDayUsecase.execute({
+    dayId,
+    userId: await getCurrentUserId(),
+    mealToReplaceId,
+    recipeId,
   });
 
   revalidatePath(`/app/meals`);
