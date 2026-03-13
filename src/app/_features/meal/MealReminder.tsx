@@ -43,28 +43,28 @@ function MealReminder({ meal }: { meal: MealDTO }) {
   }
 
   return (
-    <FoodReminderContainer
-      className={`grid relative grid-cols-[5rem_1fr] items-center max-bp-navbar-mobile:grid-cols-[4rem_1fr] `}
-      isEaten={meal.isEaten}
-      onClick={handleToggleIsEaten}
-    >
-      {isTogglingEaten && <LoadingOverlay />}
+    <FoodReminderContainer isEaten={meal.isEaten} onClick={handleToggleIsEaten}>
+      <div
+        className={`grid gap-4 grid-cols-[5rem_1fr] items-center content-center max-bp-navbar-mobile:grid-cols-[4rem_1fr] `}
+      >
+        {isTogglingEaten && <LoadingOverlay />}
 
-      <div className="relative overflow-hidden rounded-md shadow-xm aspect-square">
-        <Image
-          src={meal.imageUrl || defaultImageUrl}
-          alt={meal.name}
-          fill
-          className="object-cover"
-        />
-      </div>
+        <div className="relative overflow-hidden rounded-md shadow-xm aspect-square">
+          <Image
+            src={meal.imageUrl || defaultImageUrl}
+            alt={meal.name}
+            fill
+            className="object-cover"
+          />
+        </div>
 
-      <div className="flex flex-col min-w-0 gap-2">
-        <p className="text-lg font-semibold leading-snug max-bp-navbar-mobile:text-base">
-          {meal.name}
-        </p>
+        <div className="flex flex-col min-w-0 gap-2">
+          <p className="text-lg font-semibold leading-snug max-bp-navbar-mobile:text-base">
+            {meal.name}
+          </p>
 
-        <FoodReminderMacros calories={calories} protein={protein} />
+          <FoodReminderMacros calories={calories} protein={protein} />
+        </div>
       </div>
     </FoodReminderContainer>
   );

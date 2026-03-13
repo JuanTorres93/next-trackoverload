@@ -4,16 +4,15 @@ import FoodReminderMacros from '../common/FoodReminderMacros';
 
 function EatenFakeMeal({ fakeMeal }: { fakeMeal: FakeMealDTO }) {
   return (
-    <FoodReminderContainer
-      className="flex flex-col gap-2 p-3 cursor-default"
-      isEaten
-    >
-      <p className="font-semibold leading-snug">{fakeMeal.name}</p>
+    <FoodReminderContainer isEaten>
+      <div className="flex flex-col gap-2 p-3 cursor-default">
+        <p className="font-semibold leading-snug">{fakeMeal.name}</p>
 
-      <FoodReminderMacros
-        calories={fakeMeal.calories}
-        protein={fakeMeal.protein}
-      />
+        <FoodReminderMacros
+          calories={fakeMeal.calories}
+          protein={fakeMeal.protein}
+        />
+      </div>
     </FoodReminderContainer>
   );
 }
