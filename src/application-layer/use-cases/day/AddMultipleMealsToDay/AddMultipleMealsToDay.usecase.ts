@@ -10,6 +10,7 @@ import { IdGenerator } from '@/domain/services/IdGenerator.port';
 import { dayIdToDayMonthYear } from '@/domain/value-objects/DayId/DayId';
 import { createDayNoSaveInRepo } from '../common/createDayNoSaveInRepo';
 import { createMealsFromRecipes } from '../common/createMealsFromRecipes';
+import { Day } from '@/domain/entities/day/Day';
 
 export type AddMultipleMealsToDayUsecaseRequest = {
   dayId: string;
