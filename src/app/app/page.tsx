@@ -25,6 +25,14 @@ export default async function Dashboard() {
   const assembledDayResult = await getAssembledDayById(todayId.value);
 
   const mealsForToday: MealDTO[] = assembledDayResult.assembledDay?.meals || [];
+
+  // Sort by isEaten last
+  mealsForToday.sort((a, b) => {
+    if (a.isEaten === b.isEaten) return 0;
+    if (a.isEaten) return 1;
+    return -1;
+  });
+
   const fakeMealsForToday: FakeMealDTO[] =
     assembledDayResult.assembledDay?.fakeMeals || [];
   // TODO NEXT: añadir fake meals como ya comidas directamente.
