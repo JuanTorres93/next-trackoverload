@@ -20,17 +20,18 @@ export class DeleteDayUsecase {
   ) {}
 
   async execute(request: DeleteDayUsecaseRequest): Promise<void> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, day] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.daysRepo.getDayByIdAndUserId(request.dayId, request.userId),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
         `DeleteDayUsecase: User with id ${request.userId} not found`,
       );
     }
 
-    const day = await this.daysRepo.getDayByIdAndUserId(
-      request.dayId,
-      request.userId,
-    );
     if (!day) {
       throw new NotFoundError('DeleteDayUsecase: Day not found');
     }

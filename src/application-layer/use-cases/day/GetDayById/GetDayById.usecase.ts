@@ -9,20 +9,23 @@ export type GetDayByIdUsecaseRequest = {
 };
 
 export class GetDayByIdUsecase {
-  constructor(private daysRepo: DaysRepo, private usersRepo: UsersRepo) {}
+  constructor(
+    private daysRepo: DaysRepo,
+    private usersRepo: UsersRepo,
+  ) {}
 
   async execute(request: GetDayByIdUsecaseRequest): Promise<DayDTO | null> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, day] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.daysRepo.getDayByIdAndUserId(request.dayId, request.userId),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
-        `GetDayById usecase: User with id ${request.userId} not found`
+        `GetDayById usecase: User with id ${request.userId} not found`,
       );
     }
-
-    const day = await this.daysRepo.getDayByIdAndUserId(
-      request.dayId,
-      request.userId
-    );
 
     if (!day) return null;
 

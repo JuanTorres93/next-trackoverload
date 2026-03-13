@@ -28,19 +28,19 @@ export class AddFakeMealToDayUsecase {
   ) {}
 
   async execute(request: AddFakeMealToDayUsecaseRequest): Promise<DayDTO> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, existingDay] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.daysRepo.getDayByIdAndUserId(request.dayId, request.userId),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
         `AddFakeMealToDayUsecase: User with id ${request.userId} not found`,
       );
     }
 
-    let dayToAddFakeMeal: Day | null;
-
-    dayToAddFakeMeal = await this.daysRepo.getDayByIdAndUserId(
-      request.dayId,
-      request.userId,
-    );
+    let dayToAddFakeMeal: Day | null = existingDay;
 
     if (!dayToAddFakeMeal) {
       const { day, month, year } = dayIdToDayMonthYear(request.dayId);

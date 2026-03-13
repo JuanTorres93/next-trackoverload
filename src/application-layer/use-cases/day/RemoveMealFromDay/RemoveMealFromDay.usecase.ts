@@ -20,17 +20,18 @@ export class RemoveMealFromDayUsecase {
   ) {}
 
   async execute(request: RemoveMealFromDayUsecaseRequest): Promise<DayDTO> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, day] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.daysRepo.getDayByIdAndUserId(request.dayId, request.userId),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
         `RemoveMealFromDayUsecase: User with id ${request.userId} not found`,
       );
     }
 
-    const day = await this.daysRepo.getDayByIdAndUserId(
-      request.dayId,
-      request.userId,
-    );
     if (!day) {
       throw new NotFoundError(
         `RemoveMealFromDayUsecase: Day not found for date ${request.dayId} and userId ${request.userId}`,

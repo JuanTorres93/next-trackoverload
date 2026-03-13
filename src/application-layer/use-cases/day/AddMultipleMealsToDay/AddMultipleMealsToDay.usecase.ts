@@ -28,9 +28,11 @@ export class AddMultipleMealsToDayUsecase {
   ) {}
 
   async execute(request: AddMultipleMealsToDayUsecaseRequest): Promise<DayDTO> {
-    // Fetch user and all recipes in parallel for efficiency
-    const [user, ...recipes] = await Promise.all([
+    const [user, existingDay, ...recipes] = await Promise.all([
       this.usersRepo.getUserById(request.userId),
+
+      this.daysRepo.getDayByIdAndUserId(request.dayId, request.userId),
+
       ...request.recipeIds.map((recipeId) =>
         this.recipesRepo.getRecipeByIdAndUserId(recipeId, request.userId),
       ),
@@ -50,10 +52,7 @@ export class AddMultipleMealsToDayUsecase {
       }
     }
 
-    let dayToAddMeals = await this.daysRepo.getDayByIdAndUserId(
-      request.dayId,
-      request.userId,
-    );
+    let dayToAddMeals = existingDay as Day | null;
 
     if (!dayToAddMeals) {
       const { day, month, year } = dayIdToDayMonthYear(request.dayId);

@@ -20,17 +20,17 @@ export class RemoveFakeMealFromDayUsecase {
   ) {}
 
   async execute(request: RemoveFakeMealFromDayUsecaseRequest): Promise<DayDTO> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, day] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.daysRepo.getDayByIdAndUserId(request.dayId, request.userId),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
         `RemoveFakeMealFromDayUsecase: User with id ${request.userId} not found`,
       );
     }
-
-    const day = await this.daysRepo.getDayByIdAndUserId(
-      request.dayId,
-      request.userId,
-    );
 
     if (!day) {
       throw new NotFoundError(
