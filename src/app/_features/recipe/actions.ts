@@ -127,15 +127,19 @@ export async function updateRecipeImage(
   if (!imageFile) return;
   if (imageFile.size <= 0) return;
 
-  const arrayBuffer = await imageFile.arrayBuffer();
+  const promises = [imageFile.arrayBuffer(), getCurrentUserId()] as const;
+
+  const [arrayBuffer, userId] = await Promise.all(promises);
+
   const imageBuffer: Buffer = Buffer.from(arrayBuffer);
 
   await AppUpdateRecipeImageUsecase.execute({
-    userId: await getCurrentUserId(),
+    userId,
     recipeId,
     imageData: imageBuffer,
   });
 
+  revalidatePath(`/app`);
   revalidatePath(`/app/recipes`);
   revalidatePath(`/app/recipes/${recipeId}`);
 }
