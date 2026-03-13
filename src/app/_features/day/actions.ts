@@ -67,6 +67,7 @@ export async function removeMealFromDay(
   revalidatePath(`/app`);
 }
 
+// TODO refactor parameters order to match function name
 export async function replaceFakeMealByMealForUserInDay(
   dayId: string,
   fakeMealIdToReplace: string,
@@ -83,6 +84,7 @@ export async function replaceFakeMealByMealForUserInDay(
   revalidatePath(`/app`);
 }
 
+// TODO refactor parameters order to match function name
 export async function replaceMealByAnotherMealForUserInDay(
   dayId: string,
   mealToReplaceId: string,
@@ -99,6 +101,7 @@ export async function replaceMealByAnotherMealForUserInDay(
   revalidatePath(`/app`);
 }
 
+// TODO refactor parameters order to match function name
 export async function replaceMealByFakeMealForUserInDay(
   dayId: string,
   mealIdToReplace: string,
@@ -119,6 +122,7 @@ export async function replaceMealByFakeMealForUserInDay(
   revalidatePath(`/app`);
 }
 
+// TODO refactor parameters order to match function name
 export async function replaceFakeMealByAnotherFakeMealForUserInDay(
   dayId: string,
   fakeMealIdToReplace: string,

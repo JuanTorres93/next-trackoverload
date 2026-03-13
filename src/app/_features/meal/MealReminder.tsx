@@ -11,8 +11,12 @@ import { useRouter } from 'next/navigation';
 import FoodReminderContainer from '../common/FoodReminderContainer';
 import FoodReminderMacros from '../common/FoodReminderMacros';
 import { formatToInteger } from '@/app/_utils/format/formatToInteger';
+import {
+  replaceMealByAnotherMealForUserInDay,
+  replaceMealByFakeMealForUserInDay,
+} from '../day/actions';
 
-function MealReminder({ meal }: { meal: MealDTO }) {
+function MealReminder({ meal, dayId }: { meal: MealDTO; dayId: string }) {
   const router = useRouter();
 
   const [isTogglingEaten, setIsTogglingEaten] = useState(false);
@@ -42,8 +46,26 @@ function MealReminder({ meal }: { meal: MealDTO }) {
     }
   }
 
+  const replacement = {
+    replaceMealRequest: (recipeId: string) =>
+      replaceMealByAnotherMealForUserInDay(dayId, meal.id, recipeId),
+
+    replaceFakeMealRequest: (name: string, calories: number, protein: number) =>
+      replaceMealByFakeMealForUserInDay(
+        dayId,
+        meal.id,
+        name,
+        calories,
+        protein,
+      ),
+  };
+
   return (
-    <FoodReminderContainer isEaten={meal.isEaten} onClick={handleToggleIsEaten}>
+    <FoodReminderContainer
+      isEaten={meal.isEaten}
+      onClick={handleToggleIsEaten}
+      replacement={replacement}
+    >
       <div
         className={`grid gap-4 grid-cols-[5rem_1fr] items-center content-center max-bp-navbar-mobile:grid-cols-[4rem_1fr] `}
       >

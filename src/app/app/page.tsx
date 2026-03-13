@@ -66,11 +66,19 @@ export default async function Dashboard() {
               max="1fr"
             >
               {mealsForToday.map((meal) => (
-                <MealReminder key={meal.id} meal={meal} />
+                <MealReminder
+                  key={meal.id}
+                  meal={meal}
+                  dayId={assembledDayResult.assembledDay!.id}
+                />
               ))}
 
               {fakeMealsForToday.map((fakeMeal) => (
-                <EatenFakeMeal key={fakeMeal.id} fakeMeal={fakeMeal} />
+                <EatenFakeMeal
+                  key={fakeMeal.id}
+                  fakeMeal={fakeMeal}
+                  dayId={assembledDayResult.assembledDay!.id}
+                />
               ))}
             </GridAutoCols>
           </div>

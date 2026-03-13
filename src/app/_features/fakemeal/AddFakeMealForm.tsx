@@ -20,9 +20,17 @@ const INITIAL_FORM_STATE: AddFakeMealFormState = {
 function AddFakeMealForm({
   dayId,
   onSuccess,
+  submitAction,
+  submitLabel = 'Añadir comida',
 }: {
-  dayId: string;
+  dayId?: string;
   onSuccess?: () => void;
+  submitAction?: (
+    name: string,
+    calories: number,
+    protein: number,
+  ) => Promise<void>;
+  submitLabel?: string;
 }) {
   const { formState, isLoading, setIsLoading, setField, resetForm } =
     useFormSetup<AddFakeMealFormState>(INITIAL_FORM_STATE);
@@ -43,12 +51,14 @@ function AddFakeMealForm({
     setIsLoading(true);
 
     try {
-      await addFakeMealToDay(
-        dayId,
-        formState.name,
-        Number(formState.calories),
-        Number(formState.protein),
-      );
+      const calories = Number(formState.calories);
+      const protein = Number(formState.protein);
+
+      if (submitAction) {
+        await submitAction(formState.name, calories, protein);
+      } else {
+        await addFakeMealToDay(dayId!, formState.name, calories, protein);
+      }
 
       resetForm();
       onSuccess?.();
@@ -98,7 +108,7 @@ function AddFakeMealForm({
         isLoading={isLoading}
         disabled={invalidForm}
       >
-        Añadir comida
+        {submitLabel}
       </ButtonNew>
     </form>
   );

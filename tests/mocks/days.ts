@@ -4,9 +4,13 @@ import { AppDaysRepo } from '@/interface-adapters/app/repos/AppDaysRepo';
 import { MemoryMealsRepo } from '@/infra/repos/memory/MemoryMealsRepo';
 import { AppMealsRepo } from '@/interface-adapters/app/repos/AppMealsRepo';
 
+import { MemoryFakeMealsRepo } from '@/infra/repos/memory/MemoryFakeMealsRepo';
+import { AppFakeMealsRepo } from '@/interface-adapters/app/repos/AppFakeMealsRepo';
+
 import { AssembledDayDTO, DayDTO } from '@/application-layer/dtos/DayDTO';
 
 import {
+  AppAddFakeMealToDayUsecase,
   AppCreateDayUsecase,
   AppGetAssembledDayById,
 } from '@/interface-adapters/app/use-cases/day';
@@ -22,6 +26,7 @@ import { createMockUser } from './user';
 
 const daysRepo = AppDaysRepo as MemoryDaysRepo;
 const mealsRepo = AppMealsRepo as MemoryMealsRepo;
+const fakeMealsRepo = AppFakeMealsRepo as MemoryFakeMealsRepo;
 
 export async function createMockDay(
   day = 1,
@@ -122,4 +127,36 @@ export async function createMultipleMockDaysWithWeights(
   });
 
   return createdDays;
+}
+
+export async function createMockDayWithFakeMeal(
+  day = 1,
+  month = 1,
+  year = 2000,
+): Promise<AssembledDayDTO> {
+  if (process.env.NODE_ENV !== 'test') {
+    throw new Error('createMockDayWithFakeMeal should only be used in tests');
+  }
+
+  const mockDay = await createMockDay(day, month, year);
+
+  await AppAddFakeMealToDayUsecase.execute({
+    dayId: mockDay.id,
+    userId: mockDay.userId,
+    name: 'Test Fake Meal',
+    calories: 400,
+    protein: 25,
+  });
+
+  const mockDayWithFakeMeal = await AppGetAssembledDayById.execute({
+    dayId: mockDay.id,
+    userId: mockDay.userId,
+  });
+
+  afterAll(() => {
+    daysRepo.clearForTesting();
+    fakeMealsRepo.clearForTesting();
+  });
+
+  return mockDayWithFakeMeal!;
 }

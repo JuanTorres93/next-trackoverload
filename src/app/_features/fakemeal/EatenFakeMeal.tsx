@@ -1,10 +1,35 @@
+'use client';
 import { FakeMealDTO } from '@/application-layer/dtos/FakeMealDTO';
 import FoodReminderContainer from '../common/FoodReminderContainer';
 import FoodReminderMacros from '../common/FoodReminderMacros';
+import {
+  replaceFakeMealByAnotherFakeMealForUserInDay,
+  replaceFakeMealByMealForUserInDay,
+} from '../day/actions';
 
-function EatenFakeMeal({ fakeMeal }: { fakeMeal: FakeMealDTO }) {
+function EatenFakeMeal({
+  fakeMeal,
+  dayId,
+}: {
+  fakeMeal: FakeMealDTO;
+  dayId: string;
+}) {
+  const replacement = {
+    replaceMealRequest: (recipeId: string) =>
+      replaceFakeMealByMealForUserInDay(dayId, fakeMeal.id, recipeId),
+
+    replaceFakeMealRequest: (name: string, calories: number, protein: number) =>
+      replaceFakeMealByAnotherFakeMealForUserInDay(
+        dayId,
+        fakeMeal.id,
+        name,
+        calories,
+        protein,
+      ),
+  };
+
   return (
-    <FoodReminderContainer isEaten>
+    <FoodReminderContainer isEaten replacement={replacement}>
       <div className="flex flex-col gap-2 p-3 cursor-default">
         <p className="font-semibold leading-snug">{fakeMeal.name}</p>
 
