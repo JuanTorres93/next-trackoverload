@@ -16,24 +16,25 @@ export type UpdateFakeMealUsecaseRequest = {
 export class UpdateFakeMealUsecase {
   constructor(
     private fakeMealsRepo: FakeMealsRepo,
-    private usersRepo: UsersRepo
+    private usersRepo: UsersRepo,
   ) {}
 
   async execute(request: UpdateFakeMealUsecaseRequest): Promise<FakeMealDTO> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, fakeMeal] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.fakeMealsRepo.getFakeMealByIdAndUserId(request.id, request.userId),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
-        `UpdateFakeMealUsecase: user with id ${request.userId} not found`
+        `UpdateFakeMealUsecase: user with id ${request.userId} not found`,
       );
     }
 
-    const fakeMeal = await this.fakeMealsRepo.getFakeMealByIdAndUserId(
-      request.id,
-      request.userId
-    );
     if (!fakeMeal) {
       throw new NotFoundError(
-        `UpdateFakeMealUsecase: FakeMeal with id ${request.id} and userId ${request.userId} not found`
+        `UpdateFakeMealUsecase: FakeMeal with id ${request.id} and userId ${request.userId} not found`,
       );
     }
 

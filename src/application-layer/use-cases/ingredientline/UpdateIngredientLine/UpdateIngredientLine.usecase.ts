@@ -26,51 +26,47 @@ export class UpdateIngredientLineUsecase {
     private ingredientsRepo: IngredientsRepo,
     private recipesRepo: RecipesRepo,
     private mealsRepo: MealsRepo,
-    private usersRepo: UsersRepo
+    private usersRepo: UsersRepo,
   ) {}
 
   async execute(
-    request: UpdateIngredientLineUsecaseRequest
+    request: UpdateIngredientLineUsecaseRequest,
   ): Promise<IngredientLineDTO> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, parentEntity] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      request.parentEntityType === 'recipe'
+        ? this.recipesRepo.getRecipeById(request.parentEntityId)
+        : this.mealsRepo.getMealById(request.parentEntityId),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
-        `UpdateIngredientLineUsecase: User with id ${request.userId} not found`
+        `UpdateIngredientLineUsecase: User with id ${request.userId} not found`,
       );
-    }
-
-    // Get parent entity from repo
-    let parentEntity: Recipe | Meal | null = null;
-
-    if (request.parentEntityType === 'recipe') {
-      parentEntity = await this.recipesRepo.getRecipeById(
-        request.parentEntityId
-      );
-    } else if (request.parentEntityType === 'meal') {
-      parentEntity = await this.mealsRepo.getMealById(request.parentEntityId);
     }
 
     if (!parentEntity) {
       throw new NotFoundError(
-        `UpdateIngredientLineUsecase: ${request.parentEntityType} with id ${request.parentEntityId} not found`
+        `UpdateIngredientLineUsecase: ${request.parentEntityType} with id ${request.parentEntityId} not found`,
       );
     }
 
     // Validate user owns parent entity
     if (parentEntity.userId !== request.userId) {
       throw new AuthError(
-        `UpdateIngredientLineUsecase: ${request.parentEntityType} with id ${request.parentEntityId} not found for user ${request.userId}`
+        `UpdateIngredientLineUsecase: ${request.parentEntityType} with id ${request.parentEntityId} not found for user ${request.userId}`,
       );
     }
 
     // Verify the ingredient line exists in the parent entity
     const existingIngredientLine = parentEntity!.ingredientLines.find(
-      (line) => line.id === request.ingredientLineId
+      (line) => line.id === request.ingredientLineId,
     );
 
     if (!existingIngredientLine) {
       throw new NotFoundError(
-        `UpdateIngredientLineUsecase: IngredientLine with id ${request.ingredientLineId} does not belong to the specified ${request.parentEntityType}`
+        `UpdateIngredientLineUsecase: IngredientLine with id ${request.ingredientLineId} does not belong to the specified ${request.parentEntityType}`,
       );
     }
 
@@ -78,12 +74,12 @@ export class UpdateIngredientLineUsecase {
     let newIngredient: Ingredient | undefined;
     if (request.ingredientId !== undefined) {
       const foundIngredient = await this.ingredientsRepo.getIngredientById(
-        request.ingredientId
+        request.ingredientId,
       );
 
       if (!foundIngredient) {
         throw new NotFoundError(
-          `UpdateIngredientLineUsecase: Ingredient with id ${request.ingredientId} not found`
+          `UpdateIngredientLineUsecase: Ingredient with id ${request.ingredientId} not found`,
         );
       }
 

@@ -11,20 +11,23 @@ export type UpdateMealUsecaseRequest = {
 };
 
 export class UpdateMealUsecase {
-  constructor(private mealsRepo: MealsRepo, private usersRepo: UsersRepo) {}
+  constructor(
+    private mealsRepo: MealsRepo,
+    private usersRepo: UsersRepo,
+  ) {}
 
   async execute(request: UpdateMealUsecaseRequest): Promise<MealDTO> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, existingMeal] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.mealsRepo.getMealByIdForUser(request.id, request.userId),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
-        `UpdateMealUsecase: user with id ${request.userId} not found`
+        `UpdateMealUsecase: user with id ${request.userId} not found`,
       );
     }
-
-    const existingMeal = await this.mealsRepo.getMealByIdForUser(
-      request.id,
-      request.userId
-    );
 
     if (!existingMeal) {
       throw new NotFoundError('UpdateMealUsecase: Meal not found');

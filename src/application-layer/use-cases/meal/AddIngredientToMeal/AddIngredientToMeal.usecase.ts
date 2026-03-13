@@ -22,26 +22,26 @@ export class AddIngredientToMealUsecase {
   ) {}
 
   async execute(request: AddIngredientToMealUsecaseRequest): Promise<MealDTO> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, existingMeal, ingredient] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.mealsRepo.getMealByIdForUser(request.mealId, request.userId),
+
+      this.ingredientsRepo.getIngredientById(request.ingredientId),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
         `AddIngredientToMealUsecase: user with id ${request.userId} not found`,
       );
     }
 
-    const existingMeal = await this.mealsRepo.getMealByIdForUser(
-      request.mealId,
-      request.userId,
-    );
     if (!existingMeal) {
       throw new NotFoundError(
         `AddIngredientToMealUsecase: Meal with id ${request.mealId} not found`,
       );
     }
 
-    const ingredient = await this.ingredientsRepo.getIngredientById(
-      request.ingredientId,
-    );
     if (!ingredient) {
       throw new NotFoundError(
         `AddIngredientToMealUsecase: Ingredient with id ${request.ingredientId} not found`,
