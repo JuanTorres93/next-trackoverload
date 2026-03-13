@@ -9,6 +9,7 @@ import { showErrorToast } from '@/app/_ui/showErrorToast';
 import LoadingOverlay from '../common/LoadingOverlay';
 import { useRouter } from 'next/navigation';
 import FoodReminderContainer from '../common/FoodReminderContainer';
+import FoodReminderMacros from '../common/FoodReminderMacros';
 import { formatToInteger } from '@/app/_utils/format/formatToInteger';
 
 function MealReminder({ meal }: { meal: MealDTO }) {
@@ -58,18 +59,12 @@ function MealReminder({ meal }: { meal: MealDTO }) {
         />
       </div>
 
-      <div className="flex flex-col min-w-0 gap-1">
+      <div className="flex flex-col min-w-0 gap-2">
         <p className="text-lg font-semibold leading-snug max-bp-navbar-mobile:text-base">
           {meal.name}
         </p>
 
-        <div className="flex items-center gap-1.5 text-sm opacity-75">
-          <span className="font-medium">{calories} kcal</span>
-          <span aria-hidden="true" className="opacity-50">
-            ·
-          </span>
-          <span>{protein} g proteína</span>
-        </div>
+        <FoodReminderMacros calories={calories} protein={protein} />
       </div>
     </FoodReminderContainer>
   );
