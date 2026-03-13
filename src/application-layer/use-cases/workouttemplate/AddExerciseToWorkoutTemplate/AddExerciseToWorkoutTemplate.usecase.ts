@@ -27,18 +27,22 @@ export class AddExerciseToWorkoutTemplateUsecase {
   async execute(
     request: AddExerciseToWorkoutTemplateUsecaseRequest,
   ): Promise<WorkoutTemplateDTO> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, workoutTemplate, exercise] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.workoutTemplatesRepo.getWorkoutTemplateByIdAndUserId(
+        request.workoutTemplateId,
+        request.userId,
+      ),
+
+      this.exercisesRepo.getExerciseById(request.exerciseId),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
         `AddExerciseToWorkoutTemplateUsecase: User with id ${request.userId} not found`,
       );
     }
-
-    const workoutTemplate =
-      await this.workoutTemplatesRepo.getWorkoutTemplateByIdAndUserId(
-        request.workoutTemplateId,
-        request.userId,
-      );
 
     const isDeleted = workoutTemplate?.isDeleted ?? false;
 
@@ -48,9 +52,6 @@ export class AddExerciseToWorkoutTemplateUsecase {
       );
     }
 
-    const exercise = await this.exercisesRepo.getExerciseById(
-      request.exerciseId,
-    );
     if (!exercise) {
       throw new NotFoundError(
         'AddExerciseToWorkoutTemplateUsecase: Exercise not found',

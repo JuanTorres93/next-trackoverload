@@ -14,29 +14,31 @@ export type GetAllWorkoutTemplatesForUserUsecaseRequest = {
 export class GetAllWorkoutTemplatesForUserUsecase {
   constructor(
     private workoutTemplatesRepo: WorkoutTemplatesRepo,
-    private usersRepo: UsersRepo
+    private usersRepo: UsersRepo,
   ) {}
 
   async execute(
-    request: GetAllWorkoutTemplatesForUserUsecaseRequest
+    request: GetAllWorkoutTemplatesForUserUsecaseRequest,
   ): Promise<WorkoutTemplateDTO[]> {
     if (request.actorUserId !== request.targetUserId) {
       throw new PermissionError(
-        `GetAllWorkoutTemplatesForUserUsecase: cannot get workout templates for another user`
+        `GetAllWorkoutTemplatesForUserUsecase: cannot get workout templates for another user`,
       );
     }
 
-    const user = await this.usersRepo.getUserById(request.targetUserId);
+    const [user, workoutTemplates] = await Promise.all([
+      this.usersRepo.getUserById(request.targetUserId),
+
+      this.workoutTemplatesRepo.getAllWorkoutTemplatesByUserId(
+        request.targetUserId,
+      ),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
-        `GetAllWorkoutTemplatesForUserUsecase: User with id ${request.targetUserId} not found`
+        `GetAllWorkoutTemplatesForUserUsecase: User with id ${request.targetUserId} not found`,
       );
     }
-
-    const workoutTemplates =
-      await this.workoutTemplatesRepo.getAllWorkoutTemplatesByUserId(
-        request.targetUserId
-      );
 
     return workoutTemplates.map(toWorkoutTemplateDTO) || [];
   }

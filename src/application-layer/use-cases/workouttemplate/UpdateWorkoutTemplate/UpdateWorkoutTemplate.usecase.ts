@@ -22,18 +22,20 @@ export class UpdateWorkoutTemplateUsecase {
   async execute(
     request: UpdateWorkoutTemplateUsecaseRequest,
   ): Promise<WorkoutTemplateDTO> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, workoutTemplate] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.workoutTemplatesRepo.getWorkoutTemplateByIdAndUserId(
+        request.id,
+        request.userId,
+      ),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
         `UpdateWorkoutTemplateUsecase: User with id ${request.userId} not found`,
       );
     }
-
-    const workoutTemplate =
-      await this.workoutTemplatesRepo.getWorkoutTemplateByIdAndUserId(
-        request.id,
-        request.userId,
-      );
 
     const isDeleted = workoutTemplate?.isDeleted ?? false;
 

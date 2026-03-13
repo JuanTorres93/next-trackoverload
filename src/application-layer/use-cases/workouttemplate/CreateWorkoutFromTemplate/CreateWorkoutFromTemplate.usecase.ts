@@ -24,18 +24,20 @@ export class CreateWorkoutFromTemplateUsecase {
   async execute(
     request: CreateWorkoutFromTemplateUsecaseRequest,
   ): Promise<WorkoutDTO> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, workoutTemplate] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.workoutTemplatesRepo.getWorkoutTemplateByIdAndUserId(
+        request.workoutTemplateId,
+        request.userId,
+      ),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
         `CreateWorkoutFromTemplateUsecase: User with id ${request.userId} not found`,
       );
     }
-
-    const workoutTemplate =
-      await this.workoutTemplatesRepo.getWorkoutTemplateByIdAndUserId(
-        request.workoutTemplateId,
-        request.userId,
-      );
 
     const isDeleted = workoutTemplate?.isDeleted ?? false;
 

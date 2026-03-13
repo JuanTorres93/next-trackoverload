@@ -25,18 +25,20 @@ export class DuplicateWorkoutTemplateUsecase {
   async execute(
     request: DuplicateWorkoutTemplateUsecaseRequest,
   ): Promise<WorkoutTemplateDTO> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, originalTemplate] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.workoutTemplatesRepo.getWorkoutTemplateByIdAndUserId(
+        request.originalTemplateId,
+        request.userId,
+      ),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
         `DuplicateWorkoutTemplateUsecase: User with id ${request.userId} not found`,
       );
     }
-
-    const originalTemplate =
-      await this.workoutTemplatesRepo.getWorkoutTemplateByIdAndUserId(
-        request.originalTemplateId,
-        request.userId,
-      );
 
     const isDeleted = originalTemplate?.isDeleted ?? false;
 

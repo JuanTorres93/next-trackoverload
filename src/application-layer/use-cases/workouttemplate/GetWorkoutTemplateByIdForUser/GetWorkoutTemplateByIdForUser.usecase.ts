@@ -14,24 +14,26 @@ export type GetWorkoutTemplateByIdForUserUsecaseRequest = {
 export class GetWorkoutTemplateByIdForUserUsecase {
   constructor(
     private workoutTemplatesRepo: WorkoutTemplatesRepo,
-    private usersRepo: UsersRepo
+    private usersRepo: UsersRepo,
   ) {}
 
   async execute(
-    request: GetWorkoutTemplateByIdForUserUsecaseRequest
+    request: GetWorkoutTemplateByIdForUserUsecaseRequest,
   ): Promise<WorkoutTemplateDTO | null> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, workoutTemplate] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.workoutTemplatesRepo.getWorkoutTemplateByIdAndUserId(
+        request.id,
+        request.userId,
+      ),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
-        `GetWorkoutTemplateByIdForUserUsecase: User with id ${request.userId} not found`
+        `GetWorkoutTemplateByIdForUserUsecase: User with id ${request.userId} not found`,
       );
     }
-
-    const workoutTemplate =
-      await this.workoutTemplatesRepo.getWorkoutTemplateByIdAndUserId(
-        request.id,
-        request.userId
-      );
 
     return workoutTemplate ? toWorkoutTemplateDTO(workoutTemplate) : null;
   }
