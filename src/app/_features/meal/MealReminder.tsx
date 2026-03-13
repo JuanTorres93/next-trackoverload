@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { showErrorToast } from '@/app/_ui/showErrorToast';
 import LoadingOverlay from '../common/LoadingOverlay';
 import { useRouter } from 'next/navigation';
+import FoodReminderContainer from '../common/FoodReminderContainer';
 
 function MealReminder({ meal }: { meal: MealDTO }) {
   const router = useRouter();
@@ -37,8 +38,9 @@ function MealReminder({ meal }: { meal: MealDTO }) {
   }
 
   return (
-    <div
-      className={`grid relative grid-cols-[5rem_1fr] bg-surface-card shadow-sm p-2 rounded-xl overflow-hidden items-center gap-4 hover:scale-102 cursor-pointer max-bp-navbar-mobile:grid-cols-[4rem_1fr] transition ${meal.isEaten ? 'bg-primary! text-text-light shadow-xs! scale-97!' : ''}`}
+    <FoodReminderContainer
+      className={`grid relative grid-cols-[5rem_1fr] items-center max-bp-navbar-mobile:grid-cols-[4rem_1fr] `}
+      isEaten={meal.isEaten}
       onClick={handleToggleIsEaten}
     >
       {isTogglingEaten && <LoadingOverlay />}
@@ -55,7 +57,7 @@ function MealReminder({ meal }: { meal: MealDTO }) {
       <p className="w-full text-lg font-medium max-bp-navbar-mobile:text-base">
         {meal.name}
       </p>
-    </div>
+    </FoodReminderContainer>
   );
 }
 
