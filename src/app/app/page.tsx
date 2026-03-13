@@ -23,7 +23,12 @@ export const metadata = {
 export default async function Dashboard() {
   const todayId = dateToDayId(new Date());
 
-  const assembledDayResult = await getAssembledDayById(todayId.value);
+  const promises = [
+    getAssembledDayById(todayId.value),
+    // TODO IMPORTANT: allow user to configure days, maybe with a URL query param like ?days=14 or something like that
+    getLastNumberOfDaysIncludingToday(7),
+  ] as const;
+  const [assembledDayResult, daysHistory] = await Promise.all(promises);
 
   const mealsForToday: MealDTO[] = assembledDayResult.assembledDay?.meals || [];
 
@@ -36,11 +41,6 @@ export default async function Dashboard() {
 
   const fakeMealsForToday: FakeMealDTO[] =
     assembledDayResult.assembledDay?.fakeMeals || [];
-  // TODO NEXT: añadir fake meals como ya comidas directamente.
-  // TODO NEXT (después de el de arriba): paralelizar las llamadas
-
-  // TODO IMPORTANT: allow user to configure days, maybe with a URL query param like ?days=14 or something like that
-  const daysHistory = await getLastNumberOfDaysIncludingToday(7);
 
   const todayHasMeals = [...mealsForToday, ...fakeMealsForToday].length > 0;
 
