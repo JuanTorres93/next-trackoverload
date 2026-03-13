@@ -63,7 +63,7 @@ function MealTypeSelectionModal({
 }) {
   return (
     <div className="flex flex-col items-center gap-6 py-4 text-center max-w-96">
-      <h3 className="text-xl text-text">¿Qué quieres añadir?</h3>
+      <h3 className="text-xl text-text">Elige una opción para reemplazar</h3>
 
       <p className="text-sm text-text-minor-emphasis">
         Elige si quieres registrar una comida desde tus recetas o añadir una
