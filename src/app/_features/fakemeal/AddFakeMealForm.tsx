@@ -1,19 +1,20 @@
+import { useFormSetup } from '@/app/_hooks/useFormSetup';
 import ButtonNew from '@/app/_ui/buttons/ButtonNew';
 import FormEntry from '@/app/_ui/form/FormEntry';
 import Input from '@/app/_ui/Input';
-import { useFormSetup } from '@/app/_hooks/useFormSetup';
+import { showErrorToast } from '@/app/_ui/showErrorToast';
 import { addFakeMealToDay } from './actions';
 
 export type AddFakeMealFormState = {
   name: string;
-  calories: number;
-  protein: number;
+  calories: string;
+  protein: string;
 };
 
 const INITIAL_FORM_STATE: AddFakeMealFormState = {
-  name: 'Comida en datos',
-  calories: 0,
-  protein: 0,
+  name: '',
+  calories: '',
+  protein: '',
 };
 
 function AddFakeMealForm({
@@ -28,12 +29,16 @@ function AddFakeMealForm({
 
   const invalidForm =
     formState.name.trim() === '' ||
-    formState.calories < 0 ||
-    formState.protein < 0 ||
+    formState.calories.trim() === '' ||
+    formState.protein.trim() === '' ||
+    Number(formState.calories) < 0 ||
+    Number(formState.protein) < 0 ||
     isLoading;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    if (invalidForm) return;
 
     setIsLoading(true);
 
@@ -41,13 +46,16 @@ function AddFakeMealForm({
       await addFakeMealToDay(
         dayId,
         formState.name,
-        formState.calories,
-        formState.protein,
+        Number(formState.calories),
+        Number(formState.protein),
       );
 
       resetForm();
       onSuccess?.();
-    } catch (error) {
+    } catch {
+      showErrorToast(
+        'Error al añadir la comida. Por favor, inténtalo de nuevo.',
+      );
     } finally {
       setIsLoading(false);
     }
@@ -59,6 +67,7 @@ function AddFakeMealForm({
         <Input
           id="fake-meal-name"
           value={formState.name}
+          placeholder="Nombre de la comida"
           onChange={(e) => setField('name', e.target.value)}
         />
       </FormEntry>
@@ -67,8 +76,9 @@ function AddFakeMealForm({
         <Input
           id="fake-meal-calories"
           type="number"
+          placeholder="Calorías"
           value={formState.calories}
-          onChange={(e) => setField('calories', Number(e.target.value))}
+          onChange={(e) => setField('calories', e.target.value)}
         />
       </FormEntry>
 
@@ -76,8 +86,9 @@ function AddFakeMealForm({
         <Input
           id="fake-meal-proteins"
           type="number"
+          placeholder="Proteínas (g)"
           value={formState.protein}
-          onChange={(e) => setField('protein', Number(e.target.value))}
+          onChange={(e) => setField('protein', e.target.value)}
         />
       </FormEntry>
 
