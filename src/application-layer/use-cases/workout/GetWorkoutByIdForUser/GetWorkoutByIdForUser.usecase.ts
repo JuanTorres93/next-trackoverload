@@ -11,23 +11,23 @@ export type GetWorkoutByIdForUseUsecaseRequest = {
 export class GetWorkoutByIdForUserUsecase {
   constructor(
     private workoutsRepo: WorkoutsRepo,
-    private usersRepo: UsersRepo
+    private usersRepo: UsersRepo,
   ) {}
 
   async execute(
-    request: GetWorkoutByIdForUseUsecaseRequest
+    request: GetWorkoutByIdForUseUsecaseRequest,
   ): Promise<WorkoutDTO | null> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, workout] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.workoutsRepo.getWorkoutByIdAndUserId(request.id, request.userId),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
-        `GetWorkoutByIdForUserUsecase: User with id ${request.userId} not found`
+        `GetWorkoutByIdForUserUsecase: User with id ${request.userId} not found`,
       );
     }
-
-    const workout = await this.workoutsRepo.getWorkoutByIdAndUserId(
-      request.id,
-      request.userId
-    );
 
     return workout ? toWorkoutDTO(workout) : null;
   }

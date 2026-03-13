@@ -11,26 +11,27 @@ export type GetAllWorkoutsForUserRequest = {
 export class GetAllWorkoutsForUserUsecase {
   constructor(
     private workoutsRepo: WorkoutsRepo,
-    private usersRepo: UsersRepo
+    private usersRepo: UsersRepo,
   ) {}
 
   async execute(request: GetAllWorkoutsForUserRequest): Promise<WorkoutDTO[]> {
     if (request.actorUserId !== request.targetUserId) {
       throw new PermissionError(
-        `GetAllWorkoutsForUserUsecase: cannot get workouts for another user`
+        `GetAllWorkoutsForUserUsecase: cannot get workouts for another user`,
       );
     }
 
-    const user = await this.usersRepo.getUserById(request.targetUserId);
+    const [user, workouts] = await Promise.all([
+      this.usersRepo.getUserById(request.targetUserId),
+
+      this.workoutsRepo.getAllWorkoutsByUserId(request.targetUserId),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
-        `GetAllWorkoutsForUserUsecase: User with id ${request.targetUserId} not found`
+        `GetAllWorkoutsForUserUsecase: User with id ${request.targetUserId} not found`,
       );
     }
-
-    const workouts = await this.workoutsRepo.getAllWorkoutsByUserId(
-      request.targetUserId
-    );
 
     return workouts.map(toWorkoutDTO);
   }

@@ -10,21 +10,21 @@ export type DeleteWorkoutUsecaseRequest = {
 export class DeleteWorkoutUsecase {
   constructor(
     private workoutsRepo: WorkoutsRepo,
-    private usersRepo: UsersRepo
+    private usersRepo: UsersRepo,
   ) {}
 
   async execute(request: DeleteWorkoutUsecaseRequest): Promise<void> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, workout] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.workoutsRepo.getWorkoutByIdAndUserId(request.id, request.userId),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
-        `DeleteWorkoutUsecase: user with id ${request.userId} not found`
+        `DeleteWorkoutUsecase: user with id ${request.userId} not found`,
       );
     }
-
-    const workout = await this.workoutsRepo.getWorkoutByIdAndUserId(
-      request.id,
-      request.userId
-    );
 
     if (!workout) {
       throw new NotFoundError('DeleteWorkoutUsecase: Workout not found');

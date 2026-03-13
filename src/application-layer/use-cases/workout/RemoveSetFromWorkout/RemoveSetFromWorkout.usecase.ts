@@ -13,23 +13,26 @@ export type RemoveSetFromWorkoutUsecaseRequest = {
 export class RemoveSetFromWorkoutUsecase {
   constructor(
     private workoutsRepo: WorkoutsRepo,
-    private usersRepo: UsersRepo
+    private usersRepo: UsersRepo,
   ) {}
 
   async execute(
-    request: RemoveSetFromWorkoutUsecaseRequest
+    request: RemoveSetFromWorkoutUsecaseRequest,
   ): Promise<WorkoutDTO> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, workout] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.workoutsRepo.getWorkoutByIdAndUserId(
+        request.workoutId,
+        request.userId,
+      ),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
-        `RemoveSetFromWorkoutUsecase: User with id ${request.userId} not found`
+        `RemoveSetFromWorkoutUsecase: User with id ${request.userId} not found`,
       );
     }
-
-    const workout = await this.workoutsRepo.getWorkoutByIdAndUserId(
-      request.workoutId,
-      request.userId
-    );
 
     if (!workout) {
       throw new NotFoundError('RemoveSetFromWorkoutUsecase: Workout not found');

@@ -13,21 +13,21 @@ export type UpdateWorkoutUsecaseRequest = {
 export class UpdateWorkoutUsecase {
   constructor(
     private workoutsRepo: WorkoutsRepo,
-    private usersRepo: UsersRepo
+    private usersRepo: UsersRepo,
   ) {}
 
   async execute(request: UpdateWorkoutUsecaseRequest): Promise<WorkoutDTO> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, existingWorkout] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.workoutsRepo.getWorkoutByIdAndUserId(request.id, request.userId),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
-        `UpdateWorkoutUsecase: User with id ${request.userId} not found`
+        `UpdateWorkoutUsecase: User with id ${request.userId} not found`,
       );
     }
-
-    const existingWorkout = await this.workoutsRepo.getWorkoutByIdAndUserId(
-      request.id,
-      request.userId
-    );
 
     if (!existingWorkout) {
       throw new NotFoundError('UpdateWorkoutUsecase: Workout not found');

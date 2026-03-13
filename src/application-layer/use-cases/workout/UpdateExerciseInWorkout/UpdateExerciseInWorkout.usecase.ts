@@ -21,17 +21,20 @@ export class UpdateExerciseInWorkoutUsecase {
   async execute(
     request: UpdateExerciseInWorkoutUsecaseRequest,
   ): Promise<WorkoutDTO> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, workout] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.workoutsRepo.getWorkoutByIdAndUserId(
+        request.workoutId,
+        request.userId,
+      ),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
         `UpdateExerciseInWorkoutUsecase: User with id ${request.userId} not found`,
       );
     }
-
-    const workout = await this.workoutsRepo.getWorkoutByIdAndUserId(
-      request.workoutId,
-      request.userId,
-    );
 
     if (!workout) {
       throw new NotFoundError(
