@@ -36,12 +36,18 @@ function Open({
   children,
   opens: opensWindowName,
 }: {
-  children: React.ReactElement<{ onClick?: () => void }>;
+  children: React.ReactElement<{ onClick?: (e: React.MouseEvent) => void }>;
   opens: string;
 }) {
   const { open } = useContext(ModalContext);
 
-  return cloneElement(children, { onClick: () => open(opensWindowName) });
+  function handleClick(e: React.MouseEvent) {
+    e.stopPropagation();
+
+    open(opensWindowName);
+  }
+
+  return cloneElement(children, { onClick: handleClick });
 }
 
 function Window({
@@ -71,7 +77,9 @@ function Window({
       >
         <ButtonX className="absolute top-3 right-3" onClick={close} />
 
-        <div>{cloneElement(children, { onCloseModal: close })} </div>
+        <div className="max-bp-navbar-mobile:flex max-bp-navbar-mobile:items-center max-bp-navbar-mobile:justify-center">
+          {cloneElement(children, { onCloseModal: close })}{' '}
+        </div>
       </div>
     </div>,
     document.body,

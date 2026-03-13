@@ -1,3 +1,5 @@
+import { twMerge } from 'tailwind-merge';
+
 import Link from 'next/link';
 import TextRegular from '../typography/TextRegular';
 
@@ -15,14 +17,18 @@ function ButtonPrimary({
   const disabledStyle =
     'text-text-minor-emphasis! border-text-minor-emphasis hover:bg-transparent cursor-not-allowed';
 
-  const buttonStyle = `p-3 font-medium text-primary transition border-2 border-primary rounded-md hover:cursor-pointer hover:bg-primary hover:text-text-light ${disabled && disabledStyle} ${className}`;
+  const buttonStyle = twMerge(
+    `p-3 font-medium text-primary transition border-2 border-primary rounded-md hover:cursor-pointer hover:bg-primary hover:text-text-light`,
+    disabled ? disabledStyle : '',
+    className,
+  );
 
   if (href) {
     return (
       <TextRegular>
         <Link
           href={href}
-          className={`${buttonStyle} ${disabled && disabledStyle} inline-block`}
+          className={twMerge(buttonStyle, 'inline-block')}
           onClick={
             restProps.onClick as unknown as React.MouseEventHandler<HTMLAnchorElement>
           }

@@ -1,5 +1,7 @@
 'use client';
 
+import { twMerge } from 'tailwind-merge';
+
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -162,9 +164,12 @@ function ToggleButton({
   return (
     <button
       {...rest}
-      className={`z-40 hidden p-2 rounded-full shadow-sm cursor-pointer bg-surface-light text-surface-dark max-bp-navbar-mobile:block transition duration-200 ${
-        navbarShown && 'bg-surface-dark! text-surface-light!'
-      } ${className}`}
+      // use twMerge
+      className={twMerge(
+        `z-40 hidden p-2 rounded-full shadow-sm cursor-pointer bg-surface-light text-surface-dark max-bp-navbar-mobile:block transition duration-200`,
+        navbarShown ? 'bg-surface-dark! text-surface-light!' : '',
+        className,
+      )}
       onClick={toggleNavBar}
     >
       {!navbarShown && <HiBars3 size={30} />}
