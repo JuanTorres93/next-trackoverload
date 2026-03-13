@@ -9,20 +9,23 @@ export type GetMealByIdForUserUsecaseRequest = {
 };
 
 export class GetMealByIdForUserUsecase {
-  constructor(private mealsRepo: MealsRepo, private usersRepo: UsersRepo) {}
+  constructor(
+    private mealsRepo: MealsRepo,
+    private usersRepo: UsersRepo,
+  ) {}
 
   async execute(
-    request: GetMealByIdForUserUsecaseRequest
+    request: GetMealByIdForUserUsecaseRequest,
   ): Promise<MealDTO | null> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, meal] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.mealsRepo.getMealByIdForUser(request.mealId, request.userId),
+    ]);
+
     if (!user) {
       throw new NotFoundError('GetMealByIdForUserUsecase: User not found');
     }
-
-    const meal = await this.mealsRepo.getMealByIdForUser(
-      request.mealId,
-      request.userId
-    );
 
     return meal ? toMealDTO(meal) : null;
   }

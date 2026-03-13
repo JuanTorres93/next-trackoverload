@@ -28,17 +28,18 @@ export class GetAssembledDayByIdUsecase {
   async execute(
     request: GetAssembledDayByIdUsecaseRequest,
   ): Promise<AssembledDayDTO | null> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, day] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.dayRepo.getDayByIdAndUserId(request.dayId, request.userId),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
         `GetAssembledDayByIdUsecase: User with id ${request.userId} not found`,
       );
     }
 
-    const day = await this.dayRepo.getDayByIdAndUserId(
-      request.dayId,
-      request.userId,
-    );
     if (!day) {
       return null;
     }

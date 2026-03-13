@@ -15,17 +15,18 @@ export class ToggleIsEatenUsecase {
   ) {}
 
   async execute(request: ToggleIsEatenUsecaseRequest): Promise<MealDTO> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, meal] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.mealsRepo.getMealByIdForUser(request.mealId, request.userId),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
         `ToggleIsEatenUsecase: User with id ${request.userId} not found`,
       );
     }
 
-    const meal = await this.mealsRepo.getMealByIdForUser(
-      request.mealId,
-      request.userId,
-    );
     if (!meal) {
       throw new NotFoundError('ToggleIsEatenUsecase: Meal not found');
     }

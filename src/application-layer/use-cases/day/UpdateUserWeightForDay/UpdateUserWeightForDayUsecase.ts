@@ -21,17 +21,19 @@ export class UpdateUserWeightForDayUsecase {
   async execute(
     request: UpdateUserWeightForDayUsecaseRequest,
   ): Promise<DayDTO> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, fetchedDay] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.daysRepo.getDayByIdAndUserId(request.dayId, request.userId),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
         `UpdateUserWeightForDayUsecase: User with id ${request.userId} not found`,
       );
     }
 
-    let dayToChangeWeight: Day | null = await this.daysRepo.getDayByIdAndUserId(
-      request.dayId,
-      request.userId,
-    );
+    let dayToChangeWeight: Day | null = fetchedDay;
 
     if (!dayToChangeWeight) {
       const { day, month, year } = dayIdToDayMonthYear(request.dayId);

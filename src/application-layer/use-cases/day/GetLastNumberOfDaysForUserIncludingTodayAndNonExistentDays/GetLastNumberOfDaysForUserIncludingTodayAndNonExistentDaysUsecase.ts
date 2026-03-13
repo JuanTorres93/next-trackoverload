@@ -24,13 +24,6 @@ export class GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase {
   async execute(
     request: GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecaseRequest,
   ): Promise<DayEntry[]> {
-    const user = await this.usersRepo.getUserById(request.userId);
-    if (!user) {
-      throw new NotFoundError(
-        `GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase: User with id ${request.userId} not found`,
-      );
-    }
-
     const today = new Date();
 
     const startDate = new Date(today);
@@ -39,11 +32,21 @@ export class GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase {
     const todayDayId = dateToDayId(today).value;
     const startDayId = dateToDayId(startDate).value;
 
-    const days = await this.daysRepo.getDaysByDateRangeAndUserId(
-      startDayId,
-      todayDayId,
-      request.userId,
-    );
+    const [user, days] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.daysRepo.getDaysByDateRangeAndUserId(
+        startDayId,
+        todayDayId,
+        request.userId,
+      ),
+    ]);
+
+    if (!user) {
+      throw new NotFoundError(
+        `GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase: User with id ${request.userId} not found`,
+      );
+    }
 
     const dayMap = new Map(days.map((day) => [day.id, toDayDTO(day)]));
 

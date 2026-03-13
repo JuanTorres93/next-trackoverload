@@ -28,18 +28,20 @@ export class GetMultipleAssembledDaysByIdsUsecase {
   async execute(
     request: GetMultipleAssembledDaysByIdsUsecaseRequest,
   ): Promise<AssembledDayDTO[]> {
-    const user = await this.usersRepo.getUserById(request.userId);
+    const [user, days] = await Promise.all([
+      this.usersRepo.getUserById(request.userId),
+
+      this.dayRepo.getMultipleDaysByIdsAndUserId(
+        request.dayIds,
+        request.userId,
+      ),
+    ]);
+
     if (!user) {
       throw new NotFoundError(
         `GetMultipleAssembledDaysByIdsUsecase: User with id ${request.userId} not found`,
       );
     }
-
-    // Get all days in one query
-    const days = await this.dayRepo.getMultipleDaysByIdsAndUserId(
-      request.dayIds,
-      request.userId,
-    );
 
     if (days.length === 0) {
       return [];
