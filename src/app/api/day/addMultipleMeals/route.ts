@@ -7,11 +7,11 @@ export async function POST(
   request: NextRequest,
 ): Promise<NextResponse<JSENDResponse<{ message: string }>>> {
   try {
-    const body = await request.json();
+    const promises = [request.json(), getCurrentUserId()];
+
+    const [body, userId] = await Promise.all(promises);
 
     const { dayId, recipeIds } = body;
-
-    const userId = await getCurrentUserId();
 
     await AppAddMultipleMealsToDayUsecase.execute({
       dayId,

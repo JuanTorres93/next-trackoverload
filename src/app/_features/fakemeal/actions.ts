@@ -20,6 +20,7 @@ export async function addFakeMealToDay(
   });
 
   revalidatePath(`/app/meals`);
+  revalidatePath(`/app`);
 }
 
 export async function removeFakeMealFromDay(
@@ -33,4 +34,5 @@ export async function removeFakeMealFromDay(
   });
 
   revalidatePath(`/app/meals`);
+  revalidatePath(`/app`);
 }

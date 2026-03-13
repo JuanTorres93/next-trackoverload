@@ -60,6 +60,7 @@ export async function removeMealFromDay(
   });
 
   revalidatePath(`/app/meals`);
+  revalidatePath(`/app`);
 }
 
 export async function updateUserWeightForDay(
