@@ -32,7 +32,7 @@ function IngredientItemMini({
       <div className="relative overflow-hidden rounded-md aspect-square">
         <Image
           fill
-          src={ingredient.imageUrl || '/ingredient-no-picture.png'}
+          src={ingredient.imageUrl || '/ingredient-no-picture.webp'}
           alt="Ingredient Image"
           placeholder="blur"
           blurDataURL={blurDataURL}

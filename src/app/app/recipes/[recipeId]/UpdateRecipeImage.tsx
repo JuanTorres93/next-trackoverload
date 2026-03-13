@@ -40,7 +40,7 @@ function UpdateRecipeImage({
       {isLoading && <LoadingOverlay />}
 
       <Image
-        src={recipe.imageUrl || '/recipe-no-picture.png'}
+        src={recipe.imageUrl || '/recipe-no-picture.webp'}
         alt={recipe.name}
         width={300}
         height={200}

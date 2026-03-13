@@ -21,7 +21,7 @@ function MealReminder({ meal, dayId }: { meal: MealDTO; dayId: string }) {
 
   const [isTogglingEaten, setIsTogglingEaten] = useState(false);
 
-  const defaultImageUrl = '/recipe-no-picture.png';
+  const defaultImageUrl = '/recipe-no-picture.webp';
 
   const calories = formatToInteger(meal.calories);
   const protein = formatToInteger(meal.protein);

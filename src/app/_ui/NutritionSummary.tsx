@@ -26,8 +26,8 @@ function NutritionSummary({
   isLoading?: boolean;
 }) {
   const isIngredientLine = 'ingredient' in line;
-  const defaultImageUrlIngredient = '/ingredient-no-picture.png';
-  const defaultImageUrlRecipe = '/recipe-no-picture.png';
+  const defaultImageUrlIngredient = '/ingredient-no-picture.webp';
+  const defaultImageUrlRecipe = '/recipe-no-picture.webp';
 
   const imageUrl = isIngredientLine
     ? line.ingredient.imageUrl || defaultImageUrlIngredient

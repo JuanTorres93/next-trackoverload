@@ -156,7 +156,7 @@ function NewRecipeForm() {
               src={
                 formState.imageFile
                   ? URL.createObjectURL(formState.imageFile)
-                  : '/recipe-no-picture.png'
+                  : '/recipe-no-picture.webp'
               }
               alt="Imagen de la receta"
               fill

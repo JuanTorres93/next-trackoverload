@@ -63,7 +63,7 @@ function RecipeCard({
 
         <div className="relative h-32 col-span-2 overflow-hidden rounded-lg">
           <Image
-            src={recipe.imageUrl ? recipe.imageUrl : '/recipe-no-picture.png'}
+            src={recipe.imageUrl ? recipe.imageUrl : '/recipe-no-picture.webp'}
             alt={recipe.name}
             fill
             className="object-cover"
