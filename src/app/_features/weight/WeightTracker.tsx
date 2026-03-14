@@ -16,21 +16,37 @@ function WeightTracker({
   const { className, ...rest } = props;
   const lastDay = days[days.length - 1];
 
+  const moreThanOneDaysWithWeight =
+    days.filter((day) => day.day?.userWeightInKg !== undefined).length > 1;
+
+  const emptyInputBackground = moreThanOneDaysWithWeight
+    ? 'placeholder:bg-primary/10'
+    : 'placeholder:bg-info/20';
+
   return (
     <div
       className={twMerge(
-        'grid grid-cols-[minmax(17rem,40rem)] gap-4',
+        'grid grid-cols-[minmax(17rem,40rem)] gap-8',
         className,
       )}
       {...rest}
     >
-      <WeightInput lastDay={lastDay} />
+      <WeightInput
+        lastDay={lastDay}
+        placeholderBackground={emptyInputBackground}
+      />
       <WeightHistory days={days} />
     </div>
   );
 }
 
-function WeightInput({ lastDay }: { lastDay: DayEntry }) {
+function WeightInput({
+  lastDay,
+  placeholderBackground,
+}: {
+  lastDay: DayEntry;
+  placeholderBackground: string;
+}) {
   const debouncedHandleWeightChange = useDebounce(handleWeightChange, 250);
 
   function handleWeightChange(newWeight: string) {
@@ -43,7 +59,10 @@ function WeightInput({ lastDay }: { lastDay: DayEntry }) {
       <Input
         id="input-weight"
         containerClassName="border-0 bg-background gap-2 min-w-22 items-end p-0"
-        className="text-3xl text-right rounded-sm text-primary placeholder:bg-info/20 placeholder:text-text-minor-emphasis/65"
+        className={twMerge(
+          `text-3xl text-right rounded-sm text-primary placeholder:text-text-minor-emphasis/65!`,
+          placeholderBackground,
+        )}
         placeholder="KG"
         defaultValue={lastDay.day?.userWeightInKg}
         onChange={(e) => debouncedHandleWeightChange(e.target.value)}
