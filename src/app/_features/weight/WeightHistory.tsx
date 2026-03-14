@@ -78,14 +78,7 @@ function WeightHistory({ days }: { days: DayEntry[] }) {
           width={70}
         />
 
-        <Tooltip
-          formatter={(value) => [`${value} kg`, 'Peso']}
-          contentStyle={{
-            borderRadius: '0.5rem',
-            border: 'none',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-          }}
-        />
+        <Tooltip content={<CustomTooltip />} />
 
         <Area
           type="monotone"
@@ -119,6 +112,30 @@ function processWeightHistoryForChart(days: DayEntry[]): ChartDataPoint[] {
         weight,
       };
     });
+}
+
+function CustomTooltip({
+  active,
+  payload,
+  label,
+}: {
+  active?: boolean;
+  payload?: { value: number }[];
+  label?: string;
+}) {
+  if (!active || !payload?.length) return null;
+
+  return (
+    <div className="px-3 py-2 font-normal bg-white rounded-lg shadow-md text-text">
+      <p className="m-0 ">{label}</p>
+      <p className="m-0 ">
+        Peso :{' '}
+        <span className="font-semibold text-primary">
+          {payload[0].value} kg
+        </span>
+      </p>
+    </div>
+  );
 }
 
 export default WeightHistory;
