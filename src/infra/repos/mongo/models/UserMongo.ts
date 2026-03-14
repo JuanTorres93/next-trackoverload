@@ -25,6 +25,10 @@ const userSchema = new mongoose.Schema<UserCreateProps>({
     type: String,
     required: false,
   },
+  subscriptionStatus: {
+    type: String,
+    required: false,
+  },
   createdAt: {
     type: Date,
     required: true,

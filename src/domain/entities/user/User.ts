@@ -5,6 +5,7 @@ import { Integer } from '@/domain/value-objects/Integer/Integer';
 import { Text } from '@/domain/value-objects/Text/Text';
 import { ValidationError } from '@/domain/common/errors';
 import { HashedPassword } from '@/domain/value-objects/HashedPassword/HashedPassword';
+import { SubscriptionStatus } from '@/domain/value-objects/SubscriptionStatus/SubscriptionStatus';
 
 export type UserCreateProps = {
   id: string;
@@ -12,6 +13,7 @@ export type UserCreateProps = {
   email: string;
   hashedPassword: string;
   customerId?: string;
+  subscriptionStatus?: string;
   createdAt?: Date;
   updatedAt?: Date;
 };
@@ -19,6 +21,7 @@ export type UserCreateProps = {
 export type UserUpdateProps = {
   name?: string;
   customerId?: string;
+  subscriptionStatus?: string;
 };
 
 export type UserProps = {
@@ -26,6 +29,7 @@ export type UserProps = {
   name: Text;
   email: Email;
   hashedPassword: HashedPassword;
+  subscriptionStatus?: SubscriptionStatus;
   customerId?: Id;
   createdAt: DomainDate;
   updatedAt: DomainDate;
@@ -44,8 +48,14 @@ export class User {
       id: Id.create(props.id),
       name: Text.create(props.name, nameTextOptions),
       email: Email.create(props.email),
+
       hashedPassword: HashedPassword.create(props.hashedPassword),
+
       customerId: props.customerId ? Id.create(props.customerId) : undefined,
+      subscriptionStatus: props.subscriptionStatus
+        ? SubscriptionStatus.create(props.subscriptionStatus)
+        : undefined,
+
       createdAt: DomainDate.create(props.createdAt),
       updatedAt: DomainDate.create(props.updatedAt),
     };
@@ -54,7 +64,7 @@ export class User {
   }
 
   update(patch: UserUpdateProps): void {
-    // or every entry undefined
+    // if every entry undefined
     if (
       !patch ||
       Object.keys(patch).length === 0 ||
@@ -70,6 +80,12 @@ export class User {
 
     if (patch.customerId) {
       this.props.customerId = Id.create(patch.customerId);
+    }
+
+    if (patch.subscriptionStatus) {
+      this.props.subscriptionStatus = SubscriptionStatus.create(
+        patch.subscriptionStatus,
+      );
     }
 
     this.props.updatedAt = DomainDate.create();
@@ -96,6 +112,10 @@ export class User {
     return this.props.customerId?.value;
   }
 
+  get subscriptionStatus() {
+    return this.props.subscriptionStatus?.value;
+  }
+
   get createdAt() {
     return this.props.createdAt.value;
   }
@@ -111,6 +131,7 @@ export class User {
       email: this.props.email.value,
       hashedPassword: this.props.hashedPassword.value,
       customerId: this.props.customerId?.value,
+      subscriptionStatus: this.props.subscriptionStatus?.value,
       createdAt: this.props.createdAt.value,
       updatedAt: this.props.updatedAt.value,
     };

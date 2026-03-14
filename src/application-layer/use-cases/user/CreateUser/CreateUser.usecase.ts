@@ -70,6 +70,7 @@ export class CreateUserUsecase {
       email: request.email,
       hashedPassword,
       customerId: request.customerId ? request.customerId : undefined,
+      subscriptionStatus: 'free_trial',
     });
 
     await this.usersRepo.saveUser(newUser);

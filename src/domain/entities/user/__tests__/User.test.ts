@@ -44,6 +44,18 @@ describe('User', () => {
       expect(user.customerId).toBe(newCustomerId);
     });
 
+    it('should update subscription status', async () => {
+      const newSubscriptionStatus = 'active';
+
+      expect(user.subscriptionStatus).not.toBe(newSubscriptionStatus);
+
+      const patch = { subscriptionStatus: newSubscriptionStatus };
+
+      user.update(patch);
+
+      expect(user.subscriptionStatus).toBe(newSubscriptionStatus);
+    });
+
     it('should set createdAt and updatedAt if not provided', () => {
       // eslint-disable-next-line
       const { createdAt, updatedAt, ...propsWithoutDates } = validUserProps;
@@ -59,6 +71,19 @@ describe('User', () => {
       );
       expect(userWithoutDates.updatedAt.getTime()).toBeLessThanOrEqual(
         now.getTime(),
+      );
+    });
+
+    it('may have subscriptionStatus property', async () => {
+      const subscriptionStatus = 'active';
+      const userWithSubscriptionStatus = User.create({
+        ...validUserProps,
+        subscriptionStatus,
+      });
+
+      expect(userWithSubscriptionStatus).toBeInstanceOf(User);
+      expect(userWithSubscriptionStatus.subscriptionStatus).toBe(
+        subscriptionStatus,
       );
     });
   });

@@ -5,6 +5,7 @@ export type UserDTO = {
   name: string;
   email: string;
   customerId?: string;
+  subscriptionStatus?: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -15,6 +16,7 @@ export function toUserDTO(user: User): UserDTO {
     name: user.name,
     email: user.email,
     customerId: user.customerId,
+    subscriptionStatus: user.subscriptionStatus,
     createdAt: user.createdAt.toISOString(),
     updatedAt: user.updatedAt.toISOString(),
   };

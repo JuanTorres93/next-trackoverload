@@ -95,6 +95,16 @@ describe('CreateUserUsecase', () => {
 
       expect(user.id).not.toBe(user2.id);
     });
+
+    it('should create user on free trial', async () => {
+      const userOnTrial = await createUserUsecase.execute({
+        name: 'Trial User',
+        email: 'trialuser@example.com',
+        plainPassword,
+      });
+
+      expect(userOnTrial.subscriptionStatus).toBe('free_trial');
+    });
   });
 
   describe('Errors', () => {
