@@ -1,5 +1,6 @@
 import SubscriptionCard from '@/app/_features/subscription/SubscriptionCard';
 import { getLoggedInUser } from '@/app/_features/user/actions';
+import { getPlanInfo } from '@/app/_features/subscription/actions';
 import PageWrapper from '@/app/_ui/PageWrapper';
 import SectionHeading from '@/app/_ui/typography/SectionHeading';
 
@@ -9,9 +10,10 @@ export const metadata = {
 };
 
 export default async function SubscriptionPage() {
-  const user = await getLoggedInUser();
-
-  // TODO IMPORTANT get subscription info from stripe
+  const [user, planInfo] = await Promise.all([
+    getLoggedInUser(),
+    getPlanInfo(),
+  ]);
 
   if (!user) {
     return (
@@ -22,16 +24,19 @@ export default async function SubscriptionPage() {
     );
   }
 
+  // TODO: get periodEndDate from the user's active subscription
+  const periodEndDate = new Date();
+
   return (
     <PageWrapper>
       <SectionHeading>Suscripción</SectionHeading>
 
       <SubscriptionCard
         user={user}
-        description="Accede a todas las funciones premium de la aplicación."
-        priceInEurCents={999}
-        title="Plan Pro"
-        periodEndDate={new Date()}
+        description={planInfo.description}
+        priceInEurCents={planInfo.priceInEurCents}
+        title={planInfo.title}
+        periodEndDate={periodEndDate}
       />
     </PageWrapper>
   );

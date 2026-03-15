@@ -1,4 +1,7 @@
-import { PaymentsService } from '@/domain/services/PaymentsService.port';
+import {
+  PaymentsService,
+  PlanInfo,
+} from '@/domain/services/PaymentsService.port';
 import { SubscriptionStatus } from '@/domain/value-objects/SubscriptionStatus/SubscriptionStatus';
 
 export class MemoryPaymentsService implements PaymentsService {
@@ -24,5 +27,13 @@ export class MemoryPaymentsService implements PaymentsService {
     _customerId: string,
   ): Promise<SubscriptionStatus | null> {
     return null;
+  }
+
+  async getPlanInfo(): Promise<PlanInfo> {
+    return {
+      title: 'Plan Pro',
+      description: 'Accede a todas las funciones premium de la aplicación.',
+      priceInEurCents: 999,
+    };
   }
 }

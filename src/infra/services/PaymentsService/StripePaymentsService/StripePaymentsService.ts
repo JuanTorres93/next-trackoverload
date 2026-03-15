@@ -1,7 +1,10 @@
 import Stripe from 'stripe';
 
 import { InfrastructureError } from '@/domain/common/errors';
-import { PaymentsService } from '@/domain/services/PaymentsService.port';
+import {
+  PaymentsService,
+  PlanInfo,
+} from '@/domain/services/PaymentsService.port';
 import { SubscriptionStatus } from '@/domain/value-objects/SubscriptionStatus/SubscriptionStatus';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET!);
@@ -79,5 +82,25 @@ export class StripePaymentsService implements PaymentsService {
     if (!subscriptions[0]) return null;
 
     return toSubscriptionStatus(subscriptions[0]);
+  }
+
+  async getPlanInfo(): Promise<PlanInfo> {
+    const priceId = process.env.STRIPE_PRICE_ID!;
+
+    const price = await stripe.prices.retrieve(priceId, {
+      expand: ['product'],
+    });
+
+    const product = price.product;
+
+    const title =
+      typeof product === 'object' && 'name' in product ? product.name : '';
+
+    const description =
+      typeof product === 'object' && 'description' in product
+        ? (product.description ?? '')
+        : '';
+
+    return { title, description, priceInEurCents: price.unit_amount ?? 0 };
   }
 }
