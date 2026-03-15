@@ -6,6 +6,8 @@ import ButtonDanger from '@/app/_ui/buttons/ButtonDanger';
 import ButtonPrimary from '@/app/_ui/buttons/ButtonPrimary';
 import { UserDTO } from '@/application-layer/dtos/UserDTO';
 import { formatPriceInEurCentsToString } from './formatPriceInEurCentsToString';
+import { useState } from 'react';
+import SpinnerMini from '@/app/_ui/SpinnerMini';
 
 export type SubscriptionCardProps = {
   title: string;
@@ -13,7 +15,6 @@ export type SubscriptionCardProps = {
   description: string;
   user: UserDTO;
   periodEndDate?: Date;
-  onSubscribe?: () => void;
   onManagePayment?: () => void;
   onCancel?: () => void;
   onReactivate?: () => void;
@@ -25,7 +26,6 @@ function SubscriptionCard({
   description,
   user,
   periodEndDate,
-  onSubscribe,
   onManagePayment,
   onCancel,
   onReactivate,
@@ -56,7 +56,6 @@ function SubscriptionCard({
         <NoSubscriptionContent
           description={description}
           price={formattedPrice}
-          onSubscribe={onSubscribe}
         />
       )}
     </div>
@@ -82,12 +81,32 @@ function StatusBadge({ active }: { active: boolean }) {
 function NoSubscriptionContent({
   description,
   price,
-  onSubscribe,
 }: {
   description: string;
   price: string;
-  onSubscribe?: () => void;
 }) {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubscribe = async () => {
+    if (isLoading) return;
+
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('/api/subscription/create', {
+        method: 'POST',
+      });
+      const json = await response.json();
+
+      if (json.status === 'success') {
+        window.location.assign(json.data.redirectUrl);
+      }
+    } catch {
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <>
       <p className="text-center text-text-regular">{description}</p>
@@ -95,7 +114,10 @@ function NoSubscriptionContent({
       <p className="font-medium text-center">
         Precio: <span className="text-text/80">{price}/mes</span>
       </p>
-      <ButtonPrimary onClick={onSubscribe}>Suscribirme</ButtonPrimary>
+      <ButtonPrimary disabled={isLoading} onClick={handleSubscribe}>
+        {!isLoading && 'Suscribirme'}
+        {isLoading && <SpinnerMini className="mx-auto" />}
+      </ButtonPrimary>
     </>
   );
 }

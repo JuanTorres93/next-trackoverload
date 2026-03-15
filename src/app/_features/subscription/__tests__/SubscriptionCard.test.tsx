@@ -1,4 +1,6 @@
 import { screen, render } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { vi } from 'vitest';
 import { toUserDTO, UserDTO } from '@/application-layer/dtos/UserDTO';
 import SubscriptionCard from '../SubscriptionCard';
 import { validUserProps } from '../../../../../tests/createProps/userTestProps';
@@ -154,6 +156,49 @@ describe('SubscriptionCard', () => {
       expect(
         screen.queryByRole('button', { name: /suscribirme/i }),
       ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('subscribe button click', () => {
+    const REDIRECT_URL = 'https://checkout.stripe.com/session_123';
+
+    beforeEach(() => {
+      const mockFetch = vi.fn().mockResolvedValue({
+        json: () =>
+          Promise.resolve({
+            status: 'success',
+            data: { redirectUrl: REDIRECT_URL },
+          }),
+      });
+      vi.stubGlobal('fetch', mockFetch);
+    });
+
+    afterEach(() => {
+      vi.unstubAllGlobals();
+    });
+
+    it('calls POST /api/subscription/create when subscribe button is clicked', async () => {
+      await setup();
+      const user = userEvent.setup();
+
+      await user.click(screen.getByRole('button', { name: /suscribirme/i }));
+
+      expect(globalThis.fetch).toHaveBeenCalledWith(
+        '/api/subscription/create',
+        { method: 'POST' },
+      );
+    });
+
+    it('redirects to the returned URL on success', async () => {
+      const assignMock = vi.fn();
+      vi.stubGlobal('location', { assign: assignMock });
+
+      await setup();
+      const user = userEvent.setup();
+
+      await user.click(screen.getByRole('button', { name: /suscribirme/i }));
+
+      expect(assignMock).toHaveBeenCalledWith(REDIRECT_URL);
     });
   });
 });
