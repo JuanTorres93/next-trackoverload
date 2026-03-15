@@ -10,24 +10,16 @@ import './models/MealMongo';
 import './models/RecipeLineMongo';
 import './models/RecipeMongo';
 import './models/UserMongo';
-import './models/WorkoutMongo';
 import './models/WorkoutLineMongo';
-import './models/WorkoutTemplateMongo';
+import './models/WorkoutMongo';
 import './models/WorkoutTemplateLineMongo';
+import './models/WorkoutTemplateMongo';
 
-import { InfrastructureError } from '../../../domain/common/errors';
+const MONGODB_USERNAME = process.env.MONGODB_USERNAME;
+const MONGODB_PASSWORD = process.env.MONGODB_PASSWORD;
+const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME;
 
-const MONGODB_USERNAME_DEV = process.env.MONGODB_USERNAME_DEV;
-const MONGODB_PASSWORD_DEV = process.env.MONGODB_PASSWORD_DEV;
-const MONGODB_DB_NAME_DEV = process.env.MONGODB_DB_NAME_DEV;
-
-export const MONGODB_URI_DEV = `mongodb+srv://${MONGODB_USERNAME_DEV}:${MONGODB_PASSWORD_DEV}@cluster0.pjn69gs.mongodb.net/${MONGODB_DB_NAME_DEV}?appName=Cluster0`;
-
-const MONGODB_USERNAME_PROD = process.env.MONGODB_USERNAME_PROD;
-const MONGODB_PASSWORD_PROD = process.env.MONGODB_PASSWORD_PROD;
-const MONGODB_DB_NAME_PROD = process.env.MONGODB_DB_NAME_PROD;
-
-const MONGODB_URI_PROD = `mongodb+srv://${MONGODB_USERNAME_PROD}:${MONGODB_PASSWORD_PROD}@cluster0.pjn69gs.mongodb.net/${MONGODB_DB_NAME_PROD}?appName=Cluster0`;
+export const MONGODB_URI = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@cluster0.pjn69gs.mongodb.net/${MONGODB_DB_NAME}?appName=Cluster0`;
 
 // Prevent multiple connections in development when Next.js does hot reload
 // Use global so the promise persists across recompilations
@@ -49,24 +41,6 @@ export async function startMongooseConnection(uri: string) {
   })();
 
   return global.mongooseConnectionPromise;
-}
-
-export async function getMongooseDevelopmentInstance() {
-  if (process.env.NODE_ENV !== 'development')
-    throw new InfrastructureError(
-      'getMongooseDevelopmentInstance: Not in development environment',
-    );
-
-  await startMongooseConnection(MONGODB_URI_DEV);
-}
-
-export async function getMongooseProductionInstance() {
-  if (process.env.NODE_ENV !== 'production')
-    throw new InfrastructureError(
-      'getMongooseProductionInstance: Not in production environment',
-    );
-
-  await startMongooseConnection(MONGODB_URI_PROD);
 }
 
 export async function initMongoModels() {

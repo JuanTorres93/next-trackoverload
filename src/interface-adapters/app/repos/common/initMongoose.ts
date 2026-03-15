@@ -1,6 +1,6 @@
 import {
-  getMongooseDevelopmentInstance,
-  getMongooseProductionInstance,
+  MONGODB_URI,
+  startMongooseConnection,
 } from '@/infra/repos/mongo/config';
 
 // This promise runs on module import and is shared across all repos
@@ -10,10 +10,7 @@ export const mongooseInitPromise = (async () => {
   // have no access to MongoDB — the actual connection happens at runtime)
   if (process.env.NEXT_PHASE === 'phase-production-build') return;
 
-  if (process.env.NODE_ENV === 'development') {
-    await getMongooseDevelopmentInstance();
-  }
-  if (process.env.NODE_ENV === 'production') {
-    await getMongooseProductionInstance();
-  }
+  if (process.env.NODE_ENV === 'test') return;
+
+  await startMongooseConnection(MONGODB_URI);
 })();
