@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { AppSyncUserSubscriptionStatusUsecase } from '@/interface-adapters/app/use-cases/subscription';
+import { toSubscriptionStatus } from '@/infra/services/PaymentsService/StripePaymentsService/StripePaymentsService';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET!);
 
@@ -33,11 +35,21 @@ export async function POST(req: NextRequest) {
   switch (event.type) {
     case 'customer.subscription.created':
     case 'customer.subscription.updated':
-    case 'customer.subscription.deleted':
-      // TODO: handle subscription lifecycle
+    case 'customer.subscription.deleted': {
+      const subscription = event.data.object as Stripe.Subscription;
+
+      const customerId =
+        typeof subscription.customer === 'string'
+          ? subscription.customer
+          : subscription.customer.id;
+
+      await AppSyncUserSubscriptionStatusUsecase.execute({
+        customerId,
+        subscriptionStatus: toSubscriptionStatus(subscription).value,
+      });
       break;
+    }
     default:
-      // Ignore unhandled event types
       break;
   }
 

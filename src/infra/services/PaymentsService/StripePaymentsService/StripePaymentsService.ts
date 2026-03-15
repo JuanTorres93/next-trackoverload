@@ -7,7 +7,7 @@ import { SubscriptionStatus } from '@/domain/value-objects/SubscriptionStatus/Su
 const stripe = new Stripe(process.env.STRIPE_SECRET!);
 const appUrl = process.env.NEXT_PUBLIC_APP_URL!;
 
-function toSubscriptionStatus(
+export function toSubscriptionStatus(
   subscription: Stripe.Subscription,
 ): SubscriptionStatus {
   if (subscription.status === 'trialing')
@@ -30,6 +30,7 @@ function toSubscriptionStatus(
 export class StripePaymentsService implements PaymentsService {
   private async createCustomer(email: string, name: string): Promise<string> {
     const customer = await stripe.customers.create({ email, name });
+
     return customer.id;
   }
 
@@ -37,7 +38,7 @@ export class StripePaymentsService implements PaymentsService {
     email: string,
     name: string,
     planId: string,
-  ): Promise<{ redirectUrl: string }> {
+  ): Promise<{ redirectUrl: string; customerId: string }> {
     const customerId = await this.createCustomer(email, name);
 
     const session = await stripe.checkout.sessions.create({
@@ -53,7 +54,7 @@ export class StripePaymentsService implements PaymentsService {
         'StripePaymentsService: checkout session URL is null',
       );
 
-    return { redirectUrl: session.url };
+    return { redirectUrl: session.url, customerId };
   }
 
   async cancelSubscription(

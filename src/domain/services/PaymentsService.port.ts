@@ -5,7 +5,7 @@ export interface PaymentsService {
     email: string,
     name: string,
     planId: string,
-  ): Promise<{ redirectUrl: string }>;
+  ): Promise<{ redirectUrl: string; customerId: string }>;
 
   cancelSubscription(customerId: string): Promise<{ redirectUrl: string }>;
 
