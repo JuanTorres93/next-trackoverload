@@ -120,7 +120,7 @@ function NavBar() {
       icon: <HiClipboardDocumentList />,
     },
     { href: '/app/profile', label: 'Perfil', icon: <HiUserCircle /> },
-    { href: '/subscription', label: 'Suscripción', icon: <HiCreditCard /> },
+    { href: '/app/subscription', label: 'Suscripción', icon: <HiCreditCard /> },
   ];
 
   if (process.env.NODE_ENV !== 'production') {
