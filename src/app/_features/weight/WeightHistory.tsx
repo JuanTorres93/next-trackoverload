@@ -1,5 +1,6 @@
 'use client';
 
+import { extractCssVariable } from '@/app/_common/extractCssVariableFromGlobalsCssFile';
 import InfoBox from '@/app/_ui/InfoBox';
 import { DayEntry } from '@/application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase';
 import { dayIdToDayMonthYear } from '@/domain/value-objects/DayId/DayId';
@@ -13,11 +14,11 @@ import {
   YAxis,
 } from 'recharts';
 
-const PRIMARY_COLOR = '#008236';
-const PRIMARY_LIGHT_COLOR = '#00a63e';
-const NEUTRAL_COLOR = '#9ca3af';
-
 function WeightHistory({ days }: { days: DayEntry[] }) {
+  const colorPrimary = extractCssVariable('--color-primary');
+  const colorPrimaryLight = extractCssVariable('--color-primary-light');
+  const colorNeutral = extractCssVariable('--color-text-minor-emphasis');
+
   const data = processWeightHistoryForChart(days);
 
   if (data.length < 2) {
@@ -46,20 +47,16 @@ function WeightHistory({ days }: { days: DayEntry[] }) {
           <linearGradient id="weightGradient" x1="0" y1="0" x2="0" y2="1">
             <stop
               offset="5%"
-              stopColor={PRIMARY_LIGHT_COLOR}
+              stopColor={colorPrimaryLight}
               stopOpacity={0.15}
             />
-            <stop
-              offset="95%"
-              stopColor={PRIMARY_LIGHT_COLOR}
-              stopOpacity={0}
-            />
+            <stop offset="95%" stopColor={colorPrimaryLight} stopOpacity={0} />
           </linearGradient>
         </defs>
 
         <XAxis
           dataKey="label"
-          tick={{ fontSize: 12, fill: NEUTRAL_COLOR }}
+          tick={{ fontSize: 12, fill: colorNeutral }}
           axisLine={false}
           tickLine={false}
           interval="preserveStartEnd"
@@ -71,7 +68,7 @@ function WeightHistory({ days }: { days: DayEntry[] }) {
             (max: number) => Math.ceil(max + 0.5),
           ]}
           tickFormatter={(v) => `${Number(v).toFixed(1)} kg`}
-          tick={{ fontSize: 12, fill: NEUTRAL_COLOR }}
+          tick={{ fontSize: 12, fill: colorNeutral }}
           axisLine={false}
           tickLine={false}
           tickCount={4}
@@ -83,13 +80,11 @@ function WeightHistory({ days }: { days: DayEntry[] }) {
         <Area
           type="monotone"
           dataKey="weight"
-          stroke={PRIMARY_COLOR}
+          stroke={colorPrimary}
           strokeWidth={2}
           fill="url(#weightGradient)"
-          dot={
-            <Dot r={4} fill={PRIMARY_COLOR} stroke="white" strokeWidth={2} />
-          }
-          activeDot={{ r: 5, fill: PRIMARY_COLOR }}
+          dot={<Dot r={4} fill={colorPrimary} stroke="white" strokeWidth={2} />}
+          activeDot={{ r: 5, fill: colorPrimary }}
         />
       </AreaChart>
     </ResponsiveContainer>

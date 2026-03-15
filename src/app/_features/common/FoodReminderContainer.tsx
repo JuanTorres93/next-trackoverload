@@ -47,7 +47,7 @@ function FoodReminderContainer({
               aria-label="Cambiar comida"
               data-testid="replace-food-button"
               className={twMerge(
-                'flex items-center gap-1 text-xs opacity-60 hover:text-primary! transition-colors',
+                'flex items-center cursor-pointer gap-1 text-xs opacity-60 hover:text-primary! transition-colors',
                 isEaten && 'hover:opacity-80 hover:text-text-light!',
               )}
             >
