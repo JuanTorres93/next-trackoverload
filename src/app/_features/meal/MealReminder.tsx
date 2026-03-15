@@ -2,48 +2,51 @@
 
 import Image from 'next/image';
 
-import { MealDTO } from '@/application-layer/dtos/MealDTO';
-import { toggleIsEaten } from './actions';
-import { useState } from 'react';
 import { showErrorToast } from '@/app/_ui/showErrorToast';
-import LoadingOverlay from '../common/LoadingOverlay';
+import { formatToInteger } from '@/app/_utils/format/formatToInteger';
+import { MealDTO } from '@/application-layer/dtos/MealDTO';
 import { useRouter } from 'next/navigation';
+import { useOptimistic, useTransition } from 'react';
 import FoodReminderContainer from '../common/FoodReminderContainer';
 import FoodReminderMacros from '../common/FoodReminderMacros';
-import { formatToInteger } from '@/app/_utils/format/formatToInteger';
 import {
   replaceMealByAnotherMealForUserInDay,
   replaceMealByFakeMealForUserInDay,
 } from '../day/actions';
+import { toggleIsEaten } from './actions';
 
 function MealReminder({ meal, dayId }: { meal: MealDTO; dayId: string }) {
   const router = useRouter();
 
-  const [isTogglingEaten, setIsTogglingEaten] = useState(false);
+  const [isPending, startTransition] = useTransition();
+
+  const [optimisticIsEaten, setOptimisticIsEaten] = useOptimistic(
+    meal.isEaten ?? false,
+    (_: boolean, newValue: boolean) => newValue,
+  );
 
   const defaultImageUrl = '/recipe-no-picture.webp';
 
   const calories = formatToInteger(meal.calories);
   const protein = formatToInteger(meal.protein);
 
-  async function handleToggleIsEaten() {
-    if (isTogglingEaten) return;
+  function handleToggleIsEaten() {
+    if (isPending) return;
 
-    setIsTogglingEaten(true);
+    startTransition(async () => {
+      setOptimisticIsEaten(!optimisticIsEaten);
 
-    try {
-      await toggleIsEaten(meal.id);
-
-      router.refresh();
-    } catch {
-      showErrorToast(
-        'No se ha podido marcar la comida como "' +
-          (meal.isEaten ? 'no comida' : 'comida') +
-          '"',
-      );
-    } finally {
-      setIsTogglingEaten(false);
-    }
+      try {
+        await toggleIsEaten(meal.id);
+        router.refresh();
+      } catch {
+        showErrorToast(
+          'No se ha podido marcar la comida como "' +
+            (meal.isEaten ? 'no comida' : 'comida') +
+            '"',
+        );
+      }
+    });
   }
 
   const replacement = {
@@ -62,15 +65,13 @@ function MealReminder({ meal, dayId }: { meal: MealDTO; dayId: string }) {
 
   return (
     <FoodReminderContainer
-      isEaten={meal.isEaten}
+      isEaten={optimisticIsEaten}
       onClick={handleToggleIsEaten}
       replacement={replacement}
     >
       <div
         className={`grid gap-4 grid-cols-[5rem_1fr] items-center content-center max-bp-navbar-mobile:grid-cols-[4rem_1fr] `}
       >
-        {isTogglingEaten && <LoadingOverlay />}
-
         <div className="relative overflow-hidden rounded-md shadow-xm aspect-square">
           <Image
             src={meal.imageUrl || defaultImageUrl}
