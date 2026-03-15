@@ -1,5 +1,13 @@
+import { SubscriptionStatus } from '@/domain/value-objects/SubscriptionStatus/SubscriptionStatus';
+
 export interface PaymentsService {
-  createSubscription(userId: string, planId: string): Promise<void>;
-  cancelSubscription(userId: string): Promise<void>;
-  getSubscriptionStatus(userId: string): Promise<string>;
+  createSubscription(
+    email: string,
+    name: string,
+    planId: string,
+  ): Promise<{ redirectUrl: string }>;
+
+  cancelSubscription(customerId: string): Promise<{ redirectUrl: string }>;
+
+  getSubscriptionStatus(customerId: string): Promise<SubscriptionStatus | null>;
 }

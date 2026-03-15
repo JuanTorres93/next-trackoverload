@@ -1,0 +1,82 @@
+import Stripe from 'stripe';
+
+import { InfrastructureError } from '@/domain/common/errors';
+import { PaymentsService } from '@/domain/services/PaymentsService.port';
+import { SubscriptionStatus } from '@/domain/value-objects/SubscriptionStatus/SubscriptionStatus';
+
+const stripe = new Stripe(process.env.STRIPE_SECRET!);
+const appUrl = process.env.NEXT_PUBLIC_APP_URL!;
+
+function toSubscriptionStatus(
+  subscription: Stripe.Subscription,
+): SubscriptionStatus {
+  if (subscription.status === 'trialing')
+    return SubscriptionStatus.create('free_trial');
+
+  if (subscription.status === 'canceled')
+    return SubscriptionStatus.create('expired');
+
+  if (subscription.status === 'active' && subscription.cancel_at_period_end)
+    return SubscriptionStatus.create('canceled');
+
+  if (subscription.status === 'active')
+    return SubscriptionStatus.create('active');
+
+  throw new InfrastructureError(
+    `StripePaymentsService: unhandled Stripe subscription status '${subscription.status}'`,
+  );
+}
+
+export class StripePaymentsService implements PaymentsService {
+  private async createCustomer(email: string, name: string): Promise<string> {
+    const customer = await stripe.customers.create({ email, name });
+    return customer.id;
+  }
+
+  async createSubscription(
+    email: string,
+    name: string,
+    planId: string,
+  ): Promise<{ redirectUrl: string }> {
+    const customerId = await this.createCustomer(email, name);
+
+    const session = await stripe.checkout.sessions.create({
+      mode: 'subscription',
+      customer: customerId,
+      line_items: [{ price: planId, quantity: 1 }],
+      success_url: `${appUrl}/app/subscription?success=true`,
+      cancel_url: `${appUrl}/app/subscription`,
+    });
+
+    if (!session.url)
+      throw new InfrastructureError(
+        'StripePaymentsService: checkout session URL is null',
+      );
+
+    return { redirectUrl: session.url };
+  }
+
+  async cancelSubscription(
+    customerId: string,
+  ): Promise<{ redirectUrl: string }> {
+    const session = await stripe.billingPortal.sessions.create({
+      customer: customerId,
+      return_url: `${appUrl}/app/subscription`,
+    });
+
+    return { redirectUrl: session.url };
+  }
+
+  async getSubscriptionStatus(
+    customerId: string,
+  ): Promise<SubscriptionStatus | null> {
+    const { data: subscriptions } = await stripe.subscriptions.list({
+      customer: customerId,
+      limit: 1,
+    });
+
+    if (!subscriptions[0]) return null;
+
+    return toSubscriptionStatus(subscriptions[0]);
+  }
+}
