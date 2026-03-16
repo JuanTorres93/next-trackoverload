@@ -24,6 +24,13 @@ export class LoginUsecase {
     // "wrong password" cases to avoid user enumeration attacks
     const errorMessage = 'LoginUsecase: Invalid credentials';
 
+    // TODO IMPORTANT DELETE THIS
+    console.log('user');
+    console.log(user);
+    const allUsers = await this.usersRepo.getAllUsers();
+    console.log('allUsers');
+    console.log(allUsers);
+
     if (!user) {
       throw new AuthError(errorMessage);
     }

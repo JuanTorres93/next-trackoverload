@@ -108,6 +108,7 @@ function NavBar() {
     { href: '/app', label: 'Inicio', icon: <HiHome /> },
     { href: '/app/recipes', label: 'Recetas', icon: <HiBookOpen /> },
     { href: '/app/meals', label: 'Comidas', icon: <HiCalendarDays /> },
+    { href: '/app/subscription', label: 'Suscripción', icon: <HiCreditCard /> },
   ];
 
   // TODO IMPORTANT: Move unimplemented links to links once they are implemented
@@ -120,7 +121,6 @@ function NavBar() {
       icon: <HiClipboardDocumentList />,
     },
     { href: '/app/profile', label: 'Perfil', icon: <HiUserCircle /> },
-    { href: '/app/subscription', label: 'Suscripción', icon: <HiCreditCard /> },
   ];
 
   if (process.env.NODE_ENV !== 'production') {
