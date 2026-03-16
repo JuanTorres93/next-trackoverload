@@ -17,7 +17,11 @@ function hasValidSubscription(user: UserDTO | null): boolean {
 
   const { subscriptionStatus, subscriptionEndsAt } = user;
 
-  if (subscriptionStatus === 'active' || subscriptionStatus === 'free_trial') {
+  if (
+    subscriptionStatus === 'active' ||
+    subscriptionStatus === 'free_trial' ||
+    subscriptionStatus === 'free'
+  ) {
     return true;
   }
 
@@ -38,6 +42,7 @@ export default async function SidebarLayout({
 
   if (pathname !== '/app/subscription') {
     const user = await getLoggedInUser();
+
     if (!hasValidSubscription(user)) {
       redirect('/app/subscription');
     }
