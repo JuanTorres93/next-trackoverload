@@ -14,7 +14,6 @@ export type SubscriptionCardProps = {
   priceInEurCents: number;
   description: string;
   user: UserDTO;
-  onCancel?: () => void;
   onReactivate?: () => void;
 };
 
@@ -23,7 +22,6 @@ function SubscriptionCard({
   priceInEurCents,
   description,
   user,
-  onCancel,
   onReactivate,
 }: SubscriptionCardProps) {
   const { subscriptionStatus, subscriptionEndsAt } = user;
@@ -39,10 +37,7 @@ function SubscriptionCard({
 
       <HorizontalLine />
       {subscriptionStatus === 'active' ? (
-        <ActiveSubscriptionContent
-          periodEndDate={periodEndDate}
-          onCancel={onCancel}
-        />
+        <ActiveSubscriptionContent periodEndDate={periodEndDate} />
       ) : subscriptionStatus === 'canceled' ? (
         <CanceledSubscriptionContent
           periodEndDate={periodEndDate}
@@ -122,11 +117,31 @@ function NoSubscriptionContent({
 
 function ActiveSubscriptionContent({
   periodEndDate,
-  onCancel,
 }: {
   periodEndDate?: Date;
-  onCancel?: () => void;
 }) {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleCancel = async () => {
+    if (isLoading) return;
+
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('/api/subscription/cancel', {
+        method: 'POST',
+      });
+      const json = await response.json();
+
+      if (json.status === 'success') {
+        window.location.assign(json.data.redirectUrl);
+      }
+    } catch {
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <>
       <div className="flex items-center gap-2">
@@ -144,8 +159,13 @@ function ActiveSubscriptionContent({
 
       <HorizontalLine />
 
-      <ButtonDanger className="justify-center w-full" onClick={onCancel}>
-        Cancelar suscripción
+      <ButtonDanger
+        className="justify-center w-full"
+        disabled={isLoading}
+        onClick={handleCancel}
+      >
+        {!isLoading && 'Cancelar suscripción'}
+        {isLoading && <SpinnerMini className="mx-auto" />}
       </ButtonDanger>
     </>
   );
