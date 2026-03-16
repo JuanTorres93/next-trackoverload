@@ -27,6 +27,19 @@ describe('SyncUserSubscriptionStatusUsecase', () => {
         expect(updatedUser!.subscriptionStatus).toBe(status);
       },
     );
+
+    it('should update subscriptionEndsAt when provided', async () => {
+      const subscriptionEndsAt = new Date('2026-12-31');
+
+      await usecase.execute({
+        customerId,
+        subscriptionStatus: 'active',
+        subscriptionEndsAt,
+      });
+
+      const updatedUser = await usersRepo.getUserByCustomerId(customerId);
+      expect(updatedUser!.subscriptionEndsAt).toStrictEqual(subscriptionEndsAt);
+    });
   });
 
   describe('Errors', () => {

@@ -43,9 +43,15 @@ export async function POST(req: NextRequest) {
           ? subscription.customer
           : subscription.customer.id;
 
+      const item = subscription.items.data[0];
+      const subscriptionEndsAt = item
+        ? new Date(item.current_period_end * 1000)
+        : undefined;
+
       await AppSyncUserSubscriptionStatusUsecase.execute({
         customerId,
         subscriptionStatus: toSubscriptionStatus(subscription).value,
+        subscriptionEndsAt,
       });
       break;
     }

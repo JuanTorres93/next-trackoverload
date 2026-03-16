@@ -5,6 +5,7 @@ import { SubscriptionStatus } from '@/domain/value-objects/SubscriptionStatus/Su
 export type SyncUserSubscriptionStatusUsecaseRequest = {
   customerId: string;
   subscriptionStatus: string;
+  subscriptionEndsAt?: Date;
 };
 
 export class SyncUserSubscriptionStatusUsecase {
@@ -25,7 +26,10 @@ export class SyncUserSubscriptionStatusUsecase {
       request.subscriptionStatus,
     );
 
-    user.update({ subscriptionStatus: validatedNewStatus.value });
+    user.update({
+      subscriptionStatus: validatedNewStatus.value,
+      subscriptionEndsAt: request.subscriptionEndsAt,
+    });
 
     await this.usersRepo.saveUser(user);
   }
