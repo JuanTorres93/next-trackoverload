@@ -35,7 +35,11 @@ export function toSubscriptionStatus(
 
 export class StripePaymentsService implements PaymentsService {
   private async createCustomer(email: string, name: string): Promise<string> {
-    const customer = await stripe.customers.create({ email, name });
+    const customer = await stripe.customers.create({
+      email,
+      name,
+      preferred_locales: ['es'],
+    });
 
     return customer.id;
   }
@@ -50,6 +54,7 @@ export class StripePaymentsService implements PaymentsService {
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       customer: customerId,
+      locale: 'es',
       line_items: [{ price: planId, quantity: 1 }],
       success_url: `${appUrl}/app/subscription?success=true`,
       cancel_url: `${appUrl}/app/subscription`,
@@ -68,6 +73,7 @@ export class StripePaymentsService implements PaymentsService {
   ): Promise<{ redirectUrl: string }> {
     const session = await stripe.billingPortal.sessions.create({
       customer: customerId,
+      locale: 'es',
       return_url: `${appUrl}/app/subscription`,
     });
 
@@ -79,6 +85,7 @@ export class StripePaymentsService implements PaymentsService {
   ): Promise<{ redirectUrl: string }> {
     const session = await stripe.billingPortal.sessions.create({
       customer: customerId,
+      locale: 'es',
       return_url: `${appUrl}/app/subscription`,
     });
 
