@@ -15,6 +15,8 @@ export interface PaymentsService {
 
   cancelSubscription(customerId: string): Promise<{ redirectUrl: string }>;
 
+  resumeSubscription(customerId: string): Promise<{ redirectUrl: string }>;
+
   getSubscriptionStatus(customerId: string): Promise<SubscriptionStatus | null>;
 
   getPlanInfo(): Promise<PlanInfo>;

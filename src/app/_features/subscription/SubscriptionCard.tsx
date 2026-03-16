@@ -14,7 +14,6 @@ export type SubscriptionCardProps = {
   priceInEurCents: number;
   description: string;
   user: UserDTO;
-  onReactivate?: () => void;
 };
 
 function SubscriptionCard({
@@ -22,7 +21,6 @@ function SubscriptionCard({
   priceInEurCents,
   description,
   user,
-  onReactivate,
 }: SubscriptionCardProps) {
   const { subscriptionStatus, subscriptionEndsAt } = user;
 
@@ -39,10 +37,7 @@ function SubscriptionCard({
       {subscriptionStatus === 'active' ? (
         <ActiveSubscriptionContent periodEndDate={periodEndDate} />
       ) : subscriptionStatus === 'canceled' ? (
-        <CanceledSubscriptionContent
-          periodEndDate={periodEndDate}
-          onReactivate={onReactivate}
-        />
+        <CanceledSubscriptionContent periodEndDate={periodEndDate} />
       ) : subscriptionStatus === 'free' ? (
         <FreeSubscriptionContent />
       ) : (
@@ -173,11 +168,31 @@ function ActiveSubscriptionContent({
 
 function CanceledSubscriptionContent({
   periodEndDate,
-  onReactivate,
 }: {
   periodEndDate?: Date;
-  onReactivate?: () => void;
 }) {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleResume = async () => {
+    if (isLoading) return;
+
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('/api/subscription/resume', {
+        method: 'POST',
+      });
+      const json = await response.json();
+
+      if (json.status === 'success') {
+        window.location.assign(json.data.redirectUrl);
+      }
+    } catch {
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <>
       <div className="flex items-center gap-2">
@@ -195,8 +210,9 @@ function CanceledSubscriptionContent({
 
       <HorizontalLine />
 
-      <ButtonPrimary onClick={onReactivate}>
-        Reactivar suscripción
+      <ButtonPrimary disabled={isLoading} onClick={handleResume}>
+        {!isLoading && 'Reactivar suscripción'}
+        {isLoading && <SpinnerMini className="mx-auto" />}
       </ButtonPrimary>
     </>
   );

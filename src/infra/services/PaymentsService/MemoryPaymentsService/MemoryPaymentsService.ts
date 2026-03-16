@@ -23,6 +23,12 @@ export class MemoryPaymentsService implements PaymentsService {
     return { redirectUrl: `https://billing.example.com/${customerId}` };
   }
 
+  async resumeSubscription(
+    customerId: string,
+  ): Promise<{ redirectUrl: string }> {
+    return { redirectUrl: `https://billing.example.com/${customerId}` };
+  }
+
   async getSubscriptionStatus(
     _customerId: string,
   ): Promise<SubscriptionStatus | null> {

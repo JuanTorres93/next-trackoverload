@@ -74,6 +74,17 @@ export class StripePaymentsService implements PaymentsService {
     return { redirectUrl: session.url };
   }
 
+  async resumeSubscription(
+    customerId: string,
+  ): Promise<{ redirectUrl: string }> {
+    const session = await stripe.billingPortal.sessions.create({
+      customer: customerId,
+      return_url: `${appUrl}/app/subscription`,
+    });
+
+    return { redirectUrl: session.url };
+  }
+
   async getSubscriptionStatus(
     customerId: string,
   ): Promise<SubscriptionStatus | null> {

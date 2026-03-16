@@ -8,6 +8,9 @@ export { AppCreateSubscriptionForUserUsecase } from './CreateSubscriptionForUser
 // CANCEL Operations
 export { AppCancelSubscriptionForUserUsecase } from './CancelSubscriptionForUser/cancelSubscriptionForUser';
 
+// RESUME Operations
+export { AppResumeSubscriptionForUserUsecase } from './ResumeSubscriptionForUser/resumeSubscriptionForUser';
+
 // GET Operations
 export { AppGetPlanInfoUsecase } from './GetPlanInfo/getPlanInfo';
 

@@ -139,6 +139,17 @@ describe.skipIf(shouldSkip)('StripePaymentsService', () => {
     });
   });
 
+  describe('resumeSubscription', () => {
+    it('returns a billing portal URL', async () => {
+      const customer = await stripe.customers.create({ email: TEST_EMAIL });
+      createdCustomerIds.push(customer.id);
+
+      const result = await service.resumeSubscription(customer.id);
+
+      expect(result.redirectUrl).toMatch(/^https:\/\/billing\.stripe\.com/);
+    });
+  });
+
   describe('getSubscriptionStatus', () => {
     it('returns null if the customer has no subscriptions', async () => {
       const customer = await stripe.customers.create({ email: TEST_EMAIL });

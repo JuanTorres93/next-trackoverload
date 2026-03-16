@@ -199,6 +199,53 @@ describe('SubscriptionCard', () => {
     });
   });
 
+  describe('reactivate button click', () => {
+    const REDIRECT_URL = 'https://billing.stripe.com/session_456';
+
+    beforeEach(() => {
+      const mockFetch = vi.fn().mockResolvedValue({
+        json: () =>
+          Promise.resolve({
+            status: 'success',
+            data: { redirectUrl: REDIRECT_URL },
+          }),
+      });
+      vi.stubGlobal('fetch', mockFetch);
+    });
+
+    afterEach(() => {
+      vi.unstubAllGlobals();
+    });
+
+    it('calls POST /api/subscription/resume when reactivate button is clicked', async () => {
+      await setup('canceled');
+      const user = userEvent.setup();
+
+      await user.click(
+        screen.getByRole('button', { name: /reactivar suscripción/i }),
+      );
+
+      expect(globalThis.fetch).toHaveBeenCalledWith(
+        '/api/subscription/resume',
+        { method: 'POST' },
+      );
+    });
+
+    it('redirects to the returned URL on success', async () => {
+      const assignMock = vi.fn();
+      vi.stubGlobal('location', { assign: assignMock });
+
+      await setup('canceled');
+      const user = userEvent.setup();
+
+      await user.click(
+        screen.getByRole('button', { name: /reactivar suscripción/i }),
+      );
+
+      expect(assignMock).toHaveBeenCalledWith(REDIRECT_URL);
+    });
+  });
+
   describe('cancel button click', () => {
     const REDIRECT_URL = 'https://billing.stripe.com/session_123';
 
