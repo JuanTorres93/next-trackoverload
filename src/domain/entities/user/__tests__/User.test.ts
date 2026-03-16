@@ -86,6 +86,33 @@ describe('User', () => {
         subscriptionStatus,
       );
     });
+
+    it('may have subscriptionEndsAt property', async () => {
+      const subscriptionEndsAt = new Date();
+      const userWithSubscriptionEndsAt = User.create({
+        ...validUserProps,
+        subscriptionEndsAt,
+      });
+
+      expect(userWithSubscriptionEndsAt).toBeInstanceOf(User);
+      expect(userWithSubscriptionEndsAt.subscriptionEndsAt).toBe(
+        subscriptionEndsAt,
+      );
+    });
+
+    it('should update subscriptionEndsAt', async () => {
+      const newSubscriptionEndsAt = new Date(
+        Date.now() + 7 * 24 * 60 * 60 * 1000,
+      ); // 7 days from now
+
+      expect(user.subscriptionEndsAt).not.toBe(newSubscriptionEndsAt);
+
+      const patch = { subscriptionEndsAt: newSubscriptionEndsAt };
+
+      user.update(patch);
+
+      expect(user.subscriptionEndsAt).toBe(newSubscriptionEndsAt);
+    });
   });
 
   describe('Errors', () => {

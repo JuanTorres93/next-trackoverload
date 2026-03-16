@@ -14,6 +14,7 @@ export type UserCreateProps = {
   hashedPassword: string;
   customerId?: string;
   subscriptionStatus?: string;
+  subscriptionEndsAt?: Date;
   createdAt?: Date;
   updatedAt?: Date;
 };
@@ -22,6 +23,7 @@ export type UserUpdateProps = {
   name?: string;
   customerId?: string;
   subscriptionStatus?: string;
+  subscriptionEndsAt?: Date;
 };
 
 export type UserProps = {
@@ -30,6 +32,7 @@ export type UserProps = {
   email: Email;
   hashedPassword: HashedPassword;
   subscriptionStatus?: SubscriptionStatus;
+  subscriptionEndsAt?: DomainDate;
   customerId?: Id;
   createdAt: DomainDate;
   updatedAt: DomainDate;
@@ -54,6 +57,9 @@ export class User {
       customerId: props.customerId ? Id.create(props.customerId) : undefined,
       subscriptionStatus: props.subscriptionStatus
         ? SubscriptionStatus.create(props.subscriptionStatus)
+        : undefined,
+      subscriptionEndsAt: props.subscriptionEndsAt
+        ? DomainDate.create(props.subscriptionEndsAt)
         : undefined,
 
       createdAt: DomainDate.create(props.createdAt),
@@ -88,6 +94,12 @@ export class User {
       );
     }
 
+    if (patch.subscriptionEndsAt) {
+      this.props.subscriptionEndsAt = DomainDate.create(
+        patch.subscriptionEndsAt,
+      );
+    }
+
     this.props.updatedAt = DomainDate.create();
   }
 
@@ -116,6 +128,10 @@ export class User {
     return this.props.subscriptionStatus?.value;
   }
 
+  get subscriptionEndsAt() {
+    return this.props.subscriptionEndsAt?.value;
+  }
+
   get createdAt() {
     return this.props.createdAt.value;
   }
@@ -132,6 +148,7 @@ export class User {
       hashedPassword: this.props.hashedPassword.value,
       customerId: this.props.customerId?.value,
       subscriptionStatus: this.props.subscriptionStatus?.value,
+      subscriptionEndsAt: this.props.subscriptionEndsAt?.value,
       createdAt: this.props.createdAt.value,
       updatedAt: this.props.updatedAt.value,
     };

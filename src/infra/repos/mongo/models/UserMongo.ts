@@ -29,6 +29,10 @@ const userSchema = new mongoose.Schema<UserCreateProps>({
     type: String,
     required: false,
   },
+  subscriptionEndsAt: {
+    type: Date,
+    required: false,
+  },
   createdAt: {
     type: Date,
     required: true,
