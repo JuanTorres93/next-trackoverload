@@ -15,7 +15,6 @@ export type SubscriptionCardProps = {
   description: string;
   user: UserDTO;
   periodEndDate?: Date;
-  onManagePayment?: () => void;
   onCancel?: () => void;
   onReactivate?: () => void;
 };
@@ -26,7 +25,6 @@ function SubscriptionCard({
   description,
   user,
   periodEndDate,
-  onManagePayment,
   onCancel,
   onReactivate,
 }: SubscriptionCardProps) {
@@ -42,7 +40,6 @@ function SubscriptionCard({
       {subscriptionStatus === 'active' ? (
         <ActiveSubscriptionContent
           periodEndDate={periodEndDate}
-          onManagePayment={onManagePayment}
           onCancel={onCancel}
         />
       ) : subscriptionStatus === 'canceled' ? (
@@ -124,11 +121,9 @@ function NoSubscriptionContent({
 
 function ActiveSubscriptionContent({
   periodEndDate,
-  onManagePayment,
   onCancel,
 }: {
   periodEndDate?: Date;
-  onManagePayment?: () => void;
   onCancel?: () => void;
 }) {
   return (
@@ -148,12 +143,6 @@ function ActiveSubscriptionContent({
 
       <HorizontalLine />
 
-      <ButtonPrimary
-        className="justify-center w-full"
-        onClick={onManagePayment}
-      >
-        Gestionar suscripción
-      </ButtonPrimary>
       <ButtonDanger className="justify-center w-full" onClick={onCancel}>
         Cancelar suscripción
       </ButtonDanger>

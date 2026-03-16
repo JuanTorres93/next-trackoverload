@@ -81,12 +81,9 @@ describe('SubscriptionCard', () => {
       expect(screen.getByTestId('period-end-date')).toHaveTextContent(/abril/i);
     });
 
-    it('shows manage payment and cancel subscription buttons', async () => {
+    it('shows manage cancel subscription buttons', async () => {
       await setup('active');
 
-      expect(
-        screen.getByRole('button', { name: /gestionar suscripción/i }),
-      ).toBeInTheDocument();
       expect(
         screen.getByRole('button', { name: /cancelar suscripción/i }),
       ).toBeInTheDocument();
