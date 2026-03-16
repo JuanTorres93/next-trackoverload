@@ -4,6 +4,7 @@ export const TEST_USER_ID = 'dev-user';
 
 vi.mock('next/headers', () => {
   return {
+    headers: vi.fn(),
     cookies: vi.fn(() =>
       Promise.resolve({
         get: vi.fn(() => ({ value: 'test-token' })),

@@ -7,6 +7,7 @@ import * as matchers from '@testing-library/jest-dom/matchers';
 // These next 2 imports are for removing default behaviors of react-testing-library of showing HTML in failed tests
 import { configure as domConfigure } from '@testing-library/dom';
 import { configure as reactConfigure } from '@testing-library/react';
+import './mocks/nextjs';
 
 expect.extend(matchers);
 

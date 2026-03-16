@@ -32,6 +32,7 @@ export async function middleware(request: NextRequest) {
 
     const requestHeaders = new Headers(request.headers);
     requestHeaders.set('x-pathname', pathname);
+
     return NextResponse.next({ request: { headers: requestHeaders } });
   } catch {
     return NextResponse.redirect(new URL('/auth/login', request.url));
