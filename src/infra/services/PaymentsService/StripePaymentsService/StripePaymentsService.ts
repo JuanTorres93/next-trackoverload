@@ -19,7 +19,10 @@ export function toSubscriptionStatus(
   if (subscription.status === 'canceled')
     return SubscriptionStatus.create('expired');
 
-  if (subscription.status === 'active' && subscription.cancel_at_period_end)
+  if (
+    subscription.status === 'active' &&
+    (subscription.cancel_at_period_end || subscription.cancel_at !== null)
+  )
     return SubscriptionStatus.create('canceled');
 
   if (subscription.status === 'active')

@@ -5,7 +5,11 @@ import 'dotenv/config';
 import Stripe from 'stripe';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 
-import { StripePaymentsService } from '../StripePaymentsService';
+import {
+  StripePaymentsService,
+  toSubscriptionStatus,
+} from '../StripePaymentsService';
+import { InfrastructureError } from '@/domain/common/errors';
 
 const hasStripeCredentials = Boolean(
   process.env.STRIPE_SECRET && process.env.STRIPE_PRICE_ID,
@@ -15,6 +19,63 @@ const shouldSkip = isCI && !hasStripeCredentials;
 
 const TEST_EMAIL = 'test@example.com';
 const TEST_NAME = 'Test User';
+
+describe('toSubscriptionStatus', () => {
+  function makeSubscription(
+    status: string,
+    overrides: {
+      cancel_at_period_end?: boolean;
+      cancel_at?: number | null;
+    } = {},
+  ): Stripe.Subscription {
+    return {
+      status,
+      cancel_at_period_end: overrides.cancel_at_period_end ?? false,
+      cancel_at: overrides.cancel_at ?? null,
+    } as unknown as Stripe.Subscription;
+  }
+
+  it('maps "active" to domain "active"', () => {
+    expect(toSubscriptionStatus(makeSubscription('active')).value).toBe(
+      'active',
+    );
+  });
+
+  it('maps "trialing" to domain "free_trial"', () => {
+    expect(toSubscriptionStatus(makeSubscription('trialing')).value).toBe(
+      'free_trial',
+    );
+  });
+
+  it('maps "canceled" to domain "expired"', () => {
+    expect(toSubscriptionStatus(makeSubscription('canceled')).value).toBe(
+      'expired',
+    );
+  });
+
+  it('maps "active" + cancel_at_period_end=true to domain "canceled"', () => {
+    expect(
+      toSubscriptionStatus(
+        makeSubscription('active', { cancel_at_period_end: true }),
+      ).value,
+    ).toBe('canceled');
+  });
+
+  it('maps "active" + cancel_at set to domain "canceled" (billing portal cancels at specific date)', () => {
+    const futureTimestamp = Math.floor(Date.now() / 1000) + 86400;
+    expect(
+      toSubscriptionStatus(
+        makeSubscription('active', { cancel_at: futureTimestamp }),
+      ).value,
+    ).toBe('canceled');
+  });
+
+  it('throws InfrastructureError for an unhandled Stripe status', () => {
+    expect(() => toSubscriptionStatus(makeSubscription('past_due'))).toThrow(
+      InfrastructureError,
+    );
+  });
+});
 
 describe.skipIf(shouldSkip)('StripePaymentsService', () => {
   let stripe: Stripe;
