@@ -24,9 +24,6 @@ export default async function SubscriptionPage() {
     );
   }
 
-  // TODO: get periodEndDate from the user's active subscription
-  const periodEndDate = new Date();
-
   return (
     <PageWrapper>
       <SectionHeading>Suscripción</SectionHeading>
@@ -36,7 +33,6 @@ export default async function SubscriptionPage() {
         description={planInfo.description}
         priceInEurCents={planInfo.priceInEurCents}
         title={planInfo.title}
-        periodEndDate={periodEndDate}
       />
     </PageWrapper>
   );

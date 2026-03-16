@@ -8,11 +8,12 @@ import { User } from '@/domain/entities/user/User';
 
 const PERIOD_END_DATE = new Date(2026, 3, 12); // 12 April 2026
 
-async function setup(subscriptionStatus?: string, periodEndDate?: Date) {
+async function setup(subscriptionStatus?: string, subscriptionEndsAt?: Date) {
   const user: UserDTO = toUserDTO(
     User.create({
       ...validUserProps,
       subscriptionStatus,
+      subscriptionEndsAt,
     }),
   );
 
@@ -22,7 +23,6 @@ async function setup(subscriptionStatus?: string, periodEndDate?: Date) {
       priceInEurCents={999}
       description="Accede a todas las funciones premium de la aplicación."
       user={user}
-      periodEndDate={periodEndDate}
     />,
   );
 }

@@ -14,7 +14,6 @@ export type SubscriptionCardProps = {
   priceInEurCents: number;
   description: string;
   user: UserDTO;
-  periodEndDate?: Date;
   onCancel?: () => void;
   onReactivate?: () => void;
 };
@@ -24,12 +23,14 @@ function SubscriptionCard({
   priceInEurCents,
   description,
   user,
-  periodEndDate,
   onCancel,
   onReactivate,
 }: SubscriptionCardProps) {
-  const { subscriptionStatus } = user;
+  const { subscriptionStatus, subscriptionEndsAt } = user;
 
+  const periodEndDate = subscriptionEndsAt
+    ? new Date(subscriptionEndsAt)
+    : undefined;
   const formattedPrice = formatPriceInEurCentsToString(priceInEurCents);
 
   return (
