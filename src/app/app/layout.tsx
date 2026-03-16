@@ -12,26 +12,6 @@ export const metadata: Metadata = {
   title: 'Cimientos',
 };
 
-function hasValidSubscription(user: UserDTO | null): boolean {
-  if (!user) return false;
-
-  const { subscriptionStatus, subscriptionEndsAt } = user;
-
-  if (
-    subscriptionStatus === 'active' ||
-    subscriptionStatus === 'free_trial' ||
-    subscriptionStatus === 'free'
-  ) {
-    return true;
-  }
-
-  if (subscriptionStatus === 'canceled') {
-    return !!subscriptionEndsAt && new Date(subscriptionEndsAt) > new Date();
-  }
-
-  return false;
-}
-
 export default async function SidebarLayout({
   children,
 }: Readonly<{
@@ -62,4 +42,24 @@ export default async function SidebarLayout({
       <main className="h-full overflow-y-auto">{children}</main>
     </div>
   );
+}
+
+function hasValidSubscription(user: UserDTO | null): boolean {
+  if (!user) return false;
+
+  const { subscriptionStatus, subscriptionEndsAt } = user;
+
+  if (
+    subscriptionStatus === 'active' ||
+    subscriptionStatus === 'free_trial' ||
+    subscriptionStatus === 'free'
+  ) {
+    return true;
+  }
+
+  if (subscriptionStatus === 'canceled') {
+    return !!subscriptionEndsAt && new Date(subscriptionEndsAt) > new Date();
+  }
+
+  return false;
 }

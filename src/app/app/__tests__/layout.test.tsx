@@ -88,14 +88,6 @@ describe('SidebarLayout – subscription redirect', () => {
       expect(redirectMock).toHaveBeenCalledWith('/app/subscription');
     });
 
-    it('redirects to /app/subscription when subscriptionStatus is free', async () => {
-      mockUser({ subscriptionStatus: 'free' });
-
-      await renderLayout();
-
-      expect(redirectMock).toHaveBeenCalledWith('/app/subscription');
-    });
-
     it('redirects when canceled subscription has already ended', async () => {
       const pastDate = new Date(Date.now() - 1000).toISOString();
       mockUser({
@@ -117,6 +109,14 @@ describe('SidebarLayout – subscription redirect', () => {
       await renderLayout();
 
       expect(redirectMock).toHaveBeenCalledWith('/app/subscription');
+    });
+
+    it('does NOT redirect to /app/subscription when subscriptionStatus is free', async () => {
+      mockUser({ subscriptionStatus: 'free' });
+
+      await renderLayout();
+
+      expect(redirectMock).not.toHaveBeenCalled();
     });
 
     it('does NOT redirect when subscription is active', async () => {
