@@ -8,12 +8,17 @@ import { User } from '@/domain/entities/user/User';
 
 const PERIOD_END_DATE = new Date(2026, 3, 12); // 12 April 2026
 
-async function setup(subscriptionStatus?: string, subscriptionEndsAt?: Date) {
+async function setup(
+  subscriptionStatus?: string,
+  subscriptionEndsAt?: Date,
+  createdAt?: Date,
+) {
   const user: UserDTO = toUserDTO(
     User.create({
       ...validUserProps,
       subscriptionStatus,
       subscriptionEndsAt,
+      createdAt: createdAt ?? validUserProps.createdAt,
     }),
   );
 
@@ -37,7 +42,7 @@ describe('SubscriptionCard', () => {
   });
 
   describe('no active subscription', () => {
-    it.each(['free_trial', 'expired', undefined])(
+    it.each(['expired', undefined])(
       'shows description and price for status "%s"',
       async (status) => {
         await setup(status);
@@ -95,6 +100,58 @@ describe('SubscriptionCard', () => {
       expect(
         screen.queryByRole('button', { name: /suscribirme/i }),
       ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('free_trial subscription', () => {
+    describe('within trial period', () => {
+      it('shows description and subscribe button', async () => {
+        await setup('free_trial');
+
+        expect(
+          screen.getByText(/accede.*todas.*funciones/i),
+        ).toBeInTheDocument();
+        expect(
+          screen.getByRole('button', { name: /suscribirme/i }),
+        ).toBeInTheDocument();
+      });
+
+      it('does not show the expired trial message', async () => {
+        await setup('free_trial');
+
+        expect(
+          screen.queryByTestId('expired-trial-message'),
+        ).not.toBeInTheDocument();
+      });
+    });
+
+    describe('trial expired', () => {
+      const expiredDate = new Date(Date.now() - 15 * 24 * 60 * 60 * 1000);
+
+      it('shows expired trial message', async () => {
+        await setup('free_trial', undefined, expiredDate);
+
+        expect(screen.getByTestId('expired-trial-message')).toHaveTextContent(
+          /periodo de prueba ha terminado/i,
+        );
+      });
+
+      it('shows description and price', async () => {
+        await setup('free_trial', undefined, expiredDate);
+
+        expect(
+          screen.getByText(/accede.*todas.*funciones/i),
+        ).toBeInTheDocument();
+        expect(screen.getByText(/9\.99 €\/mes/)).toBeInTheDocument();
+      });
+
+      it('shows subscribe button', async () => {
+        await setup('free_trial', undefined, expiredDate);
+
+        expect(
+          screen.getByRole('button', { name: /suscribirme/i }),
+        ).toBeInTheDocument();
+      });
     });
   });
 

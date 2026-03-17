@@ -6,6 +6,7 @@ import ButtonDanger from '@/app/_ui/buttons/ButtonDanger';
 import ButtonPrimary from '@/app/_ui/buttons/ButtonPrimary';
 import { UserDTO } from '@/application-layer/dtos/UserDTO';
 import { formatPriceInEurCentsToString } from './formatPriceInEurCentsToString';
+import { isFreeTrialExpired } from './isFreeTrialExpired';
 import { useState } from 'react';
 import SpinnerMini from '@/app/_ui/SpinnerMini';
 
@@ -22,7 +23,7 @@ function SubscriptionCard({
   description,
   user,
 }: SubscriptionCardProps) {
-  const { subscriptionStatus, subscriptionEndsAt } = user;
+  const { subscriptionStatus, subscriptionEndsAt, createdAt } = user;
 
   const periodEndDate = subscriptionEndsAt
     ? new Date(subscriptionEndsAt)
@@ -40,6 +41,12 @@ function SubscriptionCard({
         <CanceledSubscriptionContent periodEndDate={periodEndDate} />
       ) : subscriptionStatus === 'free' ? (
         <FreeSubscriptionContent />
+      ) : subscriptionStatus === 'free_trial' &&
+        isFreeTrialExpired(createdAt) ? (
+        <ExpiredFreeTrialContent
+          description={description}
+          price={formattedPrice}
+        />
       ) : (
         <NoSubscriptionContent
           description={description}
@@ -97,6 +104,56 @@ function NoSubscriptionContent({
 
   return (
     <>
+      <p className="text-center text-text-regular">{description}</p>
+      <HorizontalLine />
+      <p className="font-medium text-center">
+        Precio: <span className="text-text/80">{price}/mes</span>
+      </p>
+      <ButtonPrimary disabled={isLoading} onClick={handleSubscribe}>
+        {!isLoading && 'Suscribirme'}
+        {isLoading && <SpinnerMini className="mx-auto" />}
+      </ButtonPrimary>
+    </>
+  );
+}
+
+function ExpiredFreeTrialContent({
+  description,
+  price,
+}: {
+  description: string;
+  price: string;
+}) {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubscribe = async () => {
+    if (isLoading) return;
+
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('/api/subscription/create', {
+        method: 'POST',
+      });
+      const json = await response.json();
+
+      if (json.status === 'success') {
+        window.location.assign(json.data.redirectUrl);
+      }
+    } catch {
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <p
+        data-testid="expired-trial-message"
+        className="font-medium text-center text-error"
+      >
+        Tu periodo de prueba ha terminado.
+      </p>
       <p className="text-center text-text-regular">{description}</p>
       <HorizontalLine />
       <p className="font-medium text-center">

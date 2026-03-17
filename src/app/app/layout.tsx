@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { FREE_TRIAL_DAYS } from '@/domain/services/PaymentsService.port';
+import { isFreeTrialExpired } from '@/app/_features/subscription/isFreeTrialExpired';
 import SideNav, {
   NavBar as SideNavNavBar,
   ToggleButton as SideNavToggle,
@@ -55,9 +55,7 @@ function hasValidSubscription(user: UserDTO | null): boolean {
   }
 
   if (subscriptionStatus === 'free_trial') {
-    const trialEnd = new Date(createdAt);
-    trialEnd.setDate(trialEnd.getDate() + FREE_TRIAL_DAYS);
-    return trialEnd > new Date();
+    return !isFreeTrialExpired(createdAt);
   }
 
   if (subscriptionStatus === 'canceled') {
