@@ -18,6 +18,7 @@ import { headers } from 'next/headers';
 import { getLoggedInUser } from '@/app/_features/user/actions';
 import SidebarLayout from '../layout';
 import type { UserDTO } from '@/application-layer/dtos/UserDTO';
+import { FREE_TRIAL_DAYS } from '@/domain/services/PaymentsService.port';
 
 const headersMock = vi.mocked(headers);
 const getLoggedInUserMock = vi.mocked(getLoggedInUser);
@@ -125,12 +126,26 @@ describe('SidebarLayout – subscription redirect', () => {
       expect(redirectMock).not.toHaveBeenCalled();
     });
 
-    it('does NOT redirect when subscription is free_trial', async () => {
-      mockUser({ subscriptionStatus: 'free_trial' });
+    it('does NOT redirect when subscription is free_trial and within trial period', async () => {
+      const recentDate = new Date(
+        Date.now() - 1 * 24 * 60 * 60 * 1000,
+      ).toISOString(); // 1 day ago
+      mockUser({ subscriptionStatus: 'free_trial', createdAt: recentDate });
 
       await renderLayout();
 
       expect(redirectMock).not.toHaveBeenCalled();
+    });
+
+    it('redirects when subscription is free_trial and trial period has expired', async () => {
+      const expiredDate = new Date(
+        Date.now() - (FREE_TRIAL_DAYS + 1) * 24 * 60 * 60 * 1000,
+      ).toISOString();
+      mockUser({ subscriptionStatus: 'free_trial', createdAt: expiredDate });
+
+      await renderLayout();
+
+      expect(redirectMock).toHaveBeenCalledWith('/app/subscription');
     });
 
     it('does NOT redirect when canceled but subscriptionEndsAt is in the future', async () => {

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { FREE_TRIAL_DAYS } from '@/domain/services/PaymentsService.port';
 import SideNav, {
   NavBar as SideNavNavBar,
   ToggleButton as SideNavToggle,
@@ -47,14 +48,16 @@ export default async function SidebarLayout({
 function hasValidSubscription(user: UserDTO | null): boolean {
   if (!user) return false;
 
-  const { subscriptionStatus, subscriptionEndsAt } = user;
+  const { subscriptionStatus, subscriptionEndsAt, createdAt } = user;
 
-  if (
-    subscriptionStatus === 'active' ||
-    subscriptionStatus === 'free_trial' ||
-    subscriptionStatus === 'free'
-  ) {
+  if (subscriptionStatus === 'active' || subscriptionStatus === 'free') {
     return true;
+  }
+
+  if (subscriptionStatus === 'free_trial') {
+    const trialEnd = new Date(createdAt);
+    trialEnd.setDate(trialEnd.getDate() + FREE_TRIAL_DAYS);
+    return trialEnd > new Date();
   }
 
   if (subscriptionStatus === 'canceled') {

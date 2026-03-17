@@ -6,6 +6,8 @@ export type PlanInfo = {
   priceInEurCents: number;
 };
 
+export const FREE_TRIAL_DAYS = 14;
+
 export interface PaymentsService {
   createSubscription(
     email: string,
