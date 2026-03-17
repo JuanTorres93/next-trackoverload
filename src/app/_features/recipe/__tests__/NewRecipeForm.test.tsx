@@ -9,6 +9,7 @@ import {
 import { createServer } from '../../../../../tests/mocks/server';
 import { createMockUser } from '../../../../../tests/mocks/user';
 import { mockDecodeFromConstraints } from '../../../../../tests/mocks/zxing';
+import { SCAN_WINDOW_SIZE } from '../../ingredient/ZXingBarcodeScanner';
 const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
 
 // Mock before importing the component that uses next/navigation
@@ -106,8 +107,10 @@ describe('NewRecipeForm', () => {
         _videoEl: unknown,
         callback: (result: { getText: () => string } | null, err: null) => void,
       ) => {
-        // Codebar for Consum Avena Integral ingredient
-        callback({ getText: () => '8414807558305' }, null);
+        // Repeat enough times to reach the majority threshold
+        for (let i = 0; i < SCAN_WINDOW_SIZE; i++) {
+          callback({ getText: () => '8414807558305' }, null);
+        }
       },
     );
 

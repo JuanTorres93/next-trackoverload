@@ -23,6 +23,7 @@ vi.mock('@/interface-adapters/app/services/AppClientImageProcessor', () => ({
 import RecipePage from '../page';
 import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
 import { mockDecodeFromConstraints } from '../../../../../../tests/mocks/zxing';
+import { SCAN_WINDOW_SIZE } from '@/app/_features/ingredient/ZXingBarcodeScanner';
 
 const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
 const usersRepo = AppUsersRepo as MemoryUsersRepo;
@@ -222,8 +223,10 @@ describe('RecipePage', () => {
             err: null,
           ) => void,
         ) => {
-          // Codebar for Consum Avena Integral ingredient
-          callback({ getText: () => '8414807558305' }, null);
+          // Repeat enough times to reach the majority threshold
+          for (let i = 0; i < SCAN_WINDOW_SIZE; i++) {
+            callback({ getText: () => '8414807558305' }, null);
+          }
         },
       );
 

@@ -12,6 +12,9 @@ import type { RefObject } from 'react';
 import ScanButton from './ScanButton';
 import Modal from '@/app/_ui/Modal';
 
+export const SCAN_WINDOW_SIZE = 7;
+const MAJORITY_THRESHOLD = 0.5;
+
 type BarcodeContextType = {
   videoHtmlElementRef: RefObject<HTMLVideoElement | null>;
   scannerResult: string | null;
@@ -96,37 +99,38 @@ function ScannerModal({ onCloseModal }: ScannerModalProps) {
   const onScanErrorRef = useRef(onScanError);
   onScanErrorRef.current = onScanError;
 
-  // Prevent the continuous ZXing callback from processing more than one result/error per modal session.
-  const hasHandledScanRef = useRef(false);
+  // Sliding window of the last SCAN_WINDOW_SIZE raw readings
+  const readingsRef = useRef<string[]>([]);
 
   // Start the scanner when the component mounts and stop it when it unmounts
   useEffect(() => {
     setScannerResult(null);
     setScannerError(null);
-    hasHandledScanRef.current = false;
+    readingsRef.current = [];
 
     reader.decodeFromConstraints(
       { video: { facingMode: 'environment' } },
       videoHtmlElementRef.current!,
       (result, err) => {
-        if (hasHandledScanRef.current) return;
-
         if (result) {
-          hasHandledScanRef.current = true;
+          const readings = readingsRef.current;
+          readings.push(result.getText());
+          if (readings.length > SCAN_WINDOW_SIZE) readings.shift();
 
-          reader.reset(); // stop further callbacks immediately
+          const majority = getMajorityValue(readings);
+          if (majority === null) return;
 
-          setScannerResult(result.getText());
-          onScanResultRef.current?.(result.getText());
+          reader.reset();
+
+          setScannerResult(majority);
+          onScanResultRef.current?.(majority);
           onCloseModalRef.current?.();
         } else if (err && !(err instanceof NotFoundException)) {
-          hasHandledScanRef.current = true;
-          reader.reset(); // stop the error-callback loop
+          reader.reset();
 
           setScannerError(err.message);
-
           onScanErrorRef.current?.();
-          onCloseModalRef.current?.(); // close so the user can retry
+          onCloseModalRef.current?.();
         }
       },
     );
@@ -152,6 +156,19 @@ function useBarcodeScannerContext() {
   }
 
   return contextValue;
+}
+
+function getMajorityValue(readings: string[]): string | null {
+  if (readings.length < SCAN_WINDOW_SIZE) return null;
+
+  const counts = new Map<string, number>();
+  for (const r of readings) counts.set(r, (counts.get(r) ?? 0) + 1);
+
+  for (const [value, count] of counts) {
+    if (count / SCAN_WINDOW_SIZE >= MAJORITY_THRESHOLD) return value;
+  }
+
+  return null;
 }
 
 BarcodeScanner.ZXing = ZXingBarcodeScanner;
