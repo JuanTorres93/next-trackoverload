@@ -1,8 +1,6 @@
 import { screen, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-// Mock before importing the component that uses next/cache
-import '@/../tests/mocks/nextjs';
 import SideNav, { NavBar } from '../SideNav';
 
 beforeEach(() => {

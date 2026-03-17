@@ -11,8 +11,6 @@ import { AppFakeMealsRepo } from '@/interface-adapters/app/repos/AppFakeMealsRep
 const fakeMealsRepo = AppFakeMealsRepo as MemoryFakeMealsRepo;
 const daysRepo = AppDaysRepo as MemoryDaysRepo;
 
-// Mock before importing the component that uses next/navigation
-import '@/../tests/mocks/nextjs';
 import { TEST_USER_ID } from '@/../tests/mocks/nextjs';
 
 import { createEmptyTestDay } from '../../../../../tests/createProps/dayTestProps';

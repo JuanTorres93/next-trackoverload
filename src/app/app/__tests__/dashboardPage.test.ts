@@ -1,6 +1,5 @@
 import { render, screen } from '@testing-library/react';
 
-import '@/../tests/mocks/nextjs';
 import DashboardPage from '../page';
 
 import { MemoryDaysRepo } from '@/infra/repos/memory/MemoryDaysRepo';

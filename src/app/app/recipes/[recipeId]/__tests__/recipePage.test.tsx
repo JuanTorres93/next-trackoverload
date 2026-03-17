@@ -10,9 +10,6 @@ import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 
-// Mock before importing the component that uses next/cache
-import '@/../tests/mocks/nextjs';
-
 // Mock AppClientImageProcessor to avoid browser API incompatibilities in the test environment
 vi.mock('@/interface-adapters/app/services/AppClientImageProcessor', () => ({
   AppClientImageProcessor: {

@@ -12,9 +12,6 @@ import { mockDecodeFromConstraints } from '../../../../../tests/mocks/zxing';
 import { SCAN_WINDOW_SIZE } from '../../ingredient/ZXingBarcodeScanner';
 const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
 
-// Mock before importing the component that uses next/navigation
-import '@/../tests/mocks/nextjs';
-
 import NewRecipeForm from '../NewRecipeForm';
 import { IngredientFinderResult } from '@/domain/services/IngredientFinder.port';
 

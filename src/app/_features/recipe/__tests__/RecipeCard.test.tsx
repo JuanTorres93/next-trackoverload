@@ -6,8 +6,6 @@ import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
 
 const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
 
-// Mock before importing the component that uses next/cache
-import '@/../tests/mocks/nextjs';
 import RecipeCard from '../RecipeCard';
 
 const { mockRecipes } = await createMockRecipes();

@@ -1,9 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-// Mock before importing the component that uses next/cache
-import '@/../tests/mocks/nextjs';
-
 import { DayEntry } from '@/application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase';
 import { createMultipleMockDaysWithWeights } from '../../../../../tests/mocks/days';
 import { AppDaysRepo } from '@/interface-adapters/app/repos/AppDaysRepo';

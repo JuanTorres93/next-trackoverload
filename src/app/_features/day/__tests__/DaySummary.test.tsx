@@ -18,8 +18,6 @@ const mealsRepo = AppMealsRepo as MemoryMealsRepo;
 const fakeMealsRepo = AppFakeMealsRepo as MemoryFakeMealsRepo;
 const daysRepo = AppDaysRepo as MemoryDaysRepo;
 
-// Mock before importing the component that uses next/cache
-import '@/../tests/mocks/nextjs';
 import { TEST_USER_ID } from '@/../tests/mocks/nextjs';
 
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';

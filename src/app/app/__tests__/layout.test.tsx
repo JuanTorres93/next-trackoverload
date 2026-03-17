@@ -2,8 +2,6 @@ import { render } from '@testing-library/react';
 import { vi, expect, describe, it, beforeEach } from 'vitest';
 import { redirect } from 'next/navigation';
 
-import '@/../tests/mocks/nextjs';
-
 vi.mock('@/app/_features/user/actions', () => ({
   getLoggedInUser: vi.fn(),
 }));
