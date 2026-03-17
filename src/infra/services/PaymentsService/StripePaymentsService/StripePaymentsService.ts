@@ -7,7 +7,11 @@ import {
 } from '@/domain/services/PaymentsService.port';
 import { SubscriptionStatus } from '@/domain/value-objects/SubscriptionStatus/SubscriptionStatus';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET!);
+let _stripe: Stripe | null = null;
+function getStripe(): Stripe {
+  if (!_stripe) _stripe = new Stripe(process.env.STRIPE_SECRET!);
+  return _stripe;
+}
 const appUrl = process.env.NEXT_PUBLIC_APP_URL!;
 
 export function toSubscriptionStatus(
@@ -35,7 +39,7 @@ export function toSubscriptionStatus(
 
 export class StripePaymentsService implements PaymentsService {
   private async createCustomer(email: string, name: string): Promise<string> {
-    const customer = await stripe.customers.create({
+    const customer = await getStripe().customers.create({
       email,
       name,
       preferred_locales: ['es'],
@@ -51,7 +55,7 @@ export class StripePaymentsService implements PaymentsService {
   ): Promise<{ redirectUrl: string; customerId: string }> {
     const customerId = await this.createCustomer(email, name);
 
-    const session = await stripe.checkout.sessions.create({
+    const session = await getStripe().checkout.sessions.create({
       mode: 'subscription',
       customer: customerId,
       locale: 'es',
@@ -71,7 +75,7 @@ export class StripePaymentsService implements PaymentsService {
   async cancelSubscription(
     customerId: string,
   ): Promise<{ redirectUrl: string }> {
-    const session = await stripe.billingPortal.sessions.create({
+    const session = await getStripe().billingPortal.sessions.create({
       customer: customerId,
       locale: 'es',
       return_url: `${appUrl}/app/subscription`,
@@ -83,7 +87,7 @@ export class StripePaymentsService implements PaymentsService {
   async resumeSubscription(
     customerId: string,
   ): Promise<{ redirectUrl: string }> {
-    const session = await stripe.billingPortal.sessions.create({
+    const session = await getStripe().billingPortal.sessions.create({
       customer: customerId,
       locale: 'es',
       return_url: `${appUrl}/app/subscription`,
@@ -95,7 +99,7 @@ export class StripePaymentsService implements PaymentsService {
   async getSubscriptionStatus(
     customerId: string,
   ): Promise<SubscriptionStatus | null> {
-    const { data: subscriptions } = await stripe.subscriptions.list({
+    const { data: subscriptions } = await getStripe().subscriptions.list({
       customer: customerId,
       limit: 1,
     });
@@ -108,7 +112,7 @@ export class StripePaymentsService implements PaymentsService {
   async getPlanInfo(): Promise<PlanInfo> {
     const priceId = process.env.STRIPE_PRICE_ID!;
 
-    const price = await stripe.prices.retrieve(priceId, {
+    const price = await getStripe().prices.retrieve(priceId, {
       expand: ['product'],
     });
 
