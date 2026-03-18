@@ -60,7 +60,7 @@ export class StripePaymentsService implements PaymentsService {
       customer: customerId,
       locale: 'es',
       line_items: [{ price: planId, quantity: 1 }],
-      success_url: `${appUrl}/app/subscription?success=true`,
+      success_url: `${appUrl}/app/subscription?subscriptionSuccess=true`,
       cancel_url: `${appUrl}/app/subscription`,
     });
 

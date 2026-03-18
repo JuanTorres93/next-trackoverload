@@ -19,6 +19,8 @@ vi.mock('@/app/_utils/auth/getCurrentUserId', () => {
   };
 });
 
+export const mockRouterReplace = vi.fn();
+
 vi.mock('next/navigation', () => {
   return {
     redirect: vi.fn(),
@@ -29,7 +31,7 @@ vi.mock('next/navigation', () => {
       back: vi.fn(),
       forward: vi.fn(),
       prefetch: vi.fn(),
-      replace: vi.fn(),
+      replace: mockRouterReplace,
     })),
   };
 });
