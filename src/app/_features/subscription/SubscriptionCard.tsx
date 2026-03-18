@@ -105,14 +105,11 @@ function NoSubscriptionContent({
   return (
     <>
       <p className="text-center text-text-regular">{description}</p>
-      <HorizontalLine />
-      <p className="font-medium text-center">
-        Precio: <span className="text-text/80">{price}/mes</span>
-      </p>
-      <ButtonPrimary disabled={isLoading} onClick={handleSubscribe}>
-        {!isLoading && 'Suscribirme'}
-        {isLoading && <SpinnerMini className="mx-auto" />}
-      </ButtonPrimary>
+      <SuscriptionInfoAndAction
+        price={price}
+        isLoading={isLoading}
+        handleSubscribe={handleSubscribe}
+      />
     </>
   );
 }
@@ -155,14 +152,11 @@ function ExpiredFreeTrialContent({
         Tu periodo de prueba ha terminado.
       </p>
       <p className="text-center text-text-regular">{description}</p>
-      <HorizontalLine />
-      <p className="font-medium text-center">
-        Precio: <span className="text-text/80">{price}/mes</span>
-      </p>
-      <ButtonPrimary disabled={isLoading} onClick={handleSubscribe}>
-        {!isLoading && 'Suscribirme'}
-        {isLoading && <SpinnerMini className="mx-auto" />}
-      </ButtonPrimary>
+      <SuscriptionInfoAndAction
+        price={price}
+        isLoading={isLoading}
+        handleSubscribe={handleSubscribe}
+      />
     </>
   );
 }
@@ -300,6 +294,53 @@ function FreeSubscriptionContent() {
           <span>Sin compromiso ni pagos</span>
         </li>
       </ul>
+    </>
+  );
+}
+
+function SuscriptionInfoAndAction({
+  price,
+  isLoading,
+  handleSubscribe,
+}: {
+  price: string;
+  isLoading: boolean;
+  handleSubscribe: () => void;
+}) {
+  return (
+    <>
+      <ul className="flex flex-col gap-2 text-sm [&>li]:flex [&>li]:items-center [&>li]:gap-2">
+        <li>
+          <HiCheckCircle className="w-4 h-4 text-primary shrink-0" />
+          <span>Registro de calorías y proteínas.</span>
+        </li>
+        <li>
+          <HiCheckCircle className="w-4 h-4 text-primary shrink-0" />
+          <span>Escaneo de códigos de barras.</span>
+        </li>
+        <li>
+          <HiCheckCircle className="w-4 h-4 text-primary shrink-0" />
+          <span>Recetario personal.</span>
+        </li>
+        <li>
+          <HiCheckCircle className="w-4 h-4 text-primary shrink-0" />
+          <span>Planificador semanal.</span>
+        </li>
+        <li>
+          <HiCheckCircle className="w-4 h-4 text-primary shrink-0" />
+          <span>Registro y seguimiento de tu peso.</span>
+        </li>
+      </ul>
+
+      <HorizontalLine />
+      <p className="font-medium text-center">
+        <span className="text-text/80">{price}/mes</span>
+      </p>
+      <HorizontalLine />
+      <ButtonPrimary disabled={isLoading} onClick={handleSubscribe}>
+        {!isLoading && 'Suscribirme'}
+        {isLoading && <SpinnerMini className="mx-auto" />}
+      </ButtonPrimary>
     </>
   );
 }
