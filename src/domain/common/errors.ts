@@ -21,6 +21,3 @@ export class ConflictError extends DomainError {}
 export class InfrastructureError extends DomainError {}
 
 export class AdapterError extends DomainError {}
-
-//TODO: delete this when beta-testing is done
-export class MaxUsersExceededError extends DomainError {}
