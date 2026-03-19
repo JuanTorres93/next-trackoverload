@@ -6,9 +6,9 @@ const ContentSecurityPolicy = [
   "default-src 'self'",
 
   // Scripts
-  isDev
-    ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
-    : "script-src 'self'",
+  "script-src 'self' 'unsafe-inline'" +
+    (isDev ? " 'unsafe-eval'" : '') +
+    ' https://vercel.live',
 
   // Styles
   isDev ? "style-src 'self' 'unsafe-inline'" : "style-src 'self'",
