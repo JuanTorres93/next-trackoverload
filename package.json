@@ -38,6 +38,7 @@
     "recharts": "^3.8.0",
     "respinner": "^5.0.0",
     "sharp": "^0.34.4",
+    "simple-statistics": "^7.8.9",
     "stripe": "^20.4.1",
     "tailwind-merge": "^3.5.0",
     "uuid": "^13.0.0"

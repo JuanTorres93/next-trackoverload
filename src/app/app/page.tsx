@@ -26,8 +26,7 @@ export default async function Dashboard() {
 
   const promises = [
     getAssembledDayById(todayId.value),
-    // TODO IMPORTANT: allow user to configure days, maybe with a URL query param like ?days=14 or something like that
-    getLastNumberOfDaysIncludingToday(7),
+    getLastNumberOfDaysIncludingToday(90),
   ] as const;
   const [assembledDayResult, daysHistory] = await Promise.all(promises);
 

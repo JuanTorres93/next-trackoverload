@@ -1,5 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render, screen } from '@testing-library/react';
 
 import DashboardPage from '../page';
 
@@ -52,26 +51,10 @@ describe('DashboardPage', () => {
 
   describe('WeightAnalisys', () => {
     it('Renders input for changing weight', async () => {
+      // Actual behaviour is tested in the component itself
       const { weightInput } = await setup();
 
       expect(weightInput).toBeInTheDocument();
-    });
-
-    it("updates user's weight for current day", async () => {
-      const { weightInput, todayId } = await setup();
-
-      const newWeight = '70';
-
-      const dayInRepo = await daysRepo.getDayById(todayId.value);
-      expect(dayInRepo?.userWeightInKg).not.toBe(Number(newWeight));
-
-      await userEvent.clear(weightInput);
-      await userEvent.type(weightInput, '70');
-
-      await waitFor(async () => {
-        const updatedDayInRepo = await daysRepo.getDayById(todayId.value);
-        expect(updatedDayInRepo?.userWeightInKg).toBe(Number(newWeight));
-      });
     });
   });
 });
