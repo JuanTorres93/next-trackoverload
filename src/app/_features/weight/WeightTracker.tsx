@@ -39,45 +39,62 @@ function WeightTracker({
         placeholderBackground={emptyInputBackground}
       />
 
-      <ChartTitle>Últimos 14 días</ChartTitle>
-      <ChartConclusion>
-        {getWeightFeedback(
+      <ChartSection
+        title="Últimos 14 días"
+        conclusion={getWeightFeedback(
           last14Days
             .map((day) => day.day?.userWeightInKg)
             .filter((weight): weight is number => weight !== undefined),
         )}
-      </ChartConclusion>
-      <WeightHistory days={last14Days} />
+      >
+        <WeightHistory days={last14Days} />
+      </ChartSection>
 
-      <ChartTitle>Últimos 30 días</ChartTitle>
-      <ChartConclusion>
-        {getWeightFeedback(
+      <ChartSection
+        title="Últimos 30 días"
+        conclusion={getWeightFeedback(
           last30Days
             .map((day) => day.day?.userWeightInKg)
             .filter((weight): weight is number => weight !== undefined),
         )}
-      </ChartConclusion>
-      <WeightHistory days={last30Days} />
+      >
+        <WeightHistory days={last30Days} />
+      </ChartSection>
 
-      <ChartTitle>Últimos 90 días</ChartTitle>
-      <ChartConclusion>
-        {getWeightFeedback(
+      <ChartSection
+        title="Últimos 90 días"
+        conclusion={getWeightFeedback(
           last90Days
             .map((day) => day.day?.userWeightInKg)
             .filter((weight): weight is number => weight !== undefined),
         )}
-      </ChartConclusion>
-      <WeightHistory days={last90Days} />
+      >
+        <WeightHistory days={last90Days} />
+      </ChartSection>
     </div>
   );
 }
 
-function ChartTitle({ children }: { children: React.ReactNode }) {
-  return <h3 className="text-sm font-medium text-primary/80">{children}</h3>;
-}
-
-function ChartConclusion({ children }: { children: React.ReactNode }) {
-  return <p className="text-sm text-primary/80">{children}</p>;
+function ChartSection({
+  title,
+  conclusion,
+  children,
+}: {
+  title: string;
+  conclusion: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-1.5">
+        <h3 className="text-xs font-semibold tracking-widest uppercase text-text-minor-emphasis">
+          {title}
+        </h3>
+        <p className="text-sm font-medium text-primary">{conclusion}</p>
+      </div>
+      {children}
+    </div>
+  );
 }
 
 export default WeightTracker;

@@ -14,25 +14,20 @@ interface TrendAnalysis {
 
 // Minimum slope (kg/day) to consider a trend as "up" or "down". Below this, it's "stable".
 // TODO: configure according user weight
-const SLOPE_THRESHOLD = 0.05; // kg/day
+const SLOPE_THRESHOLD = 0.05;
 
-// ---------- Public API ----------
+export function getWeightFeedback(data: (number | null)[]): string {
+  const points = toPoints(data);
 
-export function getWeightFeedback(data: number[]): string {
-  if (data.length < 2) {
-    return 'Not enough data to determine a trend';
+  if (points.length < 2) {
+    return 'No hay suficientes datos todavía';
   }
 
-  const analysis = analyzeTrend(data);
-
+  const analysis = analyzeTrend(points);
   return buildMessage(analysis);
 }
 
-// ---------- Core logic ----------
-
-function analyzeTrend(data: number[]): TrendAnalysis {
-  const points = toPoints(data);
-
+function analyzeTrend(points: [number, number][]): TrendAnalysis {
   const regression = linearRegression(points);
   const slope = regression.m;
 
@@ -45,10 +40,10 @@ function analyzeTrend(data: number[]): TrendAnalysis {
   };
 }
 
-// ---------- Helpers ----------
-
-function toPoints(data: number[]): [number, number][] {
-  return data.map((value, index) => [index, value]);
+function toPoints(data: (number | null)[]): [number, number][] {
+  return data
+    .map((value, index) => (value !== null ? [index, value] : null))
+    .filter((point): point is [number, number] => point !== null);
 }
 
 function getDirection(slope: number): TrendDirection {
