@@ -10,8 +10,8 @@ const ContentSecurityPolicy = [
     (isDev ? " 'unsafe-eval'" : '') +
     ' https://vercel.live',
 
-  // Styles
-  isDev ? "style-src 'self' 'unsafe-inline'" : "style-src 'self'",
+  // Styles — 'unsafe-inline' needed for Next.js inline <style> tags
+  "style-src 'self' 'unsafe-inline'",
 
   // Images
   "img-src 'self' data: blob: res.cloudinary.com images.openfoodfacts.org images.openfoodfacts.net", // NOTE: Defense in browser, sync below with next.config.ts remotePatterns
@@ -63,14 +63,14 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  // async headers() {
-  // return [
-  // {
-  // source: '/:path*',
-  // headers: securityHeaders,
-  // },
-  // ];
-  // },
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: securityHeaders,
+      },
+    ];
+  },
 
   images: {
     remotePatterns:
