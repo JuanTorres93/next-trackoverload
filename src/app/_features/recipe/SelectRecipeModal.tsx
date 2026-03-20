@@ -8,7 +8,7 @@ function SelectRecipeModal({
   onCloseModal?: () => void;
 }) {
   return (
-    <div className="max-w-200 max-h-160 overflow-y-scroll w-[80dvw] p-4">
+    <div className="max-w-200 w-[80dvw] p-4">
       <SelectRecipeForm
         addMealsRequest={addMealsRequest}
         onSuccess={onCloseModal}

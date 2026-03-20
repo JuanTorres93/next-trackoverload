@@ -88,8 +88,8 @@ function SelectRecipeForm({
     }
   }
   return (
-    <>
-      <div className="flex items-center justify-between gap-2 mb-8">
+    <div className="flex flex-col max-h-160">
+      <div className="flex items-center justify-between gap-2 mb-8 shrink-0">
         <SectionHeading className="p-0! m-0! max-bp-add-multiple-meals-modal:text-3xl!">
           Tus recetas
         </SectionHeading>
@@ -112,19 +112,21 @@ function SelectRecipeForm({
         </ButtonNew>
       </div>
 
-      {isLoading && isAddingMeals && <span>Añadiendo comidas</span>}
+      <div className="flex-1 min-h-0 overflow-y-auto">
+        {isLoading && isAddingMeals && <span>Añadiendo comidas</span>}
 
-      {isLoading && isFetching && <span>Cargando recetas</span>}
+        {isLoading && isFetching && <span>Cargando recetas</span>}
 
-      {!isLoading && (
-        <RecipesGrid
-          asLink={false}
-          recipes={recipes}
-          onClick={handleClickRecipe}
-          selectedRecipesIds={selectedRecipesIds}
-        />
-      )}
-    </>
+        {!isLoading && (
+          <RecipesGrid
+            asLink={false}
+            recipes={recipes}
+            onClick={handleClickRecipe}
+            selectedRecipesIds={selectedRecipesIds}
+          />
+        )}
+      </div>
+    </div>
   );
 }
 
