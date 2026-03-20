@@ -1,4 +1,5 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import DashboardPage from '../page';
 
@@ -15,28 +16,62 @@ const mealsRepo = AppMealsRepo as MemoryMealsRepo;
 const daysRepo = AppDaysRepo as MemoryDaysRepo;
 
 async function setup() {
+  await createMockUser();
+
+  const todayId = dateToDayId(new Date());
+  const dayWithMeals = await createMockDayWithMeal(
+    todayId.day,
+    todayId.month,
+    todayId.year,
+  );
+
   const ui = await DashboardPage();
   render(ui);
+
+  const weightInput = screen.getByTestId('input-weight');
+
+  return { weightInput, dayWithMeals, todayId };
 }
 
 describe('DashboardPage', () => {
+  afterEach(() => {
+    mealsRepo.clearForTesting();
+    daysRepo.clearForTesting();
+  });
+
   describe("Today's meals", async () => {
-    await createMockUser();
-
-    const todayId = dateToDayId(new Date());
-    const dayWithMeals = await createMockDayWithMeal(
-      todayId.day,
-      todayId.month,
-      todayId.year,
-    );
-
     it('Renders meal names for the day', async () => {
-      await setup();
+      const { dayWithMeals } = await setup();
       const meal = dayWithMeals.meals[0];
 
       const mealNameElement = screen.getByText(meal.name);
 
       expect(mealNameElement).toBeInTheDocument();
+    });
+  });
+
+  describe('WeightAnalisys', () => {
+    it('Renders input for changing weight', async () => {
+      const { weightInput } = await setup();
+
+      expect(weightInput).toBeInTheDocument();
+    });
+
+    it("updates user's weight for current day", async () => {
+      const { weightInput, todayId } = await setup();
+
+      const newWeight = '70';
+
+      const dayInRepo = await daysRepo.getDayById(todayId.value);
+      expect(dayInRepo?.userWeightInKg).not.toBe(Number(newWeight));
+
+      await userEvent.clear(weightInput);
+      await userEvent.type(weightInput, '70');
+
+      await waitFor(async () => {
+        const updatedDayInRepo = await daysRepo.getDayById(todayId.value);
+        expect(updatedDayInRepo?.userWeightInKg).toBe(Number(newWeight));
+      });
     });
   });
 });
