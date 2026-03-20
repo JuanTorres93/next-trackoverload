@@ -19,6 +19,17 @@ function WeightTracker({
   const last30Days = days.slice(-30);
   const last90Days = days.slice(-90);
 
+  const daysBewteen15And30AreOnlyNull = days
+    .slice(-30, -14)
+    .every((day) => day.day === null);
+
+  const daysBewteen31And90AreOnlyNull = days
+    .slice(-90, -30)
+    .every((day) => day.day === null);
+
+  const show30DaysChart = !daysBewteen15And30AreOnlyNull;
+  const show90DaysChart = !daysBewteen31And90AreOnlyNull;
+
   const moreThanOneDaysWithWeight =
     days.filter((day) => day.day?.userWeightInKg !== undefined).length > 1;
 
@@ -50,27 +61,31 @@ function WeightTracker({
         <WeightHistory days={last14Days} />
       </ChartSection>
 
-      <ChartSection
-        title="Últimos 30 días"
-        conclusion={getWeightFeedback(
-          last30Days
-            .map((day) => day.day?.userWeightInKg)
-            .filter((weight): weight is number => weight !== undefined),
-        )}
-      >
-        <WeightHistory days={last30Days} />
-      </ChartSection>
+      {show30DaysChart && (
+        <ChartSection
+          title="Últimos 30 días"
+          conclusion={getWeightFeedback(
+            last30Days
+              .map((day) => day.day?.userWeightInKg)
+              .filter((weight): weight is number => weight !== undefined),
+          )}
+        >
+          <WeightHistory days={last30Days} />
+        </ChartSection>
+      )}
 
-      <ChartSection
-        title="Últimos 90 días"
-        conclusion={getWeightFeedback(
-          last90Days
-            .map((day) => day.day?.userWeightInKg)
-            .filter((weight): weight is number => weight !== undefined),
-        )}
-      >
-        <WeightHistory days={last90Days} />
-      </ChartSection>
+      {show90DaysChart && (
+        <ChartSection
+          title="Últimos 90 días"
+          conclusion={getWeightFeedback(
+            last90Days
+              .map((day) => day.day?.userWeightInKg)
+              .filter((weight): weight is number => weight !== undefined),
+          )}
+        >
+          <WeightHistory days={last90Days} />
+        </ChartSection>
+      )}
     </div>
   );
 }
