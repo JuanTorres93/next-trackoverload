@@ -170,4 +170,24 @@ describe('Day', () => {
       expect(dayWithWeight.userWeightInKg).toBe(85);
     });
   });
+
+  describe('calories goal setting', () => {
+    let dayWithCaloriesGoal: Day;
+    const CALORIES_GOAL = 2000;
+
+    beforeEach(() => {
+      dayWithCaloriesGoal = Day.create({
+        ...dayTestProps.validDayProps(),
+        updatedCaloriesGoal: CALORIES_GOAL,
+      });
+    });
+
+    it('should update calories goal', async () => {
+      expect(dayWithCaloriesGoal.updatedCaloriesGoal).toBe(CALORIES_GOAL);
+
+      dayWithCaloriesGoal.updateCaloriesGoal(2500);
+
+      expect(dayWithCaloriesGoal.updatedCaloriesGoal).toBe(2500);
+    });
+  });
 });

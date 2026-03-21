@@ -3,6 +3,7 @@ import { DomainDate } from '@/domain/value-objects/DomainDate/DomainDate';
 import { Id } from '@/domain/value-objects/Id/Id';
 import { ValidationError } from '../../common/errors';
 import { WeightInKg } from '@/domain/value-objects/WeightInKg/WeightInKg';
+import { Integer } from '@/domain/value-objects/Integer/Integer';
 
 export type DayCreateProps = {
   day: number;
@@ -10,6 +11,7 @@ export type DayCreateProps = {
   year: number;
   userId: string;
   userWeightInKg?: number;
+  updatedCaloriesGoal?: number;
   createdAt?: Date;
   updatedAt?: Date;
 };
@@ -20,6 +22,7 @@ export type DayProps = {
   mealIds: Id[];
   fakeMealIds: Id[];
   userWeightInKg?: WeightInKg;
+  updatedCaloriesGoal?: Integer;
   createdAt: DomainDate;
   updatedAt: DomainDate;
 };
@@ -35,11 +38,17 @@ export class Day {
         year: props.year,
       }),
       userId: Id.create(props.userId),
+
       mealIds: [],
       fakeMealIds: [],
+
       userWeightInKg: props.userWeightInKg
         ? WeightInKg.create(props.userWeightInKg)
         : undefined,
+      updatedCaloriesGoal: props.updatedCaloriesGoal
+        ? Integer.create(props.updatedCaloriesGoal)
+        : undefined,
+
       createdAt: DomainDate.create(props.createdAt),
       updatedAt: DomainDate.create(props.updatedAt),
     };
@@ -115,6 +124,12 @@ export class Day {
     this.props.updatedAt = DomainDate.create(new Date());
   }
 
+  updateCaloriesGoal(newCaloriesGoal: number): void {
+    this.props.updatedCaloriesGoal = Integer.create(newCaloriesGoal);
+
+    this.props.updatedAt = DomainDate.create(new Date());
+  }
+
   toCreateProps(): DayCreateProps {
     return {
       day: this.day,
@@ -122,6 +137,7 @@ export class Day {
       year: this.year,
       userId: this.userId,
       userWeightInKg: this.userWeightInKg,
+      updatedCaloriesGoal: this.updatedCaloriesGoal,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
     };
@@ -158,6 +174,10 @@ export class Day {
 
   get userWeightInKg() {
     return this.props.userWeightInKg?.value;
+  }
+
+  get updatedCaloriesGoal() {
+    return this.props.updatedCaloriesGoal?.value;
   }
 
   get createdAt() {

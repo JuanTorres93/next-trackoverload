@@ -37,6 +37,10 @@ const daySchema = new mongoose.Schema<DayMongoProps>({
     type: Number,
     required: false,
   },
+  updatedCaloriesGoal: {
+    type: Number,
+    required: false,
+  },
   createdAt: {
     type: Date,
     required: true,
