@@ -1,4 +1,4 @@
-import { FREE_TRIAL_DAYS } from '@/domain/services/PaymentsService.port';
+import { FREE_TRIAL_DAYS } from '@/domain/common/constants';
 
 export function isFreeTrialExpired(createdAt: string): boolean {
   const trialEnd = new Date(createdAt);

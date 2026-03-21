@@ -9,6 +9,8 @@ export const validUserProps = {
   hashedPassword:
     'IAmAReallyStrongHashedPasswordThatShouldWorkFineInTests1234567890',
   customerId: 'customer-123',
+  subscriptionStatus: 'free_trial' as const,
+  subscriptionEndsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
   createdAt: new Date(),
   updatedAt: new Date(),
 };
@@ -16,10 +18,17 @@ export const validUserProps = {
 export function createTestUser(props?: Partial<UserCreateProps>): User {
   return User.create({
     id: props?.id || userId,
+
     name: props?.name || validUserProps.name,
     email: props?.email || validUserProps.email,
     hashedPassword: props?.hashedPassword || validUserProps.hashedPassword,
+
     customerId: props?.customerId || validUserProps.customerId,
+    subscriptionStatus:
+      props?.subscriptionStatus || validUserProps.subscriptionStatus,
+    subscriptionEndsAt:
+      props?.subscriptionEndsAt || validUserProps.subscriptionEndsAt,
+
     createdAt: props?.createdAt || validUserProps.createdAt,
     updatedAt: props?.updatedAt || validUserProps.updatedAt,
   });

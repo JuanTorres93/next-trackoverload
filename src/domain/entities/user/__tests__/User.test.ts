@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { ValidationError } from '@/domain/common/errors';
 import * as userTestProps from '../../../../../tests/createProps/userTestProps';
 import { User, UserCreateProps } from '../User';
+import { FREE_TRIAL_DAYS } from '@/domain/common/constants';
 
 describe('User', () => {
   let user: User;
@@ -112,6 +113,84 @@ describe('User', () => {
       user.update(patch);
 
       expect(user.subscriptionEndsAt).toBe(newSubscriptionEndsAt);
+    });
+
+    describe('valid subscription', () => {
+      it('should know active subscription is valid', async () => {
+        const userWithActiveSubscription = User.create({
+          ...validUserProps,
+          subscriptionStatus: 'active',
+        });
+
+        expect(userWithActiveSubscription.hasValidSubscription).toBe(true);
+      });
+
+      it('should know free subscription is valid', async () => {
+        const userWithFreeSubscription = User.create({
+          ...validUserProps,
+          subscriptionStatus: 'free',
+        });
+
+        expect(userWithFreeSubscription.hasValidSubscription).toBe(true);
+      });
+
+      it('should know free trial subscription is valid if trial not expired', async () => {
+        const createdAt = new Date();
+        createdAt.setDate(createdAt.getDate() - (FREE_TRIAL_DAYS - 1)); // One day before trial expires
+
+        const userWithFreeTrialSubscription = User.create({
+          ...validUserProps,
+          subscriptionStatus: 'free_trial',
+          createdAt,
+        });
+
+        expect(userWithFreeTrialSubscription.hasValidSubscription).toBe(true);
+      });
+
+      it('should know free trial subscription is invalid if trial expired', async () => {
+        const createdAt = new Date();
+        createdAt.setDate(createdAt.getDate() - (FREE_TRIAL_DAYS + 1)); // One day after trial expires
+
+        const userWithExpiredFreeTrialSubscription = User.create({
+          ...validUserProps,
+          subscriptionStatus: 'free_trial',
+          createdAt,
+        });
+
+        expect(userWithExpiredFreeTrialSubscription.hasValidSubscription).toBe(
+          false,
+        );
+      });
+
+      it('should know canceled subscription is valid if current date is before subscriptionEndsAt', async () => {
+        const subscriptionEndsAt = new Date(
+          Date.now() + 7 * 24 * 60 * 60 * 1000,
+        ); // 7 days from now
+
+        const userWithCanceledSubscription = User.create({
+          ...validUserProps,
+          subscriptionStatus: 'canceled',
+          subscriptionEndsAt,
+        });
+
+        expect(userWithCanceledSubscription.hasValidSubscription).toBe(true);
+      });
+
+      it('should know canceled subscription is invalid if current date is after subscriptionEndsAt', async () => {
+        const subscriptionEndsAt = new Date(
+          Date.now() - 7 * 24 * 60 * 60 * 1000,
+        ); // 7 days ago
+
+        const userWithExpiredCanceledSubscription = User.create({
+          ...validUserProps,
+          subscriptionStatus: 'canceled',
+          subscriptionEndsAt,
+        });
+
+        expect(userWithExpiredCanceledSubscription.hasValidSubscription).toBe(
+          false,
+        );
+      });
     });
   });
 

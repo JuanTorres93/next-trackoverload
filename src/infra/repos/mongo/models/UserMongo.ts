@@ -1,7 +1,9 @@
 import mongoose from 'mongoose';
 import { UserCreateProps, nameTextOptions } from '@/domain/entities/user/User';
 
-const userSchema = new mongoose.Schema<UserCreateProps>({
+const userSchema = new mongoose.Schema<
+  UserCreateProps & { hasValidSubscription?: boolean }
+>({
   id: {
     type: String,
     required: true,
@@ -31,6 +33,10 @@ const userSchema = new mongoose.Schema<UserCreateProps>({
   },
   subscriptionEndsAt: {
     type: Date,
+    required: false,
+  },
+  hasValidSubscription: {
+    type: Boolean,
     required: false,
   },
   createdAt: {

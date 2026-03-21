@@ -1,13 +1,11 @@
+import { getLoggedInUser } from '@/app/_features/user/actions';
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { isFreeTrialExpired } from '@/app/_features/subscription/isFreeTrialExpired';
 import SideNav, {
   NavBar as SideNavNavBar,
   ToggleButton as SideNavToggle,
 } from '../_ui/SideNav';
-import { getLoggedInUser } from '@/app/_features/user/actions';
-import { UserDTO } from '@/application-layer/dtos/UserDTO';
 
 export const metadata: Metadata = {
   title: 'Cimientos',
@@ -24,7 +22,7 @@ export default async function SidebarLayout({
   if (pathname !== '/app/subscription') {
     const user = await getLoggedInUser();
 
-    if (!hasValidSubscription(user)) {
+    if (!user?.hasValidSubscription) {
       redirect('/app/subscription');
     }
   }
@@ -43,24 +41,4 @@ export default async function SidebarLayout({
       <main className="h-full overflow-y-auto">{children}</main>
     </div>
   );
-}
-
-function hasValidSubscription(user: UserDTO | null): boolean {
-  if (!user) return false;
-
-  const { subscriptionStatus, subscriptionEndsAt, createdAt } = user;
-
-  if (subscriptionStatus === 'active' || subscriptionStatus === 'free') {
-    return true;
-  }
-
-  if (subscriptionStatus === 'free_trial') {
-    return !isFreeTrialExpired(createdAt);
-  }
-
-  if (subscriptionStatus === 'canceled') {
-    return !!subscriptionEndsAt && new Date(subscriptionEndsAt) > new Date();
-  }
-
-  return false;
 }

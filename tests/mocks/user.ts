@@ -1,5 +1,6 @@
 import { User } from '@/domain/entities/user/User';
 import { AppUsersRepo } from '@/interface-adapters/app/repos/AppUsersRepo';
+import { validUserProps } from '../createProps/userTestProps';
 
 export const testUserId = 'dev-user';
 
@@ -9,10 +10,8 @@ export const createMockUser = async () => {
   }
 
   const user = User.create({
+    ...validUserProps,
     id: testUserId,
-    name: 'test user',
-    email: 'testuser@example.com',
-    hashedPassword: 'test-hashed-password-for-dev-user-123456789',
   });
 
   await AppUsersRepo.saveUser(user);
@@ -21,6 +20,7 @@ export const createMockUser = async () => {
     id: user.id,
     name: user.name,
     email: user.email,
+    hasValidSubscription: user.hasValidSubscription,
     customerId: user.customerId,
     createdAt: user.createdAt.toISOString(),
     updatedAt: user.updatedAt.toISOString(),

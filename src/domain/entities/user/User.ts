@@ -6,6 +6,7 @@ import { Text } from '@/domain/value-objects/Text/Text';
 import { ValidationError } from '@/domain/common/errors';
 import { HashedPassword } from '@/domain/value-objects/HashedPassword/HashedPassword';
 import { SubscriptionStatus } from '@/domain/value-objects/SubscriptionStatus/SubscriptionStatus';
+import { FREE_TRIAL_DAYS } from '@/domain/common/constants';
 
 export type UserCreateProps = {
   id: string;
@@ -130,6 +131,32 @@ export class User {
 
   get subscriptionEndsAt() {
     return this.props.subscriptionEndsAt?.value;
+  }
+
+  get hasValidSubscription(): boolean {
+    const { subscriptionStatus, subscriptionEndsAt, createdAt } = this.props;
+
+    if (!subscriptionStatus) return false;
+
+    if (
+      subscriptionStatus.value === 'active' ||
+      subscriptionStatus.value === 'free'
+    ) {
+      return true;
+    }
+
+    if (subscriptionStatus.value === 'free_trial') {
+      const trialEndDate = new Date(createdAt.value);
+      trialEndDate.setDate(trialEndDate.getDate() + FREE_TRIAL_DAYS);
+
+      return new Date() < trialEndDate;
+    }
+
+    if (subscriptionStatus.value === 'canceled') {
+      return !!subscriptionEndsAt && subscriptionEndsAt.value > new Date();
+    }
+
+    return false;
   }
 
   get createdAt() {

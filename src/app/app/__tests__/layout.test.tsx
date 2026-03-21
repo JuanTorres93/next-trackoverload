@@ -2,6 +2,14 @@ import { render } from '@testing-library/react';
 import { vi, expect, describe, it, beforeEach } from 'vitest';
 import { redirect } from 'next/navigation';
 
+import { headers } from 'next/headers';
+import { getLoggedInUser } from '@/app/_features/user/actions';
+import SidebarLayout from '../layout';
+import { FREE_TRIAL_DAYS } from '@/domain/common/constants';
+import { User } from '@/domain/entities/user/User';
+import { toUserDTO } from '@/application-layer/dtos/UserDTO';
+import { validUserProps } from '../../../../tests/createProps/userTestProps';
+
 vi.mock('@/app/_features/user/actions', () => ({
   getLoggedInUser: vi.fn(),
 }));
@@ -13,13 +21,6 @@ vi.mock('@/app/_ui/SideNav', () => ({
   NavBar: () => <div />,
   ToggleButton: () => <div />,
 }));
-
-import { headers } from 'next/headers';
-import { getLoggedInUser } from '@/app/_features/user/actions';
-import SidebarLayout from '../layout';
-import type { UserDTO } from '@/application-layer/dtos/UserDTO';
-import { FREE_TRIAL_DAYS } from '@/domain/services/PaymentsService.port';
-
 const headersMock = vi.mocked(headers);
 const getLoggedInUserMock = vi.mocked(getLoggedInUser);
 const redirectMock = vi.mocked(redirect);
@@ -34,15 +35,24 @@ function mockPathname(pathname: string) {
     : never);
 }
 
-function mockUser(overrides: Partial<UserDTO> = {}) {
-  const base: UserDTO = {
-    id: 'user-1',
-    name: 'Test User',
-    email: 'test@example.com',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
-  getLoggedInUserMock.mockResolvedValue({ ...base, ...overrides });
+function mockUser(
+  overrides: {
+    subscriptionStatus?: string;
+    subscriptionEndsAt?: string;
+    createdAt?: string;
+  } = {},
+) {
+  const user = User.create({
+    ...validUserProps,
+    subscriptionStatus: overrides.subscriptionStatus,
+
+    subscriptionEndsAt: overrides.subscriptionEndsAt
+      ? new Date(overrides.subscriptionEndsAt)
+      : undefined,
+
+    createdAt: overrides.createdAt ? new Date(overrides.createdAt) : undefined,
+  });
+  getLoggedInUserMock.mockResolvedValue(toUserDTO(user));
 }
 
 async function renderLayout() {
@@ -130,7 +140,10 @@ describe('SidebarLayout – subscription redirect', () => {
       const recentDate = new Date(
         Date.now() - 1 * 24 * 60 * 60 * 1000,
       ).toISOString(); // 1 day ago
-      mockUser({ subscriptionStatus: 'free_trial', createdAt: recentDate });
+      mockUser({
+        subscriptionStatus: 'free_trial',
+        createdAt: recentDate,
+      });
 
       await renderLayout();
 
@@ -141,7 +154,10 @@ describe('SidebarLayout – subscription redirect', () => {
       const expiredDate = new Date(
         Date.now() - (FREE_TRIAL_DAYS + 1) * 24 * 60 * 60 * 1000,
       ).toISOString();
-      mockUser({ subscriptionStatus: 'free_trial', createdAt: expiredDate });
+      mockUser({
+        subscriptionStatus: 'free_trial',
+        createdAt: expiredDate,
+      });
 
       await renderLayout();
 
