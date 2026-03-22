@@ -26,16 +26,16 @@ function WeightTracker({
   const last30Days = days.slice(-30);
   const last90Days = days.slice(-90);
 
-  const daysBewteen15And30AreOnlyNull = days
+  const daysBetween15And30HaveNoWeight = days
     .slice(-30, -14)
-    .every((day) => day.day === null);
+    .every((day) => day.day?.userWeightInKg === undefined);
 
-  const daysBewteen31And90AreOnlyNull = days
+  const daysBetween31And90HaveNoWeight = days
     .slice(-90, -30)
-    .every((day) => day.day === null);
+    .every((day) => day.day?.userWeightInKg === undefined);
 
-  const show30DaysChart = !daysBewteen15And30AreOnlyNull;
-  const show90DaysChart = !daysBewteen31And90AreOnlyNull;
+  const show30DaysChart = !daysBetween15And30HaveNoWeight;
+  const show90DaysChart = !daysBetween31And90HaveNoWeight;
 
   const moreThanOneDaysWithWeight =
     days.filter((day) => day.day?.userWeightInKg !== undefined).length > 1;
