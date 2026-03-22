@@ -133,7 +133,7 @@ export class MongoDaysRepo implements DaysRepo {
     return filteredDocs.map((doc) => this.toDayEntity(doc));
   }
 
-  async getLastCaloriesGoalForUser(userId: string): Promise<number | null> {
+  async getLastDayWithCaloriesGoalForUser(userId: string): Promise<Day | null> {
     const doc = await DayMongo.findOne({
       userId,
       updatedCaloriesGoal: { $exists: true, $ne: null },
@@ -141,7 +141,7 @@ export class MongoDaysRepo implements DaysRepo {
       .sort({ year: -1, month: -1, day: -1 })
       .lean();
 
-    return doc?.updatedCaloriesGoal ?? null;
+    return doc ? this.toDayEntity(doc) : null;
   }
 
   async deleteDayForUser(id: string, userId: string): Promise<void> {

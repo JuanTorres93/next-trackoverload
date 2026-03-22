@@ -83,14 +83,14 @@ export class MemoryDaysRepo implements DaysRepo {
     this.days = this.days.filter((d) => d.userId !== userId);
   }
 
-  async getLastCaloriesGoalForUser(userId: string): Promise<number | null> {
+  async getLastDayWithCaloriesGoalForUser(userId: string): Promise<Day | null> {
     const userDays = this.days
       .filter(
         (day) => day.userId === userId && day.updatedCaloriesGoal !== undefined,
       )
       .sort((a, b) => b.id.localeCompare(a.id));
 
-    return userDays.length > 0 ? userDays[0].updatedCaloriesGoal! : null;
+    return userDays.length > 0 ? userDays[0] : null;
   }
 
   // IMPORTANT NOTE: Helper method for testing - not part of the interface

@@ -489,27 +489,29 @@ describe('MongoDaysRepo', () => {
     });
   });
 
-  describe('getLastCaloriesGoalForUser', () => {
+  describe('getLastDayWithCaloriesGoalForUser', () => {
     it('should return null when user has no days', async () => {
-      const result = await repo.getLastCaloriesGoalForUser('non-existent-user');
+      const result =
+        await repo.getLastDayWithCaloriesGoalForUser('non-existent-user');
       expect(result).toBeNull();
     });
 
     it('should return null when user has days but none have a calories goal', async () => {
-      const result = await repo.getLastCaloriesGoalForUser(day.userId);
+      const result = await repo.getLastDayWithCaloriesGoalForUser(day.userId);
       expect(result).toBeNull();
     });
 
-    it('should return the calories goal of the only day that has one', async () => {
+    it('should return the day with a calories goal', async () => {
       const dayWithGoal = dayTestProps.createEmptyTestDay({ day: 5 });
       dayWithGoal.updateCaloriesGoal(2000);
       await repo.saveDay(dayWithGoal);
 
-      const result = await repo.getLastCaloriesGoalForUser(day.userId);
-      expect(result).toBe(2000);
+      const result = await repo.getLastDayWithCaloriesGoalForUser(day.userId);
+      expect(result).not.toBeNull();
+      expect(result!.id).toBe(dayWithGoal.id);
     });
 
-    it('should return the calories goal of the most recent day chronologically', async () => {
+    it('should return the most recent day chronologically', async () => {
       const olderDay = dayTestProps.createEmptyTestDay({ day: 2 });
       olderDay.updateCaloriesGoal(1800);
 
@@ -519,11 +521,11 @@ describe('MongoDaysRepo', () => {
       await repo.saveDay(olderDay);
       await repo.saveDay(newerDay);
 
-      const result = await repo.getLastCaloriesGoalForUser(day.userId);
-      expect(result).toBe(2200);
+      const result = await repo.getLastDayWithCaloriesGoalForUser(day.userId);
+      expect(result!.id).toBe(newerDay.id);
     });
 
-    it('should not return the goal of a different user', async () => {
+    it('should not return the day of a different user', async () => {
       const otherUserDay = dayTestProps.createEmptyTestDay({
         userId: 'other-user',
         day: 5,
@@ -531,7 +533,7 @@ describe('MongoDaysRepo', () => {
       otherUserDay.updateCaloriesGoal(3000);
       await repo.saveDay(otherUserDay);
 
-      const result = await repo.getLastCaloriesGoalForUser(day.userId);
+      const result = await repo.getLastDayWithCaloriesGoalForUser(day.userId);
       expect(result).toBeNull();
     });
   });
