@@ -11,9 +11,10 @@ import {
 import type { RefObject } from 'react';
 import ScanButton from './ScanButton';
 import Modal from '@/app/_ui/Modal';
+import InfoBox from '@/app/_ui/InfoBox';
 
 export const SCAN_WINDOW_SIZE = 7;
-const MAJORITY_THRESHOLD = 0.5;
+const MAJORITY_THRESHOLD = 0.4;
 
 type BarcodeContextType = {
   videoHtmlElementRef: RefObject<HTMLVideoElement | null>;
@@ -139,10 +140,15 @@ function ScannerModal({ onCloseModal }: ScannerModalProps) {
   }, [reader, videoHtmlElementRef, setScannerResult, setScannerError]);
 
   return (
-    <video
-      ref={videoHtmlElementRef}
-      className="w-full h-full border rounded-lg border-border"
-    ></video>
+    <div>
+      <InfoBox className="mb-4">
+        Asegúrate de que hay buena iluminación.
+      </InfoBox>
+      <video
+        ref={videoHtmlElementRef}
+        className="w-full h-full border rounded-lg border-border"
+      ></video>
+    </div>
   );
 }
 
