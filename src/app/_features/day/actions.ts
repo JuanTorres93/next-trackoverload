@@ -1,5 +1,5 @@
 'use server';
-import { AssembledDayDTO } from '@/application-layer/dtos/DayDTO';
+import { AssembledDayDTO, DayDTO } from '@/application-layer/dtos/DayDTO';
 import { DayEntry } from '@/application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase';
 import { AppAddMultipleMealsToDayUsecase } from '@/interface-adapters/app/use-cases/day';
 import { AppGetAssembledDayById } from '@/interface-adapters/app/use-cases/day';
@@ -11,6 +11,7 @@ import { AppReplaceFakeMealByMealForUserInDayUsecase } from '@/interface-adapter
 import { AppReplaceMealByAnotherMealForUserInDayUsecase } from '@/interface-adapters/app/use-cases/day';
 import { AppReplaceMealByFakeMealForUserInDayUsecase } from '@/interface-adapters/app/use-cases/day';
 import { AppUpdateUserWeightForDayUsecase } from '@/interface-adapters/app/use-cases/day';
+import { AppGetLastDayWithCaloriesGoalForUserUsecase } from '@/interface-adapters/app/use-cases/day';
 import { revalidatePath } from 'next/cache';
 import { getCurrentUserId } from '@/app/_utils/auth/getCurrentUserId';
 
@@ -175,4 +176,10 @@ export async function addMealsToDay(
   });
 
   revalidatePath(`/app`);
+}
+
+export async function getLastDayWithCaloriesGoalForUser(): Promise<DayDTO | null> {
+  return AppGetLastDayWithCaloriesGoalForUserUsecase.execute({
+    userId: await getCurrentUserId(),
+  });
 }
