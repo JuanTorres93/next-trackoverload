@@ -5,7 +5,13 @@ import { DayEntry } from '@/application-layer/use-cases/day/GetLastNumberOfDaysF
 import { setCaloriesGoalForDay } from '../day/actions';
 import Input from '@/app/_ui/Input';
 
-function CaloriesGoalInput({ lastDay }: { lastDay: DayEntry }) {
+function CaloriesGoalInput({
+  lastDay,
+  defaultCaloriesGoal,
+}: {
+  lastDay: DayEntry;
+  defaultCaloriesGoal?: number;
+}) {
   const debouncedHandleCaloriesGoalChange = useDebounce(
     handleCaloriesGoalChange,
     250,
@@ -25,7 +31,7 @@ function CaloriesGoalInput({ lastDay }: { lastDay: DayEntry }) {
         containerClassName="border-0 bg-background gap-2 min-w-30 items-end p-0"
         className="text-3xl text-right rounded-sm text-primary placeholder:text-text-minor-emphasis/65!"
         placeholder="kcal"
-        defaultValue={lastDay.day?.updatedCaloriesGoal}
+        defaultValue={lastDay.day?.updatedCaloriesGoal ?? defaultCaloriesGoal}
         onChange={(e) => debouncedHandleCaloriesGoalChange(e.target.value)}
         disabled={false}
       >

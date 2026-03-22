@@ -16,6 +16,12 @@ function WeightTracker({
   const { className, ...rest } = props;
 
   const lastDay = days[days.length - 1];
+
+  const lastDefinedCaloriesGoal = [...days]
+    .reverse()
+    .find((day) => day.day?.updatedCaloriesGoal !== undefined)
+    ?.day?.updatedCaloriesGoal;
+
   const last14Days = days.slice(-14);
   const last30Days = days.slice(-30);
   const last90Days = days.slice(-90);
@@ -54,7 +60,10 @@ function WeightTracker({
 
         <div className="h-px bg-border/20" />
 
-        <CaloriesGoalInput lastDay={lastDay} />
+        <CaloriesGoalInput
+          lastDay={lastDay}
+          defaultCaloriesGoal={lastDefinedCaloriesGoal}
+        />
       </div>
 
       <ChartSection

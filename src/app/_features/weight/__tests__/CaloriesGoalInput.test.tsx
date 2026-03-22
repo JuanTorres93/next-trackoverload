@@ -23,7 +23,7 @@ async function createMockDays(): Promise<DayEntry[]> {
   return dayEntries;
 }
 
-async function setup(withCaloriesGoal = true) {
+async function setup(withCaloriesGoal = true, defaultCaloriesGoal?: number) {
   daysRepo.clearForTesting();
 
   const days = await createMockDays();
@@ -47,7 +47,12 @@ async function setup(withCaloriesGoal = true) {
     await daysRepo.saveDay(day);
   }
 
-  render(<CaloriesGoalInput lastDay={lastDayEntry} />);
+  render(
+    <CaloriesGoalInput
+      lastDay={lastDayEntry}
+      defaultCaloriesGoal={defaultCaloriesGoal}
+    />,
+  );
 
   return { days, lastDayEntry };
 }
@@ -101,5 +106,21 @@ describe('CaloriesGoalInput', () => {
 
       expect(updatedDay?.updatedCaloriesGoal).toBe(2500);
     });
+  });
+
+  it('renders defaultCaloriesGoal when today has no calories goal set', async () => {
+    await setup(false, 1800);
+
+    const input = screen.getByRole('textbox');
+
+    expect(input).toHaveValue('1800');
+  });
+
+  it('renders today calories goal over defaultCaloriesGoal when both exist', async () => {
+    await setup(true, 1800);
+
+    const input = screen.getByRole('textbox');
+
+    expect(input).toHaveValue('2000');
   });
 });
