@@ -22,6 +22,7 @@ export { AppReplaceFakeMealByMealForUserInDayUsecase } from './ReplaceFakeMealBy
 export { AppReplaceMealByAnotherMealForUserInDayUsecase } from './ReplaceMealByAnotherMealForUserInDay/replaceMealByAnotherMealForUserInDay';
 export { AppReplaceMealByFakeMealForUserInDayUsecase } from './ReplaceMealByFakeMealForUserInDay/replaceMealByFakeMealForUserInDay';
 export { AppUpdateUserWeightForDayUsecase } from './UpdateUserWeightForDay/updateUserWeightForDay';
+export { AppSetCaloriesGoalForDayAndUserUsecase } from './SetCaloriesGoalForDayAndUser/setCaloriesGoalForDayAndUser';
 
 // DELETE Operations
 export { AppDeleteDayUsecase } from './DeleteDay/deleteDay';

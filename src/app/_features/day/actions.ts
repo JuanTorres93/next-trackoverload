@@ -12,6 +12,7 @@ import { AppReplaceMealByAnotherMealForUserInDayUsecase } from '@/interface-adap
 import { AppReplaceMealByFakeMealForUserInDayUsecase } from '@/interface-adapters/app/use-cases/day';
 import { AppUpdateUserWeightForDayUsecase } from '@/interface-adapters/app/use-cases/day';
 import { AppGetLastDayWithCaloriesGoalForUserUsecase } from '@/interface-adapters/app/use-cases/day';
+import { AppSetCaloriesGoalForDayAndUserUsecase } from '@/interface-adapters/app/use-cases/day';
 import { revalidatePath } from 'next/cache';
 import { getCurrentUserId } from '@/app/_utils/auth/getCurrentUserId';
 
@@ -182,4 +183,17 @@ export async function getLastDayWithCaloriesGoalForUser(): Promise<DayDTO | null
   return AppGetLastDayWithCaloriesGoalForUserUsecase.execute({
     userId: await getCurrentUserId(),
   });
+}
+
+export async function setCaloriesGoalForDay(
+  dayId: string,
+  newCaloriesGoal: number,
+): Promise<void> {
+  await AppSetCaloriesGoalForDayAndUserUsecase.execute({
+    dayId,
+    userId: await getCurrentUserId(),
+    newCaloriesGoal,
+  });
+
+  revalidatePath(`/app`);
 }
