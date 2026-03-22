@@ -40,39 +40,35 @@ async function setup(removeLastDayWeight = false) {
 
   render(<WeightTracker days={days} />);
 
-  return { days, lastDayEntry };
+  const weightInput = screen.getByTestId('input-weight');
+
+  return { days, lastDayEntry, weightInput };
 }
 
 describe('WeightTracker', () => {
   it('renders current weight in input if it exists', async () => {
-    const { lastDayEntry } = await setup();
+    const { lastDayEntry, weightInput } = await setup();
 
     const lastDay = lastDayEntry.day;
 
-    const input = screen.getByRole('textbox');
-
-    expect(input).toBeInTheDocument();
-    expect(input).toHaveValue(String(lastDay!.userWeightInKg));
+    expect(weightInput).toBeInTheDocument();
+    expect(weightInput).toHaveValue(String(lastDay!.userWeightInKg));
   });
 
   it('renders placeholder text if no weight exists', async () => {
-    await setup(true);
+    const { weightInput } = await setup(true);
 
-    const input = screen.getByRole('textbox');
+    expect(weightInput).toBeInTheDocument();
+    expect(weightInput).toHaveValue('');
 
-    expect(input).toBeInTheDocument();
-    expect(input).toHaveValue('');
-
-    expect(input.getAttribute('placeholder')).toMatch(/kg/i);
+    expect(weightInput.getAttribute('placeholder')).toMatch(/kg/i);
   });
 
   it('should update user weight in repo', async () => {
-    const { lastDayEntry } = await setup();
+    const { lastDayEntry, weightInput } = await setup();
 
-    const input = screen.getByRole('textbox');
-
-    await userEvent.clear(input);
-    await userEvent.type(input, '1300');
+    await userEvent.clear(weightInput);
+    await userEvent.type(weightInput, '1300');
 
     await waitFor(async () => {
       const updatedDay = await daysRepo.getDayById(lastDayEntry.date);
@@ -82,12 +78,10 @@ describe('WeightTracker', () => {
   });
 
   it('should update user weight in repo if it had no previous value', async () => {
-    const { lastDayEntry } = await setup(true);
+    const { lastDayEntry, weightInput } = await setup(true);
 
-    const input = screen.getByRole('textbox');
-
-    await userEvent.clear(input);
-    await userEvent.type(input, '1300');
+    await userEvent.clear(weightInput);
+    await userEvent.type(weightInput, '1300');
 
     await waitFor(async () => {
       const updatedDay = await daysRepo.getDayById(lastDayEntry.date);

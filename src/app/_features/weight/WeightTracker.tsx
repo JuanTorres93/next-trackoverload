@@ -7,6 +7,7 @@ import { DayEntry } from '@/application-layer/use-cases/day/GetLastNumberOfDaysF
 import WeightHistory from './WeightHistory';
 import WeightInput from './WeightInput';
 import { getWeightFeedback } from './weightStats';
+import CaloriesGoalInput from './CaloriesGoalInput';
 
 function WeightTracker({
   days,
@@ -45,10 +46,16 @@ function WeightTracker({
       )}
       {...rest}
     >
-      <WeightInput
-        lastDay={lastDay}
-        placeholderBackground={emptyInputBackground}
-      />
+      <div className="flex flex-col gap-4 p-4 border rounded-xl border-border/20 text-text/80 bg-card ">
+        <WeightInput
+          lastDay={lastDay}
+          placeholderBackground={emptyInputBackground}
+        />
+
+        <div className="h-px bg-border/20 " />
+
+        <CaloriesGoalInput lastDay={lastDay} />
+      </div>
 
       <ChartSection
         title="Últimos 14 días"

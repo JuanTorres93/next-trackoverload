@@ -56,5 +56,13 @@ describe('DashboardPage', () => {
 
       expect(weightInput).toBeInTheDocument();
     });
+
+    it('Renders calories goal input for today', async () => {
+      await setup();
+
+      const caloriesGoalInput = screen.getByTestId('input-calories-goal');
+
+      expect(caloriesGoalInput).toBeInTheDocument();
+    });
   });
 });
