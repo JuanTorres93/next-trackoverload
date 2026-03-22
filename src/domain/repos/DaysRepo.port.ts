@@ -15,6 +15,8 @@ export interface DaysRepo {
     userId: string,
   ): Promise<Day[]>;
 
+  getLastCaloriesGoalForUser(userId: string): Promise<number | null>;
+
   saveDay(day: Day): Promise<void>;
   saveMultipleDays(days: Day[]): Promise<void>;
 
