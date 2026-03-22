@@ -7,7 +7,6 @@ import { dayIdToDayMonthYear } from '@/domain/value-objects/DayId/DayId';
 import {
   Area,
   AreaChart,
-  Dot,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -18,6 +17,7 @@ function WeightHistory({ days }: { days: DayEntry[] }) {
   const colorPrimary = extractCssVariable('--color-primary');
   const colorPrimaryLight = extractCssVariable('--color-primary-light');
   const colorNeutral = extractCssVariable('--color-text-minor-emphasis');
+  const colorCaloriesGoal = extractCssVariable('--color-error');
 
   const data = processWeightHistoryForChart(days);
 
@@ -83,7 +83,12 @@ function WeightHistory({ days }: { days: DayEntry[] }) {
           stroke={colorPrimary}
           strokeWidth={2}
           fill="url(#weightGradient)"
-          dot={<Dot r={4} fill={colorPrimary} stroke="white" strokeWidth={2} />}
+          dot={
+            <WeightDot
+              colorPrimary={colorPrimary}
+              colorCaloriesGoal={colorCaloriesGoal}
+            />
+          }
           activeDot={{ r: 5, fill: colorPrimary }}
         />
       </AreaChart>
@@ -91,7 +96,47 @@ function WeightHistory({ days }: { days: DayEntry[] }) {
   );
 }
 
-type ChartDataPoint = { label: string; weight: number };
+type ChartDataPoint = { label: string; weight: number; caloriesGoal?: number };
+
+function WeightDot({
+  cx,
+  cy,
+  payload,
+  colorPrimary,
+  colorCaloriesGoal,
+}: {
+  cx?: number;
+  cy?: number;
+  payload?: ChartDataPoint;
+  colorPrimary: string;
+  colorCaloriesGoal: string;
+}) {
+  if (cx == null || cy == null) return <g />;
+
+  if (payload?.caloriesGoal) {
+    const s = 6;
+    const pts = `${cx},${cy - s} ${cx + s},${cy} ${cx},${cy + s} ${cx - s},${cy}`;
+    return (
+      <polygon
+        points={pts}
+        fill={colorCaloriesGoal}
+        stroke="white"
+        strokeWidth={2}
+      />
+    );
+  }
+
+  return (
+    <circle
+      cx={cx}
+      cy={cy}
+      r={4}
+      fill={colorPrimary}
+      stroke="white"
+      strokeWidth={2}
+    />
+  );
+}
 
 function processWeightHistoryForChart(days: DayEntry[]): ChartDataPoint[] {
   return days
@@ -101,10 +146,12 @@ function processWeightHistoryForChart(days: DayEntry[]): ChartDataPoint[] {
 
       const label = `${day}/${month}`;
       const weight = entry.day!.userWeightInKg!;
+      const caloriesGoal = entry.day!.updatedCaloriesGoal;
 
       return {
         label,
         weight,
+        ...(caloriesGoal != null ? { caloriesGoal } : {}),
       };
     });
 }
@@ -115,20 +162,31 @@ function CustomTooltip({
   label,
 }: {
   active?: boolean;
-  payload?: { value: number }[];
+  payload?: { value: number; payload: ChartDataPoint }[];
   label?: string;
 }) {
   if (!active || !payload?.length) return null;
 
+  const dataPoint = payload[0].payload;
+
   return (
     <div className="px-3 py-2 font-normal bg-white rounded-lg shadow-md text-text">
-      <p className="m-0 ">{label}</p>
-      <p className="m-0 ">
-        Peso :{' '}
+      <p className="m-0">{label}</p>
+      <p className="m-0">
+        Peso:{' '}
         <span className="font-semibold text-primary">
           {payload[0].value} kg
         </span>
       </p>
+
+      {dataPoint.caloriesGoal != null && (
+        <p className="m-0">
+          Objetivo calórico:{' '}
+          <span className="font-semibold text-error">
+            {dataPoint.caloriesGoal} kcal
+          </span>
+        </p>
+      )}
     </div>
   );
 }

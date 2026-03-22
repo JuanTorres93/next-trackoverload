@@ -52,7 +52,7 @@ function WeightTracker({
           placeholderBackground={emptyInputBackground}
         />
 
-        <div className="h-px bg-border/20 " />
+        <div className="h-px bg-border/20" />
 
         <CaloriesGoalInput lastDay={lastDay} />
       </div>
