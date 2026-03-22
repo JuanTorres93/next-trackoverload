@@ -20,14 +20,14 @@ function WeightInput({
   }
 
   return (
-    <div className="grid gap-1 grid-cols-[max-content_min-content] items-center text-3xl ">
+    <div className="grid gap-1 grid-cols-[max-content_min-content] items-center text-3xl max-bp-navbar-mobile:text-2xl">
       <label htmlFor="input-weight">Tu peso hoy:</label>
       <Input
         id="input-weight"
         data-testid="input-weight"
-        containerClassName="border-0 bg-background gap-2 min-w-22 items-end p-0"
+        containerClassName="border-0 bg-background gap-2 min-w-22 max-bp-navbar-mobile:min-w-18 items-end p-0"
         className={twMerge(
-          `text-3xl text-right rounded-sm text-primary placeholder:text-text-minor-emphasis/65!`,
+          `text-3xl max-bp-navbar-mobile:text-2xl text-right rounded-sm text-primary placeholder:text-text-minor-emphasis/65!`,
           placeholderBackground,
         )}
         placeholder="KG"

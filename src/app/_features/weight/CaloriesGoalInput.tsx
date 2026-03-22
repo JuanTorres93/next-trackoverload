@@ -22,14 +22,14 @@ function CaloriesGoalInput({
   }
 
   return (
-    <div className="grid gap-2 grid-cols-[max-content_min-content] items-center text-3xl">
+    <div className="grid gap-2 max-bp-navbar-mobile:text-2xl grid-cols-[max-content_min-content] items-center text-3xl">
       <label htmlFor="input-calories-goal">Calorías objetivo:</label>
 
       <Input
         id="input-calories-goal"
         data-testid="input-calories-goal"
-        containerClassName="border-0 bg-background gap-2 min-w-30 items-end p-0"
-        className="text-3xl text-right rounded-sm text-primary placeholder:text-text-minor-emphasis/65!"
+        containerClassName="border-0 bg-background gap-2 min-w-30 max-bp-navbar-mobile:min-w-24 items-end p-0"
+        className="text-3xl max-bp-navbar-mobile:text-2xl text-right rounded-sm text-primary placeholder:text-text-minor-emphasis/65!"
         placeholder="kcal"
         defaultValue={lastDay.day?.updatedCaloriesGoal ?? defaultCaloriesGoal}
         onChange={(e) => debouncedHandleCaloriesGoalChange(e.target.value)}
