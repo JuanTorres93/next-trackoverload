@@ -144,6 +144,7 @@ function ScannerModal({ onCloseModal }: ScannerModalProps) {
       <InfoBox className="mb-4">
         Asegúrate de que hay buena iluminación.
       </InfoBox>
+
       <video
         ref={videoHtmlElementRef}
         className="w-full h-full border rounded-lg border-border"
