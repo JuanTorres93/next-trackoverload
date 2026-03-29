@@ -3,18 +3,17 @@
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-import ButtonNew from '@/app/_ui/buttons/ButtonNew';
 import Modal from '@/app/_ui/Modal';
 import { AssembledDayDTO } from '@/application-layer/dtos/DayDTO';
 import { dayIdToDayMonthYear } from '@/domain/value-objects/DayId/DayId';
 import SelectRecipeModal from '../recipe/SelectRecipeModal';
-import DateTitle from './DateTitle';
-import DayTitle from './DayTitle';
 import MealLine from '../meal/MealLine';
 import AddFakeMealModal from '../fakemeal/AddFakeMealModal';
 import FakeMeal from '../fakemeal/FakeMeal';
-import CaloriesAndProtein from '../common/CaloriesAndProtein';
 import { useRouter } from 'next/navigation';
+import { HiPlus } from 'react-icons/hi2';
+import { HiLightningBolt } from 'react-icons/hi';
+import { formatToInteger } from '@/app/_utils/format/formatToInteger';
 
 const computeIsToday = (day: number, month: number, year: number) => {
   const today = new Date();
@@ -42,18 +41,16 @@ function DaySummary({
   onSelectDay,
   isSelected,
 }: {
-  dayId: string; // dayId represented as string in DayId value object
+  dayId: string;
   assembledDay?: AssembledDayDTO | null;
   onSelectDay?: (dayId: string) => void;
   isSelected?: boolean;
 }) {
   const { day, month, year } = dayIdToDayMonthYear(dayId);
-
   const router = useRouter();
 
   const meals = assembledDay?.meals || [];
   const fakeMeals = assembledDay?.fakeMeals || [];
-
   const hasMeals = meals.length > 0 || fakeMeals.length > 0;
 
   const dayTotalCalories =
@@ -63,11 +60,11 @@ function DaySummary({
     meals.reduce((total, meal) => total + meal.protein, 0) +
     fakeMeals.reduce((total, fakeMeal) => total + fakeMeal.protein, 0);
 
-  // Compute day name And capitalize first letter
   const date = new Date(year, month - 1, day);
   const dayName =
     format(date, 'EEEE', { locale: es }).charAt(0).toUpperCase() +
     format(date, 'EEEE', { locale: es }).slice(1);
+  const dateLabel = format(date, 'd MMM', { locale: es });
 
   const isToday = computeIsToday(day, month, year);
   const isPast = computeIsPast(day, month, year);
@@ -75,91 +72,131 @@ function DaySummary({
   async function addMealsRequest(recipesIds: string[]) {
     await fetch('/api/day/addMultipleMeals', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        dayId,
-        recipeIds: recipesIds,
-      }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ dayId, recipeIds: recipesIds }),
       cache: 'no-store',
     });
-
-    // Refresh the page to show the new meals (the didn't show up in mobile devices)
     router.refresh();
   }
 
   return (
     <Modal>
-      <div
+      <article
         id={dayId}
-        className={`grid grid-cols-1 gap-4 grid-rows-[min-content_1fr_min-content] border-2 rounded-xl border-surface-dark overflow-x-hidden transition ${
-          isToday ? 'border-3! shadow-md border-primary-light!' : ''
-        } ${isPast ? 'opacity-60' : ''} ${isSelected ? 'border-selected!' : ''}`}
+        className={`flex flex-col rounded-2xl border transition-all duration-200 overflow-hidden
+          ${isToday ? 'border-primary shadow-[0_0_0_2px_var(--color-primary-light)]' : 'border-border/60'}
+          ${isSelected ? 'border-selected! shadow-[0_0_0_2px_var(--color-selected)]!' : ''}
+          ${isPast && !isToday ? 'opacity-55' : ''}
+          bg-surface-card
+        `}
       >
-        <div
+        {/* Day header: all info stacked vertically to avoid truncation */}
+        <header
           onClick={() => onSelectDay?.(dayId)}
-          className={`flex flex-col p-2 items-center bg-text-minor-emphasis justify-center transition gap-.5 ${isToday ? 'bg-primary-light!' : ''} ${
-            isSelected ? 'bg-selected!' : ''
-          }`}
+          className={`flex flex-col px-4 py-3 cursor-pointer transition-colors select-none border-b border-border/30
+            ${isToday ? 'bg-surface-hover' : 'bg-surface-light'}
+            ${isSelected ? 'bg-selected/10!' : ''}
+            hover:bg-surface-hover
+          `}
         >
-          <DayTitle dayName={dayName} isToday={isToday} />
-          <DateTitle day={day} month={month} year={year} />
-        </div>
-
-        <div className="grid items-start grid-cols-1 gap-3 overflow-y-scroll auto-rows-min max-h-90">
-          {meals.length > 0 &&
-            meals.map((meal) => (
-              <MealLine
-                className="mx-3"
-                key={meal.id}
-                meal={meal}
-                dayId={dayId}
-              />
-            ))}
-
-          {fakeMeals.length > 0 &&
-            fakeMeals.map((fakeMeal) => (
-              <FakeMeal
-                className="mx-3"
-                key={fakeMeal.id}
-                fakeMeal={fakeMeal}
-                dayId={dayId}
-              />
-            ))}
-        </div>
-
-        <div className="flex">
-          <Modal.Open opens="add-food-modal">
-            <ButtonNew className="w-full m-2">Comida</ButtonNew>
-          </Modal.Open>
-
-          <Modal.Open opens="add-fake-meal-modal">
-            <ButtonNew className="w-full m-2">Rápido</ButtonNew>
-          </Modal.Open>
-        </div>
-
-        {hasMeals && (
-          <div className="pt-2 bg-surface-dark ">
-            <h4 className="text-lg font-semibold text-center text-text-light">
-              Total{' '}
-            </h4>
-            <CaloriesAndProtein
-              calories={dayTotalCalories}
-              protein={dayTotalProtein}
-            />
+          {/* Row 1: day name + selection badge */}
+          <div className="flex items-center gap-1.5">
+            <span
+              className={`font-semibold leading-tight ${isToday ? 'text-primary' : 'text-text'}`}
+            >
+              {dayName}
+            </span>
+            {isToday && (
+              <span className="text-[10px] font-semibold text-primary bg-primary/15 rounded-full px-1.5 py-0.5 leading-none shrink-0">
+                Hoy
+              </span>
+            )}
+            {isSelected && !isToday && (
+              <span className="text-[10px] font-semibold text-selected bg-selected/10 rounded-full px-1.5 py-0.5 leading-none shrink-0">
+                ✓
+              </span>
+            )}
           </div>
-        )}
-      </div>
+
+          {/* Row 2: date + totals on the same compact line */}
+          <div className="flex items-baseline gap-1 mt-0.5 flex-wrap">
+            <span className="text-xs text-text-minor-emphasis">
+              {dateLabel}
+            </span>
+            {hasMeals && (
+              <>
+                <span className="text-xs text-border">&mdash;</span>
+                <span className="text-xs font-medium text-text">
+                  {formatToInteger(dayTotalCalories)} kcal
+                </span>
+                <span className="text-xs text-text-minor-emphasis">
+                  · {formatToInteger(dayTotalProtein)} g
+                </span>
+              </>
+            )}
+          </div>
+        </header>
+
+        {/* Meals list */}
+        <div className="flex flex-col flex-1 overflow-y-auto divide-y max-h-64 divide-border/20">
+          {meals.map((meal) => (
+            <MealLine key={meal.id} meal={meal} dayId={dayId} />
+          ))}
+          {fakeMeals.map((fakeMeal) => (
+            <FakeMeal key={fakeMeal.id} fakeMeal={fakeMeal} dayId={dayId} />
+          ))}
+
+          {!hasMeals && (
+            <div className="flex items-center justify-center py-8 text-sm italic text-text-minor-emphasis/50">
+              Sin comidas registradas
+            </div>
+          )}
+        </div>
+
+        {/* Action buttons — tab-style footer, no border clutter */}
+        <div className="flex mt-auto border-t border-border/30">
+          <Modal.Open opens="add-food-modal">
+            <ActionButton
+              icon={<HiPlus size={13} />}
+              label="Comida"
+              className="border-r border-border/30"
+            />
+          </Modal.Open>
+          <Modal.Open opens="add-fake-meal-modal">
+            <ActionButton icon={<HiLightningBolt size={12} />} label="Rápido" />
+          </Modal.Open>
+        </div>
+      </article>
 
       <Modal.Window name="add-food-modal">
         <SelectRecipeModal addMealsRequest={addMealsRequest} />
       </Modal.Window>
-
       <Modal.Window name="add-fake-meal-modal">
         <AddFakeMealModal dayId={dayId} />
       </Modal.Window>
     </Modal>
+  );
+}
+
+function ActionButton({
+  icon,
+  label,
+  onClick,
+  className,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  onClick?: (e: React.MouseEvent) => void;
+  className?: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex items-center gap-1 flex-1 justify-center py-2.5 text-xs font-medium text-text-minor-emphasis hover:text-primary hover:bg-surface-hover transition-colors cursor-pointer ${className ?? ''}`}
+    >
+      {icon}
+      {label}
+    </button>
   );
 }
 

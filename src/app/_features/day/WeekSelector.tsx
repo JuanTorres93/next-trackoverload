@@ -1,13 +1,11 @@
 'use client';
 
-import { twMerge } from 'tailwind-merge';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { format, startOfWeek, endOfWeek, addWeeks, subWeeks } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 import { parseFilterValueToDate } from './utils/parseFilterValueToDate';
-import ButtonPrimary from '@/app/_ui/buttons/ButtonPrimary';
 import { useEffect, useState } from 'react';
 import SpinnerMini from '@/app/_ui/SpinnerMini';
 
@@ -27,7 +25,7 @@ function WeekSelector({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const activeFilter = searchParams?.get(filterKey) || defaultFilterValue();
   const currentDate = parseFilterValueToDate(activeFilter);
 
-  const weekStartsOnMonday = 1; // 1 for Monday
+  const weekStartsOnMonday = 1;
   const weekStart = startOfWeek(currentDate, {
     weekStartsOn: weekStartsOnMonday,
   });
@@ -44,109 +42,83 @@ function WeekSelector({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
     if (filterToBeApplied === activeFilter) setIsLoading(false);
   }, [filterToBeApplied, activeFilter]);
 
-  function handleShowPreviousWeek() {
-    const previousWeek = subWeeks(currentDate, 1);
-    handleFilter(formatDateToFilterValue(previousWeek));
-  }
-
-  function handleShowNextWeek() {
-    const nextWeek = addWeeks(currentDate, 1);
-    handleFilter(formatDateToFilterValue(nextWeek));
-  }
-
   function handleFilter(filterValue: string) {
     setFilterToBeApplied(filterValue);
     setIsLoading(true);
-
     const params = new URLSearchParams(searchParams);
     params.set(filterKey, filterValue);
-
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   }
 
+  const handlePrev = () =>
+    handleFilter(formatDateToFilterValue(subWeeks(currentDate, 1)));
+  const handleNext = () =>
+    handleFilter(formatDateToFilterValue(addWeeks(currentDate, 1)));
+
   return (
-    <div
-      className={twMerge(
-        `grid grid-cols-[min-content_max-content_max-content] text-lg text-text-minor-emphasis items-center gap-6 max-bp-week-selector:grid-cols-[min-content_minmax(2rem, 20rem)] max-bp-week-selector:gap-3`,
-        className,
-      )}
-      {...rest}
-    >
-      <div className="flex gap-3">
-        <ArrowButton
-          direction="left"
-          onClick={handleShowPreviousWeek}
-          isLoading={isLoading}
-        />
-        <ArrowButton
+    <div className={`flex items-center gap-3 ${className ?? ''}`} {...rest}>
+      {/* Arrow buttons grouped together on the left */}
+      <div className="flex items-center border border-border/60 rounded-lg overflow-hidden shrink-0">
+        <NavButton direction="left" onClick={handlePrev} disabled={isLoading} />
+        <div className="w-px h-5 bg-border/60" />
+        <NavButton
           direction="right"
-          onClick={handleShowNextWeek}
-          isLoading={isLoading}
+          onClick={handleNext}
+          disabled={isLoading}
         />
       </div>
 
-      {!isLoading && (
-        <div className="flex gap-3">
-          <Day date={weekStart} />
-          <span>&mdash;</span>
-          <Day date={weekEnd} />
-        </div>
-      )}
+      {/* Date range */}
+      <div className="flex items-center gap-1.5 min-w-0">
+        {isLoading ? (
+          <SpinnerMini />
+        ) : (
+          <span className="font-semibold text-text whitespace-nowrap">
+            <span className="max-bp-week-selector:hidden">
+              {format(weekStart, "d 'de' MMMM", { locale: es })}
+              {' — '}
+              {format(weekEnd, "d 'de' MMMM", { locale: es })}
+            </span>
+            <span className="bp-week-selector:hidden">
+              {format(weekStart, 'd MMM', { locale: es })}
+              {' — '}
+              {format(weekEnd, 'd MMM', { locale: es })}
+            </span>
+          </span>
+        )}
 
-      {isLoading && <SpinnerMini />}
-
-      {!isCurrentWeek && (
-        <ButtonPrimary
-          className="p-1! px-2! text-sm max-bp-week-selector:col-span-2"
-          onClick={() => handleFilter(defaultFilterValue())}
-          disabled={isLoading}
-        >
-          Ir a semana actual
-        </ButtonPrimary>
-      )}
+        {!isCurrentWeek && !isLoading && (
+          <button
+            onClick={() => handleFilter(defaultFilterValue())}
+            disabled={isLoading}
+            className="text-xs font-semibold text-primary bg-primary/10 border border-primary/30 rounded-full px-2 py-0.5 hover:bg-primary hover:text-white transition shrink-0 cursor-pointer"
+          >
+            Hoy
+          </button>
+        )}
+      </div>
     </div>
   );
 }
 
-function ArrowButton({
+function NavButton({
   direction,
   onClick,
-  isLoading,
+  disabled,
 }: {
   direction: 'left' | 'right';
   onClick: () => void;
-  isLoading: boolean;
+  disabled: boolean;
 }) {
-  const iconOptions = {
-    size: 35,
-    strokeWidth: 0.1,
-  };
+  const Icon = direction === 'left' ? HiChevronLeft : HiChevronRight;
 
-  const style = `text-text-minor-emphasis transition rounded-full p-1 cursor-pointer hover:bg-border/20 ${isLoading ? 'opacity-50 cursor-not-allowed! bg-border/20' : ''}`;
-
-  function handleClick() {
-    if (isLoading) return;
-
-    onClick();
-  }
-
-  return direction === 'left' ? (
-    <HiChevronLeft className={style} {...iconOptions} onClick={handleClick} />
-  ) : (
-    <HiChevronRight className={style} {...iconOptions} onClick={handleClick} />
-  );
-}
-
-function Day({ date }: { date: Date }) {
   return (
-    <span>
-      <span className="max-bp-week-selector:hidden">
-        {format(date, "d 'de' MMMM", { locale: es })}
-      </span>
-      <span className="bp-week-selector:hidden">
-        {format(date, 'd MMM', { locale: es })}
-      </span>
-    </span>
+    <button
+      onClick={disabled ? undefined : onClick}
+      className={`flex items-center justify-center w-8 h-8 transition text-text-minor-emphasis hover:bg-surface-light hover:text-text ${disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}`}
+    >
+      <Icon size={18} />
+    </button>
   );
 }
 

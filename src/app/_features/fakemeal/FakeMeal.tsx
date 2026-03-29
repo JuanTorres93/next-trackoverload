@@ -1,10 +1,9 @@
 import { FakeMealDTO } from '@/application-layer/dtos/FakeMealDTO';
-import CaloriesAndProtein from '../common/CaloriesAndProtein';
-import LoggedMealContainer from '../common/LoggedMealContainer';
 import ButtonX from '@/app/_ui/buttons/ButtonX';
 import { removeFakeMealFromDay } from './actions';
 import { useState } from 'react';
 import LoadingOverlay from '../common/LoadingOverlay';
+import { formatToInteger } from '@/app/_utils/format/formatToInteger';
 
 function FakeMeal({
   fakeMeal,
@@ -14,11 +13,11 @@ function FakeMeal({
   fakeMeal: FakeMealDTO;
   dayId: string;
 } & React.HTMLAttributes<HTMLDivElement>) {
+  const { className, ...rest } = props;
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleRemoveFakeMeal() {
     setIsLoading(true);
-
     try {
       await removeFakeMealFromDay(dayId, fakeMeal.id);
     } finally {
@@ -27,22 +26,29 @@ function FakeMeal({
   }
 
   return (
-    <LoggedMealContainer {...props}>
+    <div
+      className={`relative flex items-center gap-3 px-4 py-2.5 bg-surface-card ${className ?? ''}`}
+      {...rest}
+    >
       {isLoading && <LoadingOverlay />}
-      <div className="grid grid-cols-[1fr_min-content] p-2 gap-4 items-center bg-surface-card">
-        <span className="font-semibold">{fakeMeal.name}</span>
 
-        <ButtonX
-          data-testid="remove-fake-meal"
-          onClick={handleRemoveFakeMeal}
-        />
+      {/* Lightning bolt icon for quick entries */}
+      <div className="w-9 h-9 rounded-full bg-surface-light flex items-center justify-center shrink-0 text-text-minor-emphasis text-base">
+        ⚡
       </div>
 
-      <CaloriesAndProtein
-        calories={fakeMeal.calories}
-        protein={fakeMeal.protein}
-      />
-    </LoggedMealContainer>
+      <div className="flex-1 min-w-0">
+        <p className="font-medium text-sm text-text truncate">
+          {fakeMeal.name}
+        </p>
+        <p className="text-xs text-text-minor-emphasis">
+          {formatToInteger(fakeMeal.calories)} kcal ·{' '}
+          {formatToInteger(fakeMeal.protein)} g prot
+        </p>
+      </div>
+
+      <ButtonX data-testid="remove-fake-meal" onClick={handleRemoveFakeMeal} />
+    </div>
   );
 }
 
