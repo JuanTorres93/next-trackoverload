@@ -122,7 +122,7 @@ function NewRecipeForm() {
     <IngredientSearch onIngredientSelection={onIngredientSelection}>
       <form
         onSubmit={handleSubmit}
-        className="flex items-start gap-6 max-bp-new-recipe-page:flex-col max-bp-new-recipe-page:gap-5 max-bp-new-recipe-page:max-w-2xl max-bp-new-recipe-page:mx-auto"
+        className="flex items-start w-full max-w-4xl gap-6 max-bp-new-recipe-page:flex-col max-bp-new-recipe-page:gap-5 max-bp-new-recipe-page:max-w-2xl"
       >
         {/* ── Left panel: search + results ────────────────────────────── */}
         <div className="flex flex-col flex-1 min-w-0 gap-5">
