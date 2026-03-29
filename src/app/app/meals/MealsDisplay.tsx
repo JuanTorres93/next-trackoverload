@@ -106,22 +106,24 @@ function MealsDisplay({
         </div>
       </div>
 
-      <GridAutoCols
-        className="gap-4 pl-1 mt-33"
-        fitOrFill="fill"
-        min="5rem"
-        max="20rem"
-      >
-        {assembledDays.map(({ dayId, assembledDay }) => (
-          <DaySummary
-            key={dayId}
-            dayId={dayId}
-            assembledDay={assembledDay}
-            onSelectDay={handleSelectDay}
-            isSelected={isDaySelected(dayId)}
-          />
-        ))}
-      </GridAutoCols>
+      <div className="grid grid-cols-1 max-bp-navbar-mobile:justify-items-center">
+        <GridAutoCols
+          className="gap-4 pl-1 mt-33 max-bp-week-selector:mt-36!"
+          fitOrFill="fill"
+          min="5rem"
+          max="20rem"
+        >
+          {assembledDays.map(({ dayId, assembledDay }) => (
+            <DaySummary
+              key={dayId}
+              dayId={dayId}
+              assembledDay={assembledDay}
+              onSelectDay={handleSelectDay}
+              isSelected={isDaySelected(dayId)}
+            />
+          ))}
+        </GridAutoCols>
+      </div>
 
       <Modal.Window name="add-food-to-days-modal">
         <SelectRecipeModal addMealsRequest={addMealsRequest} />

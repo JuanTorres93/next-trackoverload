@@ -1,3 +1,5 @@
+import { twMerge } from 'tailwind-merge';
+
 function GridAutoCols({
   children,
   min,
@@ -20,7 +22,7 @@ function GridAutoCols({
         gridTemplateColumns: `repeat(auto-${fitOrFill}, minmax(${min}, ${max}))`,
         ...style,
       }}
-      className={`grid ${className}`}
+      className={twMerge('grid', className)}
     >
       {children}
     </div>
