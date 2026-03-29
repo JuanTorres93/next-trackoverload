@@ -20,9 +20,10 @@ function WeightHistory({ days }: { days: DayEntry[] }) {
   const colorCaloriesGoal = extractCssVariable('--color-error');
 
   const data = processWeightHistoryForChart(days);
+  const weightEntries = data.filter((d) => d.weight !== null);
 
-  if (data.length < 2) {
-    const remainingDays = 2 - data.length;
+  if (weightEntries.length < 2) {
+    const remainingDays = 2 - weightEntries.length;
     const isPlural = remainingDays > 1;
 
     return (
@@ -52,6 +53,11 @@ function WeightHistory({ days }: { days: DayEntry[] }) {
             />
             <stop offset="95%" stopColor={colorPrimaryLight} stopOpacity={0} />
           </linearGradient>
+
+          <linearGradient id="estimatedGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor={colorNeutral} stopOpacity={0.12} />
+            <stop offset="95%" stopColor={colorNeutral} stopOpacity={0} />
+          </linearGradient>
         </defs>
 
         <XAxis
@@ -77,9 +83,24 @@ function WeightHistory({ days }: { days: DayEntry[] }) {
 
         <Tooltip content={<CustomTooltip />} />
 
+        {/* Estimated line — bottom layer */}
+        <Area
+          type="monotone"
+          dataKey="weightEstimated"
+          connectNulls={true}
+          stroke={colorNeutral}
+          strokeWidth={1.5}
+          strokeDasharray="5 4"
+          fill="url(#estimatedGradient)"
+          dot={<CaloriesGoalDot colorCaloriesGoal={colorCaloriesGoal} />}
+          activeDot={false}
+        />
+
+        {/* Real data line — top layer */}
         <Area
           type="monotone"
           dataKey="weight"
+          connectNulls={false}
           stroke={colorPrimary}
           strokeWidth={2}
           fill="url(#weightGradient)"
@@ -89,14 +110,56 @@ function WeightHistory({ days }: { days: DayEntry[] }) {
               colorCaloriesGoal={colorCaloriesGoal}
             />
           }
-          activeDot={{ r: 5, fill: colorPrimary }}
+          activeDot={{
+            r: 5,
+            fill: colorPrimary,
+            stroke: 'white',
+            strokeWidth: 2,
+          }}
         />
       </AreaChart>
     </ResponsiveContainer>
   );
 }
 
-type ChartDataPoint = { label: string; weight: number; caloriesGoal?: number };
+type ChartDataPoint = {
+  label: string;
+  weight: number | null;
+  weightEstimated: number | null;
+  caloriesGoal?: number;
+};
+
+function CaloriesGoalDot({
+  cx,
+  cy,
+  payload,
+  colorCaloriesGoal,
+}: {
+  cx?: number;
+  cy?: number;
+  payload?: ChartDataPoint;
+  colorCaloriesGoal: string;
+}) {
+  // Only render when there's a calories goal but no real weight (already covered by WeightDot otherwise)
+  if (
+    cx == null ||
+    cy == null ||
+    !payload?.caloriesGoal ||
+    payload.weight != null
+  )
+    return <g />;
+
+  const s = 6;
+  const pts = `${cx},${cy - s} ${cx + s},${cy} ${cx},${cy + s} ${cx - s},${cy}`;
+  return (
+    <polygon
+      points={pts}
+      fill={colorCaloriesGoal}
+      stroke="white"
+      strokeWidth={2}
+    />
+  );
+}
 
 function WeightDot({
   cx,
@@ -111,7 +174,7 @@ function WeightDot({
   colorPrimary: string;
   colorCaloriesGoal: string;
 }) {
-  if (cx == null || cy == null) return <g />;
+  if (cx == null || cy == null || payload?.weight == null) return <g />;
 
   if (payload?.caloriesGoal) {
     const s = 6;
@@ -139,21 +202,33 @@ function WeightDot({
 }
 
 function processWeightHistoryForChart(days: DayEntry[]): ChartDataPoint[] {
-  return days
-    .filter((entry) => entry.day?.userWeightInKg != null)
-    .map((entry) => {
-      const { day, month } = dayIdToDayMonthYear(entry.date);
+  const points = days.map((entry) => {
+    const { day, month } = dayIdToDayMonthYear(entry.date);
+    const weight = entry.day?.userWeightInKg ?? null;
+    const caloriesGoal = entry.day?.updatedCaloriesGoal;
 
-      const label = `${day}/${month}`;
-      const weight = entry.day!.userWeightInKg!;
-      const caloriesGoal = entry.day!.updatedCaloriesGoal;
+    return {
+      label: `${day}/${month}`,
+      weight,
+      ...(caloriesGoal != null ? { caloriesGoal } : {}),
+    };
+  });
 
-      return {
-        label,
-        weight,
-        ...(caloriesGoal != null ? { caloriesGoal } : {}),
-      };
-    });
+  // Find last real weight index to extend estimation forward
+  const lastRealIdx = points.reduce(
+    (last, p, i) => (p.weight !== null ? i : last),
+    -1,
+  );
+
+  return points.map((point, i) => ({
+    ...point,
+    weightEstimated:
+      point.weight !== null
+        ? point.weight
+        : i <= lastRealIdx
+          ? null // gaps before/between real points: let connectNulls handle them
+          : (points[lastRealIdx]?.weight ?? null), // after last real: flat line
+  }));
 }
 
 function CustomTooltip({
@@ -169,13 +244,32 @@ function CustomTooltip({
 
   const dataPoint = payload[0].payload;
 
+  if (dataPoint.weight === null) {
+    return (
+      <div className="px-3 py-2 font-normal bg-white rounded-lg shadow-md text-text">
+        <p className="m-0">{label}</p>
+        <p className="m-0 italic text-text-minor-emphasis">
+          Sin registro de peso
+        </p>
+        {dataPoint.caloriesGoal != null && (
+          <p className="m-0">
+            Objetivo calórico:{' '}
+            <span className="font-semibold text-error">
+              {dataPoint.caloriesGoal} kcal
+            </span>
+          </p>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="px-3 py-2 font-normal bg-white rounded-lg shadow-md text-text">
       <p className="m-0">{label}</p>
       <p className="m-0">
         Peso:{' '}
         <span className="font-semibold text-primary">
-          {payload[0].value} kg
+          {dataPoint.weight!.toFixed(1)} kg
         </span>
       </p>
 
