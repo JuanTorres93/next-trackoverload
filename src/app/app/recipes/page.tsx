@@ -14,7 +14,7 @@ export default async function RecipesPage() {
   const recipes: RecipeDTO[] = await getAllRecipesForLoggedInUser();
 
   return (
-    <PageWrapper>
+    <PageWrapper className="max-w-5xl">
       <RecipesDisplay recipes={recipes} />
     </PageWrapper>
   );

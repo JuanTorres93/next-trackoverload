@@ -20,9 +20,9 @@ function RecipesGrid({
   return (
     <GridAutoCols
       className={twMerge('gap-4', className)}
-      fitOrFill="fit"
-      min="15rem"
-      max="2rem"
+      fitOrFill="fill"
+      min="14rem"
+      max="1fr"
       {...rest}
     >
       {recipes.map((recipe) => (
