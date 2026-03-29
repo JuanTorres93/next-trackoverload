@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useRef, useState } from 'react';
+import { HiCamera } from 'react-icons/hi';
 import TextSmall from './typography/TextSmall';
 
 type ImageFile = {
@@ -13,6 +14,7 @@ type Props = {
   maxSizeMB?: number; // p. ej. 5
   accept?: string; // p. ej. "image/png,image/jpeg"
   borderTailwindColor?: string; // p. ej. "black, zinc, gray"
+  compact?: boolean; // renders a small overlay button instead of the drop zone
   onFiles?: (files: File[]) => void;
 };
 
@@ -58,6 +60,7 @@ export default function ImagePicker({
   maxSizeMB = 5,
   accept = 'image/*',
   borderTailwindColor = 'black',
+  compact = false,
   onFiles,
 }: Props) {
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -88,6 +91,34 @@ export default function ImagePicker({
     setIsOver(false);
     handleSelect(e.dataTransfer.files);
   };
+
+  const hiddenInput = (
+    <input
+      ref={inputRef}
+      type="file"
+      accept={accept}
+      multiple={multiple}
+      className="hidden"
+      onChange={onInputChange}
+    />
+  );
+
+  if (compact) {
+    return (
+      <div>
+        <button
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/50 text-white text-xs font-medium hover:bg-black/65 backdrop-blur-sm transition-colors cursor-pointer select-none"
+        >
+          <HiCamera className="text-sm" />
+          {images.length > 0 ? images[0].file.name : 'Cambiar foto'}
+        </button>
+        {hiddenInput}
+        {error && <p className="text-error text-xs mt-1">{error}</p>}
+      </div>
+    );
+  }
 
   return (
     <div className="z-10 ">
@@ -131,14 +162,7 @@ export default function ImagePicker({
             </TextSmall>
           </div>
         )}
-        <input
-          ref={inputRef}
-          type="file"
-          accept={accept}
-          multiple={multiple}
-          className="hidden"
-          onChange={onInputChange}
-        />
+        {hiddenInput}
       </div>
 
       {error && (

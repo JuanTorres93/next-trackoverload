@@ -2,9 +2,7 @@
 
 import { useFormSetup } from '@/app/_hooks/useFormSetup';
 import ButtonNew from '@/app/_ui/buttons/ButtonNew';
-import FormRow from '@/app/_ui/form/FormRow';
 import ImagePicker from '@/app/_ui/ImagePicker';
-import NutritionalInfoValue from '@/app/_ui/NutritionalInfoValue';
 import { formatToInteger } from '@/app/_utils/format/formatToInteger';
 import { CreateIngredientLineData } from '@/application-layer/use-cases/recipe/common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
 import Image from 'next/image';
@@ -18,6 +16,7 @@ import LoadingOverlay from '../common/LoadingOverlay';
 import { showErrorToast } from '@/app/_ui/showErrorToast';
 import { isNextRedirectError } from '../common/handleNextRedirectError';
 import ArrangedIngredientSearch from '../ingredient/ArrangedIngredientSearch';
+import { HiSearch } from 'react-icons/hi';
 
 export type NewRecipeFormState = {
   name: string;
@@ -48,60 +47,49 @@ function NewRecipeForm() {
     formState.ingredientLinesWithExternalRefs.length === 0 ||
     formState.name.trim() === '' ||
     formState.ingredientLinesWithExternalRefs.some(
-      (ingLineWithExternalRef) =>
-        ingLineWithExternalRef.ingredientLine.quantityInGrams <= 0,
+      (il) => il.ingredientLine.quantityInGrams <= 0,
     ) ||
     isLoading;
 
   const totalCalories = formatToInteger(
     formState.ingredientLinesWithExternalRefs.reduce(
-      (sum, ingLineWithExternalRef) =>
-        sum + ingLineWithExternalRef.ingredientLine.calories,
+      (sum, il) => sum + il.ingredientLine.calories,
       0,
     ),
   );
 
   const totalProtein = formatToInteger(
     formState.ingredientLinesWithExternalRefs.reduce(
-      (sum, ingLineWithExternalRef) =>
-        sum + ingLineWithExternalRef.ingredientLine.protein,
+      (sum, il) => sum + il.ingredientLine.protein,
       0,
     ),
   );
 
   function handleImageSelection(files: File[]) {
-    if (files.length > 0) {
-      setField('imageFile', files[0]);
-    }
+    if (files.length > 0) setField('imageFile', files[0]);
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     setIsLoading(true);
 
     const ingredientLinesInfo: CreateIngredientLineData[] =
-      formState.ingredientLinesWithExternalRefs.map(
-        (info: IngredientLineWithExternalRef) => {
-          const ingredientLine = info.ingredientLine;
-          const externalRef = info.ingredientExternalRef;
+      formState.ingredientLinesWithExternalRefs.map((info) => {
+        const { ingredientLine, ingredientExternalRef: externalRef } = info;
+        return {
+          externalIngredientId: externalRef.externalId,
+          source: externalRef.source,
+          name: ingredientLine.ingredient.name,
+          caloriesPer100g:
+            ingredientLine.ingredient.nutritionalInfoPer100g.calories,
+          proteinPer100g:
+            ingredientLine.ingredient.nutritionalInfoPer100g.protein,
+          imageUrl: ingredientLine.ingredient.imageUrl,
+          quantityInGrams: ingredientLine.quantityInGrams,
+        };
+      });
 
-          return {
-            externalIngredientId: externalRef.externalId,
-            source: externalRef.source,
-            name: ingredientLine.ingredient.name,
-            caloriesPer100g:
-              ingredientLine.ingredient.nutritionalInfoPer100g.calories,
-            proteinPer100g:
-              ingredientLine.ingredient.nutritionalInfoPer100g.protein,
-            imageUrl: ingredientLine.ingredient.imageUrl,
-            quantityInGrams: ingredientLine.quantityInGrams,
-          };
-        },
-      );
-
-    let compressedImageFile: File | undefined = undefined;
-
+    let compressedImageFile: File | undefined;
     if (formState.imageFile) {
       compressedImageFile = await AppClientImageProcessor.compressToMaxMB(
         formState.imageFile,
@@ -112,13 +100,11 @@ function NewRecipeForm() {
       await createRecipe({
         name: formState.name,
         imageFile: compressedImageFile,
-        ingredientLinesInfo: ingredientLinesInfo,
+        ingredientLinesInfo,
       });
-
       resetForm();
     } catch (error) {
       if (isNextRedirectError(error)) return;
-
       showErrorToast(
         'Error al crear la receta. Por favor, inténtalo de nuevo.',
       );
@@ -127,89 +113,141 @@ function NewRecipeForm() {
     }
   };
 
+  const hasIngredients = formState.ingredientLinesWithExternalRefs.length > 0;
+  const imagePreviewUrl = formState.imageFile
+    ? URL.createObjectURL(formState.imageFile)
+    : '/recipe-no-picture.webp';
+
   return (
     <IngredientSearch onIngredientSelection={onIngredientSelection}>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col items-center max-w-2xl gap-4 max-bp-new-recipe-page:max-w-full"
+        className="flex items-start gap-6 max-bp-new-recipe-page:flex-col max-bp-new-recipe-page:gap-5 max-bp-new-recipe-page:max-w-2xl max-bp-new-recipe-page:mx-auto"
       >
-        <FormRow>
-          <div
-            id="image-and-name-container"
-            className="relative grid grid-rows-[1fr_5rem] items-center gap-4 p-4 mx-auto mb-2 overflow-hidden w-80 text-text-light rounded-2xl aspect-square max-bp-new-recipe-page:w-60"
-          >
-            {isLoading && (
-              <LoadingOverlay className="bg-surface-dark/20! backdrop-blur-sm z-14!" />
-            )}
-
-            <textarea
-              className="w-full h-full overflow-x-hidden overflow-y-scroll text-3xl font-extrabold text-center outline-none resize-none z-15 max-bp-new-recipe-page:text-2xl"
-              spellCheck={false}
-              value={formState.name}
-              disabled={isLoading}
-              onChange={(e) => setField('name', e.target.value)}
-              placeholder="Nombre receta"
-              required
-            ></textarea>
-
-            <Image
-              src={
-                formState.imageFile
-                  ? URL.createObjectURL(formState.imageFile)
-                  : '/recipe-no-picture.webp'
-              }
-              alt="Imagen de la receta"
-              fill
-              className="object-cover"
-            />
-
-            {/* Overlay */}
-            <div className="absolute inset-0 bg-overlay/60" />
-
-            <ImagePicker
-              onFiles={handleImageSelection}
-              maxSizeMB={200} // Image is compressed on submit, so we can allow bigger sizes
-              borderTailwindColor="gray"
-              accept="image/jpeg,image/png,image/webp"
-            />
+        {/* ── Left panel: search + results ────────────────────────────── */}
+        <div className="flex flex-col flex-1 min-w-0 gap-5">
+          <div>
+            <h1 className="mb-1 text-2xl font-bold text-text">Nueva receta</h1>
+            <p className="text-sm text-text-minor-emphasis">
+              Busca ingredientes y ajusta las cantidades
+            </p>
           </div>
-        </FormRow>
 
-        <FormRow className="flex-col items-center gap-6">
           <ArrangedIngredientSearch isLoading={isLoading} />
 
-          <IngredientSearch.FoundIngredientsList containerClassName="max-w-120" />
-        </FormRow>
+          <IngredientSearch.FoundIngredientsList />
 
-        <FormRow className="flex-col items-center justify-center mx-auto max-w-150">
-          <IngredientSearch.SelectedIngredientsList />
-
-          {/* Summary */}
-          {formState.ingredientLinesWithExternalRefs.length > 0 && (
-            <div className="grid w-full grid-cols-2 p-3 mt-4 rounded-lg bg-surface-dark ">
-              <NutritionalInfoValue
-                lightText={true}
-                number={totalCalories}
-                label="Calorías totales"
-              />
-              <NutritionalInfoValue
-                lightText={true}
-                number={totalProtein}
-                label="Proteínas totales"
-              />
+          {hasIngredients && (
+            <div className="flex items-center gap-3">
+              <div className="flex-1 h-px bg-border/30" />
+              <p className="text-xs font-semibold tracking-wide uppercase text-text-minor-emphasis">
+                Ingredientes añadidos
+              </p>
+              <div className="flex-1 h-px bg-border/30" />
             </div>
           )}
 
-          <ButtonNew
-            className="flex items-center justify-center w-full mt-6"
-            disabled={invalidForm}
-            isLoading={isLoading}
-          >
-            Crear receta
-          </ButtonNew>
-        </FormRow>
+          {!hasIngredients && (
+            <div className="flex flex-col items-center justify-center gap-3 py-12 text-text-minor-emphasis/50">
+              <HiSearch className="text-4xl" />
+              <div className="text-center">
+                <p className="text-sm font-semibold">
+                  Sin ingredientes todavía
+                </p>
+                <p className="mt-1 text-xs">
+                  Busca arriba y selecciona los ingredientes de tu receta
+                </p>
+              </div>
+            </div>
+          )}
+
+          <IngredientSearch.SelectedIngredientsList
+            showIngredientLabel={false}
+            hideEmptyState
+          />
+        </div>
+
+        {/* ── Right panel: recipe preview card ─────────────────────────── */}
+        <aside className="sticky w-64 shrink-0 top-6 max-bp-new-recipe-page:w-full max-bp-new-recipe-page:static max-bp-new-recipe-page:order-first">
+          <div className="relative overflow-hidden border shadow-sm rounded-2xl border-border/60 bg-surface-card">
+            {isLoading && <LoadingOverlay className="z-20 rounded-2xl" />}
+
+            {/* Recipe image */}
+            <div className="relative h-44 bg-surface-light">
+              <Image
+                src={imagePreviewUrl}
+                alt="Imagen de la receta"
+                fill
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-overlay/60 via-transparent to-transparent" />
+
+              <div className="absolute z-10 bottom-3 left-3 right-3">
+                <ImagePicker
+                  compact
+                  onFiles={handleImageSelection}
+                  maxSizeMB={200}
+                  accept="image/jpeg,image/png,image/webp"
+                />
+              </div>
+            </div>
+
+            {/* Recipe name */}
+            <div className="px-4 pt-3 pb-2 border-b border-border/30">
+              <textarea
+                className="w-full text-lg font-bold leading-snug bg-transparent outline-none resize-none text-text placeholder:text-text-minor-emphasis"
+                rows={2}
+                spellCheck={false}
+                value={formState.name}
+                disabled={isLoading}
+                onChange={(e) => setField('name', e.target.value)}
+                placeholder="Nombre de la receta"
+                required
+              />
+            </div>
+
+            {/* Macro totals */}
+            {hasIngredients ? (
+              <div className="flex items-center px-4 py-3 border-b bg-surface-light border-border/30">
+                <MacroStat value={totalCalories} label="calorías totales" />
+                <div className="w-px h-6 mx-2 bg-border/40" />
+                <MacroStat value={totalProtein} label="proteínas totales" />
+              </div>
+            ) : (
+              <div className="px-4 py-3 text-xs italic border-b text-text-minor-emphasis/60 border-border/30">
+                Añade ingredientes para ver las macros
+              </div>
+            )}
+
+            {/* Submit */}
+            <div className="px-4 py-3">
+              <ButtonNew
+                className="justify-center w-full"
+                disabled={invalidForm}
+                isLoading={isLoading}
+              >
+                Crear receta
+              </ButtonNew>
+            </div>
+          </div>
+        </aside>
       </form>
     </IngredientSearch>
+  );
+}
+
+function MacroStat({
+  value,
+  label,
+}: {
+  value: string | number;
+  label: string;
+}) {
+  return (
+    <div className="flex flex-col items-center flex-1">
+      <span className="text-lg font-bold leading-none text-text">{value}</span>
+      <span className="text-xs text-text-minor-emphasis mt-0.5">{label}</span>
+    </div>
   );
 }
 

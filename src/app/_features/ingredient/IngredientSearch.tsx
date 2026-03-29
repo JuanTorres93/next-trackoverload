@@ -221,8 +221,11 @@ function IngredientSearch({
 }
 
 function SearchTermInput({
+  inputContainerClassName,
   ...props
-}: React.InputHTMLAttributes<HTMLInputElement>) {
+}: React.InputHTMLAttributes<HTMLInputElement> & {
+  inputContainerClassName?: string;
+}) {
   const { disabled, className, ...rest } = props;
 
   const {
@@ -235,6 +238,7 @@ function SearchTermInput({
   return (
     <div className={`${className}`} {...rest}>
       <Input
+        containerClassName={inputContainerClassName}
         value={ingredientSearchTerm}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           setIngredientSearchTerm(e.target.value);
@@ -422,10 +426,12 @@ function SelectedIngredientsList({
   className,
   containerClassName,
   showIngredientLabel = true,
+  hideEmptyState = false,
 }: {
   className?: string;
   containerClassName?: string;
   showIngredientLabel?: boolean;
+  hideEmptyState?: boolean;
 }) {
   const {
     ingredientLinesWithExternalRefs,
@@ -469,7 +475,7 @@ function SelectedIngredientsList({
         )}
       </div>
 
-      {ingredientLinesWithExternalRefs.length === 0 && (
+      {ingredientLinesWithExternalRefs.length === 0 && !hideEmptyState && (
         <TextSmall>No hay ingredientes seleccionados.</TextSmall>
       )}
     </div>

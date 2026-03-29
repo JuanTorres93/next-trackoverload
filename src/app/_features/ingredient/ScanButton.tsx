@@ -8,10 +8,10 @@ function ScanButton({
   return (
     <button
       type="button"
-      className={`p-2 rounded-md cursor-pointer bg-primary-light text-text-light ${disabledStyle}`}
+      className={`p-2.5 rounded-xl cursor-pointer border-2 border-primary text-primary hover:bg-primary/10 transition ${disabledStyle}`}
       {...props}
     >
-      <FaBarcode size={20} />
+      <FaBarcode size={18} />
     </button>
   );
 }
