@@ -1,3 +1,4 @@
+import { twMerge } from 'tailwind-merge';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import RecipeCard from './RecipeCard';
 import GridAutoCols from '@/app/_ui/GridAutoCols';
@@ -18,7 +19,7 @@ function RecipesGrid({
 
   return (
     <GridAutoCols
-      className={`gap-4 ${className}`}
+      className={twMerge('gap-4', className)}
       fitOrFill="fit"
       min="15rem"
       max="2rem"

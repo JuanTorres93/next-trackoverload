@@ -44,12 +44,14 @@ export default async function SubscriptionPage({
     <PageWrapper>
       <SectionHeading>Suscripción</SectionHeading>
 
-      <SubscriptionCard
-        user={user}
-        description={planInfo.description}
-        priceInEurCents={planInfo.priceInEurCents}
-        title={planInfo.title}
-      />
+      <div className="flex max-bp-navbar-mobile:justify-center">
+        <SubscriptionCard
+          user={user}
+          description={planInfo.description}
+          priceInEurCents={planInfo.priceInEurCents}
+          title={planInfo.title}
+        />
+      </div>
     </PageWrapper>
   );
 }

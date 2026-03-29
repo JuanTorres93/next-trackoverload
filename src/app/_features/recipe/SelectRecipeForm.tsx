@@ -123,6 +123,7 @@ function SelectRecipeForm({
             recipes={recipes}
             onClick={handleClickRecipe}
             selectedRecipesIds={selectedRecipesIds}
+            className="max-bp-navbar-mobile:justify-center"
           />
         )}
       </div>
