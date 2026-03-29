@@ -1,5 +1,6 @@
 'use client';
 
+import { twMerge } from 'tailwind-merge';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { format, startOfWeek, endOfWeek, addWeeks, subWeeks } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -65,7 +66,10 @@ function WeekSelector({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
 
   return (
     <div
-      className={`flex text-lg text-text-minor-emphasis items-center gap-6 ${className}`}
+      className={twMerge(
+        `grid grid-cols-[min-content_max-content_max-content] text-lg text-text-minor-emphasis items-center gap-6 max-bp-week-selector:grid-cols-[min-content_minmax(2rem, 20rem)] max-bp-week-selector:gap-3`,
+        className,
+      )}
       {...rest}
     >
       <div className="flex gap-3">
@@ -93,7 +97,7 @@ function WeekSelector({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
 
       {!isCurrentWeek && (
         <ButtonPrimary
-          className="p-1! px-2! text-sm"
+          className="p-1! px-2! text-sm max-bp-week-selector:col-span-2"
           onClick={() => handleFilter(defaultFilterValue())}
           disabled={isLoading}
         >
@@ -134,7 +138,16 @@ function ArrowButton({
 }
 
 function Day({ date }: { date: Date }) {
-  return <span>{format(date, "d 'de' MMMM", { locale: es })}</span>;
+  return (
+    <span>
+      <span className="max-bp-week-selector:hidden">
+        {format(date, "d 'de' MMMM", { locale: es })}
+      </span>
+      <span className="bp-week-selector:hidden">
+        {format(date, 'd MMM', { locale: es })}
+      </span>
+    </span>
+  );
 }
 
 function defaultFilterValue() {
