@@ -48,7 +48,7 @@ export default async function Dashboard() {
     <PageWrapper className="flex flex-col gap-10">
       <div>
         <SectionHeading>
-          {todayHasMeals && '¿Has comido ya...?'}
+          {todayHasMeals && 'Tus comidas hoy'}
           {!todayHasMeals && 'No hay comidas planificadas para hoy'}
         </SectionHeading>
 
@@ -92,7 +92,7 @@ export default async function Dashboard() {
       </div>
 
       <div>
-        <SectionHeading>Evolución de tu peso</SectionHeading>
+        <SectionHeading>Tu peso</SectionHeading>
         <WeightTracker days={daysHistory} />
       </div>
     </PageWrapper>

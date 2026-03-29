@@ -4,6 +4,9 @@ import { useDebounce } from '@/app/_hooks/useDebounce';
 import { DayEntry } from '@/application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase';
 import { setCaloriesGoalForDay } from '../day/actions';
 import Input from '@/app/_ui/Input';
+import InputLabel from './InputLabel';
+import { HiFire } from 'react-icons/hi2';
+import InputContainer from './InputContainer';
 
 function CaloriesGoalInput({
   lastDay,
@@ -22,8 +25,10 @@ function CaloriesGoalInput({
   }
 
   return (
-    <div className="grid gap-2 max-bp-navbar-mobile:text-2xl grid-cols-[max-content_min-content] items-center text-3xl">
-      <label htmlFor="input-calories-goal">Calorías objetivo:</label>
+    <InputContainer>
+      <InputLabel htmlFor="input-calories-goal" icon={<HiFire />}>
+        Calorías objetivo
+      </InputLabel>
 
       <Input
         id="input-calories-goal"
@@ -37,7 +42,7 @@ function CaloriesGoalInput({
       >
         <span className="mb-1 text-sm text-text-minor-emphasis">kcal</span>
       </Input>
-    </div>
+    </InputContainer>
   );
 }
 

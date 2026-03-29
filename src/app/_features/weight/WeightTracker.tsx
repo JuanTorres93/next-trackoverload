@@ -52,19 +52,11 @@ function WeightTracker({
       )}
       {...rest}
     >
-      <div className="flex flex-col gap-4 p-4 border rounded-xl border-border/20 text-text/80 bg-card ">
-        <WeightInput
-          lastDay={lastDay}
-          placeholderBackground={emptyInputBackground}
-        />
-
-        <div className="h-px bg-border/20" />
-
-        <CaloriesGoalInput
-          lastDay={lastDay}
-          defaultCaloriesGoal={lastDefinedCaloriesGoal}
-        />
-      </div>
+      <InputsSection
+        lastDay={lastDay}
+        lastDefinedCaloriesGoal={lastDefinedCaloriesGoal}
+        emptyInputBackground={emptyInputBackground}
+      />
 
       <ChartSection
         title="Últimos 14 días"
@@ -123,6 +115,52 @@ function ChartSection({
         </h3>
         <p className="text-sm font-medium text-primary">{conclusion}</p>
       </div>
+      {children}
+    </div>
+  );
+}
+
+function InputsSection({
+  lastDay,
+  lastDefinedCaloriesGoal,
+  emptyInputBackground,
+}: {
+  lastDay: DayEntry;
+  lastDefinedCaloriesGoal: number | undefined;
+  emptyInputBackground: string;
+}) {
+  return (
+    <div className="flex gap-4 p-4 bg-white border shadow-xs rounded-xl border-border/20 text-text/80">
+      <InputContainer>
+        <WeightInput
+          lastDay={lastDay}
+          placeholderBackground={emptyInputBackground}
+        />
+      </InputContainer>
+
+      <InputContainer>
+        <CaloriesGoalInput
+          lastDay={lastDay}
+          defaultCaloriesGoal={lastDefinedCaloriesGoal}
+        />
+      </InputContainer>
+    </div>
+  );
+}
+
+function InputContainer({
+  children,
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={twMerge(
+        'flex flex-col gap-2 p-4 bg-white border shadow-xs rounded-xl border-border/20',
+        className,
+      )}
+      {...props}
+    >
       {children}
     </div>
   );
