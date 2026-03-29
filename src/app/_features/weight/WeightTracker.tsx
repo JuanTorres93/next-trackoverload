@@ -45,13 +45,7 @@ function WeightTracker({
     : 'placeholder:bg-info/20';
 
   return (
-    <div
-      className={twMerge(
-        'grid grid-cols-[minmax(17rem,40rem)] gap-8',
-        className,
-      )}
-      {...rest}
-    >
+    <div className={twMerge('flex flex-col gap-8', className)} {...rest}>
       <InputsSection
         lastDay={lastDay}
         lastDefinedCaloriesGoal={lastDefinedCaloriesGoal}
@@ -130,7 +124,7 @@ function InputsSection({
   emptyInputBackground: string;
 }) {
   return (
-    <div className="grid grid-cols-[max-content_max-content] max-w-111 gap-4 p-4 bg-white border shadow-xs rounded-xl border-border/20 text-text/80 max-bp-navbar-mobile:justify-self-center max-bp-weight-input:grid-cols-1">
+    <div className="grid grid-cols-[max-content_max-content] max-w-111 gap-4 p-4 bg-white border shadow-xs rounded-xl border-border/20 text-text/80 max-bp-weight-input:grid-cols-1">
       <InputContainer>
         <WeightInput
           lastDay={lastDay}
