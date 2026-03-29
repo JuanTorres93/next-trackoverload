@@ -14,6 +14,7 @@ import {
   replaceMealByFakeMealForUserInDay,
 } from '../day/actions';
 import { toggleIsEaten } from './actions';
+import LoadingOverlay from '../common/LoadingOverlay';
 
 function MealReminder({ meal, dayId }: { meal: MealDTO; dayId: string }) {
   const router = useRouter();
@@ -69,6 +70,7 @@ function MealReminder({ meal, dayId }: { meal: MealDTO; dayId: string }) {
       onClick={handleToggleIsEaten}
       replacement={replacement}
     >
+      {isPending && <LoadingOverlay />}
       <div
         className={`grid gap-4 grid-cols-[5rem_1fr] items-center content-center max-bp-navbar-mobile:grid-cols-[4rem_1fr] `}
       >
