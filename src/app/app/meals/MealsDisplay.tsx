@@ -72,19 +72,35 @@ function MealsDisplay({
     <Modal>
       <div className="fixed top-0 z-10 flex flex-col w-full gap-4 py-4 bg-background">
         <WeekSelector />
-        <div className="flex gap-4">
+
+        <div className="flex flex-wrap gap-2">
           <Modal.Open opens="add-food-to-days-modal">
-            <ButtonNew disabled={selectedDaysIds.length < 1}>
-              Añadir comidas a varios días
+            <ButtonNew
+              disabled={selectedDaysIds.length < 1}
+              className="max-bp-navbar-mobile:text-sm max-bp-navbar-mobile:p-2!"
+            >
+              <span className="max-bp-meals-page-header-buttons:hidden">
+                Añadir comidas a varios días
+              </span>
+
+              <span className="bp-meals-page-header-buttons:hidden">
+                Añadir a varios días
+              </span>
             </ButtonNew>
           </Modal.Open>
 
           {areDaysSelected && (
             <ButtonPrimary
-              className="text-selected border-selected hover:bg-selected"
+              className="text-selected border-selected hover:bg-selected max-bp-navbar-mobile:text-sm max-bp-navbar-mobile:p-2!"
               onClick={clearSelectedDays}
             >
-              Limpiar selección
+              <span className="max-bp-meals-page-header-buttons:hidden">
+                Limpiar selección
+              </span>
+
+              <span className="bp-meals-page-header-buttons:hidden">
+                Limpiar
+              </span>
             </ButtonPrimary>
           )}
         </div>
