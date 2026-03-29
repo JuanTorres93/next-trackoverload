@@ -9,7 +9,7 @@ function ButtonSearch({
 }: React.PropsWithChildren<React.ButtonHTMLAttributes<HTMLButtonElement>>) {
   return (
     <button
-      className={`flex items-center justify-center gap-2 px-4 py-2.5 transition rounded-xl cursor-pointer select-none bg-primary text-text-light hover:bg-primary-light font-medium text-sm ${disabledStyle}`}
+      className={`flex items-center justify-center gap-2 px-4 py-2 transition rounded-xl cursor-pointer select-none bg-primary text-text-light hover:bg-primary-light font-semibold text-sm ${disabledStyle}`}
       {...props}
     >
       <HiMagnifyingGlass className="text-base" />

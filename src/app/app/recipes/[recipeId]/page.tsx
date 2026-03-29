@@ -4,7 +4,6 @@ import { getCurrentUserId } from '@/app/_utils/auth/getCurrentUserId';
 import { formatToInteger } from '@/app/_utils/format/formatToInteger';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { AppGetRecipeByIdForUserUsecase } from '@/interface-adapters/app/use-cases/recipe';
-import MacroData from './MacroData';
 import RecipeDisplay from './RecipeDisplay';
 import UpdateRecipeImage from './UpdateRecipeImage';
 import UpdateRecipeTitle from './UpdateRecipeTitle';
@@ -20,11 +19,7 @@ export async function generateMetadata({
     userId: await getCurrentUserId(),
   });
 
-  if (!recipe) {
-    return {
-      title: 'Receta no encontrada',
-    };
-  }
+  if (!recipe) return { title: 'Receta no encontrada' };
 
   return {
     title: recipe.name,
@@ -38,41 +33,61 @@ export default async function RecipePage({
   params: Promise<{ recipeId: string }>;
 }) {
   const { recipeId } = await params;
-
   const recipe: RecipeDTO | null = await getRecipeByIdForLoggedInUser(recipeId);
 
   if (!recipe) return <PageWrapper>No se encontró la receta</PageWrapper>;
 
+  const calories = formatToInteger(recipe.calories);
+  const protein = formatToInteger(recipe.protein);
+
   return (
-    <PageWrapper className="max-w-7xl ">
-      <div className="grid grid-cols-1 gap-10 max-bp-recipe-page:gap-16 max-bp-recipe-page-second:gap-6">
-        <header className="grid relative items-center w-full bg-gradient-to-l border border-border from-surface-dark to-surface-dark/60 rounded-2xl grid-cols-[20rem_1fr] grid-rows-[15rem] gap-6 text-text-light max-bp-recipe-page:grid-cols-1 max-bp-recipe-page:grid-rows-[12rem_1fr]">
-          <UpdateRecipeImage
-            className="overflow-hidden rounded-tl-2xl rounded-bl-2xl max-bp-recipe-page:rounded-tr-2xl max-bp-recipe-page:rounded-bl-none"
-            recipe={recipe}
-          />
+    <PageWrapper className="max-w-5xl">
+      <div className="flex flex-col gap-6">
+        {/* ── Hero card ─────────────────────────────────────────────── */}
+        <div className="rounded-2xl overflow-hidden border border-border/40 shadow-md bg-surface-card">
+          {/* Full-bleed image + gradient + editable title overlay */}
+          <div className="relative h-72 max-bp-recipe-page-second:h-52">
+            <UpdateRecipeImage recipe={recipe} />
 
-          <UpdateRecipeTitle
-            className="mr-6 max-bp-recipe-page:mr-0 max-bp-recipe-page:text-center max-bp-recipe-page:mx-2 max-bp-recipe-page:mb-12 max-bp-recipe-page-second:mb-0"
-            originalTitle={recipe.name}
-            recipeId={recipe.id}
-          />
+            {/* Gradient from bottom */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent pointer-events-none" />
 
-          <div className="absolute flex justify-center gap-4 -bottom-4 right-1/6 z-5 max-bp-recipe-page:left-1/2 max-bp-recipe-page:-translate-x-1/2 max-bp-recipe-page:-bottom-8 max-bp-recipe-page-second:static max-bp-recipe-page-second:translate-x-0  max-bp-recipe-page-second:grid max-bp-recipe-page-second:grid-cols-[min-content] max-bp-recipe-page-second:gap-2 max-bp-recipe-page-second:mb-2">
-            <MacroData
-              value={formatToInteger(recipe.calories)}
-              label="Calorías"
-            />
-            <MacroData
-              value={`${formatToInteger(recipe.protein)} g`}
-              label="Proteínas"
-            />
+            {/* Title overlaid at bottom */}
+            <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
+              <UpdateRecipeTitle
+                originalTitle={recipe.name}
+                recipeId={recipe.id}
+              />
+            </div>
           </div>
-        </header>
 
-        {/* Needs to be a separate component for interactivity through event handlers */}
+          {/* Macro bar */}
+          <div className="flex divide-x divide-border/30 bg-surface-card">
+            <RecipeMacroStat value={calories} label="Calorías" />
+            <RecipeMacroStat value={`${protein} g`} label="Proteínas" />
+          </div>
+        </div>
+
+        {/* ── Actions + Ingredients (client) ───────────────────────── */}
         <RecipeDisplay recipe={recipe} />
       </div>
     </PageWrapper>
+  );
+}
+
+function RecipeMacroStat({
+  value,
+  label,
+}: {
+  value: string | number;
+  label: string;
+}) {
+  return (
+    <div className="flex-1 flex flex-col items-center py-4 gap-0.5">
+      <span className="text-2xl font-bold text-primary-shade">{value}</span>
+      <span className="text-xs tracking-widest uppercase text-text-minor-emphasis/70">
+        {label}
+      </span>
+    </div>
   );
 }

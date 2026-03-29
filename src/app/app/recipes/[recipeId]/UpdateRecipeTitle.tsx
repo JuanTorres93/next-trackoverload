@@ -29,9 +29,11 @@ function UpdateRecipeTitle({
 
   return (
     <textarea
-      className={`text-4xl outline-none resize-none font-medium focus:bg-input-background/10 ${className}`}
+      className={`w-full text-3xl font-bold text-white outline-none resize-none bg-transparent placeholder:text-white/50 leading-tight drop-shadow-md max-bp-recipe-page-second:text-2xl ${className}`}
       defaultValue={originalTitle}
       onChange={handleTitleChange}
+      rows={2}
+      spellCheck={false}
       {...rest}
     />
   );

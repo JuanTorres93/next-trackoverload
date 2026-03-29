@@ -21,7 +21,6 @@ import ButtonPrimary from '@/app/_ui/buttons/ButtonPrimary';
 import Modal from '@/app/_ui/Modal';
 import { showErrorToast } from '@/app/_ui/showErrorToast';
 import SpinnerMini from '@/app/_ui/SpinnerMini';
-import SectionHeading from '@/app/_ui/typography/SectionHeading';
 import { useState } from 'react';
 import ArrangedIngredientSearch from '@/app/_features/ingredient/ArrangedIngredientSearch';
 import ButtonDanger from '@/app/_ui/buttons/ButtonDanger';
@@ -33,7 +32,6 @@ interface RecipeDisplayProps {
 }
 
 export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
-  // TODO Filter ingredients that are already in the recipe
   const [
     newIngredientLinesWithExternalRefs,
     setNewIngredientLinesWithExternalRefs,
@@ -74,7 +72,6 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
     try {
       for (const line of newIngredientLinesWithExternalRefs) {
         const externalRef = line.ingredientExternalRef;
-
         const ingredientLine = line.ingredientLine;
 
         await addIngredientToRecipe(
@@ -108,7 +105,6 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
       await duplicateRecipe(recipe.id);
     } catch (error) {
       if (isNextRedirectError(error)) return;
-
       showErrorToast(
         'Error al duplicar la receta. Por favor, inténtalo de nuevo.',
       );
@@ -126,7 +122,6 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
       await deleteRecipe(recipe.id);
     } catch (error) {
       if (isNextRedirectError(error)) return;
-
       showErrorToast(
         'Error al eliminar la receta. Por favor, inténtalo de nuevo.',
       );
@@ -137,60 +132,53 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-6">
       <Modal>
-        <div className="flex gap-4 mb-12 ml-auto max-bp-recipe-page:mx-auto">
+        {/* ── Action buttons ──────────────────────────────────────────── */}
+        <div className="flex justify-end gap-3 max-bp-recipe-page:justify-center">
           <ButtonPrimary
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 rounded-xl"
             data-testid="duplicate-recipe-button"
             onClick={handleDuplicateRecipe}
             disabled={buttonsDisabled}
           >
-            {isDuplicatingRecipe && <SpinnerMini />}
-            {!isDuplicatingRecipe && <HiOutlineDuplicate />}
-            <p>
-              Duplicar{' '}
-              <span className="max-bp-recipe-page-second:hidden">receta</span>
-            </p>
+            {isDuplicatingRecipe ? <SpinnerMini /> : <HiOutlineDuplicate />}
+            <span>Duplicar receta</span>
           </ButtonPrimary>
 
           <Modal.Open opens="confirm-delete-recipe-modal">
             <ButtonDanger
+              className="rounded-xl"
               data-testid="delete-recipe-button"
               disabled={buttonsDisabled}
             >
-              {isDeletingRecipe && <SpinnerMini />}
-              {!isDeletingRecipe && <HiOutlineTrash />}
-
-              <p>
-                Eliminar{' '}
-                <span className="max-bp-recipe-page-second:hidden">receta</span>
-              </p>
+              {isDeletingRecipe ? <SpinnerMini /> : <HiOutlineTrash />}
+              <span>Eliminar receta</span>
             </ButtonDanger>
           </Modal.Open>
         </div>
 
-        <SectionHeading>
-          <h2>Ingredientes</h2>
-        </SectionHeading>
+        {/* ── Ingredients section ─────────────────────────────────────── */}
+        <div className="flex flex-col gap-5">
+          {/* Section header row */}
+          <div className="flex items-center justify-between gap-4 max-bp-recipe-page-second:flex-col max-bp-recipe-page-second:items-start">
+            <h2 className="text-2xl font-bold text-text">Ingredientes</h2>
 
-        <div className="flex gap-4 mb-6">
-          <Modal.Open opens="add-ingredient-modal">
-            <ButtonNew
-              disabled={buttonsDisabled}
-              data-testid="add-ingredient-modal-button"
-              isLoading={isAddingIngredients}
-            >
-              <p>Añadir ingredientes</p>
-            </ButtonNew>
-          </Modal.Open>
-        </div>
+            <Modal.Open opens="add-ingredient-modal">
+              <ButtonNew
+                disabled={buttonsDisabled}
+                data-testid="add-ingredient-modal-button"
+                isLoading={isAddingIngredients}
+              >
+                Añadir ingredientes
+              </ButtonNew>
+            </Modal.Open>
+          </div>
 
-        <div className="grid grid-cols-[1fr_min-content] gap-10 grid-rows-[min-content_1fr]">
           <GridAutoCols
             data-testid="ingredient-lines-container"
-            className="row-span-2 gap-4 auto-rows-min"
-            fitOrFill="fit"
+            className="gap-3 auto-rows-min"
+            fitOrFill="fill"
             min="18rem"
             max="1fr"
           >
@@ -207,6 +195,7 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
           </GridAutoCols>
         </div>
 
+        {/* ── Modals ──────────────────────────────────────────────────── */}
         <Modal.Window name="add-ingredient-modal">
           <AddIngredientModal
             setNewIngredientLinesWithExternalRefs={
@@ -278,6 +267,7 @@ function AddIngredientModal({
         }`}
         onClick={addIngredients}
         isLoading={isLoading}
+        disabled={isLoading}
       >
         Añadir
       </ButtonNew>

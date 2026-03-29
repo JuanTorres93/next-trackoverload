@@ -34,7 +34,7 @@ function IngredientLineItem({
       {isLoading && <LoadingOverlay className="rounded-xl" />}
 
       {/* Thumbnail */}
-      <div className="relative w-11 h-11 rounded-lg overflow-hidden bg-surface-light">
+      <div className="relative overflow-hidden rounded-lg w-11 h-11 bg-surface-light">
         <Image
           fill
           src={
@@ -47,15 +47,19 @@ function IngredientLineItem({
 
       {/* Name + macros — auto-shrinks in grid */}
       <div className="min-w-0">
-        <p className="font-semibold text-sm text-text leading-tight truncate">
+        <p className="text-sm font-semibold leading-tight truncate text-text">
           {ingredientLine.ingredient.name}
         </p>
-        <p className="text-xs text-text-minor-emphasis mt-0.5 truncate">
-          <span>{calories}</span>
-          <span> Calorías · </span>
-          <span>{protein}</span>
-          <span>g Proteínas</span>
-        </p>
+        <div className="flex flex-wrap gap-x-2 mt-0.5">
+          <span className="text-xs text-text-minor-emphasis whitespace-nowrap">
+            <span>{calories}</span>
+            <span> Calorías</span>
+          </span>
+          <span className="text-xs text-text-minor-emphasis whitespace-nowrap">
+            <span>{protein}</span>
+            <span>g Proteínas</span>
+          </span>
+        </div>
       </div>
 
       {/* Quantity — fixed-size, always visible */}
@@ -66,9 +70,9 @@ function IngredientLineItem({
           onChange={(e) => onQuantityChange(Number(e.target.value))}
           disabled={isLoading}
           min={0}
-          className="w-10 text-right text-sm outline-none bg-transparent text-text disabled:cursor-not-allowed disabled:text-text-minor-emphasis"
+          className="w-10 text-sm text-right bg-transparent outline-none text-text disabled:cursor-not-allowed disabled:text-text-minor-emphasis"
         />
-        <span className="text-xs font-medium text-text-minor-emphasis leading-none">
+        <span className="text-xs font-medium leading-none text-text-minor-emphasis">
           g
         </span>
       </div>

@@ -18,7 +18,7 @@ function ButtonPrimary({
     'text-text-minor-emphasis! border-text-minor-emphasis hover:bg-transparent cursor-not-allowed';
 
   const buttonStyle = twMerge(
-    `p-3 font-medium text-primary transition border-2 border-primary rounded-md hover:cursor-pointer hover:bg-primary hover:text-text-light`,
+    `px-4 py-2 text-sm font-semibold text-primary transition-all border border-primary rounded-xl hover:cursor-pointer hover:bg-primary hover:text-text-light`,
     disabled ? disabledStyle : '',
     className,
   );
