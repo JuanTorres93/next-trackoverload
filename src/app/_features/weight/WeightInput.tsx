@@ -31,7 +31,7 @@ function WeightInput({
       <Input
         id="input-weight"
         data-testid="input-weight"
-        containerClassName="border-0 bg-background gap-2 min-w-22 max-bp-navbar-mobile:min-w-18 items-end p-0"
+        containerClassName="border-0 bg-background gap-2 max-w-34 max-bp-navbar-mobile:min-w-18 items-end p-0"
         className={twMerge(
           `text-3xl max-bp-navbar-mobile:text-2xl text-text/80 text-right rounded-sm placeholder:text-text-minor-emphasis/65!`,
           placeholderBackground,

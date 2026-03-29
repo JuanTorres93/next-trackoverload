@@ -27,14 +27,14 @@ function CaloriesGoalInput({
   return (
     <InputContainer>
       <InputLabel htmlFor="input-calories-goal" icon={<HiFire />}>
-        Calorías objetivo
+        <span>Calorías objetivo</span>
       </InputLabel>
 
       <Input
         id="input-calories-goal"
         data-testid="input-calories-goal"
-        containerClassName="border-0 bg-background gap-2 min-w-30 max-bp-navbar-mobile:min-w-24 items-end p-0"
-        className="text-3xl max-bp-navbar-mobile:text-2xl text-right rounded-sm text-primary placeholder:text-text-minor-emphasis/65!"
+        containerClassName="border-0 bg-background gap-2 max-w-34 max-bp-navbar-mobile:min-w-18 items-end p-0"
+        className="text-3xl max-bp-navbar-mobile:text-2xl text-text/80 text-right rounded-sm placeholder:text-text-minor-emphasis/65!"
         placeholder="kcal"
         defaultValue={lastDay.day?.updatedCaloriesGoal ?? defaultCaloriesGoal}
         onChange={(e) => debouncedHandleCaloriesGoalChange(e.target.value)}
