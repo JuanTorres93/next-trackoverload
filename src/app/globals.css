@@ -167,3 +167,16 @@
 .delay-700 {
   animation-delay: 700ms;
 }
+
+@keyframes slide-in-from-left {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-from-left {
+  animation: slide-in-from-left 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}

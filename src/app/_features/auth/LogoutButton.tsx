@@ -4,6 +4,7 @@ import SpinnerMini from '@/app/_ui/SpinnerMini';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { FiLogOut } from 'react-icons/fi';
+import { twMerge } from 'tailwind-merge';
 
 function LogoutButton({
   ...props
@@ -35,7 +36,10 @@ function LogoutButton({
     <button
       type="button"
       {...rest}
-      className={`flex rounded-lg p-2 w-full items-center text-text-minor-emphasis hover:text-text hover:bg-surface-light cursor-pointer transition ${className}`}
+      className={twMerge(
+        'flex rounded-lg p-2 w-full items-center text-text-minor-emphasis hover:text-text hover:bg-surface-light cursor-pointer transition',
+        className,
+      )}
       onClick={handleLogout}
       data-testid="logout-button"
     >

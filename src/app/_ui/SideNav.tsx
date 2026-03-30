@@ -29,7 +29,6 @@ import LogoutButton from '../_features/auth/LogoutButton';
 import { useScreenResize } from '../_hooks/useScreenResize';
 import Logo from './Logo';
 import SpinnerMini from './SpinnerMini';
-import TextRegular from './typography/TextRegular';
 
 type SideNavContextType = {
   navbarShown: boolean;
@@ -102,7 +101,7 @@ function SideNav({ children }: { children: React.ReactNode }) {
 }
 
 function NavBar() {
-  const { navbarShown: showNavBar } = useSideNavContext();
+  const { navbarShown, isMobileLayout, setNavbarShown } = useSideNavContext();
 
   const links: NavbarLink[] = [
     { href: '/app', label: 'Inicio', icon: <HiHome /> },
@@ -127,30 +126,59 @@ function NavBar() {
     links.push(...unimplementedLinks);
   }
 
-  if (!showNavBar) {
-    return null;
-  }
+  if (!navbarShown) return null;
 
   return (
-    <nav className="h-full max-bp-navbar-mobile:fixed max-bp-navbar-mobile:inset-0 max-bp-navbar-mobile:z-30 max-bp-navbar-mobile:backdrop-blur-md max-bp-navbar-mobile:h-dvh max-bp-navbar-mobile:bg-background/80">
-      <ul className="flex flex-col w-full h-full gap-1 p-4">
-        <li className="flex items-center justify-center mb-4">
-          {/* <Link href="/app"> */}
-          <Logo />
-          {/* </Link> */}
-        </li>
+    <>
+      {/* Dark backdrop — mobile only, closes nav on click */}
+      {isMobileLayout && (
+        <div
+          className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm"
+          onClick={() => setNavbarShown(false)}
+        />
+      )}
 
-        {links.map((link) => (
-          <li key={link.href}>
-            <NavLink link={link} />
-          </li>
-        ))}
+      {/* Sidebar panel */}
+      <nav
+        className={twMerge(
+          'flex flex-col h-full bg-surface-card border-r border-border/30',
+          'max-bp-navbar-mobile:fixed max-bp-navbar-mobile:inset-y-0 max-bp-navbar-mobile:left-0',
+          'max-bp-navbar-mobile:w-64 max-bp-navbar-mobile:z-40',
+          'max-bp-navbar-mobile:animate-slide-in-from-left',
+        )}
+      >
+        {/* Header: logo + brand */}
+        <div className="flex items-center gap-3 px-5 py-6 shrink-0">
+          <Logo size={34} />
+          <div className="leading-none">
+            <p className="text-sm font-semibold tracking-wide text-text">
+              Cimientos
+            </p>
+            <p className="text-[10px] text-text-minor-emphasis uppercase tracking-[0.1em] mt-0.5">
+              Dashboard
+            </p>
+          </div>
+        </div>
 
-        <li className="mt-auto">
+        <div className="h-px mx-4 bg-border/30 shrink-0" />
+
+        {/* Navigation links */}
+        <ul className="flex flex-col gap-0.5 p-3 flex-1 overflow-y-auto">
+          {links.map((link) => (
+            <li key={link.href}>
+              <NavLink link={link} />
+            </li>
+          ))}
+        </ul>
+
+        <div className="h-px mx-4 bg-border/30 shrink-0" />
+
+        {/* Footer: logout */}
+        <div className="p-3 shrink-0">
           <LogoutButton />
-        </li>
-      </ul>
-    </nav>
+        </div>
+      </nav>
+    </>
   );
 }
 
@@ -164,16 +192,15 @@ function ToggleButton({
   return (
     <button
       {...rest}
-      // use twMerge
       className={twMerge(
-        `z-40 hidden p-2 rounded-full shadow-sm cursor-pointer bg-surface-light text-surface-dark max-bp-navbar-mobile:block transition duration-200`,
-        navbarShown ? 'bg-surface-dark! text-surface-light!' : '',
+        'z-40 hidden max-bp-navbar-mobile:flex items-center justify-center',
+        'w-10 h-10 rounded-xl cursor-pointer transition-all duration-200',
+        'bg-surface-card text-text-minor-emphasis hover:text-text shadow-md border border-border/40',
         className,
       )}
       onClick={toggleNavBar}
     >
-      {!navbarShown && <HiBars3 size={30} />}
-      {navbarShown && <HiMiniXMark size={30} strokeWidth={0.1} />}
+      {navbarShown ? <HiMiniXMark size={22} /> : <HiBars3 size={22} />}
     </button>
   );
 }
@@ -247,16 +274,23 @@ function NavItem({
   const { className, ...rest } = props;
 
   return (
-    <TextRegular
+    <div
       {...rest}
-      className={`flex rounded-lg p-2 w-full items-center text-text-minor-emphasis hover:text-text hover:bg-surface-light cursor-pointer transition ${
-        isCurrentItem ? 'bg-surface-dark! text-text-light!' : ''
-      }
-       ${className}`}
+      className={twMerge(
+        'relative flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium',
+        'transition-colors duration-150 cursor-pointer',
+        'text-text-minor-emphasis hover:text-text hover:bg-surface-light',
+        isCurrentItem && 'text-primary bg-surface-hover font-semibold',
+        className,
+      )}
     >
-      <span className="mr-2">{icon}</span>
-      {children}
-    </TextRegular>
+      {/* Active indicator pill */}
+      {isCurrentItem && (
+        <span className="absolute left-0 inset-y-2 w-0.5 rounded-r-full bg-primary" />
+      )}
+      <span className="flex-shrink-0 text-base">{icon}</span>
+      <span>{children}</span>
+    </div>
   );
 }
 

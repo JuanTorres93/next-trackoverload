@@ -15,7 +15,7 @@ import {
   LegalTitle,
 } from '../_components/Legal';
 
-const BRAND = 'Next Trackoverload';
+const BRAND = 'Cimientos';
 const EFFECTIVE_DATE = '2 de marzo de 2026';
 
 // Datos del titular (pendiente de completar por el titular)
