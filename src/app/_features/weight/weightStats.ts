@@ -1,79 +1,96 @@
-import {
-  linearRegression,
-  linearRegressionLine,
-  rSquared,
-} from 'simple-statistics';
+// Daily rate thresholds as a fraction of body weight, direction-specific.
+// Loss and gain have different meaningful ranges because the goals are asymmetric:
+//   healthy cut = losing up to 1.3%/week, healthy bulk = gaining up to 1.4%/month.
+const THRESHOLDS = {
+  loss: {
+    meaningful: 0.01 / 30, // 1% per month — start of meaningful cut pace
+    significant: 0.013 / 7, // 1.3% per week — losing too fast
+  },
+  gain: {
+    meaningful: 0.003 / 30, // 0.3% per month — start of meaningful bulk pace
+    significant: 0.014 / 30, // 1.4% per month — gaining too fast
+  },
+} as const;
 
-type TrendDirection = 'up' | 'down' | 'stable';
-type ConfidenceLevel = 'low' | 'medium' | 'high';
+const MIN_DATA_POINTS = 3;
+
+type TrendDirection = 'up' | 'down';
+type TrendStrength = 'significant' | 'meaningful' | 'stable';
 
 interface TrendAnalysis {
   direction: TrendDirection;
-  confidence: ConfidenceLevel;
+  strength: TrendStrength;
 }
 
-// Minimum slope (kg/day) to consider a trend as "up" or "down". Below this, it's "stable".
-// TODO: configure according user weight
-const SLOPE_THRESHOLD = 0.05;
-
-export function getWeightFeedback(data: (number | null)[]): string {
-  const points = toPoints(data);
-
-  if (points.length < 2) {
+export function getWeightFeedback(weights: number[]): string {
+  if (weights.length < MIN_DATA_POINTS) {
     return 'No hay suficientes datos todavía';
   }
 
-  const analysis = analyzeTrend(points);
+  const analysis = analyzeTrend(weights);
   return buildMessage(analysis);
 }
 
-function analyzeTrend(points: [number, number][]): TrendAnalysis {
-  const regression = linearRegression(points);
-  const slope = regression.m;
+function analyzeTrend(weights: number[]): TrendAnalysis {
+  const points = toIndexedPoints(weights);
+  const slope = theilSenSlope(points);
+  const referenceWeight = medianOf(weights);
+  const dailyRate = slope / referenceWeight;
 
-  const predict = linearRegressionLine(regression);
-  const confidenceScore = rSquared(points, predict);
-
+  const direction: TrendDirection = dailyRate >= 0 ? 'up' : 'down';
   return {
-    direction: getDirection(slope),
-    confidence: getConfidence(confidenceScore),
+    direction,
+    strength: getStrength(direction, Math.abs(dailyRate)),
   };
 }
 
-function toPoints(data: (number | null)[]): [number, number][] {
-  return data
-    .map((value, index) => (value !== null ? [index, value] : null))
-    .filter((point): point is [number, number] => point !== null);
-}
-
-function getDirection(slope: number): TrendDirection {
-  if (slope > SLOPE_THRESHOLD) return 'up';
-  if (slope < -SLOPE_THRESHOLD) return 'down';
+function getStrength(
+  direction: TrendDirection,
+  absoluteRate: number,
+): TrendStrength {
+  const { significant, meaningful } =
+    direction === 'down' ? THRESHOLDS.loss : THRESHOLDS.gain;
+  if (absoluteRate >= significant) return 'significant';
+  if (absoluteRate >= meaningful) return 'meaningful';
   return 'stable';
 }
 
-function getConfidence(r2: number): ConfidenceLevel {
-  if (r2 > 0.6) return 'high';
-  if (r2 > 0.3) return 'medium';
-  return 'low';
-}
-
-function buildMessage({ direction, confidence }: TrendAnalysis): string {
-  if (confidence === 'low') {
-    return 'No hay una tendencia clara todavía';
-  }
+function buildMessage({ direction, strength }: TrendAnalysis): string {
+  if (strength === 'stable') return 'Tu peso se mantiene estable';
 
   if (direction === 'down') {
-    return confidence === 'high'
-      ? 'Estás bajando peso de forma consistente'
-      : 'Tendencia a la baja, pero con variaciones';
+    return strength === 'significant'
+      ? 'Estás bajando peso demasiado rápido'
+      : 'Estás bajando de peso a un ritmo saludable';
   }
 
-  if (direction === 'up') {
-    return confidence === 'high'
-      ? 'Estás subiendo peso de forma consistente'
-      : 'Ligera subida reciente';
-  }
+  return strength === 'significant'
+    ? 'Estás subiendo peso demasiado rápido'
+    : 'Estás subiendo de peso a un ritmo saludable';
+}
 
-  return 'Tu peso se mantiene estable';
+function toIndexedPoints(weights: number[]): [number, number][] {
+  return weights.map((w, i) => [i, w]);
+}
+
+// Theil-Sen estimator: median of all pairwise slopes.
+// Much more resistant to outlier spikes than linear regression.
+function theilSenSlope(points: [number, number][]): number {
+  const slopes: number[] = [];
+  for (let i = 0; i < points.length - 1; i++) {
+    for (let j = i + 1; j < points.length; j++) {
+      const [xi, yi] = points[i];
+      const [xj, yj] = points[j];
+      slopes.push((yj - yi) / (xj - xi));
+    }
+  }
+  return medianOf(slopes);
+}
+
+function medianOf(values: number[]): number {
+  const sorted = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 !== 0
+    ? sorted[mid]
+    : (sorted[mid - 1] + sorted[mid]) / 2;
 }
