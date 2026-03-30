@@ -1,14 +1,9 @@
 'use client';
 
-import {
-  cloneElement,
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import { cloneElement, createContext, useContext, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { twMerge } from 'tailwind-merge';
+import { useBodyScrollLock } from '../_hooks/useBodyScrollLock';
 import { useOutsideClick } from '../_hooks/useOutsideClick';
 import ButtonX from './buttons/ButtonX';
 
@@ -26,6 +21,8 @@ const ModalContext = createContext<ModalContextType>({
 
 function Modal({ children }: { children: React.ReactNode }) {
   const [openName, setOpenName] = useState('');
+
+  useBodyScrollLock(openName !== '');
 
   const close = () => {
     setOpenName('');
@@ -69,21 +66,6 @@ function Window({
 
   const { openName, close } = useContext(ModalContext);
   const ref = useOutsideClick<HTMLDivElement>(close);
-
-  useEffect(() => {
-    if (name !== openName) return;
-
-    const scrollY = window.scrollY;
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${scrollY}px`;
-    document.body.style.width = '100%';
-    return () => {
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      window.scrollTo(0, scrollY);
-    };
-  }, [name, openName]);
 
   if (name !== openName) return null;
 

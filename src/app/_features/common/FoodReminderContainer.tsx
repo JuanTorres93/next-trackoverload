@@ -63,7 +63,7 @@ function FoodReminderContainer({
 
       {replacement && (
         <>
-          <Modal.Window name="select-recipe">
+          <Modal.Window name="select-recipe" className="p-0 overflow-hidden">
             <ReplacementRecipeModal replacement={replacement} />
           </Modal.Window>
 
@@ -84,14 +84,12 @@ function ReplacementRecipeModal({
   onCloseModal?: () => void;
 }) {
   return (
-    <div className="max-w-200 max-h-160 overflow-y-scroll w-[80dvw] p-4">
-      <SelectRecipeForm
-        addMealsRequest={(recipeIds) =>
-          replacement.replaceMealRequest(recipeIds[0])
-        }
-        onSuccess={onCloseModal}
-      />
-    </div>
+    <SelectRecipeForm
+      addMealsRequest={(recipeIds) =>
+        replacement.replaceMealRequest(recipeIds[0])
+      }
+      onSuccess={onCloseModal}
+    />
   );
 }
 
@@ -103,7 +101,7 @@ function ReplacementFakeMealModal({
   onCloseModal?: () => void;
 }) {
   return (
-    <div className="max-w-200 max-h-160 overflow-y-scroll w-[80dvw] p-4">
+    <div className="max-w-200 max-h-160 overflow-y-scroll overscroll-contain w-[80dvw] p-4">
       <AddFakeMealForm
         submitAction={(name, calories, protein) =>
           replacement.replaceFakeMealRequest(name, calories, protein)
