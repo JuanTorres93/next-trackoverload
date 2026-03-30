@@ -7,6 +7,8 @@ import { AppGetRecipeByIdForUserUsecase } from '@/interface-adapters/app/use-cas
 import RecipeDisplay from './RecipeDisplay';
 import UpdateRecipeImage from './UpdateRecipeImage';
 import UpdateRecipeTitle from './UpdateRecipeTitle';
+import ButtonPrimary from '@/app/_ui/buttons/ButtonPrimary';
+import { HiOutlineEmojiSad } from 'react-icons/hi';
 
 export async function generateMetadata({
   params,
@@ -35,7 +37,22 @@ export default async function RecipePage({
   const { recipeId } = await params;
   const recipe: RecipeDTO | null = await getRecipeByIdForLoggedInUser(recipeId);
 
-  if (!recipe) return <PageWrapper>No se encontró la receta</PageWrapper>;
+  if (!recipe)
+    return (
+      <PageWrapper className="max-w-5xl">
+        <div className="flex flex-col items-center gap-4 py-20 border border-dashed border-border/40 rounded-2xl text-text-minor-emphasis">
+          <HiOutlineEmojiSad className="text-5xl opacity-30" />
+          <div className="text-center">
+            <p className="font-semibold">Receta no encontrada</p>
+            <p className="mt-1 text-sm opacity-60">
+              Puede que la receta haya sido eliminada o que el enlace no sea
+              correcto.
+            </p>
+          </div>
+          <ButtonPrimary href="/app/recipes">Ver mis recetas</ButtonPrimary>
+        </div>
+      </PageWrapper>
+    );
 
   const calories = formatToInteger(recipe.calories);
   const protein = formatToInteger(recipe.protein);
@@ -44,16 +61,16 @@ export default async function RecipePage({
     <PageWrapper className="max-w-5xl">
       <div className="flex flex-col gap-6">
         {/* ── Hero card ─────────────────────────────────────────────── */}
-        <div className="rounded-2xl overflow-hidden border border-border/40 shadow-md bg-surface-card">
+        <div className="overflow-hidden border shadow-md rounded-2xl border-border/40 bg-surface-card">
           {/* Full-bleed image + gradient + editable title overlay */}
           <div className="relative h-72 max-bp-recipe-page-second:h-52">
             <UpdateRecipeImage recipe={recipe} />
 
             {/* Gradient from bottom */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
 
             {/* Title overlaid at bottom */}
-            <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
+            <div className="absolute bottom-0 left-0 right-0 z-10 p-5">
               <UpdateRecipeTitle
                 originalTitle={recipe.name}
                 recipeId={recipe.id}
