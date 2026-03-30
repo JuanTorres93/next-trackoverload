@@ -1,6 +1,12 @@
 'use client';
 
-import { cloneElement, createContext, useContext, useState } from 'react';
+import {
+  cloneElement,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { createPortal } from 'react-dom';
 import { twMerge } from 'tailwind-merge';
 import { useOutsideClick } from '../_hooks/useOutsideClick';
@@ -64,17 +70,32 @@ function Window({
   const { openName, close } = useContext(ModalContext);
   const ref = useOutsideClick<HTMLDivElement>(close);
 
+  useEffect(() => {
+    if (name !== openName) return;
+
+    const scrollY = window.scrollY;
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = '100%';
+    return () => {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      window.scrollTo(0, scrollY);
+    };
+  }, [name, openName]);
+
   if (name !== openName) return null;
 
   return createPortal(
     <div
-      className={`fixed inset-0 transition bg-overlay/80 z-1000 backdrop-blur-xs`}
+      className={`fixed inset-0 transition bg-overlay/80 z-1000 backdrop-blur-xs touch-none`}
       onClick={(e) => e.stopPropagation()}
     >
       <div
         ref={ref}
         className={twMerge(
-          'fixed top-[50%] left-[50%] translate-[-50%] translate-y-[-50%] bg-surface-card rounded-2xl shadow-xl shadow-black/15 px-8 py-8 transition max-bp-navbar-mobile:w-[90dvw]',
+          'touch-auto fixed top-[50%] left-[50%] translate-[-50%] translate-y-[-50%] bg-surface-card rounded-2xl shadow-xl shadow-black/15 px-8 py-8 transition max-bp-navbar-mobile:w-[90dvw]',
           className,
         )}
         {...rest}
