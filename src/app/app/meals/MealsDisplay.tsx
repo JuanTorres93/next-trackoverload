@@ -9,6 +9,7 @@ import { DayId, dayIdToDayMonthYear } from '@/domain/value-objects/DayId/DayId';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useEffect, useState } from 'react';
+import useSwipe from '@/app/_hooks/useSwipe';
 import { HiCheck, HiX } from 'react-icons/hi';
 import { HiPlus } from 'react-icons/hi2';
 
@@ -21,6 +22,13 @@ function MealsDisplay({
   const [activeDayIndex, setActiveDayIndex] = useState<number>(0);
 
   const areDaysSelected = selectedDaysIds.length > 0;
+
+  const swipeHandlers = useSwipe({
+    onSwipeLeft: () =>
+      setActiveDayIndex((prev) => Math.min(prev + 1, assembledDays.length - 1)),
+
+    onSwipeRight: () => setActiveDayIndex((prev) => Math.max(prev - 1, 0)),
+  });
 
   useEffect(() => {
     const today = new Date();
@@ -60,7 +68,7 @@ function MealsDisplay({
   return (
     <Modal>
       {/* Sticky header — breaks out of PageWrapper padding via -mx-6 -mt-6 */}
-      <div className="-mx-6 -mt-6 sticky top-0 z-10 bg-background border-b border-border/40">
+      <div className="sticky top-0 z-10 -mx-6 -mt-6 border-b bg-background border-border/40">
         {/* Week navigation row */}
         <div className="flex items-center gap-3 px-6 py-2.5">
           <WeekSelector />
@@ -68,7 +76,7 @@ function MealsDisplay({
           {/* Multi-day selection actions — only shown when days are selected */}
           {areDaysSelected && (
             <div className="flex items-center gap-2 ml-auto shrink-0">
-              <span className="text-xs text-text-minor-emphasis hidden bp-navbar-mobile:inline">
+              <span className="hidden text-xs text-text-minor-emphasis bp-navbar-mobile:inline">
                 {selectedDaysIds.length} día
                 {selectedDaysIds.length > 1 ? 's' : ''}
               </span>
@@ -80,7 +88,7 @@ function MealsDisplay({
               </Modal.Open>
               <button
                 onClick={() => setSelectedDaysIds([])}
-                className="flex items-center justify-center w-8 h-8 text-text-minor-emphasis border border-border rounded-lg hover:bg-surface-light transition cursor-pointer"
+                className="flex items-center justify-center w-8 h-8 transition border rounded-lg cursor-pointer text-text-minor-emphasis border-border hover:bg-surface-light"
               >
                 <HiX size={14} />
               </button>
@@ -89,8 +97,8 @@ function MealsDisplay({
         </div>
 
         {/* Mobile day tabs */}
-        <div className="border-t border-border/30 overflow-x-auto scrollbar-none bp-navbar-mobile:hidden">
-          <div className="flex min-w-max px-3 py-1 gap-1">
+        <div className="overflow-x-auto border-t border-border/30 scrollbar-none bp-navbar-mobile:hidden">
+          <div className="flex gap-1 px-3 py-1 min-w-max">
             {assembledDays.map(({ dayId }, index) => (
               <MobileDayTab
                 key={dayId}
@@ -106,7 +114,7 @@ function MealsDisplay({
       </div>
 
       {/* Desktop grid */}
-      <div className="max-bp-navbar-mobile:hidden mt-4">
+      <div className="mt-4 max-bp-navbar-mobile:hidden">
         <div
           className="grid gap-4"
           style={{
@@ -126,7 +134,11 @@ function MealsDisplay({
       </div>
 
       {/* Mobile single-day view */}
-      <div className="bp-navbar-mobile:hidden mt-4">
+      <div
+        className="mt-4 bp-navbar-mobile:hidden"
+        data-testid="mobile-day-view"
+        {...swipeHandlers}
+      >
         {assembledDays[activeDayIndex] && (
           <DaySummary
             key={assembledDays[activeDayIndex].dayId}
@@ -174,10 +186,13 @@ function MobileDayTab({
   return (
     <button
       onClick={onClick}
+      onDoubleClick={onLongSelect}
       onContextMenu={(e) => {
         e.preventDefault();
         onLongSelect();
       }}
+      aria-current={isActive ? 'date' : undefined}
+      data-testid={`mobile-day-tab-${dayId}`}
       className={`flex flex-col items-center px-3 py-1.5 rounded-xl transition-all cursor-pointer min-w-[2.75rem] relative
         ${isActive ? 'bg-primary text-white' : 'text-text-minor-emphasis hover:bg-surface-light'}
         ${isToday && !isActive ? 'font-semibold text-primary' : ''}
@@ -193,7 +208,7 @@ function MobileDayTab({
         </span>
       )}
       {isToday && !isActive && (
-        <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary" />
+        <span className="absolute w-1 h-1 -translate-x-1/2 rounded-full bottom-1 left-1/2 bg-primary" />
       )}
     </button>
   );

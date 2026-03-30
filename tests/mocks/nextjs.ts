@@ -25,6 +25,7 @@ vi.mock('next/navigation', () => {
   return {
     redirect: vi.fn(),
     usePathname: vi.fn(() => '/'),
+    useSearchParams: vi.fn(() => new URLSearchParams()),
     useRouter: vi.fn(() => ({
       push: vi.fn(),
       refresh: vi.fn(),
