@@ -8,12 +8,10 @@ function SelectRecipeModal({
   onCloseModal?: () => void;
 }) {
   return (
-    <div className="max-w-200 w-[80dvw] p-4">
-      <SelectRecipeForm
-        addMealsRequest={addMealsRequest}
-        onSuccess={onCloseModal}
-      />
-    </div>
+    <SelectRecipeForm
+      addMealsRequest={addMealsRequest}
+      onSuccess={onCloseModal}
+    />
   );
 }
 

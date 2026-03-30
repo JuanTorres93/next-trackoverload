@@ -25,7 +25,7 @@ function AddFoodButton({ dayId }: { dayId: string }) {
         <MealTypeSelectionModal title="Elige una opción para añadir" />
       </Modal.Window>
 
-      <Modal.Window name="select-recipe">
+      <Modal.Window name="select-recipe" className="p-0 overflow-hidden">
         <AddRecipeModal dayId={dayId} />
       </Modal.Window>
 
@@ -44,12 +44,10 @@ function AddRecipeModal({
   onCloseModal?: () => void;
 }) {
   return (
-    <div className="max-w-200 max-h-160 overflow-y-scroll w-[80dvw] p-4">
-      <SelectRecipeForm
-        addMealsRequest={(recipeIds) => addMealsToDay(dayId, recipeIds)}
-        onSuccess={onCloseModal}
-      />
-    </div>
+    <SelectRecipeForm
+      addMealsRequest={(recipeIds) => addMealsToDay(dayId, recipeIds)}
+      onSuccess={onCloseModal}
+    />
   );
 }
 

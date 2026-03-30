@@ -152,7 +152,10 @@ function MealsDisplay({
         )}
       </div>
 
-      <Modal.Window name="add-food-to-days-modal">
+      <Modal.Window
+        name="add-food-to-days-modal"
+        className="p-0 overflow-hidden"
+      >
         <SelectRecipeModal addMealsRequest={addMealsRequest} />
       </Modal.Window>
     </Modal>

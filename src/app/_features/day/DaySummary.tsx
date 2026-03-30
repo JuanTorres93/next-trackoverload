@@ -168,7 +168,7 @@ function DaySummary({
         </div>
       </article>
 
-      <Modal.Window name="add-food-modal">
+      <Modal.Window name="add-food-modal" className="p-0 overflow-hidden">
         <SelectRecipeModal addMealsRequest={addMealsRequest} />
       </Modal.Window>
       <Modal.Window name="add-fake-meal-modal">

@@ -1,13 +1,16 @@
 'use client';
 
 import RecipesGrid from '@/app/_features/recipe/RecipesGrid';
+import { useRecipeSearch } from '@/app/_features/recipe/useRecipeSearch';
 import ButtonNew from '@/app/_ui/buttons/ButtonNew';
+import SearchInput from '@/app/_ui/SearchInput';
 import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
 import { useState } from 'react';
-import { HiBookOpen } from 'react-icons/hi';
+import { HiBookOpen, HiMagnifyingGlass } from 'react-icons/hi2';
 
 function RecipesDisplay({ recipes }: { recipes: RecipeDTO[] }) {
   const [isNavigating, setIsNavigating] = useState(false);
+  const { query, setQuery, filteredRecipes } = useRecipeSearch(recipes);
 
   function handleNavigate() {
     setIsNavigating(true);
@@ -42,7 +45,26 @@ function RecipesDisplay({ recipes }: { recipes: RecipeDTO[] }) {
           </div>
         </div>
       ) : (
-        <RecipesGrid data-testid="recipes-container" recipes={recipes} />
+        <div className="flex flex-col gap-6">
+          <SearchInput
+            className="max-w-xs"
+            placeholder="Buscar receta..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+
+          {filteredRecipes.length === 0 ? (
+            <div className="flex flex-col items-center justify-center gap-2 py-16 text-text-minor-emphasis">
+              <HiMagnifyingGlass className="text-4xl opacity-30" />
+              <p className="text-sm">Sin resultados para &quot;{query}&quot;</p>
+            </div>
+          ) : (
+            <RecipesGrid
+              data-testid="recipes-container"
+              recipes={filteredRecipes}
+            />
+          )}
+        </div>
       )}
     </div>
   );

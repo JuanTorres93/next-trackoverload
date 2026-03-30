@@ -2,6 +2,7 @@
 
 import { cloneElement, createContext, useContext, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { twMerge } from 'tailwind-merge';
 import { useOutsideClick } from '../_hooks/useOutsideClick';
 import ButtonX from './buttons/ButtonX';
 
@@ -72,7 +73,10 @@ function Window({
     >
       <div
         ref={ref}
-        className={`fixed top-[50%] left-[50%] translate-[-50%] translate-y-[-50%] bg-surface-card rounded-lg shadow-2xl shadow-black/50 px-6 py-10 transition max-bp-navbar-mobile:w-[90dvw] ${className}`}
+        className={twMerge(
+          'fixed top-[50%] left-[50%] translate-[-50%] translate-y-[-50%] bg-surface-card rounded-2xl shadow-xl shadow-black/15 px-8 py-8 transition max-bp-navbar-mobile:w-[90dvw]',
+          className,
+        )}
         {...rest}
       >
         <ButtonX className="absolute top-3 right-3" onClick={close} />
