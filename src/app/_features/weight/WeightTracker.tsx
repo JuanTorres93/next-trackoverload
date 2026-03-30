@@ -37,19 +37,11 @@ function WeightTracker({
   const show30DaysChart = !daysBetween15And30HaveNoWeight;
   const show90DaysChart = !daysBetween31And90HaveNoWeight;
 
-  const moreThanOneDaysWithWeight =
-    days.filter((day) => day.day?.userWeightInKg !== undefined).length > 1;
-
-  const emptyInputBackground = moreThanOneDaysWithWeight
-    ? 'placeholder:bg-primary/10'
-    : 'placeholder:bg-info/20';
-
   return (
     <div className={twMerge('flex flex-col gap-8', className)} {...rest}>
       <InputsSection
         lastDay={lastDay}
         lastDefinedCaloriesGoal={lastDefinedCaloriesGoal}
-        emptyInputBackground={emptyInputBackground}
       />
 
       <ChartSection
@@ -117,45 +109,21 @@ function ChartSection({
 function InputsSection({
   lastDay,
   lastDefinedCaloriesGoal,
-  emptyInputBackground,
 }: {
   lastDay: DayEntry;
   lastDefinedCaloriesGoal: number | undefined;
-  emptyInputBackground: string;
 }) {
   return (
-    <div className="grid grid-cols-[max-content_max-content] max-w-111 gap-4 p-4 bg-white border shadow-xs rounded-xl border-border/20 text-text/80 max-bp-weight-input:grid-cols-1">
-      <InputContainer>
-        <WeightInput
-          lastDay={lastDay}
-          placeholderBackground={emptyInputBackground}
-        />
-      </InputContainer>
-
-      <InputContainer>
+    <div className="overflow-hidden border shadow-sm border-border/30 rounded-xl bg-surface-card">
+      <div className="flex max-bp-weight-input:flex-col">
+        <WeightInput lastDay={lastDay} className="flex-1 p-5" />
+        <div className="border-r border-border/20 max-bp-weight-input:border-r-0 max-bp-weight-input:border-b" />
         <CaloriesGoalInput
           lastDay={lastDay}
           defaultCaloriesGoal={lastDefinedCaloriesGoal}
+          className="flex-1 p-5"
         />
-      </InputContainer>
-    </div>
-  );
-}
-
-function InputContainer({
-  children,
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div
-      className={twMerge(
-        'flex flex-col gap-2 p-4 bg-white border shadow-xs rounded-xl border-border/20',
-        className,
-      )}
-      {...props}
-    >
-      {children}
+      </div>
     </div>
   );
 }

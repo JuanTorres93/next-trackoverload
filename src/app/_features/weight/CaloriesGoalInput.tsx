@@ -11,9 +11,11 @@ import InputContainer from './InputContainer';
 function CaloriesGoalInput({
   lastDay,
   defaultCaloriesGoal,
+  className,
 }: {
   lastDay: DayEntry;
   defaultCaloriesGoal?: number;
+  className?: string;
 }) {
   const debouncedHandleCaloriesGoalChange = useDebounce(
     handleCaloriesGoalChange,
@@ -25,7 +27,7 @@ function CaloriesGoalInput({
   }
 
   return (
-    <InputContainer>
+    <InputContainer className={className}>
       <InputLabel htmlFor="input-calories-goal" icon={<HiFire />}>
         <span>Calorías objetivo</span>
       </InputLabel>
@@ -33,14 +35,16 @@ function CaloriesGoalInput({
       <Input
         id="input-calories-goal"
         data-testid="input-calories-goal"
-        containerClassName="border-0 bg-background gap-2 max-w-34 max-bp-navbar-mobile:min-w-18 items-end p-0"
-        className="text-3xl max-bp-navbar-mobile:text-2xl text-text/80 text-right rounded-sm placeholder:text-text-minor-emphasis/65!"
+        containerClassName="border border-border/30 bg-input-background rounded-lg px-3 py-1.5 items-baseline gap-2 w-full"
+        className="text-3xl max-bp-navbar-mobile:text-2xl text-text/80"
         placeholder="kcal"
         defaultValue={lastDay.day?.updatedCaloriesGoal ?? defaultCaloriesGoal}
         onChange={(e) => debouncedHandleCaloriesGoalChange(e.target.value)}
         disabled={false}
       >
-        <span className="mb-1 text-sm text-text-minor-emphasis">kcal</span>
+        <span className="text-sm font-medium shrink-0 text-text-minor-emphasis">
+          kcal
+        </span>
       </Input>
     </InputContainer>
   );

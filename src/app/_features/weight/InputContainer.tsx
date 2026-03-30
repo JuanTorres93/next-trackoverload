@@ -12,7 +12,7 @@ function InputContainer({
   return (
     <div
       className={twMerge(
-        'grid gap-2 max-bp-navbar-mobile:text-2xl grid-cols-1 items-center text-3xl',
+        'grid gap-2 max-bp-navbar-mobile:text-2xl grid-cols-1 items-center content-start text-3xl',
         className,
       )}
       {...rest}

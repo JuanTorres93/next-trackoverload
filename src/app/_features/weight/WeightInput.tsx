@@ -4,26 +4,26 @@ import { useDebounce } from '@/app/_hooks/useDebounce';
 import { DayEntry } from '@/application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase';
 import { updateUserWeightForDay } from '../day/actions';
 import Input from '@/app/_ui/Input';
-import { twMerge } from 'tailwind-merge';
 import InputLabel from './InputLabel';
 import { HiScale } from 'react-icons/hi2';
 import InputContainer from './InputContainer';
 
 function WeightInput({
   lastDay,
-  placeholderBackground,
+  className,
 }: {
   lastDay: DayEntry;
-  placeholderBackground: string;
+  className?: string;
 }) {
   const debouncedHandleWeightChange = useDebounce(handleWeightChange, 250);
+  const hasWeight = lastDay.day?.userWeightInKg !== undefined;
 
   function handleWeightChange(newWeight: string) {
     updateUserWeightForDay(lastDay.date, Number(newWeight));
   }
 
   return (
-    <InputContainer>
+    <InputContainer className={className}>
       <InputLabel htmlFor="input-weight" icon={<HiScale />}>
         <span>Peso hoy</span>
       </InputLabel>
@@ -31,18 +31,23 @@ function WeightInput({
       <Input
         id="input-weight"
         data-testid="input-weight"
-        containerClassName="border-0 bg-background gap-2 max-w-34 max-bp-navbar-mobile:min-w-18 items-end p-0"
-        className={twMerge(
-          `text-3xl max-bp-navbar-mobile:text-2xl text-text/80 text-right rounded-sm placeholder:text-text-minor-emphasis/65!`,
-          placeholderBackground,
-        )}
+        containerClassName="border border-border/30 bg-input-background rounded-lg px-3 py-1.5 items-baseline gap-2 w-full"
+        className="text-3xl max-bp-navbar-mobile:text-2xl text-text/80"
         placeholder="KG"
         defaultValue={lastDay.day?.userWeightInKg}
         onChange={(e) => debouncedHandleWeightChange(e.target.value)}
         disabled={false}
       >
-        <span className="mb-1 text-sm text-text-minor-emphasis ">kg</span>
+        <span className="text-sm font-medium shrink-0 text-text-minor-emphasis">
+          kg
+        </span>
       </Input>
+
+      <p
+        className={`text-xs text-text-minor-emphasis/70 italic ${hasWeight ? 'invisible' : ''}`}
+      >
+        Sin registrar hoy
+      </p>
     </InputContainer>
   );
 }
