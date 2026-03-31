@@ -3,7 +3,10 @@ import userEvent from "@testing-library/user-event";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
-import { mockRouterReplace } from "@/../tests/mocks/nextjs";
+import {
+  mockRouterReplace,
+  resetMockSearchParams,
+} from "@/../tests/mocks/nextjs";
 
 import WeekSelector, { formatDateToFilterValue } from "../WeekSelector";
 
@@ -21,6 +24,7 @@ async function setup() {
 describe("WeekSelector", () => {
   beforeEach(() => {
     mockRouterReplace.mockClear();
+    resetMockSearchParams();
   });
 
   it("should navigate to next week when clicking button", async () => {
@@ -73,5 +77,25 @@ describe("WeekSelector", () => {
     const expectedWeekRange = `${format(weekStart, "d 'de' MMMM", { locale: es })} — ${format(weekEnd, "d 'de' MMMM", { locale: es })}`;
 
     expect(weekRangeDisplay).toHaveTextContent(expectedWeekRange);
+  });
+
+  it("should not show today button if is current week", async () => {
+    await setup();
+
+    expect(
+      screen.queryByRole("button", { name: /hoy/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("should show today button if is not current week", async () => {
+    const { nextWeekButton } = await setup();
+
+    await userEvent.click(nextWeekButton);
+
+    await waitFor(async () => {
+      const todayButton = await screen.findByText(/hoy/i);
+
+      expect(todayButton).toBeInTheDocument();
+    });
   });
 });

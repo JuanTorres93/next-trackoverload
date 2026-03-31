@@ -22,25 +22,13 @@ function WeekSelector({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const pathname = usePathname();
 
   const [isLoading, setIsLoading] = useState(false);
+
   const [filterToBeApplied, setFilterToBeApplied] = useState<string | null>(
     null,
   );
+  const activeFilter = searchParams?.get(filterKey) || setFilterToToday();
 
-  const activeFilter = searchParams?.get(filterKey) || defaultFilterValue();
-  const currentDate = parseFilterValueToDate(activeFilter);
-
-  const weekStartsOnMonday = 1;
-  const weekStart = startOfWeek(currentDate, {
-    weekStartsOn: weekStartsOnMonday,
-  });
-  const weekEnd = endOfWeek(currentDate, { weekStartsOn: weekStartsOnMonday });
-
-  const isCurrentWeek =
-    format(weekStart, "yyyy_M_d") ===
-    format(
-      startOfWeek(new Date(), { weekStartsOn: weekStartsOnMonday }),
-      "yyyy_M_d",
-    );
+  const dateAccordingFilter: Date = parseFilterValueToDate(activeFilter);
 
   useEffect(() => {
     if (filterToBeApplied === activeFilter) setIsLoading(false);
@@ -61,14 +49,12 @@ function WeekSelector({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       <ArrowButtons
         isLoading={isLoading}
         handleFilter={handleFilter}
-        currentDate={currentDate}
+        dateAccordingFilter={dateAccordingFilter}
       />
 
       <DateRangeDisplay
         isLoading={isLoading}
-        weekStart={weekStart}
-        weekEnd={weekEnd}
-        isCurrentWeek={isCurrentWeek}
+        dateAccordingFilter={dateAccordingFilter}
         handleFilter={handleFilter}
       />
     </div>
@@ -78,20 +64,20 @@ function WeekSelector({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
 function ArrowButtons({
   isLoading,
   handleFilter,
-  currentDate,
+  dateAccordingFilter,
   ...props
 }: {
   isLoading: boolean;
   handleFilter: (filterValue: string) => void;
-  currentDate: Date;
+  dateAccordingFilter: Date;
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
   const handlePrev = () =>
-    handleFilter(formatDateToFilterValue(subWeeks(currentDate, 1)));
+    handleFilter(formatDateToFilterValue(subWeeks(dateAccordingFilter, 1)));
 
   const handleNext = () =>
-    handleFilter(formatDateToFilterValue(addWeeks(currentDate, 1)));
+    handleFilter(formatDateToFilterValue(addWeeks(dateAccordingFilter, 1)));
 
   return (
     <div
@@ -122,17 +108,28 @@ function ArrowButtons({
 
 function DateRangeDisplay({
   isLoading,
-  weekStart,
-  weekEnd,
-  isCurrentWeek,
+  dateAccordingFilter,
   handleFilter,
 }: {
   isLoading: boolean;
-  weekStart: Date;
-  weekEnd: Date;
-  isCurrentWeek: boolean;
+  dateAccordingFilter: Date;
   handleFilter: (filterValue: string) => void;
 }) {
+  const weekStartsOnMonday = 1;
+  const weekStart = startOfWeek(dateAccordingFilter, {
+    weekStartsOn: weekStartsOnMonday,
+  });
+  const weekEnd = endOfWeek(dateAccordingFilter, {
+    weekStartsOn: weekStartsOnMonday,
+  });
+
+  const isCurrentWeek =
+    format(weekStart, "yyyy_M_d") ===
+    format(
+      startOfWeek(new Date(), { weekStartsOn: weekStartsOnMonday }),
+      "yyyy_M_d",
+    );
+
   return (
     <div
       data-testid="week-range-display"
@@ -147,6 +144,7 @@ function DateRangeDisplay({
             {" — "}
             {format(weekEnd, "d 'de' MMMM", { locale: es })}
           </span>
+
           <span className="bp-week-selector:hidden">
             {format(weekStart, "d MMM", { locale: es })}
             {" — "}
@@ -157,7 +155,7 @@ function DateRangeDisplay({
 
       {!isCurrentWeek && !isLoading && (
         <button
-          onClick={() => handleFilter(defaultFilterValue())}
+          onClick={() => handleFilter(setFilterToToday())}
           disabled={isLoading}
           className="text-xs font-semibold text-primary bg-primary/10 border border-primary/30 rounded-full px-2 py-0.5 hover:bg-primary hover:text-white transition shrink-0 cursor-pointer"
         >
@@ -191,7 +189,7 @@ function NavButton({
   );
 }
 
-function defaultFilterValue() {
+function setFilterToToday() {
   return formatDateToFilterValue(new Date());
 }
 
