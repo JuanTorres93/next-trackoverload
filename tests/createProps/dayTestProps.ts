@@ -1,14 +1,16 @@
-import { AssembledDayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
-import { toFakeMealDTO } from '@/application-layer/dtos/FakeMealDTO';
-import { toMealDTO } from '@/application-layer/dtos/MealDTO';
-import { Day, DayCreateProps } from '@/domain/entities/day/Day';
-import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { Meal } from '@/domain/entities/meal/Meal';
-import { createTestFakeMeal } from './fakeMealTestProps';
-import { createTestMeal } from './mealTestProps';
-import { userId } from './userTestProps';
+import { AssembledDayDTO } from "@/application-layer/dtos/AssembledDayDTO";
+import { toDayDTO } from "@/application-layer/dtos/DayDTO";
+import { toFakeMealDTO } from "@/application-layer/dtos/FakeMealDTO";
+import { toMealDTO } from "@/application-layer/dtos/MealDTO";
+import { Day, DayCreateProps } from "@/domain/entities/day/Day";
+import { FakeMeal } from "@/domain/entities/fakemeal/FakeMeal";
+import { Meal } from "@/domain/entities/meal/Meal";
 
-export const dateId = new Date('2023-10-01');
+import { createTestFakeMeal } from "./fakeMealTestProps";
+import { createTestMeal } from "./mealTestProps";
+import { userId } from "./userTestProps";
+
+export const dateId = new Date("2023-10-01");
 
 export function validDayProps() {
   return {

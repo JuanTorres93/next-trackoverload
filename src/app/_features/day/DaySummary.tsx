@@ -9,7 +9,7 @@ import { HiPlus } from "react-icons/hi2";
 
 import Modal from "@/app/_ui/Modal";
 import { formatToInteger } from "@/app/_utils/format/formatToInteger";
-import { AssembledDayDTO } from "@/application-layer/dtos/DayDTO";
+import { AssembledDayDTO } from "@/application-layer/dtos/AssembledDayDTO";
 import { dayIdToDayMonthYear } from "@/domain/value-objects/DayId/DayId";
 
 import AddFakeMealModal from "../fakemeal/AddFakeMealModal";
