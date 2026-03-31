@@ -1,4 +1,5 @@
 import { act, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import { MemoryDaysRepo } from "@/infra/repos/memory/MemoryDaysRepo";
 import { MemoryFakeMealsRepo } from "@/infra/repos/memory/MemoryFakeMealsRepo";
@@ -12,7 +13,6 @@ const daysRepo = AppDaysRepo as MemoryDaysRepo;
 const fakeMealsRepo = AppFakeMealsRepo as MemoryFakeMealsRepo;
 
 async function setup() {
-  // TODO: create mocks
   const day = await createMockDayWithFakeMeal();
 
   const fakeMeal = day.fakeMeals[0];
@@ -64,9 +64,7 @@ describe("FakeMeal", () => {
 
     const deleteButton = screen.getByTestId("remove-fake-meal");
 
-    act(() => {
-      deleteButton.click();
-    });
+    userEvent.click(deleteButton);
 
     await waitFor(async () => {
       const dayInRepoAfter = await daysRepo.getDayById(day.id);
