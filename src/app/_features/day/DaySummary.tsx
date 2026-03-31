@@ -1,39 +1,21 @@
-'use client';
+"use client";
 
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
+import { useRouter } from "next/navigation";
 
-import Modal from '@/app/_ui/Modal';
-import { AssembledDayDTO } from '@/application-layer/dtos/DayDTO';
-import { dayIdToDayMonthYear } from '@/domain/value-objects/DayId/DayId';
-import SelectRecipeModal from '../recipe/SelectRecipeModal';
-import MealLine from '../meal/MealLine';
-import AddFakeMealModal from '../fakemeal/AddFakeMealModal';
-import FakeMeal from '../fakemeal/FakeMeal';
-import { useRouter } from 'next/navigation';
-import { HiPlus } from 'react-icons/hi2';
-import { HiLightningBolt } from 'react-icons/hi';
-import { formatToInteger } from '@/app/_utils/format/formatToInteger';
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
+import { HiLightningBolt } from "react-icons/hi";
+import { HiPlus } from "react-icons/hi2";
 
-const computeIsToday = (day: number, month: number, year: number) => {
-  const today = new Date();
-  return (
-    today.getDate() === day &&
-    today.getMonth() + 1 === month &&
-    today.getFullYear() === year
-  );
-};
+import Modal from "@/app/_ui/Modal";
+import { formatToInteger } from "@/app/_utils/format/formatToInteger";
+import { AssembledDayDTO } from "@/application-layer/dtos/DayDTO";
+import { dayIdToDayMonthYear } from "@/domain/value-objects/DayId/DayId";
 
-const computeIsPast = (day: number, month: number, year: number) => {
-  const today = new Date();
-  const todayDateOnly = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate(),
-  );
-  const targetDate = new Date(year, month - 1, day);
-  return targetDate < todayDateOnly;
-};
+import AddFakeMealModal from "../fakemeal/AddFakeMealModal";
+import FakeMeal from "../fakemeal/FakeMeal";
+import MealLine from "../meal/MealLine";
+import SelectRecipeModal from "../recipe/SelectRecipeModal";
 
 function DaySummary({
   dayId,
@@ -62,19 +44,19 @@ function DaySummary({
 
   const date = new Date(year, month - 1, day);
   const dayName =
-    format(date, 'EEEE', { locale: es }).charAt(0).toUpperCase() +
-    format(date, 'EEEE', { locale: es }).slice(1);
-  const dateLabel = format(date, 'd MMM', { locale: es });
+    format(date, "EEEE", { locale: es }).charAt(0).toUpperCase() +
+    format(date, "EEEE", { locale: es }).slice(1);
+  const dateLabel = format(date, "d MMM", { locale: es });
 
   const isToday = computeIsToday(day, month, year);
   const isPast = computeIsPast(day, month, year);
 
   async function addMealsRequest(recipesIds: string[]) {
-    await fetch('/api/day/addMultipleMeals', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    await fetch("/api/day/addMultipleMeals", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ dayId, recipeIds: recipesIds }),
-      cache: 'no-store',
+      cache: "no-store",
     });
     router.refresh();
   }
@@ -84,9 +66,9 @@ function DaySummary({
       <article
         id={dayId}
         className={`flex flex-col rounded-2xl border transition-all duration-200 overflow-hidden
-          ${isToday ? 'border-primary shadow-[0_0_0_2px_var(--color-primary-light)]' : 'border-border/60'}
-          ${isSelected ? 'border-selected! shadow-[0_0_0_2px_var(--color-selected)]!' : ''}
-          ${isPast && !isToday ? 'opacity-55' : ''}
+          ${isToday ? "border-primary shadow-[0_0_0_2px_var(--color-primary-light)]" : "border-border/60"}
+          ${isSelected ? "border-selected! shadow-[0_0_0_2px_var(--color-selected)]!" : ""}
+          ${isPast && !isToday ? "opacity-55" : ""}
           bg-surface-card
         `}
       >
@@ -94,15 +76,15 @@ function DaySummary({
         <header
           onClick={() => onSelectDay?.(dayId)}
           className={`flex flex-col px-4 py-3 cursor-pointer transition-colors select-none border-b border-border/30
-            ${isToday ? 'bg-surface-hover' : 'bg-surface-light'}
-            ${isSelected ? 'bg-selected/10!' : ''}
+            ${isToday ? "bg-surface-hover" : "bg-surface-light"}
+            ${isSelected ? "bg-selected/10!" : ""}
             hover:bg-surface-hover
           `}
         >
           {/* Row 1: day name + selection badge */}
           <div className="flex items-center gap-1.5">
             <span
-              className={`font-semibold leading-tight ${isToday ? 'text-primary' : 'text-text'}`}
+              className={`font-semibold leading-tight ${isToday ? "text-primary" : "text-text"}`}
             >
               {dayName}
             </span>
@@ -192,12 +174,32 @@ function ActionButton({
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-1 flex-1 justify-center py-2.5 text-xs font-medium text-text-minor-emphasis hover:text-primary hover:bg-surface-hover transition-colors cursor-pointer ${className ?? ''}`}
+      className={`flex items-center gap-1 flex-1 justify-center py-2.5 text-xs font-medium text-text-minor-emphasis hover:text-primary hover:bg-surface-hover transition-colors cursor-pointer ${className ?? ""}`}
     >
       {icon}
       {label}
     </button>
   );
+}
+
+function computeIsToday(day: number, month: number, year: number) {
+  const today = new Date();
+  return (
+    today.getDate() === day &&
+    today.getMonth() + 1 === month &&
+    today.getFullYear() === year
+  );
+}
+
+function computeIsPast(day: number, month: number, year: number) {
+  const today = new Date();
+  const todayDateOnly = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+  );
+  const targetDate = new Date(year, month - 1, day);
+  return targetDate < todayDateOnly;
 }
 
 export default DaySummary;

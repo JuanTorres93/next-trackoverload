@@ -1,7 +1,8 @@
-import { Day } from '@/domain/entities/day/Day';
-import { dayIdToDayMonthYear } from '@/domain/value-objects/DayId/DayId';
-import { MealDTO } from './MealDTO';
-import { FakeMealDTO } from './FakeMealDTO';
+import { Day } from "@/domain/entities/day/Day";
+import { dayIdToDayMonthYear } from "@/domain/value-objects/DayId/DayId";
+
+import { FakeMealDTO } from "./FakeMealDTO";
+import { MealDTO } from "./MealDTO";
 
 export type DayDTO = {
   id: string; // Date as YYYYMMDD
