@@ -1,16 +1,20 @@
-import { AssembledDayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
+import {
+  AssembledDayDTO,
+  toAssembledDayDTO,
+} from "@/application-layer/dtos/AssembledDayDTO";
+import { toDayDTO } from "@/application-layer/dtos/DayDTO";
 import {
   FakeMealDTO,
   toFakeMealDTO,
-} from '@/application-layer/dtos/FakeMealDTO';
-import { MealDTO, toMealDTO } from '@/application-layer/dtos/MealDTO';
-import { NotFoundError } from '@/domain/common/errors';
-import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { Meal } from '@/domain/entities/meal/Meal';
-import { DaysRepo } from '@/domain/repos/DaysRepo.port';
-import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
-import { MealsRepo } from '@/domain/repos/MealsRepo.port';
-import { UsersRepo } from '@/domain/repos/UsersRepo.port';
+} from "@/application-layer/dtos/FakeMealDTO";
+import { MealDTO, toMealDTO } from "@/application-layer/dtos/MealDTO";
+import { NotFoundError } from "@/domain/common/errors";
+import { FakeMeal } from "@/domain/entities/fakemeal/FakeMeal";
+import { Meal } from "@/domain/entities/meal/Meal";
+import { DaysRepo } from "@/domain/repos/DaysRepo.port";
+import { FakeMealsRepo } from "@/domain/repos/FakeMealsRepo.port";
+import { MealsRepo } from "@/domain/repos/MealsRepo.port";
+import { UsersRepo } from "@/domain/repos/UsersRepo.port";
 
 export type GetMultipleAssembledDaysByIdsUsecaseRequest = {
   dayIds: string[];
@@ -90,11 +94,11 @@ export class GetMultipleAssembledDaysByIdsUsecase {
         fakeMealDTOs.get(fakeMealId),
       ) as FakeMealDTO[];
 
-      return {
+      return toAssembledDayDTO({
         ...dayDTO,
         meals: dayMeals,
         fakeMeals: dayFakeMeals,
-      };
+      });
     });
 
     return assembledDays;

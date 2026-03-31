@@ -48,4 +48,36 @@ describe("AssembledDayDTO", () => {
   it("should reflect fakeMeal data correctly", () => {
     expect(assembledDayDTO.fakeMeals[0].id).toBe(fakeMeal.id);
   });
+
+  describe("totalCalories", () => {
+    it("should sum calories from meals and fakeMeals", () => {
+      const expected = meal.calories + fakeMeal.calories;
+      expect(assembledDayDTO.totalCalories()).toBe(expected);
+    });
+
+    it("should return 0 when there are no meals or fakeMeals", () => {
+      const emptyDay = new AssembledDayDTO({
+        ...assembledDayDTO,
+        meals: [],
+        fakeMeals: [],
+      });
+      expect(emptyDay.totalCalories()).toBe(0);
+    });
+  });
+
+  describe("totalProtein", () => {
+    it("should sum protein from meals and fakeMeals", () => {
+      const expected = meal.protein + fakeMeal.protein;
+      expect(assembledDayDTO.totalProtein()).toBe(expected);
+    });
+
+    it("should return 0 when there are no meals or fakeMeals", () => {
+      const emptyDay = new AssembledDayDTO({
+        ...assembledDayDTO,
+        meals: [],
+        fakeMeals: [],
+      });
+      expect(emptyDay.totalProtein()).toBe(0);
+    });
+  });
 });

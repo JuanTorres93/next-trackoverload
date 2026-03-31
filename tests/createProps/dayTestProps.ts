@@ -41,11 +41,11 @@ export function getValidAssembledDayDTO(): {
   const fakeMealDTO = toFakeMealDTO(fakeMeal);
 
   const dayDTO = toDayDTO(day);
-  const assembledDayDTO: AssembledDayDTO = {
+  const assembledDayDTO = new AssembledDayDTO({
     ...dayDTO,
     meals: [mealDTO],
     fakeMeals: [fakeMealDTO],
-  };
+  });
 
   return {
     assembledDayDTO,
