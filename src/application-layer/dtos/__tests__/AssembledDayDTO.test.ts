@@ -49,6 +49,47 @@ describe("AssembledDayDTO", () => {
     expect(assembledDayDTO.fakeMeals[0].id).toBe(fakeMeal.id);
   });
 
+  it("should know if is today", async () => {
+    const today = new Date();
+    const todayAssembledDayDTO = new AssembledDayDTO({
+      ...assembledDayDTO,
+      day: today.getDate(),
+      month: today.getMonth() + 1,
+      year: today.getFullYear(),
+    });
+
+    expect(todayAssembledDayDTO.isToday()).toBe(true);
+  });
+
+  it("should know it is not today", async () => {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    const yesterdayAssembledDayDTO = new AssembledDayDTO({
+      ...assembledDayDTO,
+      day: yesterday.getDate(),
+      month: yesterday.getMonth() + 1,
+      year: yesterday.getFullYear(),
+    });
+
+    expect(yesterdayAssembledDayDTO.isToday()).toBe(false);
+  });
+
+  it("should know it is in the past", async () => {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    const yesterdayAssembledDayDTO = new AssembledDayDTO({
+      ...assembledDayDTO,
+      day: yesterday.getDate(),
+      month: yesterday.getMonth() + 1,
+      year: yesterday.getFullYear(),
+    });
+
+    expect(yesterdayAssembledDayDTO.isToday()).toBe(false);
+    expect(yesterdayAssembledDayDTO.isPast()).toBe(true);
+  });
+
   describe("totalCalories", () => {
     it("should sum calories from meals and fakeMeals", () => {
       const expected = meal.calories + fakeMeal.calories;

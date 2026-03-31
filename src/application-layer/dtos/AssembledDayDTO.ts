@@ -39,6 +39,23 @@ export class AssembledDayDTO implements DayDTO {
       this.fakeMeals.reduce((total, fakeMeal) => total + fakeMeal.protein, 0)
     );
   }
+
+  isToday() {
+    const today = new Date();
+
+    return (
+      today.getDate() === this.day &&
+      today.getMonth() + 1 === this.month &&
+      today.getFullYear() === this.year
+    );
+  }
+
+  isPast() {
+    const today = new Date();
+    const dayDate = new Date(this.year, this.month - 1, this.day);
+
+    return dayDate < today;
+  }
 }
 
 export function toAssembledDayDTO(data: AssembledDayDTOData): AssembledDayDTO {
