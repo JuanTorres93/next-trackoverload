@@ -3,10 +3,10 @@ import { FakeMeal } from "@/domain/entities/fakemeal/FakeMeal";
 import { Meal } from "@/domain/entities/meal/Meal";
 
 import * as dayTestProps from "../../../../tests/createProps/dayTestProps";
-import { AssembledDayDTO } from "../AssembledDayDTO";
+import { toAssembledDayDTO } from "../AssembledDayDTO";
 
 describe("AssembledDayDTO", () => {
-  let assembledDayDTO: AssembledDayDTO;
+  let assembledDayDTO: ReturnType<typeof toAssembledDayDTO>;
   let meal: Meal;
   let fakeMeal: FakeMeal;
 
@@ -51,74 +51,74 @@ describe("AssembledDayDTO", () => {
 
   it("should know if is today", async () => {
     const today = new Date();
-    const todayAssembledDayDTO = new AssembledDayDTO({
+    const todayAssembledDayDTO = toAssembledDayDTO({
       ...assembledDayDTO,
       day: today.getDate(),
       month: today.getMonth() + 1,
       year: today.getFullYear(),
     });
 
-    expect(todayAssembledDayDTO.isToday()).toBe(true);
+    expect(todayAssembledDayDTO.isToday).toBe(true);
   });
 
   it("should know it is not today", async () => {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
 
-    const yesterdayAssembledDayDTO = new AssembledDayDTO({
+    const yesterdayAssembledDayDTO = toAssembledDayDTO({
       ...assembledDayDTO,
       day: yesterday.getDate(),
       month: yesterday.getMonth() + 1,
       year: yesterday.getFullYear(),
     });
 
-    expect(yesterdayAssembledDayDTO.isToday()).toBe(false);
+    expect(yesterdayAssembledDayDTO.isToday).toBe(false);
   });
 
   it("should know it is in the past", async () => {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
 
-    const yesterdayAssembledDayDTO = new AssembledDayDTO({
+    const yesterdayAssembledDayDTO = toAssembledDayDTO({
       ...assembledDayDTO,
       day: yesterday.getDate(),
       month: yesterday.getMonth() + 1,
       year: yesterday.getFullYear(),
     });
 
-    expect(yesterdayAssembledDayDTO.isToday()).toBe(false);
-    expect(yesterdayAssembledDayDTO.isPast()).toBe(true);
+    expect(yesterdayAssembledDayDTO.isToday).toBe(false);
+    expect(yesterdayAssembledDayDTO.isPast).toBe(true);
   });
 
   describe("totalCalories", () => {
     it("should sum calories from meals and fakeMeals", () => {
       const expected = meal.calories + fakeMeal.calories;
-      expect(assembledDayDTO.totalCalories()).toBe(expected);
+      expect(assembledDayDTO.totalCalories).toBe(expected);
     });
 
     it("should return 0 when there are no meals or fakeMeals", () => {
-      const emptyDay = new AssembledDayDTO({
+      const emptyDay = toAssembledDayDTO({
         ...assembledDayDTO,
         meals: [],
         fakeMeals: [],
       });
-      expect(emptyDay.totalCalories()).toBe(0);
+      expect(emptyDay.totalCalories).toBe(0);
     });
   });
 
   describe("totalProtein", () => {
     it("should sum protein from meals and fakeMeals", () => {
       const expected = meal.protein + fakeMeal.protein;
-      expect(assembledDayDTO.totalProtein()).toBe(expected);
+      expect(assembledDayDTO.totalProtein).toBe(expected);
     });
 
     it("should return 0 when there are no meals or fakeMeals", () => {
-      const emptyDay = new AssembledDayDTO({
+      const emptyDay = toAssembledDayDTO({
         ...assembledDayDTO,
         meals: [],
         fakeMeals: [],
       });
-      expect(emptyDay.totalProtein()).toBe(0);
+      expect(emptyDay.totalProtein).toBe(0);
     });
   });
 });

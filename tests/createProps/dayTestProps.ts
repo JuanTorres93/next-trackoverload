@@ -1,4 +1,7 @@
-import { AssembledDayDTO } from "@/application-layer/dtos/AssembledDayDTO";
+import {
+  AssembledDayDTO,
+  toAssembledDayDTO,
+} from "@/application-layer/dtos/AssembledDayDTO";
 import { toDayDTO } from "@/application-layer/dtos/DayDTO";
 import { toFakeMealDTO } from "@/application-layer/dtos/FakeMealDTO";
 import { toMealDTO } from "@/application-layer/dtos/MealDTO";
@@ -41,7 +44,7 @@ export function getValidAssembledDayDTO(): {
   const fakeMealDTO = toFakeMealDTO(fakeMeal);
 
   const dayDTO = toDayDTO(day);
-  const assembledDayDTO = new AssembledDayDTO({
+  const assembledDayDTO = toAssembledDayDTO({
     ...dayDTO,
     meals: [mealDTO],
     fakeMeals: [fakeMealDTO],

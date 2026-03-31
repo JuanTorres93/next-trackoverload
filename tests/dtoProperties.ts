@@ -1,28 +1,28 @@
-import { getGetters } from '@/application-layer/dtos/__tests__/_getGettersUtil';
-import * as workoutTestProps from './createProps/workoutTestProps';
-import * as workoutTemplateTestProps from './createProps/workoutTemplateTestProps';
-import * as dayTestProps from './createProps/dayTestProps';
-import * as externalIngredientRefTestProps from './createProps/externalIngredientRefTestProps';
-import * as fakeMealTestProps from './createProps/fakeMealTestProps';
-import * as mealTestProps from './createProps/mealTestProps';
-import * as recipeTestProps from './createProps/recipeTestProps';
-import * as ingredientTestProps from './createProps/ingredientTestProps';
-import * as exerciseTestProps from './createProps/exerciseTestProps';
-import * as userTestProps from './createProps/userTestProps';
+import { getGetters } from "@/application-layer/dtos/__tests__/_getGettersUtil";
+import { Day } from "@/domain/entities/day/Day";
+import { Exercise } from "@/domain/entities/exercise/Exercise";
+import { ExternalIngredientRef } from "@/domain/entities/externalingredientref/ExternalIngredientRef";
+import { FakeMeal } from "@/domain/entities/fakemeal/FakeMeal";
+import { Ingredient } from "@/domain/entities/ingredient/Ingredient";
+import { IngredientLine } from "@/domain/entities/ingredientline/IngredientLine";
+import { Meal } from "@/domain/entities/meal/Meal";
+import { Recipe } from "@/domain/entities/recipe/Recipe";
+import { User } from "@/domain/entities/user/User";
+import { Workout } from "@/domain/entities/workout/Workout";
+import { WorkoutLine } from "@/domain/entities/workoutline/WorkoutLine";
+import { WorkoutTemplate } from "@/domain/entities/workouttemplate/WorkoutTemplate";
+import { WorkoutTemplateLine } from "@/domain/entities/workouttemplateline/WorkoutTemplateLine";
 
-import { Exercise } from '@/domain/entities/exercise/Exercise';
-import { ExternalIngredientRef } from '@/domain/entities/externalingredientref/ExternalIngredientRef';
-import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
-import { Recipe } from '@/domain/entities/recipe/Recipe';
-import { Meal } from '@/domain/entities/meal/Meal';
-import { Workout } from '@/domain/entities/workout/Workout';
-import { WorkoutLine } from '@/domain/entities/workoutline/WorkoutLine';
-import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
-import { WorkoutTemplateLine } from '@/domain/entities/workouttemplateline/WorkoutTemplateLine';
-import { User } from '@/domain/entities/user/User';
-import { Day } from '@/domain/entities/day/Day';
+import * as dayTestProps from "./createProps/dayTestProps";
+import * as exerciseTestProps from "./createProps/exerciseTestProps";
+import * as externalIngredientRefTestProps from "./createProps/externalIngredientRefTestProps";
+import * as fakeMealTestProps from "./createProps/fakeMealTestProps";
+import * as ingredientTestProps from "./createProps/ingredientTestProps";
+import * as mealTestProps from "./createProps/mealTestProps";
+import * as recipeTestProps from "./createProps/recipeTestProps";
+import * as userTestProps from "./createProps/userTestProps";
+import * as workoutTemplateTestProps from "./createProps/workoutTemplateTestProps";
+import * as workoutTestProps from "./createProps/workoutTestProps";
 
 // FakeMeal DTO
 const sampleFakeMeal = FakeMeal.create({
@@ -71,7 +71,7 @@ const sampleUser = User.create({
 });
 const allUserGetters = getGetters(sampleUser);
 export const userDTOProperties = allUserGetters.filter(
-  (getter) => getter !== 'hashedPassword',
+  (getter) => getter !== "hashedPassword",
 );
 
 // Exercise DTO
@@ -114,6 +114,10 @@ const sampleDay = Day.create({
 export const dayDTOProperties = getGetters(sampleDay);
 export const assembledDayDTOProperties = [
   ...dayDTOProperties,
-  'meals',
-  'fakeMeals',
+  "meals",
+  "fakeMeals",
+  "totalCalories",
+  "totalProtein",
+  "isToday",
+  "isPast",
 ];

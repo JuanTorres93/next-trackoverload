@@ -1,20 +1,22 @@
-'use server';
-import { AssembledDayDTO, DayDTO } from '@/application-layer/dtos/DayDTO';
-import { DayEntry } from '@/application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase';
-import { AppAddMultipleMealsToDayUsecase } from '@/interface-adapters/app/use-cases/day';
-import { AppGetAssembledDayById } from '@/interface-adapters/app/use-cases/day';
-import { AppGetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays } from '@/interface-adapters/app/use-cases/day';
-import { AppGetMultipleAssembledDaysByIds } from '@/interface-adapters/app/use-cases/day';
-import { AppRemoveMealFromDayUsecase } from '@/interface-adapters/app/use-cases/day';
-import { AppReplaceFakeMealByAnotherFakeMealForUserInDayUsecase } from '@/interface-adapters/app/use-cases/day';
-import { AppReplaceFakeMealByMealForUserInDayUsecase } from '@/interface-adapters/app/use-cases/day';
-import { AppReplaceMealByAnotherMealForUserInDayUsecase } from '@/interface-adapters/app/use-cases/day';
-import { AppReplaceMealByFakeMealForUserInDayUsecase } from '@/interface-adapters/app/use-cases/day';
-import { AppUpdateUserWeightForDayUsecase } from '@/interface-adapters/app/use-cases/day';
-import { AppGetLastDayWithCaloriesGoalForUserUsecase } from '@/interface-adapters/app/use-cases/day';
-import { AppSetCaloriesGoalForDayAndUserUsecase } from '@/interface-adapters/app/use-cases/day';
-import { revalidatePath } from 'next/cache';
-import { getCurrentUserId } from '@/app/_utils/auth/getCurrentUserId';
+"use server";
+import { revalidatePath } from "next/cache";
+
+import { getCurrentUserId } from "@/app/_utils/auth/getCurrentUserId";
+import { AssembledDayDTO } from "@/application-layer/dtos/AssembledDayDTO";
+import { DayDTO } from "@/application-layer/dtos/DayDTO";
+import { DayEntry } from "@/application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase";
+import { AppAddMultipleMealsToDayUsecase } from "@/interface-adapters/app/use-cases/day";
+import { AppGetAssembledDayById } from "@/interface-adapters/app/use-cases/day";
+import { AppGetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays } from "@/interface-adapters/app/use-cases/day";
+import { AppGetMultipleAssembledDaysByIds } from "@/interface-adapters/app/use-cases/day";
+import { AppRemoveMealFromDayUsecase } from "@/interface-adapters/app/use-cases/day";
+import { AppReplaceFakeMealByAnotherFakeMealForUserInDayUsecase } from "@/interface-adapters/app/use-cases/day";
+import { AppReplaceFakeMealByMealForUserInDayUsecase } from "@/interface-adapters/app/use-cases/day";
+import { AppReplaceMealByAnotherMealForUserInDayUsecase } from "@/interface-adapters/app/use-cases/day";
+import { AppReplaceMealByFakeMealForUserInDayUsecase } from "@/interface-adapters/app/use-cases/day";
+import { AppUpdateUserWeightForDayUsecase } from "@/interface-adapters/app/use-cases/day";
+import { AppGetLastDayWithCaloriesGoalForUserUsecase } from "@/interface-adapters/app/use-cases/day";
+import { AppSetCaloriesGoalForDayAndUserUsecase } from "@/interface-adapters/app/use-cases/day";
 
 export type AssembledDayResult = {
   dayId: string;
