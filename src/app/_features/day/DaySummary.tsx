@@ -28,7 +28,6 @@ function DaySummary({
   onSelectDay?: (dayId: string) => void;
   isSelected?: boolean;
 }) {
-  const { day, month, year } = dayIdToDayMonthYear(dayId);
   const router = useRouter();
 
   const meals = assembledDay?.meals || [];
@@ -37,12 +36,6 @@ function DaySummary({
 
   const dayTotalCalories = assembledDay?.totalCalories ?? 0;
   const dayTotalProtein = assembledDay?.totalProtein ?? 0;
-
-  const date = new Date(year, month - 1, day);
-  const dayName =
-    format(date, "EEEE", { locale: es }).charAt(0).toUpperCase() +
-    format(date, "EEEE", { locale: es }).slice(1);
-  const dateLabel = format(date, "d MMM", { locale: es });
 
   const isToday = assembledDay?.isToday ?? false;
   const isPast = assembledDay?.isPast ?? false;
@@ -68,52 +61,15 @@ function DaySummary({
           bg-surface-card
         `}
       >
-        {/* Day header: all info stacked vertically to avoid truncation */}
-        <header
-          onClick={() => onSelectDay?.(dayId)}
-          className={`flex flex-col px-4 py-3 cursor-pointer transition-colors select-none border-b border-border/30
-            ${isToday ? "bg-surface-hover" : "bg-surface-light"}
-            ${isSelected ? "bg-selected/10!" : ""}
-            hover:bg-surface-hover
-          `}
-        >
-          {/* Row 1: day name + selection badge */}
-          <div className="flex items-center gap-1.5">
-            <span
-              className={`font-semibold leading-tight ${isToday ? "text-primary" : "text-text"}`}
-            >
-              {dayName}
-            </span>
-            {isToday && (
-              <span className="text-[10px] font-semibold text-primary bg-primary/15 rounded-full px-1.5 py-0.5 leading-none shrink-0">
-                Hoy
-              </span>
-            )}
-            {isSelected && !isToday && (
-              <span className="text-[10px] font-semibold text-selected bg-selected/10 rounded-full px-1.5 py-0.5 leading-none shrink-0">
-                ✓
-              </span>
-            )}
-          </div>
-
-          {/* Row 2: date + totals on the same compact line */}
-          <div className="flex items-baseline gap-1 mt-0.5 flex-wrap">
-            <span className="text-xs text-text-minor-emphasis">
-              {dateLabel}
-            </span>
-            {hasMeals && (
-              <>
-                <span className="text-xs text-border">&mdash;</span>
-                <span className="text-xs font-medium text-text">
-                  {formatToInteger(dayTotalCalories)} kcal
-                </span>
-                <span className="text-xs text-text-minor-emphasis">
-                  · {formatToInteger(dayTotalProtein)} g
-                </span>
-              </>
-            )}
-          </div>
-        </header>
+        <DayHeader
+          dayId={dayId}
+          isToday={isToday}
+          isSelected={Boolean(isSelected)}
+          hasMeals={hasMeals}
+          dayTotalCalories={dayTotalCalories}
+          dayTotalProtein={dayTotalProtein}
+          onSelectDay={onSelectDay}
+        />
 
         {/* Meals list */}
         <div className="flex flex-col flex-1 overflow-y-auto divide-y max-h-64 divide-border/20">
@@ -153,6 +109,81 @@ function DaySummary({
         <AddFakeMealModal dayId={dayId} />
       </Modal.Window>
     </Modal>
+  );
+}
+
+function DayHeader({
+  dayId,
+  isToday,
+  isSelected,
+  hasMeals,
+  dayTotalCalories,
+  dayTotalProtein,
+  onSelectDay,
+}: {
+  dayId: string;
+  isToday: boolean;
+  isSelected: boolean;
+  hasMeals: boolean;
+  dayTotalCalories: number;
+  dayTotalProtein: number;
+  onSelectDay?: (dayId: string) => void;
+}) {
+  const { day, month, year } = dayIdToDayMonthYear(dayId);
+  const date = new Date(year, month - 1, day);
+  const dayName =
+    format(date, "EEEE", { locale: es }).charAt(0).toUpperCase() +
+    format(date, "EEEE", { locale: es }).slice(1);
+  const dateLabel = format(date, "d MMM", { locale: es });
+
+  return (
+    <header
+      onClick={() => onSelectDay?.(dayId)}
+      className={`flex flex-col px-4 py-3 cursor-pointer transition-colors select-none border-b border-border/30
+            ${isToday ? "bg-surface-hover" : "bg-surface-light"}
+            ${isSelected ? "bg-selected/10!" : ""}
+            hover:bg-surface-hover
+          `}
+    >
+      {/* Row 1: day name + selection badge */}
+      <div className="flex items-center gap-1.5">
+        <span
+          className={`font-semibold leading-tight ${isToday ? "text-primary" : "text-text"}`}
+        >
+          {dayName}
+        </span>
+
+        {isToday && (
+          <span className="text-[10px] font-semibold text-primary bg-primary/15 rounded-full px-1.5 py-0.5 leading-none shrink-0">
+            Hoy
+          </span>
+        )}
+
+        {isSelected && !isToday && (
+          <span className="text-[10px] font-semibold text-selected bg-selected/10 rounded-full px-1.5 py-0.5 leading-none shrink-0">
+            ✓
+          </span>
+        )}
+      </div>
+
+      {/* Row 2: date + totals on the same compact line */}
+      <div className="flex items-baseline gap-1 mt-0.5 flex-wrap">
+        <span className="text-xs text-text-minor-emphasis">{dateLabel}</span>
+        {hasMeals && (
+          <>
+            <span className="text-xs text-border">&mdash;</span>
+
+            <span className="text-xs font-medium text-text">
+              {formatToInteger(dayTotalCalories)} kcal
+            </span>
+
+            <span className="text-xs text-text-minor-emphasis">
+              · {formatToInteger(dayTotalProtein)} g
+            </span>
+          </>
+        )}
+      </div>
+    </header>
   );
 }
 

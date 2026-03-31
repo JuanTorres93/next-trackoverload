@@ -95,6 +95,39 @@ describe("DaySummary", () => {
     expect(fakeMealElement).toBeInTheDocument();
   });
 
+  it("should show day name", async () => {
+    const { assembledDayDTO } = await setup();
+
+    const date = new Date(
+      assembledDayDTO.year,
+      assembledDayDTO.month - 1,
+      assembledDayDTO.day,
+    );
+    const dayName = date.toLocaleDateString("es-ES", { weekday: "long" });
+
+    const dayNameElement = await screen.findByText(new RegExp(dayName, "i"));
+
+    expect(dayNameElement).toBeInTheDocument();
+  });
+
+  it("should show day date as 30 mar format", async () => {
+    const { assembledDayDTO } = await setup();
+
+    const date = new Date(
+      assembledDayDTO.year,
+      assembledDayDTO.month - 1,
+      assembledDayDTO.day,
+    );
+    const dateLabel = date.toLocaleDateString("es-ES", {
+      day: "numeric",
+      month: "short",
+    });
+
+    const dateElement = await screen.findByText(new RegExp(dateLabel, "i"));
+
+    expect(dateElement).toBeInTheDocument();
+  });
+
   it("opens recipes selection modal window on button click", async () => {
     const { addFoodButton } = await setup();
 

@@ -48,6 +48,10 @@ export function getValidAssembledDayDTO(): {
     ...dayDTO,
     meals: [mealDTO],
     fakeMeals: [fakeMealDTO],
+    totalCalories: mealDTO.calories + fakeMealDTO.calories,
+    totalProtein: mealDTO.protein + fakeMealDTO.protein,
+    isToday: false,
+    isPast: false,
   });
 
   return {
