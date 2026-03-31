@@ -35,12 +35,8 @@ function DaySummary({
   const fakeMeals = assembledDay?.fakeMeals || [];
   const hasMeals = meals.length > 0 || fakeMeals.length > 0;
 
-  const dayTotalCalories =
-    meals.reduce((total, meal) => total + meal.calories, 0) +
-    fakeMeals.reduce((total, fakeMeal) => total + fakeMeal.calories, 0);
-  const dayTotalProtein =
-    meals.reduce((total, meal) => total + meal.protein, 0) +
-    fakeMeals.reduce((total, fakeMeal) => total + fakeMeal.protein, 0);
+  const dayTotalCalories = assembledDay?.totalCalories ?? 0;
+  const dayTotalProtein = assembledDay?.totalProtein ?? 0;
 
   const date = new Date(year, month - 1, day);
   const dayName =
@@ -48,8 +44,8 @@ function DaySummary({
     format(date, "EEEE", { locale: es }).slice(1);
   const dateLabel = format(date, "d MMM", { locale: es });
 
-  const isToday = computeIsToday(day, month, year);
-  const isPast = computeIsPast(day, month, year);
+  const isToday = assembledDay?.isToday ?? false;
+  const isPast = assembledDay?.isPast ?? false;
 
   async function addMealsRequest(recipesIds: string[]) {
     await fetch("/api/day/addMultipleMeals", {
@@ -180,26 +176,6 @@ function ActionButton({
       {label}
     </button>
   );
-}
-
-function computeIsToday(day: number, month: number, year: number) {
-  const today = new Date();
-  return (
-    today.getDate() === day &&
-    today.getMonth() + 1 === month &&
-    today.getFullYear() === year
-  );
-}
-
-function computeIsPast(day: number, month: number, year: number) {
-  const today = new Date();
-  const todayDateOnly = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate(),
-  );
-  const targetDate = new Date(year, month - 1, day);
-  return targetDate < todayDateOnly;
 }
 
 export default DaySummary;
