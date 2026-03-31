@@ -1,17 +1,21 @@
-'use client';
+"use client";
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { format, startOfWeek, endOfWeek, addWeeks, subWeeks } from 'date-fns';
-import { es } from 'date-fns/locale';
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
-import { parseFilterValueToDate } from './utils/parseFilterValueToDate';
-import { useEffect, useState } from 'react';
-import SpinnerMini from '@/app/_ui/SpinnerMini';
+import { useEffect, useState } from "react";
+
+import { addWeeks, endOfWeek, format, startOfWeek, subWeeks } from "date-fns";
+import { es } from "date-fns/locale";
+import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
+import { twMerge } from "tailwind-merge";
+
+import SpinnerMini from "@/app/_ui/SpinnerMini";
+
+import { parseFilterValueToDate } from "./utils/parseFilterValueToDate";
 
 function WeekSelector({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
-  const filterKey = 'week';
+  const filterKey = "week";
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -32,10 +36,10 @@ function WeekSelector({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const weekEnd = endOfWeek(currentDate, { weekStartsOn: weekStartsOnMonday });
 
   const isCurrentWeek =
-    format(weekStart, 'yyyy_M_d') ===
+    format(weekStart, "yyyy_M_d") ===
     format(
       startOfWeek(new Date(), { weekStartsOn: weekStartsOnMonday }),
-      'yyyy_M_d',
+      "yyyy_M_d",
     );
 
   useEffect(() => {
@@ -45,58 +49,121 @@ function WeekSelector({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   function handleFilter(filterValue: string) {
     setFilterToBeApplied(filterValue);
     setIsLoading(true);
+
     const params = new URLSearchParams(searchParams);
     params.set(filterKey, filterValue);
+
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   }
 
+  return (
+    <div className={`flex items-center gap-3 ${className ?? ""}`} {...rest}>
+      <ArrowButtons
+        isLoading={isLoading}
+        handleFilter={handleFilter}
+        currentDate={currentDate}
+      />
+
+      <DateRangeDisplay
+        isLoading={isLoading}
+        weekStart={weekStart}
+        weekEnd={weekEnd}
+        isCurrentWeek={isCurrentWeek}
+        handleFilter={handleFilter}
+      />
+    </div>
+  );
+}
+
+function ArrowButtons({
+  isLoading,
+  handleFilter,
+  currentDate,
+  ...props
+}: {
+  isLoading: boolean;
+  handleFilter: (filterValue: string) => void;
+  currentDate: Date;
+} & React.HTMLAttributes<HTMLDivElement>) {
+  const { className, ...rest } = props;
+
   const handlePrev = () =>
     handleFilter(formatDateToFilterValue(subWeeks(currentDate, 1)));
+
   const handleNext = () =>
     handleFilter(formatDateToFilterValue(addWeeks(currentDate, 1)));
 
   return (
-    <div className={`flex items-center gap-3 ${className ?? ''}`} {...rest}>
-      {/* Arrow buttons grouped together on the left */}
-      <div className="flex items-center border border-border/60 rounded-lg overflow-hidden shrink-0">
-        <NavButton direction="left" onClick={handlePrev} disabled={isLoading} />
-        <div className="w-px h-5 bg-border/60" />
-        <NavButton
-          direction="right"
-          onClick={handleNext}
-          disabled={isLoading}
-        />
-      </div>
+    <div
+      className={twMerge(
+        "flex items-center overflow-hidden border rounded-lg border-border/60 shrink-0",
+        className,
+      )}
+      {...rest}
+    >
+      <NavButton
+        data-testid="prev-week-button"
+        direction="left"
+        onClick={handlePrev}
+        disabled={isLoading}
+      />
 
-      {/* Date range */}
-      <div className="flex items-center gap-1.5 min-w-0">
-        {isLoading ? (
-          <SpinnerMini />
-        ) : (
-          <span className="font-semibold text-text whitespace-nowrap">
-            <span className="max-bp-week-selector:hidden">
-              {format(weekStart, "d 'de' MMMM", { locale: es })}
-              {' — '}
-              {format(weekEnd, "d 'de' MMMM", { locale: es })}
-            </span>
-            <span className="bp-week-selector:hidden">
-              {format(weekStart, 'd MMM', { locale: es })}
-              {' — '}
-              {format(weekEnd, 'd MMM', { locale: es })}
-            </span>
+      <div className="w-px h-5 bg-border/60" />
+
+      <NavButton
+        data-testid="next-week-button"
+        direction="right"
+        onClick={handleNext}
+        disabled={isLoading}
+      />
+    </div>
+  );
+}
+
+function DateRangeDisplay({
+  isLoading,
+  weekStart,
+  weekEnd,
+  isCurrentWeek,
+  handleFilter,
+}: {
+  isLoading: boolean;
+  weekStart: Date;
+  weekEnd: Date;
+  isCurrentWeek: boolean;
+  handleFilter: (filterValue: string) => void;
+}) {
+  return (
+    <div
+      data-testid="week-range-display"
+      className="flex items-center gap-1.5 min-w-0"
+    >
+      {isLoading ? (
+        <SpinnerMini />
+      ) : (
+        <span className="font-semibold text-text whitespace-nowrap">
+          <span className="max-bp-week-selector:hidden">
+            {format(weekStart, "d 'de' MMMM", { locale: es })}
+            {" — "}
+            {format(weekEnd, "d 'de' MMMM", { locale: es })}
           </span>
-        )}
+          <span className="bp-week-selector:hidden">
+            {format(weekStart, "d MMM", { locale: es })}
+            {" — "}
+            {format(weekEnd, "d MMM", { locale: es })}
+          </span>
+        </span>
+      )}
 
-        {!isCurrentWeek && !isLoading && (
-          <button
-            onClick={() => handleFilter(defaultFilterValue())}
-            disabled={isLoading}
-            className="text-xs font-semibold text-primary bg-primary/10 border border-primary/30 rounded-full px-2 py-0.5 hover:bg-primary hover:text-white transition shrink-0 cursor-pointer"
-          >
-            Hoy
-          </button>
-        )}
-      </div>
+      {!isCurrentWeek && !isLoading && (
+        <button
+          onClick={() => handleFilter(defaultFilterValue())}
+          disabled={isLoading}
+          className="text-xs font-semibold text-primary bg-primary/10 border border-primary/30 rounded-full px-2 py-0.5 hover:bg-primary hover:text-white transition shrink-0 cursor-pointer"
+        >
+          Hoy
+        </button>
+      )}
     </div>
   );
 }
@@ -105,17 +172,19 @@ function NavButton({
   direction,
   onClick,
   disabled,
+  ...props
 }: {
-  direction: 'left' | 'right';
+  direction: "left" | "right";
   onClick: () => void;
   disabled: boolean;
-}) {
-  const Icon = direction === 'left' ? HiChevronLeft : HiChevronRight;
+} & React.HTMLAttributes<HTMLButtonElement>) {
+  const Icon = direction === "left" ? HiChevronLeft : HiChevronRight;
 
   return (
     <button
       onClick={disabled ? undefined : onClick}
-      className={`flex items-center justify-center w-8 h-8 transition text-text-minor-emphasis hover:bg-surface-light hover:text-text ${disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}`}
+      className={`flex items-center justify-center w-8 h-8 transition text-text-minor-emphasis hover:bg-surface-light hover:text-text ${disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
+      {...props}
     >
       <Icon size={18} />
     </button>
@@ -126,8 +195,8 @@ function defaultFilterValue() {
   return formatDateToFilterValue(new Date());
 }
 
-function formatDateToFilterValue(date: Date) {
-  return format(date, 'yyyy_M_d');
+export function formatDateToFilterValue(date: Date) {
+  return format(date, "yyyy_M_d");
 }
 
 export default WeekSelector;
