@@ -30,15 +30,7 @@ function DaySummary({
 }) {
   const router = useRouter();
 
-  const meals = assembledDay?.meals || [];
-  const fakeMeals = assembledDay?.fakeMeals || [];
-  const hasMeals = meals.length > 0 || fakeMeals.length > 0;
-
-  const dayTotalCalories = assembledDay?.totalCalories ?? 0;
-  const dayTotalProtein = assembledDay?.totalProtein ?? 0;
-
-  const isToday = assembledDay?.isToday ?? false;
-  const isPast = assembledDay?.isPast ?? false;
+  const { isToday, isPast } = getAssembledDayInfo(assembledDay);
 
   async function addMealsRequest(recipesIds: string[]) {
     await fetch("/api/day/addMultipleMeals", {
@@ -63,31 +55,14 @@ function DaySummary({
       >
         <DayHeader
           dayId={dayId}
-          isToday={isToday}
+          assembledDay={assembledDay}
           isSelected={Boolean(isSelected)}
-          hasMeals={hasMeals}
-          dayTotalCalories={dayTotalCalories}
-          dayTotalProtein={dayTotalProtein}
           onSelectDay={onSelectDay}
         />
 
-        {/* Meals list */}
-        <div className="flex flex-col flex-1 overflow-y-auto divide-y max-h-64 divide-border/20">
-          {meals.map((meal) => (
-            <MealLine key={meal.id} meal={meal} dayId={dayId} />
-          ))}
-          {fakeMeals.map((fakeMeal) => (
-            <FakeMeal key={fakeMeal.id} fakeMeal={fakeMeal} dayId={dayId} />
-          ))}
+        <MealsList assembledDay={assembledDay} dayId={dayId} />
 
-          {!hasMeals && (
-            <div className="flex items-center justify-center py-8 text-sm italic text-text-minor-emphasis/50">
-              Sin comidas registradas
-            </div>
-          )}
-        </div>
-
-        {/* Action buttons — tab-style footer, no border clutter */}
+        {/* Action buttons  */}
         <div className="flex mt-auto border-t border-border/30">
           <Modal.Open opens="add-food-modal">
             <ActionButton
@@ -96,6 +71,7 @@ function DaySummary({
               className="border-r border-border/30"
             />
           </Modal.Open>
+
           <Modal.Open opens="add-fake-meal-modal">
             <ActionButton icon={<HiLightningBolt size={12} />} label="Rápido" />
           </Modal.Open>
@@ -105,6 +81,7 @@ function DaySummary({
       <Modal.Window name="add-food-modal" className="p-0 overflow-hidden">
         <SelectRecipeModal addMealsRequest={addMealsRequest} />
       </Modal.Window>
+
       <Modal.Window name="add-fake-meal-modal">
         <AddFakeMealModal dayId={dayId} />
       </Modal.Window>
@@ -114,21 +91,18 @@ function DaySummary({
 
 function DayHeader({
   dayId,
-  isToday,
+  assembledDay,
   isSelected,
-  hasMeals,
-  dayTotalCalories,
-  dayTotalProtein,
   onSelectDay,
 }: {
   dayId: string;
-  isToday: boolean;
+  assembledDay?: AssembledDayDTO | null;
   isSelected: boolean;
-  hasMeals: boolean;
-  dayTotalCalories: number;
-  dayTotalProtein: number;
   onSelectDay?: (dayId: string) => void;
 }) {
+  const { hasMeals, dayTotalCalories, dayTotalProtein, isToday } =
+    getAssembledDayInfo(assembledDay);
+
   const { day, month, year } = dayIdToDayMonthYear(dayId);
   const date = new Date(year, month - 1, day);
   const dayName =
@@ -187,6 +161,33 @@ function DayHeader({
   );
 }
 
+function MealsList({
+  assembledDay,
+  dayId,
+}: {
+  assembledDay?: AssembledDayDTO | null;
+  dayId: string;
+}) {
+  const { meals, fakeMeals, hasMeals } = getAssembledDayInfo(assembledDay);
+
+  return (
+    <div className="flex flex-col flex-1 overflow-y-auto divide-y max-h-64 divide-border/20">
+      {meals.map((meal) => (
+        <MealLine key={meal.id} meal={meal} dayId={dayId} />
+      ))}
+      {fakeMeals.map((fakeMeal) => (
+        <FakeMeal key={fakeMeal.id} fakeMeal={fakeMeal} dayId={dayId} />
+      ))}
+
+      {!hasMeals && (
+        <div className="flex items-center justify-center py-8 text-sm italic text-text-minor-emphasis/50">
+          Sin comidas registradas
+        </div>
+      )}
+    </div>
+  );
+}
+
 function ActionButton({
   icon,
   label,
@@ -207,6 +208,28 @@ function ActionButton({
       {label}
     </button>
   );
+}
+
+function getAssembledDayInfo(assembledDay: AssembledDayDTO | null | undefined) {
+  const meals = assembledDay?.meals || [];
+  const fakeMeals = assembledDay?.fakeMeals || [];
+  const hasMeals = meals.length > 0 || fakeMeals.length > 0;
+
+  const dayTotalCalories = assembledDay?.totalCalories ?? 0;
+  const dayTotalProtein = assembledDay?.totalProtein ?? 0;
+
+  const isToday = assembledDay?.isToday ?? false;
+  const isPast = assembledDay?.isPast ?? false;
+
+  return {
+    meals,
+    fakeMeals,
+    hasMeals,
+    dayTotalCalories,
+    dayTotalProtein,
+    isToday,
+    isPast,
+  };
 }
 
 export default DaySummary;
