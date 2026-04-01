@@ -11,7 +11,12 @@ export type AssembledDayDTO = DayDTO & {
   isPast: boolean;
 };
 
-export function toAssembledDayDTO(data: AssembledDayDTO): AssembledDayDTO {
+type AssembledDayDTOProps = DayDTO & {
+  meals: MealDTO[];
+  fakeMeals: FakeMealDTO[];
+};
+
+export function toAssembledDayDTO(data: AssembledDayDTOProps): AssembledDayDTO {
   return {
     ...data,
     totalCalories: computeTotalCalories(data),
@@ -21,21 +26,21 @@ export function toAssembledDayDTO(data: AssembledDayDTO): AssembledDayDTO {
   };
 }
 
-function computeTotalCalories(data: AssembledDayDTO): number {
+function computeTotalCalories(data: AssembledDayDTOProps): number {
   return (
     data.meals.reduce((total, meal) => total + meal.calories, 0) +
     data.fakeMeals.reduce((total, fakeMeal) => total + fakeMeal.calories, 0)
   );
 }
 
-function computeTotalProtein(data: AssembledDayDTO): number {
+function computeTotalProtein(data: AssembledDayDTOProps): number {
   return (
     data.meals.reduce((total, meal) => total + meal.protein, 0) +
     data.fakeMeals.reduce((total, fakeMeal) => total + fakeMeal.protein, 0)
   );
 }
 
-function computeIsToday(data: AssembledDayDTO): boolean {
+function computeIsToday(data: AssembledDayDTOProps): boolean {
   const today = new Date();
   return (
     today.getDate() === data.day &&
@@ -44,7 +49,7 @@ function computeIsToday(data: AssembledDayDTO): boolean {
   );
 }
 
-function computeIsPast(data: AssembledDayDTO): boolean {
+function computeIsPast(data: AssembledDayDTOProps): boolean {
   const today = new Date();
   const dayDate = new Date(data.year, data.month - 1, data.day);
   return dayDate < today;

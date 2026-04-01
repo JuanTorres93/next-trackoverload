@@ -1,1 +1,1 @@
-npm run lint && npm run test:all:hook
+npm run lint && npm run build && npm run test:all:hook
