@@ -82,10 +82,12 @@ function Story() {
               interesaba.
             </p>
 
-            <Callout>
-              Por suerte, cuando estudiaba en la universidad me llevé un toque
-              de atención.
-            </Callout>
+            <p>
+              <em>
+                Por suerte, cuando estudiaba en la universidad me llevé un toque
+                de atención.
+              </em>
+            </p>
 
             <p>
               Estábamos en época de extraordinarios y yo iba a estudiar a la
@@ -129,11 +131,11 @@ function Story() {
               ]}
             />
 
-            <p>
+            <Callout>
               Ese fue el combustible que me hizo superar la incomodidad. No fue
               ser atractivo, no fue estar fuerte, sino poder funcionar como
               persona y estar bien.
-            </p>
+            </Callout>
 
             <p>
               Viéndolo en retrospectiva, tuve una fuerza de voluntad de caballo.
@@ -281,12 +283,12 @@ function Story() {
               puede <em>(y debe)</em> ajustarlo a su vida y sus preferencias.
             </p>
 
-            <p>
+            <Callout>
               Puedes comer lo que quieras, lo importante es saber las
               estimaciones y cumplirlas. Y esto sirve tanto para{" "}
               <Strong>ganar músculo</Strong>, como para{" "}
               <Strong>perder grasa</Strong>.
-            </p>
+            </Callout>
 
             <p>
               El problema que yo encontré es que, en la mayoría de aplicaciones,
