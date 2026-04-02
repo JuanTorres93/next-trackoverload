@@ -7,6 +7,7 @@ interface SectionHeadingProps {
   subtitle?: string;
   align?: "left" | "center" | "right";
   className?: string;
+  inverted?: boolean;
 }
 
 export default function SectionHeading({
@@ -14,6 +15,7 @@ export default function SectionHeading({
   subtitle,
   align = "center",
   className = "",
+  inverted = false,
 }: SectionHeadingProps) {
   const alignClasses = {
     left: "text-left",
@@ -23,7 +25,12 @@ export default function SectionHeading({
 
   return (
     <div className={twMerge(`mb-10 ${alignClasses[align]} ${className}`)}>
-      <h2 className="text-4xl font-bold leading-tight md:text-5xl text-text">
+      <h2
+        className={twMerge(
+          "text-4xl font-bold leading-tight tracking-tight md:text-5xl",
+          inverted ? "text-white" : "text-text",
+        )}
+      >
         {children}
       </h2>
       <div
@@ -31,7 +38,10 @@ export default function SectionHeading({
       />
       {subtitle && (
         <p
-          className={`max-w-2xl mt-5 text-lg text-text-minor-emphasis ${align === "center" ? "mx-auto" : ""}`}
+          className={twMerge(
+            `max-w-2xl mt-5 text-lg ${align === "center" ? "mx-auto" : ""}`,
+            inverted ? "text-white/60" : "text-text-minor-emphasis",
+          )}
         >
           {subtitle}
         </p>

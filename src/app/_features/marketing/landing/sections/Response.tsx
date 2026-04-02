@@ -1,7 +1,8 @@
-import { FaArrowRight } from 'react-icons/fa';
-import ButtonCTA from '../ButtonCTA';
-import Section from '../Section';
-import SectionHeading from '../SectionHeading';
+import { FaArrowRight } from "react-icons/fa";
+
+import ButtonCTA from "../ButtonCTA";
+import Section from "../Section";
+import SectionHeading from "../SectionHeading";
 
 function Response() {
   return (
@@ -13,9 +14,7 @@ function Response() {
       </div>
 
       <div className="relative max-w-3xl mx-auto text-center text-white">
-        <SectionHeading className="!text-white">
-          Empieza tu cambio hoy
-        </SectionHeading>
+        <SectionHeading inverted>Empieza tu cambio hoy</SectionHeading>
 
         <p className="mb-8 text-xl text-white/90">
           Si te interesa sólo tienes que registrarte gratis pulsando este botón.

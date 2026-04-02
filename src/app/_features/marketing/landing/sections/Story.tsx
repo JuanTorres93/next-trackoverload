@@ -27,7 +27,7 @@ function Story() {
             className="mb-8"
           />
 
-          <div className="mx-auto prose text-text-minor-emphasis">
+          <div className="mx-auto prose prose-lg text-text-minor-emphasis">
             <p>
               <Strong>Todos</Strong> y cada uno de ellos son un buen punto de
               partida. Y por todos y cada uno de ellos merece la pena
