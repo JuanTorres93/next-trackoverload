@@ -1,36 +1,40 @@
-import { ReactNode } from 'react';
+import { ReactNode } from "react";
+
+import { twMerge } from "tailwind-merge";
 
 interface SectionHeadingProps {
   children: ReactNode;
   subtitle?: string;
-  align?: 'left' | 'center' | 'right';
+  align?: "left" | "center" | "right";
   className?: string;
 }
 
 export default function SectionHeading({
   children,
   subtitle,
-  align = 'center',
-  className = '',
+  align = "center",
+  className = "",
 }: SectionHeadingProps) {
   const alignClasses = {
-    left: 'text-left',
-    center: 'text-center',
-    right: 'text-right',
+    left: "text-left",
+    center: "text-center",
+    right: "text-right",
   };
 
   return (
-    <div className={`mb-12 ${alignClasses[align]} ${className}`}>
+    <div className={twMerge(`mb-10 ${alignClasses[align]} ${className}`)}>
       <h2 className="text-4xl font-bold leading-tight md:text-5xl text-text">
         {children}
       </h2>
+      <div
+        className={`w-14 h-1 mt-5 rounded-full bg-gradient-to-r from-primary to-primary-light ${align === "center" ? "mx-auto" : ""}`}
+      />
       {subtitle && (
-        <>
-          <div className="w-20 h-1 mx-auto mt-6 rounded-full bg-gradient-to-r from-primary to-primary-light" />
-          <p className="max-w-2xl mx-auto mt-6 text-lg text-text-minor-emphasis">
-            {subtitle}
-          </p>
-        </>
+        <p
+          className={`max-w-2xl mt-5 text-lg text-text-minor-emphasis ${align === "center" ? "mx-auto" : ""}`}
+        >
+          {subtitle}
+        </p>
       )}
     </div>
   );

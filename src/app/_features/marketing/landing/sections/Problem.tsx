@@ -1,7 +1,8 @@
-import Section from '../Section';
-import SectionHeading from '../SectionHeading';
-import Strong from '../Strong';
-import List from '../List';
+import Callout from "../Callout";
+import List from "../List";
+import Section from "../Section";
+import SectionHeading from "../SectionHeading";
+import Strong from "../Strong";
 
 function Problem() {
   return (
@@ -19,14 +20,14 @@ function Problem() {
 
         <div className="mx-auto prose prose-lg text-text-minor-emphasis">
           <p>
-            Ese es el filtro con el que miramos el mundo. Nuestros{' '}
+            Ese es el filtro con el que miramos el mundo. Nuestros{" "}
             <Strong>valores</Strong> nos guían allá donde vamos. Podemos saber
             cuáles son, o podemos ignorarlo completamente. Pero todos los
             tenemos como una brújula que señala nuestro ser ideal.
           </p>
           <p>
             Cuando nuestras acciones se alinean con nuestros valores nos
-            sentimos plenos y felices. Cuando se alejan{' '}
+            sentimos plenos y felices. Cuando se alejan{" "}
             <em>(o van en contra de ellos)</em>, aparece esa incomodidad con
             nosotros mismos. Algunos síntomas de esa falta de alineación con
             nuestros valores son:
@@ -34,26 +35,24 @@ function Problem() {
 
           <List
             items={[
-              'Sentir que no eres capaz de dar dirección a tu vida.',
-              'Sentir que nada importa.',
-              'No encontrar motivación para seguir con el día a día.',
+              "Sentir que no eres capaz de dar dirección a tu vida.",
+              "Sentir que nada importa.",
+              "No encontrar motivación para seguir con el día a día.",
             ]}
           />
 
-          <div className="p-6 my-8 border border-gray-100 bg-white/50 backdrop-blur-sm rounded-2xl">
-            <p className="font-semibold text-text">
-              Estos sentimientos negativos van formando creencias internas. Y es
-              a través de tus creencias que creas tu <Strong>identidad</Strong>.
-            </p>
-          </div>
+          <Callout>
+            Estos sentimientos negativos van formando creencias internas. Y es a
+            través de tus creencias que creas tu <Strong>identidad</Strong>.
+          </Callout>
           <p>Si piensas que: </p>
 
           <List
             items={[
-              'Eres vago.',
-              'Eres antisocial.',
-              'Comer sano no es para ti.',
-              'Entrenar no es para ti.',
+              "Eres vago.",
+              "Eres antisocial.",
+              "Comer sano no es para ti.",
+              "Entrenar no es para ti.",
             ]}
           />
 
@@ -63,15 +62,15 @@ function Problem() {
           </p>
 
           <p>
-            Pero,{' '}
+            Pero,{" "}
             <em>
               ¿qué diferencia a una persona que &quot;sí puede hacerlo&quot; de
               ti?
-            </em>{' '}
+            </em>{" "}
           </p>
           <p>
             Vivimos en el mismo mundo, tenemos un cerebro con los mismos años de
-            evolución, tenemos un cuerpo que está diseñado para lo mismo.{' '}
+            evolución, tenemos un cuerpo que está diseñado para lo mismo.{" "}
           </p>
 
           <p>
@@ -87,7 +86,7 @@ function Problem() {
 
           <p>
             No es un proceso rápido, no es un proceso cómodo, pero sí es un
-            proceso posible.{' '}
+            proceso posible.{" "}
           </p>
 
           <p>
@@ -98,7 +97,7 @@ function Problem() {
             Si construimos nuestra identidad sobre unos cimientos robustos,
             entonces nuestras creencias nos permitirán superar obstáculos. Nos
             haremos cargo de nuestros problemas, sabremos que se pueden
-            solucionar y sentiremos que somos capaces de superarlos.{' '}
+            solucionar y sentiremos que somos capaces de superarlos.{" "}
           </p>
 
           <p>

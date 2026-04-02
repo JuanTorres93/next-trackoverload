@@ -1,8 +1,9 @@
-import FeatureList from '../FeatureList';
-import List from '../List';
-import Section from '../Section';
-import SectionHeading from '../SectionHeading';
-import Strong from '../Strong';
+import Callout from "../Callout";
+import FeatureList from "../FeatureList";
+import List from "../List";
+import Section from "../Section";
+import SectionHeading from "../SectionHeading";
+import Strong from "../Strong";
 
 function Story() {
   return (
@@ -16,11 +17,11 @@ function Story() {
 
           <FeatureList
             items={[
-              'Salud física',
-              'Nutrición',
-              'Salud mental',
-              'Amistad',
-              'Amor',
+              "Salud física",
+              "Nutrición",
+              "Salud mental",
+              "Amistad",
+              "Amor",
             ]}
             variant="pill"
             className="mb-8"
@@ -39,12 +40,10 @@ function Story() {
               vi que era algo en lo que tenía que trabajar.
             </p>
 
-            <div className="p-6 mt-8 bg-primary/5 rounded-2xl">
-              <p className="font-medium text-text">
-                Lo bueno de empezar por la salud física es que{' '}
-                <Strong>sólo dependes de ti</Strong>.{' '}
-              </p>
-            </div>
+            <Callout>
+              Lo bueno de empezar por la salud física es que{" "}
+              <Strong>sólo dependes de ti</Strong>.{" "}
+            </Callout>
 
             <p>
               A diferencia de otros pilares como la amistad o amor, no requieres
@@ -63,7 +62,7 @@ function Story() {
 
           <div className="prose prose-lg text-text-minor-emphasis">
             <p>
-              El primer cimiento para una buena salud física es el{' '}
+              El primer cimiento para una buena salud física es el{" "}
               <Strong>ejercicio</Strong>.
             </p>
 
@@ -71,28 +70,26 @@ function Story() {
               Y para mí fue una putada, porque <Strong>NUNCA</Strong> me había
               gustado hacer ejercicio. Siempre lo había odiado, solo de pensar
               en ponerme a entrenar me cansaba. Era vago hasta la médula y, por
-              alto que fuera el incentivo, no conseguía <em>(ni quería)</em>{' '}
+              alto que fuera el incentivo, no conseguía <em>(ni quería)</em>{" "}
               ponerme a entrenar.
             </p>
 
             <p>
-              Había adoptado la pereza como una parte integral de mi{' '}
+              Había adoptado la pereza como una parte integral de mi{" "}
               <Strong>identidad</Strong>. Yo quería ser fuerte, pero no estaba
               dispuesto a poner el esfuerzo necesario para conseguirlo. Además,
               de cara al exterior lo negaba, decía que era algo que no me
               interesaba.
             </p>
 
-            <div className="p-6 my-8 border-l-4 bg-primary/5 rounded-2xl border-primary">
-              <p className="italic text-text">
-                Por suerte, cuando estudiaba en la universidad me llevé un toque
-                de atención.
-              </p>
-            </div>
+            <Callout>
+              Por suerte, cuando estudiaba en la universidad me llevé un toque
+              de atención.
+            </Callout>
 
             <p>
               Estábamos en época de extraordinarios y yo iba a estudiar a la
-              facultad.{' '}
+              facultad.{" "}
             </p>
 
             <p>
@@ -102,12 +99,12 @@ function Story() {
             </p>
 
             <p>
-              Ese fue el momento en el que tomé la decisión:{' '}
+              Ese fue el momento en el que tomé la decisión:{" "}
               <em>
                 &quot;en cuanto termine los exámenes me pongo a hacer ejercicio,
                 esta vez en serio&quot;
               </em>
-              .{' '}
+              .{" "}
             </p>
 
             <p>
@@ -119,16 +116,16 @@ function Story() {
               Los primeros años <Strong>odiaba</Strong> cuando llegaba el día de
               entrenamiento. Me sentía incómodo conmigo mismo: tanto mental,
               como físicamente. Me daba vergüenza que otras personas supieran
-              que estaba entrenando, que quería estar bien.{' '}
+              que estaba entrenando, que quería estar bien.{" "}
             </p>
 
             <p>Pero luché contra esa incomodidad. Tenía un propósito.</p>
 
             <List
               items={[
-                'Quería estar sano en el largo plazo.',
-                'Sentirme bien.',
-                'Que mi cuerpo respondiera cuando se lo pidiera.',
+                "Quería estar sano en el largo plazo.",
+                "Sentirme bien.",
+                "Que mi cuerpo respondiera cuando se lo pidiera.",
               ]}
             />
 
@@ -148,22 +145,18 @@ function Story() {
             <p>
               <Strong>Pero con los años he aprendido</Strong>. Me he adaptado y
               he descubierto un método con el que se puede ser consistente sin
-              depender en exceso de la fuerza de voluntad.{' '}
+              depender en exceso de la fuerza de voluntad.{" "}
             </p>
 
             <p>
               No te voy a engañar: va a seguir siendo incómodo y difícil, sobre
               todo si no has entrenado nunca. Pero el sufrimiento es
               personalizable y, además, se ve progreso desde el principio, lo
-              que ayuda a ser consistente.{' '}
+              que ayuda a ser consistente.{" "}
             </p>
 
             <p>
-              Es el método de{' '}
-              <span className="font-semibold text-primary">
-                &quot;una repetición más&quot;
-              </span>
-              .
+              Es el método de <Strong>&quot;una repetición más&quot;</Strong>.
             </p>
           </div>
         </div>
@@ -176,8 +169,8 @@ function Story() {
 
           <div className="prose prose-lg text-text-minor-emphasis">
             <p>
-              El otro cimiento para una gran salud física es la{' '}
-              <Strong>nutrición</Strong>.{' '}
+              El otro cimiento para una gran salud física es la{" "}
+              <Strong>nutrición</Strong>.{" "}
             </p>
 
             <p>
@@ -191,7 +184,7 @@ function Story() {
             <p>
               Al igual que con el ejercicio, nunca me había interesado la
               nutrición. Y, a <em>diferencia</em> del ejercicio, la razón por la
-              que lo hice no fue la salud, sino verme fuerte.{' '}
+              que lo hice no fue la salud, sino verme fuerte.{" "}
             </p>
 
             <p>
@@ -219,7 +212,7 @@ function Story() {
 
             <p>
               Las recomendaciones eran comer más calorías de las que gastas y
-              suficiente proteína.{' '}
+              suficiente proteína.{" "}
             </p>
 
             <p>
@@ -233,7 +226,7 @@ function Story() {
             </p>
 
             <p>
-              Si te falta una, o te falta la otra, entonces <Strong>no</Strong>{' '}
+              Si te falta una, o te falta la otra, entonces <Strong>no</Strong>{" "}
               se pueden dar las condiciones para construir músculo.
             </p>
 
@@ -252,19 +245,17 @@ function Story() {
               suficientemente cercana.
             </p>
 
-            <div className="p-6 my-8 bg-primary/5 rounded-2xl">
-              <p className="font-medium text-text">
-                Así que mi enfoque cambió. Ya no pesaba todo lo que comía, me
-                empecé a hacer un recetario. Iba apuntando recetas con sus
-                cantidades para hacer cada comida. Y calculaba los números{' '}
-                <Strong>una sola vez</Strong>.
-              </p>
-            </div>
+            <Callout>
+              Así que mi enfoque cambió. Ya no pesaba todo lo que comía, me
+              empecé a hacer un recetario. Iba apuntando recetas con sus
+              cantidades para hacer cada comida. Y calculaba los números{" "}
+              <Strong>una sola vez</Strong>.
+            </Callout>
 
             <p>
               De esta forma, cada vez que hiciera esa comida sabría
               inmediatamente sus calorías y proteínas. Sin necesidad de pesarlo
-              todo.{' '}
+              todo.{" "}
             </p>
 
             <p>
@@ -283,7 +274,7 @@ function Story() {
             <p>
               A mí no me gusta cocinar, así que lo hago una vez a la semana.
               Cocino dos recetas distintas: una para comer y otra para cenar. De
-              esta manera es muy fácil cumplir con los números.{' '}
+              esta manera es muy fácil cumplir con los números.{" "}
             </p>
             <p>
               <Strong>Pero no es la única forma de hacerlo</Strong>. Cada uno
@@ -292,8 +283,8 @@ function Story() {
 
             <p>
               Puedes comer lo que quieras, lo importante es saber las
-              estimaciones y cumplirlas. Y esto sirve tanto para{' '}
-              <Strong>ganar músculo</Strong>, como para{' '}
+              estimaciones y cumplirlas. Y esto sirve tanto para{" "}
+              <Strong>ganar músculo</Strong>, como para{" "}
               <Strong>perder grasa</Strong>.
             </p>
 
@@ -306,7 +297,7 @@ function Story() {
 
             <p>
               Por eso decidí crear <Strong>Cimientos</Strong>. Es una forma de
-              centrarte <Strong>sólo en lo que importa</Strong> para el proceso:{' '}
+              centrarte <Strong>sólo en lo que importa</Strong> para el proceso:{" "}
               <Strong>calorías y proteínas</Strong>.
             </p>
 

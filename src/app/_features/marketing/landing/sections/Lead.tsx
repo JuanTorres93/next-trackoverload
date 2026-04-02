@@ -1,4 +1,5 @@
-import Section from '../Section';
+import Section from "../Section";
+import Strong from "../Strong";
 
 export default function Lead() {
   return (
@@ -7,14 +8,14 @@ export default function Lead() {
         <p className="text-2xl leading-relaxed text-text md:text-3xl md:leading-relaxed">
           Si has tenido dificultades para sentirte pleno,
           <br />
-          <span className="font-semibold text-primary">
-            si has querido verte bien y no has sabido cómo,
-          </span>
+          <Strong>si has querido verte bien y no has sabido cómo,</Strong>
           <br />
           si no eres feliz pero sientes que deberías serlo,
         </p>
 
-        <p className="mt-8 text-xl text-text-minor-emphasis md:text-2xl">
+        <div className="w-10 h-px mx-auto my-8 bg-border" />
+
+        <p className="text-xl italic text-text-minor-emphasis md:text-2xl">
           entonces has llegado al sitio correcto.
         </p>
       </div>
