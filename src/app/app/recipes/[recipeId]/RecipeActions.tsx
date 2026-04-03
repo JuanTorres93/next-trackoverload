@@ -1,37 +1,34 @@
-'use client';
+"use client";
 
-import { updateIngredientLineQuantity } from '@/app/_features/ingredient/actions';
-import IngredientLineItem from '@/app/_features/ingredient/IngredientLineItem';
+import { useState } from "react";
+
+import { HiOutlineDuplicate, HiOutlineTrash } from "react-icons/hi";
+
+import { isNextRedirectError } from "@/app/_features/common/handleNextRedirectError";
+import ArrangedIngredientSearch from "@/app/_features/ingredient/ArrangedIngredientSearch";
+import IngredientLineItem from "@/app/_features/ingredient/IngredientLineItem";
+import IngredientSearch, {
+  IngredientLineWithExternalRef,
+} from "@/app/_features/ingredient/IngredientSearch";
+import { updateIngredientLineQuantity } from "@/app/_features/ingredient/actions";
 import {
   addIngredientToRecipe,
   deleteRecipe,
   duplicateRecipe,
   removeIngredientFromRecipe,
-} from '@/app/_features/recipe/actions';
-import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
-import { HiOutlineDuplicate, HiOutlineTrash } from 'react-icons/hi';
+} from "@/app/_features/recipe/actions";
+import { useDebounce } from "@/app/_hooks/useDebounce";
+import ConfirmDelete from "@/app/_ui/ConfirmDeleteModal";
+import GridAutoCols from "@/app/_ui/GridAutoCols";
+import Modal from "@/app/_ui/Modal";
+import SpinnerMini from "@/app/_ui/SpinnerMini";
+import ButtonDanger from "@/app/_ui/buttons/ButtonDanger";
+import ButtonNew from "@/app/_ui/buttons/ButtonNew";
+import ButtonPrimary from "@/app/_ui/buttons/ButtonPrimary";
+import { showErrorToast } from "@/app/_ui/showErrorToast";
+import { RecipeDTO } from "@/application-layer/dtos/RecipeDTO";
 
-import { isNextRedirectError } from '@/app/_features/common/handleNextRedirectError';
-import IngredientSearch, {
-  IngredientLineWithExternalRef,
-} from '@/app/_features/ingredient/IngredientSearch';
-import { useDebounce } from '@/app/_hooks/useDebounce';
-import ButtonNew from '@/app/_ui/buttons/ButtonNew';
-import ButtonPrimary from '@/app/_ui/buttons/ButtonPrimary';
-import Modal from '@/app/_ui/Modal';
-import { showErrorToast } from '@/app/_ui/showErrorToast';
-import SpinnerMini from '@/app/_ui/SpinnerMini';
-import { useState } from 'react';
-import ArrangedIngredientSearch from '@/app/_features/ingredient/ArrangedIngredientSearch';
-import ButtonDanger from '@/app/_ui/buttons/ButtonDanger';
-import ConfirmDelete from '@/app/_ui/ConfirmDeleteModal';
-import GridAutoCols from '@/app/_ui/GridAutoCols';
-
-interface RecipeDisplayProps {
-  recipe: RecipeDTO;
-}
-
-export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
+export default function RecipeActions({ recipe }: { recipe: RecipeDTO }) {
   const [
     newIngredientLinesWithExternalRefs,
     setNewIngredientLinesWithExternalRefs,
@@ -50,18 +47,18 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
   async function handleRemoveIngredient(ingredientId: string) {
     if (recipe.ingredientLines.length <= 1)
       return showErrorToast(
-        'No se puede borrar, la receta debe tener al menos un ingrediente.',
+        "No se puede borrar, la receta debe tener al menos un ingrediente.",
       );
 
     try {
       await removeIngredientFromRecipe(recipe.id, ingredientId);
     } catch {
-      showErrorToast('Error al eliminar el ingrediente.');
+      showErrorToast("Error al eliminar el ingrediente.");
     }
   }
 
   function handleQuantityChange(lineId: string, quantity: number) {
-    updateIngredientLineQuantity('recipe', recipe.id, lineId, quantity);
+    updateIngredientLineQuantity("recipe", recipe.id, lineId, quantity);
   }
 
   async function handleAddIngredients(e: React.FormEvent) {
@@ -87,7 +84,7 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
       }
     } catch {
       showErrorToast(
-        'Error al añadir ingredientes. Por favor, inténtalo de nuevo.',
+        "Error al añadir ingredientes. Por favor, inténtalo de nuevo.",
       );
     } finally {
       setIsAddingIngredients(false);
@@ -106,7 +103,7 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
     } catch (error) {
       if (isNextRedirectError(error)) return;
       showErrorToast(
-        'Error al duplicar la receta. Por favor, inténtalo de nuevo.',
+        "Error al duplicar la receta. Por favor, inténtalo de nuevo.",
       );
     } finally {
       setIsDuplicatingRecipe(false);
@@ -123,7 +120,7 @@ export default function RecipeDisplay({ recipe }: RecipeDisplayProps) {
     } catch (error) {
       if (isNextRedirectError(error)) return;
       showErrorToast(
-        'Error al eliminar la receta. Por favor, inténtalo de nuevo.',
+        "Error al eliminar la receta. Por favor, inténtalo de nuevo.",
       );
     } finally {
       setIsDeletingRecipe(false);
@@ -263,7 +260,7 @@ function AddIngredientModal({
       <ButtonNew
         type="submit"
         className={`${
-          newIngredientLinesWithExternalRefs.length <= 0 ? 'hidden' : ''
+          newIngredientLinesWithExternalRefs.length <= 0 ? "hidden" : ""
         }`}
         onClick={addIngredients}
         isLoading={isLoading}
