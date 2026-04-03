@@ -1,26 +1,27 @@
-import { mockIngredientsForIngredientFinder } from '@/../tests/mocks/ingredients';
-import { createMockRecipes } from '@/../tests/mocks/recipes';
-import { createServer } from '@/../tests/mocks/server';
-import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
-import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
-import { AppRecipesRepo } from '@/interface-adapters/app/repos/AppRecipesRepo';
-import { AppUsersRepo } from '@/interface-adapters/app/repos/AppUsersRepo';
-import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
-import { render, screen, waitFor, within } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { vi } from 'vitest';
+import { render, screen, waitFor, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
+
+import { mockIngredientsForIngredientFinder } from "@/../tests/mocks/ingredients";
+import { createMockRecipes } from "@/../tests/mocks/recipes";
+import { createServer } from "@/../tests/mocks/server";
+import { SCAN_WINDOW_SIZE } from "@/app/_features/ingredient/ZXingBarcodeScanner";
+import { RecipeDTO } from "@/application-layer/dtos/RecipeDTO";
+import { MemoryRecipesRepo } from "@/infra/repos/memory/MemoryRecipesRepo";
+import { MemoryUsersRepo } from "@/infra/repos/memory/MemoryUsersRepo";
+import { AppRecipesRepo } from "@/interface-adapters/app/repos/AppRecipesRepo";
+import { AppUsersRepo } from "@/interface-adapters/app/repos/AppUsersRepo";
+
+import { createTestImage } from "../../../../../../tests/helpers/imageTestHelpers";
+import { mockDecodeFromConstraints } from "../../../../../../tests/mocks/zxing";
+import RecipePage from "../page";
 
 // Mock AppClientImageProcessor to avoid browser API incompatibilities in the test environment
-vi.mock('@/interface-adapters/app/services/AppClientImageProcessor', () => ({
+vi.mock("@/interface-adapters/app/services/AppClientImageProcessor", () => ({
   AppClientImageProcessor: {
     compressToMaxMB: vi.fn((file: File) => Promise.resolve(file)),
   },
 }));
-
-import RecipePage from '../page';
-import { createTestImage } from '../../../../../../tests/helpers/imageTestHelpers';
-import { mockDecodeFromConstraints } from '../../../../../../tests/mocks/zxing';
-import { SCAN_WINDOW_SIZE } from '@/app/_features/ingredient/ZXingBarcodeScanner';
 
 const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
 const usersRepo = AppUsersRepo as MemoryUsersRepo;
@@ -29,8 +30,8 @@ let mockRecipes: RecipeDTO[] = [];
 createServer(
   [
     {
-      path: '/api/ingredient/fuzzy/:term',
-      method: 'get',
+      path: "/api/ingredient/fuzzy/:term",
+      method: "get",
       response: ({ params }) => {
         const term = params.term as string;
         const ingredients = mockIngredientsForIngredientFinder;
@@ -39,24 +40,24 @@ createServer(
           ingredient.ingredient.name.toLowerCase().includes(term.toLowerCase()),
         );
 
-        return { status: 'success', data: filteredIngredients };
+        return { status: "success", data: filteredIngredients };
       },
     },
     {
-      path: '/api/ingredient/barcode/:barcode',
-      method: 'get',
+      path: "/api/ingredient/barcode/:barcode",
+      method: "get",
       response: () => ({
-        status: 'success',
+        status: "success",
         data: [
           {
             ingredient: {
-              name: 'Avena Integral',
+              name: "Avena Integral",
               nutritionalInfoPer100g: { calories: 370, protein: 13 },
               imageUrl: undefined,
             },
             externalRef: {
-              externalId: '8414807558305',
-              source: 'openfoodfacts',
+              externalId: "8414807558305",
+              source: "openfoodfacts",
             },
           },
         ],
@@ -64,7 +65,7 @@ createServer(
     },
   ],
   {
-    onUnhandledRequest: 'bypass',
+    onUnhandledRequest: "bypass",
   },
 );
 
@@ -89,9 +90,9 @@ afterEach(() => {
   usersRepo.clearForTesting();
 });
 
-describe('RecipePage', () => {
-  describe('Shown info', () => {
-    it('renders recipe title', async () => {
+describe("RecipePage", () => {
+  describe("Shown info", () => {
+    it("renders recipe title", async () => {
       await setup();
 
       const title = await screen.findByDisplayValue(mockRecipes[0].name);
@@ -99,7 +100,7 @@ describe('RecipePage', () => {
       expect(title).toBeInTheDocument();
     });
 
-    it('renders rounded calories', async () => {
+    it("renders rounded calories", async () => {
       await setup();
 
       const calories = mockRecipes[0].calories;
@@ -112,7 +113,7 @@ describe('RecipePage', () => {
       expect(caloriesElement).toBeInTheDocument();
     });
 
-    it('renders rounded protein', async () => {
+    it("renders rounded protein", async () => {
       await setup();
 
       const protein = mockRecipes[0].protein;
@@ -125,7 +126,7 @@ describe('RecipePage', () => {
       expect(proteinElement).toBeInTheDocument();
     });
 
-    it('renders ingredient lines', async () => {
+    it("renders ingredient lines", async () => {
       await setup();
 
       const ingredientLines = mockRecipes[0].ingredientLines;
@@ -136,7 +137,7 @@ describe('RecipePage', () => {
       }
     });
 
-    it('renders ingredient quantities', async () => {
+    it("renders ingredient quantities", async () => {
       await setup();
 
       const ingredientLines = mockRecipes[0].ingredientLines;
@@ -148,7 +149,7 @@ describe('RecipePage', () => {
       }
     });
 
-    it('renders total rounded calories per ingredient', async () => {
+    it("renders total rounded calories per ingredient", async () => {
       await setup();
 
       const ingredientLines = mockRecipes[0].ingredientLines;
@@ -161,7 +162,7 @@ describe('RecipePage', () => {
       }
     });
 
-    it('renders total rounded protein per ingredient', async () => {
+    it("renders total rounded protein per ingredient", async () => {
       await setup();
 
       const ingredientLines = mockRecipes[0].ingredientLines;
@@ -175,8 +176,8 @@ describe('RecipePage', () => {
     });
   });
 
-  describe('Behavior', () => {
-    it('allows updating ingredient quantity', async () => {
+  describe("Behavior", () => {
+    it("allows updating ingredient quantity", async () => {
       await setup();
 
       const recipe = mockRecipes[0];
@@ -184,7 +185,7 @@ describe('RecipePage', () => {
       const ingredientLines = recipe.ingredientLines;
       const lineToUpdate = ingredientLines[0];
 
-      const newQuantity = '500';
+      const newQuantity = "500";
 
       const quantityInput = screen.getByDisplayValue(
         lineToUpdate.quantityInGrams.toString(),
@@ -210,7 +211,7 @@ describe('RecipePage', () => {
       });
     });
 
-    it('fetches ingredients through barcode', async () => {
+    it("fetches ingredients through barcode", async () => {
       mockDecodeFromConstraints.mockImplementation(
         (
           _constraints: unknown,
@@ -222,7 +223,7 @@ describe('RecipePage', () => {
         ) => {
           // Repeat enough times to reach the majority threshold
           for (let i = 0; i < SCAN_WINDOW_SIZE; i++) {
-            callback({ getText: () => '8414807558305' }, null);
+            callback({ getText: () => "8414807558305" }, null);
           }
         },
       );
@@ -230,18 +231,18 @@ describe('RecipePage', () => {
       await setup();
 
       const addIngredientButton = screen.getByTestId(
-        'add-ingredient-modal-button',
+        "add-ingredient-modal-button",
       );
       await userEvent.click(addIngredientButton);
 
       const barcodeScannerButton = await screen.findByTestId(
-        'open-scanner-button',
+        "open-scanner-button",
       );
       await userEvent.click(barcodeScannerButton);
 
       await waitFor(async () => {
         // Get list again to avoid stale reference
-        const ingredientList = await screen.findByTestId('ingredient-list');
+        const ingredientList = await screen.findByTestId("ingredient-list");
 
         expect(ingredientList.children.length).toBe(1);
       });
@@ -250,12 +251,12 @@ describe('RecipePage', () => {
       expect(ingredientElement).toBeInTheDocument();
     });
 
-    it('duplicates recipe', async () => {
+    it("duplicates recipe", async () => {
       await setup();
 
       const initialRecipes = recipesRepo.countForTesting();
 
-      const duplicateButton = screen.getByTestId('duplicate-recipe-button');
+      const duplicateButton = screen.getByTestId("duplicate-recipe-button");
 
       await userEvent.click(duplicateButton);
 
@@ -265,16 +266,16 @@ describe('RecipePage', () => {
       });
     });
 
-    it('deletes recipe', async () => {
+    it("deletes recipe", async () => {
       await setup();
 
       const initialRecipes = recipesRepo.countForTesting();
 
-      const deleteButton = screen.getByTestId('delete-recipe-button');
+      const deleteButton = screen.getByTestId("delete-recipe-button");
       await userEvent.click(deleteButton);
 
-      const confirmButton = await screen.findByRole('button', {
-        name: 'Eliminar',
+      const confirmButton = await screen.findByRole("button", {
+        name: "Eliminar",
       });
       await userEvent.click(confirmButton);
 
@@ -284,7 +285,7 @@ describe('RecipePage', () => {
       });
     });
 
-    it('can remove ingredients from recipe', async () => {
+    it("can remove ingredients from recipe", async () => {
       await setup();
 
       const recipe = mockRecipes[0];
@@ -292,13 +293,13 @@ describe('RecipePage', () => {
       const initialIngredientLinesCount = recipe.ingredientLines.length;
 
       const ingredientLinesContainer = screen.getByTestId(
-        'ingredient-lines-container',
+        "ingredient-lines-container",
       );
 
       const ingredientLineElement = ingredientLinesContainer
         .children[0] as HTMLElement;
       const removeButton = within(ingredientLineElement).getByTestId(
-        'nutritional-summary-delete-button',
+        "nutritional-summary-delete-button",
       );
 
       await userEvent.click(removeButton);
@@ -312,14 +313,14 @@ describe('RecipePage', () => {
       });
     });
 
-    it('cannot leave a recipe with less than one ingredient', async () => {
+    it("cannot leave a recipe with less than one ingredient", async () => {
       await setup();
 
       const recipe = mockRecipes[0];
 
       // Remove all ingredients except one
       const deleteIngredientButtons = await screen.findAllByTestId(
-        'nutritional-summary-delete-button',
+        "nutritional-summary-delete-button",
       );
 
       const [lastButton, ...restButtons] = deleteIngredientButtons;
@@ -341,30 +342,30 @@ describe('RecipePage', () => {
       expect(finalRecipe!.ingredientLines.length).toBe(1);
     });
 
-    it('can add new ingredient to recipe', async () => {
+    it("can add new ingredient to recipe", async () => {
       const { renderedRecipe } = await setup();
 
       const existingLinesContainer = screen.getByTestId(
-        'ingredient-lines-container',
+        "ingredient-lines-container",
       );
       const initialIngredientLinesCount =
         existingLinesContainer.childElementCount;
 
       const addIngredientButton = screen.getByTestId(
-        'add-ingredient-modal-button',
+        "add-ingredient-modal-button",
       );
       await userEvent.click(addIngredientButton);
 
       const searchIngredientInput = await screen.findByPlaceholderText(
-        'Buscar ingredientes...',
+        "Buscar ingredientes...",
       );
 
-      const searchButton = screen.getByRole('button', { name: 'Buscar' });
+      const searchButton = screen.getByRole("button", { name: "Buscar" });
 
-      await userEvent.type(searchIngredientInput, 'celery');
+      await userEvent.type(searchIngredientInput, "celery");
       await userEvent.click(searchButton);
 
-      const ingredientList = await screen.findByTestId('ingredient-list');
+      const ingredientList = await screen.findByTestId("ingredient-list");
 
       await waitFor(() => {
         expect(ingredientList.childNodes.length).toBeGreaterThan(0);
@@ -373,7 +374,7 @@ describe('RecipePage', () => {
       const searchResultItem = await screen.findByText(/celery/i);
       await userEvent.click(searchResultItem);
 
-      const addButton = screen.getByRole('button', { name: /^añadir$/i });
+      const addButton = screen.getByRole("button", { name: /^añadir$/i });
       await userEvent.click(addButton);
 
       await waitFor(() => {
@@ -387,14 +388,14 @@ describe('RecipePage', () => {
       });
     });
 
-    it('updates recipe name', async () => {
+    it("updates recipe name", async () => {
       const { renderedRecipe } = await setup();
 
       const titleInput = (await screen.findByDisplayValue(
         renderedRecipe.name,
       )) as HTMLInputElement;
 
-      const newTitle = 'Updated Recipe Title';
+      const newTitle = "Updated Recipe Title";
 
       await userEvent.clear(titleInput);
       await userEvent.type(titleInput, newTitle);
@@ -409,20 +410,20 @@ describe('RecipePage', () => {
       });
     });
 
-    it('updates recipe image when no previous image existed', async () => {
+    it("updates recipe image when no previous image existed", async () => {
       const { renderedRecipe } = await setup();
 
       const updateImageInput = screen.getByTestId(
-        'edit-recipe-image-button',
+        "edit-recipe-image-button",
       ) as HTMLInputElement;
 
-      const testImage = await createTestImage('small');
+      const testImage = await createTestImage("small");
 
       const testImageFile = new File(
         [new Uint8Array(testImage)],
-        'test-image.png',
+        "test-image.png",
         {
-          type: 'image/png',
+          type: "image/png",
         },
       );
 

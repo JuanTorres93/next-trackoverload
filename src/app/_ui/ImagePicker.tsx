@@ -1,96 +1,62 @@
-'use client';
+"use client";
 
-import { useCallback, useRef, useState } from 'react';
-import { HiCamera } from 'react-icons/hi';
-import TextSmall from './typography/TextSmall';
+import { useCallback, useRef, useState } from "react";
 
-type ImageFile = {
-  file: File;
-  previewUrl: string;
-};
+import { HiCamera } from "react-icons/hi";
 
-type Props = {
-  multiple?: boolean;
-  maxSizeMB?: number; // p. ej. 5
-  accept?: string; // p. ej. "image/png,image/jpeg"
-  borderTailwindColor?: string; // p. ej. "black, zinc, gray"
-  compact?: boolean; // renders a small overlay button instead of the drop zone
-  onFiles?: (files: File[]) => void;
-};
-
-const validate = (
-  files: File[],
-  maxSizeMB: number,
-  accept: string,
-  setError: React.Dispatch<React.SetStateAction<string | null>>,
-) => {
-  const maxBytes = maxSizeMB * 1024 * 1024;
-  const acceptedMimes = accept.split(',').map((s) => s.trim());
-  const okFiles: File[] = [];
-
-  for (const f of files) {
-    const typeOk = acceptedMimes.some((a) =>
-      a.endsWith('/*') ? f.type.startsWith(a.slice(0, -1)) : f.type === a,
-    );
-
-    if (!typeOk) {
-      setError(`Tipo no permitido: ${f.type}`);
-      continue;
-    }
-
-    if (f.size > maxBytes) {
-      setError(
-        `Archivo demasiado grande: ${(f.size / 1024 / 1024).toFixed(
-          2,
-        )} MB (máx ${maxSizeMB} MB)`,
-      );
-      continue;
-    }
-
-    okFiles.push(f);
-  }
-
-  if (okFiles.length) setError(null);
-
-  return okFiles;
-};
+import TextSmall from "./typography/TextSmall";
 
 export default function ImagePicker({
   multiple = false,
   maxSizeMB = 5,
-  accept = 'image/*',
-  borderTailwindColor = 'black',
+  accept = "image/*",
+  borderTailwindColor = "black",
   compact = false,
   onFiles,
-}: Props) {
-  const inputRef = useRef<HTMLInputElement | null>(null);
+}: {
+  multiple?: boolean;
+  maxSizeMB?: number; // e.g. 5
+  accept?: string; // e.g. "image/png,image/jpeg"
+  borderTailwindColor?: string; // e.g. "black, zinc, gray"
+  compact?: boolean; // renders a small overlay button instead of the drop zone
+  onFiles?: (files: File[]) => void;
+}) {
   const [images, setImages] = useState<ImageFile[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isOver, setIsOver] = useState(false);
 
-  const handleSelect = useCallback(
-    (filesList: FileList | null) => {
-      if (!filesList) return;
-      const files = Array.from(filesList);
-      const valid = validate(files, maxSizeMB, accept, setError);
-      const withPreview = valid.map((file) => ({
-        file,
-        previewUrl: URL.createObjectURL(file),
-      }));
-      setImages((prev) => (multiple ? [...prev, ...withPreview] : withPreview));
-      onFiles?.(multiple ? valid : valid.slice(0, 1));
-    },
-    [multiple, onFiles, accept, maxSizeMB],
-  );
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+  function onInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     handleSelect(e.target.files);
+  }
 
-  const onDrop = (e: React.DragEvent) => {
+  function onDrop(e: React.DragEvent) {
     e.preventDefault();
     setIsOver(false);
     handleSelect(e.dataTransfer.files);
-  };
+  }
+
+  const handleSelect = useCallback(
+    (filesList: FileList | null) => {
+      if (!filesList) return;
+
+      const files = Array.from(filesList);
+      const validFiles = validate(files, maxSizeMB, accept, setError);
+
+      const filesWithPreview = validFiles.map((file) => ({
+        file,
+        previewUrl: URL.createObjectURL(file),
+      }));
+
+      setImages((prev) =>
+        multiple ? [...prev, ...filesWithPreview] : filesWithPreview,
+      );
+
+      onFiles?.(multiple ? validFiles : validFiles.slice(0, 1));
+    },
+    [multiple, onFiles, accept, maxSizeMB],
+  );
 
   const hiddenInput = (
     <input
@@ -112,10 +78,12 @@ export default function ImagePicker({
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/50 text-white text-xs font-medium hover:bg-black/65 backdrop-blur-sm transition-colors cursor-pointer select-none"
         >
           <HiCamera className="text-sm" />
-          {images.length > 0 ? images[0].file.name : 'Cambiar foto'}
+          {images.length > 0 ? images[0].file.name : "Cambiar foto"}
         </button>
+
         {hiddenInput}
-        {error && <p className="text-error text-xs mt-1">{error}</p>}
+
+        {error && <p className="mt-1 text-xs text-error">{error}</p>}
       </div>
     );
   }
@@ -133,7 +101,7 @@ export default function ImagePicker({
         tabIndex={0}
         onClick={() => inputRef.current?.click()}
         onKeyDown={(e) =>
-          e.key === 'Enter' ? inputRef.current?.click() : undefined
+          e.key === "Enter" ? inputRef.current?.click() : undefined
         }
         className={`border-2 border-dashed rounded-2xl p-4 text-center cursor-pointer select-none
           ${
@@ -147,8 +115,8 @@ export default function ImagePicker({
         {images.length === 0 ? (
           <>
             <p className="text-sm">
-              Arrastra tu{multiple ? 's' : ''} im{multiple ? 'á' : 'a'}gen
-              {multiple ? 'es' : ''}
+              Arrastra tu{multiple ? "s" : ""} im{multiple ? "á" : "a"}gen
+              {multiple ? "es" : ""}
             </p>
           </>
         ) : (
@@ -173,3 +141,45 @@ export default function ImagePicker({
     </div>
   );
 }
+
+function validate(
+  files: File[],
+  maxSizeMB: number,
+  accept: string,
+  setError: React.Dispatch<React.SetStateAction<string | null>>,
+): File[] {
+  const maxBytes = maxSizeMB * 1024 * 1024;
+  const acceptedMimes = accept.split(",").map((s) => s.trim());
+  const okFiles: File[] = [];
+
+  for (const f of files) {
+    const typeOk = acceptedMimes.some((a) =>
+      a.endsWith("/*") ? f.type.startsWith(a.slice(0, -1)) : f.type === a,
+    );
+
+    if (!typeOk) {
+      setError(`Tipo no permitido: ${f.type}`);
+      continue;
+    }
+
+    if (f.size > maxBytes) {
+      setError(
+        `Archivo demasiado grande: ${(f.size / 1024 / 1024).toFixed(
+          2,
+        )} MB (máx ${maxSizeMB} MB)`,
+      );
+      continue;
+    }
+
+    okFiles.push(f);
+  }
+
+  if (okFiles.length) setError(null);
+
+  return okFiles;
+}
+
+type ImageFile = {
+  file: File;
+  previewUrl: string;
+};

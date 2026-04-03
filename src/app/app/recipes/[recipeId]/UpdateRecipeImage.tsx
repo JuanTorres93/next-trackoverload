@@ -1,12 +1,15 @@
-'use client';
-import { updateRecipeImage } from '@/app/_features/recipe/actions';
-import LoadingOverlay from '@/app/_features/common/LoadingOverlay';
-import { AppClientImageProcessor } from '@/interface-adapters/app/services/AppClientImageProcessor';
-import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
-import { showErrorToast } from '@/app/_ui/showErrorToast';
-import Image from 'next/image';
-import { useRef, useState } from 'react';
-import { HiCamera } from 'react-icons/hi';
+"use client";
+import Image from "next/image";
+
+import { useRef, useState } from "react";
+
+import { HiCamera } from "react-icons/hi";
+
+import LoadingOverlay from "@/app/_features/common/LoadingOverlay";
+import { updateRecipeImage } from "@/app/_features/recipe/actions";
+import { showErrorToast } from "@/app/_ui/showErrorToast";
+import { RecipeDTO } from "@/application-layer/dtos/RecipeDTO";
+import { AppClientImageProcessor } from "@/interface-adapters/app/services/AppClientImageProcessor";
 
 function UpdateRecipeImage({ recipe }: { recipe: RecipeDTO }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -14,11 +17,16 @@ function UpdateRecipeImage({ recipe }: { recipe: RecipeDTO }) {
 
   async function handleImageUpload(imageFile: File) {
     setIsLoading(true);
+
     try {
-      const compressed = await AppClientImageProcessor.compressToMaxMB(imageFile);
+      const compressed =
+        await AppClientImageProcessor.compressToMaxMB(imageFile);
+
       await updateRecipeImage(recipe.id, compressed);
     } catch {
-      showErrorToast('Error al subir la imagen. Por favor, inténtalo de nuevo.');
+      showErrorToast(
+        "Error al subir la imagen. Por favor, inténtalo de nuevo.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -29,7 +37,7 @@ function UpdateRecipeImage({ recipe }: { recipe: RecipeDTO }) {
       {isLoading && <LoadingOverlay />}
 
       <Image
-        src={recipe.imageUrl || '/recipe-no-picture.webp'}
+        src={recipe.imageUrl || "/recipe-no-picture.webp"}
         alt={recipe.name}
         fill
         className="object-cover object-center"
@@ -37,7 +45,7 @@ function UpdateRecipeImage({ recipe }: { recipe: RecipeDTO }) {
       />
 
       {/* Compact pill — top-left, above gradient */}
-      <div className="absolute top-3 left-3 z-20">
+      <div className="absolute z-20 top-3 left-3">
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
