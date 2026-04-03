@@ -1,10 +1,13 @@
-'use client';
-import ButtonX from '@/app/_ui/buttons/ButtonX';
-import { formatToInteger } from '@/app/_utils/format/formatToInteger';
-import { IngredientLineDTO } from '@/application-layer/dtos/IngredientLineDTO';
-import Image from 'next/image';
-import { useState } from 'react';
-import LoadingOverlay from '../common/LoadingOverlay';
+"use client";
+import Image from "next/image";
+
+import { useState } from "react";
+
+import ButtonX from "@/app/_ui/buttons/ButtonX";
+import { formatToInteger } from "@/app/_utils/format/formatToInteger";
+import { IngredientLineDTO } from "@/application-layer/dtos/IngredientLineDTO";
+
+import LoadingOverlay from "../common/LoadingOverlay";
 
 function IngredientLineItem({
   ingredientLine,
@@ -17,17 +20,18 @@ function IngredientLineItem({
 }) {
   const [isLoading, setIsLoading] = useState(false);
 
+  const calories = formatToInteger(ingredientLine.calories);
+  const protein = formatToInteger(ingredientLine.protein);
+
   async function handleRemove() {
     setIsLoading(true);
+
     try {
       await onRemove();
     } finally {
       setIsLoading(false);
     }
   }
-
-  const calories = formatToInteger(ingredientLine.calories);
-  const protein = formatToInteger(ingredientLine.protein);
 
   return (
     <div className="relative grid grid-cols-[2.75rem_1fr_auto_auto] items-center gap-x-3 p-3 rounded-xl border border-border/50 bg-surface-card hover:border-border/70 transition-colors">
@@ -38,23 +42,25 @@ function IngredientLineItem({
         <Image
           fill
           src={
-            ingredientLine.ingredient.imageUrl || '/ingredient-no-picture.webp'
+            ingredientLine.ingredient.imageUrl || "/ingredient-no-picture.webp"
           }
           alt={ingredientLine.ingredient.name}
           className="object-cover"
         />
       </div>
 
-      {/* Name + macros — auto-shrinks in grid */}
+      {/* Name + macros  */}
       <div className="min-w-0">
         <p className="text-sm font-semibold leading-tight truncate text-text">
           {ingredientLine.ingredient.name}
         </p>
+
         <div className="flex flex-wrap gap-x-2 mt-0.5">
           <span className="text-xs text-text-minor-emphasis whitespace-nowrap">
             <span>{calories}</span>
             <span> Calorías</span>
           </span>
+
           <span className="text-xs text-text-minor-emphasis whitespace-nowrap">
             <span>{protein}</span>
             <span>g Proteínas</span>
@@ -62,7 +68,7 @@ function IngredientLineItem({
         </div>
       </div>
 
-      {/* Quantity — fixed-size, always visible */}
+      {/* Quantity  */}
       <div className="flex items-center gap-1.5 border border-border/60 rounded-lg px-2.5 py-1.5 bg-input-background shrink-0">
         <input
           type="number"
@@ -72,12 +78,13 @@ function IngredientLineItem({
           min={0}
           className="w-10 text-sm text-right bg-transparent outline-none text-text disabled:cursor-not-allowed disabled:text-text-minor-emphasis"
         />
+
         <span className="text-xs font-medium leading-none text-text-minor-emphasis">
           g
         </span>
       </div>
 
-      {/* Remove — always visible */}
+      {/* Remove  */}
       <ButtonX
         data-testid="nutritional-summary-delete-button"
         onClick={handleRemove}
