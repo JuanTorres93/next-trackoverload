@@ -1,19 +1,21 @@
-import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
-import { AppRecipesRepo } from '@/interface-adapters/app/repos/AppRecipesRepo';
-import { render, screen, waitFor, within } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render, screen, waitFor, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+
+import { IngredientFinderResult } from "@/domain/services/IngredientFinder.port";
+import { MemoryRecipesRepo } from "@/infra/repos/memory/MemoryRecipesRepo";
+import { AppRecipesRepo } from "@/interface-adapters/app/repos/AppRecipesRepo";
+
 import {
   createMockIngredients,
   mockIngredientsForIngredientFinder,
-} from '../../../../../tests/mocks/ingredients';
-import { createServer } from '../../../../../tests/mocks/server';
-import { createMockUser } from '../../../../../tests/mocks/user';
-import { mockDecodeFromConstraints } from '../../../../../tests/mocks/zxing';
-import { SCAN_WINDOW_SIZE } from '../../ingredient/ZXingBarcodeScanner';
-const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
+} from "../../../../../tests/mocks/ingredients";
+import { createServer } from "../../../../../tests/mocks/server";
+import { createMockUser } from "../../../../../tests/mocks/user";
+import { mockDecodeFromConstraints } from "../../../../../tests/mocks/zxing";
+import { SCAN_WINDOW_SIZE } from "../../ingredient/ZXingBarcodeScanner";
+import NewRecipeForm from "../NewRecipeForm";
 
-import NewRecipeForm from '../NewRecipeForm';
-import { IngredientFinderResult } from '@/domain/services/IngredientFinder.port';
+const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
 
 await createMockIngredients();
 await createMockUser();
@@ -21,8 +23,8 @@ await createMockUser();
 createServer(
   [
     {
-      path: '/api/ingredient/fuzzy/:term',
-      method: 'get',
+      path: "/api/ingredient/fuzzy/:term",
+      method: "get",
       response: ({ params }) => {
         const term = params.term as string;
         const results = mockIngredientsForIngredientFinder;
@@ -32,24 +34,24 @@ createServer(
             result.ingredient.name.toLowerCase().includes(term.toLowerCase()),
         );
 
-        return { status: 'success', data: filteredIngredients };
+        return { status: "success", data: filteredIngredients };
       },
     },
     {
-      path: '/api/ingredient/barcode/:barcode',
-      method: 'get',
+      path: "/api/ingredient/barcode/:barcode",
+      method: "get",
       response: () => ({
-        status: 'success',
+        status: "success",
         data: [
           {
             ingredient: {
-              name: 'Avena Integral',
+              name: "Avena Integral",
               nutritionalInfoPer100g: { calories: 370, protein: 13 },
               imageUrl: undefined,
             },
             externalRef: {
-              externalId: '8414807558305',
-              source: 'openfoodfacts',
+              externalId: "8414807558305",
+              source: "openfoodfacts",
             },
           },
         ],
@@ -57,7 +59,7 @@ createServer(
     },
   ],
   {
-    onUnhandledRequest: 'bypass',
+    onUnhandledRequest: "bypass",
   },
 );
 
@@ -65,17 +67,19 @@ async function setup() {
   render(<NewRecipeForm />);
 
   const searchBar = screen.getByPlaceholderText(/ingred/i);
-  const searchButton = screen.getByTestId('search-ingredient-button');
-  const barcodeScannerButton = screen.getByTestId('open-scanner-button');
+  const searchButton = screen.getByTestId("search-ingredient-button");
+  const barcodeScannerButton = screen.getByTestId("open-scanner-button");
 
-  await userEvent.type(searchBar, 'c');
+  await userEvent.type(searchBar, "c");
   await userEvent.click(searchButton);
 
-  const ingredientList = await screen.findByTestId('ingredient-list');
+  const ingredientList = await screen.findByTestId("ingredient-list");
 
-  const ingredientLineList = screen.getByTestId('ingredient-line-list');
+  const ingredientLineList = screen.getByTestId("ingredient-line-list");
 
-  const createButton = screen.getByRole('button', { name: /crear receta/i });
+  const createButton = screen.getByRole("button", { name: /crear receta/i });
+
+  const recipeNameInput = screen.getByTestId("recipe-name-input");
 
   return {
     ingredientList,
@@ -84,11 +88,12 @@ async function setup() {
     createButton,
     searchButton,
     barcodeScannerButton,
+    recipeNameInput,
   };
 }
 
-describe('NewRecipeForm', () => {
-  it('fetches ingredients', async () => {
+describe("NewRecipeForm", () => {
+  it("fetches ingredients", async () => {
     const { ingredientList } = await setup();
 
     expect(ingredientList).toBeInTheDocument();
@@ -97,7 +102,7 @@ describe('NewRecipeForm', () => {
     expect(ingredientList.children.length).toBe(3);
   });
 
-  it('fetches ingredients through barcode', async () => {
+  it("fetches ingredients through barcode", async () => {
     mockDecodeFromConstraints.mockImplementation(
       (
         _constraints: unknown,
@@ -106,7 +111,7 @@ describe('NewRecipeForm', () => {
       ) => {
         // Repeat enough times to reach the majority threshold
         for (let i = 0; i < SCAN_WINDOW_SIZE; i++) {
-          callback({ getText: () => '8414807558305' }, null);
+          callback({ getText: () => "8414807558305" }, null);
         }
       },
     );
@@ -116,7 +121,7 @@ describe('NewRecipeForm', () => {
     await userEvent.click(barcodeScannerButton);
 
     // Get list again to avoid stale reference
-    const ingredientList = await screen.findByTestId('ingredient-list');
+    const ingredientList = await screen.findByTestId("ingredient-list");
 
     await waitFor(() => {
       expect(ingredientList.children.length).toBe(1);
@@ -126,12 +131,12 @@ describe('NewRecipeForm', () => {
     expect(ingredientElement).toBeInTheDocument();
   });
 
-  it('does not show ingredient lines if not selected', async () => {
+  it("does not show ingredient lines if not selected", async () => {
     const caloriesInfo = screen.queryByText(/calorías/i);
     expect(caloriesInfo).not.toBeInTheDocument();
   });
 
-  it('adds ingredient line on selection', async () => {
+  it("adds ingredient line on selection", async () => {
     const { ingredientList, ingredientLineList } = await setup();
 
     const firstIngredient = ingredientList.children[0];
@@ -144,7 +149,7 @@ describe('NewRecipeForm', () => {
     expect(caloriesInfo.length).toBe(2);
   });
 
-  it('adds multiple ingredient lines on selection', async () => {
+  it("adds multiple ingredient lines on selection", async () => {
     const { ingredientList, ingredientLineList } = await setup();
 
     const firstIngredient = ingredientList.children[0];
@@ -155,7 +160,7 @@ describe('NewRecipeForm', () => {
     expect(ingredientLineList.children.length).toBe(2);
   });
 
-  it('removes already added ingredient lines on selection', async () => {
+  it("removes already added ingredient lines on selection", async () => {
     const { ingredientList } = await setup();
 
     const firstIngredient = ingredientList.children[0];
@@ -170,7 +175,7 @@ describe('NewRecipeForm', () => {
     expect(caloriesAfterDeselection).not.toBeInTheDocument();
   });
 
-  it('shows nutritional info summary when ingredients are added', async () => {
+  it("shows nutritional info summary when ingredients are added", async () => {
     const { ingredientList } = await setup();
 
     const firstIngredient = ingredientList.children[0];
@@ -183,7 +188,7 @@ describe('NewRecipeForm', () => {
     expect(proteinInfo).toBeInTheDocument();
   });
 
-  it('does not show nutritional info summary when no ingredients are added', async () => {
+  it("does not show nutritional info summary when no ingredients are added", async () => {
     await setup();
 
     const caloriesInfo = screen.queryByText(/calorías totales/i);
@@ -193,7 +198,7 @@ describe('NewRecipeForm', () => {
     expect(proteinInfo).not.toBeInTheDocument();
   });
 
-  it('does not create recipe if no ingredients are selected', async () => {
+  it("does not create recipe if no ingredients are selected", async () => {
     const { createButton } = await setup();
 
     expect(createButton).toBeDisabled();
@@ -213,7 +218,7 @@ describe('NewRecipeForm', () => {
 
     const quantityInput = within(
       ingredientLineList.children[0] as HTMLElement,
-    ).getByRole('spinbutton');
+    ).getByRole("spinbutton");
 
     await userEvent.clear(quantityInput);
 
@@ -226,7 +231,7 @@ describe('NewRecipeForm', () => {
     expect(recipesRepo.countForTesting()).toBe(0);
   });
 
-  it('ingredient has a default quantity of 100g', async () => {
+  it("ingredient has a default quantity of 100g", async () => {
     const { ingredientList, ingredientLineList } = await setup();
 
     const firstIngredient = ingredientList.children[0];
@@ -234,23 +239,30 @@ describe('NewRecipeForm', () => {
 
     const quantityInput = within(
       ingredientLineList.children[0] as HTMLElement,
-    ).getByRole('spinbutton');
+    ).getByRole("spinbutton");
 
-    expect((quantityInput as HTMLInputElement).value).toBe('100');
+    expect((quantityInput as HTMLInputElement).value).toBe("100");
   });
 
-  it('creates recipe if all ingredients have valid quantities', async () => {
-    const { ingredientList, createButton, ingredientLineList } = await setup();
+  it("creates recipe if all ingredients have valid quantities", async () => {
+    const {
+      ingredientList,
+      createButton,
+      ingredientLineList,
+      recipeNameInput,
+    } = await setup();
+
+    await userEvent.type(recipeNameInput, "Receta de prueba");
 
     const firstIngredient = ingredientList.children[0];
     await userEvent.click(firstIngredient);
 
     const quantityInput = within(
       ingredientLineList.children[0] as HTMLElement,
-    ).getByRole('spinbutton');
+    ).getByRole("spinbutton");
 
     await userEvent.clear(quantityInput);
-    await userEvent.type(quantityInput, '150');
+    await userEvent.type(quantityInput, "150");
 
     expect(createButton).toBeEnabled();
 
