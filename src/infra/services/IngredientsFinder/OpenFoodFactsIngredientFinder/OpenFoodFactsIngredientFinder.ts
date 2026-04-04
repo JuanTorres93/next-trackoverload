@@ -1,9 +1,9 @@
-import { InfrastructureError } from '@/domain/common/errors';
+import { InfrastructureError } from "@/domain/common/errors";
 import {
   IngredientFinder,
   IngredientFinderResult,
-} from '@/domain/services/IngredientFinder.port';
-import { RateLimiter } from '@/domain/services/RateLimiter.port';
+} from "@/domain/services/IngredientFinder.port";
+import { RateLimiter } from "@/domain/services/RateLimiter.port";
 
 // DOCS: https://openfoodfacts.github.io/openfoodfacts-server/api/
 // SEARCH DOCS: https://search.openfoodfacts.org/docs
@@ -28,34 +28,34 @@ export const READ_RATE_LIMITS = {
 
 // Used for product lookups (barcode)
 const BASE_URL =
-  process.env.NODE_ENV === 'production'
-    ? 'https://world.openfoodfacts.org'
-    : 'https://world.openfoodfacts.net';
+  process.env.NODE_ENV === "production"
+    ? "https://world.openfoodfacts.org"
+    : "https://world.openfoodfacts.net";
 
 // Dedicated Elasticsearch-based search service — much faster than legacy BASE_URL/cgi/search.pl
-const SEARCH_URL = 'https://search.openfoodfacts.org/search';
+const SEARCH_URL = "https://search.openfoodfacts.org/search";
 
-const IMAGES_BASE_URL = 'https://images.openfoodfacts.org/images/products';
+const IMAGES_BASE_URL = "https://images.openfoodfacts.org/images/products";
 
 let authHeader;
-if (['test', 'development'].includes(process.env.NODE_ENV))
+if (["test", "development"].includes(process.env.NODE_ENV))
   authHeader = {
-    Authorization: 'Basic' + btoa('off:off'),
+    Authorization: "Basic" + btoa("off:off"),
   };
 
-if (process.env.NODE_ENV === 'production')
+if (process.env.NODE_ENV === "production")
   authHeader = {
-    'User-Agent': process.env.OPEN_FOOD_FACTS_USER_AGENT,
+    "User-Agent": process.env.OPEN_FOOD_FACTS_USER_AGENT,
   };
 
 if (!authHeader) {
   throw new InfrastructureError(
-    'OpenFoodFactsIngredientFinder: Missing Authorization header configuration. Is NODE_ENV set correctly?',
+    "OpenFoodFactsIngredientFinder: Missing Authorization header configuration. Is NODE_ENV set correctly?",
   );
 }
 
 const fields =
-  'code,product_name,product_name_en,nutriments,image_thumb_url,image_front_url,images';
+  "code,product_name,product_name_en,nutriments,image_thumb_url,image_front_url,images,nova_group,categories_tags";
 
 export class OpenFoodFactsIngredientFinder implements IngredientFinder {
   private readonly searchRateLimiter: RateLimiter;
@@ -76,14 +76,14 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
     if (await this.searchRateLimiter.isRateLimited(this.clientId)) {
       // TODO throw RateLimitError instead
       throw new InfrastructureError(
-        'OpenFoodFactsIngredientFinder: Rate limit exceeded for search queries',
+        "OpenFoodFactsIngredientFinder: Rate limit exceeded for search queries",
       );
     }
 
-    const url = `${SEARCH_URL}?q=${encodeURIComponent(name)}&page_size=50&fields=${fields}`;
+    const url = `${SEARCH_URL}?q=${encodeURIComponent(name)}&page_size=100&lang=es,en&fields=${fields}`;
 
     const response = await fetch(url, {
-      method: 'GET',
+      method: "GET",
       headers: { ...authHeader! },
     });
 
@@ -104,14 +104,14 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
     if (await this.barcodeRateLimiter.isRateLimited(this.clientId)) {
       // TODO throw RateLimitError instead
       throw new InfrastructureError(
-        'OpenFoodFactsIngredientFinder: Rate limit exceeded for barcode queries',
+        "OpenFoodFactsIngredientFinder: Rate limit exceeded for barcode queries",
       );
     }
 
     const url = `${BASE_URL}/api/v2/product/${encodeURIComponent(barcode)}?fields=${fields}`;
 
     const response = await fetch(url, {
-      method: 'GET',
+      method: "GET",
       headers: { ...authHeader! },
     });
 
@@ -131,7 +131,7 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
   private mapOpenFoodFactProductToIngredientResult(
     products: OpenFoodFactProduct[],
   ): IngredientFinderResult[] {
-    const filteredProducts = products
+    const usefulProducts = products
       // Has name
       .filter(
         (product: OpenFoodFactProduct) =>
@@ -143,21 +143,44 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
       .filter(
         (product: OpenFoodFactProduct) =>
           product.nutriments &&
-          (product?.nutriments?.['energy-kcal_100g'] > 0 ||
-            product?.nutriments?.['proteins_100g'] > 0),
-      );
+          (product?.nutriments?.["energy-kcal_100g"] > 0 ||
+            product?.nutriments?.["proteins_100g"] > 0),
+      )
+      .sort((product, otherProduct) => {
+        // Priority 1: NOVA group 1 (Unprocessed)
+        const productNova = product.nova_group === 1 ? 0 : 1;
+        const otherProductNova = otherProduct.nova_group === 1 ? 0 : 1;
 
-    const ingredients: IngredientFinderResult[] = filteredProducts.map(
+        if (productNova !== otherProductNova)
+          return productNova - otherProductNova;
+
+        // Priority 2: NOVA group 2 (Processed culinary ingredient)
+        const productProcessed = product.nova_group === 2 ? 0 : 1;
+        const otherProductProcessed = otherProduct.nova_group === 2 ? 0 : 1;
+
+        if (productProcessed !== otherProductProcessed)
+          return productProcessed - otherProductProcessed;
+
+        // Priority 3: Name length similarity (shorter names are often purer ingredients)
+        const productName =
+          product.product_name || product.product_name_en || "";
+        const otherProductName =
+          otherProduct.product_name || otherProduct.product_name_en || "";
+
+        return productName.length - otherProductName.length;
+      });
+
+    const ingredients: IngredientFinderResult[] = usefulProducts.map(
       (product: OpenFoodFactProduct) => {
         const ingredient = {
           name:
             product.product_name ||
             product.product_name_en ||
-            'Ingrediente desconocido',
+            "Ingrediente desconocido",
 
           nutritionalInfoPer100g: {
-            calories: product?.nutriments?.['energy-kcal_100g'] || 0,
-            protein: product?.nutriments?.['proteins_100g'] || 0,
+            calories: product?.nutriments?.["energy-kcal_100g"] || 0,
+            protein: product?.nutriments?.["proteins_100g"] || 0,
           },
 
           imageUrl:
@@ -168,7 +191,7 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
 
         const externalRef = {
           externalId: product.code,
-          source: 'openfoodfacts',
+          source: "openfoodfacts",
         };
 
         return {
@@ -206,20 +229,22 @@ type OpenFoodFactProduct = {
   product_name: string;
   product_name_en?: string;
   nutriments: {
-    'energy-kcal_100g': number;
+    "energy-kcal_100g": number;
     proteins_100g: number;
   };
   image_thumb_url?: string;
   image_front_url?: string;
   images?: OpenFoodFactImages;
+  nova_group?: number;
+  categories_tags?: string[];
 };
 
 function isNamedImage(
   image: OpenFoodFactNamedImage | OpenFoodFactRawImage,
 ): image is OpenFoodFactNamedImage {
   return (
-    'imgid' in image &&
-    typeof (image as OpenFoodFactNamedImage).imgid === 'string'
+    "imgid" in image &&
+    typeof (image as OpenFoodFactNamedImage).imgid === "string"
   );
 }
 
@@ -234,7 +259,7 @@ function formatBarcodeForImagePath(barcode: string): string {
     ];
     const rest = barcode.slice(9);
     if (rest) parts.push(rest);
-    return parts.join('/');
+    return parts.join("/");
   }
   return barcode;
 }
@@ -250,7 +275,7 @@ function computeImageUrlFromArray(
 
   // Prefer front image (any language), then any other named image
   const namedKey =
-    keys.find((k) => k.startsWith('front_')) ??
+    keys.find((k) => k.startsWith("front_")) ??
     keys.find((k) => !/^\d+$/.test(k) && isNamedImage(images[k]));
 
   if (namedKey && isNamedImage(images[namedKey])) {
