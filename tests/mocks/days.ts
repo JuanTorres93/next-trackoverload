@@ -146,35 +146,3 @@ export async function createMultipleMockDaysWithWeights(
 
   return createdDays;
 }
-
-/** @deprecated Use createMockDay with the fakeMeals option instead.  */
-export async function createMockDayWithFakeMeal(
-  day = 1,
-  month = 1,
-  year = 2000,
-): Promise<AssembledDayDTO> {
-  if (process.env.NODE_ENV !== "test") {
-    throw new Error("createMockDayWithFakeMeal should only be used in tests");
-  }
-
-  const mockDay = await createMockDay(day, month, year, {
-    createWithMeal: false,
-    fakeMeals: {
-      name: "Test Fake Meal",
-      calories: 400,
-      protein: 25,
-    },
-  });
-
-  const mockDayWithFakeMeal = await AppGetAssembledDayById.execute({
-    dayId: mockDay.id,
-    userId: mockDay.userId,
-  });
-
-  afterAll(() => {
-    daysRepo.clearForTesting();
-    fakeMealsRepo.clearForTesting();
-  });
-
-  return mockDayWithFakeMeal!;
-}

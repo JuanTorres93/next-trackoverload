@@ -6,14 +6,17 @@ import { MemoryFakeMealsRepo } from "@/infra/repos/memory/MemoryFakeMealsRepo";
 import { AppDaysRepo } from "@/interface-adapters/app/repos/AppDaysRepo";
 import { AppFakeMealsRepo } from "@/interface-adapters/app/repos/AppFakeMealsRepo";
 
-import { createMockDayWithFakeMeal } from "../../../../../tests/mocks/days";
+import { createMockDay } from "../../../../../tests/mocks/days";
 import FakeMeal from "../FakeMeal";
 
 const daysRepo = AppDaysRepo as MemoryDaysRepo;
 const fakeMealsRepo = AppFakeMealsRepo as MemoryFakeMealsRepo;
 
 async function setup() {
-  const day = await createMockDayWithFakeMeal();
+  const day = await createMockDay(1, 1, 2000, {
+    fakeMeals: { name: "Test Fake Meal", calories: 400, protein: 25 },
+    returnAssembled: true,
+  });
 
   const fakeMeal = day.fakeMeals[0];
 
