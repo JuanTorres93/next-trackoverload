@@ -80,7 +80,7 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
       );
     }
 
-    const url = `${SEARCH_URL}?q=${encodeURIComponent(name)}&page_size=100&lang=es,en&fields=${fields}`;
+    const url = `${SEARCH_URL}?q=${encodeURIComponent(name)}&page_size=80&lang=es,en&fields=${fields}`;
 
     const response = await fetch(url, {
       method: "GET",
@@ -97,7 +97,7 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
 
     const json = await response.json();
 
-    return this.mapOpenFoodFactProductToIngredientResult(json.hits || []);
+    return this.mapOpenFoodFactProductToIngredientResult(json.hits || [], name);
   }
 
   async findIngredientsByBarcode(barcode: string) {
@@ -124,14 +124,16 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
     }
 
     const json = await response.json();
-
     return this.mapOpenFoodFactProductToIngredientResult([json.product]);
   }
 
   private mapOpenFoodFactProductToIngredientResult(
     products: OpenFoodFactProduct[],
+    searchName: string = "",
   ): IngredientFinderResult[] {
-    const usefulProducts = products
+    const query = searchName.toLowerCase().trim();
+
+    const filteredProducts = products
       // Has name
       .filter(
         (product: OpenFoodFactProduct) =>
@@ -143,46 +145,57 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
       .filter(
         (product: OpenFoodFactProduct) =>
           product.nutriments &&
-          (product?.nutriments?.["energy-kcal_100g"] > 0 ||
-            product?.nutriments?.["proteins_100g"] > 0),
-      )
-      .sort((product, otherProduct) => {
-        // Priority 1: NOVA group 1 (Unprocessed)
-        const productNova = product.nova_group === 1 ? 0 : 1;
-        const otherProductNova = otherProduct.nova_group === 1 ? 0 : 1;
+          ((product.nutriments["energy-kcal_100g"] || 0) > 0 ||
+            (product.nutriments["proteins_100g"] || 0) > 0),
+      );
 
-        if (productNova !== otherProductNova)
-          return productNova - otherProductNova;
+    // Scoring to prioritize whole ingredients over processed ones
+    const scoredProducts = filteredProducts.map((product) => {
+      let score = 0;
+      const name = (
+        product.product_name ||
+        product.product_name_en ||
+        ""
+      ).toLowerCase();
 
-        // Priority 2: NOVA group 2 (Processed culinary ingredient)
-        const productProcessed = product.nova_group === 2 ? 0 : 1;
-        const otherProductProcessed = otherProduct.nova_group === 2 ? 0 : 1;
+      // Priority: Exact match
+      if (name === query) score += 100;
+      else if (name.startsWith(query)) score += 40;
 
-        if (productProcessed !== otherProductProcessed)
-          return productProcessed - otherProductProcessed;
+      // Priority: Alimentos no procesados (NOVA 1 es fruta/verdura fresca)
+      // Priority: Unprocessed foods (NOVA 1 is fresh fruit/veg)
+      if (product.nova_group === 1) score += 50;
+      if (product.nova_group === 2) score += 20;
+      // Penalize ultra-processed (NOVA 4)
+      if (product.nova_group === 4) score -= 40;
 
-        // Priority 3: Name length similarity (shorter names are often purer ingredients)
-        const productName =
-          product.product_name || product.product_name_en || "";
-        const otherProductName =
-          otherProduct.product_name || otherProduct.product_name_en || "";
+      // Priority: Freshness tags
+      const tags = product.categories_tags || [];
+      if (tags.some((t) => t.includes("fresh") || t.includes("raw")))
+        score += 30;
 
-        return productName.length - otherProductName.length;
-      });
+      // Penalize long names (usually specific processed products)
+      score -= name.length * 0.5;
 
-    const ingredients: IngredientFinderResult[] = usefulProducts.map(
-      (product: OpenFoodFactProduct) => {
+      return { product, score };
+    });
+
+    // Sort by descending score
+    scoredProducts.sort(
+      (product, otherProduct) => otherProduct.score - product.score,
+    );
+
+    const ingredients: IngredientFinderResult[] = scoredProducts.map(
+      ({ product }: { product: OpenFoodFactProduct }) => {
         const ingredient = {
           name:
             product.product_name ||
             product.product_name_en ||
             "Ingrediente desconocido",
-
           nutritionalInfoPer100g: {
-            calories: product?.nutriments?.["energy-kcal_100g"] || 0,
-            protein: product?.nutriments?.["proteins_100g"] || 0,
+            calories: product.nutriments["energy-kcal_100g"] || 0,
+            protein: product.nutriments["proteins_100g"] || 0,
           },
-
           imageUrl:
             product.image_thumb_url ||
             product.image_front_url ||
@@ -269,25 +282,20 @@ function computeImageUrlFromArray(
   images?: OpenFoodFactImages,
 ): string | undefined {
   if (!images || !barcode) return undefined;
-
   const barcodePath = formatBarcodeForImagePath(barcode);
   const keys = Object.keys(images);
-
   // Prefer front image (any language), then any other named image
   const namedKey =
     keys.find((k) => k.startsWith("front_")) ??
     keys.find((k) => !/^\d+$/.test(k) && isNamedImage(images[k]));
-
   if (namedKey && isNamedImage(images[namedKey])) {
     const { imgid } = images[namedKey] as OpenFoodFactNamedImage;
     return `${IMAGES_BASE_URL}/${barcodePath}/${imgid}.400.jpg`;
   }
-
   // Fall back to first raw numeric image
   const numericKey = keys.find((k) => /^\d+$/.test(k));
   if (numericKey) {
     return `${IMAGES_BASE_URL}/${barcodePath}/${numericKey}.400.jpg`;
   }
-
   return undefined;
 }
