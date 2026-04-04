@@ -14,7 +14,10 @@ import SelectRecipeModal from "@/app/_features/recipe/SelectRecipeModal";
 import useSwipe from "@/app/_hooks/useSwipe";
 import GridAutoCols from "@/app/_ui/GridAutoCols";
 import Modal from "@/app/_ui/Modal";
-import { dayIdToDayMonthYear } from "@/domain/value-objects/DayId/DayId";
+import {
+  dateToDayId,
+  dayIdToDayMonthYear,
+} from "@/domain/value-objects/DayId/DayId";
 
 function MealsDisplay({
   assembledDays,
@@ -22,7 +25,9 @@ function MealsDisplay({
   assembledDays: AssembledDayResult[];
 }) {
   const [selectedDaysIds, setSelectedDaysIds] = useState<string[]>([]);
-  const [activeDayIndex, setActiveDayIndex] = useState<number>(0);
+  const [activeDayIndex, setActiveDayIndex] = useState<number>(() =>
+    findTodayIndex(assembledDays),
+  );
 
   const areDaysSelected = selectedDaysIds.length > 0;
 
@@ -234,6 +239,14 @@ function MobileDayTab({
       )}
     </button>
   );
+}
+
+function findTodayIndex(assembledDays: AssembledDayResult[]): number {
+  const todayId = dateToDayId(new Date()).value;
+
+  const index = assembledDays.findIndex(({ dayId }) => dayId === todayId);
+
+  return index >= 0 ? index : 0;
 }
 
 export default MealsDisplay;

@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { AssembledDayResult } from "@/app/_features/day/actions";
+import { dateToDayId } from "@/domain/value-objects/DayId/DayId";
 import { MemoryDaysRepo } from "@/infra/repos/memory/MemoryDaysRepo";
 import { MemoryUsersRepo } from "@/infra/repos/memory/MemoryUsersRepo";
 import { AppDaysRepo } from "@/interface-adapters/app/repos/AppDaysRepo";
@@ -106,6 +107,33 @@ describe("MealsDisplay", () => {
       fireEvent.touchEnd(getMobileDayView(), {
         changedTouches: [{ clientX: 270, clientY: 0 }],
       });
+
+      expect(getActiveTabs()[0]).toHaveAttribute(
+        "data-testid",
+        `mobile-day-tab-${days[0].dayId}`,
+      );
+    });
+  });
+
+  describe("mobile initial day selection", () => {
+    it("should start on today's day when today is in the list", () => {
+      const todayId = dateToDayId(new Date()).value;
+
+      const days: AssembledDayResult[] = [
+        { dayId: "20000101", assembledDay: null },
+        { dayId: todayId, assembledDay: null },
+        { dayId: "20000103", assembledDay: null },
+      ];
+      render(<MealsDisplay assembledDays={days} />);
+
+      expect(getActiveTabs()[0]).toHaveAttribute(
+        "data-testid",
+        `mobile-day-tab-${todayId}`,
+      );
+    });
+
+    it("should start on the first day when today is not in the list", async () => {
+      const { days } = await setup();
 
       expect(getActiveTabs()[0]).toHaveAttribute(
         "data-testid",
