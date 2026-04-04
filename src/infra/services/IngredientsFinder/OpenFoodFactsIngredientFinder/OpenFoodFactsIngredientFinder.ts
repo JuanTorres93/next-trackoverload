@@ -72,7 +72,7 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
     this.clientId = clientId;
   }
 
-  async findIngredientsByFuzzyName(name: string) {
+  async findIngredientsByFuzzyName(name: string, page: number = 1) {
     if (await this.searchRateLimiter.isRateLimited(this.clientId)) {
       // TODO throw RateLimitError instead
       throw new InfrastructureError(
@@ -80,7 +80,7 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
       );
     }
 
-    const url = `${SEARCH_URL}?q=${encodeURIComponent(name)}&page_size=80&lang=es,en&fields=${fields}`;
+    const url = `${SEARCH_URL}?q=${encodeURIComponent(name)}&page_size=80&page=${page}&lang=es,en&fields=${fields}`;
 
     const response = await fetch(url, {
       method: "GET",

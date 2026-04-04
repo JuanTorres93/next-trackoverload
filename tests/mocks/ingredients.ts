@@ -1,20 +1,20 @@
-import { MemoryIngredientsRepo } from '@/infra/repos/memory/MemoryIngredientsRepo';
-import { AppIngredientsRepo } from '@/interface-adapters/app/repos/AppIngredientsRepo';
-import { AppCreateIngredientUsecase } from '@/interface-adapters/app/use-cases/ingredient';
+import { MemoryIngredientsRepo } from "@/infra/repos/memory/MemoryIngredientsRepo";
+import { AppIngredientsRepo } from "@/interface-adapters/app/repos/AppIngredientsRepo";
+import { AppCreateIngredientUsecase } from "@/interface-adapters/app/use-cases/ingredient";
 
 const ingredientPropsForUseCase = [
   {
-    name: 'Carrot',
+    name: "Carrot",
     calories: 41,
     protein: 0.9,
   },
   {
-    name: 'Cabbage',
+    name: "Cabbage",
     calories: 25,
     protein: 1.3,
   },
   {
-    name: 'Celery',
+    name: "Celery",
     calories: 16,
     protein: 0.7,
   },
@@ -31,17 +31,18 @@ export const mockIngredientsForIngredientFinder = ingredientPropsForUseCase.map(
         },
         imageUrl: undefined,
       },
+
       externalRef: {
         externalId: `external-id-${index + 1}`,
-        source: 'openfoodfacts',
+        source: "openfoodfacts",
       },
     };
   },
 );
 
 export const createMockIngredients = async () => {
-  if (process.env.NODE_ENV !== 'test') {
-    throw new Error('createMockIngredients should only be used in tests');
+  if (process.env.NODE_ENV !== "test") {
+    throw new Error("createMockIngredients should only be used in tests");
   }
 
   const createdIngredients = [];

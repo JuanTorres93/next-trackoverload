@@ -1,8 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createAppIngredientFinder } from '@/interface-adapters/app/services/AppIngredientFinder';
-import { IngredientFinderResult } from '@/domain/services/IngredientFinder.port';
-import { JSENDResponse } from '@/app/_types/JSEND';
-import { getClientId } from '@/app/api/_common/getClientId';
+import { NextRequest, NextResponse } from "next/server";
+
+import { JSENDResponse } from "@/app/_types/JSEND";
+import { getClientId } from "@/app/api/_common/getClientId";
+import { IngredientFinderResult } from "@/domain/services/IngredientFinder.port";
+import { createAppIngredientFinder } from "@/interface-adapters/app/services/AppIngredientFinder";
 
 export async function GET(
   request: NextRequest,
@@ -10,12 +11,13 @@ export async function GET(
 ): Promise<NextResponse<JSENDResponse<IngredientFinderResult[]>>> {
   try {
     const { name } = await params;
-    const term = decodeURIComponent(name || '').trim();
+    const term = decodeURIComponent(name || "").trim();
     const clientId = getClientId(request);
+    const page = parseInt(request.nextUrl.searchParams.get("page") || "1", 10);
 
     if (!term) {
       return NextResponse.json(
-        { status: 'fail', data: { message: 'Missing ingredient name' } },
+        { status: "fail", data: { message: "Missing ingredient name" } },
         { status: 400 },
       );
     }
@@ -23,20 +25,21 @@ export async function GET(
     const foundIngredients: IngredientFinderResult[] =
       await createAppIngredientFinder(clientId).findIngredientsByFuzzyName(
         term,
+        page,
       );
 
     return NextResponse.json(
-      { status: 'success', data: foundIngredients },
+      { status: "success", data: foundIngredients },
       { status: 200 },
     );
   } catch (error) {
     console.log(
-      'app/api/ingredient/fuzzy/[name]/GET: Error fetching ingredients:',
+      "app/api/ingredient/fuzzy/[name]/GET: Error fetching ingredients:",
       error,
     );
 
     return NextResponse.json(
-      { status: 'fail', data: { message: 'Failed to fetch ingredients' } },
+      { status: "fail", data: { message: "Failed to fetch ingredients" } },
       { status: 500 },
     );
   }
