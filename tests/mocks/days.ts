@@ -2,6 +2,8 @@ import { AssembledDayDTO } from "@/application-layer/dtos/AssembledDayDTO";
 import { DayDTO } from "@/application-layer/dtos/DayDTO";
 import { AddMultipleMealsToDayUsecaseRequest } from "@/application-layer/use-cases/day/AddMultipleMealsToDay/AddMultipleMealsToDay.usecase";
 import { CreateDayUsecaseRequest } from "@/application-layer/use-cases/day/CreateDay/CreateDay.usecase";
+import { FakeMealCreateProps } from "@/domain/entities/fakemeal/FakeMeal";
+import { UserCreateProps } from "@/domain/entities/user/User";
 import { MemoryDaysRepo } from "@/infra/repos/memory/MemoryDaysRepo";
 import { MemoryFakeMealsRepo } from "@/infra/repos/memory/MemoryFakeMealsRepo";
 import { MemoryMealsRepo } from "@/infra/repos/memory/MemoryMealsRepo";
@@ -23,16 +25,41 @@ const daysRepo = AppDaysRepo as MemoryDaysRepo;
 const mealsRepo = AppMealsRepo as MemoryMealsRepo;
 const fakeMealsRepo = AppFakeMealsRepo as MemoryFakeMealsRepo;
 
+type CreateMockDayOptions = {
+  alternativeUserProps?: Partial<UserCreateProps>;
+  createWithMeal?: boolean;
+  fakeMeals?: Partial<FakeMealCreateProps>;
+  returnAssembled?: boolean;
+};
+
+export async function createMockDay(
+  day: number,
+  month: number,
+  year: number,
+  options: CreateMockDayOptions & { returnAssembled: true },
+): Promise<AssembledDayDTO>;
+export async function createMockDay(
+  day?: number,
+  month?: number,
+  year?: number,
+  options?: CreateMockDayOptions & { returnAssembled?: false },
+): Promise<DayDTO>;
 export async function createMockDay(
   day = 1,
   month = 1,
   year = 2000,
-): Promise<DayDTO> {
+  {
+    alternativeUserProps,
+    createWithMeal = false,
+    fakeMeals,
+    returnAssembled = false,
+  }: CreateMockDayOptions = {},
+): Promise<DayDTO | AssembledDayDTO> {
   if (process.env.NODE_ENV !== "test") {
     throw new Error("createMockDay should only be used in tests");
   }
 
-  const mockUser = await createMockUser();
+  const mockUser = await createMockUser(alternativeUserProps);
 
   const dayPropsForUseCase: CreateDayUsecaseRequest = {
     actorUserId: mockUser.id,
@@ -44,13 +71,45 @@ export async function createMockDay(
 
   const createdDay = await AppCreateDayUsecase.execute(dayPropsForUseCase);
 
+  if (createWithMeal) {
+    const mockRecipes = await createMockRecipes();
+    const recipeIdToAdd = mockRecipes.mockRecipes[0].id;
+
+    const addMealsToDayProps: AddMultipleMealsToDayUsecaseRequest = {
+      dayId: createdDay.id,
+      userId: mockUser.id,
+      recipeIds: [recipeIdToAdd],
+    };
+
+    await AppAddMultipleMealsToDayUsecase.execute(addMealsToDayProps);
+  }
+
+  if (fakeMeals) {
+    await AppAddFakeMealToDayUsecase.execute({
+      dayId: createdDay.id,
+      userId: mockUser.id,
+      name: fakeMeals.name || "Test Fake Meal",
+      calories: fakeMeals.calories || 400,
+      protein: fakeMeals.protein || 25,
+    });
+  }
+
   afterAll(() => {
     daysRepo.clearForTesting();
   });
 
+  if (returnAssembled) {
+    const assembledDay = await AppGetAssembledDayById.execute({
+      dayId: createdDay.id,
+      userId: createdDay.userId,
+    });
+    return assembledDay!;
+  }
+
   return createdDay;
 }
 
+/** @deprecated Use createMockDay with the createWithMeal option instead.  */
 export async function createMockDayWithMeal(
   day = 1,
   month = 1,
@@ -60,18 +119,9 @@ export async function createMockDayWithMeal(
     throw new Error("createMockDayWithMeal should only be used in tests");
   }
 
-  const mockDay = await createMockDay(day, month, year);
-  const mockRecipes = await createMockRecipes();
-
-  const recipeIdToAdd = mockRecipes.mockRecipes[0].id;
-
-  const addMealsToDayProps: AddMultipleMealsToDayUsecaseRequest = {
-    dayId: mockDay.id,
-    userId: mockDay.userId,
-    recipeIds: [recipeIdToAdd],
-  };
-
-  await AppAddMultipleMealsToDayUsecase.execute(addMealsToDayProps);
+  const mockDay = await createMockDay(day, month, year, {
+    createWithMeal: true,
+  });
 
   const mockDayWithMeal = await AppGetAssembledDayById.execute({
     dayId: mockDay.id,
@@ -124,6 +174,7 @@ export async function createMultipleMockDaysWithWeights(
   return createdDays;
 }
 
+/** @deprecated Use createMockDay with the fakeMeals option instead.  */
 export async function createMockDayWithFakeMeal(
   day = 1,
   month = 1,
@@ -133,14 +184,13 @@ export async function createMockDayWithFakeMeal(
     throw new Error("createMockDayWithFakeMeal should only be used in tests");
   }
 
-  const mockDay = await createMockDay(day, month, year);
-
-  await AppAddFakeMealToDayUsecase.execute({
-    dayId: mockDay.id,
-    userId: mockDay.userId,
-    name: "Test Fake Meal",
-    calories: 400,
-    protein: 25,
+  const mockDay = await createMockDay(day, month, year, {
+    createWithMeal: false,
+    fakeMeals: {
+      name: "Test Fake Meal",
+      calories: 400,
+      protein: 25,
+    },
   });
 
   const mockDayWithFakeMeal = await AppGetAssembledDayById.execute({

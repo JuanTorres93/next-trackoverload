@@ -1,26 +1,27 @@
-import PageWrapper from '../_ui/PageWrapper';
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
+import { HiCalendar } from "react-icons/hi";
 
-import { FakeMealDTO } from '@/application-layer/dtos/FakeMealDTO';
-import { MealDTO } from '@/application-layer/dtos/MealDTO';
-import { dateToDayId } from '@/domain/value-objects/DayId/DayId';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
+import { FakeMealDTO } from "@/application-layer/dtos/FakeMealDTO";
+import { MealDTO } from "@/application-layer/dtos/MealDTO";
+import { dateToDayId } from "@/domain/value-objects/DayId/DayId";
+
+import AddFoodButton from "../_features/common/AddFoodButton";
 import {
   getAssembledDayById,
   getLastNumberOfDaysIncludingToday,
-} from '../_features/day/actions';
-import EatenMealsNutritionTracker from '../_features/meal/EatenMealsNutritionTracker';
-import MealReminder from '../_features/meal/MealReminder';
-import WeightTracker from '../_features/weight/WeightTracker';
-import ButtonPrimary from '../_ui/buttons/ButtonPrimary';
-import GridAutoCols from '../_ui/GridAutoCols';
-import EatenFakeMeal from '../_features/fakemeal/EatenFakeMeal';
-import AddFoodButton from '../_features/common/AddFoodButton';
-import { HiCalendar } from 'react-icons/hi';
+} from "../_features/day/actions";
+import EatenFakeMeal from "../_features/fakemeal/EatenFakeMeal";
+import EatenMealsNutritionTracker from "../_features/meal/EatenMealsNutritionTracker";
+import MealReminder from "../_features/meal/MealReminder";
+import WeightTracker from "../_features/weight/WeightTracker";
+import GridAutoCols from "../_ui/GridAutoCols";
+import PageWrapper from "../_ui/PageWrapper";
+import ButtonPrimary from "../_ui/buttons/ButtonPrimary";
 
 export const metadata = {
-  title: 'Dashboard',
-  description: 'Dashboard page',
+  title: "Dashboard",
+  description: "Dashboard page",
 };
 
 export default async function Dashboard() {

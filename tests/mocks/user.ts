@@ -1,17 +1,21 @@
-import { User } from '@/domain/entities/user/User';
-import { AppUsersRepo } from '@/interface-adapters/app/repos/AppUsersRepo';
-import { validUserProps } from '../createProps/userTestProps';
+import { User, UserCreateProps } from "@/domain/entities/user/User";
+import { AppUsersRepo } from "@/interface-adapters/app/repos/AppUsersRepo";
 
-export const testUserId = 'dev-user';
+import { validUserProps } from "../createProps/userTestProps";
 
-export const createMockUser = async () => {
-  if (process.env.NODE_ENV !== 'test') {
-    throw new Error('createMockUser should only be used in tests');
+export const testUserId = "dev-user";
+
+export const createMockUser = async (
+  alternativeUserProps?: Partial<UserCreateProps>,
+) => {
+  if (process.env.NODE_ENV !== "test") {
+    throw new Error("createMockUser should only be used in tests");
   }
 
   const user = User.create({
     ...validUserProps,
     id: testUserId,
+    ...alternativeUserProps,
   });
 
   await AppUsersRepo.saveUser(user);

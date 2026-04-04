@@ -1,13 +1,14 @@
-import { AppUsersRepo } from '@/interface-adapters/app/repos/AppUsersRepo';
-import { AppIngredientsRepo } from '@/interface-adapters/app/repos/AppIngredientsRepo';
-import { AppRecipesRepo } from '@/interface-adapters/app/repos/AppRecipesRepo';
-import { AppCreateRecipeUsecase } from '@/interface-adapters/app/use-cases/recipe';
-import { createMockUser } from './user';
-import { createMockIngredients } from './ingredients';
+import { AppIngredientsRepo } from "@/interface-adapters/app/repos/AppIngredientsRepo";
+import { AppRecipesRepo } from "@/interface-adapters/app/repos/AppRecipesRepo";
+import { AppUsersRepo } from "@/interface-adapters/app/repos/AppUsersRepo";
+import { AppCreateRecipeUsecase } from "@/interface-adapters/app/use-cases/recipe";
+
+import { createMockIngredients } from "./ingredients";
+import { createMockUser } from "./user";
 
 export const createMockRecipes = async () => {
-  if (process.env.NODE_ENV !== 'test') {
-    throw new Error('createMockRecipes should only be used in tests');
+  if (process.env.NODE_ENV !== "test") {
+    throw new Error("createMockRecipes should only be used in tests");
   }
 
   const mockIngredients = await createMockIngredients();
@@ -17,11 +18,11 @@ export const createMockRecipes = async () => {
     {
       actorUserId: mockUser.id,
       targetUserId: mockUser.id,
-      name: 'Carrot Soup',
+      name: "Carrot Soup",
       ingredientLinesInfo: [
         {
           externalIngredientId: mockIngredients[0].id,
-          source: 'openfoodfacts',
+          source: "openfoodfacts",
           name: mockIngredients[0].name,
           caloriesPer100g: mockIngredients[0].nutritionalInfoPer100g.calories,
           proteinPer100g: mockIngredients[0].nutritionalInfoPer100g.protein,
@@ -31,7 +32,7 @@ export const createMockRecipes = async () => {
         {
           externalIngredientId: mockIngredients[1].id,
           name: mockIngredients[1].name,
-          source: 'openfoodfacts',
+          source: "openfoodfacts",
           caloriesPer100g: mockIngredients[1].nutritionalInfoPer100g.calories,
           proteinPer100g: mockIngredients[1].nutritionalInfoPer100g.protein,
           imageUrl: mockIngredients[1].imageUrl,
@@ -42,12 +43,12 @@ export const createMockRecipes = async () => {
     {
       actorUserId: mockUser.id,
       targetUserId: mockUser.id,
-      name: 'Cabbage Salad',
+      name: "Cabbage Salad",
       ingredientLinesInfo: [
         {
           externalIngredientId: mockIngredients[1].id,
           name: mockIngredients[1].name,
-          source: 'openfoodfacts',
+          source: "openfoodfacts",
           caloriesPer100g: mockIngredients[1].nutritionalInfoPer100g.calories,
           proteinPer100g: mockIngredients[1].nutritionalInfoPer100g.protein,
           imageUrl: mockIngredients[1].imageUrl,
@@ -56,7 +57,7 @@ export const createMockRecipes = async () => {
         {
           externalIngredientId: mockIngredients[2].id,
           name: mockIngredients[2].name,
-          source: 'openfoodfacts',
+          source: "openfoodfacts",
           caloriesPer100g: mockIngredients[2].nutritionalInfoPer100g.calories,
           proteinPer100g: mockIngredients[2].nutritionalInfoPer100g.protein,
           imageUrl: mockIngredients[2].imageUrl,
@@ -67,12 +68,12 @@ export const createMockRecipes = async () => {
     {
       actorUserId: mockUser.id,
       targetUserId: mockUser.id,
-      name: 'Celery Stir-fry',
+      name: "Celery Stir-fry",
       ingredientLinesInfo: [
         {
           externalIngredientId: mockIngredients[2].id,
           name: mockIngredients[2].name,
-          source: 'openfoodfacts',
+          source: "openfoodfacts",
           caloriesPer100g: mockIngredients[2].nutritionalInfoPer100g.calories,
           proteinPer100g: mockIngredients[2].nutritionalInfoPer100g.protein,
           imageUrl: mockIngredients[2].imageUrl,
@@ -80,7 +81,7 @@ export const createMockRecipes = async () => {
         },
         {
           externalIngredientId: mockIngredients[0].id,
-          source: 'openfoodfacts',
+          source: "openfoodfacts",
           caloriesPer100g: mockIngredients[0].nutritionalInfoPer100g.calories,
           proteinPer100g: mockIngredients[0].nutritionalInfoPer100g.protein,
           imageUrl: mockIngredients[0].imageUrl,
