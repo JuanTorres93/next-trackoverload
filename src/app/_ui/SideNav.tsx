@@ -1,9 +1,16 @@
-'use client';
+"use client";
 
-import { twMerge } from 'tailwind-merge';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+
 import {
   HiBars3,
   HiBookOpen,
@@ -15,20 +22,14 @@ import {
   HiMiniXMark,
   HiSquares2X2,
   HiUserCircle,
-} from 'react-icons/hi2';
+} from "react-icons/hi2";
+import { twMerge } from "tailwind-merge";
 
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
-import { extractCssVariable } from '../_common/extractCssVariableFromGlobalsCssFile';
-import LogoutButton from '../_features/auth/LogoutButton';
-import { useScreenResize } from '../_hooks/useScreenResize';
-import Logo from './Logo';
-import SpinnerMini from './SpinnerMini';
+import { extractCssVariable } from "../_common/extractCssVariableFromGlobalsCssFile";
+import LogoutButton from "../_features/auth/LogoutButton";
+import { useScreenResize } from "../_hooks/useScreenResize";
+import Logo from "./Logo";
+import SpinnerMini from "./SpinnerMini";
 
 type SideNavContextType = {
   navbarShown: boolean;
@@ -65,7 +66,7 @@ function SideNav({ children }: { children: React.ReactNode }) {
 
   // Read from the single source of truth: --breakpoint-bp-navbar-mobile in globals.css
   const getNavbarMobileBreakpoint = useCallback((): number => {
-    const raw = extractCssVariable('--breakpoint-bp-navbar-mobile');
+    const raw = extractCssVariable("--breakpoint-bp-navbar-mobile");
 
     return raw ? parseInt(raw, 10) : 0;
   }, []);
@@ -104,25 +105,29 @@ function NavBar() {
   const { navbarShown, isMobileLayout, setNavbarShown } = useSideNavContext();
 
   const links: NavbarLink[] = [
-    { href: '/app', label: 'Inicio', icon: <HiHome /> },
-    { href: '/app/recipes', label: 'Recetas', icon: <HiBookOpen /> },
-    { href: '/app/meals', label: 'Comidas', icon: <HiCalendarDays /> },
-    { href: '/app/subscription', label: 'Suscripción', icon: <HiCreditCard /> },
+    { href: "/app", label: "Inicio", icon: <HiHome /> },
+    { href: "/app/recipes", label: "Recetas", icon: <HiBookOpen /> },
+    {
+      href: "/app/meals",
+      label: "Planificación comidas",
+      icon: <HiCalendarDays />,
+    },
+    { href: "/app/subscription", label: "Suscripción", icon: <HiCreditCard /> },
   ];
 
   // TODO IMPORTANT: Move unimplemented links to links once they are implemented
   const unimplementedLinks: NavbarLink[] = [
-    { href: '/app/templates', label: 'Plantillas', icon: <HiSquares2X2 /> },
-    { href: '/app/workouts', label: 'Entrenos', icon: <HiFire /> },
+    { href: "/app/templates", label: "Plantillas", icon: <HiSquares2X2 /> },
+    { href: "/app/workouts", label: "Entrenos", icon: <HiFire /> },
     {
-      href: '/app/exercises',
-      label: 'Ejercicios',
+      href: "/app/exercises",
+      label: "Ejercicios",
       icon: <HiClipboardDocumentList />,
     },
-    { href: '/app/profile', label: 'Perfil', icon: <HiUserCircle /> },
+    { href: "/app/profile", label: "Perfil", icon: <HiUserCircle /> },
   ];
 
-  if (process.env.NODE_ENV !== 'production') {
+  if (process.env.NODE_ENV !== "production") {
     links.push(...unimplementedLinks);
   }
 
@@ -141,10 +146,10 @@ function NavBar() {
       {/* Sidebar panel */}
       <nav
         className={twMerge(
-          'flex flex-col h-full bg-surface-card border-r border-border/30',
-          'max-bp-navbar-mobile:fixed max-bp-navbar-mobile:inset-y-0 max-bp-navbar-mobile:left-0',
-          'max-bp-navbar-mobile:w-64 max-bp-navbar-mobile:z-40',
-          'max-bp-navbar-mobile:animate-slide-in-from-left',
+          "flex flex-col h-full bg-surface-card border-r border-border/30",
+          "max-bp-navbar-mobile:fixed max-bp-navbar-mobile:inset-y-0 max-bp-navbar-mobile:left-0",
+          "max-bp-navbar-mobile:w-64 max-bp-navbar-mobile:z-40",
+          "max-bp-navbar-mobile:animate-slide-in-from-left",
         )}
       >
         {/* Header: logo + brand */}
@@ -193,9 +198,9 @@ function ToggleButton({
     <button
       {...rest}
       className={twMerge(
-        'z-40 hidden max-bp-navbar-mobile:flex items-center justify-center',
-        'w-10 h-10 rounded-xl cursor-pointer transition-all duration-200',
-        'bg-surface-card text-text-minor-emphasis hover:text-text shadow-md border border-border/40',
+        "z-40 hidden max-bp-navbar-mobile:flex items-center justify-center",
+        "w-10 h-10 rounded-xl cursor-pointer transition-all duration-200",
+        "bg-surface-card text-text-minor-emphasis hover:text-text shadow-md border border-border/40",
         className,
       )}
       onClick={toggleNavBar}
@@ -277,10 +282,10 @@ function NavItem({
     <div
       {...rest}
       className={twMerge(
-        'relative flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium',
-        'transition-colors duration-150 cursor-pointer',
-        'text-text-minor-emphasis hover:text-text hover:bg-surface-light',
-        isCurrentItem && 'text-primary bg-surface-hover font-semibold',
+        "relative flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium",
+        "transition-colors duration-150 cursor-pointer",
+        "text-text-minor-emphasis hover:text-text hover:bg-surface-light",
+        isCurrentItem && "text-primary bg-surface-hover font-semibold",
         className,
       )}
     >
@@ -298,7 +303,7 @@ function useSideNavContext() {
   const contextValue = useContext(SideNavContext);
 
   if (!contextValue) {
-    throw new Error('useSideNavContext must be used within a SideNavProvider');
+    throw new Error("useSideNavContext must be used within a SideNavProvider");
   }
 
   return contextValue;
