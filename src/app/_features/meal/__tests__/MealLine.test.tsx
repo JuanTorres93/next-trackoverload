@@ -1,13 +1,12 @@
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { TEST_USER_ID } from "@/../tests/mocks/nextjs";
 import { MemoryDaysRepo } from "@/infra/repos/memory/MemoryDaysRepo";
 import { MemoryMealsRepo } from "@/infra/repos/memory/MemoryMealsRepo";
 import { AppDaysRepo } from "@/interface-adapters/app/repos/AppDaysRepo";
 import { AppMealsRepo } from "@/interface-adapters/app/repos/AppMealsRepo";
 
-import { createMockDayWithMeal } from "../../../../../tests/mocks/days";
+import { createMockDay } from "../../../../../tests/mocks/days";
 import MealLine from "../MealLine";
 
 const daysRepo = AppDaysRepo as MemoryDaysRepo;
@@ -16,7 +15,10 @@ const mealsRepo = AppMealsRepo as MemoryMealsRepo;
 const DELETE_BUTTON_TEST_ID = "nutritional-summary-delete-button";
 
 async function setup() {
-  const day = await createMockDayWithMeal();
+  const day = await createMockDay(1, 1, 2000, {
+    createWithMeal: true,
+    returnAssembled: true,
+  });
   const meal = day.meals[0];
 
   render(<MealLine meal={meal} dayId={day.id} />);
@@ -97,7 +99,10 @@ describe("MealLine", () => {
   });
 
   it("should not render delete button if dayId is not provided", async () => {
-    const day = await createMockDayWithMeal();
+    const day = await createMockDay(1, 1, 2000, {
+      createWithMeal: true,
+      returnAssembled: true,
+    });
 
     const meal = day.meals[0];
 

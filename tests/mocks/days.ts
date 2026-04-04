@@ -109,33 +109,6 @@ export async function createMockDay(
   return createdDay;
 }
 
-/** @deprecated Use createMockDay with the createWithMeal option instead.  */
-export async function createMockDayWithMeal(
-  day = 1,
-  month = 1,
-  year = 2000,
-): Promise<AssembledDayDTO> {
-  if (process.env.NODE_ENV !== "test") {
-    throw new Error("createMockDayWithMeal should only be used in tests");
-  }
-
-  const mockDay = await createMockDay(day, month, year, {
-    createWithMeal: true,
-  });
-
-  const mockDayWithMeal = await AppGetAssembledDayById.execute({
-    dayId: mockDay.id,
-    userId: mockDay.userId,
-  });
-
-  afterAll(() => {
-    daysRepo.clearForTesting();
-    mealsRepo.clearForTesting();
-  });
-
-  return mockDayWithMeal!;
-}
-
 export async function createMultipleMockDaysWithWeights(
   numberOfDays: number,
 ): Promise<DayDTO[]> {

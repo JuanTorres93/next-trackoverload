@@ -3,10 +3,13 @@ import userEvent from "@testing-library/user-event";
 
 import { IngredientLineDTO } from "@/application-layer/dtos/IngredientLineDTO";
 
-import { createMockDayWithMeal } from "../../../../../tests/mocks/days";
+import { createMockDay } from "../../../../../tests/mocks/days";
 import IngredientLineItem from "../IngredientLineItem";
 
-const mockDay = await createMockDayWithMeal();
+const mockDay = await createMockDay(1, 1, 2000, {
+  createWithMeal: true,
+  returnAssembled: true,
+});
 const mockIngredientLine: IngredientLineDTO =
   mockDay.meals[0].ingredientLines[0];
 
