@@ -1,7 +1,8 @@
-import { ExercisesRepo } from '@/domain/repos/ExercisesRepo.port';
-import { Exercise } from '@/domain/entities/exercise/Exercise';
-import ExerciseMongo from './models/ExerciseMongo';
-import { ExerciseCreateProps } from '@/domain/entities/exercise/Exercise';
+import { Exercise } from "@/domain/entities/exercise/Exercise";
+import { ExerciseCreateProps } from "@/domain/entities/exercise/Exercise";
+import { ExercisesRepo } from "@/domain/repos/ExercisesRepo.port";
+
+import ExerciseMongo from "./models/ExerciseMongo";
 
 export class MongoExercisesRepo implements ExercisesRepo {
   async saveExercise(exercise: Exercise): Promise<void> {
@@ -27,6 +28,12 @@ export class MongoExercisesRepo implements ExercisesRepo {
     }
 
     return Exercise.create(doc);
+  }
+
+  async getExercisesByIds(ids: string[]): Promise<Exercise[]> {
+    const docs = await ExerciseMongo.find({ id: { $in: ids } }).lean();
+
+    return docs.map((doc) => Exercise.create(doc));
   }
 
   async deleteExercise(id: string): Promise<void> {
