@@ -8,7 +8,7 @@ import { AppDaysRepo } from "@/interface-adapters/app/repos/AppDaysRepo";
 import { AppFakeMealsRepo } from "@/interface-adapters/app/repos/AppFakeMealsRepo";
 
 import { createEmptyTestDay } from "../../../../../tests/createProps/dayTestProps";
-import { createServer } from "../../../../../tests/mocks/server";
+import { mockIngredientApiFetch } from "../../../../../tests/mocks/ingredientApi";
 import { createMockUser } from "../../../../../tests/mocks/user";
 import { mockDecodeFromConstraints } from "../../../../../tests/mocks/zxing";
 import { SCAN_WINDOW_SIZE } from "../../ingredient/ZXingBarcodeScanner";
@@ -24,34 +24,22 @@ const MOCK_INGREDIENT_NAME = "Leche Entera";
 const MOCK_CALORIES_PER_100G = 66;
 const MOCK_PROTEIN_PER_100G = 3;
 
-createServer(
-  [
-    {
-      path: `/api/ingredient/barcode/:code`,
-      method: "get",
-      response: () => ({
-        status: "success",
-        data: [
-          {
-            ingredient: {
-              name: MOCK_INGREDIENT_NAME,
-              nutritionalInfoPer100g: {
-                calories: MOCK_CALORIES_PER_100G,
-                protein: MOCK_PROTEIN_PER_100G,
-              },
-              imageUrl: undefined,
-            },
-            externalRef: {
-              externalId: MOCK_BARCODE,
-              source: "openfoodfacts",
-            },
-          },
-        ],
-      }),
+mockIngredientApiFetch({
+  barcodeIngredient: {
+    ingredient: {
+      name: MOCK_INGREDIENT_NAME,
+      nutritionalInfoPer100g: {
+        calories: MOCK_CALORIES_PER_100G,
+        protein: MOCK_PROTEIN_PER_100G,
+      },
+      imageUrl: undefined,
     },
-  ],
-  { onUnhandledRequest: "bypass" },
-);
+    externalRef: {
+      externalId: MOCK_BARCODE,
+      source: "openfoodfacts",
+    },
+  },
+});
 
 async function setup() {
   daysRepo.clearForTesting();

@@ -1,15 +1,11 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { IngredientFinderResult } from "@/domain/services/IngredientFinder.port";
 import { MemoryRecipesRepo } from "@/infra/repos/memory/MemoryRecipesRepo";
 import { AppRecipesRepo } from "@/interface-adapters/app/repos/AppRecipesRepo";
 
-import {
-  createMockIngredients,
-  mockIngredientsForIngredientFinder,
-} from "../../../../../tests/mocks/ingredients";
-import { createServer } from "../../../../../tests/mocks/server";
+import { mockIngredientApiFetch } from "../../../../../tests/mocks/ingredientApi";
+import { createMockIngredients } from "../../../../../tests/mocks/ingredients";
 import { createMockUser } from "../../../../../tests/mocks/user";
 import { mockDecodeFromConstraints } from "../../../../../tests/mocks/zxing";
 import { SCAN_WINDOW_SIZE } from "../../ingredient/ZXingBarcodeScanner";
@@ -19,49 +15,7 @@ const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
 
 await createMockIngredients();
 await createMockUser();
-
-createServer(
-  [
-    {
-      path: "/api/ingredient/fuzzy/:term",
-      method: "get",
-      response: ({ params }) => {
-        const term = params.term as string;
-        const results = mockIngredientsForIngredientFinder;
-
-        const filteredIngredients: IngredientFinderResult[] = results.filter(
-          (result) =>
-            result.ingredient.name.toLowerCase().includes(term.toLowerCase()),
-        );
-
-        return { status: "success", data: filteredIngredients };
-      },
-    },
-    {
-      path: "/api/ingredient/barcode/:barcode",
-      method: "get",
-      response: () => ({
-        status: "success",
-        data: [
-          {
-            ingredient: {
-              name: "Avena Integral",
-              nutritionalInfoPer100g: { calories: 370, protein: 13 },
-              imageUrl: undefined,
-            },
-            externalRef: {
-              externalId: "8414807558305",
-              source: "openfoodfacts",
-            },
-          },
-        ],
-      }),
-    },
-  ],
-  {
-    onUnhandledRequest: "bypass",
-  },
-);
+mockIngredientApiFetch();
 
 async function setup() {
   render(<NewRecipeForm />);

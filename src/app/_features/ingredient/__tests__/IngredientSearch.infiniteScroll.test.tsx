@@ -2,11 +2,11 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
+import { mockIngredientApiFetch } from "@/../tests/mocks/ingredientApi";
 import {
   createMockIngredients,
   mockIngredientsForIngredientFinder,
 } from "@/../tests/mocks/ingredients";
-import { createServer } from "@/../tests/mocks/server";
 
 import IngredientSearch from "../IngredientSearch";
 
@@ -15,24 +15,13 @@ await createMockIngredients();
 const PAGE_1_RESULTS = mockIngredientsForIngredientFinder.slice(0, 2);
 const PAGE_2_RESULTS = mockIngredientsForIngredientFinder.slice(2);
 
-createServer(
-  [
-    {
-      path: "/api/ingredient/fuzzy/:term",
-      method: "get",
-      response: ({ request }) => {
-        const url = new URL(request.url);
-        const page = parseInt(url.searchParams.get("page") ?? "1", 10);
-
-        if (page === 1) return { status: "success", data: PAGE_1_RESULTS };
-        if (page === 2) return { status: "success", data: PAGE_2_RESULTS };
-
-        return { status: "success", data: [] };
-      },
-    },
-  ],
-  { onUnhandledRequest: "bypass" },
-);
+mockIngredientApiFetch({
+  fuzzyResolver: (_term, page) => {
+    if (page === 1) return PAGE_1_RESULTS;
+    if (page === 2) return PAGE_2_RESULTS;
+    return [];
+  },
+});
 
 let observerCallback: IntersectionObserverCallback | null = null;
 
