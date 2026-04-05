@@ -1,13 +1,14 @@
-'use client';
-import { useFormSetup } from '@/app/_hooks/useFormSetup';
-import ButtonPrimary from '@/app/_ui/buttons/ButtonPrimary';
-import FormEntry from '@/app/_ui/form/FormEntry';
-import Input from '@/app/_ui/Input';
-import PasswordInput from '@/app/_ui/PasswordInput';
-import { showErrorToast } from '@/app/_ui/showErrorToast';
-import AuthLink from '@/app/_features/auth/AuthLink';
-import SpinnerMini from '@/app/_ui/SpinnerMini';
-import { useRouter } from 'next/navigation';
+"use client";
+import { useRouter } from "next/navigation";
+
+import AuthLink from "@/app/_features/auth/AuthLink";
+import { useFormSetup } from "@/app/_hooks/useFormSetup";
+import Input from "@/app/_ui/Input";
+import PasswordInput from "@/app/_ui/PasswordInput";
+import SpinnerMini from "@/app/_ui/SpinnerMini";
+import ButtonPrimary from "@/app/_ui/buttons/ButtonPrimary";
+import FormEntry from "@/app/_ui/form/FormEntry";
+import { showErrorToast } from "@/app/_ui/showErrorToast";
 
 export type LoginFormState = {
   email: string;
@@ -15,8 +16,8 @@ export type LoginFormState = {
 };
 
 const INITIAL_FORM_STATE: LoginFormState = {
-  email: '',
-  plainPassword: '',
+  email: "",
+  plainPassword: "",
 };
 
 function LoginForm() {
@@ -33,10 +34,10 @@ function LoginForm() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formState),
       });
@@ -45,9 +46,9 @@ function LoginForm() {
         const jsonResponse = await response.json();
 
         const errorMessage =
-          jsonResponse.status === 'fail'
-            ? Object.values(jsonResponse.data).join(' ')
-            : jsonResponse.message || 'Error al iniciar sesión.';
+          jsonResponse.status === "fail"
+            ? Object.values(jsonResponse.data).join(" ")
+            : jsonResponse.message || "Error al iniciar sesión.";
 
         showErrorToast(errorMessage);
         return;
@@ -57,9 +58,9 @@ function LoginForm() {
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       router.refresh();
-      router.push('/app');
+      router.push("/app");
     } catch {
-      showErrorToast('Error al iniciar sesión.');
+      showErrorToast("Error al iniciar sesión.");
     } finally {
       setIsLoading(false);
     }
@@ -71,7 +72,7 @@ function LoginForm() {
         <h2 className="mb-2 text-2xl font-semibold">Inicia sesión</h2>
 
         <h3 className="text-sm ">
-          ¿No tienes una cuenta?{' '}
+          ¿No tienes una cuenta?{" "}
           <AuthLink className="inline" href="/auth/register">
             Regístrate
           </AuthLink>
@@ -86,7 +87,7 @@ function LoginForm() {
             value={formState.email}
             disabled={isLoading}
             placeholder="Email"
-            onChange={(e) => setField('email', e.target.value)}
+            onChange={(e) => setField("email", e.target.value)}
             required
           />
         </FormEntry>
@@ -98,14 +99,14 @@ function LoginForm() {
             placeholder="Contr@s3ña"
             disabled={isLoading}
             value={formState.plainPassword}
-            onChange={(e) => setField('plainPassword', e.target.value)}
+            onChange={(e) => setField("plainPassword", e.target.value)}
             required
           />
         </FormEntry>
 
         <ButtonPrimary className="mt-2" type="submit" disabled={isFormInvalid}>
           {isLoading && <SpinnerMini className="mx-auto" />}
-          {!isLoading && 'Iniciar sesión'}
+          {!isLoading && "Iniciar sesión"}
         </ButtonPrimary>
       </form>
     </div>
