@@ -29,7 +29,7 @@
 
 # Progreso con el tiempo
 
-- [ ] ¿Seguimiento gráfico del tiempo en volumen y en definición?
+- [x] ¿Seguimiento gráfico del tiempo en volumen y en definición?
 
 # Plantillas entrenamiento
 
@@ -65,12 +65,12 @@
 
 # Auth
 
-- [ ] Login
-- [ ] Registro (Crear usuario)
+- [x] Login
+- [x] Registro (Crear usuario)
 - [ ] Cambiar contraseña
 
 # Pagos
 
-- [ ] Crear suscripción
-- [ ] Cancelar suscripción
-- [ ] 100% money-back refund guarantee de X tiempo
+- [x] Crear suscripción
+- [x] Cancelar suscripción
+- [x] Prueba gratuita de 14 días
