@@ -12,6 +12,9 @@ vi.mock("@zxing/library", () => import("./mocks/zxing"));
 
 expect.extend(matchers);
 
+// scrollTo is not implemented in jsdom
+vi.stubGlobal("scrollTo", vi.fn());
+
 // IntersectionObserver is not implemented in jsdom; provide a no-op stub
 vi.stubGlobal(
   "IntersectionObserver",
