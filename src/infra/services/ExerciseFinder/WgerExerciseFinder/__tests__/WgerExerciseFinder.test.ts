@@ -1,18 +1,12 @@
 import { ExerciseFinderResult } from "@/domain/services/ExerciseFinder.port";
-import { MemoryTokenBucketRateLimiter } from "@/infra/services/RateLimiter/MemoryTokenBucketRateLimiter/MemoryTokenBucketRateLimiter";
 
-import { READ_RATE_LIMITS, WgerExerciseFinder } from "../WgerExerciseFinder";
+import { WgerExerciseFinder } from "../WgerExerciseFinder";
 
 describe("WgerExerciseFinder", () => {
   let exerciseFinder: WgerExerciseFinder;
 
   beforeAll(() => {
-    const searchRateLimiter = new MemoryTokenBucketRateLimiter(
-      READ_RATE_LIMITS.searchQueries.requests,
-      READ_RATE_LIMITS.searchQueries.perMinutes,
-    );
-
-    exerciseFinder = new WgerExerciseFinder(searchRateLimiter, "test-client");
+    exerciseFinder = new WgerExerciseFinder();
   });
 
   describe("findExercisesByFuzzyName", () => {
@@ -60,20 +54,6 @@ describe("WgerExerciseFinder", () => {
       const exactResults =
         await exerciseFinder.findExercisesByFuzzyName("Bench Press");
       expect(exactResults[0].exercise.name.toLowerCase()).toBe("bench press");
-    });
-  });
-
-  describe("rate limiting", () => {
-    it("throws InfrastructureError when rate limit is exceeded", async () => {
-      const exhaustedLimiter = new MemoryTokenBucketRateLimiter(0, 1);
-      const limitedFinder = new WgerExerciseFinder(
-        exhaustedLimiter,
-        "limited-client",
-      );
-
-      await expect(
-        limitedFinder.findExercisesByFuzzyName("Squat"),
-      ).rejects.toThrow("Rate limit exceeded");
     });
   });
 });

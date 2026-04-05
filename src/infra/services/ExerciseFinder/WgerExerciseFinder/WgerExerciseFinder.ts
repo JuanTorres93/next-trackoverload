@@ -3,7 +3,6 @@ import {
   ExerciseFinder,
   ExerciseFinderResult,
 } from "@/domain/services/ExerciseFinder.port";
-import { RateLimiter } from "@/domain/services/RateLimiter.port";
 
 // DOCS: https://wger.de/api/v2/
 // SEARCH DOCS: https://wger.de/api/v2/exercise/search/
@@ -18,29 +17,14 @@ const BASE_URL = "https://wger.de";
 const SEARCH_URL = `${BASE_URL}/api/v2/exercise/search/`;
 
 export class WgerExerciseFinder implements ExerciseFinder {
-  private readonly searchRateLimiter: RateLimiter;
-  private readonly clientId: string;
-
-  constructor(searchRateLimiter: RateLimiter, clientId: string) {
-    this.searchRateLimiter = searchRateLimiter;
-    this.clientId = clientId;
-  }
+  constructor() {}
 
   async findExercisesByFuzzyName(
     name: string,
   ): Promise<ExerciseFinderResult[]> {
-    if (await this.searchRateLimiter.isRateLimited(this.clientId)) {
-      // TODO throw RateLimitError instead
-      throw new InfrastructureError(
-        "WgerExerciseFinder: Rate limit exceeded for search queries",
-      );
-    }
-
     const url = `${SEARCH_URL}?term=${encodeURIComponent(name)}&language=english&format=json`;
 
     const response = await fetch(url, { method: "GET" });
-
-    this.searchRateLimiter.recordRequest(this.clientId);
 
     if (!response.ok) {
       throw new InfrastructureError(
