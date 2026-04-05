@@ -1,4 +1,4 @@
-import { ExternalIngredientRef } from '../entities/externalingredientref/ExternalIngredientRef';
+import { ExternalIngredientRef } from "../entities/externalingredientref/ExternalIngredientRef";
 
 export interface ExternalIngredientsRefRepo {
   getAllExternalIngredientsRef(): Promise<ExternalIngredientRef[]>;
@@ -10,6 +10,8 @@ export interface ExternalIngredientsRefRepo {
     externalIds: string[],
     source: string,
   ): Promise<ExternalIngredientRef[]>;
+
   save(externalIngredientRef: ExternalIngredientRef): Promise<void>;
+
   delete(externalId: string): Promise<void>;
 }
