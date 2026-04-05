@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { twMerge } from 'tailwind-merge';
+import { twMerge } from "tailwind-merge";
 
-import { DayEntry } from '@/application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase';
+import { DayEntry } from "@/application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase";
 
-import WeightHistory from './WeightHistory';
-import WeightInput from './WeightInput';
-import { getWeightFeedback } from './weightStats';
-import CaloriesGoalInput from './CaloriesGoalInput';
+import CaloriesGoalInput from "./CaloriesGoalInput";
+import WeightHistory from "./WeightHistory";
+import WeightInput from "./WeightInput";
+import { getWeightFeedback } from "./weightStats";
 
 function WeightTracker({
   days,
@@ -38,7 +38,7 @@ function WeightTracker({
   const show90DaysChart = !daysBetween31And90HaveNoWeight;
 
   return (
-    <div className={twMerge('flex flex-col gap-8', className)} {...rest}>
+    <div className={twMerge("flex flex-col gap-8", className)} {...rest}>
       <InputsSection
         lastDay={lastDay}
         lastDefinedCaloriesGoal={lastDefinedCaloriesGoal}
@@ -117,7 +117,9 @@ function InputsSection({
     <div className="overflow-hidden border shadow-sm border-border/30 rounded-xl bg-surface-card">
       <div className="flex max-bp-weight-input:flex-col">
         <WeightInput lastDay={lastDay} className="flex-1 p-5" />
+
         <div className="border-r border-border/20 max-bp-weight-input:border-r-0 max-bp-weight-input:border-b" />
+
         <CaloriesGoalInput
           lastDay={lastDay}
           defaultCaloriesGoal={lastDefinedCaloriesGoal}

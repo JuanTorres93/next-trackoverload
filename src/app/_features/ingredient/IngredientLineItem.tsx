@@ -3,6 +3,7 @@ import Image from "next/image";
 
 import { useState } from "react";
 
+import Input from "@/app/_ui/Input";
 import ButtonX from "@/app/_ui/buttons/ButtonX";
 import { formatToInteger } from "@/app/_utils/format/formatToInteger";
 import { IngredientLineDTO } from "@/application-layer/dtos/IngredientLineDTO";
@@ -69,20 +70,19 @@ function IngredientLineItem({
       </div>
 
       {/* Quantity  */}
-      <div className="flex items-center gap-1.5 border border-border/60 rounded-lg px-2.5 py-1.5 bg-input-background shrink-0">
-        <input
-          type="number"
-          defaultValue={ingredientLine.quantityInGrams}
-          onChange={(e) => onQuantityChange(Number(e.target.value))}
-          disabled={isLoading}
-          min={0}
-          className="w-10 text-sm text-right bg-transparent outline-none text-text disabled:cursor-not-allowed disabled:text-text-minor-emphasis"
-        />
-
+      <Input
+        type="number"
+        defaultValue={ingredientLine.quantityInGrams}
+        onChange={(e) => onQuantityChange(Number(e.target.value))}
+        disabled={isLoading}
+        min={0}
+        className="w-10 text-sm text-right"
+        containerClassName="gap-1.5 px-2.5 py-1.5 min-w-0 shrink-0 border-border/60"
+      >
         <span className="text-xs font-medium leading-none text-text-minor-emphasis">
           g
         </span>
-      </div>
+      </Input>
 
       {/* Remove  */}
       <ButtonX

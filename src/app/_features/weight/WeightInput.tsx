@@ -1,12 +1,14 @@
-'use client';
+"use client";
 
-import { useDebounce } from '@/app/_hooks/useDebounce';
-import { DayEntry } from '@/application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase';
-import { updateUserWeightForDay } from '../day/actions';
-import Input from '@/app/_ui/Input';
-import InputLabel from './InputLabel';
-import { HiScale } from 'react-icons/hi2';
-import InputContainer from './InputContainer';
+import { HiScale } from "react-icons/hi2";
+
+import { useDebounce } from "@/app/_hooks/useDebounce";
+import Input from "@/app/_ui/Input";
+import { DayEntry } from "@/application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase";
+
+import { updateUserWeightForDay } from "../day/actions";
+import InputContainer from "./InputContainer";
+import InputLabel from "./InputLabel";
 
 function WeightInput({
   lastDay,
@@ -44,7 +46,7 @@ function WeightInput({
       </Input>
 
       <p
-        className={`text-xs text-text-minor-emphasis/70 italic ${hasWeight ? 'invisible' : ''}`}
+        className={`text-xs text-text-minor-emphasis/70 italic ${hasWeight ? "invisible" : ""}`}
       >
         Sin registrar hoy
       </p>

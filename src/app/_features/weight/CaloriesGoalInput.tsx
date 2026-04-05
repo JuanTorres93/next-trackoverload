@@ -1,12 +1,14 @@
-'use client';
+"use client";
 
-import { useDebounce } from '@/app/_hooks/useDebounce';
-import { DayEntry } from '@/application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase';
-import { setCaloriesGoalForDay } from '../day/actions';
-import Input from '@/app/_ui/Input';
-import InputLabel from './InputLabel';
-import { HiFire } from 'react-icons/hi2';
-import InputContainer from './InputContainer';
+import { HiFire } from "react-icons/hi2";
+
+import { useDebounce } from "@/app/_hooks/useDebounce";
+import Input from "@/app/_ui/Input";
+import { DayEntry } from "@/application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase";
+
+import { setCaloriesGoalForDay } from "../day/actions";
+import InputContainer from "./InputContainer";
+import InputLabel from "./InputLabel";
 
 function CaloriesGoalInput({
   lastDay,
