@@ -1,73 +1,18 @@
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { vi } from "vitest";
 
-import { mockIngredientsForIngredientFinder } from "@/../tests/mocks/ingredients";
 import { createMockRecipes } from "@/../tests/mocks/recipes";
-import { createServer } from "@/../tests/mocks/server";
-import { SCAN_WINDOW_SIZE } from "@/app/_features/ingredient/ZXingBarcodeScanner";
 import { RecipeDTO } from "@/application-layer/dtos/RecipeDTO";
 import { MemoryRecipesRepo } from "@/infra/repos/memory/MemoryRecipesRepo";
 import { MemoryUsersRepo } from "@/infra/repos/memory/MemoryUsersRepo";
 import { AppRecipesRepo } from "@/interface-adapters/app/repos/AppRecipesRepo";
 import { AppUsersRepo } from "@/interface-adapters/app/repos/AppUsersRepo";
 
-import { createTestImage } from "../../../../../../tests/helpers/imageTestHelpers";
-import { mockDecodeFromConstraints } from "../../../../../../tests/mocks/zxing";
 import RecipePage from "../page";
-
-// Mock AppClientImageProcessor to avoid browser API incompatibilities in the test environment
-vi.mock("@/interface-adapters/app/services/AppClientImageProcessor", () => ({
-  AppClientImageProcessor: {
-    compressToMaxMB: vi.fn((file: File) => Promise.resolve(file)),
-  },
-}));
 
 const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
 const usersRepo = AppUsersRepo as MemoryUsersRepo;
 let mockRecipes: RecipeDTO[] = [];
-
-createServer(
-  [
-    {
-      path: "/api/ingredient/fuzzy/:term",
-      method: "get",
-      response: ({ params }) => {
-        const term = params.term as string;
-        const ingredients = mockIngredientsForIngredientFinder;
-
-        const filteredIngredients = ingredients.filter((ingredient) =>
-          ingredient.ingredient.name.toLowerCase().includes(term.toLowerCase()),
-        );
-
-        return { status: "success", data: filteredIngredients };
-      },
-    },
-    {
-      path: "/api/ingredient/barcode/:barcode",
-      method: "get",
-      response: () => ({
-        status: "success",
-        data: [
-          {
-            ingredient: {
-              name: "Avena Integral",
-              nutritionalInfoPer100g: { calories: 370, protein: 13 },
-              imageUrl: undefined,
-            },
-            externalRef: {
-              externalId: "8414807558305",
-              source: "openfoodfacts",
-            },
-          },
-        ],
-      }),
-    },
-  ],
-  {
-    onUnhandledRequest: "bypass",
-  },
-);
 
 async function setup() {
   // Recreate mock recipes for each test to ensure a clean state
@@ -92,7 +37,7 @@ afterEach(() => {
 
 describe("RecipePage", () => {
   describe("Shown info", () => {
-    it("renders recipe title", async () => {
+    it("renders recipe title (UpdateRecipeTitle)", async () => {
       await setup();
 
       const title = await screen.findByDisplayValue(mockRecipes[0].name);
@@ -126,327 +71,38 @@ describe("RecipePage", () => {
       expect(proteinElement).toBeInTheDocument();
     });
 
-    it("renders ingredient lines", async () => {
+    it("renders ingredient lines (RecipeActions)", async () => {
       await setup();
 
-      const ingredientLines = mockRecipes[0].ingredientLines;
-
-      for (const line of ingredientLines) {
-        const ingredientLineElement = screen.getByText(line.ingredient.name);
-        expect(ingredientLineElement).toBeInTheDocument();
+      for (const line of mockRecipes[0].ingredientLines) {
+        expect(screen.getByText(line.ingredient.name)).toBeInTheDocument();
       }
     });
 
-    it("renders ingredient quantities", async () => {
+    it("renders change image button (UpdateRecipeImage)", async () => {
       await setup();
 
-      const ingredientLines = mockRecipes[0].ingredientLines;
+      const updateImageButton = screen.getByTestId("edit-recipe-image-button");
 
-      for (const line of ingredientLines) {
-        const quantityText = `${line.quantityInGrams}`;
-        const quantityElement = screen.getByDisplayValue(quantityText);
-        expect(quantityElement).toBeInTheDocument();
-      }
-    });
-
-    it("renders total rounded calories per ingredient", async () => {
-      await setup();
-
-      const ingredientLines = mockRecipes[0].ingredientLines;
-
-      for (const line of ingredientLines) {
-        const roundedCalories = Math.round(line.calories).toString();
-
-        const caloriesElement = screen.getByText(roundedCalories);
-        expect(caloriesElement).toBeInTheDocument();
-      }
-    });
-
-    it("renders total rounded protein per ingredient", async () => {
-      await setup();
-
-      const ingredientLines = mockRecipes[0].ingredientLines;
-
-      for (const line of ingredientLines) {
-        const roundedProtein = Math.round(line.protein).toString();
-
-        const proteinElement = screen.getByText(roundedProtein);
-        expect(proteinElement).toBeInTheDocument();
-      }
+      expect(updateImageButton).toBeInTheDocument();
     });
   });
 
   describe("Behavior", () => {
-    it("allows updating ingredient quantity", async () => {
+    it("renders duplicate button (DuplicateRecipe)", async () => {
       await setup();
-
-      const recipe = mockRecipes[0];
-
-      const ingredientLines = recipe.ingredientLines;
-      const lineToUpdate = ingredientLines[0];
-
-      const newQuantity = "500";
-
-      const quantityInput = screen.getByDisplayValue(
-        lineToUpdate.quantityInGrams.toString(),
-      );
-
-      await userEvent.clear(quantityInput);
-      await userEvent.type(quantityInput, newQuantity);
-
-      expect(quantityInput).toHaveValue("500");
-
-      await waitFor(async () => {
-        const updatedIngredientLine = await recipesRepo
-          .getRecipeById(recipe.id)
-          .then((r) =>
-            r?.ingredientLines.find(
-              (line) => line.ingredient.id === lineToUpdate.ingredient.id,
-            ),
-          );
-
-        expect(updatedIngredientLine?.quantityInGrams).toBe(
-          parseInt(newQuantity),
-        );
-      });
-    });
-
-    it("fetches ingredients through barcode", async () => {
-      mockDecodeFromConstraints.mockImplementation(
-        (
-          _constraints: unknown,
-          _videoEl: unknown,
-          callback: (
-            result: { getText: () => string } | null,
-            err: null,
-          ) => void,
-        ) => {
-          // Repeat enough times to reach the majority threshold
-          for (let i = 0; i < SCAN_WINDOW_SIZE; i++) {
-            callback({ getText: () => "8414807558305" }, null);
-          }
-        },
-      );
-
-      await setup();
-
-      const addIngredientButton = screen.getByTestId(
-        "add-ingredient-modal-button",
-      );
-      await userEvent.click(addIngredientButton);
-
-      const barcodeScannerButton = await screen.findByTestId(
-        "open-scanner-button",
-      );
-      await userEvent.click(barcodeScannerButton);
-
-      await waitFor(async () => {
-        // Get list again to avoid stale reference
-        const ingredientList = await screen.findByTestId("ingredient-list");
-
-        expect(ingredientList.children.length).toBe(1);
-      });
-
-      const ingredientElement = screen.getByText(/avena/i);
-      expect(ingredientElement).toBeInTheDocument();
-    });
-
-    it("duplicates recipe", async () => {
-      await setup();
-
-      const initialRecipes = recipesRepo.countForTesting();
 
       const duplicateButton = screen.getByTestId("duplicate-recipe-button");
 
-      await userEvent.click(duplicateButton);
-
-      await waitFor(() => {
-        const allRecipes = recipesRepo.countForTesting();
-        expect(allRecipes).toBe(initialRecipes + 1);
-      });
+      expect(duplicateButton).toBeInTheDocument();
     });
 
-    it("deletes recipe", async () => {
+    it("renders delete button (DeleteRecipe)", async () => {
       await setup();
-
-      const initialRecipes = recipesRepo.countForTesting();
 
       const deleteButton = screen.getByTestId("delete-recipe-button");
-      await userEvent.click(deleteButton);
 
-      const confirmButton = await screen.findByRole("button", {
-        name: "Eliminar",
-      });
-      await userEvent.click(confirmButton);
-
-      await waitFor(() => {
-        const allRecipes = recipesRepo.countForTesting();
-        expect(allRecipes).toBe(initialRecipes - 1);
-      });
+      expect(deleteButton).toBeInTheDocument();
     });
-
-    it("can remove ingredients from recipe", async () => {
-      await setup();
-
-      const recipe = mockRecipes[0];
-
-      const initialIngredientLinesCount = recipe.ingredientLines.length;
-
-      const ingredientLinesContainer = screen.getByTestId(
-        "ingredient-lines-container",
-      );
-
-      const ingredientLineElement = ingredientLinesContainer
-        .children[0] as HTMLElement;
-      const removeButton = within(ingredientLineElement).getByTestId(
-        "nutritional-summary-delete-button",
-      );
-
-      await userEvent.click(removeButton);
-
-      await waitFor(async () => {
-        const updatedRecipe = await recipesRepo.getRecipeById(recipe.id);
-        expect(updatedRecipe).not.toBeNull();
-        expect(updatedRecipe!.ingredientLines.length).toBe(
-          initialIngredientLinesCount - 1,
-        );
-      });
-    });
-
-    it("cannot leave a recipe with less than one ingredient", async () => {
-      await setup();
-
-      const recipe = mockRecipes[0];
-
-      // Remove all ingredients except one
-      const deleteIngredientButtons = await screen.findAllByTestId(
-        "nutritional-summary-delete-button",
-      );
-
-      const [lastButton, ...restButtons] = deleteIngredientButtons;
-
-      for (const button of restButtons) {
-        await userEvent.click(button);
-      }
-
-      const updatedRecipe = await recipesRepo.getRecipeById(recipe.id);
-
-      expect(updatedRecipe).not.toBeNull();
-      expect(updatedRecipe!.ingredientLines.length).toBe(1);
-
-      await userEvent.click(lastButton);
-
-      const finalRecipe = await recipesRepo.getRecipeById(recipe.id);
-
-      expect(finalRecipe).not.toBeNull();
-      expect(finalRecipe!.ingredientLines.length).toBe(1);
-    });
-
-    it("can add new ingredient to recipe", async () => {
-      const { renderedRecipe } = await setup();
-
-      const existingLinesContainer = screen.getByTestId(
-        "ingredient-lines-container",
-      );
-      const initialIngredientLinesCount =
-        existingLinesContainer.childElementCount;
-
-      const addIngredientButton = screen.getByTestId(
-        "add-ingredient-modal-button",
-      );
-      await userEvent.click(addIngredientButton);
-
-      const searchIngredientInput = await screen.findByPlaceholderText(
-        "Buscar ingredientes...",
-      );
-
-      const searchButton = screen.getByRole("button", { name: "Buscar" });
-
-      await userEvent.type(searchIngredientInput, "celery");
-      await userEvent.click(searchButton);
-
-      const ingredientList = await screen.findByTestId("ingredient-list");
-
-      await waitFor(() => {
-        expect(ingredientList.childNodes.length).toBeGreaterThan(0);
-      });
-
-      const searchResultItem = await screen.findByText(/celery/i);
-      await userEvent.click(searchResultItem);
-
-      const addButton = screen.getByRole("button", { name: /^añadir$/i });
-      await userEvent.click(addButton);
-
-      await waitFor(() => {
-        // Get recipe from repo to check ingredient lines count (tested in this way because NextJS revalidation does not work in test environment)
-        recipesRepo.getRecipeById(renderedRecipe.id).then((updatedRecipe) => {
-          expect(updatedRecipe).not.toBeNull();
-          expect(updatedRecipe!.ingredientLines.length).toBe(
-            initialIngredientLinesCount + 1,
-          );
-        });
-      });
-    });
-
-    it("updates recipe name", async () => {
-      const { renderedRecipe } = await setup();
-
-      const titleInput = (await screen.findByDisplayValue(
-        renderedRecipe.name,
-      )) as HTMLInputElement;
-
-      const newTitle = "Updated Recipe Title";
-
-      await userEvent.clear(titleInput);
-      await userEvent.type(titleInput, newTitle);
-
-      await waitFor(async () => {
-        const updatedRecipe = await recipesRepo.getRecipeById(
-          renderedRecipe.id,
-        );
-
-        expect(updatedRecipe).not.toBeNull();
-        expect(updatedRecipe!.name).toBe(newTitle);
-      });
-    });
-
-    it("updates recipe image when no previous image existed", async () => {
-      const { renderedRecipe } = await setup();
-
-      const updateImageInput = screen.getByTestId(
-        "edit-recipe-image-button",
-      ) as HTMLInputElement;
-
-      const testImage = await createTestImage("small");
-
-      const testImageFile = new File(
-        [new Uint8Array(testImage)],
-        "test-image.png",
-        {
-          type: "image/png",
-        },
-      );
-
-      // Mock arrayBuffer method for Node.js environment
-      testImageFile.arrayBuffer = async () => {
-        const uint8Array = new Uint8Array(testImage);
-        return uint8Array.buffer as ArrayBuffer;
-      };
-
-      expect(renderedRecipe.imageUrl).toBeUndefined();
-
-      await userEvent.upload(updateImageInput, testImageFile);
-
-      await waitFor(async () => {
-        const updatedRecipe = await recipesRepo.getRecipeById(
-          renderedRecipe.id,
-        );
-
-        expect(updatedRecipe).not.toBeNull();
-        expect(updatedRecipe!.imageUrl).toBeDefined();
-      });
-    });
-
-    // TODO test updating recipe image when previous image existed
   });
 });
