@@ -3,8 +3,8 @@ import { beforeEach, describe } from "vitest";
 import { Exercise } from "@/domain/entities/exercise/Exercise";
 import { User } from "@/domain/entities/user/User";
 import { WorkoutTemplate } from "@/domain/entities/workouttemplate/WorkoutTemplate";
-import { MemoryExternalExercisesRefRepo } from "@/infra/repos/memory/MemoryExternalExercisesRefRepo";
 import { MongoExercisesRepo } from "@/infra/repos/mongo/MongoExercisesRepo";
+import { MongoExternalExercisesRefRepo } from "@/infra/repos/mongo/MongoExternalExercisesRefRepo";
 import { MongoUsersRepo } from "@/infra/repos/mongo/MongoUsersRepo";
 import { MongoWorkoutTemplatesRepo } from "@/infra/repos/mongo/MongoWorkoutTemplatesRepo";
 import { mockForThrowingError } from "@/infra/repos/mongo/__tests__/mockForThrowingError";
@@ -13,6 +13,7 @@ import {
   setupMongoTestDB,
   teardownMongoTestDB,
 } from "@/infra/repos/mongo/__tests__/setupMongoTestDB";
+import ExternalExerciseRefMongo from "@/infra/repos/mongo/models/ExternalExerciseRefMongo";
 import { Uuidv4IdGenerator } from "@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator";
 import { MongoTransactionContext } from "@/infra/transaction-context/MongoTransactionContext/MongoTransactionContext";
 
@@ -24,7 +25,7 @@ import { AddExerciseToWorkoutTemplateUsecase } from "../AddExerciseToWorkoutTemp
 describe("AddExerciseToWorkoutTemplateUsecase", () => {
   let workoutTemplatesRepo: MongoWorkoutTemplatesRepo;
   let exercisesRepo: MongoExercisesRepo;
-  let externalExercisesRefRepo: MemoryExternalExercisesRefRepo;
+  let externalExercisesRefRepo: MongoExternalExercisesRefRepo;
   let usersRepo: MongoUsersRepo;
   let usecase: AddExerciseToWorkoutTemplateUsecase;
   let user: User;
@@ -50,7 +51,7 @@ describe("AddExerciseToWorkoutTemplateUsecase", () => {
 
     workoutTemplatesRepo = new MongoWorkoutTemplatesRepo();
     exercisesRepo = new MongoExercisesRepo();
-    externalExercisesRefRepo = new MemoryExternalExercisesRefRepo();
+    externalExercisesRefRepo = new MongoExternalExercisesRefRepo();
     usersRepo = new MongoUsersRepo();
 
     usecase = new AddExerciseToWorkoutTemplateUsecase(
@@ -89,6 +90,9 @@ describe("AddExerciseToWorkoutTemplateUsecase", () => {
 
       const allExercises = await exercisesRepo.getAllExercises();
       expect(allExercises).toHaveLength(preSeededExercises.length);
+
+      const externalRefCount = await ExternalExerciseRefMongo.countDocuments();
+      expect(externalRefCount).toBe(0);
     };
   });
 
