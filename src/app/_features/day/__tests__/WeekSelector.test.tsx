@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { format } from "date-fns";
+import { endOfWeek, format, startOfWeek } from "date-fns";
 import { es } from "date-fns/locale";
 
 import {
@@ -69,10 +69,14 @@ describe("WeekSelector", () => {
     const { weekRangeDisplay } = await setup();
 
     const today = new Date();
-    const weekStart = new Date(today);
-    weekStart.setDate(today.getDate() - today.getDay() + 1); // Assuming week starts on Monday
-    const weekEnd = new Date(weekStart);
-    weekEnd.setDate(weekStart.getDate() + 6);
+
+    const weekStartsOnMonday = 1;
+    const weekStart = startOfWeek(today, {
+      weekStartsOn: weekStartsOnMonday,
+    });
+    const weekEnd = endOfWeek(today, {
+      weekStartsOn: weekStartsOnMonday,
+    });
 
     const expectedWeekRange = `${format(weekStart, "d 'de' MMMM", { locale: es })} — ${format(weekEnd, "d 'de' MMMM", { locale: es })}`;
 

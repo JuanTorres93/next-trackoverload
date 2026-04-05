@@ -139,12 +139,14 @@ function DateRangeDisplay({
         <SpinnerMini />
       ) : (
         <span className="font-semibold text-text whitespace-nowrap">
+          {/* Desktop view */}
           <span className="max-bp-week-selector:hidden">
             {format(weekStart, "d 'de' MMMM", { locale: es })}
             {" — "}
             {format(weekEnd, "d 'de' MMMM", { locale: es })}
           </span>
 
+          {/* Mobile view */}
           <span className="bp-week-selector:hidden">
             {format(weekStart, "d MMM", { locale: es })}
             {" — "}
