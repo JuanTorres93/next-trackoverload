@@ -2,15 +2,19 @@ import { Exercise } from "@/domain/entities/exercise/Exercise";
 import { ExerciseCreateProps } from "@/domain/entities/exercise/Exercise";
 import { ExercisesRepo } from "@/domain/repos/ExercisesRepo.port";
 
+import { withTransaction } from "./common/withTransaction";
 import ExerciseMongo from "./models/ExerciseMongo";
 
 export class MongoExercisesRepo implements ExercisesRepo {
   async saveExercise(exercise: Exercise): Promise<void> {
     const exerciseData: ExerciseCreateProps = exercise.toCreateProps();
 
-    await ExerciseMongo.findOneAndUpdate({ id: exercise.id }, exerciseData, {
-      upsert: true,
-      new: true,
+    await withTransaction(async (session) => {
+      await ExerciseMongo.findOneAndUpdate({ id: exercise.id }, exerciseData, {
+        upsert: true,
+        new: true,
+        session,
+      });
     });
   }
 

@@ -1,18 +1,24 @@
 import {
   WorkoutTemplateDTO,
   toWorkoutTemplateDTO,
-} from '@/application-layer/dtos/WorkoutTemplateDTO';
-import { NotFoundError } from '@/domain/common/errors';
-import { WorkoutTemplateLine } from '@/domain/entities/workouttemplateline/WorkoutTemplateLine';
-import { ExercisesRepo } from '@/domain/repos/ExercisesRepo.port';
-import { UsersRepo } from '@/domain/repos/UsersRepo.port';
-import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
-import { IdGenerator } from '@/domain/services/IdGenerator.port';
+} from "@/application-layer/dtos/WorkoutTemplateDTO";
+import { TransactionContext } from "@/application-layer/ports/TransactionContext.port";
+import { NotFoundError } from "@/domain/common/errors";
+import { WorkoutTemplateLine } from "@/domain/entities/workouttemplateline/WorkoutTemplateLine";
+import { ExercisesRepo } from "@/domain/repos/ExercisesRepo.port";
+import { ExternalExercisesRefRepo } from "@/domain/repos/ExternalExercisesRefRepo.port";
+import { UsersRepo } from "@/domain/repos/UsersRepo.port";
+import { WorkoutTemplatesRepo } from "@/domain/repos/WorkoutTemplatesRepo.port";
+import { IdGenerator } from "@/domain/services/IdGenerator.port";
+
+import { createExercisesAndExternalExercisesNoSaveInRepo } from "../../exercise/common/createExercisesAndExternalExercisesNoSaveInRepo";
 
 export type AddExerciseToWorkoutTemplateUsecaseRequest = {
   userId: string;
   workoutTemplateId: string;
-  exerciseId: string;
+  externalExerciseId: string;
+  source: string;
+  name: string;
   sets: number;
 };
 
@@ -22,20 +28,20 @@ export class AddExerciseToWorkoutTemplateUsecase {
     private exercisesRepo: ExercisesRepo,
     private usersRepo: UsersRepo,
     private idGenerator: IdGenerator,
+    private externalExercisesRefRepo: ExternalExercisesRefRepo,
+    private transactionContext: TransactionContext,
   ) {}
 
   async execute(
     request: AddExerciseToWorkoutTemplateUsecaseRequest,
   ): Promise<WorkoutTemplateDTO> {
-    const [user, workoutTemplate, exercise] = await Promise.all([
+    const [user, workoutTemplate] = await Promise.all([
       this.usersRepo.getUserById(request.userId),
 
       this.workoutTemplatesRepo.getWorkoutTemplateByIdAndUserId(
         request.workoutTemplateId,
         request.userId,
       ),
-
-      this.exercisesRepo.getExerciseById(request.exerciseId),
     ]);
 
     if (!user) {
@@ -48,26 +54,48 @@ export class AddExerciseToWorkoutTemplateUsecase {
 
     if (!workoutTemplate || isDeleted) {
       throw new NotFoundError(
-        'AddExerciseToWorkoutTemplateUsecase: WorkoutTemplate not found',
+        "AddExerciseToWorkoutTemplateUsecase: WorkoutTemplate not found",
       );
     }
 
-    if (!exercise) {
-      throw new NotFoundError(
-        'AddExerciseToWorkoutTemplateUsecase: Exercise not found',
+    const { createdExercises, createdExternalExercises, allExercises } =
+      await createExercisesAndExternalExercisesNoSaveInRepo(
+        [
+          {
+            externalExerciseId: request.externalExerciseId,
+            source: request.source,
+            name: request.name,
+          },
+        ],
+        this.exercisesRepo,
+        this.externalExercisesRefRepo,
+        this.idGenerator,
       );
-    }
+
+    const exerciseToAdd = allExercises[0];
 
     const workoutTemplateLine = WorkoutTemplateLine.create({
       id: this.idGenerator.generateId(),
       templateId: workoutTemplate.id,
-      exerciseId: request.exerciseId,
+      exerciseId: exerciseToAdd.id,
       sets: request.sets,
     });
 
     workoutTemplate.addExercise(workoutTemplateLine);
 
-    await this.workoutTemplatesRepo.saveWorkoutTemplate(workoutTemplate);
+    await this.transactionContext.run(async () => {
+      if (Object.keys(createdExternalExercises).length > 0) {
+        const externalExercise = Object.values(createdExternalExercises)[0];
+        await this.externalExercisesRefRepo.save(externalExercise);
+      }
+
+      if (Object.keys(createdExercises).length > 0) {
+        const exercise = Object.values(createdExercises)[0];
+        await this.exercisesRepo.saveExercise(exercise);
+      }
+
+      await this.workoutTemplatesRepo.saveWorkoutTemplate(workoutTemplate);
+    });
 
     return toWorkoutTemplateDTO(workoutTemplate);
   }

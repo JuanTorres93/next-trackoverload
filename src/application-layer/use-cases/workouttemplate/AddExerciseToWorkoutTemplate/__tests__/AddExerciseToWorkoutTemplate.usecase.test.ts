@@ -1,61 +1,64 @@
-import * as dto from '@/../tests/dtoProperties';
-import { NotFoundError } from '@/domain/common/errors';
-import { User } from '@/domain/entities/user/User';
-import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
-import { MemoryExercisesRepo } from '@/infra/repos/memory/MemoryExercisesRepo';
-import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
-import { MemoryWorkoutTemplatesRepo } from '@/infra/repos/memory/MemoryWorkoutTemplatesRepo';
-import { Uuidv4IdGenerator } from '@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator';
-import * as exerciseTestProps from '../../../../../../tests/createProps/exerciseTestProps';
-import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
-import * as workoutTemplateTestProps from '../../../../../../tests/createProps/workoutTemplateTestProps';
-import { AddExerciseToWorkoutTemplateUsecase } from '../AddExerciseToWorkoutTemplate.usecase';
+import * as dto from "@/../tests/dtoProperties";
+import { NotFoundError } from "@/domain/common/errors";
+import { User } from "@/domain/entities/user/User";
+import { WorkoutTemplate } from "@/domain/entities/workouttemplate/WorkoutTemplate";
+import { MemoryExercisesRepo } from "@/infra/repos/memory/MemoryExercisesRepo";
+import { MemoryExternalExercisesRefRepo } from "@/infra/repos/memory/MemoryExternalExercisesRefRepo";
+import { MemoryUsersRepo } from "@/infra/repos/memory/MemoryUsersRepo";
+import { MemoryWorkoutTemplatesRepo } from "@/infra/repos/memory/MemoryWorkoutTemplatesRepo";
+import { Uuidv4IdGenerator } from "@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator";
+import { MemoryTransactionContext } from "@/infra/transaction-context/MemoryTransactionContext/MemoryTransactionContext";
 
-describe('AddExerciseToWorkoutTemplateUsecase', () => {
+import * as exerciseTestProps from "../../../../../../tests/createProps/exerciseTestProps";
+import * as externalExerciseRefTestProps from "../../../../../../tests/createProps/externalExerciseRefTestProps";
+import * as userTestProps from "../../../../../../tests/createProps/userTestProps";
+import * as workoutTemplateTestProps from "../../../../../../tests/createProps/workoutTemplateTestProps";
+import { AddExerciseToWorkoutTemplateUsecase } from "../AddExerciseToWorkoutTemplate.usecase";
+
+describe("AddExerciseToWorkoutTemplateUsecase", () => {
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
   let exercisesRepo: MemoryExercisesRepo;
+  let externalExercisesRefRepo: MemoryExternalExercisesRefRepo;
   let usersRepo: MemoryUsersRepo;
   let usecase: AddExerciseToWorkoutTemplateUsecase;
   let existingTemplate: WorkoutTemplate;
   let user: User;
 
+  const newExerciseRequest = {
+    externalExerciseId: "ext-ex-new",
+    source: "wger",
+    name: "Shoulder Press",
+    sets: 4,
+  };
+
   beforeEach(async () => {
     workoutTemplatesRepo = new MemoryWorkoutTemplatesRepo();
     exercisesRepo = new MemoryExercisesRepo();
+    externalExercisesRefRepo = new MemoryExternalExercisesRefRepo();
     usersRepo = new MemoryUsersRepo();
     usecase = new AddExerciseToWorkoutTemplateUsecase(
       workoutTemplatesRepo,
       exercisesRepo,
       usersRepo,
       new Uuidv4IdGenerator(),
+      externalExercisesRefRepo,
+      new MemoryTransactionContext(),
     );
 
     user = userTestProps.createTestUser();
-
-    // Create the exercises that will be used in tests
-    const benchPressExercise = exerciseTestProps.createTestExercise();
-
-    const shoulderPressExercise = exerciseTestProps.createTestExercise({
-      id: 'shoulder-press',
-    });
-
-    // Create a template with one existing exercise
     existingTemplate = workoutTemplateTestProps.createTestWorkoutTemplate();
 
     await usersRepo.saveUser(user);
-    await exercisesRepo.saveExercise(benchPressExercise);
-    await exercisesRepo.saveExercise(shoulderPressExercise);
     await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
   });
 
-  describe('Execution', () => {
-    it('should add exercise to workout template', async () => {
+  describe("Execution", () => {
+    it("should add exercise to workout template", async () => {
       const request = {
         userId: userTestProps.userId,
         workoutTemplateId:
           workoutTemplateTestProps.validWorkoutTemplateProps().id,
-        exerciseId: 'shoulder-press',
-        sets: 4,
+        ...newExerciseRequest,
       };
 
       const result = await usecase.execute(request);
@@ -64,26 +67,13 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
         workoutTemplateTestProps.validWorkoutTemplateProps().exercises.length +
           1,
       );
-
-      const exercisesIds = result.exercises.map((ex) => ex.exerciseId);
-      expect(exercisesIds).toContain('shoulder-press');
-
-      // Verify it was saved
-      const savedTemplate = await workoutTemplatesRepo.getWorkoutTemplateById(
-        workoutTemplateTestProps.validWorkoutTemplateProps().id,
-      );
-      expect(savedTemplate!.exercises).toHaveLength(
-        workoutTemplateTestProps.validWorkoutTemplateProps().exercises.length +
-          1,
-      );
     });
 
-    it('should return WorkoutTemplateDTO', async () => {
+    it("should return WorkoutTemplateDTO", async () => {
       const request = {
         userId: userTestProps.userId,
-        workoutTemplateId: '1',
-        exerciseId: 'shoulder-press',
-        sets: 4,
+        workoutTemplateId: existingTemplate.id,
+        ...newExerciseRequest,
       };
 
       const result = await usecase.execute(request);
@@ -93,106 +83,149 @@ describe('AddExerciseToWorkoutTemplateUsecase', () => {
         expect(result).toHaveProperty(prop);
       }
     });
+
+    it("should persist the updated template", async () => {
+      const request = {
+        userId: userTestProps.userId,
+        workoutTemplateId: existingTemplate.id,
+        ...newExerciseRequest,
+      };
+
+      await usecase.execute(request);
+
+      const savedTemplate = await workoutTemplatesRepo.getWorkoutTemplateById(
+        existingTemplate.id,
+      );
+      expect(savedTemplate!.exercises).toHaveLength(
+        workoutTemplateTestProps.validWorkoutTemplateProps().exercises.length +
+          1,
+      );
+    });
   });
 
-  describe('Errors', () => {
-    it('should throw NotFoundError when workout template does not exist', async () => {
+  describe("Side effects", () => {
+    it("should create and save a new exercise when it does not exist", async () => {
       const request = {
         userId: userTestProps.userId,
-        workoutTemplateId: 'non-existent',
-        exerciseId: 'bench-press',
+        workoutTemplateId: existingTemplate.id,
+        ...newExerciseRequest,
+      };
+
+      const exercisesBefore = exercisesRepo.countForTesting();
+
+      await usecase.execute(request);
+
+      expect(exercisesRepo.countForTesting()).toBe(exercisesBefore + 1);
+    });
+
+    it("should create and save a new external exercise ref when it does not exist", async () => {
+      const request = {
+        userId: userTestProps.userId,
+        workoutTemplateId: existingTemplate.id,
+        ...newExerciseRequest,
+      };
+
+      const refsBefore = externalExercisesRefRepo.countForTesting();
+
+      await usecase.execute(request);
+
+      expect(externalExercisesRefRepo.countForTesting()).toBe(refsBefore + 1);
+
+      const savedRef = await externalExercisesRefRepo.getByExternalIdAndSource(
+        newExerciseRequest.externalExerciseId,
+        newExerciseRequest.source,
+      );
+      expect(savedRef).not.toBeNull();
+    });
+
+    it("should reuse existing exercise and not create duplicates", async () => {
+      // Use an exercise not already present in the template (template has ex1 and ex2)
+      const existingExercise = exerciseTestProps.createTestExercise({
+        id: "ex-already-known",
+      });
+      const existingExternalRef =
+        externalExerciseRefTestProps.createTestExternalExerciseRef({
+          externalId: "ext-ex-already-known",
+          exerciseId: existingExercise.id,
+        });
+
+      await exercisesRepo.saveExercise(existingExercise);
+      await externalExercisesRefRepo.save(existingExternalRef);
+
+      const request = {
+        userId: userTestProps.userId,
+        workoutTemplateId: existingTemplate.id,
+        externalExerciseId: "ext-ex-already-known",
+        source:
+          externalExerciseRefTestProps.validExternalExerciseRefProps.source,
+        name: "Does not matter",
         sets: 3,
       };
 
-      await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+      const exercisesBefore = exercisesRepo.countForTesting();
+      const refsBefore = externalExercisesRefRepo.countForTesting();
 
+      await usecase.execute(request);
+
+      expect(exercisesRepo.countForTesting()).toBe(exercisesBefore);
+      expect(externalExercisesRefRepo.countForTesting()).toBe(refsBefore);
+    });
+  });
+
+  describe("Errors", () => {
+    it("should throw NotFoundError when workout template does not exist", async () => {
+      const request = {
+        userId: userTestProps.userId,
+        workoutTemplateId: "non-existent",
+        ...newExerciseRequest,
+      };
+
+      await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
       await expect(usecase.execute(request)).rejects.toThrow(
         /AddExerciseToWorkoutTemplateUsecase.*WorkoutTemplate.*not found/,
       );
     });
 
-    it('should throw error if exercise does not exist', async () => {
-      const request = {
-        userId: userTestProps.userId,
-        workoutTemplateId: '1',
-        exerciseId: 'non-existent-exercise',
-        sets: 3,
-      };
-
-      await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
-
-      await expect(usecase.execute(request)).rejects.toThrow(
-        /AddExerciseToWorkoutTemplateUsecase.*Exercise.*not found/,
-      );
-    });
-
-    it('should throw NotFoundError when trying to add exercise to deleted template', async () => {
-      // Delete the template
-      existingTemplate.markAsDeleted();
-
-      const request = {
-        userId: userTestProps.userId,
-        workoutTemplateId: '1',
-        exerciseId: 'shoulder-press',
-        sets: 3,
-      };
-
-      await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
-      await expect(usecase.execute(request)).rejects.toThrow(
-        /AddExerciseToWorkoutTemplateUsecase.*WorkoutTemplate.*not found/,
-      );
-    });
-
-    it('should throw error when trying to add exercise to a template marked as deleted', async () => {
-      // Mark the template as deleted without removing it from repo
+    it("should throw NotFoundError when trying to add exercise to deleted template", async () => {
       existingTemplate.markAsDeleted();
       await workoutTemplatesRepo.saveWorkoutTemplate(existingTemplate);
 
       const request = {
         userId: userTestProps.userId,
-        workoutTemplateId: '1',
-        exerciseId: 'shoulder-press',
-        sets: 3,
+        workoutTemplateId: existingTemplate.id,
+        ...newExerciseRequest,
       };
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
-
       await expect(usecase.execute(request)).rejects.toThrow(
         /AddExerciseToWorkoutTemplateUsecase.*WorkoutTemplate.*not found/,
       );
     });
 
-    it('should throw error if user does not exist', async () => {
+    it("should throw NotFoundError when user does not exist", async () => {
       const request = {
-        userId: 'non-existent',
-        workoutTemplateId:
-          workoutTemplateTestProps.validWorkoutTemplateProps().id,
-        exerciseId: 'bench-press',
-        sets: 3,
+        userId: "non-existent",
+        workoutTemplateId: existingTemplate.id,
+        ...newExerciseRequest,
       };
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
-
       await expect(usecase.execute(request)).rejects.toThrow(
         /AddExerciseToWorkoutTemplateUsecase.*User.*not.*found/,
       );
     });
 
-    it("should throw error when trying to add exercise to another user's workout template", async () => {
-      const anotherUser = userTestProps.createTestUser({
-        id: 'user-2',
-      });
+    it("should throw NotFoundError when trying to add exercise to another user's template", async () => {
+      const anotherUser = userTestProps.createTestUser({ id: "user-2" });
       await usersRepo.saveUser(anotherUser);
 
       const request = {
         userId: anotherUser.id,
         workoutTemplateId: existingTemplate.id,
-        exerciseId: 'bench-press',
-        sets: 3,
+        ...newExerciseRequest,
       };
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
-
       await expect(usecase.execute(request)).rejects.toThrow(
         /AddExerciseToWorkoutTemplateUsecase.*WorkoutTemplate.*not found/,
       );
