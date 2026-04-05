@@ -1,14 +1,14 @@
-import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
-import { NotFoundError } from '@/domain/common/errors';
-import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
-import { Recipe } from '@/domain/entities/recipe/Recipe';
-import { ExternalIngredientsRefRepo } from '@/domain/repos/ExternalIngredientsRefRepo.port';
-import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
-import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
-import { UsersRepo } from '@/domain/repos/UsersRepo.port';
-import { IdGenerator } from '@/domain/services/IdGenerator.port';
-import { TransactionContext } from '@/application-layer/ports/TransactionContext.port';
-import { createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo } from '../common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
+import { RecipeDTO, toRecipeDTO } from "@/application-layer/dtos/RecipeDTO";
+import { TransactionContext } from "@/application-layer/ports/TransactionContext.port";
+import { NotFoundError } from "@/domain/common/errors";
+import { IngredientLine } from "@/domain/entities/ingredientline/IngredientLine";
+import { ExternalIngredientsRefRepo } from "@/domain/repos/ExternalIngredientsRefRepo.port";
+import { IngredientsRepo } from "@/domain/repos/IngredientsRepo.port";
+import { RecipesRepo } from "@/domain/repos/RecipesRepo.port";
+import { UsersRepo } from "@/domain/repos/UsersRepo.port";
+import { IdGenerator } from "@/domain/services/IdGenerator.port";
+
+import { createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo } from "../common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo";
 
 export type AddIngredientToRecipeUsecaseRequest = {
   recipeId: string;
@@ -86,7 +86,7 @@ export class AddIngredientToRecipeUsecase {
     const newIngredientLine: IngredientLine = IngredientLine.create({
       id: this.idGenerator.generateId(),
       parentId: request.recipeId,
-      parentType: 'recipe',
+      parentType: "recipe",
       ingredient: ingredientToAdd,
       quantityInGrams: quantityInGrams,
     });

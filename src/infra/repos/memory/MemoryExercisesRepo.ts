@@ -1,5 +1,5 @@
-import { ExercisesRepo } from '@/domain/repos/ExercisesRepo.port';
-import { Exercise } from '@/domain/entities/exercise/Exercise';
+import { Exercise } from "@/domain/entities/exercise/Exercise";
+import { ExercisesRepo } from "@/domain/repos/ExercisesRepo.port";
 
 export class MemoryExercisesRepo implements ExercisesRepo {
   private exercises: Exercise[] = [];
@@ -20,6 +20,10 @@ export class MemoryExercisesRepo implements ExercisesRepo {
   async getExerciseById(id: string): Promise<Exercise | null> {
     const exercise = this.exercises.find((ex) => ex.id === id);
     return exercise || null;
+  }
+
+  async getExercisesByIds(ids: string[]): Promise<Exercise[]> {
+    return this.exercises.filter((ex) => ids.includes(ex.id));
   }
 
   async deleteExercise(id: string): Promise<void> {
