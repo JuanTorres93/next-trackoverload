@@ -1,5 +1,6 @@
-import ButtonCTA from './ButtonCTA';
-import { FaCheck } from 'react-icons/fa';
+import { FaCheck } from "react-icons/fa";
+
+import ButtonCTA from "./ButtonCTA";
 
 interface PricingCardProps {
   title: string;
@@ -18,7 +19,7 @@ export default function PricingCard({
   features,
   ctaText,
   ctaHref,
-  className = '',
+  className = "",
 }: PricingCardProps) {
   return (
     <div
@@ -32,12 +33,14 @@ export default function PricingCard({
         <span className="text-4xl font-bold">{price}</span>
         <span className="ml-2 text-white/80">/mes</span>
       </div>
+
       <p className="mt-2 text-white/80">{description}</p>
 
       <ul className="mt-6 space-y-3">
         {features.map((feature, index) => (
           <li key={index} className="flex items-start gap-2">
             <FaCheck className="w-5 h-5 mt-0.5 flex-shrink-0 text-white" />
+
             <span className="text-white/90">{feature}</span>
           </li>
         ))}

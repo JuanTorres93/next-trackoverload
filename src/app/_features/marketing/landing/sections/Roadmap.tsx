@@ -1,57 +1,58 @@
-import Section from '../Section';
-import SectionHeading from '../SectionHeading';
 import {
   FaChartLine,
+  FaClipboardList,
   FaUtensils,
   FaWeight,
-  FaClipboardList,
-} from 'react-icons/fa';
+} from "react-icons/fa";
+
+import Section from "../Section";
+import SectionHeading from "../SectionHeading";
 
 interface RoadmapItemProps {
   icon: React.ReactNode;
   title: string;
   description: string;
-  status: 'current' | 'upcoming' | 'future';
+  status: "current" | "upcoming" | "future";
 }
 
 function RoadmapItem({ icon, title, description, status }: RoadmapItemProps) {
   const statusStyles = {
-    current: 'border-primary bg-primary/5',
-    upcoming: 'border-amber-500 bg-amber-50',
-    future: 'border-gray-200 bg-gray-50',
+    current: "border-primary bg-primary/5",
+    upcoming: "border-amber-500 bg-amber-50",
+    future: "border-gray-200 bg-gray-50",
   };
 
   const statusText = {
-    current: 'Disponible ahora',
-    upcoming: 'Próximamente',
-    future: 'Futuro',
+    current: "Disponible ahora",
+    upcoming: "Próximamente",
+    future: "Futuro",
   };
 
   return (
     <div
       className={`relative p-6 rounded-2xl border-2 ${statusStyles[status]} transition-all hover:shadow-md`}
     >
-      {/* Estado */}
+      {/* State */}
       <span
         className={`absolute top-4 right-4 px-3 py-1 text-xs font-medium rounded-full ${
-          status === 'current'
-            ? 'bg-primary text-white'
-            : status === 'upcoming'
-              ? 'bg-amber-500 text-white'
-              : 'bg-gray-200 text-gray-600'
+          status === "current"
+            ? "bg-primary text-white"
+            : status === "upcoming"
+              ? "bg-amber-500 text-white"
+              : "bg-gray-200 text-gray-600"
         }`}
       >
         {statusText[status]}
       </span>
 
-      {/* Icono */}
+      {/* Icon */}
       <div
         className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4 ${
-          status === 'current'
-            ? 'bg-primary text-white'
-            : status === 'upcoming'
-              ? 'bg-amber-500 text-white'
-              : 'bg-gray-200 text-gray-500'
+          status === "current"
+            ? "bg-primary text-white"
+            : status === "upcoming"
+              ? "bg-amber-500 text-white"
+              : "bg-gray-200 text-gray-500"
         }`}
       >
         {icon}
@@ -71,9 +72,8 @@ export default function Roadmap() {
           Hoja de ruta
         </SectionHeading>
 
-        {/* Grid de features */}
+        {/* Features Grid */}
         <div className="grid gap-6 mt-12 md:grid-cols-2 lg:grid-cols-3">
-          {/* Nutrición - Disponible */}
           <RoadmapItem
             icon={<FaUtensils />}
             title="Nutrición"
@@ -81,7 +81,6 @@ export default function Roadmap() {
             status="current"
           />
 
-          {/* Seguimiento de peso - Próximamente */}
           <RoadmapItem
             icon={<FaWeight />}
             title="Seguimiento de peso"
@@ -89,7 +88,6 @@ export default function Roadmap() {
             status="current"
           />
 
-          {/* Entrenamientos - Próximamente */}
           <RoadmapItem
             icon={<FaClipboardList />}
             title="Entrenamientos"
@@ -97,7 +95,6 @@ export default function Roadmap() {
             status="upcoming"
           />
 
-          {/* Progreso - Próximamente */}
           <RoadmapItem
             icon={<FaChartLine />}
             title="Seguimiento de progreso"
@@ -106,9 +103,8 @@ export default function Roadmap() {
           />
         </div>
 
-        {/* Nota a pie */}
         <p className="mt-12 text-sm text-center text-text-minor-emphasis">
-          ¿Echas de menos alguna funcionalidad?{' '}
+          ¿Echas de menos alguna funcionalidad?{" "}
           <a
             href="mailto:juan@juantorres.me"
             className="font-medium text-primary hover:underline"

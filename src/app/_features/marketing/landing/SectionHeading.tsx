@@ -33,6 +33,7 @@ export default function SectionHeading({
       >
         {children}
       </h2>
+
       <div
         className={`w-14 h-1 mt-5 rounded-full bg-gradient-to-r from-primary to-primary-light ${align === "center" ? "mx-auto" : ""}`}
       />

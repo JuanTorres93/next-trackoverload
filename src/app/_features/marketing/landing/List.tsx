@@ -17,7 +17,7 @@ export default function List({
   itemClassName = "",
   iconClassName = "",
 }: ListProps) {
-  // Icono por defecto si no se proporciona uno
+  // Default icon if none is provided
   const defaultIcon = (
     <span
       className={twMerge(
@@ -37,6 +37,7 @@ export default function List({
           <span className="flex items-center h-6">
             {icon ? icon : defaultIcon}
           </span>
+
           <span className="flex-1 leading-6 text-text-minor-emphasis">
             {item}
           </span>

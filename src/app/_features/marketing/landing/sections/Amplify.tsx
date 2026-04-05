@@ -20,10 +20,12 @@ function Amplify() {
           <div className="p-8 border rounded-2xl border-rose-100 bg-rose-50/40">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-1 h-6 rounded bg-rose-400 shrink-0" />
+
               <h3 className="text-lg font-semibold text-rose-800">
                 Comportamientos que debilitan
               </h3>
             </div>
+
             <FeatureList
               items={[
                 "Criticar a los demás.",
@@ -34,6 +36,7 @@ function Amplify() {
               ]}
               variant="default"
             />
+
             <p className="mt-5 text-sm leading-relaxed text-rose-700/80">
               Todos estos comportamientos van alimentándose de tu confianza. Lo
               hacen lentamente, pero sin pausa.
@@ -43,10 +46,12 @@ function Amplify() {
           <div className="p-8 border rounded-2xl border-primary/20 bg-primary/5">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-1 h-6 rounded bg-primary shrink-0" />
+
               <h3 className="text-lg font-semibold text-primary-shade">
                 Comportamientos que fortalecen
               </h3>
             </div>
+
             <FeatureList
               items={[
                 "Intentar comprender la situación de la otra persona antes de criticarle.",
@@ -57,6 +62,7 @@ function Amplify() {
               ]}
               variant="check"
             />
+
             <p className="mt-5 text-sm leading-relaxed text-primary/80">
               Estas acciones alimentan las creencias de que eres alguien que
               merece la pena, de que eres alguien capaz de superar problemas.

@@ -1,10 +1,12 @@
-'use server';
+"use server";
 
-import ButtonPrimary from '@/app/_ui/buttons/ButtonPrimary';
-import Logo from '@/app/_ui/Logo';
-import { getCurrentUserId } from '@/app/_utils/auth/getCurrentUserId';
-import ButtonCTA from './ButtonCTA';
-import Link from 'next/link';
+import Link from "next/link";
+
+import Logo from "@/app/_ui/Logo";
+import ButtonPrimary from "@/app/_ui/buttons/ButtonPrimary";
+import { getCurrentUserId } from "@/app/_utils/auth/getCurrentUserId";
+
+import ButtonCTA from "./ButtonCTA";
 
 async function NavBar({ ...props }: React.HTMLAttributes<HTMLElement>) {
   const { className, ...rest } = props;
@@ -41,6 +43,7 @@ async function NavBar({ ...props }: React.HTMLAttributes<HTMLElement>) {
             <span className="hidden max-bp-marketing-navbar-mobile:inline">
               Login
             </span>
+
             <span className="inline max-bp-marketing-navbar-mobile:hidden">
               Inicia sesión
             </span>
