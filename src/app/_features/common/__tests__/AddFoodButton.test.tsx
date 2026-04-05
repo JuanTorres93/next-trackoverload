@@ -6,9 +6,11 @@ import { RecipeDTO } from "@/application-layer/dtos/RecipeDTO";
 import { MemoryDaysRepo } from "@/infra/repos/memory/MemoryDaysRepo";
 import { MemoryFakeMealsRepo } from "@/infra/repos/memory/MemoryFakeMealsRepo";
 import { MemoryMealsRepo } from "@/infra/repos/memory/MemoryMealsRepo";
+import { MemoryRecipesRepo } from "@/infra/repos/memory/MemoryRecipesRepo";
 import { AppDaysRepo } from "@/interface-adapters/app/repos/AppDaysRepo";
 import { AppFakeMealsRepo } from "@/interface-adapters/app/repos/AppFakeMealsRepo";
 import { AppMealsRepo } from "@/interface-adapters/app/repos/AppMealsRepo";
+import { AppRecipesRepo } from "@/interface-adapters/app/repos/AppRecipesRepo";
 
 import { createMockDay } from "../../../../../tests/mocks/days";
 import { createMockRecipes } from "../../../../../tests/mocks/recipes";
@@ -18,6 +20,7 @@ import AddFoodButton from "../AddFoodButton";
 const daysRepo = AppDaysRepo as MemoryDaysRepo;
 const mealsRepo = AppMealsRepo as MemoryMealsRepo;
 const fakeMealsRepo = AppFakeMealsRepo as MemoryFakeMealsRepo;
+const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
 
 describe("AddFoodButton", () => {
   let mockRecipesForApi: RecipeDTO[] = [];
@@ -34,6 +37,7 @@ describe("AddFoodButton", () => {
     daysRepo.clearForTesting();
     mealsRepo.clearForTesting();
     fakeMealsRepo.clearForTesting();
+    recipesRepo.clearForTesting();
     mockRecipesForApi = [];
   });
 
@@ -62,13 +66,13 @@ describe("AddFoodButton", () => {
   });
 
   it("adds a meal from a recipe to the day", async () => {
+    const { mockRecipes } = await createMockRecipes();
     const day = await createMockDay(1, 1, 2000, {
       createWithMeal: true,
+      mealRecipeId: mockRecipes[0].id,
       returnAssembled: true,
     });
     const originalMealCount = day.meals.length;
-    const { mockRecipes } = await createMockRecipes();
-    mockRecipesForApi = mockRecipes;
 
     render(<AddFoodButton dayId={day.id} />);
 

@@ -1,7 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { HiLightningBolt } from "react-icons/hi";
@@ -16,6 +14,7 @@ import AddFakeMealModal from "../fakemeal/AddFakeMealModal";
 import FakeMeal from "../fakemeal/FakeMeal";
 import MealLine from "../meal/MealLine";
 import SelectRecipeModal from "../recipe/SelectRecipeModal";
+import { addMealsToDay } from "./actions";
 
 function DaySummary({
   dayId,
@@ -28,18 +27,10 @@ function DaySummary({
   onSelectDay?: (dayId: string) => void;
   isSelected?: boolean;
 }) {
-  const router = useRouter();
-
   const { isToday, isPast } = getAssembledDayInfo(assembledDay);
 
   async function addMealsRequest(recipesIds: string[]) {
-    await fetch("/api/day/addMultipleMeals", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ dayId, recipeIds: recipesIds }),
-      cache: "no-store",
-    });
-    router.refresh();
+    await addMealsToDay(dayId, recipesIds);
   }
 
   return (

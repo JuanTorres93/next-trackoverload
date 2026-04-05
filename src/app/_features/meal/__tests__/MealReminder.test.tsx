@@ -6,9 +6,11 @@ import { RecipeDTO } from "@/application-layer/dtos/RecipeDTO";
 import { MemoryDaysRepo } from "@/infra/repos/memory/MemoryDaysRepo";
 import { MemoryFakeMealsRepo } from "@/infra/repos/memory/MemoryFakeMealsRepo";
 import { MemoryMealsRepo } from "@/infra/repos/memory/MemoryMealsRepo";
+import { MemoryRecipesRepo } from "@/infra/repos/memory/MemoryRecipesRepo";
 import { AppDaysRepo } from "@/interface-adapters/app/repos/AppDaysRepo";
 import { AppFakeMealsRepo } from "@/interface-adapters/app/repos/AppFakeMealsRepo";
 import { AppMealsRepo } from "@/interface-adapters/app/repos/AppMealsRepo";
+import { AppRecipesRepo } from "@/interface-adapters/app/repos/AppRecipesRepo";
 
 import { createMockDay } from "../../../../../tests/mocks/days";
 import { createMockRecipes } from "../../../../../tests/mocks/recipes";
@@ -18,6 +20,7 @@ import MealReminder from "../MealReminder";
 const mealsRepo = AppMealsRepo as MemoryMealsRepo;
 const daysRepo = AppDaysRepo as MemoryDaysRepo;
 const fakeMealsRepo = AppFakeMealsRepo as MemoryFakeMealsRepo;
+const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
 
 async function setup() {
   const dayWithMeal = await createMockDay(1, 1, 2000, {
@@ -38,6 +41,7 @@ describe("MealReminder", () => {
     mealsRepo.clearForTesting();
     daysRepo.clearForTesting();
     fakeMealsRepo.clearForTesting();
+    recipesRepo.clearForTesting();
   });
 
   it("should toggle isEaten to true when clicking an uneaten meal", async () => {
@@ -71,7 +75,7 @@ describe("MealReminder", () => {
 });
 
 describe("MealReminder - food replacement", () => {
-  let mockRecipesForApi: RecipeDTO[] = [];
+  const mockRecipesForApi: RecipeDTO[] = [];
 
   createServer([
     {
@@ -85,6 +89,7 @@ describe("MealReminder - food replacement", () => {
     mealsRepo.clearForTesting();
     daysRepo.clearForTesting();
     fakeMealsRepo.clearForTesting();
+    recipesRepo.clearForTesting();
   });
 
   it("shows replacement type selection modal when replace button is clicked", async () => {
@@ -106,13 +111,13 @@ describe("MealReminder - food replacement", () => {
   });
 
   it("replaces a meal with a meal from another recipe", async () => {
+    const { mockRecipes } = await createMockRecipes();
     const dayWithMeal = await createMockDay(1, 1, 2000, {
       createWithMeal: true,
+      mealRecipeId: mockRecipes[0].id,
       returnAssembled: true,
     });
     const originalMealId = dayWithMeal.meals[0].id;
-    const { mockRecipes } = await createMockRecipes();
-    mockRecipesForApi = mockRecipes;
 
     render(<MealReminder meal={dayWithMeal.meals[0]} dayId={dayWithMeal.id} />);
 

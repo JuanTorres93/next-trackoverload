@@ -28,6 +28,7 @@ const fakeMealsRepo = AppFakeMealsRepo as MemoryFakeMealsRepo;
 type CreateMockDayOptions = {
   alternativeUserProps?: Partial<UserCreateProps>;
   createWithMeal?: boolean;
+  mealRecipeId?: string;
   fakeMeals?: Partial<FakeMealCreateProps>;
   returnAssembled?: boolean;
 };
@@ -51,6 +52,7 @@ export async function createMockDay(
   {
     alternativeUserProps,
     createWithMeal = false,
+    mealRecipeId,
     fakeMeals,
     returnAssembled = false,
   }: CreateMockDayOptions = {},
@@ -72,8 +74,8 @@ export async function createMockDay(
   const createdDay = await AppCreateDayUsecase.execute(dayPropsForUseCase);
 
   if (createWithMeal) {
-    const mockRecipes = await createMockRecipes();
-    const recipeIdToAdd = mockRecipes.mockRecipes[0].id;
+    const recipeIdToAdd =
+      mealRecipeId ?? (await createMockRecipes()).mockRecipes[0].id;
 
     const addMealsToDayProps: AddMultipleMealsToDayUsecaseRequest = {
       dayId: createdDay.id,

@@ -1,8 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { TEST_USER_ID } from "@/../tests/mocks/nextjs";
-import { RecipeDTO } from "@/application-layer/dtos/RecipeDTO";
 import { MemoryDaysRepo } from "@/infra/repos/memory/MemoryDaysRepo";
 import { MemoryFakeMealsRepo } from "@/infra/repos/memory/MemoryFakeMealsRepo";
 import { MemoryMealsRepo } from "@/infra/repos/memory/MemoryMealsRepo";
@@ -10,12 +8,8 @@ import { AppDaysRepo } from "@/interface-adapters/app/repos/AppDaysRepo";
 import { AppFakeMealsRepo } from "@/interface-adapters/app/repos/AppFakeMealsRepo";
 import { AppMealsRepo } from "@/interface-adapters/app/repos/AppMealsRepo";
 
-import {
-  createEmptyTestDay,
-  getValidAssembledDayDTO,
-} from "../../../../../tests/createProps/dayTestProps";
+import { createMockDay } from "../../../../../tests/mocks/days";
 import { createMockRecipes } from "../../../../../tests/mocks/recipes";
-import { createServer } from "../../../../../tests/mocks/server";
 import DaySummary from "../DaySummary";
 
 const mealsRepo = AppMealsRepo as MemoryMealsRepo;
@@ -24,36 +18,20 @@ const daysRepo = AppDaysRepo as MemoryDaysRepo;
 
 const { mockRecipes } = await createMockRecipes();
 
-createServer(
-  [
-    {
-      path: "/api/recipe/getAll",
-      method: "get",
-      response: () => {
-        const allRecipes: RecipeDTO[] = [...mockRecipes];
-
-        return { status: "success", data: allRecipes };
-      },
-    },
-  ],
-  {
-    onUnhandledRequest: "bypass",
-  },
-);
-
 async function setup() {
-  const day = createEmptyTestDay({
-    userId: TEST_USER_ID,
+  const assembledDayDTO = await createMockDay(1, 1, 2000, {
+    createWithMeal: true,
+    mealRecipeId: mockRecipes[0].id,
+    fakeMeals: {
+      name: "Fake Meal 1",
+      calories: 100,
+      protein: 10,
+    },
+    returnAssembled: true,
   });
 
-  const { assembledDayDTO, meal, fakeMeal } = getValidAssembledDayDTO();
-
-  day.addMeal(meal.id);
-  day.addFakeMeal(fakeMeal.id);
-
-  await mealsRepo.saveMeal(meal);
-  await fakeMealsRepo.saveFakeMeal(fakeMeal);
-  await daysRepo.saveDay(day);
+  const meal = assembledDayDTO.meals[0];
+  const fakeMeal = assembledDayDTO.fakeMeals[0];
 
   render(
     <DaySummary dayId={assembledDayDTO.id} assembledDay={assembledDayDTO} />,
@@ -78,6 +56,12 @@ async function setup() {
 }
 
 describe("DaySummary", () => {
+  afterEach(() => {
+    mealsRepo.clearForTesting();
+    fakeMealsRepo.clearForTesting();
+    daysRepo.clearForTesting();
+  });
+
   it("should show meals info", async () => {
     const { meal } = await setup();
 
@@ -143,15 +127,11 @@ describe("DaySummary", () => {
 
     await userEvent.click(addFoodButton);
 
-    await waitFor(async () => {
-      for (const recipe of mockRecipes) {
-        const recipeName = recipe.name;
-
-        const recipeHTML = await screen.findByText(new RegExp(recipeName, "i"));
-
-        expect(recipeHTML).toBeInTheDocument();
-      }
-    });
+    for (const recipe of mockRecipes) {
+      await screen.findByRole("heading", {
+        name: new RegExp(recipe.name, "i"),
+      });
+    }
   });
 
   it("add meals modal button should be disabled by default", async () => {
@@ -177,11 +157,11 @@ describe("DaySummary", () => {
 
     expect(addMealsButton).toBeDisabled();
 
-    const firstRecipeElement = await screen.findByText(
-      new RegExp(mockRecipes[0].name, "i"),
-    );
+    const firstRecipe = await screen.findByRole("heading", {
+      name: new RegExp(mockRecipes[0].name, "i"),
+    });
 
-    await userEvent.click(firstRecipeElement);
+    await userEvent.click(firstRecipe);
 
     expect(addMealsButton).toBeEnabled();
   });
@@ -214,41 +194,28 @@ describe("DaySummary", () => {
     });
   });
 
-  it("should send post request to add a meal", async () => {
-    const { addFoodButton, assembledDayDTO } = await setup();
-
-    const fetchSpy = vi.spyOn(global, "fetch");
+  it("should add a meal in repos", async () => {
+    const { addFoodButton } = await setup();
 
     await userEvent.click(addFoodButton);
 
-    const firstRecipeElement = await screen.findByText(
-      new RegExp(mockRecipes[0].name, "i"),
-    );
+    const firstRecipe = await screen.findByRole("heading", {
+      name: new RegExp(mockRecipes[0].name, "i"),
+    });
 
-    await userEvent.click(firstRecipeElement);
+    await userEvent.click(firstRecipe);
 
     const addMealsButton = screen.getByRole("button", {
       name: /añadir comidas/i,
     });
 
+    const initialMealsCount = mealsRepo.countForTesting();
+
     await userEvent.click(addMealsButton);
 
     await waitFor(() => {
-      // First time is for fetching recipes
-      // Second time is for adding meal
-      expect(fetchSpy).toHaveBeenCalledTimes(2);
+      expect(mealsRepo.countForTesting()).toBe(initialMealsCount + 1);
     });
-
-    const [, options] = fetchSpy.mock.calls[1];
-
-    const body = JSON.parse(options!.body as string);
-
-    expect(body).toEqual(
-      expect.objectContaining({
-        dayId: assembledDayDTO.id,
-        recipeIds: [mockRecipes[0].id],
-      }),
-    );
   });
 
   it("should show day total calories", async () => {

@@ -1,14 +1,15 @@
-import ButtonNew from '@/app/_ui/buttons/ButtonNew';
-import SearchInput from '@/app/_ui/SearchInput';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { HiMagnifyingGlass } from 'react-icons/hi2';
-import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
-import { JSENDResponse } from '@/app/_types/JSEND';
-import { InfrastructureError } from '@/domain/common/errors';
-import { showErrorToast } from '@/app/_ui/showErrorToast';
-import { useRecipeSearch } from './useRecipeSearch';
-import RecipesGrid from './RecipesGrid';
+import { useEffect, useState } from "react";
+
+import { HiMagnifyingGlass } from "react-icons/hi2";
+
+import SearchInput from "@/app/_ui/SearchInput";
+import ButtonNew from "@/app/_ui/buttons/ButtonNew";
+import { showErrorToast } from "@/app/_ui/showErrorToast";
+import { RecipeDTO } from "@/application-layer/dtos/RecipeDTO";
+
+import RecipesGrid from "./RecipesGrid";
+import { getAllRecipesForLoggedInUser } from "./actions";
+import { useRecipeSearch } from "./useRecipeSearch";
 
 function SelectRecipeForm({
   addMealsRequest,
@@ -17,7 +18,6 @@ function SelectRecipeForm({
   addMealsRequest: (recipesIds: string[]) => Promise<void>;
   onSuccess?: () => void;
 }) {
-  const router = useRouter();
   const [recipes, setRecipes] = useState<RecipeDTO[]>([]);
   const [selectedRecipesIds, setSelectedRecipesIds] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -43,24 +43,10 @@ function SelectRecipeForm({
       setIsFetching(true);
 
       try {
-        const response = await fetch('/api/recipe/getAll');
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch recipes');
-        }
-
-        const jsendResponse: JSENDResponse<RecipeDTO[]> = await response.json();
-
-        if (
-          jsendResponse.status === 'fail' ||
-          jsendResponse.status === 'error'
-        ) {
-          throw new InfrastructureError();
-        }
-
-        setRecipes(jsendResponse.data);
+        const recipes = await getAllRecipesForLoggedInUser();
+        setRecipes(recipes);
       } catch {
-        showErrorToast('Error al cargar las recetas.');
+        showErrorToast("Error al cargar las recetas.");
       } finally {
         setIsLoading(false);
         setIsFetching(false);
@@ -78,9 +64,8 @@ function SelectRecipeForm({
       await addMealsRequest(selectedRecipesIds);
 
       onSuccess?.();
-      router.refresh();
     } catch {
-      showErrorToast('Error al añadir las comidas.');
+      showErrorToast("Error al añadir las comidas.");
     } finally {
       setIsLoading(false);
       setIsAddingMeals(false);
@@ -90,18 +75,18 @@ function SelectRecipeForm({
   const addButtonLabel =
     numberOfSelectedRecipes > 0
       ? `Añadir comidas (${numberOfSelectedRecipes})`
-      : 'Añadir comidas';
+      : "Añadir comidas";
 
   return (
     <div className="flex flex-col w-[min(80dvw,48rem)] max-h-[85dvh] max-bp-add-multiple-meals-modal:w-[90dvw]">
       {/* Header — right-padded to avoid overlapping the Modal's close button */}
-      <div className="flex items-center justify-between gap-4 px-7 pt-7 pb-5 pr-12 shrink-0">
+      <div className="flex items-center justify-between gap-4 pb-5 pr-12 px-7 pt-7 shrink-0">
         <div>
           <h2 className="text-xl font-bold text-text">Tus recetas</h2>
           <p className="text-sm text-text-minor-emphasis mt-0.5">
             {isFetching
-              ? 'Cargando...'
-              : `${recipes.length} receta${recipes.length !== 1 ? 's' : ''}`}
+              ? "Cargando..."
+              : `${recipes.length} receta${recipes.length !== 1 ? "s" : ""}`}
           </p>
         </div>
         <ButtonNew
@@ -116,13 +101,13 @@ function SelectRecipeForm({
           <span className="hidden max-bp-add-multiple-meals-modal:inline">
             {numberOfSelectedRecipes > 0
               ? `Añadir comidas (${numberOfSelectedRecipes})`
-              : 'Añadir comidas'}
+              : "Añadir comidas"}
           </span>
         </ButtonNew>
       </div>
 
       {/* Search */}
-      <div className="px-7 pb-5 shrink-0">
+      <div className="pb-5 px-7 shrink-0">
         <SearchInput
           className="w-full"
           placeholder="Buscar receta..."
@@ -131,10 +116,10 @@ function SelectRecipeForm({
         />
       </div>
 
-      <div className="mx-7 h-px bg-border/30 shrink-0" />
+      <div className="h-px mx-7 bg-border/30 shrink-0" />
 
       {/* Scrollable recipe list */}
-      <div className="flex-1 min-h-0 overflow-y-auto px-7 py-5">
+      <div className="flex-1 min-h-0 py-5 overflow-y-auto px-7">
         {isAddingMeals && (
           <p className="py-8 text-sm text-center text-text-minor-emphasis">
             Añadiendo comidas...
@@ -151,7 +136,7 @@ function SelectRecipeForm({
           <div className="flex flex-col items-center gap-2 py-12 text-text-minor-emphasis">
             <HiMagnifyingGlass className="text-3xl opacity-30" />
             <p className="text-sm">
-              {query ? `Sin resultados para "${query}"` : 'No hay recetas'}
+              {query ? `Sin resultados para "${query}"` : "No hay recetas"}
             </p>
           </div>
         )}
