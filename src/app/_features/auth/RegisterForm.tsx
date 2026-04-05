@@ -1,14 +1,16 @@
-'use client';
-import AuthLink from '@/app/_features/auth/AuthLink';
-import { useFormSetup } from '@/app/_hooks/useFormSetup';
-import ButtonPrimary from '@/app/_ui/buttons/ButtonPrimary';
-import Checkbox from '@/app/_ui/Checkbox';
-import FormEntry from '@/app/_ui/form/FormEntry';
-import Input from '@/app/_ui/Input';
-import PasswordInput from '@/app/_ui/PasswordInput';
-import { showErrorToast } from '@/app/_ui/showErrorToast';
-import SpinnerMini from '@/app/_ui/SpinnerMini';
-import { useRouter } from 'next/navigation';
+"use client";
+import { useRouter } from "next/navigation";
+
+import AuthCard from "@/app/_features/auth/AuthCard";
+import AuthLink from "@/app/_features/auth/AuthLink";
+import { useFormSetup } from "@/app/_hooks/useFormSetup";
+import Checkbox from "@/app/_ui/Checkbox";
+import Input from "@/app/_ui/Input";
+import PasswordInput from "@/app/_ui/PasswordInput";
+import SpinnerMini from "@/app/_ui/SpinnerMini";
+import ButtonPrimary from "@/app/_ui/buttons/ButtonPrimary";
+import FormEntry from "@/app/_ui/form/FormEntry";
+import { showErrorToast } from "@/app/_ui/showErrorToast";
 
 export type RegisterFormState = {
   name: string;
@@ -18,9 +20,9 @@ export type RegisterFormState = {
 };
 
 const INITIAL_FORM_STATE: RegisterFormState = {
-  name: '',
-  email: '',
-  plainPassword: '',
+  name: "",
+  email: "",
+  plainPassword: "",
   acceptTerms: false,
 };
 
@@ -42,10 +44,10 @@ function RegisterForm() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formState),
       });
@@ -54,9 +56,9 @@ function RegisterForm() {
         const jsonResponse = await response.json();
 
         const errorMessage =
-          jsonResponse.status === 'fail'
-            ? Object.values(jsonResponse.data).join(' ')
-            : jsonResponse.message || 'Error al crear el usuario.';
+          jsonResponse.status === "fail"
+            ? Object.values(jsonResponse.data).join(" ")
+            : jsonResponse.message || "Error al crear el usuario.";
 
         showErrorToast(errorMessage);
 
@@ -67,10 +69,10 @@ function RegisterForm() {
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       router.refresh();
-      router.push('/app');
+      router.push("/app");
     } catch {
       showErrorToast(
-        'Error al crear el usuario. Por favor, inténtalo de nuevo.',
+        "Error al crear el usuario. Por favor, inténtalo de nuevo.",
       );
     } finally {
       setIsLoading(false);
@@ -78,11 +80,17 @@ function RegisterForm() {
   }
 
   return (
-    <div className="w-full p-10 rounded-xl max-w-110 bg-text-light">
-      <header className="mb-6 text-center">
-        <h2 className="mb-2 text-2xl font-semibold">Crea tu cuenta</h2>
-      </header>
-
+    <AuthCard
+      title="Crea tu cuenta"
+      footer={
+        <>
+          ¿Ya tienes una cuenta?{" "}
+          <AuthLink className="inline" href="/auth/login">
+            Inicia sesión
+          </AuthLink>
+        </>
+      }
+    >
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <FormEntry labelText="Nombre" htmlFor="name">
           <Input
@@ -91,7 +99,7 @@ function RegisterForm() {
             disabled={isLoading}
             value={formState.name}
             placeholder="Nombre"
-            onChange={(e) => setField('name', e.target.value)}
+            onChange={(e) => setField("name", e.target.value)}
             required
           />
         </FormEntry>
@@ -103,7 +111,7 @@ function RegisterForm() {
             value={formState.email}
             disabled={isLoading}
             placeholder="Email"
-            onChange={(e) => setField('email', e.target.value)}
+            onChange={(e) => setField("email", e.target.value)}
             required
           />
         </FormEntry>
@@ -115,7 +123,7 @@ function RegisterForm() {
             placeholder="Contr@s3ña"
             disabled={isLoading}
             value={formState.plainPassword}
-            onChange={(e) => setField('plainPassword', e.target.value)}
+            onChange={(e) => setField("plainPassword", e.target.value)}
             required
           />
         </FormEntry>
@@ -123,7 +131,7 @@ function RegisterForm() {
         <FormEntry
           labelText={
             <span>
-              Acepto los{' '}
+              Acepto los{" "}
               <AuthLink href="/legal/terms-and-conditions" target="_blank">
                 términos y condiciones
               </AuthLink>
@@ -137,24 +145,21 @@ function RegisterForm() {
             id="acceptTerms"
             checked={formState.acceptTerms}
             disabled={isLoading}
-            onChange={(e) => setField('acceptTerms', e.target.checked)}
+            onChange={(e) => setField("acceptTerms", e.target.checked)}
             required
           />
         </FormEntry>
 
-        <ButtonPrimary className="mt-2" type="submit" disabled={isFormInvalid}>
+        <ButtonPrimary
+          className="mt-2 w-full justify-center bg-primary text-text-light hover:bg-primary-light hover:border-primary-light"
+          type="submit"
+          disabled={isFormInvalid}
+        >
           {isLoading && <SpinnerMini className="mx-auto" />}
-          {!isLoading && 'Registrarse'}
+          {!isLoading && "Registrarse"}
         </ButtonPrimary>
       </form>
-
-      <h3 className="mt-4 text-sm text-center">
-        ¿Ya tienes una cuenta?{' '}
-        <AuthLink className="inline" href="/auth/login">
-          Inicia sesión
-        </AuthLink>
-      </h3>
-    </div>
+    </AuthCard>
   );
 }
 

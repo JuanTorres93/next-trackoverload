@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 
+import AuthCard from "@/app/_features/auth/AuthCard";
 import AuthLink from "@/app/_features/auth/AuthLink";
 import { useFormSetup } from "@/app/_hooks/useFormSetup";
 import Input from "@/app/_ui/Input";
@@ -67,18 +68,17 @@ function LoginForm() {
   }
 
   return (
-    <div className="w-full p-10 rounded-xl max-w-110 bg-text-light">
-      <header className="mb-6 text-center">
-        <h2 className="mb-2 text-2xl font-semibold">Inicia sesión</h2>
-
-        <h3 className="text-sm ">
+    <AuthCard
+      title="Inicia sesión"
+      subtitle={
+        <>
           ¿No tienes una cuenta?{" "}
           <AuthLink className="inline" href="/auth/register">
             Regístrate
           </AuthLink>
-        </h3>
-      </header>
-
+        </>
+      }
+    >
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <FormEntry labelText="Email" htmlFor="email">
           <Input
@@ -104,12 +104,16 @@ function LoginForm() {
           />
         </FormEntry>
 
-        <ButtonPrimary className="mt-2" type="submit" disabled={isFormInvalid}>
+        <ButtonPrimary
+          className="mt-2 w-full justify-center bg-primary text-text-light hover:bg-primary-light hover:border-primary-light"
+          type="submit"
+          disabled={isFormInvalid}
+        >
           {isLoading && <SpinnerMini className="mx-auto" />}
           {!isLoading && "Iniciar sesión"}
         </ButtonPrimary>
       </form>
-    </div>
+    </AuthCard>
   );
 }
 

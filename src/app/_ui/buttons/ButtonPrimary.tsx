@@ -1,7 +1,8 @@
-import { twMerge } from 'tailwind-merge';
+import Link from "next/link";
 
-import Link from 'next/link';
-import TextRegular from '../typography/TextRegular';
+import { twMerge } from "tailwind-merge";
+
+import TextRegular from "../typography/TextRegular";
 
 function ButtonPrimary({
   children,
@@ -13,14 +14,15 @@ function ButtonPrimary({
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   const { className, disabled, ...restProps } = props;
 
-  // Separate disabled style because Link doesn't support the disabled attribute
+  // Separate disabled style because Link doesn't support the disabled attribute.
+  // Applied AFTER className so it always wins regardless of variant overrides.
   const disabledStyle =
-    'text-text-minor-emphasis! border-text-minor-emphasis hover:bg-transparent cursor-not-allowed';
+    "opacity-50 cursor-not-allowed hover:cursor-not-allowed hover:bg-transparent hover:border-current hover:text-current";
 
   const buttonStyle = twMerge(
     `px-4 py-2 text-sm font-semibold text-primary transition-all border border-primary rounded-xl hover:cursor-pointer hover:bg-primary hover:text-text-light`,
-    disabled ? disabledStyle : '',
     className,
+    disabled ? disabledStyle : "",
   );
 
   if (href) {
@@ -28,7 +30,7 @@ function ButtonPrimary({
       <TextRegular>
         <Link
           href={href}
-          className={twMerge(buttonStyle, 'inline-block')}
+          className={twMerge(buttonStyle, "inline-block")}
           onClick={
             restProps.onClick as unknown as React.MouseEventHandler<HTMLAnchorElement>
           }
