@@ -32,6 +32,7 @@ function WeightInput({
 
       <Input
         id="input-weight"
+        type="number"
         data-testid="input-weight"
         containerClassName="border border-border/30 bg-input-background rounded-lg px-3 py-1.5 items-baseline gap-2 w-full"
         className="text-3xl max-bp-navbar-mobile:text-2xl text-text/80"

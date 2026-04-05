@@ -1,28 +1,26 @@
-import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
-import { createMockUser } from '../../../../../tests/mocks/user';
+import { TEST_USER_ID } from "@/../tests/mocks/nextjs";
+import { MemoryDaysRepo } from "@/infra/repos/memory/MemoryDaysRepo";
+import { MemoryFakeMealsRepo } from "@/infra/repos/memory/MemoryFakeMealsRepo";
+import { AppDaysRepo } from "@/interface-adapters/app/repos/AppDaysRepo";
+import { AppFakeMealsRepo } from "@/interface-adapters/app/repos/AppFakeMealsRepo";
 
-import { MemoryDaysRepo } from '@/infra/repos/memory/MemoryDaysRepo';
-import { MemoryFakeMealsRepo } from '@/infra/repos/memory/MemoryFakeMealsRepo';
-import { AppDaysRepo } from '@/interface-adapters/app/repos/AppDaysRepo';
-import { AppFakeMealsRepo } from '@/interface-adapters/app/repos/AppFakeMealsRepo';
+import { createEmptyTestDay } from "../../../../../tests/createProps/dayTestProps";
+import { createServer } from "../../../../../tests/mocks/server";
+import { createMockUser } from "../../../../../tests/mocks/user";
+import { mockDecodeFromConstraints } from "../../../../../tests/mocks/zxing";
+import { SCAN_WINDOW_SIZE } from "../../ingredient/ZXingBarcodeScanner";
+import AddFakeMealForm from "../AddFakeMealForm";
 
 const fakeMealsRepo = AppFakeMealsRepo as MemoryFakeMealsRepo;
 const daysRepo = AppDaysRepo as MemoryDaysRepo;
 
-import { TEST_USER_ID } from '@/../tests/mocks/nextjs';
-
-import { createEmptyTestDay } from '../../../../../tests/createProps/dayTestProps';
-import AddFakeMealForm from '../AddFakeMealForm';
-import { mockDecodeFromConstraints } from '../../../../../tests/mocks/zxing';
-import { SCAN_WINDOW_SIZE } from '../../ingredient/ZXingBarcodeScanner';
-import { createServer } from '../../../../../tests/mocks/server';
-
 await createMockUser();
 
-const MOCK_BARCODE = '8480000543745';
-const MOCK_INGREDIENT_NAME = 'Leche Entera';
+const MOCK_BARCODE = "8480000543745";
+const MOCK_INGREDIENT_NAME = "Leche Entera";
 const MOCK_CALORIES_PER_100G = 66;
 const MOCK_PROTEIN_PER_100G = 3;
 
@@ -30,9 +28,9 @@ createServer(
   [
     {
       path: `/api/ingredient/barcode/:code`,
-      method: 'get',
+      method: "get",
       response: () => ({
-        status: 'success',
+        status: "success",
         data: [
           {
             ingredient: {
@@ -45,14 +43,14 @@ createServer(
             },
             externalRef: {
               externalId: MOCK_BARCODE,
-              source: 'openfoodfacts',
+              source: "openfoodfacts",
             },
           },
         ],
       }),
     },
   ],
-  { onUnhandledRequest: 'bypass' },
+  { onUnhandledRequest: "bypass" },
 );
 
 async function setup() {
@@ -69,8 +67,8 @@ async function setup() {
   const nameInput = screen.getByLabelText(/nombre de la comida/i);
   const caloriesInput = screen.getByLabelText(/calorías/i);
   const proteinsInput = screen.getByLabelText(/proteínas/i);
-  const submitButton = screen.getByRole('button', { name: /añadir comida/i });
-  const barcodeScannerButton = screen.getByTestId('open-scanner-button');
+  const submitButton = screen.getByRole("button", { name: /añadir comida/i });
+  const barcodeScannerButton = screen.getByTestId("open-scanner-button");
 
   return {
     nameInput,
@@ -96,20 +94,20 @@ function simulateBarcodeScan(barcode: string) {
   );
 }
 
-describe('AddFakeMealForm', () => {
-  it('does not show quantity field before scanning', async () => {
+describe("AddFakeMealForm", () => {
+  it("does not show quantity field before scanning", async () => {
     await setup();
 
     expect(screen.queryByLabelText(/cantidad/i)).not.toBeInTheDocument();
   });
 
-  it('creates fake meal on submit', async () => {
+  it("creates fake meal on submit", async () => {
     const { nameInput, caloriesInput, proteinsInput, submitButton } =
       await setup();
 
-    await userEvent.type(nameInput, 'Fake Meal Test');
-    await userEvent.type(caloriesInput, '500');
-    await userEvent.type(proteinsInput, '30');
+    await userEvent.type(nameInput, "Fake Meal Test");
+    await userEvent.type(caloriesInput, "500");
+    await userEvent.type(proteinsInput, "30");
     await userEvent.click(submitButton);
 
     await waitFor(async () => {
@@ -122,7 +120,7 @@ describe('AddFakeMealForm', () => {
     });
   });
 
-  it('fills name, calories and proteins after barcode scan', async () => {
+  it("fills name, calories and proteins after barcode scan", async () => {
     simulateBarcodeScan(MOCK_BARCODE);
 
     const { barcodeScannerButton, nameInput, caloriesInput, proteinsInput } =
@@ -133,12 +131,12 @@ describe('AddFakeMealForm', () => {
     // Default quantity is 100g so values should equal the per-100g values
     await waitFor(() => {
       expect(nameInput).toHaveValue(MOCK_INGREDIENT_NAME);
-      expect(caloriesInput).toHaveValue(MOCK_CALORIES_PER_100G);
-      expect(proteinsInput).toHaveValue(MOCK_PROTEIN_PER_100G);
+      expect(caloriesInput).toHaveValue(MOCK_CALORIES_PER_100G.toString());
+      expect(proteinsInput).toHaveValue(MOCK_PROTEIN_PER_100G.toString());
     });
   });
 
-  it('locks calories and proteins after barcode scan', async () => {
+  it("locks calories and proteins after barcode scan", async () => {
     simulateBarcodeScan(MOCK_BARCODE);
 
     const { barcodeScannerButton, caloriesInput, proteinsInput } =
@@ -152,7 +150,7 @@ describe('AddFakeMealForm', () => {
     });
   });
 
-  it('recalculates calories and proteins when quantity changes after barcode scan', async () => {
+  it("recalculates calories and proteins when quantity changes after barcode scan", async () => {
     simulateBarcodeScan(MOCK_BARCODE);
 
     const { barcodeScannerButton, caloriesInput, proteinsInput } =
@@ -161,23 +159,23 @@ describe('AddFakeMealForm', () => {
     await userEvent.click(barcodeScannerButton);
 
     await waitFor(() => {
-      expect(caloriesInput).toHaveValue(MOCK_CALORIES_PER_100G);
+      expect(caloriesInput).toHaveValue(MOCK_CALORIES_PER_100G.toString());
     });
 
     const quantityInput = screen.getByLabelText(/cantidad/i);
     await userEvent.clear(quantityInput);
-    await userEvent.type(quantityInput, '200');
+    await userEvent.type(quantityInput, "200");
 
     const expectedCalories = Math.round((MOCK_CALORIES_PER_100G * 200) / 100);
     const expectedProtein = Math.round((MOCK_PROTEIN_PER_100G * 200) / 100);
 
     await waitFor(() => {
-      expect(caloriesInput).toHaveValue(expectedCalories);
-      expect(proteinsInput).toHaveValue(expectedProtein);
+      expect(caloriesInput).toHaveValue(expectedCalories.toString());
+      expect(proteinsInput).toHaveValue(expectedProtein.toString());
     });
   });
 
-  it('submits correct values when barcode fills the form', async () => {
+  it("submits correct values when barcode fills the form", async () => {
     simulateBarcodeScan(MOCK_BARCODE);
 
     const { barcodeScannerButton, submitButton, dayId } = await setup();

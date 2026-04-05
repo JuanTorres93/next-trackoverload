@@ -194,7 +194,7 @@ describe("RecipePage", () => {
       await userEvent.clear(quantityInput);
       await userEvent.type(quantityInput, newQuantity);
 
-      expect(quantityInput).toHaveValue(500);
+      expect(quantityInput).toHaveValue("500");
 
       await waitFor(async () => {
         const updatedIngredientLine = await recipesRepo
