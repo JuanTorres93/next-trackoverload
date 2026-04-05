@@ -1,6 +1,7 @@
 import { getGetters } from "@/application-layer/dtos/__tests__/_getGettersUtil";
 import { Day } from "@/domain/entities/day/Day";
 import { Exercise } from "@/domain/entities/exercise/Exercise";
+import { ExternalExerciseRef } from "@/domain/entities/externalexerciseref/ExternalExerciseRef";
 import { ExternalIngredientRef } from "@/domain/entities/externalingredientref/ExternalIngredientRef";
 import { FakeMeal } from "@/domain/entities/fakemeal/FakeMeal";
 import { Ingredient } from "@/domain/entities/ingredient/Ingredient";
@@ -15,6 +16,7 @@ import { WorkoutTemplateLine } from "@/domain/entities/workouttemplateline/Worko
 
 import * as dayTestProps from "./createProps/dayTestProps";
 import * as exerciseTestProps from "./createProps/exerciseTestProps";
+import * as externalExerciseRefTestProps from "./createProps/externalExerciseRefTestProps";
 import * as externalIngredientRefTestProps from "./createProps/externalIngredientRefTestProps";
 import * as fakeMealTestProps from "./createProps/fakeMealTestProps";
 import * as ingredientTestProps from "./createProps/ingredientTestProps";
@@ -42,6 +44,14 @@ const sampleExternalIngredientRef = ExternalIngredientRef.create({
 });
 export const externalIngredientRefDTOProperties = getGetters(
   sampleExternalIngredientRef,
+);
+
+// ExternalExerciseRef DTO
+const sampleExternalExerciseRef = ExternalExerciseRef.create({
+  ...externalExerciseRefTestProps.validExternalExerciseRefProps,
+});
+export const externalExerciseRefDTOProperties = getGetters(
+  sampleExternalExerciseRef,
 );
 
 // IngredientLine DTO
