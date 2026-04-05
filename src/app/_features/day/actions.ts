@@ -6,6 +6,7 @@ import { AssembledDayDTO } from "@/application-layer/dtos/AssembledDayDTO";
 import { DayDTO } from "@/application-layer/dtos/DayDTO";
 import { DayEntry } from "@/application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase";
 import { AppAddMultipleMealsToDayUsecase } from "@/interface-adapters/app/use-cases/day";
+import { AppAddMultipleMealsToMultipleDaysUsecase } from "@/interface-adapters/app/use-cases/day";
 import { AppGetAssembledDayById } from "@/interface-adapters/app/use-cases/day";
 import { AppGetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays } from "@/interface-adapters/app/use-cases/day";
 import { AppGetMultipleAssembledDaysByIds } from "@/interface-adapters/app/use-cases/day";
@@ -68,8 +69,8 @@ export async function removeMealFromDay(
     mealId,
   });
 
-  revalidatePath(`/app/meals`);
   revalidatePath(`/app`);
+  revalidatePath(`/app/meals`);
 }
 
 export async function replaceFakeMealByMealForUserInDay(
@@ -84,8 +85,8 @@ export async function replaceFakeMealByMealForUserInDay(
     recipeId,
   });
 
-  revalidatePath(`/app/meals`);
   revalidatePath(`/app`);
+  revalidatePath(`/app/meals`);
 }
 
 export async function replaceMealByAnotherMealForUserInDay(
@@ -100,8 +101,8 @@ export async function replaceMealByAnotherMealForUserInDay(
     recipeId,
   });
 
-  revalidatePath(`/app/meals`);
   revalidatePath(`/app`);
+  revalidatePath(`/app/meals`);
 }
 
 export async function replaceMealByFakeMealForUserInDay(
@@ -120,8 +121,8 @@ export async function replaceMealByFakeMealForUserInDay(
     protein,
   });
 
-  revalidatePath(`/app/meals`);
   revalidatePath(`/app`);
+  revalidatePath(`/app/meals`);
 }
 
 export async function replaceFakeMealByAnotherFakeMealForUserInDay(
@@ -140,8 +141,8 @@ export async function replaceFakeMealByAnotherFakeMealForUserInDay(
     protein,
   });
 
-  revalidatePath(`/app/meals`);
   revalidatePath(`/app`);
+  revalidatePath(`/app/meals`);
 }
 
 export async function updateUserWeightForDay(
@@ -179,6 +180,21 @@ export async function addMealsToDay(
   });
 
   revalidatePath(`/app`);
+  revalidatePath(`/app/meals`);
+}
+
+export async function addMealsToMultipleDays(
+  dayIds: string[],
+  recipeIds: string[],
+): Promise<void> {
+  await AppAddMultipleMealsToMultipleDaysUsecase.execute({
+    dayIds,
+    recipeIds,
+    userId: await getCurrentUserId(),
+  });
+
+  revalidatePath(`/app`);
+  revalidatePath(`/app/meals`);
 }
 
 export async function getLastDayWithCaloriesGoalForUser(): Promise<DayDTO | null> {

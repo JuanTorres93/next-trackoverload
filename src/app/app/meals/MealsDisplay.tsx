@@ -9,7 +9,10 @@ import { HiPlus } from "react-icons/hi2";
 
 import DaySummary from "@/app/_features/day/DaySummary";
 import WeekSelector from "@/app/_features/day/WeekSelector";
-import { AssembledDayResult } from "@/app/_features/day/actions";
+import {
+  AssembledDayResult,
+  addMealsToMultipleDays,
+} from "@/app/_features/day/actions";
 import SelectRecipeModal from "@/app/_features/recipe/SelectRecipeModal";
 import useSwipe from "@/app/_hooks/useSwipe";
 import GridAutoCols from "@/app/_ui/GridAutoCols";
@@ -47,12 +50,8 @@ function MealsDisplay({
   }
 
   async function addMealsRequest(recipesIds: string[]) {
-    const response = await fetch("/api/day/addMultipleMealsToMultipleDays", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ dayIds: selectedDaysIds, recipeIds: recipesIds }),
-    });
-    if (response.ok) setSelectedDaysIds([]);
+    await addMealsToMultipleDays(selectedDaysIds, recipesIds);
+    setSelectedDaysIds([]);
   }
 
   return (
