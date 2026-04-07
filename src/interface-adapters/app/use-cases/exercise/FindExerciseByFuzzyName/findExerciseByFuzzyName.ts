@@ -1,4 +1,5 @@
 import { FindExerciseByFuzzyNameUsecase } from "@/application-layer/use-cases/exercise/FindExerciseByFuzzyName/FindExerciseByFuzzyNameUsecase";
+import { MemoryExerciseFinder } from "@/infra/services/ExerciseFinder/MemoryExerciseFinder/MemoryExerciseFinder";
 import {
   READ_RATE_LIMITS,
   WgerExerciseFinder,
@@ -11,12 +12,18 @@ const RateLimiterImpl =
     ? MemoryTokenBucketRateLimiter
     : BottleneckRateLimiter;
 
-const exerciseFinder = new WgerExerciseFinder();
-
 const searchRateLimiter = new RateLimiterImpl(
   READ_RATE_LIMITS.searchQueries.requests,
   READ_RATE_LIMITS.searchQueries.perMinutes,
 );
 
-export const AppFindExerciseByFuzzyNameUsecase =
-  new FindExerciseByFuzzyNameUsecase(exerciseFinder, searchRateLimiter);
+export function createAppFindExerciseByFuzzyNameUsecase(
+  clientId: string,
+): FindExerciseByFuzzyNameUsecase {
+  const exerciseFinder =
+    process.env.NODE_ENV === "test"
+      ? new MemoryExerciseFinder()
+      : new WgerExerciseFinder(searchRateLimiter, clientId);
+
+  return new FindExerciseByFuzzyNameUsecase(exerciseFinder);
+}
