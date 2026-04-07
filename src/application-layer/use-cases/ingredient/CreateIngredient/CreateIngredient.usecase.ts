@@ -1,10 +1,10 @@
-import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
 import {
   IngredientDTO,
   toIngredientDTO,
-} from '@/application-layer/dtos/IngredientDTO';
-import { IdGenerator } from '@/domain/services/IdGenerator.port';
+} from "@/application-layer/dtos/IngredientDTO";
+import { Ingredient } from "@/domain/entities/ingredient/Ingredient";
+import { IngredientsRepo } from "@/domain/repos/IngredientsRepo.port";
+import { IdGenerator } from "@/domain/services/IdGenerator.port";
 
 export type CreateIngredientUsecaseRequest = {
   name: string;
