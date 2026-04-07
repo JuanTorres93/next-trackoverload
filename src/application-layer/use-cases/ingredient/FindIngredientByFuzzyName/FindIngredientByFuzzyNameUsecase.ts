@@ -1,5 +1,7 @@
-import { IngredientFinder } from "@/domain/services/IngredientFinder.port";
-import { IngredientFinderResult } from "@/domain/services/IngredientFinder.port";
+import {
+  IngredientFinder,
+  IngredientFinderResult,
+} from "@/domain/services/IngredientFinder.port";
 
 export type FindIngredientByFuzzyNameUsecaseRequest = {
   name: string;
@@ -7,7 +9,7 @@ export type FindIngredientByFuzzyNameUsecaseRequest = {
 };
 
 export class FindIngredientByFuzzyNameUsecase {
-  constructor(private ingredientFinder: IngredientFinder) {}
+  constructor(private readonly ingredientFinder: IngredientFinder) {}
 
   async execute(
     request: FindIngredientByFuzzyNameUsecaseRequest,

@@ -24,11 +24,7 @@ export class MemoryIngredientFinder implements IngredientFinder {
     const q = barcode.trim();
     if (!q) return [];
 
-    return this.seed.filter(
-      (item) =>
-        item.externalRef.externalId === q ||
-        item.externalRef.externalId?.includes(q),
-    );
+    return this.seed.filter((item) => item.externalRef.externalId === q);
   }
 }
 
