@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { JSENDResponse } from "@/app/_types/JSEND";
 import { getClientId } from "@/app/api/_common/getClientId";
 import { IngredientFinderResult } from "@/domain/services/IngredientFinder.port";
-import { createAppIngredientFinder } from "@/interface-adapters/app/services/AppIngredientFinder";
+import { createAppFindIngredientByFuzzyNameUsecase } from "@/interface-adapters/app/use-cases/ingredient/FindIngredientByFuzzyName/findIngredientByFuzzyName";
 
 export async function GET(
   request: NextRequest,
@@ -23,10 +23,10 @@ export async function GET(
     }
 
     const foundIngredients: IngredientFinderResult[] =
-      await createAppIngredientFinder(clientId).findIngredientsByFuzzyName(
-        term,
+      await createAppFindIngredientByFuzzyNameUsecase(clientId).execute({
+        name: term,
         page,
-      );
+      });
 
     return NextResponse.json(
       { status: "success", data: foundIngredients },

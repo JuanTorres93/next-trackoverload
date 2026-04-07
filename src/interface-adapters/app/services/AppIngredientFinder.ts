@@ -1,5 +1,6 @@
 import { IngredientFinder } from "@/domain/services/IngredientFinder.port";
 import { RateLimiter } from "@/domain/services/RateLimiter.port";
+import { MemoryIngredientFinder } from "@/infra/services/IngredientsFinder/MemoryIngredientFinder/MemoryIngredientFinder";
 import {
   OpenFoodFactsIngredientFinder,
   READ_RATE_LIMITS,
@@ -23,6 +24,10 @@ const barcodeRateLimiter: RateLimiter = new RateLimiterImpl(
 );
 
 export function createAppIngredientFinder(clientId: string): IngredientFinder {
+  if (process.env.NODE_ENV === "test") {
+    return new MemoryIngredientFinder();
+  }
+
   return new OpenFoodFactsIngredientFinder(
     searchRateLimiter,
     barcodeRateLimiter,
