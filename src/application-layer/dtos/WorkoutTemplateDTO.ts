@@ -1,8 +1,9 @@
-import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
+import { WorkoutTemplate } from "@/domain/entities/workouttemplate/WorkoutTemplate";
+
 import {
   WorkoutTemplateLineDTO,
   toWorkoutTemplateLineDTO,
-} from './WorkoutTemplateLineDTO';
+} from "./WorkoutTemplateLineDTO";
 
 export type WorkoutTemplateDTO = {
   id: string;
@@ -16,7 +17,7 @@ export type WorkoutTemplateDTO = {
 };
 
 export function toWorkoutTemplateDTO(
-  workoutTemplate: WorkoutTemplate
+  workoutTemplate: WorkoutTemplate,
 ): WorkoutTemplateDTO {
   return {
     id: workoutTemplate.id,
