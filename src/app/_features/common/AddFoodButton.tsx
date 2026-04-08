@@ -1,10 +1,12 @@
-'use client';
-import { HiPlus } from 'react-icons/hi2';
-import Modal from '@/app/_ui/Modal';
-import SelectRecipeForm from '@/app/_features/recipe/SelectRecipeForm';
-import AddFakeMealForm from '@/app/_features/fakemeal/AddFakeMealForm';
-import { MealTypeSelectionModal } from './MealTypeModal';
-import { addMealsToDay } from '@/app/_features/day/actions';
+"use client";
+import { HiPlus } from "react-icons/hi2";
+
+import { addMealsToDay } from "@/app/_features/day/actions";
+import AddFakeMealForm from "@/app/_features/fakemeal/AddFakeMealForm";
+import SelectRecipeForm from "@/app/_features/recipe/SelectRecipeForm";
+import Modal from "@/app/_ui/Modal";
+
+import { MealTypeSelectionModal } from "./MealTypeModal";
 
 function AddFoodButton({ dayId }: { dayId: string }) {
   return (

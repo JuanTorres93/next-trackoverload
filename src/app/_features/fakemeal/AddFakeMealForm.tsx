@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { useState } from "react";
 
 import { HiLockClosed } from "react-icons/hi";
@@ -46,6 +48,8 @@ function AddFakeMealForm({
   ) => Promise<void>;
   submitLabel?: string;
 }) {
+  const router = useRouter();
+
   const { formState, isLoading, setIsLoading, setField, resetForm } =
     useFormSetup<AddFakeMealFormState>(INITIAL_FORM_STATE);
 
@@ -91,6 +95,8 @@ function AddFakeMealForm({
       );
     } finally {
       setIsLoading(false);
+
+      router.refresh();
     }
   }
 

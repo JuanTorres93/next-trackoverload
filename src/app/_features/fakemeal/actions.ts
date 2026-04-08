@@ -1,9 +1,9 @@
-'use server';
-import { revalidatePath } from 'next/cache';
+"use server";
+import { revalidatePath } from "next/cache";
 
-import { AppAddFakeMealToDayUsecase } from '@/interface-adapters/app/use-cases/day';
-import { AppRemoveFakeMealFromDayUsecase } from '@/interface-adapters/app/use-cases/day/RemoveFakeMealFromDay/removeFakeMealFromDay';
-import { getCurrentUserId } from '@/app/_utils/auth/getCurrentUserId';
+import { getCurrentUserId } from "@/app/_utils/auth/getCurrentUserId";
+import { AppAddFakeMealToDayUsecase } from "@/interface-adapters/app/use-cases/day";
+import { AppRemoveFakeMealFromDayUsecase } from "@/interface-adapters/app/use-cases/day/RemoveFakeMealFromDay/removeFakeMealFromDay";
 
 export async function addFakeMealToDay(
   dayId: string,
@@ -19,8 +19,8 @@ export async function addFakeMealToDay(
     userId: await getCurrentUserId(),
   });
 
-  revalidatePath(`/app/meals`);
   revalidatePath(`/app`);
+  revalidatePath(`/app/meals`);
 }
 
 export async function removeFakeMealFromDay(
@@ -33,6 +33,6 @@ export async function removeFakeMealFromDay(
     userId: await getCurrentUserId(),
   });
 
-  revalidatePath(`/app/meals`);
   revalidatePath(`/app`);
+  revalidatePath(`/app/meals`);
 }
