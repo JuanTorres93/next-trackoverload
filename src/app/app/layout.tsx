@@ -1,14 +1,12 @@
-import { getLoggedInUser } from '@/app/_features/user/actions';
-import type { Metadata } from 'next';
-import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
+import type { Metadata } from "next";
+
 import SideNav, {
   NavBar as SideNavNavBar,
   ToggleButton as SideNavToggle,
-} from '../_ui/SideNav';
+} from "../_ui/SideNav";
 
 export const metadata: Metadata = {
-  title: 'Cimientos',
+  title: "Cimientos",
 };
 
 export default async function SidebarLayout({
@@ -16,17 +14,6 @@ export default async function SidebarLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const headersList = await headers();
-  const pathname = headersList.get('x-pathname') ?? '';
-
-  if (pathname !== '/app/subscription') {
-    const user = await getLoggedInUser();
-
-    if (!user?.hasValidSubscription) {
-      redirect('/app/subscription');
-    }
-  }
-
   return (
     <div
       id="sidebar-layout"
@@ -38,6 +25,7 @@ export default async function SidebarLayout({
           <SideNavToggle className="fixed top-2 right-4" />
         </SideNav>
       </aside>
+
       <main className="h-full overflow-y-auto">{children}</main>
     </div>
   );

@@ -1,6 +1,5 @@
-import InfoBox from '@/app/_ui/InfoBox';
-import { FakeMealDTO } from '@/application-layer/dtos/FakeMealDTO';
-import { MealDTO } from '@/application-layer/dtos/MealDTO';
+import { FakeMealDTO } from "@/application-layer/dtos/FakeMealDTO";
+import { MealDTO } from "@/application-layer/dtos/MealDTO";
 
 function EatenMealsNutritionTracker({
   meals,
@@ -30,14 +29,6 @@ function EatenMealsNutritionTracker({
   const allMealsAreEaten =
     eatenMeals.length === meals.length + fakeMeals.length;
 
-  if (eatenMeals.length === 0) {
-    return (
-      <InfoBox>
-        <span>Marca comidas para ver el progreso de hoy</span>
-      </InfoBox>
-    );
-  }
-
   return (
     <div className="overflow-hidden border shadow-sm rounded-xl bg-surface-card border-border/30">
       <div className="grid grid-cols-[1fr_min-content_1fr]">
@@ -51,10 +42,10 @@ function EatenMealsNutritionTracker({
 
         {/* vertical line separator */}
         <div
-          className={`flex items-center justify-center bg-surface-card ${allMealsAreEaten ? 'bg-primary!' : ''}`}
+          className={`flex items-center justify-center bg-surface-card ${allMealsAreEaten ? "bg-primary!" : ""}`}
         >
           <div
-            className={`border-l border-border/50 h-[60%]  ${allMealsAreEaten ? 'border-text-light/50!' : ''}`}
+            className={`border-l border-border/50 h-[60%]  ${allMealsAreEaten ? "border-text-light/50!" : ""}`}
           ></div>
         </div>
 
@@ -75,9 +66,9 @@ function NutrientStat({
   eaten,
   total,
   isCompleted,
-  unit = '',
-  className = '',
-  valueClassName = 'text-text',
+  unit = "",
+  className = "",
+  valueClassName = "text-text",
 }: {
   label: string;
   eaten: number;
@@ -90,7 +81,7 @@ function NutrientStat({
   return (
     <div
       className={`flex p-4 flex-col  text-text-minor-emphasis ${
-        isCompleted && 'bg-primary text-text-light!'
+        isCompleted && "bg-primary text-text-light!"
       } ${className}`}
     >
       <span className="text-xs tracking-wide uppercase">{label}</span>
@@ -98,7 +89,7 @@ function NutrientStat({
       <div className="flex items-baseline gap-1">
         <span
           className={`text-2xl font-semibold ${valueClassName} ${
-            isCompleted && 'text-text-light!'
+            isCompleted && "text-text-light!"
           }`}
         >
           {eaten}

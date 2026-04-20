@@ -1,10 +1,13 @@
-import { NextResponse, NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
-import { AppAuthService } from './interface-adapters/app/services/AppAuthService';
-import { AuthError } from './domain/common/errors';
-import { cookieSessionName } from './app/api/auth/cookie';
+import { cookieSessionName } from "./app/api/auth/cookie";
+import { AuthError } from "./domain/common/errors";
+import { AppUsersRepo } from "./interface-adapters/app/repos/AppUsersRepo";
+import { AppAuthService } from "./interface-adapters/app/services/AppAuthService";
 
-const notAllowedForLoggedInUsers = ['/auth/login', '/auth/register'];
+export const runtime = "nodejs";
+
+const notAllowedForLoggedInUsers = ["/auth/login", "/auth/register"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -16,29 +19,35 @@ export async function middleware(request: NextRequest) {
 
     const validToken = await AppAuthService.validateToken(token);
 
-    if (validToken) return NextResponse.redirect(new URL('/app', request.url));
+    if (validToken) return NextResponse.redirect(new URL("/app", request.url));
 
     return NextResponse.next();
   }
 
   if (!token) {
-    return NextResponse.redirect(new URL('/auth/login', request.url));
+    return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
   try {
     const validToken = await AppAuthService.validateToken(token);
 
-    if (!validToken) throw new AuthError('middleware: Invalid token');
+    if (!validToken) throw new AuthError("middleware: Invalid token");
 
-    const requestHeaders = new Headers(request.headers);
-    requestHeaders.set('x-pathname', pathname);
+    if (pathname !== "/app/subscription") {
+      const userId = await AppAuthService.getCurrentUserIdFromToken(token);
+      const user = await AppUsersRepo.getUserById(userId);
 
-    return NextResponse.next({ request: { headers: requestHeaders } });
+      if (!user?.hasValidSubscription) {
+        return NextResponse.redirect(new URL("/app/subscription", request.url));
+      }
+    }
+
+    return NextResponse.next();
   } catch {
-    return NextResponse.redirect(new URL('/auth/login', request.url));
+    return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 }
 
 export const config = {
-  matcher: ['/app/:path*', '/auth/login', '/auth/register'],
+  matcher: ["/app/:path*", "/auth/login", "/auth/register"],
 };
