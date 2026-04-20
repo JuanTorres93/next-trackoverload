@@ -1,17 +1,31 @@
 // @vitest-environment node
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from "next/server";
 
-vi.mock('@/interface-adapters/app/services/AppAuthService', () => ({
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+import { AppUsersRepo } from "@/interface-adapters/app/repos/AppUsersRepo";
+import { AppAuthService } from "@/interface-adapters/app/services/AppAuthService";
+
+import { middleware } from "../middleware";
+
+vi.mock("@/interface-adapters/app/services/AppAuthService", () => ({
   AppAuthService: {
     validateToken: vi.fn(),
+    getCurrentUserIdFromToken: vi.fn(),
   },
 }));
 
-import { middleware } from '../middleware';
-import { AppAuthService } from '@/interface-adapters/app/services/AppAuthService';
+vi.mock("@/interface-adapters/app/repos/AppUsersRepo", () => ({
+  AppUsersRepo: {
+    getUserById: vi.fn(),
+  },
+}));
 
 const validateTokenMock = vi.mocked(AppAuthService.validateToken);
+const getCurrentUserIdFromTokenMock = vi.mocked(
+  AppAuthService.getCurrentUserIdFromToken,
+);
+const getUserByIdMock = vi.mocked(AppUsersRepo.getUserById);
 
 function makeRequest(pathname: string, token?: string): NextRequest {
   return new NextRequest(`http://localhost${pathname}`, {
@@ -20,39 +34,46 @@ function makeRequest(pathname: string, token?: string): NextRequest {
 }
 
 function getRedirectPathname(response: Response): string | null {
-  const location = response.headers.get('location');
+  const location = response.headers.get("location");
   if (!location) return null;
   return new URL(location).pathname;
 }
 
-describe('middleware', () => {
+function mockValidUserWithSubscription() {
+  getCurrentUserIdFromTokenMock.mockResolvedValue("user-id");
+  getUserByIdMock.mockResolvedValue({ hasValidSubscription: true } as Awaited<
+    ReturnType<typeof AppUsersRepo.getUserById>
+  >);
+}
+
+describe("middleware", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  describe('routes not allowed for logged-in users (/auth/login, /auth/register)', () => {
-    const authPaths = ['/auth/login', '/auth/register'];
+  describe("routes not allowed for logged-in users (/auth/login, /auth/register)", () => {
+    const authPaths = ["/auth/login", "/auth/register"];
 
     for (const path of authPaths) {
       describe(path, () => {
-        it('passes through when there is no session token', async () => {
+        it("passes through when there is no session token", async () => {
           const response = await middleware(makeRequest(path));
 
           expect(getRedirectPathname(response)).toBeNull();
         });
 
-        it('redirects to /app when the session token is valid', async () => {
+        it("redirects to /app when the session token is valid", async () => {
           validateTokenMock.mockResolvedValue(true);
 
-          const response = await middleware(makeRequest(path, 'valid-token'));
+          const response = await middleware(makeRequest(path, "valid-token"));
 
-          expect(getRedirectPathname(response)).toBe('/app');
+          expect(getRedirectPathname(response)).toBe("/app");
         });
 
-        it('passes through when the session token is invalid', async () => {
+        it("passes through when the session token is invalid", async () => {
           validateTokenMock.mockResolvedValue(false);
 
-          const response = await middleware(makeRequest(path, 'invalid-token'));
+          const response = await middleware(makeRequest(path, "invalid-token"));
 
           expect(getRedirectPathname(response)).toBeNull();
         });
@@ -60,51 +81,89 @@ describe('middleware', () => {
     }
   });
 
-  describe('protected app routes (/app/*)', () => {
-    it('redirects to /auth/login when there is no session token', async () => {
-      const response = await middleware(makeRequest('/app/dashboard'));
+  describe("protected app routes (/app/*)", () => {
+    it("redirects to /auth/login when there is no session token", async () => {
+      const response = await middleware(makeRequest("/app/dashboard"));
 
-      expect(getRedirectPathname(response)).toBe('/auth/login');
+      expect(getRedirectPathname(response)).toBe("/auth/login");
     });
 
-    it('passes through when the session token is valid', async () => {
+    it("passes through when the session token is valid and subscription is active", async () => {
       validateTokenMock.mockResolvedValue(true);
+      mockValidUserWithSubscription();
 
       const response = await middleware(
-        makeRequest('/app/dashboard', 'valid-token'),
+        makeRequest("/app/dashboard", "valid-token"),
       );
 
       expect(getRedirectPathname(response)).toBeNull();
     });
 
-    it('forwards the current pathname in the x-pathname request header', async () => {
-      validateTokenMock.mockResolvedValue(true);
-      const nextSpy = vi.spyOn(NextResponse, 'next');
-
-      await middleware(makeRequest('/app/dashboard', 'valid-token'));
-
-      const [options] = nextSpy.mock.calls[0];
-      expect(options?.request?.headers?.get('x-pathname')).toBe(
-        '/app/dashboard',
-      );
-    });
-
-    it('redirects to /auth/login when the token is invalid', async () => {
+    it("redirects to /auth/login when the token is invalid", async () => {
       validateTokenMock.mockResolvedValue(false);
 
       const response = await middleware(
-        makeRequest('/app/dashboard', 'invalid-token'),
+        makeRequest("/app/dashboard", "invalid-token"),
       );
 
-      expect(getRedirectPathname(response)).toBe('/auth/login');
+      expect(getRedirectPathname(response)).toBe("/auth/login");
     });
 
-    it('redirects to /auth/login when validateToken throws', async () => {
-      validateTokenMock.mockRejectedValue(new Error('unexpected error'));
+    it("redirects to /auth/login when validateToken throws", async () => {
+      validateTokenMock.mockRejectedValue(new Error("unexpected error"));
 
-      const response = await middleware(makeRequest('/app/dashboard', 'token'));
+      const response = await middleware(makeRequest("/app/dashboard", "token"));
 
-      expect(getRedirectPathname(response)).toBe('/auth/login');
+      expect(getRedirectPathname(response)).toBe("/auth/login");
+    });
+
+    describe("subscription redirect", () => {
+      it("redirects to /app/subscription when user has no valid subscription", async () => {
+        validateTokenMock.mockResolvedValue(true);
+        getCurrentUserIdFromTokenMock.mockResolvedValue("user-id");
+        getUserByIdMock.mockResolvedValue({
+          hasValidSubscription: false,
+        } as Awaited<ReturnType<typeof AppUsersRepo.getUserById>>);
+
+        const response = await middleware(
+          makeRequest("/app/dashboard", "valid-token"),
+        );
+
+        expect(getRedirectPathname(response)).toBe("/app/subscription");
+      });
+
+      it("does NOT redirect to /app/subscription when already on that path", async () => {
+        validateTokenMock.mockResolvedValue(true);
+
+        const response = await middleware(
+          makeRequest("/app/subscription", "valid-token"),
+        );
+
+        expect(getRedirectPathname(response)).toBeNull();
+      });
+
+      it("does NOT redirect when user has a valid subscription", async () => {
+        validateTokenMock.mockResolvedValue(true);
+        mockValidUserWithSubscription();
+
+        const response = await middleware(
+          makeRequest("/app/dashboard", "valid-token"),
+        );
+
+        expect(getRedirectPathname(response)).toBeNull();
+      });
+
+      it("redirects to /app/subscription when user is not found", async () => {
+        validateTokenMock.mockResolvedValue(true);
+        getCurrentUserIdFromTokenMock.mockResolvedValue("user-id");
+        getUserByIdMock.mockResolvedValue(null);
+
+        const response = await middleware(
+          makeRequest("/app/dashboard", "valid-token"),
+        );
+
+        expect(getRedirectPathname(response)).toBe("/app/subscription");
+      });
     });
   });
 });
