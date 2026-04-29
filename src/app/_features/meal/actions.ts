@@ -1,7 +1,8 @@
-'use server';
-import { getCurrentUserId } from '@/app/_utils/auth/getCurrentUserId';
-import { AppToggleIsEatenUsecase } from '@/interface-adapters/app/use-cases/meal';
-import { revalidatePath } from 'next/cache';
+"use server";
+import { revalidatePath } from "next/cache";
+
+import { getCurrentUserId } from "@/app/_utils/auth/getCurrentUserId";
+import { AppToggleIsEatenUsecase } from "@/interface-adapters/app/use-cases/meal";
 
 export async function toggleIsEaten(mealId: string): Promise<void> {
   await AppToggleIsEatenUsecase.execute({
@@ -9,5 +10,5 @@ export async function toggleIsEaten(mealId: string): Promise<void> {
     userId: await getCurrentUserId(),
   });
 
-  revalidatePath('/app');
+  revalidatePath("/app");
 }

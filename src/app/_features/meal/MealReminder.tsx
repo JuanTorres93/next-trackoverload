@@ -1,24 +1,22 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
+import Image from "next/image";
 
-import { showErrorToast } from '@/app/_ui/showErrorToast';
-import { formatToInteger } from '@/app/_utils/format/formatToInteger';
-import { MealDTO } from '@/application-layer/dtos/MealDTO';
-import { useRouter } from 'next/navigation';
-import { useOptimistic, useTransition } from 'react';
-import FoodReminderContainer from '../common/FoodReminderContainer';
-import FoodReminderMacros from '../common/FoodReminderMacros';
+import { useOptimistic, useTransition } from "react";
+
+import { showErrorToast } from "@/app/_ui/showErrorToast";
+import { formatToInteger } from "@/app/_utils/format/formatToInteger";
+import { MealDTO } from "@/application-layer/dtos/MealDTO";
+
+import FoodReminderContainer from "../common/FoodReminderContainer";
+import FoodReminderMacros from "../common/FoodReminderMacros";
 import {
   replaceMealByAnotherMealForUserInDay,
   replaceMealByFakeMealForUserInDay,
-} from '../day/actions';
-import { toggleIsEaten } from './actions';
-import LoadingOverlay from '../common/LoadingOverlay';
+} from "../day/actions";
+import { toggleIsEaten } from "./actions";
 
 function MealReminder({ meal, dayId }: { meal: MealDTO; dayId: string }) {
-  const router = useRouter();
-
   const [isPending, startTransition] = useTransition();
 
   const [optimisticIsEaten, setOptimisticIsEaten] = useOptimistic(
@@ -26,7 +24,7 @@ function MealReminder({ meal, dayId }: { meal: MealDTO; dayId: string }) {
     (_: boolean, newValue: boolean) => newValue,
   );
 
-  const defaultImageUrl = '/recipe-no-picture.webp';
+  const defaultImageUrl = "/recipe-no-picture.webp";
 
   const calories = formatToInteger(meal.calories);
   const protein = formatToInteger(meal.protein);
@@ -34,19 +32,16 @@ function MealReminder({ meal, dayId }: { meal: MealDTO; dayId: string }) {
   function handleToggleIsEaten() {
     if (isPending) return;
 
-    startTransition(async () => {
+    startTransition(() => {
       setOptimisticIsEaten(!optimisticIsEaten);
+    });
 
-      try {
-        await toggleIsEaten(meal.id);
-        router.refresh();
-      } catch {
-        showErrorToast(
-          'No se ha podido marcar la comida como "' +
-            (meal.isEaten ? 'no comida' : 'comida') +
-            '"',
-        );
-      }
+    toggleIsEaten(meal.id).catch(() => {
+      showErrorToast(
+        'No se ha podido marcar la comida como "' +
+          (optimisticIsEaten ? "no comida" : "comida") +
+          '"',
+      );
     });
   }
 
@@ -70,7 +65,6 @@ function MealReminder({ meal, dayId }: { meal: MealDTO; dayId: string }) {
       onClick={handleToggleIsEaten}
       replacement={replacement}
     >
-      {isPending && <LoadingOverlay />}
       <div
         className={`grid gap-4 grid-cols-[5rem_1fr] items-center content-center max-bp-navbar-mobile:grid-cols-[4rem_1fr] `}
       >
