@@ -3,4 +3,4 @@
 // =============================================================================
 
 // UPDATE Operations
-export { AppUpdateIngredientLineUsecase } from './UpdateIngredientLine/updateIngredientLine';
+export { AppUpdateIngredientLineUsecase } from "./AppUpdateIngredientLineUsecase";
