@@ -1,10 +1,12 @@
-import { describe, expect, it } from 'vitest';
-import { Exercise } from '../Exercise';
-import * as exerciseTestProps from '../../../../../tests/createProps/exerciseTestProps';
-import { ValidationError } from '@/domain/common/errors';
+import { describe, expect, it } from "vitest";
 
-describe('Exercise', () => {
-  it('should create a valid exercise', () => {
+import { ValidationError } from "@/domain/common/errors";
+
+import * as exerciseTestProps from "../../../../../tests/createProps/exerciseTestProps";
+import { Exercise } from "../Exercise";
+
+describe("Exercise", () => {
+  it("should create a valid exercise", () => {
     const exercise = Exercise.create(exerciseTestProps.validExerciseProps);
 
     expect(exercise).toBeInstanceOf(Exercise);
@@ -12,16 +14,26 @@ describe('Exercise', () => {
     expect(exercise.name).toBe(exerciseTestProps.validExerciseProps.name);
   });
 
-  it('should update name', async () => {
+  it("should update name", async () => {
     const exercise = Exercise.create(exerciseTestProps.validExerciseProps);
-    const newName = 'Updated Exercise Name';
+    const newName = "Updated Exercise Name";
 
     exercise.update({ name: newName });
 
     expect(exercise.name).toBe(newName);
   });
 
-  it('should create an exercise if no createdAt or updatedAt is provided', async () => {
+  it("may have userId", async () => {
+    const exerciseWithUserId = Exercise.create({
+      ...exerciseTestProps.validExerciseProps,
+      userId: "user-id",
+    });
+
+    expect(exerciseWithUserId).toBeInstanceOf(Exercise);
+    expect(exerciseWithUserId.userId).toBe("user-id");
+  });
+
+  it("should create an exercise if no createdAt or updatedAt is provided", async () => {
     // eslint-disable-next-line
     const { createdAt, updatedAt, ...propsWithoutDates } =
       exerciseTestProps.validExerciseProps;
@@ -32,7 +44,7 @@ describe('Exercise', () => {
     expect(exercise.updatedAt instanceof Date).toBe(true);
   });
 
-  it('should throw error if id is not instance of Id', async () => {
+  it("should throw error if id is not instance of Id", async () => {
     expect(() => {
       Exercise.create({
         ...exerciseTestProps.validExerciseProps,
@@ -50,24 +62,24 @@ describe('Exercise', () => {
     }).toThrowError(/Id/);
   });
 
-  it('should throw error if name is empty', async () => {
+  it("should throw error if name is empty", async () => {
     expect(() => {
       Exercise.create({
         ...exerciseTestProps.validExerciseProps,
-        name: '',
+        name: "",
       });
     }).toThrowError(ValidationError);
 
     expect(() => {
       Exercise.create({
         ...exerciseTestProps.validExerciseProps,
-        name: '',
+        name: "",
       });
     }).toThrowError(/Text.*empty/);
   });
 
-  it('should throw error if name is greater that 100 characters', async () => {
-    const longName = 'a'.repeat(101);
+  it("should throw error if name is greater that 100 characters", async () => {
+    const longName = "a".repeat(101);
 
     expect(() => {
       Exercise.create({

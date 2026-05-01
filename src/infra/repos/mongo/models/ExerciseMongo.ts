@@ -1,8 +1,9 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
+
 import {
   ExerciseCreateProps,
   nameTextOptions,
-} from '@/domain/entities/exercise/Exercise';
+} from "@/domain/entities/exercise/Exercise";
 
 const exerciseSchema = new mongoose.Schema<ExerciseCreateProps>({
   id: {
@@ -14,6 +15,10 @@ const exerciseSchema = new mongoose.Schema<ExerciseCreateProps>({
     type: String,
     required: true,
     maxlength: nameTextOptions.maxLength.value,
+  },
+  userId: {
+    type: String,
+    required: false,
   },
   createdAt: {
     type: Date,
@@ -27,6 +32,6 @@ const exerciseSchema = new mongoose.Schema<ExerciseCreateProps>({
 
 const ExerciseMongo =
   mongoose.models.Exercise ||
-  mongoose.model<ExerciseCreateProps>('Exercise', exerciseSchema);
+  mongoose.model<ExerciseCreateProps>("Exercise", exerciseSchema);
 
 export default ExerciseMongo;

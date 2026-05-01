@@ -1,11 +1,12 @@
-import { DomainDate } from '@/domain/value-objects/DomainDate/DomainDate';
-import { Id } from '@/domain/value-objects/Id/Id';
-import { Integer } from '@/domain/value-objects/Integer/Integer';
-import { Text } from '@/domain/value-objects/Text/Text';
+import { DomainDate } from "@/domain/value-objects/DomainDate/DomainDate";
+import { Id } from "@/domain/value-objects/Id/Id";
+import { Integer } from "@/domain/value-objects/Integer/Integer";
+import { Text } from "@/domain/value-objects/Text/Text";
 
 export type ExerciseCreateProps = {
   id: string;
   name: string;
+  userId?: string;
   createdAt?: Date;
   updatedAt?: Date;
 };
@@ -17,6 +18,7 @@ export type ExerciseUpdateProps = {
 export type ExerciseProps = {
   id: Id;
   name: Text;
+  userId?: Id;
   createdAt: DomainDate;
   updatedAt: DomainDate;
 };
@@ -33,6 +35,7 @@ export class Exercise {
     const exerciseProps: ExerciseProps = {
       id: Id.create(props.id),
       name: Text.create(props.name, nameTextOptions),
+      userId: props.userId ? Id.create(props.userId) : undefined,
       createdAt: DomainDate.create(props.createdAt),
       updatedAt: DomainDate.create(props.updatedAt),
     };
@@ -55,6 +58,10 @@ export class Exercise {
     return this.props.name.value;
   }
 
+  get userId() {
+    return this.props.userId?.value;
+  }
+
   get createdAt() {
     return this.props.createdAt.value;
   }
@@ -69,6 +76,7 @@ export class Exercise {
       name: this.props.name.value,
       createdAt: this.props.createdAt.value,
       updatedAt: this.props.updatedAt.value,
+      userId: this.props.userId?.value,
     };
   }
 }
