@@ -3,13 +3,13 @@
 // =============================================================================
 
 // CREATE Operations
-export { AppCreateUserUsecase } from './CreateUser/createUser';
+export { AppCreateUserUsecase } from "./AppCreateUserUsecase";
 
 // READ Operations
-export { AppGetUserByIdUsecase } from './GetUserById/getUserById';
+export { AppGetUserByIdUsecase } from "./AppGetUserByIdUsecase";
 
 // UPDATE Operations
-export { AppUpdateUserUsecase } from './UpdateUser/updateUser';
+export { AppUpdateUserUsecase } from "./AppUpdateUserUsecase";
 
 // DELETE Operations
-export { AppDeleteUserUsecase } from './DeleteUser/deleteUser';
+export { AppDeleteUserUsecase } from "./AppDeleteUserUsecase";
