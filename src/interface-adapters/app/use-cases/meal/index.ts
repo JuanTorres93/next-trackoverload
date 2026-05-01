@@ -3,4 +3,4 @@
 // =============================================================================
 
 // UPDATE Operations
-export { AppToggleIsEatenUsecase } from "./ToggleIsEaten/toggleIsEaten";
+export { AppToggleIsEatenUsecase } from "./AppToggleIsEatenUsecase";
