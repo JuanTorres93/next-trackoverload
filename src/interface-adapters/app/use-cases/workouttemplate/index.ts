@@ -3,20 +3,20 @@
 // =============================================================================
 
 // CREATE Operations
-export { AppCreateWorkoutTemplateUsecase } from './CreateWorkoutTemplate/createWorkoutTemplate';
-export { AppCreateWorkoutFromTemplateUsecase } from './CreateWorkoutFromTemplate/createWorkoutFromTemplate';
-export { AppDuplicateWorkoutTemplateUsecase } from './DuplicateWorkoutTemplate/duplicateWorkoutTemplate';
+export { AppCreateWorkoutTemplateUsecase } from "./AppCreateWorkoutTemplateUsecase";
+export { AppCreateWorkoutFromTemplateUsecase } from "./AppCreateWorkoutFromTemplateUsecase";
+export { AppDuplicateWorkoutTemplateUsecase } from "./AppDuplicateWorkoutTemplateUsecase";
 
 // READ Operations
-export { AppGetAllWorkoutTemplatesForUserUsecase } from './GetAllWorkoutTemplatesForUser/getAllWorkoutTemplatesForUser';
-export { AppGetWorkoutTemplateByIdForUserUsecase } from './GetWorkoutTemplateByIdForUser/getWorkoutTemplateByIdForUser';
+export { AppGetAllWorkoutTemplatesForUserUsecase } from "./AppGetAllWorkoutTemplatesForUserUsecase";
+export { AppGetWorkoutTemplateByIdForUserUsecase } from "./AppGetWorkoutTemplateByIdForUserUsecase";
 
 // UPDATE Operations
-export { AppUpdateWorkoutTemplateUsecase } from './UpdateWorkoutTemplate/updateWorkoutTemplate';
-export { AppAddExerciseToWorkoutTemplateUsecase } from './AddExerciseToWorkoutTemplate/addExerciseToWorkoutTemplate';
-export { AppRemoveExerciseFromWorkoutTemplateUsecase } from './RemoveExerciseFromWorkoutTemplate/removeExerciseFromWorkoutTemplate';
-export { AppReorderExerciseInWorkoutTemplateUsecase } from './ReorderExerciseInWorkoutTemplate/reorderExerciseInWorkoutTemplate';
-export { AppUpdateExerciseInWorkoutTemplateUsecase } from './UpdateExerciseInWorkoutTemplate/updateExerciseInWorkoutTemplate';
+export { AppUpdateWorkoutTemplateUsecase } from "./AppUpdateWorkoutTemplateUsecase";
+export { AppAddExerciseToWorkoutTemplateUsecase } from "./AppAddExerciseToWorkoutTemplateUsecase";
+export { AppRemoveExerciseFromWorkoutTemplateUsecase } from "./AppRemoveExerciseFromWorkoutTemplateUsecase";
+export { AppReorderExerciseInWorkoutTemplateUsecase } from "./AppReorderExerciseInWorkoutTemplateUsecase";
+export { AppUpdateExerciseInWorkoutTemplateUsecase } from "./AppUpdateExerciseInWorkoutTemplateUsecase";
 
 // DELETE Operations
-export { AppDeleteWorkoutTemplateUsecase } from './DeleteWorkoutTemplate/deleteWorkoutTemplate';
+export { AppDeleteWorkoutTemplateUsecase } from "./AppDeleteWorkoutTemplateUsecase";
