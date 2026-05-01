@@ -4,6 +4,7 @@ import {
   ExerciseFinder,
   ExerciseFinderResult,
 } from "@/domain/services/ExerciseFinder.port";
+import { EXERCISES_PER_PAGE } from "@/domain/services/ExerciseFinder.port";
 
 export class BackendForFrontendExerciseFinder implements ExerciseFinder {
   private readonly backendUrl: string;
@@ -14,10 +15,21 @@ export class BackendForFrontendExerciseFinder implements ExerciseFinder {
 
   async findExercisesByFuzzyName(
     name: string,
-    _page?: number,
+    page?: number,
     userId?: string,
   ): Promise<ExerciseFinderResult[]> {
-    const url = `${this.backendUrl}/exercises/${encodeURIComponent(name)}`;
+    const queryParams = new URLSearchParams();
+
+    if (userId) {
+      queryParams.append("userId", userId);
+    }
+
+    if (page) {
+      queryParams.append("page", page.toString());
+      queryParams.append("limit", EXERCISES_PER_PAGE.toString());
+    }
+
+    const url = `${this.backendUrl}/exercises/${encodeURIComponent(name)}?${queryParams.toString()}`;
 
     const response = await fetch(url, { method: "GET" });
 
@@ -43,6 +55,7 @@ export class BackendForFrontendExerciseFinder implements ExerciseFinder {
   ): ExerciseFinderResult {
     const exercise: ExerciseFinderResult["exercise"] = {
       name: exerciseFromAPI.name,
+      userId: exerciseFromAPI.userId,
     };
 
     const externalRef: ExerciseFinderResult["externalRef"] = {
