@@ -1,5 +1,6 @@
-import Bottleneck from 'bottleneck';
-import { RateLimiter } from '@/domain/services/RateLimiter.port';
+import Bottleneck from "bottleneck";
+
+import { RateLimiter } from "@/infra/services/interfaces/RateLimiter.port";
 
 export class BottleneckRateLimiter implements RateLimiter {
   private readonly group: Bottleneck.Group;

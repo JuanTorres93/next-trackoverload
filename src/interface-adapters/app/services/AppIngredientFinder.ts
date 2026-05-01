@@ -1,5 +1,4 @@
 import { IngredientFinder } from "@/domain/services/IngredientFinder.port";
-import { RateLimiter } from "@/domain/services/RateLimiter.port";
 import { MemoryIngredientFinder } from "@/infra/services/IngredientsFinder/MemoryIngredientFinder/MemoryIngredientFinder";
 import {
   OpenFoodFactsIngredientFinder,
@@ -7,6 +6,7 @@ import {
 } from "@/infra/services/IngredientsFinder/OpenFoodFactsIngredientFinder/OpenFoodFactsIngredientFinder";
 import { BottleneckRateLimiter } from "@/infra/services/RateLimiter/BottleneckRateLimiter/BottleneckRateLimiter";
 import { MemoryTokenBucketRateLimiter } from "@/infra/services/RateLimiter/MemoryTokenBucketRateLimiter/MemoryTokenBucketRateLimiter";
+import { RateLimiter } from "@/infra/services/interfaces/RateLimiter.port";
 
 const RateLimiterImpl =
   process.env.NODE_ENV === "test"

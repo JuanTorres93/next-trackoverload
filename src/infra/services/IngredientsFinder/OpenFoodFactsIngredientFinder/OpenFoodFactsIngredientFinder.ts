@@ -3,7 +3,7 @@ import {
   IngredientFinder,
   IngredientFinderResult,
 } from "@/domain/services/IngredientFinder.port";
-import { RateLimiter } from "@/domain/services/RateLimiter.port";
+import { RateLimiter } from "@/infra/services/interfaces/RateLimiter.port";
 
 // DOCS: https://openfoodfacts.github.io/openfoodfacts-server/api/
 // SEARCH DOCS: https://search.openfoodfacts.org/docs

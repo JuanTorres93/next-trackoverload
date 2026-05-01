@@ -1,4 +1,4 @@
-import { RateLimiter } from '@/domain/services/RateLimiter.port';
+import { RateLimiter } from "@/infra/services/interfaces/RateLimiter.port";
 
 type Bucket = {
   requests: number;
