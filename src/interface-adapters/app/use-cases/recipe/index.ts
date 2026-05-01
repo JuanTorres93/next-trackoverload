@@ -3,18 +3,18 @@
 // =============================================================================
 
 // CREATE Operations
-export { AppCreateRecipeUsecase } from "./CreateRecipe/createRecipe";
-export { AppDuplicateRecipeUsecase } from "./DuplicateRecipe/duplicateRecipe";
+export { AppCreateRecipeUsecase } from "./AppCreateRecipeUsecase";
+export { AppDuplicateRecipeUsecase } from "./AppDuplicateRecipeUsecase";
 
 // READ Operations
-export { AppGetAllRecipesForUserUsecase } from "./GetAllRecipesForUser/getAllRecipesForUser";
-export { AppGetRecipeByIdForUserUsecase } from "./GetRecipeByIdForUser/getRecipeByIdForUser";
+export { AppGetAllRecipesForUserUsecase } from "./AppGetAllRecipesForUserUsecase";
+export { AppGetRecipeByIdForUserUsecase } from "./AppGetRecipeByIdForUserUsecase";
 
 // UPDATE Operations
-export { AppUpdateRecipeUsecase } from "./UpdateRecipe/updateRecipe";
-export { AppAddIngredientToRecipeUsecase } from "./AddIngredientToRecipe/addIngredientToRecipe";
-export { AppRemoveIngredientFromRecipeUsecase } from "./RemoveIngredientFromRecipe/removeIngredientFromRecipe";
-export { AppUpdateRecipeImageUsecase } from "./UpdateRecipeImage/updateRecipeImage";
+export { AppUpdateRecipeUsecase } from "./AppUpdateRecipeUsecase";
+export { AppAddIngredientToRecipeUsecase } from "./AppAddIngredientToRecipeUsecase";
+export { AppRemoveIngredientFromRecipeUsecase } from "./AppRemoveIngredientFromRecipeUsecase";
+export { AppUpdateRecipeImageUsecase } from "./AppUpdateRecipeImageUsecase";
 
 // DELETE Operations
-export { AppDeleteRecipeUsecase } from "./DeleteRecipe/deleteRecipe";
+export { AppDeleteRecipeUsecase } from "./AppDeleteRecipeUsecase";
