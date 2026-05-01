@@ -3,22 +3,22 @@
 // =============================================================================
 
 // CREATE Operations
-export { AppCreateDayUsecase } from "./CreateDay/createDay";
+export { AppCreateDayUsecase } from "./AppCreateDayUsecase";
 
 // READ Operations
-export { AppGetAssembledDayById } from "./GetAssembledDayById/getAssembledDayById";
-export { AppGetMultipleAssembledDaysByIds } from "./GetMultipleAssembledDaysByIds/getMultipleAssembledDaysByIds";
-export { AppGetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays } from "./GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/getLastNumberOfDaysForUserIncludingTodayAndNonExistentDays";
-export { AppGetLastDayWithCaloriesGoalForUserUsecase } from "./GetLastDayWithCaloriesGoalForUser/getLastDayWithCaloriesGoalForUser";
+export { AppGetAssembledDayById } from "./AppGetAssembledDayByIdUsecase";
+export { AppGetMultipleAssembledDaysByIds } from "./AppGetMultipleAssembledDaysByIdsUsecase";
+export { AppGetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays } from "./AppGetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase";
+export { AppGetLastDayWithCaloriesGoalForUserUsecase } from "./AppGetLastDayWithCaloriesGoalForUserUsecase";
 
 // UPDATE Operations
-export { AppAddMultipleMealsToDayUsecase } from "./AddMultipleMealsToDay/addMultipleMealsToDay";
-export { AppAddMultipleMealsToMultipleDaysUsecase } from "./AddMultipleMealsToMultipleDays/addMultipleMealsToMultipleDays";
-export { AppAddFakeMealToDayUsecase } from "./AddFakeMealToDay/addFakeMealToDay";
-export { AppRemoveMealFromDayUsecase } from "./RemoveMealFromDay/removeMealFromDay";
-export { AppReplaceFakeMealByAnotherFakeMealForUserInDayUsecase } from "./ReplaceFakeMealByAnotherFakeMealForUserInDay/replaceFakeMealByAnotherFakeMealForUserInDay";
-export { AppReplaceFakeMealByMealForUserInDayUsecase } from "./ReplaceFakeMealByMealForUserInDay/replaceFakeMealByMealForUserInDay";
-export { AppReplaceMealByAnotherMealForUserInDayUsecase } from "./ReplaceMealByAnotherMealForUserInDay/replaceMealByAnotherMealForUserInDay";
-export { AppReplaceMealByFakeMealForUserInDayUsecase } from "./ReplaceMealByFakeMealForUserInDay/replaceMealByFakeMealForUserInDay";
-export { AppUpdateUserWeightForDayUsecase } from "./UpdateUserWeightForDay/updateUserWeightForDay";
-export { AppSetCaloriesGoalForDayAndUserUsecase } from "./SetCaloriesGoalForDayAndUser/setCaloriesGoalForDayAndUser";
+export { AppAddMultipleMealsToDayUsecase } from "./AppAddMultipleMealsToDayUsecase";
+export { AppAddMultipleMealsToMultipleDaysUsecase } from "./AppAddMultipleMealsToMultipleDaysUsecase";
+export { AppAddFakeMealToDayUsecase } from "./AppAddFakeMealToDayUsecase";
+export { AppRemoveMealFromDayUsecase } from "./AppRemoveMealFromDayUsecase";
+export { AppReplaceFakeMealByAnotherFakeMealForUserInDayUsecase } from "./AppReplaceFakeMealByAnotherFakeMealForUserInDayUsecase";
+export { AppReplaceFakeMealByMealForUserInDayUsecase } from "./AppReplaceFakeMealByMealForUserInDayUsecase";
+export { AppReplaceMealByAnotherMealForUserInDayUsecase } from "./AppReplaceMealByAnotherMealForUserInDayUsecase";
+export { AppReplaceMealByFakeMealForUserInDayUsecase } from "./AppReplaceMealByFakeMealForUserInDayUsecase";
+export { AppUpdateUserWeightForDayUsecase } from "./AppUpdateUserWeightForDayUsecase";
+export { AppSetCaloriesGoalForDayAndUserUsecase } from "./AppSetCaloriesGoalForDayAndUserUsecase";

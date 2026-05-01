@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 
 import { getCurrentUserId } from "@/app/_utils/auth/getCurrentUserId";
 import { AppAddFakeMealToDayUsecase } from "@/interface-adapters/app/use-cases/day";
-import { AppRemoveFakeMealFromDayUsecase } from "@/interface-adapters/app/use-cases/day/RemoveFakeMealFromDay/removeFakeMealFromDay";
+import { AppRemoveFakeMealFromDayUsecase } from "@/interface-adapters/app/use-cases/day/AppRemoveFakeMealFromDayUsecase";
 
 export async function addFakeMealToDay(
   dayId: string,
