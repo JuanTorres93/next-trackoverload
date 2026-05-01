@@ -1,5 +1,6 @@
-import { HiSearch } from 'react-icons/hi';
-import IngredientSearch from './IngredientSearch';
+import { HiSearch } from "react-icons/hi";
+
+import IngredientSearch from "./IngredientSearch";
 
 function ArrangedIngredientSearch({ isLoading }: { isLoading: boolean }) {
   return (
@@ -14,9 +15,6 @@ function ArrangedIngredientSearch({ isLoading }: { isLoading: boolean }) {
           disabled={isLoading}
         />
       </div>
-
-      {/* Search action button */}
-      <IngredientSearch.SearchButton disabled={isLoading} />
 
       {/* Barcode scanner */}
       <IngredientSearch.BarcodeSearch disabled={isLoading} />

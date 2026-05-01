@@ -244,10 +244,8 @@ describe("RecipeActions", () => {
       const searchIngredientInput = await screen.findByPlaceholderText(
         "Buscar ingredientes...",
       );
-      const searchButton = screen.getByRole("button", { name: "Buscar" });
 
       await userEvent.type(searchIngredientInput, "celery");
-      await userEvent.click(searchButton);
 
       const ingredientList = await screen.findByTestId("ingredient-list");
       await waitFor(() => {

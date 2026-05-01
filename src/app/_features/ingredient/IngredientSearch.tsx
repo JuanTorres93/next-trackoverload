@@ -7,11 +7,11 @@ import React, {
   useState,
 } from "react";
 
+import { useDebounce } from "@/app/_hooks/useDebounce";
 import { useOutsideClick } from "@/app/_hooks/useOutsideClick";
 import { JSENDResponse } from "@/app/_types/JSEND";
 import Input from "@/app/_ui/Input";
 import Spinner from "@/app/_ui/Spinner";
-import ButtonSearch from "@/app/_ui/buttons/ButtonSearch";
 import { showErrorToast } from "@/app/_ui/showErrorToast";
 import TextSmall from "@/app/_ui/typography/TextSmall";
 import { formatToInteger } from "@/app/_utils/format/formatToInteger";
@@ -34,45 +34,36 @@ function SearchTermInput({
 }) {
   const { disabled, className, ...rest } = props;
 
+  const debounceSearch = useDebounce((term: string) => {
+    searchIngredients(term);
+  }, 500);
+
   const {
     handleShowList,
     ingredientSearchTerm,
     setIngredientSearchTerm,
-    isLoading,
+    searchIngredients,
   } = useIngredientSearchContext();
 
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const processedValue = e.target.value.trim();
+
+    setIngredientSearchTerm(processedValue);
+    handleShowList();
+
+    debounceSearch(processedValue);
+  }
   return (
     <div className={`${className}`} {...rest}>
       <Input
         containerClassName={inputContainerClassName}
         value={ingredientSearchTerm}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          setIngredientSearchTerm(e.target.value);
-          handleShowList();
-        }}
-        disabled={isLoading || disabled}
+        onChange={handleChange}
+        disabled={disabled}
         onClick={handleShowList}
         placeholder="Buscar ingredientes..."
       />
     </div>
-  );
-}
-
-function SearchButton({
-  ...props
-}: React.ButtonHTMLAttributes<HTMLButtonElement>) {
-  const { disabled, ...rest } = props;
-
-  const { ingredientSearchTerm, isLoading, searchIngredients } =
-    useIngredientSearchContext();
-
-  return (
-    <ButtonSearch
-      onClick={() => searchIngredients(ingredientSearchTerm)}
-      disabled={isLoading || disabled}
-      data-testid="search-ingredient-button"
-      {...rest}
-    />
   );
 }
 
@@ -611,7 +602,6 @@ async function fetchIngredientsPage(
 }
 
 IngredientSearch.SearchTermInput = SearchTermInput;
-IngredientSearch.SearchButton = SearchButton;
 IngredientSearch.FoundIngredientsList = FoundIngredientsList;
 IngredientSearch.SelectedIngredientsList = SelectedIngredientsList;
 IngredientSearch.BarcodeSearch = BarcodeSearch;

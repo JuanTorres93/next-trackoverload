@@ -21,11 +21,9 @@ async function setup() {
   render(<NewRecipeForm />);
 
   const searchBar = screen.getByPlaceholderText(/ingred/i);
-  const searchButton = screen.getByTestId("search-ingredient-button");
   const barcodeScannerButton = screen.getByTestId("open-scanner-button");
 
   await userEvent.type(searchBar, "c");
-  await userEvent.click(searchButton);
 
   const ingredientList = await screen.findByTestId("ingredient-list");
 
@@ -40,7 +38,6 @@ async function setup() {
     ingredientLineList,
     searchBar,
     createButton,
-    searchButton,
     barcodeScannerButton,
     recipeNameInput,
   };

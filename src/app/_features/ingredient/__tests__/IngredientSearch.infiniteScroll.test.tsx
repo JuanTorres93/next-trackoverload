@@ -53,20 +53,17 @@ async function setup() {
   render(
     <IngredientSearch>
       <IngredientSearch.SearchTermInput />
-      <IngredientSearch.SearchButton />
       <IngredientSearch.FoundIngredientsList />
     </IngredientSearch>,
   );
 
   const searchBar = screen.getByPlaceholderText(/ingred/i);
-  const searchButton = screen.getByTestId("search-ingredient-button");
 
   await userEvent.type(searchBar, "c");
-  await userEvent.click(searchButton);
 
   await screen.findByTestId("ingredient-list");
 
-  return { searchButton };
+  return { searchBar };
 }
 
 describe("IngredientSearch — infinite scroll", () => {
@@ -117,7 +114,7 @@ describe("IngredientSearch — infinite scroll", () => {
   });
 
   it("resets to page 1 when a new search is performed", async () => {
-    const { searchButton } = await setup();
+    const { searchBar } = await setup();
     const ingredientList = screen.getByTestId("ingredient-list");
 
     // Load page 2
@@ -125,7 +122,8 @@ describe("IngredientSearch — infinite scroll", () => {
     await waitFor(() => expect(ingredientList.children.length).toBe(3));
 
     // New search → should unmount and remount the list with page 1 results only
-    await userEvent.click(searchButton);
+    await userEvent.clear(searchBar);
+    await userEvent.type(searchBar, "c");
 
     await waitFor(() => {
       const refreshedList = screen.getByTestId("ingredient-list");
