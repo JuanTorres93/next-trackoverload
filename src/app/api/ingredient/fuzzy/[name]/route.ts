@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { JSENDResponse } from "@/app/_types/JSEND";
 import { getClientId } from "@/app/api/_common/getClientId";
 import { IngredientFinderResult } from "@/domain/services/IngredientFinder.port";
-import { createAppFindIngredientByFuzzyNameUsecase } from "@/interface-adapters/app/use-cases/ingredient/FindIngredientByFuzzyName/findIngredientByFuzzyName";
+import { createAppFindIngredientByFuzzyNameUsecase } from "@/interface-adapters/app/use-cases/ingredient/AppFindIngredientByFuzzyNameUsecase";
 
 export async function GET(
   request: NextRequest,

@@ -3,8 +3,8 @@
 // =============================================================================
 
 // CREATE Operations
-export { AppCreateIngredientUsecase } from "./CreateIngredient/createingredient";
+export { AppCreateIngredientUsecase } from "./AppCreateingredientUsecase";
 
 // READ Operations
-export { createAppFindIngredientByFuzzyNameUsecase } from "./FindIngredientByFuzzyName/findIngredientByFuzzyName";
-export { createAppFindIngredientByBarcodeUsecase } from "./FindIngredientByBarcode/findIngredientByBarcode";
+export { createAppFindIngredientByFuzzyNameUsecase } from "./AppFindIngredientByFuzzyNameUsecase";
+export { createAppFindIngredientByBarcodeUsecase } from "./AppFindIngredientByBarcodeUsecase";
