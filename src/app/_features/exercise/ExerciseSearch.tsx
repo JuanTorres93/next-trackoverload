@@ -2,11 +2,11 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 import WorkoutTemplateLine from "@/app/_features/workouttemplate/WorkoutTemplateLine";
+import { useDebounce } from "@/app/_hooks/useDebounce";
 import { useOutsideClick } from "@/app/_hooks/useOutsideClick";
 import { JSENDResponse } from "@/app/_types/JSEND";
 import Input from "@/app/_ui/Input";
 import Spinner from "@/app/_ui/Spinner";
-import ButtonSearch from "@/app/_ui/buttons/ButtonSearch";
 import { showErrorToast } from "@/app/_ui/showErrorToast";
 import { ExerciseFinderResult } from "@/domain/services/ExerciseFinder.port";
 
@@ -16,36 +16,30 @@ const ExerciseSearchContext = createContext<ContextType | null>(null);
 
 function SearchTermInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
   const { className, disabled, ...rest } = props;
-  const { searchTerm, setSearchTerm, handleShowResults, isLoading } =
+  const { searchTerm, setSearchTerm, handleShowResults, searchExercises } =
     useExerciseSearchContext();
+
+  const debouncedSearchExercises = useDebounce(searchExercises, 500);
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const processedValue = e.target.value.trim();
+
+    setSearchTerm(processedValue);
+    handleShowResults();
+
+    debouncedSearchExercises(searchTerm);
+  }
 
   return (
     <div className={className} {...rest}>
       <Input
         value={searchTerm}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          setSearchTerm(e.target.value);
-          handleShowResults();
-        }}
-        disabled={isLoading || disabled}
+        onChange={handleChange}
+        disabled={disabled}
         onClick={handleShowResults}
         placeholder="Buscar ejercicios..."
       />
     </div>
-  );
-}
-
-function SearchButton(props: React.ButtonHTMLAttributes<HTMLButtonElement>) {
-  const { disabled, ...rest } = props;
-  const { searchTerm, isLoading, searchExercises } = useExerciseSearchContext();
-
-  return (
-    <ButtonSearch
-      onClick={() => searchExercises(searchTerm)}
-      disabled={isLoading || disabled}
-      data-testid="search-exercise-button"
-      {...rest}
-    />
   );
 }
 
@@ -380,7 +374,6 @@ function useExerciseSearchContext(): ContextType {
 }
 
 ExerciseSearch.SearchTermInput = SearchTermInput;
-ExerciseSearch.SearchButton = SearchButton;
 ExerciseSearch.FoundExercisesList = FoundExercisesList;
 ExerciseSearch.SelectedExercisesList = SelectedExercisesList;
 

@@ -18,7 +18,6 @@ function renderExerciseSearch() {
   render(
     <ExerciseSearch>
       <ExerciseSearch.SearchTermInput />
-      <ExerciseSearch.SearchButton />
       <ExerciseSearch.FoundExercisesList />
       <ExerciseSearch.SelectedExercisesList />
     </ExerciseSearch>,
@@ -26,15 +25,14 @@ function renderExerciseSearch() {
 
   return {
     searchInput: screen.getByPlaceholderText(/buscar ejercicios/i),
-    searchButton: screen.getByTestId("search-exercise-button"),
   };
 }
 
 async function searchFor(term: string) {
-  const { searchInput, searchButton } = renderExerciseSearch();
+  const { searchInput } = renderExerciseSearch();
   await userEvent.type(searchInput, term);
-  await userEvent.click(searchButton);
-  return { searchInput, searchButton };
+
+  return { searchInput };
 }
 
 describe("ExerciseSearch — search", () => {
@@ -52,8 +50,10 @@ describe("ExerciseSearch — search", () => {
   it("does not fetch when the search term is blank", async () => {
     const fetchSpy = vi.spyOn(global, "fetch");
 
-    const { searchButton } = renderExerciseSearch();
-    await userEvent.click(searchButton);
+    const { searchInput } = renderExerciseSearch();
+
+    await userEvent.clear(searchInput);
+    await userEvent.type(searchInput, " ");
 
     expect(fetchSpy).not.toHaveBeenCalled();
   });
@@ -111,17 +111,15 @@ describe("ExerciseSearch — selection", () => {
     render(
       <ExerciseSearch onExerciseSelection={onExerciseSelection}>
         <ExerciseSearch.SearchTermInput />
-        <ExerciseSearch.SearchButton />
         <ExerciseSearch.FoundExercisesList />
         <ExerciseSearch.SelectedExercisesList />
       </ExerciseSearch>,
     );
 
     const searchInput = screen.getByPlaceholderText(/buscar ejercicios/i);
-    const searchButton = screen.getByTestId("search-exercise-button");
 
     await userEvent.type(searchInput, "squat");
-    await userEvent.click(searchButton);
+
     await screen.findByTestId("exercise-list");
 
     await userEvent.click(screen.getByText(SQUAT.exercise.name));
@@ -188,9 +186,11 @@ describe("ExerciseSearch — infinite scroll", () => {
   }
 
   async function setupWithResults() {
-    const { searchInput, searchButton } = renderExerciseSearch();
+    const { searchInput } = renderExerciseSearch();
+
+    await userEvent.clear(searchInput);
     await userEvent.type(searchInput, "press");
-    await userEvent.click(searchButton);
+
     await screen.findByTestId("exercise-list");
   }
 

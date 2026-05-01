@@ -11,7 +11,6 @@ function NewTemplateForm({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       <ExerciseSearch>
         <div className="flex gap-2">
           <ExerciseSearch.SearchTermInput />
-          <ExerciseSearch.SearchButton />
         </div>
 
         <ExerciseSearch.FoundExercisesList className="mb-3" />
