@@ -3,15 +3,15 @@
 // =============================================================================
 
 // CREATE Operations
-export { AppCreateExerciseUsecase } from './CreateExercise/createExercise';
+export { AppCreateExerciseUsecase } from "./AppCreateExerciseUsecase";
 
 // READ Operations
-export { AppGetAllExercisesUsecase } from './GetAllExercises/getAllExercises';
-export { AppGetExerciseByIdUsecase } from './GetExerciseById/getExerciseById';
-export { AppGetExercisesByIdsUsecase } from './GetExercisesByIds/getExercisesByIds';
+export { AppGetAllExercisesUsecase } from "./AppGetAllExercisesUsecase";
+export { AppGetExerciseByIdUsecase } from "./AppGetExerciseByIdUsecase";
+export { AppGetExercisesByIdsUsecase } from "./AppGetExercisesByIdsUsecase";
 
 // UPDATE Operations
-export { AppUpdateExerciseUsecase } from './UpdateExercise/updateExercise';
+export { AppUpdateExerciseUsecase } from "./AppUpdateExerciseUsecase";
 
 // DELETE Operations
-export { AppDeleteExerciseUsecase } from './DeleteExercise/deleteExercise';
+export { AppDeleteExerciseUsecase } from "./AppDeleteExerciseUsecase";

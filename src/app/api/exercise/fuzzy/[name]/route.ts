@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { JSENDResponse } from "@/app/_types/JSEND";
 import { ExerciseFinderResult } from "@/domain/services/ExerciseFinder.port";
-import { AppFindExerciseByFuzzyNameUsecase } from "@/interface-adapters/app/use-cases/exercise/FindExerciseByFuzzyName/findExerciseByFuzzyName";
+import { AppFindExerciseByFuzzyNameUsecase } from "@/interface-adapters/app/use-cases/exercise/AppFindExerciseByFuzzyNameUsecase";
 
 export async function GET(
   request: NextRequest,

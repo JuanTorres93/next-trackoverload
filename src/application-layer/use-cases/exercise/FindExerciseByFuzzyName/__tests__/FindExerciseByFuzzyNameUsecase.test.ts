@@ -9,10 +9,8 @@ import {
 } from "../FindExerciseByFuzzyNameUsecase";
 
 describe("FindExerciseByFuzzyNameUsecase", () => {
-  const CLIENT_ID = "test-client";
   const request: FindExerciseByFuzzyNameRequest = {
     name: "Bench",
-    clientId: CLIENT_ID,
   };
 
   let usecase: FindExerciseByFuzzyNameUsecase;
