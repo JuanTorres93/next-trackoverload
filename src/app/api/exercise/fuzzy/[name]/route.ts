@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { JSENDResponse } from "@/app/_types/JSEND";
-import { getClientId } from "@/app/api/_common/getClientId";
 import { ExerciseFinderResult } from "@/domain/services/ExerciseFinder.port";
-import { createAppFindExerciseByFuzzyNameUsecase } from "@/interface-adapters/app/use-cases/exercise/FindExerciseByFuzzyName/findExerciseByFuzzyName";
+import { AppFindExerciseByFuzzyNameUsecase } from "@/interface-adapters/app/use-cases/exercise/FindExerciseByFuzzyName/findExerciseByFuzzyName";
 
 export async function GET(
   request: NextRequest,
@@ -12,7 +11,6 @@ export async function GET(
   try {
     const { name } = await params;
     const term = decodeURIComponent(name || "").trim();
-    const clientId = getClientId(request);
     const page = parseInt(request.nextUrl.searchParams.get("page") || "1", 10);
 
     if (!term) {
@@ -23,9 +21,8 @@ export async function GET(
     }
 
     const foundExercises: ExerciseFinderResult[] =
-      await createAppFindExerciseByFuzzyNameUsecase(clientId).execute({
+      await AppFindExerciseByFuzzyNameUsecase.execute({
         name: term,
-        clientId,
         page,
       });
 

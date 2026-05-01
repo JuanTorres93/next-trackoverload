@@ -5,7 +5,6 @@ import {
 
 export type FindExerciseByFuzzyNameRequest = {
   name: string;
-  clientId: string;
   page?: number;
 };
 
