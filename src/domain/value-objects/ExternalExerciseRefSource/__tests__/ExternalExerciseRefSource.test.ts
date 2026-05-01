@@ -10,6 +10,13 @@ describe("ExternalExerciseRefSource", () => {
     expect(source.value).toBe("wger");
   });
 
+  it("should create a valid ExternalExerciseRefSource with 'backend-for-frontend'", () => {
+    const source = ExternalExerciseRefSource.create("backend-for-frontend");
+
+    expect(source).toBeInstanceOf(ExternalExerciseRefSource);
+    expect(source.value).toBe("backend-for-frontend");
+  });
+
   it("should be case insensitive and trim spaces", () => {
     const source = ExternalExerciseRefSource.create("  Wger  ");
 
@@ -22,7 +29,7 @@ describe("ExternalExerciseRefSource", () => {
       ValidationError,
     );
     expect(() => ExternalExerciseRefSource.create("invalidsource")).toThrow(
-      /ExternalExerciseRefSource: value must be one of \[wger\]/,
+      /ExternalExerciseRefSource: value must be one of \[wger, backend-for-frontend\]/,
     );
   });
 

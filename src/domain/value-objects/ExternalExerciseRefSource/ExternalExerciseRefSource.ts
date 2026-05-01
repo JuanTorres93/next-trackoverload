@@ -7,7 +7,7 @@ type ExternalExerciseRefSourceProps = {
   value: string;
 };
 
-export const VALID_SOURCES = ["wger"];
+export const VALID_SOURCES = ["wger", "backend-for-frontend"];
 
 export class ExternalExerciseRefSource extends ValueObject<ExternalExerciseRefSourceProps> {
   private readonly _value: string;
