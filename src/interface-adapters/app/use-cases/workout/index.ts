@@ -3,15 +3,15 @@
 // =============================================================================
 
 // READ Operations
-export { AppGetAllWorkoutsForUserUsecase } from './GetAllWorkoutsForUser/getAllWorkoutsForUser';
-export { AppGetWorkoutByIdForUserUsecase } from './GetWorkoutByIdForUser/getWorkoutByIdForUser';
-export { AppGetWorkoutsByTemplateForUserUsecase } from './GetWorkoutsByTemplateForUser/getWorkoutsByTemplateForUser';
+export { AppGetAllWorkoutsForUserUsecase } from "./AppGetAllWorkoutsForUserUsecase";
+export { AppGetWorkoutByIdForUserUsecase } from "./AppGetWorkoutByIdForUserUsecase";
+export { AppGetWorkoutsByTemplateForUserUsecase } from "./AppGetWorkoutsByTemplateForUserUsecase";
 
 // UPDATE Operations
-export { AppUpdateWorkoutUsecase } from './UpdateWorkout/updateWorkout';
-export { AppAddExerciseToWorkoutUsecase } from './AddExerciseToWorkout/addExerciseToWorkout';
-export { AppRemoveSetFromWorkoutUsecase } from './RemoveSetFromWorkout/removeSetFromWorkout';
-export { AppUpdateExerciseInWorkoutUsecase } from './UpdateExerciseInWorkout/updateExerciseInWorkout';
+export { AppUpdateWorkoutUsecase } from "./AppUpdateWorkoutUsecase";
+export { AppAddExerciseToWorkoutUsecase } from "./AppAddExerciseToWorkoutUsecase";
+export { AppRemoveSetFromWorkoutUsecase } from "./AppRemoveSetFromWorkoutUsecase";
+export { AppUpdateExerciseInWorkoutUsecase } from "./AppUpdateExerciseInWorkoutUsecase";
 
 // DELETE Operations
-export { AppDeleteWorkoutUsecase } from './DeleteWorkout/deleteWorkout';
+export { AppDeleteWorkoutUsecase } from "./AppDeleteWorkoutUsecase";
