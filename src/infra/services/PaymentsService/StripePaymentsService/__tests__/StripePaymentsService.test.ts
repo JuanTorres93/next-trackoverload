@@ -1,26 +1,26 @@
 // @vitest-environment node
 // Load env variables for real Stripe API calls
-import 'dotenv/config';
+import "dotenv/config";
+import Stripe from "stripe";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
-import Stripe from 'stripe';
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { InfrastructureError } from "@/domain/common/errors";
 
+import { isRunningInCICD } from "../../../../../../tests/common/isRunningInCICD";
 import {
   StripePaymentsService,
   toSubscriptionStatus,
-} from '../StripePaymentsService';
-import { InfrastructureError } from '@/domain/common/errors';
+} from "../StripePaymentsService";
 
 const hasStripeCredentials = Boolean(
   process.env.STRIPE_SECRET && process.env.STRIPE_PRICE_ID,
 );
-const isCI = Boolean(process.env.CI || process.env.GITHUB_ACTIONS);
-const shouldSkip = isCI && !hasStripeCredentials;
+const shouldSkip = isRunningInCICD && !hasStripeCredentials;
 
-const TEST_EMAIL = 'test@example.com';
-const TEST_NAME = 'Test User';
+const TEST_EMAIL = "test@example.com";
+const TEST_NAME = "Test User";
 
-describe('toSubscriptionStatus', () => {
+describe("toSubscriptionStatus", () => {
   function makeSubscription(
     status: string,
     overrides: {
@@ -36,48 +36,48 @@ describe('toSubscriptionStatus', () => {
   }
 
   it('maps "active" to domain "active"', () => {
-    expect(toSubscriptionStatus(makeSubscription('active')).value).toBe(
-      'active',
+    expect(toSubscriptionStatus(makeSubscription("active")).value).toBe(
+      "active",
     );
   });
 
   it('maps "trialing" to domain "free_trial"', () => {
-    expect(toSubscriptionStatus(makeSubscription('trialing')).value).toBe(
-      'free_trial',
+    expect(toSubscriptionStatus(makeSubscription("trialing")).value).toBe(
+      "free_trial",
     );
   });
 
   it('maps "canceled" to domain "expired"', () => {
-    expect(toSubscriptionStatus(makeSubscription('canceled')).value).toBe(
-      'expired',
+    expect(toSubscriptionStatus(makeSubscription("canceled")).value).toBe(
+      "expired",
     );
   });
 
   it('maps "active" + cancel_at_period_end=true to domain "canceled"', () => {
     expect(
       toSubscriptionStatus(
-        makeSubscription('active', { cancel_at_period_end: true }),
+        makeSubscription("active", { cancel_at_period_end: true }),
       ).value,
-    ).toBe('canceled');
+    ).toBe("canceled");
   });
 
   it('maps "active" + cancel_at set to domain "canceled" (billing portal cancels at specific date)', () => {
     const futureTimestamp = Math.floor(Date.now() / 1000) + 86400;
     expect(
       toSubscriptionStatus(
-        makeSubscription('active', { cancel_at: futureTimestamp }),
+        makeSubscription("active", { cancel_at: futureTimestamp }),
       ).value,
-    ).toBe('canceled');
+    ).toBe("canceled");
   });
 
-  it('throws InfrastructureError for an unhandled Stripe status', () => {
-    expect(() => toSubscriptionStatus(makeSubscription('past_due'))).toThrow(
+  it("throws InfrastructureError for an unhandled Stripe status", () => {
+    expect(() => toSubscriptionStatus(makeSubscription("past_due"))).toThrow(
       InfrastructureError,
     );
   });
 });
 
-describe.skipIf(shouldSkip)('StripePaymentsService', () => {
+describe.skipIf(shouldSkip)("StripePaymentsService", () => {
   let stripe: Stripe;
   let service: StripePaymentsService;
   let createdCustomerIds: string[];
@@ -97,8 +97,8 @@ describe.skipIf(shouldSkip)('StripePaymentsService', () => {
     }
   });
 
-  describe('createSubscription', () => {
-    it('creates a Stripe customer and returns a checkout session URL', async () => {
+  describe("createSubscription", () => {
+    it("creates a Stripe customer and returns a checkout session URL", async () => {
       const result = await service.createSubscription(
         TEST_EMAIL,
         TEST_NAME,
@@ -115,9 +115,9 @@ describe.skipIf(shouldSkip)('StripePaymentsService', () => {
       if (customers.data[0]) createdCustomerIds.push(customers.data[0].id);
     });
 
-    it('throws if the price ID does not exist', async () => {
+    it("throws if the price ID does not exist", async () => {
       await expect(
-        service.createSubscription(TEST_EMAIL, TEST_NAME, 'price_nonexistent'),
+        service.createSubscription(TEST_EMAIL, TEST_NAME, "price_nonexistent"),
       ).rejects.toThrow();
 
       const customers = await stripe.customers.list({
@@ -128,8 +128,8 @@ describe.skipIf(shouldSkip)('StripePaymentsService', () => {
     });
   });
 
-  describe('cancelSubscription', () => {
-    it('returns a billing portal URL', async () => {
+  describe("cancelSubscription", () => {
+    it("returns a billing portal URL", async () => {
       const customer = await stripe.customers.create({ email: TEST_EMAIL });
       createdCustomerIds.push(customer.id);
 
@@ -139,8 +139,8 @@ describe.skipIf(shouldSkip)('StripePaymentsService', () => {
     });
   });
 
-  describe('resumeSubscription', () => {
-    it('returns a billing portal URL', async () => {
+  describe("resumeSubscription", () => {
+    it("returns a billing portal URL", async () => {
       const customer = await stripe.customers.create({ email: TEST_EMAIL });
       createdCustomerIds.push(customer.id);
 
@@ -150,8 +150,8 @@ describe.skipIf(shouldSkip)('StripePaymentsService', () => {
     });
   });
 
-  describe('getSubscriptionStatus', () => {
-    it('returns null if the customer has no subscriptions', async () => {
+  describe("getSubscriptionStatus", () => {
+    it("returns null if the customer has no subscriptions", async () => {
       const customer = await stripe.customers.create({ email: TEST_EMAIL });
       createdCustomerIds.push(customer.id);
 
