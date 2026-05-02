@@ -69,6 +69,7 @@ function PreviewCard({
         value={formState.newTemplateName}
         onChange={(e) => setField("newTemplateName", e.target.value)}
         placeholder="Nombre de la nueva plantilla"
+        autoFocus
       />
     </div>
   );

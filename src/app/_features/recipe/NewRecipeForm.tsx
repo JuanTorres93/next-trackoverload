@@ -238,6 +238,7 @@ function RecipePreviewCard({
             disabled={isLoading}
             onChange={(e) => setField("name", e.target.value)}
             placeholder="Nombre de la receta"
+            autoFocus
             required
           />
         </div>

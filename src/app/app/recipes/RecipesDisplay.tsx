@@ -1,12 +1,14 @@
-'use client';
+"use client";
 
-import RecipesGrid from '@/app/_features/recipe/RecipesGrid';
-import { useRecipeSearch } from '@/app/_features/recipe/useRecipeSearch';
-import ButtonNew from '@/app/_ui/buttons/ButtonNew';
-import SearchInput from '@/app/_ui/SearchInput';
-import { RecipeDTO } from '@/application-layer/dtos/RecipeDTO';
-import { useState } from 'react';
-import { HiBookOpen, HiMagnifyingGlass } from 'react-icons/hi2';
+import { useState } from "react";
+
+import { HiBookOpen, HiMagnifyingGlass } from "react-icons/hi2";
+
+import RecipesGrid from "@/app/_features/recipe/RecipesGrid";
+import { useRecipeSearch } from "@/app/_features/recipe/useRecipeSearch";
+import SearchInput from "@/app/_ui/SearchInput";
+import ButtonNew from "@/app/_ui/buttons/ButtonNew";
+import { RecipeDTO } from "@/application-layer/dtos/RecipeDTO";
 
 function RecipesDisplay({ recipes }: { recipes: RecipeDTO[] }) {
   const [isNavigating, setIsNavigating] = useState(false);
@@ -22,7 +24,7 @@ function RecipesDisplay({ recipes }: { recipes: RecipeDTO[] }) {
         <div>
           <h1 className="text-2xl font-bold text-text">Mis Recetas</h1>
           <p className="text-sm text-text-minor-emphasis">
-            {recipes.length} receta{recipes.length !== 1 ? 's' : ''}
+            {recipes.length} receta{recipes.length !== 1 ? "s" : ""}
           </p>
         </div>
         <ButtonNew
@@ -51,6 +53,7 @@ function RecipesDisplay({ recipes }: { recipes: RecipeDTO[] }) {
             placeholder="Buscar receta..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            autoFocus
           />
 
           {filteredRecipes.length === 0 ? (

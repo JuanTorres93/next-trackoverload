@@ -96,6 +96,7 @@ function SelectRecipeForm({
           placeholder="Buscar receta..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          autoFocus
         />
       </div>
 
