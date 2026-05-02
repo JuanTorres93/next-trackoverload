@@ -12,6 +12,7 @@ import { formatToInteger } from "@/app/_utils/format/formatToInteger";
 import { CreateIngredientLineData } from "@/application-layer/use-cases/recipe/common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo";
 import { AppClientImageProcessor } from "@/interface-adapters/app/services/AppClientImageProcessor";
 
+import FormTitleTextArea from "../common/FormTitleInput";
 import LoadingOverlay from "../common/LoadingOverlay";
 import { isNextRedirectError } from "../common/handleNextRedirectError";
 import ArrangedIngredientSearch from "../ingredient/ArrangedIngredientSearch";
@@ -231,11 +232,8 @@ function RecipePreviewCard({
 
         {/* Recipe name */}
         <div className="px-4 pt-3 pb-2 border-b border-border/30">
-          <textarea
+          <FormTitleTextArea
             data-testid="recipe-name-input"
-            className="w-full text-lg font-bold leading-snug bg-transparent outline-none resize-none text-text placeholder:text-text-minor-emphasis"
-            rows={2}
-            spellCheck={false}
             value={formState.name}
             disabled={isLoading}
             onChange={(e) => setField("name", e.target.value)}

@@ -1,6 +1,7 @@
-import { Text } from '../Text/Text';
-import { ValidationError } from '@/domain/common/errors';
-import { ValueObject } from '../ValueObject';
+import { ValidationError } from "@/domain/common/errors";
+
+import { Text } from "../Text/Text";
+import { ValueObject } from "../ValueObject";
 
 type EmailProps = {
   value: string;
@@ -22,10 +23,10 @@ export class Email extends ValueObject<EmailProps> {
 
     // Validate email format
     if (!this.EMAIL_REGEX.test(text.value)) {
-      throw new ValidationError('Email: value must be a valid email format');
+      throw new ValidationError("Email: value must be a valid email format");
     }
 
-    return new Email({ value: text.value.toLocaleLowerCase() });
+    return new Email({ value: text.value.toLowerCase() });
   }
 
   get value(): string {
