@@ -54,8 +54,6 @@ describe("CreateWorkoutTemplateUsecase", () => {
 
       expect(result.userId).toBe(userTestProps.userId);
       expect(result.name).toBe("Push Day");
-      expect(result.exercises).toEqual([]);
-      expect(result.id).toBeDefined();
     });
 
     it("should return a WorkoutTemplateDTO", async () => {
@@ -69,6 +67,30 @@ describe("CreateWorkoutTemplateUsecase", () => {
       for (const prop of dto.workoutTemplateDTOProperties) {
         expect(result).toHaveProperty(prop);
       }
+    });
+
+    it("should include exercises in created template", async () => {
+      const request = {
+        ...validRequest,
+        templateLines: [
+          {
+            exerciseId: "exercise-1",
+            sets: 3,
+          },
+          {
+            exerciseId: "exercise-2",
+            sets: 4,
+          },
+        ],
+      };
+
+      const result = await usecase.execute(request);
+
+      expect(result.exercises).toHaveLength(2);
+      expect(result.exercises[0].exerciseId).toBe("exercise-1");
+      expect(result.exercises[0].sets).toBe(3);
+      expect(result.exercises[1].exerciseId).toBe("exercise-2");
+      expect(result.exercises[1].sets).toBe(4);
     });
   });
 
@@ -89,7 +111,28 @@ describe("CreateWorkoutTemplateUsecase", () => {
       expect(savedTemplate!.name).toBe("Test template persistence");
     });
 
-    // TODO IMPORTANT test saving of workout template lines
+    it("should persist template lines in repo", async () => {
+      const request = {
+        ...validRequest,
+        templateLines: [
+          {
+            exerciseId: "persisted-exercise",
+            sets: 99,
+          },
+        ],
+      };
+
+      const result = await usecase.execute(request);
+
+      const savedTemplate = await workoutTemplatesRepo.getWorkoutTemplateById(
+        result.id,
+      );
+
+      expect(savedTemplate).not.toBeNull();
+      expect(savedTemplate!.exercises).toHaveLength(1);
+      expect(savedTemplate!.exercises[0].exerciseId).toBe("persisted-exercise");
+      expect(savedTemplate!.exercises[0].sets).toBe(99);
+    });
   });
 
   describe("Errors", () => {

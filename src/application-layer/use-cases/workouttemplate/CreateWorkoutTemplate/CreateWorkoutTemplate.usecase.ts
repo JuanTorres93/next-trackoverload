@@ -8,7 +8,10 @@ import {
   ValidationError,
 } from "@/domain/common/errors";
 import { WorkoutTemplate } from "@/domain/entities/workouttemplate/WorkoutTemplate";
-import { WorkoutTemplateLineCreateProps } from "@/domain/entities/workouttemplateline/WorkoutTemplateLine";
+import {
+  WorkoutTemplateLine,
+  WorkoutTemplateLineCreateProps,
+} from "@/domain/entities/workouttemplateline/WorkoutTemplateLine";
 import { UsersRepo } from "@/domain/repos/UsersRepo.port";
 import { WorkoutTemplatesRepo } from "@/domain/repos/WorkoutTemplatesRepo.port";
 import { IdGenerator } from "@/domain/services/IdGenerator.port";
@@ -52,12 +55,27 @@ export class CreateWorkoutTemplateUsecase {
       );
     }
 
+    const newTemplateId = this.idGenerator.generateId();
+
     const newWorkoutTemplate = WorkoutTemplate.create({
-      id: this.idGenerator.generateId(),
+      id: newTemplateId,
       userId: request.targetUserId,
       name: request.name,
       exercises: [],
     });
+
+    const workoutTemplateLines = request.templateLines.map((line) =>
+      WorkoutTemplateLine.create({
+        id: this.idGenerator.generateId(),
+        templateId: newTemplateId,
+        exerciseId: line.exerciseId,
+        sets: line.sets,
+      }),
+    );
+
+    for (const line of workoutTemplateLines) {
+      newWorkoutTemplate.addExercise(line);
+    }
 
     await this.workoutTemplatesRepo.saveWorkoutTemplate(newWorkoutTemplate);
 
