@@ -6,9 +6,12 @@ import {
 } from "@/domain/common/errors";
 import { User } from "@/domain/entities/user/User";
 import { WorkoutTemplate } from "@/domain/entities/workouttemplate/WorkoutTemplate";
+import { MemoryExercisesRepo } from "@/infra/repos/memory/MemoryExercisesRepo";
+import { MemoryExternalExercisesRefRepo } from "@/infra/repos/memory/MemoryExternalExercisesRefRepo";
 import { MemoryUsersRepo } from "@/infra/repos/memory/MemoryUsersRepo";
 import { MemoryWorkoutTemplatesRepo } from "@/infra/repos/memory/MemoryWorkoutTemplatesRepo";
 import { Uuidv4IdGenerator } from "@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator";
+import { MemoryTransactionContext } from "@/infra/transaction-context/MemoryTransactionContext/MemoryTransactionContext";
 
 import * as userTestProps from "../../../../../../tests/createProps/userTestProps";
 import { CreateWorkoutTemplateUsecase } from "../CreateWorkoutTemplate.usecase";
@@ -19,7 +22,9 @@ const validRequest = {
   name: "Push Day",
   templateLines: [
     {
-      exerciseId: "exercise-1",
+      externalExerciseId: "ext-ex-1",
+      source: "wger",
+      name: "Bench Press",
       sets: 3,
     },
   ],
@@ -28,16 +33,23 @@ const validRequest = {
 describe("CreateWorkoutTemplateUsecase", () => {
   let workoutTemplatesRepo: MemoryWorkoutTemplatesRepo;
   let usersRepo: MemoryUsersRepo;
+  let exercisesRepo: MemoryExercisesRepo;
+  let externalExercisesRefRepo: MemoryExternalExercisesRefRepo;
   let usecase: CreateWorkoutTemplateUsecase;
   let user: User;
 
   beforeEach(async () => {
     workoutTemplatesRepo = new MemoryWorkoutTemplatesRepo();
     usersRepo = new MemoryUsersRepo();
+    exercisesRepo = new MemoryExercisesRepo();
+    externalExercisesRefRepo = new MemoryExternalExercisesRefRepo();
     usecase = new CreateWorkoutTemplateUsecase(
       workoutTemplatesRepo,
       usersRepo,
       new Uuidv4IdGenerator(),
+      exercisesRepo,
+      externalExercisesRefRepo,
+      new MemoryTransactionContext(),
     );
 
     user = userTestProps.createTestUser();
@@ -74,11 +86,15 @@ describe("CreateWorkoutTemplateUsecase", () => {
         ...validRequest,
         templateLines: [
           {
-            exerciseId: "exercise-1",
+            externalExerciseId: "ext-ex-1",
+            source: "wger",
+            name: "Bench Press",
             sets: 3,
           },
           {
-            exerciseId: "exercise-2",
+            externalExerciseId: "ext-ex-2",
+            source: "wger",
+            name: "Squat",
             sets: 4,
           },
         ],
@@ -87,9 +103,7 @@ describe("CreateWorkoutTemplateUsecase", () => {
       const result = await usecase.execute(request);
 
       expect(result.exercises).toHaveLength(2);
-      expect(result.exercises[0].exerciseId).toBe("exercise-1");
       expect(result.exercises[0].sets).toBe(3);
-      expect(result.exercises[1].exerciseId).toBe("exercise-2");
       expect(result.exercises[1].sets).toBe(4);
     });
   });
@@ -116,7 +130,9 @@ describe("CreateWorkoutTemplateUsecase", () => {
         ...validRequest,
         templateLines: [
           {
-            exerciseId: "persisted-exercise",
+            externalExerciseId: "ext-persisted-ex",
+            source: "wger",
+            name: "Persisted Exercise",
             sets: 99,
           },
         ],
@@ -130,8 +146,37 @@ describe("CreateWorkoutTemplateUsecase", () => {
 
       expect(savedTemplate).not.toBeNull();
       expect(savedTemplate!.exercises).toHaveLength(1);
-      expect(savedTemplate!.exercises[0].exerciseId).toBe("persisted-exercise");
       expect(savedTemplate!.exercises[0].sets).toBe(99);
+    });
+
+    it("should create and persist new exercises if they do not exist", async () => {
+      const request = {
+        ...validRequest,
+        templateLines: [
+          {
+            externalExerciseId: "ext-ex-new",
+            source: "wger",
+            name: "Brand New Exercise",
+            sets: 3,
+          },
+        ],
+      };
+
+      const exercisesBefore = exercisesRepo.countForTesting();
+      const externalRefsBefore = externalExercisesRefRepo.countForTesting();
+
+      await usecase.execute(request);
+
+      expect(exercisesRepo.countForTesting()).toBe(exercisesBefore + 1);
+      expect(externalExercisesRefRepo.countForTesting()).toBe(
+        externalRefsBefore + 1,
+      );
+
+      const savedRef = await externalExercisesRefRepo.getByExternalIdAndSource(
+        "ext-ex-new",
+        "wger",
+      );
+      expect(savedRef).not.toBeNull();
     });
   });
 

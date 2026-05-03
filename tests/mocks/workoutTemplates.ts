@@ -1,3 +1,4 @@
+import { AppExercisesRepo } from "@/interface-adapters/app/repos/AppExercisesRepo";
 import { AppExternalExercisesRefRepo } from "@/interface-adapters/app/repos/AppExternalExercisesRefRepo";
 import { AppUsersRepo } from "@/interface-adapters/app/repos/AppUsersRepo";
 import { AppWorkoutsTemplatesRepo } from "@/interface-adapters/app/repos/AppWorkoutsTemplatesRepo";
@@ -6,10 +7,7 @@ import {
   AppCreateWorkoutTemplateUsecase,
 } from "@/interface-adapters/app/use-cases/workouttemplate";
 
-import {
-  createMockExercises,
-  mockExercisesForExerciseFinder,
-} from "./exercises";
+import { mockExercisesForExerciseFinder } from "./exercises";
 import { createMockUser } from "./user";
 
 const setsForExercises = [3, 4, 5];
@@ -19,8 +17,9 @@ export const createMockWorkoutTemplates = async () => {
     throw new Error("createMockWorkoutTemplates should only be used in tests");
   }
 
-  const mockExercises = await createMockExercises();
   const mockUser = await createMockUser();
+
+  const firstExercise = mockExercisesForExerciseFinder[0];
 
   let mockTemplate = await AppCreateWorkoutTemplateUsecase.execute({
     actorUserId: mockUser.id,
@@ -28,8 +27,10 @@ export const createMockWorkoutTemplates = async () => {
     name: "Upper Body A",
     templateLines: [
       {
-        exerciseId: mockExercises[0].id,
-        sets: 3,
+        externalExerciseId: firstExercise.externalRef.externalId,
+        source: firstExercise.externalRef.source,
+        name: firstExercise.exercise.name,
+        sets: setsForExercises[0],
       },
     ],
   });
@@ -43,7 +44,7 @@ export const createMockWorkoutTemplates = async () => {
     }),
   );
 
-  for (const exercise of exercisesForTemplates) {
+  for (const exercise of exercisesForTemplates.slice(1)) {
     mockTemplate = await AppAddExerciseToWorkoutTemplateUsecase.execute({
       userId: mockUser.id,
       workoutTemplateId: mockTemplate.id,
@@ -55,7 +56,8 @@ export const createMockWorkoutTemplates = async () => {
   }
 
   afterAll(() => {
-    // AppExercisesRepo cleanup is handled by createMockExercises
+    // @ts-expect-error AppExercisesRepo will always be MemoryExercisesRepo
+    AppExercisesRepo.clearForTesting();
     // @ts-expect-error AppWorkoutsTemplatesRepo will always be MemoryWorkoutTemplatesRepo
     AppWorkoutsTemplatesRepo.clearForTesting();
     // @ts-expect-error AppExternalExercisesRefRepo will always be MemoryExternalExercisesRefRepo

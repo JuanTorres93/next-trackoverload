@@ -2,28 +2,30 @@ import {
   WorkoutTemplateDTO,
   toWorkoutTemplateDTO,
 } from "@/application-layer/dtos/WorkoutTemplateDTO";
+import { TransactionContext } from "@/application-layer/ports/TransactionContext.port";
 import {
   NotFoundError,
   PermissionError,
   ValidationError,
 } from "@/domain/common/errors";
 import { WorkoutTemplate } from "@/domain/entities/workouttemplate/WorkoutTemplate";
-import {
-  WorkoutTemplateLine,
-  WorkoutTemplateLineCreateProps,
-} from "@/domain/entities/workouttemplateline/WorkoutTemplateLine";
+import { WorkoutTemplateLine } from "@/domain/entities/workouttemplateline/WorkoutTemplateLine";
+import { ExercisesRepo } from "@/domain/repos/ExercisesRepo.port";
+import { ExternalExercisesRefRepo } from "@/domain/repos/ExternalExercisesRefRepo.port";
 import { UsersRepo } from "@/domain/repos/UsersRepo.port";
 import { WorkoutTemplatesRepo } from "@/domain/repos/WorkoutTemplatesRepo.port";
 import { IdGenerator } from "@/domain/services/IdGenerator.port";
+
+import {
+  CreateWorkoutTemplateLineData,
+  createExercisesAndExternalExercisesForWorkoutTemplateLineNoSaveInRepo,
+} from "../common/createExercisesAndExternalExercisesForWorkoutTemplateLineNoSaveInRepo";
 
 export type CreateWorkoutTemplateUsecaseRequest = {
   actorUserId: string;
   targetUserId: string;
   name: string;
-  templateLines: Omit<
-    WorkoutTemplateLineCreateProps,
-    "id" | "templateId" | "createdAt" | "updatedAt"
-  >[];
+  templateLines: CreateWorkoutTemplateLineData[];
 };
 
 export class CreateWorkoutTemplateUsecase {
@@ -31,6 +33,9 @@ export class CreateWorkoutTemplateUsecase {
     private workoutTemplatesRepo: WorkoutTemplatesRepo,
     private usersRepo: UsersRepo,
     private idGenerator: IdGenerator,
+    private exercisesRepo: ExercisesRepo,
+    private externalExercisesRefRepo: ExternalExercisesRefRepo,
+    private transactionContext: TransactionContext,
   ) {}
 
   async execute(
@@ -55,6 +60,14 @@ export class CreateWorkoutTemplateUsecase {
       );
     }
 
+    const { setsMapByExternalId, createdExercises, createdExternalExercises } =
+      await createExercisesAndExternalExercisesForWorkoutTemplateLineNoSaveInRepo(
+        request.templateLines,
+        this.exercisesRepo,
+        this.externalExercisesRefRepo,
+        this.idGenerator,
+      );
+
     const newTemplateId = this.idGenerator.generateId();
 
     const newWorkoutTemplate = WorkoutTemplate.create({
@@ -64,20 +77,29 @@ export class CreateWorkoutTemplateUsecase {
       exercises: [],
     });
 
-    const workoutTemplateLines = request.templateLines.map((line) =>
-      WorkoutTemplateLine.create({
-        id: this.idGenerator.generateId(),
-        templateId: newTemplateId,
-        exerciseId: line.exerciseId,
-        sets: line.sets,
-      }),
-    );
-
-    for (const line of workoutTemplateLines) {
-      newWorkoutTemplate.addExercise(line);
+    for (const line of request.templateLines) {
+      const { exerciseId, sets } = setsMapByExternalId[line.externalExerciseId];
+      newWorkoutTemplate.addExercise(
+        WorkoutTemplateLine.create({
+          id: this.idGenerator.generateId(),
+          templateId: newTemplateId,
+          exerciseId,
+          sets,
+        }),
+      );
     }
 
-    await this.workoutTemplatesRepo.saveWorkoutTemplate(newWorkoutTemplate);
+    await this.transactionContext.run(async () => {
+      for (const externalRef of Object.values(createdExternalExercises)) {
+        await this.externalExercisesRefRepo.save(externalRef);
+      }
+
+      for (const exercise of Object.values(createdExercises)) {
+        await this.exercisesRepo.saveExercise(exercise);
+      }
+
+      await this.workoutTemplatesRepo.saveWorkoutTemplate(newWorkoutTemplate);
+    });
 
     return toWorkoutTemplateDTO(newWorkoutTemplate);
   }
