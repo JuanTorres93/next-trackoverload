@@ -1,17 +1,26 @@
 import {
   WorkoutTemplateDTO,
   toWorkoutTemplateDTO,
-} from '@/application-layer/dtos/WorkoutTemplateDTO';
-import { NotFoundError, PermissionError } from '@/domain/common/errors';
-import { WorkoutTemplate } from '@/domain/entities/workouttemplate/WorkoutTemplate';
-import { UsersRepo } from '@/domain/repos/UsersRepo.port';
-import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
-import { IdGenerator } from '@/domain/services/IdGenerator.port';
+} from "@/application-layer/dtos/WorkoutTemplateDTO";
+import {
+  NotFoundError,
+  PermissionError,
+  ValidationError,
+} from "@/domain/common/errors";
+import { WorkoutTemplate } from "@/domain/entities/workouttemplate/WorkoutTemplate";
+import { WorkoutTemplateLineCreateProps } from "@/domain/entities/workouttemplateline/WorkoutTemplateLine";
+import { UsersRepo } from "@/domain/repos/UsersRepo.port";
+import { WorkoutTemplatesRepo } from "@/domain/repos/WorkoutTemplatesRepo.port";
+import { IdGenerator } from "@/domain/services/IdGenerator.port";
 
 export type CreateWorkoutTemplateUsecaseRequest = {
   actorUserId: string;
   targetUserId: string;
   name: string;
+  templateLines: Omit<
+    WorkoutTemplateLineCreateProps,
+    "id" | "templateId" | "createdAt" | "updatedAt"
+  >[];
 };
 
 export class CreateWorkoutTemplateUsecase {
@@ -26,7 +35,13 @@ export class CreateWorkoutTemplateUsecase {
   ): Promise<WorkoutTemplateDTO> {
     if (request.actorUserId !== request.targetUserId) {
       throw new PermissionError(
-        'CreateWorkoutTemplateUsecase: cannot create workout template for another user',
+        "CreateWorkoutTemplateUsecase: cannot create workout template for another user",
+      );
+    }
+
+    if (!request.templateLines || request.templateLines.length === 0) {
+      throw new ValidationError(
+        "CreateWorkoutTemplateUsecase: at least one exercise must be included in the workout template",
       );
     }
 

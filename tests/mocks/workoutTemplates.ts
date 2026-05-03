@@ -19,13 +19,19 @@ export const createMockWorkoutTemplates = async () => {
     throw new Error("createMockWorkoutTemplates should only be used in tests");
   }
 
-  await createMockExercises();
+  const mockExercises = await createMockExercises();
   const mockUser = await createMockUser();
 
   let mockTemplate = await AppCreateWorkoutTemplateUsecase.execute({
     actorUserId: mockUser.id,
     targetUserId: mockUser.id,
     name: "Upper Body A",
+    templateLines: [
+      {
+        exerciseId: mockExercises[0].id,
+        sets: 3,
+      },
+    ],
   });
 
   const exercisesForTemplates = mockExercisesForExerciseFinder.map(
