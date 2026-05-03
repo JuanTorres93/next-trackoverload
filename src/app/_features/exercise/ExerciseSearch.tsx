@@ -33,6 +33,7 @@ function SearchTermInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <div className={className} {...rest}>
       <Input
+        data-testid="exercise-search-input"
         value={searchTerm}
         onChange={handleChange}
         disabled={disabled}

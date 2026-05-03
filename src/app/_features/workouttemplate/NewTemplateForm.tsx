@@ -1,10 +1,10 @@
 "use client";
-import { useState } from "react";
 
 import { twMerge } from "tailwind-merge";
 
-import ExerciseSearch from "@/app/_features/exercise/ExerciseSearch";
-import { SelectedExerciseEntry } from "@/app/_features/exercise/ExerciseSearch";
+import ExerciseSearch, {
+  SelectedExerciseEntry,
+} from "@/app/_features/exercise/ExerciseSearch";
 import { useFormSetup } from "@/app/_hooks/useFormSetup";
 
 import FormTitleTextArea from "../common/FormTitleInput";
