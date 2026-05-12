@@ -82,6 +82,10 @@ function NewRecipeForm() {
     } catch (error) {
       if (isNextRedirectError(error)) return;
 
+      // TODO DELETE THESE DEBUG LOGS
+      console.log("error de la receta");
+      console.log(error);
+
       showErrorToast(
         "Error al crear la receta. Por favor, inténtalo de nuevo.",
       );
