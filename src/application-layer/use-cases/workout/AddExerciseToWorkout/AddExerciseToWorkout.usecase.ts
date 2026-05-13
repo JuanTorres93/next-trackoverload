@@ -81,19 +81,23 @@ export class AddExerciseToWorkoutUsecase {
     workout.addExercise(workoutLine);
 
     await this.transactionContext.run(async () => {
+      const promises: Promise<void>[] = [];
+
       if (Object.keys(createdExternalExercises).length > 0) {
         const externalExercise = Object.values(createdExternalExercises)[0];
 
-        await this.externalExercisesRefRepo.save(externalExercise);
+        promises.push(this.externalExercisesRefRepo.save(externalExercise));
       }
 
       if (Object.keys(createdExercises).length > 0) {
         const exercise = Object.values(createdExercises)[0];
 
-        await this.exercisesRepo.saveExercise(exercise);
+        promises.push(this.exercisesRepo.saveExercise(exercise));
       }
 
-      await this.workoutsRepo.saveWorkout(workout);
+      promises.push(this.workoutsRepo.saveWorkout(workout));
+
+      await Promise.all(promises);
     });
 
     return toWorkoutDTO(workout);

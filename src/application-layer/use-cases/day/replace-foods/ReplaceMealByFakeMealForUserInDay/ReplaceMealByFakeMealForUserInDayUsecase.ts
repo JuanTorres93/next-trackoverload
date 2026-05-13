@@ -1,12 +1,12 @@
-import { DayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
-import { TransactionContext } from '@/application-layer/ports/TransactionContext.port';
-import { NotFoundError } from '@/domain/common/errors';
-import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import { DaysRepo } from '@/domain/repos/DaysRepo.port';
-import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
-import { MealsRepo } from '@/domain/repos/MealsRepo.port';
-import { UsersRepo } from '@/domain/repos/UsersRepo.port';
-import { IdGenerator } from '@/domain/services/IdGenerator.port';
+import { DayDTO, toDayDTO } from "@/application-layer/dtos/DayDTO";
+import { TransactionContext } from "@/application-layer/ports/TransactionContext.port";
+import { NotFoundError } from "@/domain/common/errors";
+import { FakeMeal } from "@/domain/entities/fakemeal/FakeMeal";
+import { DaysRepo } from "@/domain/repos/DaysRepo.port";
+import { FakeMealsRepo } from "@/domain/repos/FakeMealsRepo.port";
+import { MealsRepo } from "@/domain/repos/MealsRepo.port";
+import { UsersRepo } from "@/domain/repos/UsersRepo.port";
+import { IdGenerator } from "@/domain/services/IdGenerator.port";
 
 export type ReplaceMealByFakeMealForUserInDayUsecaseRequest = {
   dayId: string;
@@ -60,9 +60,11 @@ export class ReplaceMealByFakeMealForUserInDayUsecase {
     day.addFakeMeal(newFakeMeal.id);
 
     await this.transactionContext.run(async () => {
-      await this.mealsRepo.deleteMeal(request.mealIdToReplace);
-      await this.fakeMealsRepo.saveFakeMeal(newFakeMeal);
-      await this.daysRepo.saveDay(day);
+      await Promise.all([
+        this.mealsRepo.deleteMeal(request.mealIdToReplace),
+        this.fakeMealsRepo.saveFakeMeal(newFakeMeal),
+        this.daysRepo.saveDay(day),
+      ]);
     });
 
     return toDayDTO(day);

@@ -90,15 +90,21 @@ export class CreateWorkoutTemplateUsecase {
     }
 
     await this.transactionContext.run(async () => {
+      const promises: Promise<void>[] = [];
+
       for (const externalRef of Object.values(createdExternalExercises)) {
-        await this.externalExercisesRefRepo.save(externalRef);
+        promises.push(this.externalExercisesRefRepo.save(externalRef));
       }
 
       for (const exercise of Object.values(createdExercises)) {
-        await this.exercisesRepo.saveExercise(exercise);
+        promises.push(this.exercisesRepo.saveExercise(exercise));
       }
 
-      await this.workoutTemplatesRepo.saveWorkoutTemplate(newWorkoutTemplate);
+      promises.push(
+        this.workoutTemplatesRepo.saveWorkoutTemplate(newWorkoutTemplate),
+      );
+
+      await Promise.all(promises);
     });
 
     return toWorkoutTemplateDTO(newWorkoutTemplate);

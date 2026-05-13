@@ -1,20 +1,21 @@
-import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
-import { NotFoundError, PermissionError } from '@/domain/common/errors';
-import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
-import { Recipe } from '@/domain/entities/recipe/Recipe';
-import { ExternalIngredientsRefRepo } from '@/domain/repos/ExternalIngredientsRefRepo.port';
-import { ImagesRepo } from '@/domain/repos/ImagesRepo.port';
-import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
-import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
-import { UsersRepo } from '@/domain/repos/UsersRepo.port';
-import { IdGenerator } from '@/domain/services/IdGenerator.port';
-import { ImageProcessor } from '@/domain/services/ImageProcessor/ServerImageProcessor.port';
-import { TransactionContext } from '@/application-layer/ports/TransactionContext.port';
+import { RecipeDTO, toRecipeDTO } from "@/application-layer/dtos/RecipeDTO";
+import { TransactionContext } from "@/application-layer/ports/TransactionContext.port";
+import { NotFoundError, PermissionError } from "@/domain/common/errors";
+import { IngredientLine } from "@/domain/entities/ingredientline/IngredientLine";
+import { Recipe } from "@/domain/entities/recipe/Recipe";
+import { ExternalIngredientsRefRepo } from "@/domain/repos/ExternalIngredientsRefRepo.port";
+import { ImagesRepo } from "@/domain/repos/ImagesRepo.port";
+import { IngredientsRepo } from "@/domain/repos/IngredientsRepo.port";
+import { RecipesRepo } from "@/domain/repos/RecipesRepo.port";
+import { UsersRepo } from "@/domain/repos/UsersRepo.port";
+import { IdGenerator } from "@/domain/services/IdGenerator.port";
+import { ImageProcessor } from "@/domain/services/ImageProcessor/ServerImageProcessor.port";
+
 import {
-  createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo,
   CreateIngredientLineData,
-} from '../common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
-import { processRecipeImageBufferForUploading } from '../common/processImageBufferForUploading';
+  createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo,
+} from "../common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo";
+import { processRecipeImageBufferForUploading } from "../common/processImageBufferForUploading";
 
 export type CreateRecipeUsecaseRequest = {
   actorUserId: string;
@@ -39,7 +40,7 @@ export class CreateRecipeUsecase {
   async execute(request: CreateRecipeUsecaseRequest): Promise<RecipeDTO> {
     if (request.actorUserId !== request.targetUserId) {
       throw new PermissionError(
-        'CreateRecipeUsecase: cannot create recipe for another user',
+        "CreateRecipeUsecase: cannot create recipe for another user",
       );
     }
 
@@ -85,7 +86,7 @@ export class CreateRecipeUsecase {
       const ingredientLine = IngredientLine.create({
         id: this.idGenerator.generateId(),
         parentId: newRecipeId,
-        parentType: 'recipe',
+        parentType: "recipe",
         ingredient: ingredient,
         quantityInGrams: quantityInGrams,
       });
@@ -118,15 +119,19 @@ export class CreateRecipeUsecase {
     // Save any missing ingredients and external refs
     // TODO IMPORTANT: Create methods for batch saving to optimize performance
     await this.transactionContext.run(async () => {
+      const promises: Promise<void>[] = [];
+
       for (const extRef of Object.values(missingExternalIngredients)) {
-        await this.externalIngredientsRefRepo.save(extRef);
+        promises.push(this.externalIngredientsRefRepo.save(extRef));
       }
 
       for (const ingredient of Object.values(missingIngredients)) {
-        await this.ingredientsRepo.saveIngredient(ingredient);
+        promises.push(this.ingredientsRepo.saveIngredient(ingredient));
       }
 
-      await this.recipesRepo.saveRecipe(newRecipe);
+      promises.push(this.recipesRepo.saveRecipe(newRecipe));
+
+      await Promise.all(promises);
     });
 
     return toRecipeDTO(newRecipe);

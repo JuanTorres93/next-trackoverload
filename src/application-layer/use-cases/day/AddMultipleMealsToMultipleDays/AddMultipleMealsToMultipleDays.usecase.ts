@@ -1,16 +1,17 @@
-import { DayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
-import { TransactionContext } from '@/application-layer/ports/TransactionContext.port';
-import { NotFoundError, ValidationError } from '@/domain/common/errors';
-import { Day } from '@/domain/entities/day/Day';
-import { Recipe } from '@/domain/entities/recipe/Recipe';
-import { DaysRepo } from '@/domain/repos/DaysRepo.port';
-import { MealsRepo } from '@/domain/repos/MealsRepo.port';
-import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
-import { UsersRepo } from '@/domain/repos/UsersRepo.port';
-import { IdGenerator } from '@/domain/services/IdGenerator.port';
-import { dayIdToDayMonthYear } from '@/domain/value-objects/DayId/DayId';
-import { createDayNoSaveInRepo } from '../common/createDayNoSaveInRepo';
-import { createMealsFromRecipes } from '../common/createMealsFromRecipes';
+import { DayDTO, toDayDTO } from "@/application-layer/dtos/DayDTO";
+import { TransactionContext } from "@/application-layer/ports/TransactionContext.port";
+import { NotFoundError, ValidationError } from "@/domain/common/errors";
+import { Day } from "@/domain/entities/day/Day";
+import { Recipe } from "@/domain/entities/recipe/Recipe";
+import { DaysRepo } from "@/domain/repos/DaysRepo.port";
+import { MealsRepo } from "@/domain/repos/MealsRepo.port";
+import { RecipesRepo } from "@/domain/repos/RecipesRepo.port";
+import { UsersRepo } from "@/domain/repos/UsersRepo.port";
+import { IdGenerator } from "@/domain/services/IdGenerator.port";
+import { dayIdToDayMonthYear } from "@/domain/value-objects/DayId/DayId";
+
+import { createDayNoSaveInRepo } from "../common/createDayNoSaveInRepo";
+import { createMealsFromRecipes } from "../common/createMealsFromRecipes";
 
 export type AddMultipleMealsToMultipleDaysUsecaseRequest = {
   dayIds: string[];
@@ -79,8 +80,10 @@ export class AddMultipleMealsToMultipleDaysUsecase {
     });
 
     await this.transactionContext.run(async () => {
-      await this.mealsRepo.saveMultipleMeals(allMeals);
-      await this.daysRepo.saveMultipleDays(days);
+      await Promise.all([
+        this.mealsRepo.saveMultipleMeals(allMeals),
+        this.daysRepo.saveMultipleDays(days),
+      ]);
     });
 
     return days.map(toDayDTO);
