@@ -1,6 +1,6 @@
 export type AuthToken = string;
 
-export const SESSION_DURATION_IN_DAYS = 7;
+export const SESSION_DURATION_IN_DAYS = 28;
 
 export interface AuthService {
   generateToken(userId: string): Promise<AuthToken>;
