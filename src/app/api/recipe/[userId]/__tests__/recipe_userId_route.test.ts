@@ -1,6 +1,5 @@
-import { GetAllRecipesForUserUsecase } from "@/application-layer/use-cases/recipe/GetAllRecipesForUser/GetAllRecipesForUser.usecase";
+import { registerUserInAPITests } from "@/app/api/__tests__/registerUserInAPITests";
 import { Recipe } from "@/domain/entities/recipe/Recipe";
-import { User } from "@/domain/entities/user/User";
 import { MemoryRecipesRepo } from "@/infra/repos/memory/MemoryRecipesRepo";
 import { MemoryUsersRepo } from "@/infra/repos/memory/MemoryUsersRepo";
 import { AppRecipesRepo } from "@/interface-adapters/app/repos/AppRecipesRepo";
@@ -14,26 +13,40 @@ describe("GET /api/recipe/[userId]", () => {
   let recipesRepo: MemoryRecipesRepo;
   let usersRepo: MemoryUsersRepo;
   let testRecipes: Recipe[];
-  let user1: User;
-  let user2: User;
-  const userId1 = userTestProps.userId;
-  const userId2 = "user-2";
+  let user1Id: string;
+  let user2Id: string;
 
   beforeEach(async () => {
     recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
     usersRepo = AppUsersRepo as MemoryUsersRepo;
 
-    user1 = userTestProps.createTestUser();
+    recipesRepo.clearForTesting();
+    usersRepo.clearForTesting();
 
-    user2 = userTestProps.createTestUser({
-      id: userId2,
+    const user1 = userTestProps.createTestUser();
+
+    const user2 = userTestProps.createTestUser({
+      email: "user2@example.com",
     });
 
+    await registerUserInAPITests(user1.email, user1.name);
+
+    await registerUserInAPITests(user2.email, user2.name);
+
+    user1Id = (await usersRepo.getUserByEmail(user1.email))!.id;
+    user2Id = (await usersRepo.getUserByEmail(user2.email))!.id;
+
     testRecipes = [
-      recipeTestProps.createTestRecipe({}, 1),
+      recipeTestProps.createTestRecipe(
+        {
+          userId: user1Id,
+        },
+        1,
+      ),
       recipeTestProps.createTestRecipe(
         {
           id: "recipe2",
+          userId: user1Id,
         },
         2,
       ),
@@ -42,16 +55,14 @@ describe("GET /api/recipe/[userId]", () => {
     for (const recipe of testRecipes) {
       await recipesRepo.saveRecipe(recipe);
     }
-    await usersRepo.saveUser(user1);
-    await usersRepo.saveUser(user2);
   });
 
   it("returns JSEND format", async () => {
-    const params = Promise.resolve({ userId: userId1 });
+    const params = Promise.resolve({ userId: user1Id });
 
     const response = await GET(
-      new Request(`http://localhost/api/recipe/${userId1}`),
-      { params: { userId: userId1 } },
+      new Request(`http://localhost/api/recipe/${user1Id}`),
+      { params: { userId: user1Id } },
     );
 
     const data = await response.json();
@@ -62,8 +73,8 @@ describe("GET /api/recipe/[userId]", () => {
 
   it("returns all recipes for a user", async () => {
     const response = await GET(
-      new Request(`http://localhost/api/recipe/${userId1}`),
-      { params: { userId: userId1 } },
+      new Request(`http://localhost/api/recipe/${user1Id}`),
+      { params: { userId: user1Id } },
     );
 
     const data = await response.json();

@@ -1,11 +1,11 @@
-import { UserDTO, toUserDTO } from '@/application-layer/dtos/UserDTO';
-import { AlreadyExistsError } from '@/domain/common/errors';
-import { User } from '@/domain/entities/user/User';
-import { UsersRepo } from '@/domain/repos/UsersRepo.port';
-import { IdGenerator } from '@/domain/services/IdGenerator.port';
-import { PasswordEncryptorService } from '@/domain/services/PasswordEncryptorService.port';
-import { Email } from '@/domain/value-objects/Email/Email';
-import { Password } from '@/domain/value-objects/Password/Password';
+import { UserDTO, toUserDTO } from "@/application-layer/dtos/UserDTO";
+import { AlreadyExistsError } from "@/domain/common/errors";
+import { User } from "@/domain/entities/user/User";
+import { UsersRepo } from "@/domain/repos/UsersRepo.port";
+import { IdGenerator } from "@/domain/services/IdGenerator.port";
+import { PasswordEncryptorService } from "@/domain/services/PasswordEncryptorService.port";
+import { Email } from "@/domain/value-objects/Email/Email";
+import { Password } from "@/domain/value-objects/Password/Password";
 
 export type CreateUserUsecaseRequest = {
   name: string;
@@ -40,13 +40,13 @@ export class CreateUserUsecase {
 
     if (existingEmail) {
       throw new AlreadyExistsError(
-        'CreateUserUsecase: User with this email already exists',
+        "CreateUserUsecase: User with this email already exists",
       );
     }
 
     if (existingCustomer) {
       throw new AlreadyExistsError(
-        'CreateUserUsecase: User with this customerId already exists',
+        "CreateUserUsecase: User with this customerId already exists",
       );
     }
 
@@ -59,7 +59,7 @@ export class CreateUserUsecase {
       email: request.email,
       hashedPassword,
       customerId: request.customerId ? request.customerId : undefined,
-      subscriptionStatus: 'free_trial',
+      subscriptionStatus: "free_trial",
     });
 
     await this.usersRepo.saveUser(newUser);
