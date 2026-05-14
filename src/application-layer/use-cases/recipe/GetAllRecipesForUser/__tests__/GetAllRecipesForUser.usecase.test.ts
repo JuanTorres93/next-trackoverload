@@ -1,15 +1,17 @@
-import * as dto from '@/../tests/dtoProperties';
-import { NotFoundError, PermissionError } from '@/domain/common/errors';
-import { Recipe } from '@/domain/entities/recipe/Recipe';
-import { User } from '@/domain/entities/user/User';
-import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
-import { MemoryUsersRepo } from '@/infra/repos/memory/MemoryUsersRepo';
-import { beforeEach, describe, expect, it } from 'vitest';
-import * as recipeTestProps from '../../../../../../tests/createProps/recipeTestProps';
-import * as userTestProps from '../../../../../../tests/createProps/userTestProps';
-import { GetAllRecipesForUserUsecase } from '../GetAllRecipesForUser.usecase';
+import { beforeEach, describe, expect, it } from "vitest";
 
-describe('GetAllRecipesForUserUsecase', () => {
+import * as dto from "@/../tests/dtoProperties";
+import { NotFoundError, PermissionError } from "@/domain/common/errors";
+import { Recipe } from "@/domain/entities/recipe/Recipe";
+import { User } from "@/domain/entities/user/User";
+import { MemoryRecipesRepo } from "@/infra/repos/memory/MemoryRecipesRepo";
+import { MemoryUsersRepo } from "@/infra/repos/memory/MemoryUsersRepo";
+
+import * as recipeTestProps from "../../../../../../tests/createProps/recipeTestProps";
+import * as userTestProps from "../../../../../../tests/createProps/userTestProps";
+import { GetAllRecipesForUserUsecase } from "../GetAllRecipesForUser.usecase";
+
+describe("GetAllRecipesForUserUsecase", () => {
   let recipesRepo: MemoryRecipesRepo;
   let usersRepo: MemoryUsersRepo;
   let getAllRecipesUsecase: GetAllRecipesForUserUsecase;
@@ -17,7 +19,7 @@ describe('GetAllRecipesForUserUsecase', () => {
   let user1: User;
   let user2: User;
   const userId1 = userTestProps.userId;
-  const userId2 = 'user-2';
+  const userId2 = "user-2";
 
   beforeEach(async () => {
     recipesRepo = new MemoryRecipesRepo();
@@ -37,7 +39,7 @@ describe('GetAllRecipesForUserUsecase', () => {
       recipeTestProps.createTestRecipe({}, 1),
       recipeTestProps.createTestRecipe(
         {
-          id: 'recipe2',
+          id: "recipe2",
         },
         2,
       ),
@@ -50,8 +52,8 @@ describe('GetAllRecipesForUserUsecase', () => {
     await usersRepo.saveUser(user2);
   });
 
-  describe('Execution', () => {
-    it('should return all recipes when they exist', async () => {
+  describe("Execution", () => {
+    it("should return all recipes when they exist", async () => {
       const result = await getAllRecipesUsecase.execute({
         actorUserId: userId1,
         targetUserId: userId1,
@@ -64,7 +66,7 @@ describe('GetAllRecipesForUserUsecase', () => {
       expect(recipeIds).toContain(testRecipes[1].id);
     });
 
-    it('should return an array of RecipeDTO', async () => {
+    it("should return an array of RecipeDTO", async () => {
       const result = await getAllRecipesUsecase.execute({
         actorUserId: userId1,
         targetUserId: userId1,
@@ -81,7 +83,7 @@ describe('GetAllRecipesForUserUsecase', () => {
       }
     });
 
-    it('should return empty array when no recipes exist', async () => {
+    it("should return empty array when no recipes exist", async () => {
       recipesRepo.clearForTesting();
 
       const result = await getAllRecipesUsecase.execute({
@@ -92,9 +94,9 @@ describe('GetAllRecipesForUserUsecase', () => {
       expect(result).toEqual([]);
     });
 
-    it('should return only recipes for the specified user', async () => {
+    it("should return only recipes for the specified user", async () => {
       const user2Recipe = recipeTestProps.createTestRecipe({
-        id: 'user-2-recipe',
+        id: "user-2-recipe",
         userId: userId2,
       });
 
@@ -127,11 +129,11 @@ describe('GetAllRecipesForUserUsecase', () => {
     });
   });
 
-  describe('Errors', () => {
-    it('should throw error if user does not exist', async () => {
+  describe("Errors", () => {
+    it("should throw error if user does not exist", async () => {
       const request = {
-        actorUserId: 'non-existent',
-        targetUserId: 'non-existent',
+        actorUserId: "non-existent",
+        targetUserId: "non-existent",
       };
 
       await expect(getAllRecipesUsecase.execute(request)).rejects.toThrow(
@@ -142,7 +144,7 @@ describe('GetAllRecipesForUserUsecase', () => {
       );
     });
 
-    it('should throw error when trying to get another users recipes', async () => {
+    it("should throw error when trying to get another users recipes", async () => {
       const request = {
         actorUserId: userId1,
         targetUserId: userId2,
