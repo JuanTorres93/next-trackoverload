@@ -84,25 +84,17 @@ export class AddExerciseToWorkoutTemplateUsecase {
     workoutTemplate.addExercise(workoutTemplateLine);
 
     await this.transactionContext.run(async () => {
-      const promises: Promise<void>[] = [];
-
       if (Object.keys(createdExternalExercises).length > 0) {
         const externalExercise = Object.values(createdExternalExercises)[0];
-
-        promises.push(this.externalExercisesRefRepo.save(externalExercise));
+        await this.externalExercisesRefRepo.save(externalExercise);
       }
 
       if (Object.keys(createdExercises).length > 0) {
         const exercise = Object.values(createdExercises)[0];
-
-        promises.push(this.exercisesRepo.saveExercise(exercise));
+        await this.exercisesRepo.saveExercise(exercise);
       }
 
-      promises.push(
-        this.workoutTemplatesRepo.saveWorkoutTemplate(workoutTemplate),
-      );
-
-      await Promise.all(promises);
+      await this.workoutTemplatesRepo.saveWorkoutTemplate(workoutTemplate);
     });
 
     return toWorkoutTemplateDTO(workoutTemplate);

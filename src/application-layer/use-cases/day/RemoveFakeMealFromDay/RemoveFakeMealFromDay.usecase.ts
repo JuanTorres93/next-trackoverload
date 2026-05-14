@@ -1,9 +1,9 @@
-import { DayDTO, toDayDTO } from "@/application-layer/dtos/DayDTO";
-import { TransactionContext } from "@/application-layer/ports/TransactionContext.port";
-import { NotFoundError } from "@/domain/common/errors";
-import { DaysRepo } from "@/domain/repos/DaysRepo.port";
-import { FakeMealsRepo } from "@/domain/repos/FakeMealsRepo.port";
-import { UsersRepo } from "@/domain/repos/UsersRepo.port";
+import { DayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
+import { NotFoundError } from '@/domain/common/errors';
+import { DaysRepo } from '@/domain/repos/DaysRepo.port';
+import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
+import { UsersRepo } from '@/domain/repos/UsersRepo.port';
+import { TransactionContext } from '@/application-layer/ports/TransactionContext.port';
 
 export type RemoveFakeMealFromDayUsecaseRequest = {
   dayId: string;
@@ -41,10 +41,8 @@ export class RemoveFakeMealFromDayUsecase {
     day.removeFakeMealById(request.fakeMealId);
 
     await this.transactionContext.run(async () => {
-      await Promise.all([
-        this.fakeMealsRepo.deleteFakeMeal(request.fakeMealId),
-        this.daysRepo.saveDay(day),
-      ]);
+      await this.fakeMealsRepo.deleteFakeMeal(request.fakeMealId);
+      await this.daysRepo.saveDay(day);
     });
 
     return toDayDTO(day);

@@ -1,15 +1,14 @@
-import { DayDTO, toDayDTO } from "@/application-layer/dtos/DayDTO";
-import { TransactionContext } from "@/application-layer/ports/TransactionContext.port";
-import { NotFoundError } from "@/domain/common/errors";
-import { Recipe } from "@/domain/entities/recipe/Recipe";
-import { DaysRepo } from "@/domain/repos/DaysRepo.port";
-import { FakeMealsRepo } from "@/domain/repos/FakeMealsRepo.port";
-import { MealsRepo } from "@/domain/repos/MealsRepo.port";
-import { RecipesRepo } from "@/domain/repos/RecipesRepo.port";
-import { UsersRepo } from "@/domain/repos/UsersRepo.port";
-import { IdGenerator } from "@/domain/services/IdGenerator.port";
-
-import { createMealsFromRecipes } from "../../common/createMealsFromRecipes";
+import { DayDTO, toDayDTO } from '@/application-layer/dtos/DayDTO';
+import { TransactionContext } from '@/application-layer/ports/TransactionContext.port';
+import { NotFoundError } from '@/domain/common/errors';
+import { Recipe } from '@/domain/entities/recipe/Recipe';
+import { DaysRepo } from '@/domain/repos/DaysRepo.port';
+import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
+import { MealsRepo } from '@/domain/repos/MealsRepo.port';
+import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
+import { UsersRepo } from '@/domain/repos/UsersRepo.port';
+import { IdGenerator } from '@/domain/services/IdGenerator.port';
+import { createMealsFromRecipes } from '../../common/createMealsFromRecipes';
 
 export type ReplaceFakeMealByMealForUserInDayUsecaseRequest = {
   fakeMealIdToReplace: string;
@@ -68,11 +67,9 @@ export class ReplaceFakeMealByMealForUserInDayUsecase {
     day.addMeal(newMeal.id);
 
     await this.transactionContext.run(async () => {
-      await Promise.all([
-        this.fakeMealsRepo.deleteFakeMeal(request.fakeMealIdToReplace),
-        this.mealsRepo.saveMeal(newMeal),
-        this.daysRepo.saveDay(day),
-      ]);
+      await this.fakeMealsRepo.deleteFakeMeal(request.fakeMealIdToReplace);
+      await this.mealsRepo.saveMeal(newMeal);
+      await this.daysRepo.saveDay(day);
     });
 
     return toDayDTO(day);

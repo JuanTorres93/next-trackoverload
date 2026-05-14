@@ -94,22 +94,18 @@ export class AddIngredientToRecipeUsecase {
     existingRecipe.addIngredientLine(newIngredientLine);
 
     await this.transactionContext.run(async () => {
-      const promises: Promise<void>[] = [];
-
       if (Object.keys(createdExternalIngredients).length > 0) {
         const externalIngredient = Object.values(createdExternalIngredients)[0];
 
-        promises.push(this.externalIngredientsRefRepo.save(externalIngredient));
+        await this.externalIngredientsRefRepo.save(externalIngredient);
       }
 
       if (Object.keys(createdIngredients).length > 0) {
         const ingredient = Object.values(createdIngredients)[0];
-        promises.push(this.ingredientsRepo.saveIngredient(ingredient));
+        await this.ingredientsRepo.saveIngredient(ingredient);
       }
 
-      promises.push(this.recipesRepo.saveRecipe(existingRecipe));
-
-      await Promise.all(promises);
+      await this.recipesRepo.saveRecipe(existingRecipe);
     });
 
     return toRecipeDTO(existingRecipe);
