@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 
 import { cookieSessionName } from "@/app/api/auth/cookie";
+import { AuthError } from "@/domain/common/errors";
 import { AppAuthService } from "@/interface-adapters/app/services/AppAuthService";
 
 /**
@@ -11,7 +12,9 @@ import { AppAuthService } from "@/interface-adapters/app/services/AppAuthService
 export async function getCurrentUserId(): Promise<string> {
   const cookieStore = await cookies();
 
-  const token = cookieStore.get(cookieSessionName)!.value;
+  const token = cookieStore.get(cookieSessionName)?.value;
+
+  if (!token) throw new AuthError("Unauthorized: client ID is missing");
 
   return AppAuthService.getCurrentUserIdFromToken(token);
 }

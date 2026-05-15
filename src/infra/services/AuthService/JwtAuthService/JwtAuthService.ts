@@ -1,6 +1,7 @@
-import { jwtVerify, SignJWT } from 'jose';
-import { AuthService, AuthToken } from '@/domain/services/AuthService.port';
-import { SESSION_DURATION_IN_DAYS } from '@/domain/services/AuthService.port';
+import { SignJWT, jwtVerify } from "jose";
+
+import { AuthService, AuthToken } from "@/domain/services/AuthService.port";
+import { SESSION_DURATION_IN_DAYS } from "@/domain/services/AuthService.port";
 
 type JwtPayload = {
   userId: string;
@@ -20,7 +21,7 @@ export class JwtAuthService implements AuthService {
 
   async generateToken(userId: string): Promise<AuthToken> {
     return new SignJWT({ userId } satisfies JwtPayload)
-      .setProtectedHeader({ alg: 'HS256' })
+      .setProtectedHeader({ alg: "HS256" })
       .setExpirationTime(this.expiresIn)
       .sign(this.secretKey);
   }

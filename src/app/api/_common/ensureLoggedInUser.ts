@@ -13,7 +13,7 @@ export async function ensureLoggedInUser(): Promise<{
   if (!currentUserId) {
     const errorResponse: JSENDFailure = {
       status: "fail",
-      data: { message: "Unauthorized: client ID is missing" },
+      data: { message: "You need to log in to access this resource" },
     };
 
     notLoggedInResponse = NextResponse.json(errorResponse, { status: 401 });

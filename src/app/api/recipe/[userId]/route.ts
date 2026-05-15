@@ -13,13 +13,11 @@ export async function GET(
 ): Promise<NextResponse<JSENDResponse<RecipeDTO[]>>> {
   const { userId } = params;
 
-  const { currentUserId, notLoggedInResponse } = await ensureLoggedInUser();
-  if (notLoggedInResponse) return notLoggedInResponse;
-
-  let recipes: RecipeDTO[];
-
   try {
-    recipes = await AppGetAllRecipesForUserUsecase.execute({
+    const { currentUserId, notLoggedInResponse } = await ensureLoggedInUser();
+    if (notLoggedInResponse) return notLoggedInResponse;
+
+    const recipes: RecipeDTO[] = await AppGetAllRecipesForUserUsecase.execute({
       actorUserId: currentUserId,
       targetUserId: userId,
     });
