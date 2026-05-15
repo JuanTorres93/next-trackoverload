@@ -15,6 +15,7 @@ export { AppGetLastDayWithCaloriesGoalForUserUsecase } from "./AppGetLastDayWith
 export { AppAddMultipleMealsToDayUsecase } from "./AppAddMultipleMealsToDayUsecase";
 export { AppAddMultipleMealsToMultipleDaysUsecase } from "./AppAddMultipleMealsToMultipleDaysUsecase";
 export { AppAddFakeMealToDayUsecase } from "./AppAddFakeMealToDayUsecase";
+export { AppRemoveFakeMealFromDayUsecase } from "./AppRemoveFakeMealFromDayUsecase";
 export { AppRemoveMealFromDayUsecase } from "./AppRemoveMealFromDayUsecase";
 export { AppReplaceFakeMealByAnotherFakeMealForUserInDayUsecase } from "./AppReplaceFakeMealByAnotherFakeMealForUserInDayUsecase";
 export { AppReplaceFakeMealByMealForUserInDayUsecase } from "./AppReplaceFakeMealByMealForUserInDayUsecase";
