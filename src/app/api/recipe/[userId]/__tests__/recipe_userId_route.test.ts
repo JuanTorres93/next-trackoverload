@@ -67,7 +67,7 @@ describe("GET /api/recipe/[userId]", () => {
   it("returns JSEND format if user is not logged in", async () => {
     const response = await GET(
       new Request(`http://localhost/api/recipe/${user1Id}`),
-      { params: { userId: user1Id } },
+      { params: Promise.resolve({ userId: user1Id }) },
     );
 
     const data = await response.json();
@@ -81,7 +81,7 @@ describe("GET /api/recipe/[userId]", () => {
 
     const response = await GET(
       new Request(`http://localhost/api/recipe/${user1Id}`),
-      { params: { userId: user1Id } },
+      { params: Promise.resolve({ userId: user1Id }) },
     );
 
     const data = await response.json();
@@ -95,7 +95,7 @@ describe("GET /api/recipe/[userId]", () => {
 
     const response = await GET(
       new Request(`http://localhost/api/recipe/${user1Id}`),
-      { params: { userId: user1Id } },
+      { params: Promise.resolve({ userId: user1Id }) },
     );
 
     const data = await response.json();
@@ -108,7 +108,7 @@ describe("GET /api/recipe/[userId]", () => {
     it("should throw AuthenticationError if user is not logged in", async () => {
       const response = await GET(
         new Request(`http://localhost/api/recipe/${user1Id}`),
-        { params: { userId: user1Id } },
+        { params: Promise.resolve({ userId: user1Id }) },
       );
 
       const data = await response.json();
@@ -125,7 +125,7 @@ describe("GET /api/recipe/[userId]", () => {
 
       const response = await GET(
         new Request(`http://localhost/api/recipe/${nonExistentUserId}`),
-        { params: { userId: nonExistentUserId } },
+        { params: Promise.resolve({ userId: nonExistentUserId }) },
       );
 
       const data = await response.json();
@@ -140,7 +140,7 @@ describe("GET /api/recipe/[userId]", () => {
 
       const response = await GET(
         new Request(`http://localhost/api/recipe/${user2Id}`),
-        { params: { userId: user2Id } },
+        { params: Promise.resolve({ userId: user2Id }) },
       );
 
       const data = await response.json();

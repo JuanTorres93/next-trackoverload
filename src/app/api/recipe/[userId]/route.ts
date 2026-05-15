@@ -9,9 +9,9 @@ import { handleKnownErrors } from "../../_common/handleKnownErrors";
 
 export async function GET(
   req: Request,
-  { params }: { params: { userId: string } },
+  { params }: { params: Promise<{ userId: string }> },
 ): Promise<NextResponse<JSENDResponse<RecipeDTO[]>>> {
-  const { userId } = params;
+  const { userId } = await params;
 
   try {
     const { currentUserId, notLoggedInResponse } = await ensureLoggedInUser();
