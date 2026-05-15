@@ -1,25 +1,20 @@
-import { AdapterError } from "@/domain/common/errors";
 import { MemoryExternalIngredientsRefRepo } from "@/infra/repos/memory/MemoryExternalIngredientsRefRepo";
 import { MongoExternalIngredientsRefRepo } from "@/infra/repos/mongo/MongoExternalIngredientsRefRepo";
+import { injectFor_ProductionDevelopment_Test } from "@/interface-adapters/common/injectFor_ProductionDevelopment_Test";
 
 import { mongooseInitPromise } from "./common/initMongoose";
 
-let AppExternalIngredientsRefRepo:
+const AppExternalIngredientsRefRepo:
   | MemoryExternalIngredientsRefRepo
-  | MongoExternalIngredientsRefRepo;
-
-if (process.env.NODE_ENV === "test") {
-  AppExternalIngredientsRefRepo = new MemoryExternalIngredientsRefRepo();
-} else if (
-  process.env.NODE_ENV === "development" ||
-  process.env.NODE_ENV === "production"
-) {
-  await mongooseInitPromise;
-  AppExternalIngredientsRefRepo = new MongoExternalIngredientsRefRepo();
-} else {
-  throw new AdapterError(
-    "AppExternalIngredientsRefRepo: NODE_ENV must be one of 'production', 'development', or 'test'",
+  | MongoExternalIngredientsRefRepo =
+  await injectFor_ProductionDevelopment_Test(
+    MongoExternalIngredientsRefRepo,
+    MemoryExternalIngredientsRefRepo,
+    {
+      beforeProdDev: async () => {
+        await mongooseInitPromise;
+      },
+    },
   );
-}
 
 export { AppExternalIngredientsRefRepo };

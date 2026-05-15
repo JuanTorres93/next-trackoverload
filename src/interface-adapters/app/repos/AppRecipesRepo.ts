@@ -1,22 +1,19 @@
-import { AdapterError } from '@/domain/common/errors';
-import { MemoryRecipesRepo } from '@/infra/repos/memory/MemoryRecipesRepo';
-import { MongoRecipesRepo } from '@/infra/repos/mongo/MongoRecipesRepo';
-import { mongooseInitPromise } from './common/initMongoose';
+import { RecipesRepo } from "@/domain/repos/RecipesRepo.port";
+import { MemoryRecipesRepo } from "@/infra/repos/memory/MemoryRecipesRepo";
+import { MongoRecipesRepo } from "@/infra/repos/mongo/MongoRecipesRepo";
+import { injectFor_ProductionDevelopment_Test } from "@/interface-adapters/common/injectFor_ProductionDevelopment_Test";
 
-let AppRecipesRepo: MemoryRecipesRepo | MongoRecipesRepo;
+import { mongooseInitPromise } from "./common/initMongoose";
 
-if (process.env.NODE_ENV === 'test') {
-  AppRecipesRepo = new MemoryRecipesRepo();
-} else if (
-  process.env.NODE_ENV === 'development' ||
-  process.env.NODE_ENV === 'production'
-) {
-  await mongooseInitPromise;
-  AppRecipesRepo = new MongoRecipesRepo();
-} else {
-  throw new AdapterError(
-    "AppRecipesRepo: NODE_ENV must be one of 'production', 'development', or 'test'",
+const AppRecipesRepo: RecipesRepo =
+  await injectFor_ProductionDevelopment_Test<RecipesRepo>(
+    MongoRecipesRepo,
+    MemoryRecipesRepo,
+    {
+      beforeProdDev: async () => {
+        await mongooseInitPromise;
+      },
+    },
   );
-}
 
 export { AppRecipesRepo };

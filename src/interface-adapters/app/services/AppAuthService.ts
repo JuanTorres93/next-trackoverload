@@ -1,18 +1,22 @@
+import { AuthService } from "@/domain/services/AuthService.port";
 import { JwtAuthService } from "@/infra/services/AuthService/JwtAuthService/JwtAuthService";
 import { MemoryAuthService } from "@/infra/services/AuthService/MemoryAuthService/MemoryAuthService";
+import { injectFor_ProductionDevelopment_Test } from "@/interface-adapters/common/injectFor_ProductionDevelopment_Test";
 
-let AppAuthService: JwtAuthService | MemoryAuthService;
+const secret = process.env.JWT_SECRET;
 
-if (process.env.NODE_ENV === "test") {
-  AppAuthService = new MemoryAuthService();
-} else {
-  const secret = process.env.JWT_SECRET;
-  if (!secret) {
-    throw new Error(
-      "AppAuthService: JWT_SECRET environment variable is not set",
-    );
-  }
-  AppAuthService = new JwtAuthService(secret);
-}
+const AppAuthService: AuthService = await injectFor_ProductionDevelopment_Test<
+  AuthService,
+  [string]
+>(JwtAuthService, MemoryAuthService, {
+  beforeProdDev: async () => {
+    if (!secret) {
+      throw new Error(
+        "AppAuthService: JWT_SECRET environment variable is not set",
+      );
+    }
+  },
+  prodDevConstructorArgs: [secret!],
+});
 
 export { AppAuthService };

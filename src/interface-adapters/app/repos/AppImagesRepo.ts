@@ -1,12 +1,12 @@
-import { CloudinaryImagesRepo } from '@/infra/repos/cloudinary/CloudinaryImagesRepo/CloudinaryImagesRepo';
-import { MemoryImagesRepo } from '@/infra/repos/memory/MemoryImagesRepo';
+import { ImagesRepo } from "@/domain/repos/ImagesRepo.port";
+import { CloudinaryImagesRepo } from "@/infra/repos/cloudinary/CloudinaryImagesRepo/CloudinaryImagesRepo";
+import { MemoryImagesRepo } from "@/infra/repos/memory/MemoryImagesRepo";
+import { injectFor_ProductionDevelopment_Test } from "@/interface-adapters/common/injectFor_ProductionDevelopment_Test";
 
-let AppImagesRepo: CloudinaryImagesRepo | MemoryImagesRepo;
-
-if (process.env.NODE_ENV === 'test') {
-  AppImagesRepo = new MemoryImagesRepo();
-} else {
-  AppImagesRepo = new CloudinaryImagesRepo();
-}
+const AppImagesRepo: ImagesRepo =
+  await injectFor_ProductionDevelopment_Test<ImagesRepo>(
+    CloudinaryImagesRepo,
+    MemoryImagesRepo,
+  );
 
 export { AppImagesRepo };

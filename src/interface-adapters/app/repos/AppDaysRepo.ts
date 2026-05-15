@@ -1,23 +1,19 @@
-import { AdapterError } from '@/domain/common/errors';
-import { MemoryDaysRepo } from '@/infra/repos/memory/MemoryDaysRepo';
-import { MongoDaysRepo } from '@/infra/repos/mongo/MongoDaysRepo';
-import { mongooseInitPromise } from './common/initMongoose';
+import { DaysRepo } from "@/domain/repos/DaysRepo.port";
+import { MemoryDaysRepo } from "@/infra/repos/memory/MemoryDaysRepo";
+import { MongoDaysRepo } from "@/infra/repos/mongo/MongoDaysRepo";
+import { injectFor_ProductionDevelopment_Test } from "@/interface-adapters/common/injectFor_ProductionDevelopment_Test";
 
-let AppDaysRepo: MemoryDaysRepo | MongoDaysRepo;
+import { mongooseInitPromise } from "./common/initMongoose";
 
-if (process.env.NODE_ENV === 'test') {
-  AppDaysRepo = new MemoryDaysRepo();
-} else if (
-  process.env.NODE_ENV === 'development' ||
-  process.env.NODE_ENV === 'production'
-) {
-  // Wait for the joint promise of MongoDB connection
-  await mongooseInitPromise;
-  AppDaysRepo = new MongoDaysRepo();
-} else {
-  throw new AdapterError(
-    "AppRecipesRepo: NODE_ENV must be one of 'production', 'development', or 'test'",
+const AppDaysRepo: DaysRepo =
+  await injectFor_ProductionDevelopment_Test<DaysRepo>(
+    MongoDaysRepo,
+    MemoryDaysRepo,
+    {
+      beforeProdDev: async () => {
+        await mongooseInitPromise;
+      },
+    },
   );
-}
 
 export { AppDaysRepo };

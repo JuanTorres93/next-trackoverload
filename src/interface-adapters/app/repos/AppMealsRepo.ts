@@ -1,22 +1,19 @@
-import { AdapterError } from '@/domain/common/errors';
-import { MemoryMealsRepo } from '@/infra/repos/memory/MemoryMealsRepo';
-import { MongoMealsRepo } from '@/infra/repos/mongo/MongoMealsRepo';
-import { mongooseInitPromise } from './common/initMongoose';
+import { MealsRepo } from "@/domain/repos/MealsRepo.port";
+import { MemoryMealsRepo } from "@/infra/repos/memory/MemoryMealsRepo";
+import { MongoMealsRepo } from "@/infra/repos/mongo/MongoMealsRepo";
+import { injectFor_ProductionDevelopment_Test } from "@/interface-adapters/common/injectFor_ProductionDevelopment_Test";
 
-let AppMealsRepo: MemoryMealsRepo | MongoMealsRepo;
+import { mongooseInitPromise } from "./common/initMongoose";
 
-if (process.env.NODE_ENV === 'test') {
-  AppMealsRepo = new MemoryMealsRepo();
-} else if (
-  process.env.NODE_ENV === 'development' ||
-  process.env.NODE_ENV === 'production'
-) {
-  await mongooseInitPromise;
-  AppMealsRepo = new MongoMealsRepo();
-} else {
-  throw new AdapterError(
-    "AppMealsRepo: NODE_ENV must be one of 'production', 'development', or 'test'",
+const AppMealsRepo: MealsRepo =
+  await injectFor_ProductionDevelopment_Test<MealsRepo>(
+    MongoMealsRepo,
+    MemoryMealsRepo,
+    {
+      beforeProdDev: async () => {
+        await mongooseInitPromise;
+      },
+    },
   );
-}
 
 export { AppMealsRepo };

@@ -1,12 +1,11 @@
-import { MemoryPaymentsService } from '@/infra/services/PaymentsService/MemoryPaymentsService/MemoryPaymentsService';
-import { StripePaymentsService } from '@/infra/services/PaymentsService/StripePaymentsService/StripePaymentsService';
+import { MemoryPaymentsService } from "@/infra/services/PaymentsService/MemoryPaymentsService/MemoryPaymentsService";
+import { StripePaymentsService } from "@/infra/services/PaymentsService/StripePaymentsService/StripePaymentsService";
+import { injectFor_ProductionDevelopment_Test } from "@/interface-adapters/common/injectFor_ProductionDevelopment_Test";
 
-let AppPaymentsService: StripePaymentsService | MemoryPaymentsService;
-
-if (process.env.NODE_ENV === 'test') {
-  AppPaymentsService = new MemoryPaymentsService();
-} else {
-  AppPaymentsService = new StripePaymentsService();
-}
+const AppPaymentsService: StripePaymentsService | MemoryPaymentsService =
+  await injectFor_ProductionDevelopment_Test(
+    StripePaymentsService,
+    MemoryPaymentsService,
+  );
 
 export { AppPaymentsService };

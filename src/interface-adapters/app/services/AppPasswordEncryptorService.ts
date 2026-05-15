@@ -1,14 +1,12 @@
-import { DummyPasswordEncryptorService } from '@/infra/services/PasswordEncryptorService/DummyPasswordEncryptorService/DummyPasswordEncryptorService';
-import { BcryptPasswordEncryptorService } from '@/infra/services/PasswordEncryptorService/BcryptPasswordEncryptorService/BcryptPasswordEncryptorService';
+import { PasswordEncryptorService } from "@/domain/services/PasswordEncryptorService.port";
+import { BcryptPasswordEncryptorService } from "@/infra/services/PasswordEncryptorService/BcryptPasswordEncryptorService/BcryptPasswordEncryptorService";
+import { DummyPasswordEncryptorService } from "@/infra/services/PasswordEncryptorService/DummyPasswordEncryptorService/DummyPasswordEncryptorService";
+import { injectFor_ProductionDevelopment_Test } from "@/interface-adapters/common/injectFor_ProductionDevelopment_Test";
 
-let AppPasswordEncryptorService:
-  | BcryptPasswordEncryptorService
-  | DummyPasswordEncryptorService;
-
-if (process.env.NODE_ENV === 'test') {
-  AppPasswordEncryptorService = new DummyPasswordEncryptorService();
-} else {
-  AppPasswordEncryptorService = new BcryptPasswordEncryptorService();
-}
+const AppPasswordEncryptorService: PasswordEncryptorService =
+  await injectFor_ProductionDevelopment_Test<PasswordEncryptorService>(
+    BcryptPasswordEncryptorService,
+    DummyPasswordEncryptorService,
+  );
 
 export { AppPasswordEncryptorService };

@@ -1,22 +1,18 @@
-import { AdapterError } from '@/domain/common/errors';
-import { MemoryFakeMealsRepo } from '@/infra/repos/memory/MemoryFakeMealsRepo';
-import { MongoFakeMealsRepo } from '@/infra/repos/mongo/MongoFakeMealsRepo';
-import { mongooseInitPromise } from './common/initMongoose';
+import { MemoryFakeMealsRepo } from "@/infra/repos/memory/MemoryFakeMealsRepo";
+import { MongoFakeMealsRepo } from "@/infra/repos/mongo/MongoFakeMealsRepo";
+import { injectFor_ProductionDevelopment_Test } from "@/interface-adapters/common/injectFor_ProductionDevelopment_Test";
 
-let AppFakeMealsRepo: MemoryFakeMealsRepo | MongoFakeMealsRepo;
+import { mongooseInitPromise } from "./common/initMongoose";
 
-if (process.env.NODE_ENV === 'test') {
-  AppFakeMealsRepo = new MemoryFakeMealsRepo();
-} else if (
-  process.env.NODE_ENV === 'development' ||
-  process.env.NODE_ENV === 'production'
-) {
-  await mongooseInitPromise;
-  AppFakeMealsRepo = new MongoFakeMealsRepo();
-} else {
-  throw new AdapterError(
-    "AppFakeMealsRepo: NODE_ENV must be one of 'production', 'development', or 'test'",
+const AppFakeMealsRepo: MemoryFakeMealsRepo | MongoFakeMealsRepo =
+  await injectFor_ProductionDevelopment_Test(
+    MongoFakeMealsRepo,
+    MemoryFakeMealsRepo,
+    {
+      beforeProdDev: async () => {
+        await mongooseInitPromise;
+      },
+    },
   );
-}
 
 export { AppFakeMealsRepo };

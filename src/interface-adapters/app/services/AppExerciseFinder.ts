@@ -1,14 +1,12 @@
+import { ExerciseFinder } from "@/domain/services/ExerciseFinder.port";
 import { BackendForFrontendExerciseFinder } from "@/infra/services/ExerciseFinder/BackendForFrontendExerciseFinder/BackendForFrontendExerciseFinder";
 import MemoryExerciseFinder from "@/infra/services/ExerciseFinder/MemoryExerciseFinder/MemoryExerciseFinder";
+import { injectFor_ProductionDevelopment_Test } from "@/interface-adapters/common/injectFor_ProductionDevelopment_Test";
 
-let AppExerciseFinderService:
-  | BackendForFrontendExerciseFinder
-  | MemoryExerciseFinder;
-
-if (process.env.NODE_ENV === "test") {
-  AppExerciseFinderService = new MemoryExerciseFinder();
-} else {
-  AppExerciseFinderService = new BackendForFrontendExerciseFinder();
-}
+const AppExerciseFinderService: ExerciseFinder =
+  await injectFor_ProductionDevelopment_Test<ExerciseFinder>(
+    BackendForFrontendExerciseFinder,
+    MemoryExerciseFinder,
+  );
 
 export { AppExerciseFinderService };

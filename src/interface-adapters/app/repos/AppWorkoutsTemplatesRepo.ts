@@ -1,24 +1,19 @@
-import { AdapterError } from '@/domain/common/errors';
-import { MemoryWorkoutTemplatesRepo } from '@/infra/repos/memory/MemoryWorkoutTemplatesRepo';
-import { MongoWorkoutTemplatesRepo } from '@/infra/repos/mongo/MongoWorkoutTemplatesRepo';
-import { mongooseInitPromise } from './common/initMongoose';
+import { WorkoutTemplatesRepo } from "@/domain/repos/WorkoutTemplatesRepo.port";
+import { MemoryWorkoutTemplatesRepo } from "@/infra/repos/memory/MemoryWorkoutTemplatesRepo";
+import { MongoWorkoutTemplatesRepo } from "@/infra/repos/mongo/MongoWorkoutTemplatesRepo";
+import { injectFor_ProductionDevelopment_Test } from "@/interface-adapters/common/injectFor_ProductionDevelopment_Test";
 
-let AppWorkoutsTemplatesRepo:
-  | MemoryWorkoutTemplatesRepo
-  | MongoWorkoutTemplatesRepo;
+import { mongooseInitPromise } from "./common/initMongoose";
 
-if (process.env.NODE_ENV === 'test') {
-  AppWorkoutsTemplatesRepo = new MemoryWorkoutTemplatesRepo();
-} else if (
-  process.env.NODE_ENV === 'development' ||
-  process.env.NODE_ENV === 'production'
-) {
-  await mongooseInitPromise;
-  AppWorkoutsTemplatesRepo = new MongoWorkoutTemplatesRepo();
-} else {
-  throw new AdapterError(
-    "AppWorkoutsTemplatesRepo: NODE_ENV must be one of 'production', 'development', or 'test'",
+const AppWorkoutsTemplatesRepo: WorkoutTemplatesRepo =
+  await injectFor_ProductionDevelopment_Test<WorkoutTemplatesRepo>(
+    MongoWorkoutTemplatesRepo,
+    MemoryWorkoutTemplatesRepo,
+    {
+      beforeProdDev: async () => {
+        await mongooseInitPromise;
+      },
+    },
   );
-}
 
 export { AppWorkoutsTemplatesRepo };
