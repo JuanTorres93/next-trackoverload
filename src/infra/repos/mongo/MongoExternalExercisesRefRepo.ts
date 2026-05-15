@@ -25,7 +25,7 @@ export class MongoExternalExercisesRefRepo implements ExternalExercisesRefRepo {
           source: externalExerciseRef.source,
         },
         data,
-        { upsert: true, new: true, session },
+        { upsert: true, returnDocument: "after", session },
       );
     });
   }

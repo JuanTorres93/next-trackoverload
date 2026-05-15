@@ -1,19 +1,20 @@
 import {
   Ingredient,
   IngredientCreateProps,
-} from '@/domain/entities/ingredient/Ingredient';
+} from "@/domain/entities/ingredient/Ingredient";
 import {
   IngredientLine,
   IngredientLineCreateProps,
-} from '@/domain/entities/ingredientline/IngredientLine';
-import { Recipe, RecipeCreateProps } from '@/domain/entities/recipe/Recipe';
-import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
-import { withTransaction } from './common/withTransaction';
-import RecipeLineMongo from './models/RecipeLineMongo';
-import RecipeMongo from './models/RecipeMongo';
+} from "@/domain/entities/ingredientline/IngredientLine";
+import { Recipe, RecipeCreateProps } from "@/domain/entities/recipe/Recipe";
+import { RecipesRepo } from "@/domain/repos/RecipesRepo.port";
+
+import { withTransaction } from "./common/withTransaction";
+import RecipeLineMongo from "./models/RecipeLineMongo";
+import RecipeMongo from "./models/RecipeMongo";
 
 // Type for recipe line document populated with ingredient
-type PopulatedRecipeLineDoc = Omit<IngredientLineCreateProps, 'ingredient'> & {
+type PopulatedRecipeLineDoc = Omit<IngredientLineCreateProps, "ingredient"> & {
   ingredientId: string;
   ingredient?: IngredientCreateProps;
 };
@@ -30,7 +31,7 @@ export class MongoRecipesRepo implements RecipesRepo {
     await withTransaction(async (session) => {
       await RecipeMongo.findOneAndUpdate({ id: recipe.id }, recipeData, {
         upsert: true,
-        new: true,
+        returnDocument: "after",
         session,
       });
 
@@ -56,8 +57,8 @@ export class MongoRecipesRepo implements RecipesRepo {
   async getAllRecipes(): Promise<Recipe[]> {
     const recipeDocs = await RecipeMongo.find({})
       .populate({
-        path: 'recipeLines',
-        populate: { path: 'ingredient', model: 'Ingredient' },
+        path: "recipeLines",
+        populate: { path: "ingredient", model: "Ingredient" },
       })
       .lean({ virtuals: true });
 
@@ -67,8 +68,8 @@ export class MongoRecipesRepo implements RecipesRepo {
   async getRecipeById(id: string): Promise<Recipe | null> {
     const doc = await RecipeMongo.findOne({ id })
       .populate({
-        path: 'recipeLines',
-        populate: { path: 'ingredient', model: 'Ingredient' },
+        path: "recipeLines",
+        populate: { path: "ingredient", model: "Ingredient" },
       })
       .lean({ virtuals: true });
 
@@ -78,8 +79,8 @@ export class MongoRecipesRepo implements RecipesRepo {
   async getAllRecipesByUserId(userId: string): Promise<Recipe[]> {
     const recipeDocs = await RecipeMongo.find({ userId })
       .populate({
-        path: 'recipeLines',
-        populate: { path: 'ingredient', model: 'Ingredient' },
+        path: "recipeLines",
+        populate: { path: "ingredient", model: "Ingredient" },
       })
       .lean({ virtuals: true });
 
@@ -92,8 +93,8 @@ export class MongoRecipesRepo implements RecipesRepo {
   ): Promise<Recipe | null> {
     const doc = await RecipeMongo.findOne({ id, userId })
       .populate({
-        path: 'recipeLines',
-        populate: { path: 'ingredient', model: 'Ingredient' },
+        path: "recipeLines",
+        populate: { path: "ingredient", model: "Ingredient" },
       })
       .lean({ virtuals: true });
 
@@ -136,7 +137,7 @@ export class MongoRecipesRepo implements RecipesRepo {
   }
 
   async deleteAllRecipesForUser(userId: string): Promise<void> {
-    const recipeDocs = await RecipeMongo.find({ userId }).select('id').lean();
+    const recipeDocs = await RecipeMongo.find({ userId }).select("id").lean();
     const recipeIds = recipeDocs.map((doc) => doc.id);
 
     await withTransaction(async (session) => {
@@ -162,7 +163,7 @@ export class MongoRecipesRepo implements RecipesRepo {
       .map((line) =>
         IngredientLine.create({
           ...line,
-          parentType: 'recipe',
+          parentType: "recipe",
           ingredient: Ingredient.create(line.ingredient!),
         }),
       );

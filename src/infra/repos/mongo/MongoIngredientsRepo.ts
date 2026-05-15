@@ -1,8 +1,9 @@
-import { IngredientsRepo } from '@/domain/repos/IngredientsRepo.port';
-import { Ingredient } from '@/domain/entities/ingredient/Ingredient';
-import IngredientMongo from './models/IngredientMongo';
-import { IngredientCreateProps } from '@/domain/entities/ingredient/Ingredient';
-import { withTransaction } from './common/withTransaction';
+import { Ingredient } from "@/domain/entities/ingredient/Ingredient";
+import { IngredientCreateProps } from "@/domain/entities/ingredient/Ingredient";
+import { IngredientsRepo } from "@/domain/repos/IngredientsRepo.port";
+
+import { withTransaction } from "./common/withTransaction";
+import IngredientMongo from "./models/IngredientMongo";
 
 export class MongoIngredientsRepo implements IngredientsRepo {
   async saveIngredient(ingredient: Ingredient): Promise<void> {
@@ -12,7 +13,7 @@ export class MongoIngredientsRepo implements IngredientsRepo {
       await IngredientMongo.findOneAndUpdate(
         { id: ingredient.id },
         ingredientData,
-        { upsert: true, new: true, session },
+        { upsert: true, returnDocument: "after", session },
       );
     });
   }

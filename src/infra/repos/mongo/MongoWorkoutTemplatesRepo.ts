@@ -1,28 +1,29 @@
-import { ExerciseCreateProps } from '@/domain/entities/exercise/Exercise';
-import {
-  WorkoutTemplateLine,
-  WorkoutTemplateLineCreateProps,
-} from '@/domain/entities/workouttemplateline/WorkoutTemplateLine';
+import { ExerciseCreateProps } from "@/domain/entities/exercise/Exercise";
 import {
   WorkoutTemplate,
   WorkoutTemplateCreateProps,
-} from '@/domain/entities/workouttemplate/WorkoutTemplate';
-import { WorkoutTemplatesRepo } from '@/domain/repos/WorkoutTemplatesRepo.port';
-import { withTransaction } from './common/withTransaction';
-import WorkoutTemplateLineMongo from './models/WorkoutTemplateLineMongo';
-import WorkoutTemplateMongo from './models/WorkoutTemplateMongo';
+} from "@/domain/entities/workouttemplate/WorkoutTemplate";
+import {
+  WorkoutTemplateLine,
+  WorkoutTemplateLineCreateProps,
+} from "@/domain/entities/workouttemplateline/WorkoutTemplateLine";
+import { WorkoutTemplatesRepo } from "@/domain/repos/WorkoutTemplatesRepo.port";
+
+import { withTransaction } from "./common/withTransaction";
+import WorkoutTemplateLineMongo from "./models/WorkoutTemplateLineMongo";
+import WorkoutTemplateMongo from "./models/WorkoutTemplateMongo";
 
 // Type for workout template line document populated with exercise
 type PopulatedTemplateLineDoc = Omit<
   WorkoutTemplateLineCreateProps,
-  'exercise'
+  "exercise"
 > & {
   exerciseId: string;
   exercise?: ExerciseCreateProps;
 };
 
 // Type for workout template document populated with template lines and exercises
-type PopulatedTemplateDoc = Omit<WorkoutTemplateCreateProps, 'exercises'> & {
+type PopulatedTemplateDoc = Omit<WorkoutTemplateCreateProps, "exercises"> & {
   templateLines?: PopulatedTemplateLineDoc[];
 };
 
@@ -36,7 +37,7 @@ export class MongoWorkoutTemplatesRepo implements WorkoutTemplatesRepo {
         templateData,
         {
           upsert: true,
-          new: true,
+          returnDocument: "after",
           session,
         },
       );
@@ -62,8 +63,8 @@ export class MongoWorkoutTemplatesRepo implements WorkoutTemplatesRepo {
   async getAllWorkoutTemplates(): Promise<WorkoutTemplate[]> {
     const templateDocs = await WorkoutTemplateMongo.find({})
       .populate({
-        path: 'templateLines',
-        populate: { path: 'exercise', model: 'Exercise' },
+        path: "templateLines",
+        populate: { path: "exercise", model: "Exercise" },
       })
       .lean({ virtuals: true });
 
@@ -75,8 +76,8 @@ export class MongoWorkoutTemplatesRepo implements WorkoutTemplatesRepo {
   ): Promise<WorkoutTemplate[]> {
     const templateDocs = await WorkoutTemplateMongo.find({ userId })
       .populate({
-        path: 'templateLines',
-        populate: { path: 'exercise', model: 'Exercise' },
+        path: "templateLines",
+        populate: { path: "exercise", model: "Exercise" },
       })
       .lean({ virtuals: true });
 
@@ -86,8 +87,8 @@ export class MongoWorkoutTemplatesRepo implements WorkoutTemplatesRepo {
   async getWorkoutTemplateById(id: string): Promise<WorkoutTemplate | null> {
     const doc = await WorkoutTemplateMongo.findOne({ id })
       .populate({
-        path: 'templateLines',
-        populate: { path: 'exercise', model: 'Exercise' },
+        path: "templateLines",
+        populate: { path: "exercise", model: "Exercise" },
       })
       .lean({ virtuals: true });
 
@@ -100,8 +101,8 @@ export class MongoWorkoutTemplatesRepo implements WorkoutTemplatesRepo {
   ): Promise<WorkoutTemplate | null> {
     const doc = await WorkoutTemplateMongo.findOne({ id, userId })
       .populate({
-        path: 'templateLines',
-        populate: { path: 'exercise', model: 'Exercise' },
+        path: "templateLines",
+        populate: { path: "exercise", model: "Exercise" },
       })
       .lean({ virtuals: true });
 
@@ -110,7 +111,7 @@ export class MongoWorkoutTemplatesRepo implements WorkoutTemplatesRepo {
 
   async deleteAllWorkoutTemplatesForUser(userId: string): Promise<void> {
     const templateDocs = await WorkoutTemplateMongo.find({ userId })
-      .select('id')
+      .select("id")
       .lean();
     const templateIds = templateDocs.map((doc) => doc.id);
 

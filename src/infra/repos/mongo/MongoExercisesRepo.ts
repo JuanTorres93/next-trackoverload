@@ -12,7 +12,7 @@ export class MongoExercisesRepo implements ExercisesRepo {
     await withTransaction(async (session) => {
       await ExerciseMongo.findOneAndUpdate({ id: exercise.id }, exerciseData, {
         upsert: true,
-        new: true,
+        returnDocument: "after",
         session,
       });
     });

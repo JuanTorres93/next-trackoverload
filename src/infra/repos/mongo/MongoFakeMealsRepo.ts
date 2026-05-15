@@ -1,8 +1,9 @@
-import { FakeMealsRepo } from '@/domain/repos/FakeMealsRepo.port';
-import { FakeMeal } from '@/domain/entities/fakemeal/FakeMeal';
-import FakeMealMongo from './models/FakeMealMongo';
-import { FakeMealCreateProps } from '@/domain/entities/fakemeal/FakeMeal';
-import { withTransaction } from './common/withTransaction';
+import { FakeMeal } from "@/domain/entities/fakemeal/FakeMeal";
+import { FakeMealCreateProps } from "@/domain/entities/fakemeal/FakeMeal";
+import { FakeMealsRepo } from "@/domain/repos/FakeMealsRepo.port";
+
+import { withTransaction } from "./common/withTransaction";
+import FakeMealMongo from "./models/FakeMealMongo";
 
 export class MongoFakeMealsRepo implements FakeMealsRepo {
   async saveFakeMeal(fakeMeal: FakeMeal): Promise<void> {
@@ -11,7 +12,7 @@ export class MongoFakeMealsRepo implements FakeMealsRepo {
 
       await FakeMealMongo.findOneAndUpdate({ id: fakeMeal.id }, fakeMealData, {
         upsert: true,
-        new: true,
+        returnDocument: "after",
         session,
       });
     });

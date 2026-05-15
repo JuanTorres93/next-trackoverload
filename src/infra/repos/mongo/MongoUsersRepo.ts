@@ -1,8 +1,9 @@
-import { UsersRepo } from '@/domain/repos/UsersRepo.port';
-import { User } from '@/domain/entities/user/User';
-import UserMongo from './models/UserMongo';
-import { UserCreateProps } from '@/domain/entities/user/User';
-import { withTransaction } from './common/withTransaction';
+import { User } from "@/domain/entities/user/User";
+import { UserCreateProps } from "@/domain/entities/user/User";
+import { UsersRepo } from "@/domain/repos/UsersRepo.port";
+
+import { withTransaction } from "./common/withTransaction";
+import UserMongo from "./models/UserMongo";
 
 export class MongoUsersRepo implements UsersRepo {
   async saveUser(user: User): Promise<void> {
@@ -11,7 +12,7 @@ export class MongoUsersRepo implements UsersRepo {
 
       await UserMongo.findOneAndUpdate({ id: user.id }, userData, {
         upsert: true,
-        new: true,
+        returnDocument: "after",
         session,
       });
     });

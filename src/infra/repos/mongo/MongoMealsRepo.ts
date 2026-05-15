@@ -1,19 +1,20 @@
 import {
   Ingredient,
   IngredientCreateProps,
-} from '@/domain/entities/ingredient/Ingredient';
+} from "@/domain/entities/ingredient/Ingredient";
 import {
   IngredientLine,
   IngredientLineCreateProps,
-} from '@/domain/entities/ingredientline/IngredientLine';
-import { Meal, MealCreateProps } from '@/domain/entities/meal/Meal';
-import { MealsRepo } from '@/domain/repos/MealsRepo.port';
-import { withTransaction } from './common/withTransaction';
-import MealLineMongo from './models/MealLineMongo';
-import MealMongo from './models/MealMongo';
+} from "@/domain/entities/ingredientline/IngredientLine";
+import { Meal, MealCreateProps } from "@/domain/entities/meal/Meal";
+import { MealsRepo } from "@/domain/repos/MealsRepo.port";
+
+import { withTransaction } from "./common/withTransaction";
+import MealLineMongo from "./models/MealLineMongo";
+import MealMongo from "./models/MealMongo";
 
 // Type for meal line document populated with ingredient
-type PopulatedMealLineDoc = Omit<IngredientLineCreateProps, 'ingredient'> & {
+type PopulatedMealLineDoc = Omit<IngredientLineCreateProps, "ingredient"> & {
   ingredientId: string;
   ingredient?: IngredientCreateProps;
 };
@@ -30,7 +31,7 @@ export class MongoMealsRepo implements MealsRepo {
     await withTransaction(async (session) => {
       await MealMongo.findOneAndUpdate({ id: meal.id }, mealData, {
         upsert: true,
-        new: true,
+        returnDocument: "after",
         session,
       });
 
@@ -98,8 +99,8 @@ export class MongoMealsRepo implements MealsRepo {
   async getAllMeals(): Promise<Meal[]> {
     const mealDocs = await MealMongo.find({})
       .populate({
-        path: 'mealLines',
-        populate: { path: 'ingredient', model: 'Ingredient' },
+        path: "mealLines",
+        populate: { path: "ingredient", model: "Ingredient" },
       })
       .lean({ virtuals: true });
 
@@ -109,8 +110,8 @@ export class MongoMealsRepo implements MealsRepo {
   async getMealById(id: string): Promise<Meal | null> {
     const doc = await MealMongo.findOne({ id })
       .populate({
-        path: 'mealLines',
-        populate: { path: 'ingredient', model: 'Ingredient' },
+        path: "mealLines",
+        populate: { path: "ingredient", model: "Ingredient" },
       })
       .lean({ virtuals: true });
 
@@ -120,8 +121,8 @@ export class MongoMealsRepo implements MealsRepo {
   async getMealByIds(ids: string[]): Promise<Meal[]> {
     const mealDocs = await MealMongo.find({ id: { $in: ids } })
       .populate({
-        path: 'mealLines',
-        populate: { path: 'ingredient', model: 'Ingredient' },
+        path: "mealLines",
+        populate: { path: "ingredient", model: "Ingredient" },
       })
       .lean({ virtuals: true });
 
@@ -131,8 +132,8 @@ export class MongoMealsRepo implements MealsRepo {
   async getAllMealsForUser(userId: string): Promise<Meal[]> {
     const mealDocs = await MealMongo.find({ userId })
       .populate({
-        path: 'mealLines',
-        populate: { path: 'ingredient', model: 'Ingredient' },
+        path: "mealLines",
+        populate: { path: "ingredient", model: "Ingredient" },
       })
       .lean({ virtuals: true });
 
@@ -142,8 +143,8 @@ export class MongoMealsRepo implements MealsRepo {
   async getMealByIdForUser(id: string, userId: string): Promise<Meal | null> {
     const doc = await MealMongo.findOne({ id, userId })
       .populate({
-        path: 'mealLines',
-        populate: { path: 'ingredient', model: 'Ingredient' },
+        path: "mealLines",
+        populate: { path: "ingredient", model: "Ingredient" },
       })
       .lean({ virtuals: true });
 
@@ -159,8 +160,8 @@ export class MongoMealsRepo implements MealsRepo {
       userId,
     })
       .populate({
-        path: 'mealLines',
-        populate: { path: 'ingredient', model: 'Ingredient' },
+        path: "mealLines",
+        populate: { path: "ingredient", model: "Ingredient" },
       })
       .lean({ virtuals: true });
 
@@ -193,7 +194,7 @@ export class MongoMealsRepo implements MealsRepo {
 
   async deleteAllMealsForUser(userId: string): Promise<void> {
     // Find all meal IDs for this user first
-    const mealDocs = await MealMongo.find({ userId }).select('id').lean();
+    const mealDocs = await MealMongo.find({ userId }).select("id").lean();
     const mealIds = mealDocs.map((doc) => doc.id);
 
     await withTransaction(async (session) => {
@@ -220,7 +221,7 @@ export class MongoMealsRepo implements MealsRepo {
       .map((line) =>
         IngredientLine.create({
           ...line,
-          parentType: 'meal',
+          parentType: "meal",
           ingredient: Ingredient.create(line.ingredient!),
         }),
       );

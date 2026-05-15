@@ -1,22 +1,23 @@
-import { ExerciseCreateProps } from '@/domain/entities/exercise/Exercise';
+import { ExerciseCreateProps } from "@/domain/entities/exercise/Exercise";
+import { Workout, WorkoutCreateProps } from "@/domain/entities/workout/Workout";
 import {
   WorkoutLine,
   WorkoutLineCreateProps,
-} from '@/domain/entities/workoutline/WorkoutLine';
-import { Workout, WorkoutCreateProps } from '@/domain/entities/workout/Workout';
-import { WorkoutsRepo } from '@/domain/repos/WorkoutsRepo.port';
-import { withTransaction } from './common/withTransaction';
-import WorkoutLineMongo from './models/WorkoutLineMongo';
-import WorkoutMongo from './models/WorkoutMongo';
+} from "@/domain/entities/workoutline/WorkoutLine";
+import { WorkoutsRepo } from "@/domain/repos/WorkoutsRepo.port";
+
+import { withTransaction } from "./common/withTransaction";
+import WorkoutLineMongo from "./models/WorkoutLineMongo";
+import WorkoutMongo from "./models/WorkoutMongo";
 
 // Type for workout line document populated with exercise
-type PopulatedWorkoutLineDoc = Omit<WorkoutLineCreateProps, 'exercise'> & {
+type PopulatedWorkoutLineDoc = Omit<WorkoutLineCreateProps, "exercise"> & {
   exerciseId: string;
   exercise?: ExerciseCreateProps;
 };
 
 // Type for workout document populated with workout lines and exercises
-type PopulatedWorkoutDoc = Omit<WorkoutCreateProps, 'exercises'> & {
+type PopulatedWorkoutDoc = Omit<WorkoutCreateProps, "exercises"> & {
   workoutLines?: PopulatedWorkoutLineDoc[];
 };
 
@@ -27,7 +28,7 @@ export class MongoWorkoutsRepo implements WorkoutsRepo {
     await withTransaction(async (session) => {
       await WorkoutMongo.findOneAndUpdate({ id: workout.id }, workoutData, {
         upsert: true,
-        new: true,
+        returnDocument: "after",
         session,
       });
 
@@ -49,8 +50,8 @@ export class MongoWorkoutsRepo implements WorkoutsRepo {
   async getAllWorkouts(): Promise<Workout[]> {
     const workoutDocs = await WorkoutMongo.find({})
       .populate({
-        path: 'workoutLines',
-        populate: { path: 'exercise', model: 'Exercise' },
+        path: "workoutLines",
+        populate: { path: "exercise", model: "Exercise" },
       })
       .lean({ virtuals: true });
 
@@ -60,8 +61,8 @@ export class MongoWorkoutsRepo implements WorkoutsRepo {
   async getWorkoutById(id: string): Promise<Workout | null> {
     const doc = await WorkoutMongo.findOne({ id })
       .populate({
-        path: 'workoutLines',
-        populate: { path: 'exercise', model: 'Exercise' },
+        path: "workoutLines",
+        populate: { path: "exercise", model: "Exercise" },
       })
       .lean({ virtuals: true });
 
@@ -71,8 +72,8 @@ export class MongoWorkoutsRepo implements WorkoutsRepo {
   async getAllWorkoutsByUserId(userId: string): Promise<Workout[]> {
     const workoutDocs = await WorkoutMongo.find({ userId })
       .populate({
-        path: 'workoutLines',
-        populate: { path: 'exercise', model: 'Exercise' },
+        path: "workoutLines",
+        populate: { path: "exercise", model: "Exercise" },
       })
       .lean({ virtuals: true });
 
@@ -85,8 +86,8 @@ export class MongoWorkoutsRepo implements WorkoutsRepo {
   ): Promise<Workout | null> {
     const doc = await WorkoutMongo.findOne({ id, userId })
       .populate({
-        path: 'workoutLines',
-        populate: { path: 'exercise', model: 'Exercise' },
+        path: "workoutLines",
+        populate: { path: "exercise", model: "Exercise" },
       })
       .lean({ virtuals: true });
 
@@ -98,8 +99,8 @@ export class MongoWorkoutsRepo implements WorkoutsRepo {
       workoutTemplateId: templateId,
     })
       .populate({
-        path: 'workoutLines',
-        populate: { path: 'exercise', model: 'Exercise' },
+        path: "workoutLines",
+        populate: { path: "exercise", model: "Exercise" },
       })
       .lean({ virtuals: true });
 
@@ -115,8 +116,8 @@ export class MongoWorkoutsRepo implements WorkoutsRepo {
       userId,
     })
       .populate({
-        path: 'workoutLines',
-        populate: { path: 'exercise', model: 'Exercise' },
+        path: "workoutLines",
+        populate: { path: "exercise", model: "Exercise" },
       })
       .lean({ virtuals: true });
 
@@ -140,7 +141,7 @@ export class MongoWorkoutsRepo implements WorkoutsRepo {
 
   async deleteAllWorkoutsForUser(userId: string): Promise<void> {
     // Find all workout IDs for this user first
-    const workoutDocs = await WorkoutMongo.find({ userId }).select('id').lean();
+    const workoutDocs = await WorkoutMongo.find({ userId }).select("id").lean();
     const workoutIds = workoutDocs.map((doc) => doc.id);
 
     await withTransaction(async (session) => {

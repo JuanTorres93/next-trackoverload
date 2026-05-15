@@ -1,7 +1,8 @@
-import { Day } from '@/domain/entities/day/Day';
-import { DaysRepo } from '@/domain/repos/DaysRepo.port';
-import { withTransaction } from './common/withTransaction';
-import DayMongo, { DayMongoProps } from './models/DayMongo';
+import { Day } from "@/domain/entities/day/Day";
+import { DaysRepo } from "@/domain/repos/DaysRepo.port";
+
+import { withTransaction } from "./common/withTransaction";
+import DayMongo, { DayMongoProps } from "./models/DayMongo";
 
 export class MongoDaysRepo implements DaysRepo {
   async saveDay(day: Day): Promise<void> {
@@ -17,7 +18,7 @@ export class MongoDaysRepo implements DaysRepo {
         dayData,
         {
           upsert: true,
-          new: true,
+          returnDocument: "after",
           session,
         },
       );
@@ -183,8 +184,8 @@ export class MongoDaysRepo implements DaysRepo {
   }
 
   private getDayId(year: number, month: number, day: number): string {
-    const dayStr = String(day).padStart(2, '0');
-    const monthStr = String(month).padStart(2, '0');
+    const dayStr = String(day).padStart(2, "0");
+    const monthStr = String(month).padStart(2, "0");
     const yearStr = String(year);
     return `${yearStr}${monthStr}${dayStr}`;
   }

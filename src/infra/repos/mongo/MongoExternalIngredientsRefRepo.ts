@@ -1,8 +1,9 @@
-import { ExternalIngredientsRefRepo } from '@/domain/repos/ExternalIngredientsRefRepo.port';
-import { ExternalIngredientRef } from '@/domain/entities/externalingredientref/ExternalIngredientRef';
-import ExternalIngredientRefMongo from './models/ExternalIngredientRefMongo';
-import { ExternalIngredientRefCreateProps } from '@/domain/entities/externalingredientref/ExternalIngredientRef';
-import { withTransaction } from './common/withTransaction';
+import { ExternalIngredientRef } from "@/domain/entities/externalingredientref/ExternalIngredientRef";
+import { ExternalIngredientRefCreateProps } from "@/domain/entities/externalingredientref/ExternalIngredientRef";
+import { ExternalIngredientsRefRepo } from "@/domain/repos/ExternalIngredientsRefRepo.port";
+
+import { withTransaction } from "./common/withTransaction";
+import ExternalIngredientRefMongo from "./models/ExternalIngredientRefMongo";
 
 export class MongoExternalIngredientsRefRepo implements ExternalIngredientsRefRepo {
   async getAllExternalIngredientsRef(): Promise<ExternalIngredientRef[]> {
@@ -22,7 +23,7 @@ export class MongoExternalIngredientsRefRepo implements ExternalIngredientsRefRe
           source: externalIngredientRef.source,
         },
         data,
-        { upsert: true, new: true, session },
+        { upsert: true, returnDocument: "after", session },
       );
     });
   }
