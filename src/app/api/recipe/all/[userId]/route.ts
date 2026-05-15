@@ -5,7 +5,7 @@ import { ensureLoggedInUser } from "@/app/api/_common/ensureLoggedInUser";
 import { RecipeDTO } from "@/application-layer/dtos/RecipeDTO";
 import { AppGetAllRecipesForUserUsecase } from "@/interface-adapters/app/use-cases/recipe";
 
-import { handleKnownErrors } from "../../_common/handleKnownErrors";
+import { handleKnownErrors } from "../../../_common/handleKnownErrors";
 
 export async function GET(
   req: Request,

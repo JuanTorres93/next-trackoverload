@@ -8,8 +8,8 @@ import { MemoryUsersRepo } from "@/infra/repos/memory/MemoryUsersRepo";
 import { AppRecipesRepo } from "@/interface-adapters/app/repos/AppRecipesRepo";
 import { AppUsersRepo } from "@/interface-adapters/app/repos/AppUsersRepo";
 
-import * as recipeTestProps from "../../../../../../tests/createProps/recipeTestProps";
-import * as userTestProps from "../../../../../../tests/createProps/userTestProps";
+import * as recipeTestProps from "../../../../../../../tests/createProps/recipeTestProps";
+import * as userTestProps from "../../../../../../../tests/createProps/userTestProps";
 import { GET } from "../route";
 
 describe("GET /api/recipe/[userId]", () => {
