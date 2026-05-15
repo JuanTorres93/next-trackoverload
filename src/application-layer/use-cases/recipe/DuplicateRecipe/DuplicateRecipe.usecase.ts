@@ -1,12 +1,11 @@
-import { RecipeDTO, toRecipeDTO } from '@/application-layer/dtos/RecipeDTO';
-import { Recipe } from '@/domain/entities/recipe/Recipe';
-import { RecipesRepo } from '@/domain/repos/RecipesRepo.port';
-import { UsersRepo } from '@/domain/repos/UsersRepo.port';
-import { ImagesRepo } from '@/domain/repos/ImagesRepo.port';
-
-import { NotFoundError } from '@/domain/common/errors';
-import { IdGenerator } from '@/domain/services/IdGenerator.port';
-import { IngredientLine } from '@/domain/entities/ingredientline/IngredientLine';
+import { RecipeDTO, toRecipeDTO } from "@/application-layer/dtos/RecipeDTO";
+import { NotFoundError } from "@/domain/common/errors";
+import { IngredientLine } from "@/domain/entities/ingredientline/IngredientLine";
+import { Recipe } from "@/domain/entities/recipe/Recipe";
+import { ImagesRepo } from "@/domain/repos/ImagesRepo.port";
+import { RecipesRepo } from "@/domain/repos/RecipesRepo.port";
+import { UsersRepo } from "@/domain/repos/UsersRepo.port";
+import { IdGenerator } from "@/domain/services/IdGenerator.port";
 
 export type DuplicateRecipeUsecaseRequest = {
   recipeId: string;
@@ -51,7 +50,7 @@ export class DuplicateRecipeUsecase {
       const newIngredientLine = IngredientLine.create({
         id: this.idGenerator.generateId(),
         parentId: newRecipeId,
-        parentType: 'recipe',
+        parentType: "recipe",
         quantityInGrams: ingredientline.quantityInGrams,
         ingredient: ingredientline.ingredient,
       });
