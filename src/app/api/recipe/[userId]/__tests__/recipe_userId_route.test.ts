@@ -1,5 +1,8 @@
+import { loginInAPITests } from "@/app/api/__tests__/loginInAPITests";
+import { logoutInAPITests } from "@/app/api/__tests__/logoutInAPITests";
 import { registerUserInAPITests } from "@/app/api/__tests__/registerUserInAPITests";
 import { Recipe } from "@/domain/entities/recipe/Recipe";
+import { User } from "@/domain/entities/user/User";
 import { MemoryRecipesRepo } from "@/infra/repos/memory/MemoryRecipesRepo";
 import { MemoryUsersRepo } from "@/infra/repos/memory/MemoryUsersRepo";
 import { AppRecipesRepo } from "@/interface-adapters/app/repos/AppRecipesRepo";
@@ -13,6 +16,8 @@ describe("GET /api/recipe/[userId]", () => {
   let recipesRepo: MemoryRecipesRepo;
   let usersRepo: MemoryUsersRepo;
   let testRecipes: Recipe[];
+
+  let user1: User;
   let user1Id: string;
   let user2Id: string;
 
@@ -23,7 +28,7 @@ describe("GET /api/recipe/[userId]", () => {
     recipesRepo.clearForTesting();
     usersRepo.clearForTesting();
 
-    const user1 = userTestProps.createTestUser();
+    user1 = userTestProps.createTestUser();
 
     const user2 = userTestProps.createTestUser({
       email: "user2@example.com",
@@ -55,11 +60,11 @@ describe("GET /api/recipe/[userId]", () => {
     for (const recipe of testRecipes) {
       await recipesRepo.saveRecipe(recipe);
     }
+
+    await logoutInAPITests();
   });
 
   it("returns JSEND format", async () => {
-    const params = Promise.resolve({ userId: user1Id });
-
     const response = await GET(
       new Request(`http://localhost/api/recipe/${user1Id}`),
       { params: { userId: user1Id } },
@@ -72,6 +77,8 @@ describe("GET /api/recipe/[userId]", () => {
   });
 
   it("returns all recipes for a user", async () => {
+    await loginInAPITests(user1.email);
+
     const response = await GET(
       new Request(`http://localhost/api/recipe/${user1Id}`),
       { params: { userId: user1Id } },
@@ -84,7 +91,22 @@ describe("GET /api/recipe/[userId]", () => {
   });
 
   describe("Errors", () => {
+    it("should throw AuthenticationError if user is not logged in", async () => {
+      const response = await GET(
+        new Request(`http://localhost/api/recipe/${user1Id}`),
+        { params: { userId: user1Id } },
+      );
+
+      const data = await response.json();
+
+      expect(response.status).toBe(401);
+      expect(data).toHaveProperty("status", "fail");
+      expect(data.data).toHaveProperty("message");
+    });
+
     it("should return 404 if user does not exist", async () => {
+      await loginInAPITests(user1.email);
+
       const nonExistentUserId = "non-existent-user";
 
       const response = await GET(

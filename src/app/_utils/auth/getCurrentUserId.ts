@@ -1,7 +1,7 @@
-import { cookies } from 'next/headers';
+import { cookies } from "next/headers";
 
-import { cookieSessionName } from '@/app/api/auth/cookie';
-import { AppAuthService } from '@/interface-adapters/app/services/AppAuthService';
+import { cookieSessionName } from "@/app/api/auth/cookie";
+import { AppAuthService } from "@/interface-adapters/app/services/AppAuthService";
 
 /**
  * Reads the session cookie and returns the authenticated user's ID.

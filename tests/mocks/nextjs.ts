@@ -10,6 +10,12 @@ export const resetMockSearchParams = () => {
   searchParamsState.params = new URLSearchParams();
 };
 
+let currentUserIdForTests: string | null = TEST_USER_ID;
+
+export const setCurrentlyLoggedInUserIdForTests = (id: string | null) => {
+  currentUserIdForTests = id;
+};
+
 vi.mock("next/headers", () => {
   return {
     headers: vi.fn(),
@@ -23,7 +29,7 @@ vi.mock("next/headers", () => {
 
 vi.mock("@/app/_utils/auth/getCurrentUserId", () => {
   return {
-    getCurrentUserId: vi.fn(() => Promise.resolve(TEST_USER_ID)),
+    getCurrentUserId: vi.fn(() => Promise.resolve(currentUserIdForTests)),
   };
 });
 

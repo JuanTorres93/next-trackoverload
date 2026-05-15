@@ -8,6 +8,7 @@ type TokenData = {
 
 export class MemoryAuthService implements AuthService {
   private revokedTokens: Set<string> = new Set();
+  private lastGeneratedToken: AuthToken | null = null;
 
   async generateToken(userId: string): Promise<AuthToken> {
     const tokenData: TokenData = {
@@ -16,7 +17,10 @@ export class MemoryAuthService implements AuthService {
       nonce: Math.random().toString(36).substring(2, 15),
     };
 
-    return Buffer.from(JSON.stringify(tokenData)).toString("base64");
+    const token = Buffer.from(JSON.stringify(tokenData)).toString("base64");
+
+    this.lastGeneratedToken = token;
+    return token;
   }
 
   async validateToken(token: AuthToken): Promise<boolean> {
@@ -71,5 +75,9 @@ export class MemoryAuthService implements AuthService {
 
   getRevokedTokensCountForTesting(): number {
     return this.revokedTokens.size;
+  }
+
+  getLastGeneratedTokenForTesting(): AuthToken | null {
+    return this.lastGeneratedToken;
   }
 }

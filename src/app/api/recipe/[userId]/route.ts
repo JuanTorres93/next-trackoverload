@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
 
 import { JSENDResponse } from "@/app/_types/JSEND";
+import { getCurrentUserId } from "@/app/_utils/auth/getCurrentUserId";
 import { RecipeDTO } from "@/application-layer/dtos/RecipeDTO";
 import { AppGetAllRecipesForUserUsecase } from "@/interface-adapters/app/use-cases/recipe";
-
-import { getClientId } from "../../_common/getClientId";
 
 export async function GET(
   req: Request,
@@ -12,7 +11,16 @@ export async function GET(
 ): Promise<NextResponse<JSENDResponse<RecipeDTO[]>>> {
   const { userId } = params;
 
-  // TODO NEXT: get client id from auth token
+  const currentUserId = await getCurrentUserId();
+
+  if (!currentUserId) {
+    const errorResponse: JSENDResponse<null> = {
+      status: "fail",
+      data: { message: "Unauthorized: client ID is missing" },
+    };
+
+    return NextResponse.json(errorResponse, { status: 401 });
+  }
 
   let recipes: RecipeDTO[];
 
