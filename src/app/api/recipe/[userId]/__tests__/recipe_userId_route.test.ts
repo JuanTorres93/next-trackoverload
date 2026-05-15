@@ -64,7 +64,21 @@ describe("GET /api/recipe/[userId]", () => {
     await logoutInAPITests();
   });
 
-  it("returns JSEND format", async () => {
+  it("returns JSEND format if user is not logged in", async () => {
+    const response = await GET(
+      new Request(`http://localhost/api/recipe/${user1Id}`),
+      { params: { userId: user1Id } },
+    );
+
+    const data = await response.json();
+
+    expect(data).toHaveProperty("status");
+    expect(data).toHaveProperty("data");
+  });
+
+  it("should return JSEND format if user is logged in", async () => {
+    await loginInAPITests(user1.email);
+
     const response = await GET(
       new Request(`http://localhost/api/recipe/${user1Id}`),
       { params: { userId: user1Id } },
@@ -121,19 +135,19 @@ describe("GET /api/recipe/[userId]", () => {
       expect(data.data).toHaveProperty("message");
     });
 
-    // TODO NEXT: auth in tests
+    it("should return 404 if user does not have permission to view recipes", async () => {
+      await loginInAPITests(user1.email);
 
-    //it("should return 404 if user does not have permission to view recipes", async () => {
-    //  const response = await GET(
-    //    new Request(`http://localhost/api/recipe/${userId2}`),
-    //    { params: { userId: userId2 } },
-    //  );
+      const response = await GET(
+        new Request(`http://localhost/api/recipe/${user2Id}`),
+        { params: { userId: user2Id } },
+      );
 
-    //  const data = await response.json();
+      const data = await response.json();
 
-    //  expect(response.status).toBe(404);
-    //  expect(data).toHaveProperty("status", "fail");
-    //  expect(data.data).toHaveProperty("message");
-    //});
+      expect(response.status).toBe(404);
+      expect(data).toHaveProperty("status", "fail");
+      expect(data.data).toHaveProperty("message");
+    });
   });
 });

@@ -26,11 +26,12 @@ export async function GET(
 
   try {
     recipes = await AppGetAllRecipesForUserUsecase.execute({
-      actorUserId: userId,
+      actorUserId: currentUserId,
       targetUserId: userId,
     });
   } catch (error) {
-    console.error(`Error in GET /api/recipe/${userId}:`, error);
+    if (process.env.NODE_ENV !== "test")
+      console.error(`Error in GET /api/recipe/${userId}:`, error);
 
     const errorResponse: JSENDResponse<null> = {
       status: "fail",
