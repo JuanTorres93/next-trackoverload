@@ -1,6 +1,8 @@
 import { vi } from "vitest";
 
-export const TEST_USER_ID = "dev-user";
+import { userId } from "../createProps/userTestProps";
+
+export const TEST_USER_ID = userId;
 
 const searchParamsState = vi.hoisted(() => ({ params: new URLSearchParams() }));
 

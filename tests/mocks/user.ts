@@ -3,8 +3,6 @@ import { AppUsersRepo } from "@/interface-adapters/app/repos/AppUsersRepo";
 
 import { validUserProps } from "../createProps/userTestProps";
 
-export const testUserId = "dev-user";
-
 export const createMockUser = async (
   alternativeUserProps?: Partial<UserCreateProps>,
 ) => {
@@ -14,7 +12,6 @@ export const createMockUser = async (
 
   const user = User.create({
     ...validUserProps,
-    id: testUserId,
     ...alternativeUserProps,
   });
 

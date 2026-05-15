@@ -1,15 +1,15 @@
-import { User, UserCreateProps } from '@/domain/entities/user/User';
+import { User, UserCreateProps } from "@/domain/entities/user/User";
 
-export const userId = 'user-1';
+export const userId = "user-1";
 
 export const validUserProps = {
   id: userId,
-  name: 'Test User',
-  email: 'testuser@example.com',
+  name: "Test User",
+  email: "testuser@example.com",
   hashedPassword:
-    'IAmAReallyStrongHashedPasswordThatShouldWorkFineInTests1234567890',
-  customerId: 'customer-123',
-  subscriptionStatus: 'free_trial' as const,
+    "IAmAReallyStrongHashedPasswordThatShouldWorkFineInTests1234567890",
+  customerId: "customer-123",
+  subscriptionStatus: "free_trial" as const,
   subscriptionEndsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
   createdAt: new Date(),
   updatedAt: new Date(),

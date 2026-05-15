@@ -1,15 +1,15 @@
-import { MemoryAuthService } from '@/infra/services/AuthService/MemoryAuthService/MemoryAuthService';
-import { JwtAuthService } from '@/infra/services/AuthService/JwtAuthService/JwtAuthService';
+import { JwtAuthService } from "@/infra/services/AuthService/JwtAuthService/JwtAuthService";
+import { MemoryAuthService } from "@/infra/services/AuthService/MemoryAuthService/MemoryAuthService";
 
 let AppAuthService: JwtAuthService | MemoryAuthService;
 
-if (process.env.NODE_ENV === 'test') {
+if (process.env.NODE_ENV === "test") {
   AppAuthService = new MemoryAuthService();
 } else {
   const secret = process.env.JWT_SECRET;
   if (!secret) {
     throw new Error(
-      'AppAuthService: JWT_SECRET environment variable is not set',
+      "AppAuthService: JWT_SECRET environment variable is not set",
     );
   }
   AppAuthService = new JwtAuthService(secret);
