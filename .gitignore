@@ -51,3 +51,5 @@
 
 # FileSystemImageManager images (for development purposes only)
 **/public/file_system_image_repo/
+
+.expo
