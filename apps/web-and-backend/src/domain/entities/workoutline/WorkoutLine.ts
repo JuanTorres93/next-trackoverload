@@ -1,0 +1,122 @@
+import { DomainDate } from '../../value-objects/DomainDate/DomainDate';
+import { Id } from '../../value-objects/Id/Id';
+import { Integer } from '../../value-objects/Integer/Integer';
+import { WeightInKg } from '../../value-objects/WeightInKg/WeightInKg';
+
+export type WorkoutLineCreateProps = {
+  id: string;
+  workoutId: string;
+  exerciseId: string;
+  setNumber: number;
+  reps: number;
+  weightInKg: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+};
+
+export type WorkoutLineUpdateProps = {
+  setNumber?: number;
+  reps?: number;
+  weightInKg?: number;
+};
+
+export type WorkoutLineProps = {
+  id: Id;
+  workoutId: Id;
+  exerciseId: Id;
+  setNumber: Integer;
+  reps: Integer;
+  weightInKg: WeightInKg;
+  createdAt: DomainDate;
+  updatedAt: DomainDate;
+};
+
+export const setNumberIntegerOptions = {
+  onlyPositive: true,
+  canBeZero: false,
+};
+
+const repsIntegerOptions = {
+  onlyPositive: true,
+};
+
+export class WorkoutLine {
+  private constructor(private readonly props: WorkoutLineProps) {}
+
+  static create(props: WorkoutLineCreateProps): WorkoutLine {
+    const entityProps: WorkoutLineProps = {
+      id: Id.create(props.id),
+      workoutId: Id.create(props.workoutId),
+      exerciseId: Id.create(props.exerciseId),
+      setNumber: Integer.create(props.setNumber, setNumberIntegerOptions),
+      reps: Integer.create(props.reps, repsIntegerOptions),
+      weightInKg: WeightInKg.create(props.weightInKg),
+      createdAt: DomainDate.create(props.createdAt),
+      updatedAt: DomainDate.create(props.updatedAt),
+    };
+
+    return new WorkoutLine(entityProps);
+  }
+
+  update(patch: WorkoutLineUpdateProps) {
+    if (patch.setNumber !== undefined) {
+      this.props.setNumber = Integer.create(
+        patch.setNumber,
+        setNumberIntegerOptions,
+      );
+    }
+    if (patch.reps !== undefined) {
+      this.props.reps = Integer.create(patch.reps, repsIntegerOptions);
+    }
+    if (patch.weightInKg !== undefined) {
+      this.props.weightInKg = WeightInKg.create(patch.weightInKg);
+    }
+    this.props.updatedAt = DomainDate.create();
+  }
+
+  toCreateProps(): WorkoutLineCreateProps {
+    return {
+      id: this.id,
+      workoutId: this.workoutId,
+      exerciseId: this.exerciseId,
+      setNumber: this.setNumber,
+      reps: this.reps,
+      weightInKg: this.weightInKg,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+    };
+  }
+
+  // Getters
+  get id() {
+    return this.props.id.value;
+  }
+
+  get exerciseId() {
+    return this.props.exerciseId.value;
+  }
+
+  get workoutId() {
+    return this.props.workoutId.value;
+  }
+
+  get setNumber() {
+    return this.props.setNumber.value;
+  }
+
+  get reps() {
+    return this.props.reps.value;
+  }
+
+  get weightInKg() {
+    return this.props.weightInKg.value;
+  }
+
+  get createdAt() {
+    return this.props.createdAt.value;
+  }
+
+  get updatedAt() {
+    return this.props.updatedAt.value;
+  }
+}

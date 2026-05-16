@@ -1,1 +1,2 @@
-npm run lint && npm run test
+# TODO: when mobile app id added, extend script to build mobile app as well
+npm run lint:web && npm run test:web

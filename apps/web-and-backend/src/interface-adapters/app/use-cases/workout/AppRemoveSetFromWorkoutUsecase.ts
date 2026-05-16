@@ -1,0 +1,8 @@
+import { AppWorkoutsRepo } from '../../repos/AppWorkoutsRepo';
+import { AppUsersRepo } from '../../repos/AppUsersRepo';
+import { RemoveSetFromWorkoutUsecase } from '../../../../application-layer/use-cases/workout/RemoveSetFromWorkout/RemoveSetFromWorkout.usecase';
+
+export const AppRemoveSetFromWorkoutUsecase = new RemoveSetFromWorkoutUsecase(
+  AppWorkoutsRepo,
+  AppUsersRepo
+);

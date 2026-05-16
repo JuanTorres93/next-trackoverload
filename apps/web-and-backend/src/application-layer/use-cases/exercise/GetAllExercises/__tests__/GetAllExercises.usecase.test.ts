@@ -1,0 +1,65 @@
+import { beforeEach, describe, expect, it } from "vitest";
+
+import * as exerciseTestProps from "../../../../../../tests/createProps/exerciseTestProps";
+import * as dto from "../../../../../../tests/dtoProperties";
+import { Exercise } from "../../../../../domain/entities/exercise/Exercise";
+import { MemoryExercisesRepo } from "../../../../../infra/repos/memory/MemoryExercisesRepo";
+import { GetAllExercisesUsecase } from "../GetAllExercises.usecase";
+
+describe("GetAllExercisesUsecase", () => {
+  let exercisesRepo: MemoryExercisesRepo;
+  let getAllExercisesUsecase: GetAllExercisesUsecase;
+
+  beforeEach(() => {
+    exercisesRepo = new MemoryExercisesRepo();
+    getAllExercisesUsecase = new GetAllExercisesUsecase(exercisesRepo);
+  });
+
+  describe("Found", () => {
+    it("should return all exercises", async () => {
+      const exercise1 = exerciseTestProps.createTestExercise();
+      const exercise2 = exerciseTestProps.createTestExercise({
+        id: "2",
+      });
+
+      await exercisesRepo.saveExercise(exercise1);
+      await exercisesRepo.saveExercise(exercise2);
+
+      const exercises = await getAllExercisesUsecase.execute();
+
+      const exerciseIds = exercises.map((e) => e.id);
+
+      expect(exercises).toHaveLength(2);
+      expect(exerciseIds).toContain(exercise1.id);
+      expect(exerciseIds).toContain(exercise2.id);
+    });
+
+    it("should return an array of ExerciseDTO", async () => {
+      const exercise1 = exerciseTestProps.createTestExercise();
+      const exercise2 = exerciseTestProps.createTestExercise({
+        id: "2",
+      });
+
+      await exercisesRepo.saveExercise(exercise1);
+      await exercisesRepo.saveExercise(exercise2);
+
+      const exercises = await getAllExercisesUsecase.execute();
+
+      expect(exercises).toHaveLength(2);
+
+      for (const exercise of exercises) {
+        expect(exercise).not.toBeInstanceOf(Exercise);
+
+        for (const prop of dto.exerciseDTOProperties) {
+          expect(exercise).toHaveProperty(prop);
+        }
+      }
+    });
+
+    it("should return empty array when no exercises exist", async () => {
+      const exercises = await getAllExercisesUsecase.execute();
+
+      expect(exercises).toHaveLength(0);
+    });
+  });
+});

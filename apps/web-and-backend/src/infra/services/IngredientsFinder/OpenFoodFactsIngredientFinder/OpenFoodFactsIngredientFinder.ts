@@ -1,0 +1,301 @@
+import { InfrastructureError } from "../../../../domain/common/errors";
+import {
+  IngredientFinder,
+  IngredientFinderResult,
+} from "../../../../domain/services/IngredientFinder.port";
+import { RateLimiter } from "../../interfaces/RateLimiter.port";
+
+// DOCS: https://openfoodfacts.github.io/openfoodfacts-server/api/
+// SEARCH DOCS: https://search.openfoodfacts.org/docs
+export const READ_RATE_LIMITS = {
+  // GET /api/v*/product
+  productQueries: {
+    requests: 100,
+    perMinutes: 1,
+  },
+  // GET https://search.openfoodfacts.org/search (// The 10 req/min limit in the official docs only applies to legacy /cgi/search.pl and /api/v*/search.
+  // We keep a conservative limit here as good practice.
+  searchQueries: {
+    requests: 25, // 10
+    perMinutes: 1,
+  },
+  // such as /categories, /label/organic, /ingredient/salt, /category/breads,...
+  facetQueries: {
+    requests: 2,
+    perMinutes: 1,
+  },
+};
+
+// Used for product lookups (barcode)
+const BASE_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://world.openfoodfacts.org"
+    : "https://world.openfoodfacts.net";
+
+// Dedicated Elasticsearch-based search service — much faster than legacy BASE_URL/cgi/search.pl
+const SEARCH_URL = "https://search.openfoodfacts.org/search";
+
+const IMAGES_BASE_URL = "https://images.openfoodfacts.org/images/products";
+
+let authHeader;
+if (["test", "development"].includes(process.env.NODE_ENV))
+  authHeader = {
+    Authorization: "Basic" + btoa("off:off"),
+  };
+
+if (process.env.NODE_ENV === "production")
+  authHeader = {
+    "User-Agent": process.env.OPEN_FOOD_FACTS_USER_AGENT,
+  };
+
+if (!authHeader) {
+  throw new InfrastructureError(
+    "OpenFoodFactsIngredientFinder: Missing Authorization header configuration. Is NODE_ENV set correctly?",
+  );
+}
+
+const fields =
+  "code,product_name,product_name_en,nutriments,image_thumb_url,image_front_url,images,nova_group,categories_tags";
+
+export class OpenFoodFactsIngredientFinder implements IngredientFinder {
+  private readonly searchRateLimiter: RateLimiter;
+  private readonly barcodeRateLimiter: RateLimiter;
+  private readonly clientId: string;
+
+  constructor(
+    searchRateLimiter: RateLimiter,
+    barcodeRateLimiter: RateLimiter,
+    clientId: string,
+  ) {
+    this.searchRateLimiter = searchRateLimiter;
+    this.barcodeRateLimiter = barcodeRateLimiter;
+    this.clientId = clientId;
+  }
+
+  async findIngredientsByFuzzyName(name: string, page: number = 1) {
+    if (await this.searchRateLimiter.isRateLimited(this.clientId)) {
+      // TODO throw RateLimitError instead
+      throw new InfrastructureError(
+        "OpenFoodFactsIngredientFinder: Rate limit exceeded for search queries",
+      );
+    }
+
+    const url = `${SEARCH_URL}?q=${encodeURIComponent(name)}&page_size=80&page=${page}&lang=es,en&fields=${fields}`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: { ...authHeader! },
+    });
+
+    this.searchRateLimiter.recordRequest(this.clientId);
+
+    if (!response.ok) {
+      throw new InfrastructureError(
+        `OpenFoodFactsIngredientFinder: Failed to fetch ingredients by name "${name}". Status: ${response.status}`,
+      );
+    }
+
+    const json = await response.json();
+
+    return this.mapOpenFoodFactProductToIngredientResult(json.hits || [], name);
+  }
+
+  async findIngredientsByBarcode(barcode: string) {
+    if (await this.barcodeRateLimiter.isRateLimited(this.clientId)) {
+      // TODO throw RateLimitError instead
+      throw new InfrastructureError(
+        "OpenFoodFactsIngredientFinder: Rate limit exceeded for barcode queries",
+      );
+    }
+
+    const url = `${BASE_URL}/api/v2/product/${encodeURIComponent(barcode)}?fields=${fields}`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: { ...authHeader! },
+    });
+
+    this.barcodeRateLimiter.recordRequest(this.clientId);
+
+    if (!response.ok) {
+      throw new InfrastructureError(
+        `OpenFoodFactsIngredientFinder: Failed to fetch ingredients by barcode "${barcode}". Status: ${response.status}`,
+      );
+    }
+
+    const json = await response.json();
+    return this.mapOpenFoodFactProductToIngredientResult([json.product]);
+  }
+
+  private mapOpenFoodFactProductToIngredientResult(
+    products: OpenFoodFactProduct[],
+    searchName: string = "",
+  ): IngredientFinderResult[] {
+    const query = searchName.toLowerCase().trim();
+
+    const filteredProducts = products
+      // Has name
+      .filter(
+        (product: OpenFoodFactProduct) =>
+          (product.product_name && product.product_name.trim().length > 0) ||
+          (product.product_name_en &&
+            product.product_name_en.trim().length > 0),
+      )
+      // Has at least calories or protein
+      .filter(
+        (product: OpenFoodFactProduct) =>
+          product.nutriments &&
+          ((product.nutriments["energy-kcal_100g"] || 0) > 0 ||
+            (product.nutriments["proteins_100g"] || 0) > 0),
+      );
+
+    // Scoring to prioritize whole ingredients over processed ones
+    const scoredProducts = filteredProducts.map((product) => {
+      let score = 0;
+      const name = (
+        product.product_name ||
+        product.product_name_en ||
+        ""
+      ).toLowerCase();
+
+      // Priority: Exact match
+      if (name === query) score += 100;
+      else if (name.startsWith(query)) score += 40;
+
+      // Priority: Alimentos no procesados (NOVA 1 es fruta/verdura fresca)
+      // Priority: Unprocessed foods (NOVA 1 is fresh fruit/veg)
+      if (product.nova_group === 1) score += 50;
+      if (product.nova_group === 2) score += 20;
+      // Penalize ultra-processed (NOVA 4)
+      if (product.nova_group === 4) score -= 40;
+
+      // Priority: Freshness tags
+      const tags = product.categories_tags || [];
+      if (tags.some((t) => t.includes("fresh") || t.includes("raw")))
+        score += 30;
+
+      // Penalize long names (usually specific processed products)
+      score -= name.length * 0.5;
+
+      return { product, score };
+    });
+
+    // Sort by descending score
+    scoredProducts.sort(
+      (product, otherProduct) => otherProduct.score - product.score,
+    );
+
+    const ingredients: IngredientFinderResult[] = scoredProducts.map(
+      ({ product }: { product: OpenFoodFactProduct }) => {
+        const ingredient = {
+          name:
+            product.product_name ||
+            product.product_name_en ||
+            "Ingrediente desconocido",
+          nutritionalInfoPer100g: {
+            calories: product.nutriments["energy-kcal_100g"] || 0,
+            protein: product.nutriments["proteins_100g"] || 0,
+          },
+          imageUrl:
+            product.image_thumb_url ||
+            product.image_front_url ||
+            computeImageUrlFromArray(product.code, product.images),
+        };
+
+        const externalRef = {
+          externalId: product.code,
+          source: "openfoodfacts",
+        };
+
+        return {
+          ingredient,
+          externalRef,
+        };
+      },
+    );
+
+    return ingredients || [];
+  }
+}
+
+type OpenFoodFactImageSizes = {
+  [size: string]: { w: number; h: number };
+};
+
+type OpenFoodFactNamedImage = {
+  imgid: string;
+  sizes: OpenFoodFactImageSizes;
+};
+
+type OpenFoodFactRawImage = {
+  sizes: OpenFoodFactImageSizes;
+  uploaded_t?: number | string;
+  uploader?: string;
+};
+
+type OpenFoodFactImages = {
+  [key: string]: OpenFoodFactNamedImage | OpenFoodFactRawImage;
+};
+
+type OpenFoodFactProduct = {
+  code: string;
+  product_name: string;
+  product_name_en?: string;
+  nutriments: {
+    "energy-kcal_100g": number;
+    proteins_100g: number;
+  };
+  image_thumb_url?: string;
+  image_front_url?: string;
+  images?: OpenFoodFactImages;
+  nova_group?: number;
+  categories_tags?: string[];
+};
+
+function isNamedImage(
+  image: OpenFoodFactNamedImage | OpenFoodFactRawImage,
+): image is OpenFoodFactNamedImage {
+  return (
+    "imgid" in image &&
+    typeof (image as OpenFoodFactNamedImage).imgid === "string"
+  );
+}
+
+// Splits barcode into path segments used by the OpenFoodFacts image CDN.
+// e.g. '3017620422003' → '301/762/042/2003'
+function formatBarcodeForImagePath(barcode: string): string {
+  if (barcode.length >= 9) {
+    const parts = [
+      barcode.slice(0, 3),
+      barcode.slice(3, 6),
+      barcode.slice(6, 9),
+    ];
+    const rest = barcode.slice(9);
+    if (rest) parts.push(rest);
+    return parts.join("/");
+  }
+  return barcode;
+}
+
+function computeImageUrlFromArray(
+  barcode: string,
+  images?: OpenFoodFactImages,
+): string | undefined {
+  if (!images || !barcode) return undefined;
+  const barcodePath = formatBarcodeForImagePath(barcode);
+  const keys = Object.keys(images);
+  // Prefer front image (any language), then any other named image
+  const namedKey =
+    keys.find((k) => k.startsWith("front_")) ??
+    keys.find((k) => !/^\d+$/.test(k) && isNamedImage(images[k]));
+  if (namedKey && isNamedImage(images[namedKey])) {
+    const { imgid } = images[namedKey] as OpenFoodFactNamedImage;
+    return `${IMAGES_BASE_URL}/${barcodePath}/${imgid}.400.jpg`;
+  }
+  // Fall back to first raw numeric image
+  const numericKey = keys.find((k) => /^\d+$/.test(k));
+  if (numericKey) {
+    return `${IMAGES_BASE_URL}/${barcodePath}/${numericKey}.400.jpg`;
+  }
+  return undefined;
+}

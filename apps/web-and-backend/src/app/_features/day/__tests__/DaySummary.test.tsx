@@ -1,0 +1,255 @@
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+
+import { createMockDay } from "../../../../../tests/mocks/days";
+import { createMockRecipes } from "../../../../../tests/mocks/recipes";
+import { MemoryDaysRepo } from "../../../../infra/repos/memory/MemoryDaysRepo";
+import { MemoryFakeMealsRepo } from "../../../../infra/repos/memory/MemoryFakeMealsRepo";
+import { MemoryMealsRepo } from "../../../../infra/repos/memory/MemoryMealsRepo";
+import { AppDaysRepo } from "../../../../interface-adapters/app/repos/AppDaysRepo";
+import { AppFakeMealsRepo } from "../../../../interface-adapters/app/repos/AppFakeMealsRepo";
+import { AppMealsRepo } from "../../../../interface-adapters/app/repos/AppMealsRepo";
+import DaySummary from "../DaySummary";
+
+const mealsRepo = AppMealsRepo as MemoryMealsRepo;
+const fakeMealsRepo = AppFakeMealsRepo as MemoryFakeMealsRepo;
+const daysRepo = AppDaysRepo as MemoryDaysRepo;
+
+const { mockRecipes } = await createMockRecipes();
+
+async function setup() {
+  const assembledDayDTO = await createMockDay(1, 1, 2000, {
+    createWithMeal: true,
+    mealRecipeId: mockRecipes[0].id,
+    fakeMeals: {
+      name: "Fake Meal 1",
+      calories: 100,
+      protein: 10,
+    },
+    returnAssembled: true,
+  });
+
+  const meal = assembledDayDTO.meals[0];
+  const fakeMeal = assembledDayDTO.fakeMeals[0];
+
+  render(
+    <DaySummary dayId={assembledDayDTO.id} assembledDay={assembledDayDTO} />,
+  );
+
+  const addFoodButton = screen.getByRole("button", { name: /comida/i });
+
+  const deleteMealButton = screen.getAllByTestId(
+    "nutritional-summary-delete-button",
+  );
+
+  const deleteFakeMealButton = screen.getByTestId("remove-fake-meal");
+
+  return {
+    assembledDayDTO,
+    addFoodButton,
+    meal,
+    fakeMeal,
+    deleteMealButton,
+    deleteFakeMealButton,
+  };
+}
+
+describe("DaySummary", () => {
+  afterEach(() => {
+    mealsRepo.clearForTesting();
+    fakeMealsRepo.clearForTesting();
+    daysRepo.clearForTesting();
+  });
+
+  it("should show meals info", async () => {
+    const { meal } = await setup();
+
+    const mealElement = await screen.findByText(new RegExp(meal.name, "i"));
+
+    expect(mealElement).toBeInTheDocument();
+  });
+
+  it("should show fake meals info", async () => {
+    const { fakeMeal } = await setup();
+
+    const fakeMealElement = await screen.findByText(
+      new RegExp(fakeMeal.name, "i"),
+    );
+    expect(fakeMealElement).toBeInTheDocument();
+  });
+
+  it("should show day name", async () => {
+    const { assembledDayDTO } = await setup();
+
+    const date = new Date(
+      assembledDayDTO.year,
+      assembledDayDTO.month - 1,
+      assembledDayDTO.day,
+    );
+    const dayName = date.toLocaleDateString("es-ES", { weekday: "long" });
+
+    const dayNameElement = await screen.findByText(new RegExp(dayName, "i"));
+
+    expect(dayNameElement).toBeInTheDocument();
+  });
+
+  it("should show day date as 30 mar format", async () => {
+    const { assembledDayDTO } = await setup();
+
+    const date = new Date(
+      assembledDayDTO.year,
+      assembledDayDTO.month - 1,
+      assembledDayDTO.day,
+    );
+    const dateLabel = date.toLocaleDateString("es-ES", {
+      day: "numeric",
+      month: "short",
+    });
+
+    const dateElement = await screen.findByText(new RegExp(dateLabel, "i"));
+
+    expect(dateElement).toBeInTheDocument();
+  });
+
+  it("opens recipes selection modal window on button click", async () => {
+    const { addFoodButton } = await setup();
+
+    expect(screen.queryByText(/tus recetas/i)).not.toBeInTheDocument();
+
+    await userEvent.click(addFoodButton);
+
+    expect(screen.getByText(/tus recetas/i)).toBeInTheDocument();
+  });
+
+  it("shows recipes in modal window", async () => {
+    const { addFoodButton } = await setup();
+
+    await userEvent.click(addFoodButton);
+
+    for (const recipe of mockRecipes) {
+      await screen.findByRole("heading", {
+        name: new RegExp(recipe.name, "i"),
+      });
+    }
+  });
+
+  it("add meals modal button should be disabled by default", async () => {
+    const { addFoodButton } = await setup();
+
+    await userEvent.click(addFoodButton);
+
+    const addMealsButton = screen.getByRole("button", {
+      name: /añadir comidas/i,
+    });
+
+    expect(addMealsButton).toBeDisabled();
+  });
+
+  it("add meals modal button should be enabled when selecting a meal", async () => {
+    const { addFoodButton } = await setup();
+
+    await userEvent.click(addFoodButton);
+
+    const addMealsButton = screen.getByRole("button", {
+      name: /añadir comidas/i,
+    });
+
+    expect(addMealsButton).toBeDisabled();
+
+    const firstRecipe = await screen.findByRole("heading", {
+      name: new RegExp(mockRecipes[0].name, "i"),
+    });
+
+    await userEvent.click(firstRecipe);
+
+    expect(addMealsButton).toBeEnabled();
+  });
+
+  it("should remove meal on button click", async () => {
+    const { deleteMealButton } = await setup();
+
+    const mealsBefore = mealsRepo.countForTesting();
+    expect(mealsBefore).toBe(1);
+
+    await userEvent.click(deleteMealButton[0]);
+
+    await waitFor(() => {
+      const mealsAfter = mealsRepo.countForTesting();
+      expect(mealsAfter).toBe(0);
+    });
+  });
+
+  it("should remove fake meal on button click", async () => {
+    const { deleteFakeMealButton } = await setup();
+
+    const fakeMealsBefore = fakeMealsRepo.countForTesting();
+    expect(fakeMealsBefore).toBe(1);
+
+    await userEvent.click(deleteFakeMealButton);
+
+    await waitFor(() => {
+      const fakeMealsAfter = fakeMealsRepo.countForTesting();
+      expect(fakeMealsAfter).toBe(0);
+    });
+  });
+
+  it("should add a meal in repos", async () => {
+    const { addFoodButton } = await setup();
+
+    await userEvent.click(addFoodButton);
+
+    const firstRecipe = await screen.findByRole("heading", {
+      name: new RegExp(mockRecipes[0].name, "i"),
+    });
+
+    await userEvent.click(firstRecipe);
+
+    const addMealsButton = screen.getByRole("button", {
+      name: /añadir comidas/i,
+    });
+
+    const initialMealsCount = mealsRepo.countForTesting();
+
+    await userEvent.click(addMealsButton);
+
+    await waitFor(() => {
+      expect(mealsRepo.countForTesting()).toBe(initialMealsCount + 1);
+    });
+  });
+
+  it("should show day total calories", async () => {
+    const { assembledDayDTO } = await setup();
+
+    const totalCalories =
+      assembledDayDTO.meals.reduce((total, meal) => total + meal.calories, 0) +
+      assembledDayDTO.fakeMeals.reduce(
+        (total, fakeMeal) => total + fakeMeal.calories,
+        0,
+      );
+
+    const caloriesElement = await screen.findByText(
+      new RegExp(totalCalories.toString(), "i"),
+    );
+
+    expect(caloriesElement).toBeInTheDocument();
+  });
+
+  it("should show day total protein", async () => {
+    const { assembledDayDTO } = await setup();
+
+    const totalProtein =
+      assembledDayDTO.meals.reduce((total, meal) => total + meal.protein, 0) +
+      assembledDayDTO.fakeMeals.reduce(
+        (total, fakeMeal) => total + fakeMeal.protein,
+        0,
+      );
+
+    const roundedTotalProtein = Math.round(totalProtein);
+
+    const proteinElement = await screen.findByText(
+      new RegExp(roundedTotalProtein.toString(), "i"),
+    );
+
+    expect(proteinElement).toBeInTheDocument();
+  });
+});
