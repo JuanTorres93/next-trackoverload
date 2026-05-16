@@ -1,2 +1,3 @@
-# TODO: when mobile app id added, extend script to build mobile app as well
+# TODO: when mobile app is added, extend script to build mobile app as well
+
 npm run build:web
