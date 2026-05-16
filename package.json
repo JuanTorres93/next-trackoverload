@@ -5,7 +5,7 @@
     "apps/*"
   ],
   "scripts": {
-    "prepare": "husky",
+    "prepare": "husky || true",
     "dev:web": "npm run dev --workspace=apps/web-and-backend",
     "build:web": "npm run build --workspace=apps/web-and-backend",
     "start:web": "npm run start --workspace=apps/web-and-backend",
