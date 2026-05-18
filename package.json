@@ -6,7 +6,7 @@
     "apps/mobile"
   ],
   "scripts": {
-    "install-app": "npm install --w=apps/web-and-backend && npm install --w=apps/mobile",
+    "install-app": "npm install --workspaces=false && npm install --w=apps/web-and-backend && npm install --w=apps/mobile",
     "prepare": "husky || true",
     "dev:web": "npm run dev --workspace=apps/web-and-backend",
     "build:web": "npm run build --workspace=apps/web-and-backend",
