@@ -7,6 +7,8 @@ import React, {
   useState,
 } from "react";
 
+import { IngredientLineDTO } from "../../../application-layer/dtos/IngredientLineDTO";
+import { IngredientFinderResult } from "../../../domain/services/IngredientFinder.port";
 import { useDebounce } from "../../_hooks/useDebounce";
 import { useOutsideClick } from "../../_hooks/useOutsideClick";
 import { JSENDResponse } from "../../_types/JSEND";
@@ -15,9 +17,6 @@ import Spinner from "../../_ui/Spinner";
 import { showErrorToast } from "../../_ui/showErrorToast";
 import TextSmall from "../../_ui/typography/TextSmall";
 import { formatToInteger } from "../../_utils/format/formatToInteger";
-import { IngredientLineDTO } from "../../../application-layer/dtos/IngredientLineDTO";
-import { IngredientFinderResult } from "../../../domain/services/IngredientFinder.port";
-
 import { createInMemoryRecipeIngredientLine } from "../recipe/utils";
 import IngredientItemMini from "./IngredientItemMini";
 import IngredientLineItem from "./IngredientLineItem";
@@ -46,12 +45,12 @@ function SearchTermInput({
   } = useIngredientSearchContext();
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const processedValue = e.target.value.trim();
+    const value = e.target.value;
 
-    setIngredientSearchTerm(processedValue);
+    setIngredientSearchTerm(value);
     handleShowList();
 
-    debounceSearch(processedValue);
+    debounceSearch(value);
   }
   return (
     <div className={`${className}`} {...rest}>
