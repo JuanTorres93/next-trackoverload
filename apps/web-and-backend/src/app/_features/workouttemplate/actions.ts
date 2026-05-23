@@ -1,5 +1,8 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+
 import { WorkoutTemplateDTO } from "../../../application-layer/dtos/WorkoutTemplateDTO";
 import { CreateWorkoutTemplateUsecaseRequest } from "../../../application-layer/use-cases/workouttemplate/CreateWorkoutTemplate/CreateWorkoutTemplate.usecase";
 import { AppGetAllWorkoutTemplatesForUserUsecase } from "../../../interface-adapters/app/use-cases/workouttemplate";
@@ -26,12 +29,13 @@ export async function createWorkoutTemplateForLoggedInUser(
 ) {
   const userId = await getCurrentUserId();
 
-  const createdTemplate: WorkoutTemplateDTO =
-    await AppCreateWorkoutTemplateUsecase.execute({
-      actorUserId: userId,
-      targetUserId: userId,
-      ...request,
-    });
+  await AppCreateWorkoutTemplateUsecase.execute({
+    actorUserId: userId,
+    targetUserId: userId,
+    ...request,
+  });
 
-  return createdTemplate;
+  // TODO Change to redirect to the created template's page when that page is implemented
+  revalidatePath("/app/templates");
+  redirect("/app/templates");
 }

@@ -4,14 +4,13 @@ import Image from "next/image";
 
 import { HiSearch } from "react-icons/hi";
 
+import { CreateIngredientLineData } from "../../../application-layer/use-cases/recipe/common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo";
+import { AppClientImageProcessor } from "../../../interface-adapters/app/services/AppClientImageProcessor";
 import { useFormSetup } from "../../_hooks/useFormSetup";
 import ImagePicker from "../../_ui/ImagePicker";
 import ButtonNew from "../../_ui/buttons/ButtonNew";
 import { showErrorToast } from "../../_ui/showErrorToast";
 import { formatToInteger } from "../../_utils/format/formatToInteger";
-import { CreateIngredientLineData } from "../../../application-layer/use-cases/recipe/common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo";
-import { AppClientImageProcessor } from "../../../interface-adapters/app/services/AppClientImageProcessor";
-
 import FormTitleTextArea from "../common/FormTitleInput";
 import LoadingOverlay from "../common/LoadingOverlay";
 import { isNextRedirectError } from "../common/handleNextRedirectError";
@@ -81,10 +80,6 @@ function NewRecipeForm() {
       resetForm();
     } catch (error) {
       if (isNextRedirectError(error)) return;
-
-      // TODO DELETE THESE DEBUG LOGS
-      console.log("error de la receta");
-      console.log(error);
 
       showErrorToast(
         "Error al crear la receta. Por favor, inténtalo de nuevo.",
