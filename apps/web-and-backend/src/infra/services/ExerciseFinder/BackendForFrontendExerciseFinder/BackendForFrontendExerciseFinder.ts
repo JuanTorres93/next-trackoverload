@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+
 import { JSENDSuccess } from "../../../../app/_types/JSEND";
 import { InfrastructureError } from "../../../../domain/common/errors";
 import {
@@ -5,6 +7,8 @@ import {
   ExerciseFinderResult,
 } from "../../../../domain/services/ExerciseFinder.port";
 import { EXERCISES_PER_PAGE } from "../../../../domain/services/ExerciseFinder.port";
+
+dotenv.config();
 
 export class BackendForFrontendExerciseFinder implements ExerciseFinder {
   private readonly backendUrl: string;
@@ -31,7 +35,12 @@ export class BackendForFrontendExerciseFinder implements ExerciseFinder {
 
     const url = `${this.backendUrl}/exercises/${encodeURIComponent(name)}?${queryParams.toString()}`;
 
-    const response = await fetch(url, { method: "GET" });
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "x-api-key": process.env.EXERCISES_API_KEY!,
+      },
+    });
 
     if (!response.ok) {
       throw new InfrastructureError(
