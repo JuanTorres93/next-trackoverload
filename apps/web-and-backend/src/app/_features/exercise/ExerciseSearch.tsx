@@ -1,15 +1,14 @@
 "use client";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 
-import WorkoutTemplateLine from "../workouttemplate/WorkoutTemplateLine";
+import { ExerciseFinderResult } from "../../../domain/services/ExerciseFinder.port";
 import { useDebounce } from "../../_hooks/useDebounce";
 import { useOutsideClick } from "../../_hooks/useOutsideClick";
 import { JSENDResponse } from "../../_types/JSEND";
 import Input from "../../_ui/Input";
 import Spinner from "../../_ui/Spinner";
 import { showErrorToast } from "../../_ui/showErrorToast";
-import { ExerciseFinderResult } from "../../../domain/services/ExerciseFinder.port";
-
+import WorkoutTemplateLine from "../workouttemplate/WorkoutTemplateLine";
 import Exercise from "./Exercise";
 
 const ExerciseSearchContext = createContext<ContextType | null>(null);
@@ -22,12 +21,12 @@ function SearchTermInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
   const debouncedSearchExercises = useDebounce(searchExercises, 500);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const processedValue = e.target.value.trim();
+    const value = e.target.value;
 
-    setSearchTerm(processedValue);
+    setSearchTerm(value);
     handleShowResults();
 
-    debouncedSearchExercises(searchTerm);
+    debouncedSearchExercises(value);
   }
 
   return (

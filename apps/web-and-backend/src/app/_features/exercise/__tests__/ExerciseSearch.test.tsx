@@ -4,7 +4,6 @@ import { vi } from "vitest";
 
 import { mockExerciseApiFetch } from "../../../../../tests/mocks/exerciseApi";
 import { mockExercisesForExerciseFinder } from "../../../../../tests/mocks/exercises";
-
 import ExerciseSearch from "../ExerciseSearch";
 
 const [BENCH_PRESS, INCLINE_BENCH_PRESS, SQUAT] =

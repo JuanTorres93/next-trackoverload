@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 export function useFormSetup<T>(initialState: T) {
   type FormErrors = Record<keyof T, string>;

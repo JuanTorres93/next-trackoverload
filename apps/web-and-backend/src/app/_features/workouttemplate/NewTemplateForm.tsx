@@ -2,12 +2,15 @@
 
 import { twMerge } from "tailwind-merge";
 
+import ButtonNew from "@/app/_ui/buttons/ButtonNew";
+import { CreateWorkoutTemplateLineData } from "@/application-layer/use-cases/workouttemplate/common/createExercisesAndExternalExercisesForWorkoutTemplateLineNoSaveInRepo";
+
+import { useFormSetup } from "../../_hooks/useFormSetup";
+import FormTitleTextArea from "../common/FormTitleInput";
 import ExerciseSearch, {
   SelectedExerciseEntry,
 } from "../exercise/ExerciseSearch";
-import { useFormSetup } from "../../_hooks/useFormSetup";
-
-import FormTitleTextArea from "../common/FormTitleInput";
+import { createWorkoutTemplateForLoggedInUser } from "./actions";
 
 export type NewTemplateFormState = {
   newTemplateName: string;
@@ -45,7 +48,12 @@ function NewTemplateForm({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
         <ExerciseSearch.SelectedExercisesList />
       </ExerciseSearch>
 
-      <PreviewCard formState={formState} setField={setField} />
+      <PreviewCard
+        formState={formState}
+        setField={setField}
+        invalidForm={invalidForm}
+        resetForm={resetForm}
+      />
     </div>
   );
 }
@@ -53,15 +61,36 @@ function NewTemplateForm({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
 function PreviewCard({
   formState,
   setField,
+  invalidForm,
+  resetForm,
   ...props
 }: {
   formState: NewTemplateFormState;
-  setField: (
-    fieldName: keyof NewTemplateFormState,
-    value: NewTemplateFormState[keyof NewTemplateFormState],
-  ) => void;
+  setField: SetFieldType;
+  invalidForm: boolean;
+  resetForm: () => void;
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
+
+  function handleCreateTemplate() {
+    if (invalidForm) return;
+
+    const templateLines: CreateWorkoutTemplateLineData[] =
+      formState.selectedExercises.map((exerciseEntry) => ({
+        externalExerciseId:
+          exerciseEntry.exerciseFinderResult.externalRef.externalId,
+        source: exerciseEntry.exerciseFinderResult.externalRef.source,
+        name: exerciseEntry.exerciseFinderResult.exercise.name,
+        sets: exerciseEntry.sets,
+      }));
+
+    createWorkoutTemplateForLoggedInUser({
+      name: formState.newTemplateName,
+      templateLines,
+    });
+
+    resetForm();
+  }
 
   return (
     <div className={twMerge("", className)} {...rest}>
@@ -70,9 +99,23 @@ function PreviewCard({
         onChange={(e) => setField("newTemplateName", e.target.value)}
         placeholder="Nombre de la nueva plantilla"
         autoFocus
+        data-testid="template-name-input"
       />
+
+      <ButtonNew
+        disabled={invalidForm}
+        data-testid="create-template-button"
+        onClick={handleCreateTemplate}
+      >
+        Crear plantilla
+      </ButtonNew>
     </div>
   );
 }
+
+type SetFieldType = (
+  fieldName: keyof NewTemplateFormState,
+  value: NewTemplateFormState[keyof NewTemplateFormState],
+) => void;
 
 export default NewTemplateForm;
