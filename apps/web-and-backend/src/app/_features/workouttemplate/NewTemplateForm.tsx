@@ -1,5 +1,6 @@
 "use client";
 
+import { HiSearch } from "react-icons/hi";
 import { twMerge } from "tailwind-merge";
 
 import ButtonNew from "@/app/_ui/buttons/ButtonNew";
@@ -43,12 +44,38 @@ function NewTemplateForm({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       {...rest}
     >
       <ExerciseSearch onExerciseSelection={onExerciseSelection}>
-        <div className="flex gap-2">
+        <div className="">
           <ExerciseSearch.SearchTermInput />
         </div>
 
         <ExerciseSearch.FoundExercisesList className="mb-3" />
-        <ExerciseSearch.SelectedExercisesList />
+
+        {hasExercises && (
+          <div className="flex items-center gap-3 mt-4">
+            <div className="flex-1 h-px bg-border/30" />
+
+            <p className="text-xs font-semibold tracking-wide uppercase text-text-minor-emphasis">
+              Ejercicios añadidos
+            </p>
+            <div className="flex-1 h-px bg-border/30" />
+          </div>
+        )}
+
+        {!hasExercises && (
+          <div className="flex flex-col items-center justify-center gap-3 py-12 text-text-minor-emphasis/50">
+            <HiSearch className="text-4xl" />
+
+            <div className="text-center">
+              <p className="text-sm font-semibold">Sin ejercicios todavía</p>
+
+              <p className="mt-1 text-xs">
+                Busca arriba y selecciona los ejercicios de tu receta
+              </p>
+            </div>
+          </div>
+        )}
+
+        <ExerciseSearch.SelectedExercisesList className="my-4" />
       </ExerciseSearch>
 
       <PreviewCard
