@@ -1,13 +1,13 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { mockIngredientApiFetch } from "../../../../../tests/mocks/ingredientApi";
-import { createMockIngredients } from "../../../../../tests/mocks/ingredients";
-import { createMockUser } from "../../../../../tests/mocks/user";
-import { mockDecodeFromConstraints } from "../../../../../tests/mocks/zxing";
-import { MemoryRecipesRepo } from "../../../../infra/repos/memory/MemoryRecipesRepo";
-import { AppRecipesRepo } from "../../../../interface-adapters/app/repos/AppRecipesRepo";
-import { SCAN_WINDOW_SIZE } from "../../ingredient/ZXingBarcodeScanner";
+import { mockIngredientApiFetch } from "../../../../../../tests/mocks/ingredientApi";
+import { createMockIngredients } from "../../../../../../tests/mocks/ingredients";
+import { createMockUser } from "../../../../../../tests/mocks/user";
+import { mockDecodeFromConstraints } from "../../../../../../tests/mocks/zxing";
+import { MemoryRecipesRepo } from "../../../../../infra/repos/memory/MemoryRecipesRepo";
+import { AppRecipesRepo } from "../../../../../interface-adapters/app/repos/AppRecipesRepo";
+import { SCAN_WINDOW_SIZE } from "../../../ingredient/ZXingBarcodeScanner";
 import NewRecipeForm from "../NewRecipeForm";
 
 const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
