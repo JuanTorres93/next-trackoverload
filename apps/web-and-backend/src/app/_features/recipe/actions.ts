@@ -39,17 +39,25 @@ export async function getAllRecipesForLoggedInUser(): Promise<
   }
 }
 
-export async function getRecipeByIdForLoggedInUser(recipeId: string) {
-  const userId = await getCurrentUserId();
+export async function getRecipeByIdForLoggedInUser(
+  recipeId: string,
+): Promise<JSENDResponse<RecipeDTO | null>> {
+  try {
+    const userId = await getCurrentUserId();
 
-  const recipe: RecipeDTO | null = await AppGetRecipeByIdForUserUsecase.execute(
-    {
-      id: recipeId,
-      userId,
-    },
-  );
+    const recipe: RecipeDTO | null =
+      await AppGetRecipeByIdForUserUsecase.execute({
+        id: recipeId,
+        userId,
+      });
 
-  return recipe;
+    return {
+      status: "success",
+      data: recipe,
+    };
+  } catch (error) {
+    return handleActionErrors(error as Error);
+  }
 }
 
 export async function createRecipe({

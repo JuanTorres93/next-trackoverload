@@ -1,13 +1,12 @@
 import { HiOutlineEmojiSad } from "react-icons/hi";
 
+import { JSENDResponse } from "@/app/_types/JSEND";
+
+import { RecipeDTO } from "../../../../application-layer/dtos/RecipeDTO";
 import { getRecipeByIdForLoggedInUser } from "../../../_features/recipe/actions";
 import PageWrapper from "../../../_ui/PageWrapper";
 import ButtonPrimary from "../../../_ui/buttons/ButtonPrimary";
-import { getCurrentUserId } from "../../../_utils/auth/getCurrentUserId";
 import { formatToInteger } from "../../../_utils/format/formatToInteger";
-import { RecipeDTO } from "../../../../application-layer/dtos/RecipeDTO";
-import { AppGetRecipeByIdForUserUsecase } from "../../../../interface-adapters/app/use-cases/recipe";
-
 import RecipeActions from "./RecipeActions";
 import UpdateRecipeImage from "./UpdateRecipeImage";
 import UpdateRecipeTitle from "./UpdateRecipeTitle";
@@ -18,9 +17,14 @@ export default async function RecipePage({
   params: Promise<{ recipeId: string }>;
 }) {
   const { recipeId } = await params;
-  const recipe: RecipeDTO | null = await getRecipeByIdForLoggedInUser(recipeId);
+  const recipeJSEND: JSENDResponse<RecipeDTO | null> =
+    await getRecipeByIdForLoggedInUser(recipeId);
 
-  if (!recipe) return <RecipeNotFound />;
+  if (recipeJSEND.status !== "success") return <RecipeNotFound />;
+
+  if (!recipeJSEND.data) return <RecipeNotFound />;
+
+  const recipe = recipeJSEND.data;
 
   return (
     <PageWrapper className="max-w-5xl">
@@ -101,15 +105,15 @@ export async function generateMetadata({
   params: Promise<{ recipeId: string }>;
 }) {
   const { recipeId } = await params;
-  const recipe = await AppGetRecipeByIdForUserUsecase.execute({
-    id: recipeId,
-    userId: await getCurrentUserId(),
-  });
 
-  if (!recipe) return { title: "Receta no encontrada" };
+  const recipeJSEND: JSENDResponse<RecipeDTO | null> =
+    await getRecipeByIdForLoggedInUser(recipeId);
+
+  if (recipeJSEND.status !== "success")
+    return { title: "Receta no encontrada" };
 
   return {
-    title: recipe.name,
-    description: `Detalles de la receta: ${recipe.name}`,
+    title: recipeJSEND.data?.name || "Receta no encontrada",
+    description: `Detalles de la receta: ${recipeJSEND.data?.name || "Receta no encontrada"}`,
   };
 }
