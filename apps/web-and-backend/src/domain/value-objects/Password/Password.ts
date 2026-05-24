@@ -1,6 +1,6 @@
-import { Text } from '../Text/Text';
-import { ValidationError } from '../../common/errors';
-import { ValueObject } from '../ValueObject';
+import { ValidationError } from "../../common/errors";
+import { Text } from "../Text/Text";
+import { ValueObject } from "../ValueObject";
 
 type PasswordProps = {
   value: string;
@@ -42,35 +42,35 @@ export class Password extends ValueObject<PasswordProps> {
     // Validate minimum length
     if (text.value.length < opts.minLength) {
       throw new ValidationError(
-        `Password: value must be at least ${opts.minLength} characters long`,
+        `La contraseña debe tener al menos ${opts.minLength} caracteres`,
       );
     }
 
     // Validate maximum length
     if (text.value.length > opts.maxLength) {
       throw new ValidationError(
-        `Password: value must not exceed ${opts.maxLength} characters`,
+        `La contraseña debe ser menor de ${opts.maxLength} caracteres`,
       );
     }
 
     // Validate uppercase requirement
     if (opts.requireUppercase && !/[A-Z]/.test(text.value)) {
       throw new ValidationError(
-        'Password: value must contain at least one uppercase letter',
+        "La contraseña debe contener al menos una letra mayúscula",
       );
     }
 
     // Validate lowercase requirement
     if (opts.requireLowercase && !/[a-z]/.test(text.value)) {
       throw new ValidationError(
-        'Password: value must contain at least one lowercase letter',
+        "La contraseña debe contener al menos una letra minúscula",
       );
     }
 
     // Validate number requirement
     if (opts.requireNumber && !/[0-9]/.test(text.value)) {
       throw new ValidationError(
-        'Password: value must contain at least one number',
+        "La contraseña debe contener al menos un número",
       );
     }
 
@@ -80,7 +80,7 @@ export class Password extends ValueObject<PasswordProps> {
       !/[!@#$%^&*(),.?":{}|<>_\-+=[\]\\\/;'`~]/.test(text.value)
     ) {
       throw new ValidationError(
-        'Password: value must contain at least one special character',
+        "La contraseña debe contener al menos un carácter especial",
       );
     }
 

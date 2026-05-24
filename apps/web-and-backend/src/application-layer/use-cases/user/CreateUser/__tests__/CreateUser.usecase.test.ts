@@ -105,36 +105,29 @@ describe("CreateUserUsecase", () => {
   });
 
   describe("Errors", () => {
-    it("should throw error if email already exists", async () => {
-      const request = {
-        name: "Duplicate Email User",
-        email: userTestProps.validUserProps.email,
-        plainPassword,
-      };
+    it("should throw error for same email (even with different case)", async () => {
+      const requests = [
+        {
+          name: "Duplicate Email User",
+          email: userTestProps.validUserProps.email,
+          plainPassword,
+        },
+        {
+          name: "Duplicate Email User",
+          email: userTestProps.validUserProps.email.toUpperCase(),
+          plainPassword,
+        },
+      ];
 
-      await expect(createUserUsecase.execute(request)).rejects.toThrow(
-        AlreadyExistsError,
-      );
+      for (const request of requests) {
+        await expect(createUserUsecase.execute(request)).rejects.toThrow(
+          AlreadyExistsError,
+        );
 
-      await expect(createUserUsecase.execute(request)).rejects.toThrow(
-        /CreateUserUsecase.*User.*email.*already exists/,
-      );
-    });
-
-    it("should throw error for same email with different case", async () => {
-      const request = {
-        name: "Duplicate Email User",
-        email: userTestProps.validUserProps.email.toUpperCase(),
-        plainPassword,
-      };
-
-      await expect(createUserUsecase.execute(request)).rejects.toThrow(
-        AlreadyExistsError,
-      );
-
-      await expect(createUserUsecase.execute(request)).rejects.toThrow(
-        /CreateUserUsecase.*User.*email.*already exists/,
-      );
+        await expect(createUserUsecase.execute(request)).rejects.toThrow(
+          /.*email.*regist.*/,
+        );
+      }
     });
 
     it("should throw error if customer id already exists", async () => {

@@ -1,4 +1,3 @@
-import { UserDTO, toUserDTO } from "../../../dtos/UserDTO";
 import { AlreadyExistsError } from "../../../../domain/common/errors";
 import { User } from "../../../../domain/entities/user/User";
 import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
@@ -6,6 +5,7 @@ import { IdGenerator } from "../../../../domain/services/IdGenerator.port";
 import { PasswordEncryptorService } from "../../../../domain/services/PasswordEncryptorService.port";
 import { Email } from "../../../../domain/value-objects/Email/Email";
 import { Password } from "../../../../domain/value-objects/Password/Password";
+import { UserDTO, toUserDTO } from "../../../dtos/UserDTO";
 
 export type CreateUserUsecaseRequest = {
   name: string;
@@ -39,9 +39,7 @@ export class CreateUserUsecase {
     ]);
 
     if (existingEmail) {
-      throw new AlreadyExistsError(
-        "CreateUserUsecase: User with this email already exists",
-      );
+      throw new AlreadyExistsError("Este email ya está registrado.");
     }
 
     if (existingCustomer) {
