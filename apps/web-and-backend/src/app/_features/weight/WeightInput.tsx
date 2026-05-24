@@ -2,10 +2,11 @@
 
 import { HiScale } from "react-icons/hi2";
 
+import { showErrorToast } from "@/app/_ui/showErrorToast";
+
+import { DayEntry } from "../../../application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase";
 import { useDebounce } from "../../_hooks/useDebounce";
 import Input from "../../_ui/Input";
-import { DayEntry } from "../../../application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase";
-
 import { updateUserWeightForDay } from "../day/actions";
 import InputContainer from "./InputContainer";
 import InputLabel from "./InputLabel";
@@ -20,8 +21,15 @@ function WeightInput({
   const debouncedHandleWeightChange = useDebounce(handleWeightChange, 250);
   const hasWeight = lastDay.day?.userWeightInKg !== undefined;
 
-  function handleWeightChange(newWeight: string) {
-    updateUserWeightForDay(lastDay.date, Number(newWeight));
+  async function handleWeightChange(newWeight: string) {
+    const jsend = await updateUserWeightForDay(lastDay.date, Number(newWeight));
+
+    if (jsend.status !== "success") {
+      showErrorToast(
+        jsend.data?.message ||
+          "Error al actualizar el peso. Por favor, intenta de nuevo.",
+      );
+    }
   }
 
   return (

@@ -211,14 +211,23 @@ export async function replaceFakeMealByAnotherFakeMealForUserInDay(
 export async function updateUserWeightForDay(
   dayId: string,
   newWeightInKg: number,
-): Promise<void> {
-  await AppUpdateUserWeightForDayUsecase.execute({
-    dayId,
-    userId: await getCurrentUserId(),
-    newWeightInKg,
-  });
+): Promise<JSENDResponse<void>> {
+  try {
+    await AppUpdateUserWeightForDayUsecase.execute({
+      dayId,
+      userId: await getCurrentUserId(),
+      newWeightInKg,
+    });
 
-  revalidatePath(`/app`);
+    revalidatePath(`/app`);
+
+    return {
+      status: "success",
+      data: undefined,
+    };
+  } catch (error) {
+    return handleActionErrors(error as Error);
+  }
 }
 
 export async function getLastNumberOfDaysIncludingToday(
@@ -287,12 +296,21 @@ export async function getLastDayWithCaloriesGoalForUser(): Promise<DayDTO | null
 export async function setCaloriesGoalForDay(
   dayId: string,
   newCaloriesGoal: number,
-): Promise<void> {
-  await AppSetCaloriesGoalForDayAndUserUsecase.execute({
-    dayId,
-    userId: await getCurrentUserId(),
-    newCaloriesGoal,
-  });
+): Promise<JSENDResponse<void>> {
+  try {
+    await AppSetCaloriesGoalForDayAndUserUsecase.execute({
+      dayId,
+      userId: await getCurrentUserId(),
+      newCaloriesGoal,
+    });
 
-  revalidatePath(`/app`);
+    revalidatePath(`/app`);
+
+    return {
+      status: "success",
+      data: undefined,
+    };
+  } catch (error) {
+    return handleActionErrors(error as Error);
+  }
 }

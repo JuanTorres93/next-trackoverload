@@ -2,10 +2,11 @@
 
 import { HiFire } from "react-icons/hi2";
 
+import { showErrorToast } from "@/app/_ui/showErrorToast";
+
+import { DayEntry } from "../../../application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase";
 import { useDebounce } from "../../_hooks/useDebounce";
 import Input from "../../_ui/Input";
-import { DayEntry } from "../../../application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase";
-
 import { setCaloriesGoalForDay } from "../day/actions";
 import InputContainer from "./InputContainer";
 import InputLabel from "./InputLabel";
@@ -24,8 +25,18 @@ function CaloriesGoalInput({
     250,
   );
 
-  function handleCaloriesGoalChange(newCaloriesGoal: string) {
-    setCaloriesGoalForDay(lastDay.date, Number(newCaloriesGoal));
+  async function handleCaloriesGoalChange(newCaloriesGoal: string) {
+    const jsend = await setCaloriesGoalForDay(
+      lastDay.date,
+      Number(newCaloriesGoal),
+    );
+
+    if (jsend.status !== "success") {
+      showErrorToast(
+        jsend.data?.message ||
+          "Error al actualizar el objetivo de calorías. Por favor, intenta de nuevo.",
+      );
+    }
   }
 
   return (
