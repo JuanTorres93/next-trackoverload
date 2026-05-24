@@ -1,22 +1,36 @@
-'use server';
-import { AppUpdateIngredientLineUsecase } from '../../../interface-adapters/app/use-cases/ingredientline';
-import { revalidatePath } from 'next/cache';
-import { getCurrentUserId } from '../../_utils/auth/getCurrentUserId';
+"use server";
+import { revalidatePath } from "next/cache";
+
+import { JSENDResponse } from "@/app/_types/JSEND";
+import { IngredientLineDTO } from "@/application-layer/dtos/IngredientLineDTO";
+
+import { AppUpdateIngredientLineUsecase } from "../../../interface-adapters/app/use-cases/ingredientline";
+import { getCurrentUserId } from "../../_utils/auth/getCurrentUserId";
+import { handleActionErrors } from "../common/handleActionErrors";
 
 export async function updateIngredientLineQuantity(
-  parentEntityType: 'recipe' | 'meal',
+  parentEntityType: "recipe" | "meal",
   parentEntityId: string,
   ingredientLineId: string,
   newQuantityInGrams: number,
-) {
-  await AppUpdateIngredientLineUsecase.execute({
-    userId: await getCurrentUserId(),
-    parentEntityType,
-    parentEntityId,
-    ingredientLineId,
-    quantityInGrams: newQuantityInGrams,
-  });
+): Promise<JSENDResponse<IngredientLineDTO>> {
+  try {
+    const updatedIngredientLine = await AppUpdateIngredientLineUsecase.execute({
+      userId: await getCurrentUserId(),
+      parentEntityType,
+      parentEntityId,
+      ingredientLineId,
+      quantityInGrams: newQuantityInGrams,
+    });
 
-  revalidatePath(`/app/${parentEntityType}s/${parentEntityId}`);
-  revalidatePath(`/app/${parentEntityType}s`);
+    revalidatePath(`/app/${parentEntityType}s/${parentEntityId}`);
+    revalidatePath(`/app/${parentEntityType}s`);
+
+    return {
+      status: "success",
+      data: updatedIngredientLine,
+    };
+  } catch (error) {
+    return handleActionErrors(error as Error);
+  }
 }

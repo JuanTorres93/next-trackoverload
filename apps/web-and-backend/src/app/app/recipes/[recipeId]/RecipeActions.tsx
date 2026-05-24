@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { HiOutlineDuplicate, HiOutlineTrash } from "react-icons/hi";
 
+import { RecipeDTO } from "../../../../application-layer/dtos/RecipeDTO";
 import { isNextRedirectError } from "../../../_features/common/handleNextRedirectError";
 import ArrangedIngredientSearch from "../../../_features/ingredient/ArrangedIngredientSearch";
 import IngredientLineItem from "../../../_features/ingredient/IngredientLineItem";
@@ -26,7 +27,6 @@ import ButtonDanger from "../../../_ui/buttons/ButtonDanger";
 import ButtonNew from "../../../_ui/buttons/ButtonNew";
 import ButtonPrimary from "../../../_ui/buttons/ButtonPrimary";
 import { showErrorToast } from "../../../_ui/showErrorToast";
-import { RecipeDTO } from "../../../../application-layer/dtos/RecipeDTO";
 
 export default function RecipeActions({ recipe }: { recipe: RecipeDTO }) {
   const [
@@ -188,8 +188,20 @@ function IngredientsSection({
     }
   }
 
-  function handleQuantityChange(lineId: string, quantity: number) {
-    updateIngredientLineQuantity("recipe", recipe.id, lineId, quantity);
+  async function handleQuantityChange(lineId: string, quantity: number) {
+    const jsend = await updateIngredientLineQuantity(
+      "recipe",
+      recipe.id,
+      lineId,
+      quantity,
+    );
+
+    if (jsend.status !== "success") {
+      showErrorToast(
+        jsend.data?.message ||
+          "Error al actualizar la cantidad del ingrediente. Por favor, inténtalo de nuevo.",
+      );
+    }
   }
   const debouncedUpdateQuantity = useDebounce(handleQuantityChange, 250);
 
