@@ -121,14 +121,6 @@ function IngredientsPanel({
 }) {
   return (
     <div className="flex flex-col flex-1 min-w-0 gap-5">
-      <div>
-        <h1 className="mb-1 text-2xl font-bold text-text">Nueva receta</h1>
-
-        <p className="text-sm text-text-minor-emphasis">
-          Busca ingredientes y ajusta las cantidades
-        </p>
-      </div>
-
       <ArrangedIngredientSearch isLoading={isLoading} />
 
       <IngredientSearch.FoundIngredientsList />

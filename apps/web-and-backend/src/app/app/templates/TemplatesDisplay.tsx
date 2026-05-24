@@ -4,16 +4,20 @@ import { useState } from "react";
 
 import { HiMagnifyingGlass, HiRectangleStack } from "react-icons/hi2";
 
+import PageTitle from "@/app/_ui/typography/PageTitle";
+
+import { WorkoutTemplateDTO } from "../../../application-layer/dtos/WorkoutTemplateDTO";
 import WorkoutTemplatesGrid from "../../_features/workouttemplate/WorkoutTemplatesGrid";
 import { useWorkoutTemplateSearch } from "../../_features/workouttemplate/useWorkoutTemplateSearch";
 import SearchInput from "../../_ui/SearchInput";
 import ButtonNew from "../../_ui/buttons/ButtonNew";
-import { WorkoutTemplateDTO } from "../../../application-layer/dtos/WorkoutTemplateDTO";
 
 function TemplatesDisplay({ templates }: { templates: WorkoutTemplateDTO[] }) {
   const [isNavigating, setIsNavigating] = useState(false);
   const { query, setQuery, filteredTemplates } =
     useWorkoutTemplateSearch(templates);
+
+  const pageSubtitle = `${templates.length} plantilla${templates.length !== 1 ? "s" : ""}`;
 
   function handleNavigate() {
     setIsNavigating(true);
@@ -22,12 +26,8 @@ function TemplatesDisplay({ templates }: { templates: WorkoutTemplateDTO[] }) {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4 max-bp-navbar-mobile:flex-col max-bp-navbar-mobile:items-start">
-        <div>
-          <h1 className="text-2xl font-bold text-text">Mis Plantillas</h1>
-          <p className="text-sm text-text-minor-emphasis">
-            {templates.length} plantilla{templates.length !== 1 ? "s" : ""}
-          </p>
-        </div>
+        <PageTitle title="Mis Plantillas" subtitle={pageSubtitle} />
+
         <ButtonNew
           href="/app/templates/new"
           onClick={handleNavigate}

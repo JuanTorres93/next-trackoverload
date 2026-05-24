@@ -4,15 +4,19 @@ import { useState } from "react";
 
 import { HiBookOpen, HiMagnifyingGlass } from "react-icons/hi2";
 
+import PageTitle from "@/app/_ui/typography/PageTitle";
+
+import { RecipeDTO } from "../../../application-layer/dtos/RecipeDTO";
 import RecipesGrid from "../../_features/recipe/RecipesGrid";
 import { useRecipeSearch } from "../../_features/recipe/useRecipeSearch";
 import SearchInput from "../../_ui/SearchInput";
 import ButtonNew from "../../_ui/buttons/ButtonNew";
-import { RecipeDTO } from "../../../application-layer/dtos/RecipeDTO";
 
 function RecipesDisplay({ recipes }: { recipes: RecipeDTO[] }) {
   const [isNavigating, setIsNavigating] = useState(false);
   const { query, setQuery, filteredRecipes } = useRecipeSearch(recipes);
+
+  const pageSubtitle = `${recipes.length} receta${recipes.length !== 1 ? "s" : ""}`;
 
   function handleNavigate() {
     setIsNavigating(true);
@@ -21,12 +25,8 @@ function RecipesDisplay({ recipes }: { recipes: RecipeDTO[] }) {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4 max-bp-navbar-mobile:flex-col max-bp-navbar-mobile:items-start">
-        <div>
-          <h1 className="text-2xl font-bold text-text">Mis Recetas</h1>
-          <p className="text-sm text-text-minor-emphasis">
-            {recipes.length} receta{recipes.length !== 1 ? "s" : ""}
-          </p>
-        </div>
+        <PageTitle title="Mis Recetas" subtitle={pageSubtitle} />
+
         <ButtonNew
           href="/app/recipes/new"
           onClick={handleNavigate}

@@ -6,7 +6,6 @@ import { FakeMealDTO } from "../../application-layer/dtos/FakeMealDTO";
 import { MealDTO } from "../../application-layer/dtos/MealDTO";
 import { DayEntry } from "../../application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase";
 import { dateToDayId } from "../../domain/value-objects/DayId/DayId";
-
 import AddFoodButton from "../_features/common/AddFoodButton";
 import {
   AssembledDayResult,
@@ -20,6 +19,7 @@ import WeightTracker from "../_features/weight/WeightTracker";
 import GridAutoCols from "../_ui/GridAutoCols";
 import PageWrapper from "../_ui/PageWrapper";
 import ButtonPrimary from "../_ui/buttons/ButtonPrimary";
+import PageTitle from "../_ui/typography/PageTitle";
 
 export default async function Dashboard() {
   const todayId = dateToDayId(new Date());
@@ -64,12 +64,7 @@ function NutritionForToday({
 
   return (
     <section className="flex flex-col gap-4">
-      <div>
-        <h1 className="text-2xl font-bold text-text">Tus comidas hoy</h1>
-        <p className="text-sm capitalize text-text-minor-emphasis">
-          {todayFormatted}
-        </p>
-      </div>
+      <PageTitle title="Tus comidas hoy" subtitle={todayFormatted} />
 
       {todayHasMeals && (
         <>
@@ -129,7 +124,7 @@ function NutritionForToday({
 function WeightManagement({ daysHistory }: { daysHistory: DayEntry[] }) {
   return (
     <section className="flex flex-col gap-4">
-      <h2 className="text-2xl font-bold text-text">Tu peso</h2>
+      <PageTitle title="Tu peso" />
 
       <WeightTracker days={daysHistory} />
     </section>

@@ -1,13 +1,15 @@
-import SubscriptionCard from '../../_features/subscription/SubscriptionCard';
-import { getLoggedInUser } from '../../_features/user/actions';
-import { getPlanInfo } from '../../_features/subscription/actions';
-import PageWrapper from '../../_ui/PageWrapper';
-import SectionHeading from '../../_ui/typography/SectionHeading';
-import SubscriptionSuccessRedirect from './SubscriptionSuccessRedirect';
+import PageTitle from "@/app/_ui/typography/PageTitle";
+
+import SubscriptionCard from "../../_features/subscription/SubscriptionCard";
+import { getPlanInfo } from "../../_features/subscription/actions";
+import { getLoggedInUser } from "../../_features/user/actions";
+import PageWrapper from "../../_ui/PageWrapper";
+import SectionHeading from "../../_ui/typography/SectionHeading";
+import SubscriptionSuccessRedirect from "./SubscriptionSuccessRedirect";
 
 export const metadata = {
-  title: 'Suscripción',
-  description: 'Gestiona tu suscripción.',
+  title: "Suscripción",
+  description: "Gestiona tu suscripción.",
 };
 
 export default async function SubscriptionPage({
@@ -17,10 +19,18 @@ export default async function SubscriptionPage({
 }) {
   const { subscriptionSuccess } = await searchParams;
 
-  if (subscriptionSuccess === 'true') {
+  const PageTitleComponent = (
+    <PageTitle
+      className="mb-6"
+      title="Suscripción"
+      subtitle="Gestiona tu suscripción."
+    />
+  );
+
+  if (subscriptionSuccess === "true") {
     return (
       <PageWrapper>
-        <SectionHeading>Suscripción</SectionHeading>
+        {PageTitleComponent}
         <SubscriptionSuccessRedirect />
       </PageWrapper>
     );
@@ -34,7 +44,7 @@ export default async function SubscriptionPage({
   if (!user) {
     return (
       <PageWrapper>
-        <SectionHeading>Suscripción</SectionHeading>
+        {PageTitleComponent}
         <p>No se pudo cargar la información de tu suscripción.</p>
       </PageWrapper>
     );
@@ -42,7 +52,7 @@ export default async function SubscriptionPage({
 
   return (
     <PageWrapper>
-      <SectionHeading>Suscripción</SectionHeading>
+      {PageTitleComponent}
 
       <div className="flex max-bp-navbar-mobile:justify-center">
         <SubscriptionCard
