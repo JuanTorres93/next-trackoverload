@@ -2,10 +2,9 @@
 import { revalidatePath } from "next/cache";
 
 import { JSENDResponse } from "@/app/_types/JSEND";
-import { ValidationError } from "@/domain/common/errors";
+import { DayDTO } from "@/application-layer/dtos/DayDTO";
 
 import { AssembledDayDTO } from "../../../application-layer/dtos/AssembledDayDTO";
-import { DayDTO } from "../../../application-layer/dtos/DayDTO";
 import { DayEntry } from "../../../application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase";
 import {
   AppAddMultipleMealsToDayUsecase,
@@ -232,13 +231,23 @@ export async function updateUserWeightForDay(
 
 export async function getLastNumberOfDaysIncludingToday(
   numberOfDays: number,
-): Promise<DayEntry[]> {
-  return await AppGetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays.execute(
-    {
-      numberOfDays,
-      userId: await getCurrentUserId(),
-    },
-  );
+): Promise<JSENDResponse<DayEntry[]>> {
+  try {
+    const dayEntries =
+      await AppGetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays.execute(
+        {
+          numberOfDays,
+          userId: await getCurrentUserId(),
+        },
+      );
+
+    return {
+      status: "success",
+      data: dayEntries,
+    };
+  } catch (error) {
+    return handleActionErrors(error as Error);
+  }
 }
 
 export async function addMealsToDay(
@@ -287,10 +296,21 @@ export async function addMealsToMultipleDays(
   }
 }
 
-export async function getLastDayWithCaloriesGoalForUser(): Promise<DayDTO | null> {
-  return AppGetLastDayWithCaloriesGoalForUserUsecase.execute({
-    userId: await getCurrentUserId(),
-  });
+export async function getLastDayWithCaloriesGoalForUser(): Promise<
+  JSENDResponse<DayDTO | null>
+> {
+  try {
+    const lastDay = await AppGetLastDayWithCaloriesGoalForUserUsecase.execute({
+      userId: await getCurrentUserId(),
+    });
+
+    return {
+      status: "success",
+      data: lastDay,
+    };
+  } catch (error) {
+    return handleActionErrors(error as Error);
+  }
 }
 
 export async function setCaloriesGoalForDay(

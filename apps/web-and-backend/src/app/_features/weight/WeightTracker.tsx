@@ -3,7 +3,6 @@
 import { twMerge } from "tailwind-merge";
 
 import { DayEntry } from "../../../application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase";
-
 import CaloriesGoalInput from "./CaloriesGoalInput";
 import WeightHistory from "./WeightHistory";
 import WeightInput from "./WeightInput";
@@ -17,6 +16,7 @@ function WeightTracker({
 
   const lastDay = days[days.length - 1];
 
+  // TODO use server action (already created) for retrieving the last defined calories goal, instead of calculating it here.
   const lastDefinedCaloriesGoal = [...days]
     .reverse()
     .find((day) => day.day?.updatedCaloriesGoal !== undefined)

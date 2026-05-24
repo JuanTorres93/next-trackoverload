@@ -31,10 +31,13 @@ export default async function Dashboard() {
     getLastNumberOfDaysIncludingToday(90),
   ] as const;
 
-  const [assembledDayResultJSEND, daysHistory] = await Promise.all(promises);
+  const [assembledDayResultJSEND, daysHistoryJSEND] =
+    await Promise.all(promises);
 
   const errorInAssembledDayResult =
     assembledDayResultJSEND.status !== "success";
+
+  const errorInDaysHistoryResult = daysHistoryJSEND.status !== "success";
 
   return (
     <PageWrapper className="flex flex-col max-w-5xl gap-12">
@@ -49,7 +52,16 @@ export default async function Dashboard() {
         <NutritionForToday assembledDayResult={assembledDayResultJSEND.data} />
       )}
 
-      <WeightManagement daysHistory={daysHistory} />
+      {errorInDaysHistoryResult && (
+        <ErrorBox>
+          {daysHistoryJSEND.data?.message ||
+            "Error al cargar el historial de días."}
+        </ErrorBox>
+      )}
+
+      {!errorInDaysHistoryResult && (
+        <WeightManagement daysHistory={daysHistoryJSEND.data} />
+      )}
     </PageWrapper>
   );
 }
