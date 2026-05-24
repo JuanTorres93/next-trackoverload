@@ -1,11 +1,12 @@
 "use client";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 
+import SearchInput from "@/app/_ui/SearchInput";
+
 import { ExerciseFinderResult } from "../../../domain/services/ExerciseFinder.port";
 import { useDebounce } from "../../_hooks/useDebounce";
 import { useOutsideClick } from "../../_hooks/useOutsideClick";
 import { JSENDResponse } from "../../_types/JSEND";
-import Input from "../../_ui/Input";
 import Spinner from "../../_ui/Spinner";
 import { showErrorToast } from "../../_ui/showErrorToast";
 import WorkoutTemplateLine from "../workouttemplate/WorkoutTemplateLine";
@@ -31,7 +32,7 @@ function SearchTermInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
 
   return (
     <div className={className} {...rest}>
-      <Input
+      <SearchInput
         data-testid="exercise-search-input"
         value={searchTerm}
         onChange={handleChange}

@@ -59,7 +59,7 @@ function RecipePreviewCard({
             className="object-cover"
           />
 
-          <div className="absolute inset-0 bg-gradient-to-t from-overlay/60 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-overlay/60 via-transparent to-transparent" />
 
           <div className="absolute z-10 bottom-3 left-3 right-3">
             <ImagePicker

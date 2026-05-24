@@ -1,6 +1,6 @@
-import { FaBarcode } from 'react-icons/fa6';
+import { FaBarcode } from "react-icons/fa6";
 
-import { disabledStyle } from '../../_ui/buttons/ButtonSearch';
+import { disabledStyle } from "../../_ui/buttons/ButtonSearch";
 
 function ScanButton({
   ...props
@@ -8,7 +8,7 @@ function ScanButton({
   return (
     <button
       type="button"
-      className={`p-2.5 rounded-xl cursor-pointer border-2 border-primary text-primary hover:bg-primary/10 transition ${disabledStyle}`}
+      className={`p-2 rounded-lg cursor-pointer border border-primary text-primary hover:bg-primary/10 transition ${disabledStyle}`}
       {...props}
     >
       <FaBarcode size={18} />

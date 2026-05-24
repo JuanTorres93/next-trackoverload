@@ -7,12 +7,15 @@ import React, {
   useState,
 } from "react";
 
+import { twMerge } from "tailwind-merge";
+
+import SearchInput from "@/app/_ui/SearchInput";
+
 import { IngredientLineDTO } from "../../../application-layer/dtos/IngredientLineDTO";
 import { IngredientFinderResult } from "../../../domain/services/IngredientFinder.port";
 import { useDebounce } from "../../_hooks/useDebounce";
 import { useOutsideClick } from "../../_hooks/useOutsideClick";
 import { JSENDResponse } from "../../_types/JSEND";
-import Input from "../../_ui/Input";
 import Spinner from "../../_ui/Spinner";
 import { showErrorToast } from "../../_ui/showErrorToast";
 import TextSmall from "../../_ui/typography/TextSmall";
@@ -26,7 +29,6 @@ const IngredientSearchContext =
   createContext<IngredientSearchContextType | null>(null);
 
 function SearchTermInput({
-  inputContainerClassName,
   ...props
 }: React.InputHTMLAttributes<HTMLInputElement> & {
   inputContainerClassName?: string;
@@ -53,16 +55,15 @@ function SearchTermInput({
     debounceSearch(value);
   }
   return (
-    <div className={`${className}`} {...rest}>
-      <Input
-        containerClassName={inputContainerClassName}
-        value={ingredientSearchTerm}
-        onChange={handleChange}
-        disabled={disabled}
-        onClick={handleShowList}
-        placeholder="Buscar ingredientes..."
-      />
-    </div>
+    <SearchInput
+      className={twMerge("", className)}
+      value={ingredientSearchTerm}
+      onChange={handleChange}
+      disabled={disabled}
+      onClick={handleShowList}
+      placeholder="Buscar ingredientes..."
+      {...rest}
+    />
   );
 }
 
