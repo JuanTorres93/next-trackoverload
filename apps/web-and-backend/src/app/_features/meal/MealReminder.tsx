@@ -4,10 +4,9 @@ import Image from "next/image";
 
 import { useOptimistic, useTransition } from "react";
 
+import { MealDTO } from "../../../application-layer/dtos/MealDTO";
 import { showErrorToast } from "../../_ui/showErrorToast";
 import { formatToInteger } from "../../_utils/format/formatToInteger";
-import { MealDTO } from "../../../application-layer/dtos/MealDTO";
-
 import FoodReminderContainer from "../common/FoodReminderContainer";
 import FoodReminderMacros from "../common/FoodReminderMacros";
 import {
@@ -36,11 +35,12 @@ function MealReminder({ meal, dayId }: { meal: MealDTO; dayId: string }) {
       setOptimisticIsEaten(!optimisticIsEaten);
     });
 
-    toggleIsEaten(meal.id).catch(() => {
+    toggleIsEaten(meal.id).then((jsend) => {
+      if (jsend.status === "success") return;
+
       showErrorToast(
-        'No se ha podido marcar la comida como "' +
-          (optimisticIsEaten ? "no comida" : "comida") +
-          '"',
+        jsend.data?.message ||
+          "Ha ocurrido un error al marcar la comida como comida. Por favor, intenta nuevamente.",
       );
     });
   }

@@ -1,14 +1,28 @@
 "use server";
 import { revalidatePath } from "next/cache";
 
-import { getCurrentUserId } from "../../_utils/auth/getCurrentUserId";
+import { JSENDResponse } from "@/app/_types/JSEND";
+
 import { AppToggleIsEatenUsecase } from "../../../interface-adapters/app/use-cases/meal";
+import { getCurrentUserId } from "../../_utils/auth/getCurrentUserId";
+import { handleActionErrors } from "../common/handleActionErrors";
 
-export async function toggleIsEaten(mealId: string): Promise<void> {
-  await AppToggleIsEatenUsecase.execute({
-    mealId,
-    userId: await getCurrentUserId(),
-  });
+export async function toggleIsEaten(
+  mealId: string,
+): Promise<JSENDResponse<void>> {
+  try {
+    await AppToggleIsEatenUsecase.execute({
+      mealId,
+      userId: await getCurrentUserId(),
+    });
 
-  revalidatePath("/app");
+    revalidatePath("/app");
+
+    return {
+      status: "success",
+      data: undefined,
+    };
+  } catch (error) {
+    return handleActionErrors(error as Error);
+  }
 }
