@@ -1,30 +1,42 @@
-'use server';
+"use server";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+
+import { JSENDResponse } from "@/app/_types/JSEND";
+
+import { RecipeDTO } from "../../../application-layer/dtos/RecipeDTO";
+import { CreateIngredientLineData } from "../../../application-layer/use-cases/recipe/common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo";
 import {
-  AppGetAllRecipesForUserUsecase,
-  AppGetRecipeByIdForUserUsecase,
   AppAddIngredientToRecipeUsecase,
   AppCreateRecipeUsecase,
   AppDeleteRecipeUsecase,
   AppDuplicateRecipeUsecase,
+  AppGetAllRecipesForUserUsecase,
+  AppGetRecipeByIdForUserUsecase,
   AppRemoveIngredientFromRecipeUsecase,
   AppUpdateRecipeImageUsecase,
   AppUpdateRecipeUsecase,
-} from '../../../interface-adapters/app/use-cases/recipe';
+} from "../../../interface-adapters/app/use-cases/recipe";
+import { getCurrentUserId } from "../../_utils/auth/getCurrentUserId";
+import { handleActionErrors } from "../common/handleActionErrors";
 
-import { CreateIngredientLineData } from '../../../application-layer/use-cases/recipe/common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
-import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
-import { RecipeDTO } from '../../../application-layer/dtos/RecipeDTO';
-import { getCurrentUserId } from '../../_utils/auth/getCurrentUserId';
+export async function getAllRecipesForLoggedInUser(): Promise<
+  JSENDResponse<RecipeDTO[]>
+> {
+  try {
+    const userId = await getCurrentUserId();
+    const recipes: RecipeDTO[] = await AppGetAllRecipesForUserUsecase.execute({
+      actorUserId: userId,
+      targetUserId: userId,
+    });
 
-export async function getAllRecipesForLoggedInUser() {
-  const userId = await getCurrentUserId();
-  const recipes: RecipeDTO[] = await AppGetAllRecipesForUserUsecase.execute({
-    actorUserId: userId,
-    targetUserId: userId,
-  });
-
-  return recipes;
+    return {
+      status: "success",
+      data: recipes,
+    };
+  } catch (error) {
+    return handleActionErrors(error as Error);
+  }
 }
 
 export async function getRecipeByIdForLoggedInUser(recipeId: string) {
@@ -71,7 +83,7 @@ export async function createRecipe({
     return;
   }
 
-  redirect('/app/recipes');
+  redirect("/app/recipes");
 }
 
 export async function deleteRecipe(recipeId: string) {
@@ -80,8 +92,8 @@ export async function deleteRecipe(recipeId: string) {
     id: recipeId,
   });
 
-  revalidatePath('/app/recipes');
-  redirect('/app/recipes/');
+  revalidatePath("/app/recipes");
+  redirect("/app/recipes/");
 }
 
 export async function removeIngredientFromRecipe(
@@ -105,7 +117,7 @@ export async function duplicateRecipe(recipeId: string, newName?: string) {
     ...(newName && { newName }),
   });
 
-  revalidatePath('/app/recipes');
+  revalidatePath("/app/recipes");
   redirect(`/app/recipes/${duplicatedRecipe.id}`);
 }
 
@@ -116,7 +128,7 @@ export async function renameRecipe(recipeId: string, newName: string) {
     name: newName,
   });
 
-  revalidatePath('/app/recipes');
+  revalidatePath("/app/recipes");
   revalidatePath(`/app/recipes/${updatedRecipe.id}`);
 }
 

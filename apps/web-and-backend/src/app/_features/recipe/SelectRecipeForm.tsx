@@ -34,7 +34,18 @@ function SelectRecipeForm({
       setIsFetching(true);
 
       try {
-        const recipes = await getAllRecipesForLoggedInUser();
+        const jsend = await getAllRecipesForLoggedInUser();
+
+        if (jsend.status !== "success") {
+          showErrorToast(
+            jsend.data?.message ||
+              "Error al cargar las recetas. Por favor, intenta de nuevo.",
+          );
+
+          return;
+        }
+
+        const recipes = jsend.data;
 
         setRecipes(recipes);
       } catch {

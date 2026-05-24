@@ -1,21 +1,33 @@
-import { getAllRecipesForLoggedInUser } from '../../_features/recipe/actions';
-import PageWrapper from '../../_ui/PageWrapper';
-import { RecipeDTO } from '../../../application-layer/dtos/RecipeDTO';
-import RecipesDisplay from './RecipesDisplay';
+import { JSENDResponse } from "@/app/_types/JSEND";
+import ErrorBox from "@/app/_ui/ErrorBox";
 
-export const dynamic = 'force-dynamic';
+import { RecipeDTO } from "../../../application-layer/dtos/RecipeDTO";
+import { getAllRecipesForLoggedInUser } from "../../_features/recipe/actions";
+import PageWrapper from "../../_ui/PageWrapper";
+import RecipesDisplay from "./RecipesDisplay";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: 'Recetas',
-  description: 'Todas tus recetas',
+  title: "Recetas",
+  description: "Todas tus recetas",
 };
 
 export default async function RecipesPage() {
-  const recipes: RecipeDTO[] = await getAllRecipesForLoggedInUser();
+  const recipesResponse: JSENDResponse<RecipeDTO[]> =
+    await getAllRecipesForLoggedInUser();
+
+  const hasError = recipesResponse.status !== "success";
 
   return (
     <PageWrapper className="max-w-5xl">
-      <RecipesDisplay recipes={recipes} />
+      {hasError && (
+        <ErrorBox>
+          {recipesResponse.data?.message ||
+            "Ha ocurrido un error al cargar tus recetas. Por favor, intenta nuevamente más tarde."}
+        </ErrorBox>
+      )}
+      {!hasError && <RecipesDisplay recipes={recipesResponse.data} />}
     </PageWrapper>
   );
 }
