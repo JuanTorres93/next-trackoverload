@@ -16,6 +16,7 @@ import EatenFakeMeal from "../_features/fakemeal/EatenFakeMeal";
 import EatenMealsNutritionTracker from "../_features/meal/EatenMealsNutritionTracker";
 import MealReminder from "../_features/meal/MealReminder";
 import WeightTracker from "../_features/weight/WeightTracker";
+import ErrorBox from "../_ui/ErrorBox";
 import GridAutoCols from "../_ui/GridAutoCols";
 import PageWrapper from "../_ui/PageWrapper";
 import ButtonPrimary from "../_ui/buttons/ButtonPrimary";
@@ -26,13 +27,27 @@ export default async function Dashboard() {
 
   const promises = [
     getAssembledDayById(todayId.value),
+
     getLastNumberOfDaysIncludingToday(90),
   ] as const;
-  const [assembledDayResult, daysHistory] = await Promise.all(promises);
+
+  const [assembledDayResultJSEND, daysHistory] = await Promise.all(promises);
+
+  const errorInAssembledDayResult =
+    assembledDayResultJSEND.status !== "success";
 
   return (
     <PageWrapper className="flex flex-col max-w-5xl gap-12">
-      <NutritionForToday assembledDayResult={assembledDayResult} />
+      {errorInAssembledDayResult && (
+        <ErrorBox>
+          {assembledDayResultJSEND.data?.message ||
+            "Error al cargar los datos de hoy."}
+        </ErrorBox>
+      )}
+
+      {!errorInAssembledDayResult && (
+        <NutritionForToday assembledDayResult={assembledDayResultJSEND.data} />
+      )}
 
       <WeightManagement daysHistory={daysHistory} />
     </PageWrapper>

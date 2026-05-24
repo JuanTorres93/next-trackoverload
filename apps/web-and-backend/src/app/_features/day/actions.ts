@@ -1,23 +1,28 @@
 "use server";
 import { revalidatePath } from "next/cache";
 
-import { getCurrentUserId } from "../../_utils/auth/getCurrentUserId";
+import { JSENDResponse } from "@/app/_types/JSEND";
+
 import { AssembledDayDTO } from "../../../application-layer/dtos/AssembledDayDTO";
 import { DayDTO } from "../../../application-layer/dtos/DayDTO";
 import { DayEntry } from "../../../application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase";
-import { AppAddMultipleMealsToDayUsecase } from "../../../interface-adapters/app/use-cases/day";
-import { AppAddMultipleMealsToMultipleDaysUsecase } from "../../../interface-adapters/app/use-cases/day";
-import { AppGetAssembledDayById } from "../../../interface-adapters/app/use-cases/day";
-import { AppGetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays } from "../../../interface-adapters/app/use-cases/day";
-import { AppGetMultipleAssembledDaysByIds } from "../../../interface-adapters/app/use-cases/day";
-import { AppRemoveMealFromDayUsecase } from "../../../interface-adapters/app/use-cases/day";
-import { AppReplaceFakeMealByAnotherFakeMealForUserInDayUsecase } from "../../../interface-adapters/app/use-cases/day";
-import { AppReplaceFakeMealByMealForUserInDayUsecase } from "../../../interface-adapters/app/use-cases/day";
-import { AppReplaceMealByAnotherMealForUserInDayUsecase } from "../../../interface-adapters/app/use-cases/day";
-import { AppReplaceMealByFakeMealForUserInDayUsecase } from "../../../interface-adapters/app/use-cases/day";
-import { AppUpdateUserWeightForDayUsecase } from "../../../interface-adapters/app/use-cases/day";
-import { AppGetLastDayWithCaloriesGoalForUserUsecase } from "../../../interface-adapters/app/use-cases/day";
-import { AppSetCaloriesGoalForDayAndUserUsecase } from "../../../interface-adapters/app/use-cases/day";
+import {
+  AppAddMultipleMealsToDayUsecase,
+  AppAddMultipleMealsToMultipleDaysUsecase,
+  AppGetAssembledDayById,
+  AppGetLastDayWithCaloriesGoalForUserUsecase,
+  AppGetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays,
+  AppGetMultipleAssembledDaysByIds,
+  AppRemoveMealFromDayUsecase,
+  AppReplaceFakeMealByAnotherFakeMealForUserInDayUsecase,
+  AppReplaceFakeMealByMealForUserInDayUsecase,
+  AppReplaceMealByAnotherMealForUserInDayUsecase,
+  AppReplaceMealByFakeMealForUserInDayUsecase,
+  AppSetCaloriesGoalForDayAndUserUsecase,
+  AppUpdateUserWeightForDayUsecase,
+} from "../../../interface-adapters/app/use-cases/day";
+import { getCurrentUserId } from "../../_utils/auth/getCurrentUserId";
+import { handleActionErrors } from "../common/handleActionErrors";
 
 export type AssembledDayResult = {
   dayId: string;
@@ -26,37 +31,49 @@ export type AssembledDayResult = {
 
 export async function getAssembledDayById(
   dayId: string,
-): Promise<AssembledDayResult> {
-  // TODO handle errors
-  const assembledDay = await AppGetAssembledDayById.execute({
-    dayId,
-    userId: await getCurrentUserId(),
-  });
+): Promise<JSENDResponse<AssembledDayResult>> {
+  try {
+    const assembledDay = await AppGetAssembledDayById.execute({
+      dayId,
+      userId: await getCurrentUserId(),
+    });
 
-  return {
-    dayId,
-    assembledDay,
-  };
+    return {
+      status: "success",
+      data: {
+        dayId,
+        assembledDay,
+      },
+    };
+  } catch (error) {
+    return handleActionErrors(error as Error);
+  }
 }
 
 export async function getAssembledDaysByIds(
   dayIds: string[],
-): Promise<AssembledDayResult[]> {
-  // TODO handle errors
-  const assembledDays = await AppGetMultipleAssembledDaysByIds.execute({
-    dayIds,
-    userId: await getCurrentUserId(),
-  });
+): Promise<JSENDResponse<AssembledDayResult[]>> {
+  try {
+    const assembledDays = await AppGetMultipleAssembledDaysByIds.execute({
+      dayIds,
+      userId: await getCurrentUserId(),
+    });
 
-  const assembledDaysMap = new Map<string, AssembledDayDTO>();
-  assembledDays.forEach((day) => assembledDaysMap.set(day.id, day));
+    const assembledDaysMap = new Map<string, AssembledDayDTO>();
+    assembledDays.forEach((day) => assembledDaysMap.set(day.id, day));
 
-  const assembledDaysResults: AssembledDayResult[] = dayIds.map((dayId) => ({
-    dayId,
-    assembledDay: assembledDaysMap.get(dayId) || null,
-  }));
+    const assembledDaysResults: AssembledDayResult[] = dayIds.map((dayId) => ({
+      dayId,
+      assembledDay: assembledDaysMap.get(dayId) || null,
+    }));
 
-  return assembledDaysResults;
+    return {
+      status: "success",
+      data: assembledDaysResults,
+    };
+  } catch (error) {
+    return handleActionErrors(error as Error);
+  }
 }
 
 export async function removeMealFromDay(

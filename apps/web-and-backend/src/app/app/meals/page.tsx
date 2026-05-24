@@ -1,17 +1,18 @@
-import { eachDayOfInterval, endOfWeek, startOfWeek } from 'date-fns';
+import { eachDayOfInterval, endOfWeek, startOfWeek } from "date-fns";
 
-import { DayId } from '../../../domain/value-objects/DayId/DayId';
+import ErrorBox from "@/app/_ui/ErrorBox";
 
-import { getAssembledDaysByIds } from '../../_features/day/actions';
-import { parseFilterValueToDate } from '../../_features/day/utils/parseFilterValueToDate';
-import PageWrapper from '../../_ui/PageWrapper';
-import MealsDisplay from './MealsDisplay';
+import { DayId } from "../../../domain/value-objects/DayId/DayId";
+import { getAssembledDaysByIds } from "../../_features/day/actions";
+import { parseFilterValueToDate } from "../../_features/day/utils/parseFilterValueToDate";
+import PageWrapper from "../../_ui/PageWrapper";
+import MealsDisplay from "./MealsDisplay";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: 'Comidas',
-  description: 'Planificación de comidas',
+  title: "Comidas",
+  description: "Planificación de comidas",
 };
 
 export default async function MealsPage({
@@ -43,11 +44,19 @@ export default async function MealsPage({
       }).value,
   );
 
-  const assembledDays = await getAssembledDaysByIds(dayIds);
+  const assembledDaysJSEND = await getAssembledDaysByIds(dayIds);
+
+  const hasError = assembledDaysJSEND.status !== "success";
 
   return (
     <PageWrapper>
-      <MealsDisplay assembledDays={assembledDays} />
+      {hasError && (
+        <ErrorBox>
+          {assembledDaysJSEND.data?.message ||
+            "Ocurrió un error al cargar las comidas. Por favor, intenta de nuevo."}
+        </ErrorBox>
+      )}
+      {!hasError && <MealsDisplay assembledDays={assembledDaysJSEND.data} />}
     </PageWrapper>
   );
 }
