@@ -36,12 +36,14 @@ export default async function SubscriptionPage({
     );
   }
 
-  const [user, planInfo] = await Promise.all([
+  const [user, planInfoJSEND] = await Promise.all([
     getLoggedInUser(),
     getPlanInfo(),
   ]);
 
-  if (!user) {
+  const hasErrorPlanInfo = planInfoJSEND.status !== "success";
+
+  if (!user || hasErrorPlanInfo) {
     return (
       <PageWrapper>
         {PageTitleComponent}
@@ -49,6 +51,8 @@ export default async function SubscriptionPage({
       </PageWrapper>
     );
   }
+
+  const planInfo = planInfoJSEND.data;
 
   return (
     <PageWrapper>

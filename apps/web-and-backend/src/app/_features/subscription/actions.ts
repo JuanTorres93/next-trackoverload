@@ -1,7 +1,20 @@
 "use server";
 
-import { AppGetPlanInfoUsecase } from "../../../interface-adapters/app/use-cases/subscription";
+import { JSENDResponse } from "@/app/_types/JSEND";
+import { PlanInfo } from "@/domain/services/PaymentsService.port";
 
-export async function getPlanInfo() {
-  return AppGetPlanInfoUsecase.execute();
+import { AppGetPlanInfoUsecase } from "../../../interface-adapters/app/use-cases/subscription";
+import { handleActionErrors } from "../common/handleActionErrors";
+
+export async function getPlanInfo(): Promise<JSENDResponse<PlanInfo>> {
+  try {
+    const planInfo = await AppGetPlanInfoUsecase.execute();
+
+    return {
+      status: "success",
+      data: planInfo,
+    };
+  } catch (error) {
+    return handleActionErrors(error as Error);
+  }
 }
