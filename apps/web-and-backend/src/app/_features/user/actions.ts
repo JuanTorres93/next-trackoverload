@@ -1,13 +1,28 @@
-'use server';
+"use server";
 
-import { AppGetUserByIdUsecase } from '../../../interface-adapters/app/use-cases/user';
-import { getCurrentUserId } from '../../_utils/auth/getCurrentUserId';
+import { JSENDResponse } from "@/app/_types/JSEND";
+import { UserDTO } from "@/application-layer/dtos/UserDTO";
 
-export async function getLoggedInUser() {
-  const userId = await getCurrentUserId();
+import { AppGetUserByIdUsecase } from "../../../interface-adapters/app/use-cases/user";
+import { getCurrentUserId } from "../../_utils/auth/getCurrentUserId";
+import { handleActionErrors } from "../common/handleActionErrors";
 
-  return AppGetUserByIdUsecase.execute({
-    actorUserId: userId,
-    targetUserId: userId,
-  });
+export async function getLoggedInUser(): Promise<
+  JSENDResponse<UserDTO | null>
+> {
+  try {
+    const userId = await getCurrentUserId();
+
+    const user = await AppGetUserByIdUsecase.execute({
+      actorUserId: userId,
+      targetUserId: userId,
+    });
+
+    return {
+      status: "success",
+      data: user,
+    };
+  } catch (error) {
+    return handleActionErrors(error as Error);
+  }
 }
