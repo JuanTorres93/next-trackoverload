@@ -131,12 +131,17 @@ function RecipeButtons({
     setIsDuplicatingRecipe(true);
 
     try {
-      await duplicateRecipe(recipe.id);
+      const jsend = await duplicateRecipe(recipe.id);
+
+      if (jsend.status !== "success") {
+        showErrorToast(
+          jsend.data?.message ||
+            "Error al duplicar la receta. Intenta nuevamente.",
+        );
+        return;
+      }
     } catch (error) {
       if (isNextRedirectError(error)) return;
-      showErrorToast(
-        "Error al duplicar la receta. Por favor, inténtalo de nuevo.",
-      );
     } finally {
       setIsDuplicatingRecipe(false);
       setIsLoading(false);
@@ -181,15 +186,14 @@ function IngredientsSection({
   isAddingIngredients: boolean;
 }) {
   async function handleRemoveIngredient(ingredientId: string) {
-    if (recipe.ingredientLines.length <= 1)
-      return showErrorToast(
-        "No se puede borrar, la receta debe tener al menos un ingrediente.",
-      );
+    const jsend = await removeIngredientFromRecipe(recipe.id, ingredientId);
 
-    try {
-      await removeIngredientFromRecipe(recipe.id, ingredientId);
-    } catch {
-      showErrorToast("Error al eliminar el ingrediente.");
+    if (jsend.status !== "success") {
+      showErrorToast(
+        jsend.data?.message ||
+          "Error al eliminar el ingrediente. Por favor, inténtalo de nuevo.",
+      );
+      return;
     }
   }
 
@@ -284,7 +288,7 @@ function AddIngredientModal({
         const externalRef = line.ingredientExternalRef;
         const ingredientLine = line.ingredientLine;
 
-        await addIngredientToRecipe(
+        const jsend = await addIngredientToRecipe(
           recipe.id,
           externalRef.externalId,
           externalRef.source,
@@ -294,11 +298,15 @@ function AddIngredientModal({
           ingredientLine.ingredient.imageUrl,
           ingredientLine.quantityInGrams,
         );
+
+        if (jsend.status !== "success") {
+          showErrorToast(
+            jsend.data?.message ||
+              `Error al añadir el ingrediente ${ingredientLine.ingredient.name}. Por favor, inténtalo de nuevo.`,
+          );
+          return;
+        }
       }
-    } catch {
-      showErrorToast(
-        "Error al añadir ingredientes. Por favor, inténtalo de nuevo.",
-      );
     } finally {
       setIsAddingIngredients(false);
       setIsLoading(false);

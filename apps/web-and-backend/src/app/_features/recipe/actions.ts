@@ -129,61 +129,106 @@ export async function deleteRecipe(
 export async function removeIngredientFromRecipe(
   recipeId: string,
   ingredientId: string,
-) {
-  await AppRemoveIngredientFromRecipeUsecase.execute({
-    recipeId,
-    userId: await getCurrentUserId(),
-    ingredientId,
-  });
+): Promise<JSENDResponse<void>> {
+  try {
+    await AppRemoveIngredientFromRecipeUsecase.execute({
+      recipeId,
+      userId: await getCurrentUserId(),
+      ingredientId,
+    });
 
-  revalidatePath(`/app/recipes`);
-  revalidatePath(`/app/recipes/${recipeId}`);
+    revalidatePath(`/app/recipes`);
+    revalidatePath(`/app/recipes/${recipeId}`);
+
+    return {
+      status: "success",
+      data: undefined,
+    };
+  } catch (error) {
+    return handleActionErrors(error as Error);
+  }
 }
 
-export async function duplicateRecipe(recipeId: string, newName?: string) {
-  const duplicatedRecipe = await AppDuplicateRecipeUsecase.execute({
-    userId: await getCurrentUserId(),
-    recipeId,
-    ...(newName && { newName }),
-  });
+export async function duplicateRecipe(
+  recipeId: string,
+  newName?: string,
+): Promise<JSENDResponse<void>> {
+  try {
+    const duplicatedRecipe = await AppDuplicateRecipeUsecase.execute({
+      userId: await getCurrentUserId(),
+      recipeId,
+      ...(newName && { newName }),
+    });
 
-  revalidatePath("/app/recipes");
-  redirect(`/app/recipes/${duplicatedRecipe.id}`);
+    revalidatePath("/app/recipes");
+    redirect(`/app/recipes/${duplicatedRecipe.id}`);
+  } catch (error) {
+    if (isNextRedirectError(error)) throw error;
+
+    return handleActionErrors(error as Error);
+  }
 }
 
-export async function renameRecipe(recipeId: string, newName: string) {
-  const updatedRecipe = await AppUpdateRecipeUsecase.execute({
-    userId: await getCurrentUserId(),
-    id: recipeId,
-    name: newName,
-  });
+export async function renameRecipe(
+  recipeId: string,
+  newName: string,
+): Promise<JSENDResponse<void>> {
+  try {
+    const updatedRecipe = await AppUpdateRecipeUsecase.execute({
+      userId: await getCurrentUserId(),
+      id: recipeId,
+      name: newName,
+    });
 
-  revalidatePath("/app/recipes");
-  revalidatePath(`/app/recipes/${updatedRecipe.id}`);
+    revalidatePath("/app/recipes");
+    revalidatePath(`/app/recipes/${updatedRecipe.id}`);
+
+    return {
+      status: "success",
+      data: undefined,
+    };
+  } catch (error) {
+    return handleActionErrors(error as Error);
+  }
 }
 
 export async function updateRecipeImage(
   recipeId: string,
   imageFile: File | null,
-) {
-  if (!imageFile) return;
-  if (imageFile.size <= 0) return;
+): Promise<JSENDResponse<void>> {
+  if (!imageFile || imageFile.size <= 0)
+    return {
+      status: "fail",
+      data: {
+        message:
+          "No se ha proporcionado una imagen válida. Por favor, selecciona una imagen para subir.",
+      },
+    };
 
   const promises = [imageFile.arrayBuffer(), getCurrentUserId()] as const;
 
-  const [arrayBuffer, userId] = await Promise.all(promises);
+  try {
+    const [arrayBuffer, userId] = await Promise.all(promises);
 
-  const imageBuffer: Buffer = Buffer.from(arrayBuffer);
+    const imageBuffer: Buffer = Buffer.from(arrayBuffer);
 
-  await AppUpdateRecipeImageUsecase.execute({
-    userId,
-    recipeId,
-    imageData: imageBuffer,
-  });
+    await AppUpdateRecipeImageUsecase.execute({
+      userId,
+      recipeId,
+      imageData: imageBuffer,
+    });
 
-  revalidatePath(`/app`);
-  revalidatePath(`/app/recipes`);
-  revalidatePath(`/app/recipes/${recipeId}`);
+    revalidatePath(`/app`);
+    revalidatePath(`/app/recipes`);
+    revalidatePath(`/app/recipes/${recipeId}`);
+
+    return {
+      status: "success",
+      data: undefined,
+    };
+  } catch (error) {
+    return handleActionErrors(error as Error);
+  }
 }
 
 export async function addIngredientToRecipe(
@@ -195,18 +240,27 @@ export async function addIngredientToRecipe(
   proteinPer100g: number,
   imageUrl: string | undefined,
   quantityInGrams: number,
-) {
-  await AppAddIngredientToRecipeUsecase.execute({
-    userId: await getCurrentUserId(),
-    recipeId,
-    externalIngredientId: externalIngredientId,
-    source: source,
-    name: name,
-    caloriesPer100g: caloriesPer100g,
-    proteinPer100g: proteinPer100g,
-    imageUrl: imageUrl,
-    quantityInGrams,
-  });
+): Promise<JSENDResponse<void>> {
+  try {
+    await AppAddIngredientToRecipeUsecase.execute({
+      userId: await getCurrentUserId(),
+      recipeId,
+      externalIngredientId: externalIngredientId,
+      source: source,
+      name: name,
+      caloriesPer100g: caloriesPer100g,
+      proteinPer100g: proteinPer100g,
+      imageUrl: imageUrl,
+      quantityInGrams,
+    });
 
-  revalidatePath(`/app/recipes/${recipeId}`);
+    revalidatePath(`/app/recipes/${recipeId}`);
+
+    return {
+      status: "success",
+      data: undefined,
+    };
+  } catch (error) {
+    return handleActionErrors(error as Error);
+  }
 }

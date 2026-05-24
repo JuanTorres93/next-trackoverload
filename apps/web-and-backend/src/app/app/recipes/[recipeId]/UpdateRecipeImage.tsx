@@ -5,11 +5,11 @@ import { useRef, useState } from "react";
 
 import { HiCamera } from "react-icons/hi";
 
+import { RecipeDTO } from "../../../../application-layer/dtos/RecipeDTO";
+import { AppClientImageProcessor } from "../../../../interface-adapters/app/services/AppClientImageProcessor";
 import LoadingOverlay from "../../../_features/common/LoadingOverlay";
 import { updateRecipeImage } from "../../../_features/recipe/actions";
 import { showErrorToast } from "../../../_ui/showErrorToast";
-import { RecipeDTO } from "../../../../application-layer/dtos/RecipeDTO";
-import { AppClientImageProcessor } from "../../../../interface-adapters/app/services/AppClientImageProcessor";
 
 function UpdateRecipeImage({ recipe }: { recipe: RecipeDTO }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -22,11 +22,15 @@ function UpdateRecipeImage({ recipe }: { recipe: RecipeDTO }) {
       const compressed =
         await AppClientImageProcessor.compressToMaxMB(imageFile);
 
-      await updateRecipeImage(recipe.id, compressed);
-    } catch {
-      showErrorToast(
-        "Error al subir la imagen. Por favor, inténtalo de nuevo.",
-      );
+      const jsend = await updateRecipeImage(recipe.id, compressed);
+
+      if (jsend.status !== "success") {
+        showErrorToast(
+          jsend.data?.message ||
+            "Error al actualizar la imagen. Por favor, inténtalo de nuevo.",
+        );
+        return;
+      }
     } finally {
       setIsLoading(false);
     }
