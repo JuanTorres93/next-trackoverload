@@ -1,9 +1,10 @@
 import { useState } from "react";
 
+import { showErrorToast } from "@/app/_ui/showErrorToast";
+
+import { FakeMealDTO } from "../../../application-layer/dtos/FakeMealDTO";
 import ButtonX from "../../_ui/buttons/ButtonX";
 import { formatToInteger } from "../../_utils/format/formatToInteger";
-import { FakeMealDTO } from "../../../application-layer/dtos/FakeMealDTO";
-
 import LoadingOverlay from "../common/LoadingOverlay";
 import { removeFakeMealFromDay } from "./actions";
 
@@ -21,7 +22,14 @@ function FakeMeal({
   async function handleRemoveFakeMeal() {
     setIsLoading(true);
     try {
-      await removeFakeMealFromDay(dayId, fakeMeal.id);
+      const jsend = await removeFakeMealFromDay(dayId, fakeMeal.id);
+      if (jsend.status !== "success") {
+        showErrorToast(
+          jsend.data?.message ||
+            "Error al eliminar la comida. Por favor, inténtalo de nuevo.",
+        );
+        return;
+      }
     } finally {
       setIsLoading(false);
     }

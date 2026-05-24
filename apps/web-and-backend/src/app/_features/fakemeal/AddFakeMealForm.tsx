@@ -90,7 +90,20 @@ function AddFakeMealForm({
           return;
         }
       } else {
-        await addFakeMealToDay(dayId!, formState.name, calories, protein);
+        const jsend = await addFakeMealToDay(
+          dayId!,
+          formState.name,
+          calories,
+          protein,
+        );
+
+        if (jsend.status !== "success") {
+          showErrorToast(
+            jsend.data?.message ||
+              "Error al añadir la comida. Por favor, inténtalo de nuevo.",
+          );
+          return;
+        }
       }
 
       resetForm();
