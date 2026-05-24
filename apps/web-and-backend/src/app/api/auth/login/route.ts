@@ -1,10 +1,11 @@
-import { AppAuthService } from '../../../../interface-adapters/app/services/AppAuthService';
-import { AppLoginUsecase } from '../../../../interface-adapters/app/use-cases/auth/Login/login';
-import { JSENDResponse } from '../../../_types/JSEND';
-import type { NextRequest } from 'next/server';
-import { NextResponse } from 'next/server';
-import { cookieSessionName, cookieSessionMaxAgeInSeconds } from '../cookie';
-import { AuthError } from '../../../../domain/common/errors';
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
+
+import { AppAuthService } from "../../../../interface-adapters/app/services/AppAuthService";
+import { AppLoginUsecase } from "../../../../interface-adapters/app/use-cases/auth/Login/login";
+import { JSENDResponse } from "../../../_types/JSEND";
+import { handleKnownErrors } from "../../_common/handleKnownErrors";
+import { cookieSessionMaxAgeInSeconds, cookieSessionName } from "../cookie";
 
 export async function POST(
   _req: NextRequest,
@@ -22,46 +23,23 @@ export async function POST(
 
     const response = NextResponse.json(
       {
-        status: 'success' as const,
-        data: 'User logged in successfully',
+        status: "success" as const,
+        data: "User logged in successfully",
       },
       { status: 200 },
     );
 
     response.cookies.set(cookieSessionName, token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
       maxAge: cookieSessionMaxAgeInSeconds,
     });
 
     return response;
   } catch (error) {
-    console.error('app/api/auth/login: Error logging in user:', error);
+    console.error("app/api/auth/login: Error logging in user:", error);
 
-    return handleErrors(error as Error);
+    return handleKnownErrors(error as Error);
   }
-}
-
-function handleErrors(error: Error): NextResponse<JSENDResponse<string>> {
-  if (error instanceof AuthError) {
-    return NextResponse.json(
-      {
-        status: 'fail' as const,
-        data: {
-          authError: 'Email o contraseña incorrectos.',
-        },
-      },
-      { status: 422 },
-    );
-  }
-
-  // Unhandled errors
-  return NextResponse.json(
-    {
-      status: 'error' as const,
-      message: 'Error al crear el usuario.',
-    },
-    { status: 500 },
-  );
 }

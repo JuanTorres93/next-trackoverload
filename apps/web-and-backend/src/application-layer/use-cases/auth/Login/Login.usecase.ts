@@ -1,8 +1,8 @@
-import { UserDTO, toUserDTO } from '../../../dtos/UserDTO';
-import { AuthError } from '../../../../domain/common/errors';
-import { UsersRepo } from '../../../../domain/repos/UsersRepo.port';
-import { PasswordEncryptorService } from '../../../../domain/services/PasswordEncryptorService.port';
-import { Email } from '../../../../domain/value-objects/Email/Email';
+import { AuthError } from "../../../../domain/common/errors";
+import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
+import { PasswordEncryptorService } from "../../../../domain/services/PasswordEncryptorService.port";
+import { Email } from "../../../../domain/value-objects/Email/Email";
+import { UserDTO, toUserDTO } from "../../../dtos/UserDTO";
 
 export type LoginUsecaseRequest = {
   email: string;
@@ -22,7 +22,8 @@ export class LoginUsecase {
     const user = await this.usersRepo.getUserByEmail(email);
     // Use the same generic error for both "not found" and
     // "wrong password" cases to avoid user enumeration attacks
-    const errorMessage = 'LoginUsecase: Invalid credentials';
+    const errorMessage =
+      "Credenciales inválidas. Verifica tu email y contraseña.";
 
     if (!user) {
       throw new AuthError(errorMessage);

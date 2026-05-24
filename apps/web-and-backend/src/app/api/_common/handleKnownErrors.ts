@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 
-import { JSENDFailure } from "../../_types/JSEND";
 import {
   AlreadyExistsError,
   DomainError,
@@ -9,6 +8,7 @@ import {
   ValidationError,
   isDomainError,
 } from "../../../domain/common/errors";
+import { JSENDFailure } from "../../_types/JSEND";
 
 export function handleKnownErrors(error: Error): NextResponse<JSENDFailure> {
   const jsend: JSENDFailure = {
@@ -16,7 +16,8 @@ export function handleKnownErrors(error: Error): NextResponse<JSENDFailure> {
     data: {},
   };
   let statusCode = 500;
-  let errorMessage = "An unexpected error occurred";
+  let errorMessage =
+    "Ha ocurrido un error inesperado. Por favor, intenta nuevamente más tarde.";
 
   if (process.env.NODE_ENV !== "test") console.error("Domain error:", error);
 
