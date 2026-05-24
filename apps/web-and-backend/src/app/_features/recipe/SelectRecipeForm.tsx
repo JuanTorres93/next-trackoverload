@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 
 import { HiMagnifyingGlass } from "react-icons/hi2";
 
+import { JSENDResponse } from "@/app/_types/JSEND";
+
+import { RecipeDTO } from "../../../application-layer/dtos/RecipeDTO";
 import SearchInput from "../../_ui/SearchInput";
 import ButtonNew from "../../_ui/buttons/ButtonNew";
 import { showErrorToast } from "../../_ui/showErrorToast";
-import { RecipeDTO } from "../../../application-layer/dtos/RecipeDTO";
-
 import RecipesGrid from "./RecipesGrid";
 import { getAllRecipesForLoggedInUser } from "./actions";
 import { useRecipeSearch } from "./useRecipeSearch";
@@ -15,7 +16,7 @@ function SelectRecipeForm({
   addMealsRequest,
   onSuccess,
 }: {
-  addMealsRequest: (recipesIds: string[]) => Promise<void>;
+  addMealsRequest: (recipesIds: string[]) => Promise<JSENDResponse<void>>;
   onSuccess?: () => void;
 }) {
   const [recipes, setRecipes] = useState<RecipeDTO[]>([]);
@@ -50,11 +51,18 @@ function SelectRecipeForm({
     setIsAddingMeals(true);
 
     try {
-      await addMealsRequest(selectedRecipesIds);
+      const jsend = await addMealsRequest(selectedRecipesIds);
+
+      if (jsend.status !== "success") {
+        showErrorToast(
+          jsend.data?.message ||
+            "Error al añadir las comidas. Por favor, intenta de nuevo.",
+        );
+
+        return;
+      }
 
       onSuccess?.();
-    } catch {
-      showErrorToast("Error al añadir las comidas.");
     } finally {
       setIsAddingMeals(false);
     }

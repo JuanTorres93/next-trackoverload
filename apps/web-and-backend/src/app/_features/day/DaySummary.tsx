@@ -5,11 +5,12 @@ import { es } from "date-fns/locale";
 import { HiLightningBolt } from "react-icons/hi";
 import { HiPlus } from "react-icons/hi2";
 
-import Modal from "../../_ui/Modal";
-import { formatToInteger } from "../../_utils/format/formatToInteger";
+import { JSENDResponse } from "@/app/_types/JSEND";
+
 import { AssembledDayDTO } from "../../../application-layer/dtos/AssembledDayDTO";
 import { dayIdToDayMonthYear } from "../../../domain/value-objects/DayId/DayId";
-
+import Modal from "../../_ui/Modal";
+import { formatToInteger } from "../../_utils/format/formatToInteger";
 import AddFakeMealModal from "../fakemeal/AddFakeMealModal";
 import FakeMeal from "../fakemeal/FakeMeal";
 import MealLine from "../meal/MealLine";
@@ -29,8 +30,10 @@ function DaySummary({
 }) {
   const { isToday, isPast } = getAssembledDayInfo(assembledDay);
 
-  async function addMealsRequest(recipesIds: string[]) {
-    await addMealsToDay(dayId, recipesIds);
+  async function addMealsRequest(
+    recipesIds: string[],
+  ): Promise<JSENDResponse<void>> {
+    return await addMealsToDay(dayId, recipesIds);
   }
 
   return (

@@ -3,10 +3,11 @@ import Image from "next/image";
 
 import { useState } from "react";
 
+import { showErrorToast } from "@/app/_ui/showErrorToast";
+
+import { MealDTO } from "../../../application-layer/dtos/MealDTO";
 import ButtonX from "../../_ui/buttons/ButtonX";
 import { formatToInteger } from "../../_utils/format/formatToInteger";
-import { MealDTO } from "../../../application-layer/dtos/MealDTO";
-
 import LoadingOverlay from "../common/LoadingOverlay";
 import { removeMealFromDay } from "../day/actions";
 
@@ -25,7 +26,13 @@ function MealLine({
     if (!dayId) return;
     setIsLoading(true);
     try {
-      await removeMealFromDay(dayId, meal.id);
+      const jsend = await removeMealFromDay(dayId, meal.id);
+
+      if (jsend.status !== "success")
+        showErrorToast(
+          jsend.data?.message ||
+            "Error al eliminar la comida. Por favor, intenta de nuevo.",
+        );
     } finally {
       setIsLoading(false);
     }

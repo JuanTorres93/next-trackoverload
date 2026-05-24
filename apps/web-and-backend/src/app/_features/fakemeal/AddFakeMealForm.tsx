@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import { HiLockClosed } from "react-icons/hi";
 
+import { IngredientFinderResult } from "../../../domain/services/IngredientFinder.port";
 import { useFormSetup } from "../../_hooks/useFormSetup";
 import { JSENDResponse } from "../../_types/JSEND";
 import Input from "../../_ui/Input";
@@ -14,8 +15,6 @@ import ButtonNew from "../../_ui/buttons/ButtonNew";
 import FormEntry from "../../_ui/form/FormEntry";
 import { showErrorToast } from "../../_ui/showErrorToast";
 import TextSmall from "../../_ui/typography/TextSmall";
-import { IngredientFinderResult } from "../../../domain/services/IngredientFinder.port";
-
 import BarcodeScanner from "../ingredient/ZXingBarcodeScanner";
 import { addFakeMealToDay } from "./actions";
 
@@ -45,7 +44,7 @@ function AddFakeMealForm({
     name: string,
     calories: number,
     protein: number,
-  ) => Promise<void>;
+  ) => Promise<JSENDResponse<void>>;
   submitLabel?: string;
 }) {
   const router = useRouter();
@@ -81,7 +80,15 @@ function AddFakeMealForm({
       const protein = Number(formState.protein);
 
       if (submitAction) {
-        await submitAction(formState.name, calories, protein);
+        const jsend = await submitAction(formState.name, calories, protein);
+
+        if (jsend.status !== "success") {
+          showErrorToast(
+            jsend.data?.message ||
+              "Error al añadir la comida. Por favor, inténtalo de nuevo.",
+          );
+          return;
+        }
       } else {
         await addFakeMealToDay(dayId!, formState.name, calories, protein);
       }

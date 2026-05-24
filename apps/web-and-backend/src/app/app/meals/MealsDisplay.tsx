@@ -7,6 +7,12 @@ import { es } from "date-fns/locale";
 import { HiCheck, HiX } from "react-icons/hi";
 import { HiPlus } from "react-icons/hi2";
 
+import { JSENDResponse } from "@/app/_types/JSEND";
+
+import {
+  dateToDayId,
+  dayIdToDayMonthYear,
+} from "../../../domain/value-objects/DayId/DayId";
 import DaySummary from "../../_features/day/DaySummary";
 import WeekSelector from "../../_features/day/WeekSelector";
 import {
@@ -17,10 +23,6 @@ import SelectRecipeModal from "../../_features/recipe/SelectRecipeModal";
 import useSwipe from "../../_hooks/useSwipe";
 import GridAutoCols from "../../_ui/GridAutoCols";
 import Modal from "../../_ui/Modal";
-import {
-  dateToDayId,
-  dayIdToDayMonthYear,
-} from "../../../domain/value-objects/DayId/DayId";
 
 function MealsDisplay({
   assembledDays,
@@ -49,9 +51,13 @@ function MealsDisplay({
     );
   }
 
-  async function addMealsRequest(recipesIds: string[]) {
-    await addMealsToMultipleDays(selectedDaysIds, recipesIds);
+  async function addMealsRequest(
+    recipesIds: string[],
+  ): Promise<JSENDResponse<void>> {
+    const response = await addMealsToMultipleDays(selectedDaysIds, recipesIds);
     setSelectedDaysIds([]);
+
+    return response;
   }
 
   return (

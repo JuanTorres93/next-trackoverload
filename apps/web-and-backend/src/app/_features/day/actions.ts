@@ -2,6 +2,7 @@
 import { revalidatePath } from "next/cache";
 
 import { JSENDResponse } from "@/app/_types/JSEND";
+import { ValidationError } from "@/domain/common/errors";
 
 import { AssembledDayDTO } from "../../../application-layer/dtos/AssembledDayDTO";
 import { DayDTO } from "../../../application-layer/dtos/DayDTO";
@@ -79,47 +80,74 @@ export async function getAssembledDaysByIds(
 export async function removeMealFromDay(
   dayId: string,
   mealId: string,
-): Promise<void> {
-  await AppRemoveMealFromDayUsecase.execute({
-    dayId: dayId,
-    userId: await getCurrentUserId(),
-    mealId,
-  });
+): Promise<JSENDResponse<void>> {
+  try {
+    await AppRemoveMealFromDayUsecase.execute({
+      dayId: dayId,
+      userId: await getCurrentUserId(),
+      mealId,
+    });
 
-  revalidatePath(`/app`);
-  revalidatePath(`/app/meals`);
+    revalidatePath(`/app`);
+    revalidatePath(`/app/meals`);
+
+    return {
+      status: "success",
+      data: undefined,
+    };
+  } catch (error) {
+    return handleActionErrors(error as Error);
+  }
 }
 
 export async function replaceFakeMealByMealForUserInDay(
   fakeMealIdToReplace: string,
   recipeId: string,
   dayId: string,
-): Promise<void> {
-  await AppReplaceFakeMealByMealForUserInDayUsecase.execute({
-    dayId,
-    userId: await getCurrentUserId(),
-    fakeMealIdToReplace,
-    recipeId,
-  });
+): Promise<JSENDResponse<void>> {
+  try {
+    await AppReplaceFakeMealByMealForUserInDayUsecase.execute({
+      dayId,
+      userId: await getCurrentUserId(),
+      fakeMealIdToReplace,
+      recipeId,
+    });
 
-  revalidatePath(`/app`);
-  revalidatePath(`/app/meals`);
+    revalidatePath(`/app`);
+    revalidatePath(`/app/meals`);
+
+    return {
+      status: "success",
+      data: undefined,
+    };
+  } catch (error) {
+    return handleActionErrors(error as Error);
+  }
 }
 
 export async function replaceMealByAnotherMealForUserInDay(
   mealToReplaceId: string,
   recipeId: string,
   dayId: string,
-): Promise<void> {
-  await AppReplaceMealByAnotherMealForUserInDayUsecase.execute({
-    dayId,
-    userId: await getCurrentUserId(),
-    mealToReplaceId,
-    recipeId,
-  });
+): Promise<JSENDResponse<void>> {
+  try {
+    await AppReplaceMealByAnotherMealForUserInDayUsecase.execute({
+      dayId,
+      userId: await getCurrentUserId(),
+      mealToReplaceId,
+      recipeId,
+    });
 
-  revalidatePath(`/app`);
-  revalidatePath(`/app/meals`);
+    revalidatePath(`/app`);
+    revalidatePath(`/app/meals`);
+
+    return {
+      status: "success",
+      data: undefined,
+    };
+  } catch (error) {
+    return handleActionErrors(error as Error);
+  }
 }
 
 export async function replaceMealByFakeMealForUserInDay(
@@ -128,18 +156,27 @@ export async function replaceMealByFakeMealForUserInDay(
   calories: number,
   protein: number,
   dayId: string,
-): Promise<void> {
-  await AppReplaceMealByFakeMealForUserInDayUsecase.execute({
-    dayId,
-    userId: await getCurrentUserId(),
-    mealIdToReplace,
-    name,
-    calories,
-    protein,
-  });
+): Promise<JSENDResponse<void>> {
+  try {
+    await AppReplaceMealByFakeMealForUserInDayUsecase.execute({
+      dayId,
+      userId: await getCurrentUserId(),
+      mealIdToReplace,
+      name,
+      calories,
+      protein,
+    });
 
-  revalidatePath(`/app`);
-  revalidatePath(`/app/meals`);
+    revalidatePath(`/app`);
+    revalidatePath(`/app/meals`);
+
+    return {
+      status: "success",
+      data: undefined,
+    };
+  } catch (error) {
+    return handleActionErrors(error as Error);
+  }
 }
 
 export async function replaceFakeMealByAnotherFakeMealForUserInDay(
@@ -148,18 +185,27 @@ export async function replaceFakeMealByAnotherFakeMealForUserInDay(
   calories: number,
   protein: number,
   dayId: string,
-): Promise<void> {
-  await AppReplaceFakeMealByAnotherFakeMealForUserInDayUsecase.execute({
-    dayId,
-    userId: await getCurrentUserId(),
-    fakeMealIdToReplace,
-    name,
-    calories,
-    protein,
-  });
+): Promise<JSENDResponse<void>> {
+  try {
+    await AppReplaceFakeMealByAnotherFakeMealForUserInDayUsecase.execute({
+      dayId,
+      userId: await getCurrentUserId(),
+      fakeMealIdToReplace,
+      name,
+      calories,
+      protein,
+    });
 
-  revalidatePath(`/app`);
-  revalidatePath(`/app/meals`);
+    revalidatePath(`/app`);
+    revalidatePath(`/app/meals`);
+
+    return {
+      status: "success",
+      data: undefined,
+    };
+  } catch (error) {
+    return handleActionErrors(error as Error);
+  }
 }
 
 export async function updateUserWeightForDay(
@@ -189,29 +235,47 @@ export async function getLastNumberOfDaysIncludingToday(
 export async function addMealsToDay(
   dayId: string,
   recipeIds: string[],
-): Promise<void> {
-  await AppAddMultipleMealsToDayUsecase.execute({
-    dayId,
-    recipeIds,
-    userId: await getCurrentUserId(),
-  });
+): Promise<JSENDResponse<void>> {
+  try {
+    await AppAddMultipleMealsToDayUsecase.execute({
+      dayId,
+      recipeIds,
+      userId: await getCurrentUserId(),
+    });
 
-  revalidatePath(`/app`);
-  revalidatePath(`/app/meals`);
+    revalidatePath(`/app`);
+    revalidatePath(`/app/meals`);
+
+    return {
+      status: "success",
+      data: undefined,
+    };
+  } catch (error) {
+    return handleActionErrors(error as Error);
+  }
 }
 
 export async function addMealsToMultipleDays(
   dayIds: string[],
   recipeIds: string[],
-): Promise<void> {
-  await AppAddMultipleMealsToMultipleDaysUsecase.execute({
-    dayIds,
-    recipeIds,
-    userId: await getCurrentUserId(),
-  });
+): Promise<JSENDResponse<void>> {
+  try {
+    await AppAddMultipleMealsToMultipleDaysUsecase.execute({
+      dayIds,
+      recipeIds,
+      userId: await getCurrentUserId(),
+    });
 
-  revalidatePath(`/app`);
-  revalidatePath(`/app/meals`);
+    revalidatePath(`/app`);
+    revalidatePath(`/app/meals`);
+
+    return {
+      status: "success",
+      data: undefined,
+    };
+  } catch (error) {
+    return handleActionErrors(error as Error);
+  }
 }
 
 export async function getLastDayWithCaloriesGoalForUser(): Promise<DayDTO | null> {
