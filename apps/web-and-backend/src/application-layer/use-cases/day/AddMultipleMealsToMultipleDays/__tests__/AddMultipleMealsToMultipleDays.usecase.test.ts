@@ -214,9 +214,7 @@ describe("AddMultipleMealsToMultipleDaysUsecase", () => {
       };
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
-      await expect(usecase.execute(request)).rejects.toThrow(
-        /AddMultipleMealsToMultipleDaysUsecase.*user.*not.*found/,
-      );
+      await expect(usecase.execute(request)).rejects.toThrow(/.*us.*no.*exist/);
     });
 
     it("should throw NotFoundError if any recipe does not exist", async () => {
@@ -227,9 +225,7 @@ describe("AddMultipleMealsToMultipleDaysUsecase", () => {
       };
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
-      await expect(usecase.execute(request)).rejects.toThrow(
-        /AddMultipleMealsToMultipleDaysUsecase.*Recipe.*not.*found/,
-      );
+      await expect(usecase.execute(request)).rejects.toThrow(/no.*rec.*/i);
     });
 
     it("should not create any meals if one recipe is missing", async () => {
@@ -265,7 +261,7 @@ describe("AddMultipleMealsToMultipleDaysUsecase", () => {
           userId: userTestProps.userId,
           recipeIds: [recipe1.id],
         }),
-      ).rejects.toThrow(/cannot process more than.*days/i);
+      ).rejects.toThrow(/sele.*m.*d.*s/i);
     });
 
     it(`should allow exactly ${AddMultipleMealsToMultipleDaysUsecase.MAX_DAYS} days`, async () => {

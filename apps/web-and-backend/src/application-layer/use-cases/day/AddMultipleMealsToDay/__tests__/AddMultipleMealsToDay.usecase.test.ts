@@ -189,7 +189,7 @@ describe("AddMultipleMealsToDayUsecase", () => {
 
       await expect(
         addMultipleMealsToDayUsecase.execute(request),
-      ).rejects.toThrow(/AddMultipleMealsToDayUsecase.*user.*not.*found/);
+      ).rejects.toThrow(/.*no.*exist/);
     });
 
     it("should throw error if any recipe does not exist", async () => {
@@ -205,7 +205,7 @@ describe("AddMultipleMealsToDayUsecase", () => {
 
       await expect(
         addMultipleMealsToDayUsecase.execute(request),
-      ).rejects.toThrow(/AddMultipleMealsToDayUsecase.*Recipe.*not.*found/);
+      ).rejects.toThrow(/rec.*no.*exist/);
     });
 
     it("should not create any meals if one recipe is missing", async () => {

@@ -125,7 +125,7 @@ describe("AddFakeMealToDayUsecase", () => {
       );
 
       await expect(addFakeMealToDayUsecase.execute(request)).rejects.toThrow(
-        /AddFakeMealToDay.*User.*not.*found/,
+        /no.*exis/,
       );
     });
   });

@@ -1,14 +1,16 @@
-import { DayDTO, toDayDTO } from '../../../dtos/DayDTO';
-import { NotFoundError } from '../../../../domain/common/errors';
-import { FakeMeal } from '../../../../domain/entities/fakemeal/FakeMeal';
-import { DaysRepo } from '../../../../domain/repos/DaysRepo.port';
-import { FakeMealsRepo } from '../../../../domain/repos/FakeMealsRepo.port';
-import { UsersRepo } from '../../../../domain/repos/UsersRepo.port';
-import { IdGenerator } from '../../../../domain/services/IdGenerator.port';
-import { TransactionContext } from '../../../ports/TransactionContext.port';
-import { Day } from '../../../../domain/entities/day/Day';
-import { dayIdToDayMonthYear } from '../../../../domain/value-objects/DayId/DayId';
-import { createDayNoSaveInRepo } from '../common/createDayNoSaveInRepo';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { NotFoundError } from "../../../../domain/common/errors";
+import { Day } from "../../../../domain/entities/day/Day";
+import { FakeMeal } from "../../../../domain/entities/fakemeal/FakeMeal";
+import { DaysRepo } from "../../../../domain/repos/DaysRepo.port";
+import { FakeMealsRepo } from "../../../../domain/repos/FakeMealsRepo.port";
+import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
+import { IdGenerator } from "../../../../domain/services/IdGenerator.port";
+import { dayIdToDayMonthYear } from "../../../../domain/value-objects/DayId/DayId";
+import { DayDTO, toDayDTO } from "../../../dtos/DayDTO";
+import { TransactionContext } from "../../../ports/TransactionContext.port";
+import { createDayNoSaveInRepo } from "../common/createDayNoSaveInRepo";
 
 export type AddFakeMealToDayUsecaseRequest = {
   dayId: string;
@@ -35,9 +37,11 @@ export class AddFakeMealToDayUsecase {
     ]);
 
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `AddFakeMealToDayUsecase: User with id ${request.userId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     let dayToAddFakeMeal: Day | null = existingDay;

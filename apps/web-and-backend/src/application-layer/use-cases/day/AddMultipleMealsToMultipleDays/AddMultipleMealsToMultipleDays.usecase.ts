@@ -1,16 +1,21 @@
-import { DayDTO, toDayDTO } from '../../../dtos/DayDTO';
-import { TransactionContext } from '../../../ports/TransactionContext.port';
-import { NotFoundError, ValidationError } from '../../../../domain/common/errors';
-import { Day } from '../../../../domain/entities/day/Day';
-import { Recipe } from '../../../../domain/entities/recipe/Recipe';
-import { DaysRepo } from '../../../../domain/repos/DaysRepo.port';
-import { MealsRepo } from '../../../../domain/repos/MealsRepo.port';
-import { RecipesRepo } from '../../../../domain/repos/RecipesRepo.port';
-import { UsersRepo } from '../../../../domain/repos/UsersRepo.port';
-import { IdGenerator } from '../../../../domain/services/IdGenerator.port';
-import { dayIdToDayMonthYear } from '../../../../domain/value-objects/DayId/DayId';
-import { createDayNoSaveInRepo } from '../common/createDayNoSaveInRepo';
-import { createMealsFromRecipes } from '../common/createMealsFromRecipes';
+import { logNoTest } from "@/utils/logNoTest";
+
+import {
+  NotFoundError,
+  ValidationError,
+} from "../../../../domain/common/errors";
+import { Day } from "../../../../domain/entities/day/Day";
+import { Recipe } from "../../../../domain/entities/recipe/Recipe";
+import { DaysRepo } from "../../../../domain/repos/DaysRepo.port";
+import { MealsRepo } from "../../../../domain/repos/MealsRepo.port";
+import { RecipesRepo } from "../../../../domain/repos/RecipesRepo.port";
+import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
+import { IdGenerator } from "../../../../domain/services/IdGenerator.port";
+import { dayIdToDayMonthYear } from "../../../../domain/value-objects/DayId/DayId";
+import { DayDTO, toDayDTO } from "../../../dtos/DayDTO";
+import { TransactionContext } from "../../../ports/TransactionContext.port";
+import { createDayNoSaveInRepo } from "../common/createDayNoSaveInRepo";
+import { createMealsFromRecipes } from "../common/createMealsFromRecipes";
 
 export type AddMultipleMealsToMultipleDaysUsecaseRequest = {
   dayIds: string[];
@@ -35,8 +40,12 @@ export class AddMultipleMealsToMultipleDaysUsecase {
     if (
       request.dayIds.length > AddMultipleMealsToMultipleDaysUsecase.MAX_DAYS
     ) {
+      logNoTest(
+        `AddMultipleMealsToMultipleDaysUsecase: Attempting to process ${request.dayIds.length} days, which exceeds the maximum of ${AddMultipleMealsToMultipleDaysUsecase.MAX_DAYS}`,
+      );
+
       throw new ValidationError(
-        `AddMultipleMealsToMultipleDaysUsecase: cannot process more than ${AddMultipleMealsToMultipleDaysUsecase.MAX_DAYS} days at once`,
+        `Selecciona un máximo de ${AddMultipleMealsToMultipleDaysUsecase.MAX_DAYS} días.`,
       );
     }
 
@@ -49,16 +58,20 @@ export class AddMultipleMealsToMultipleDaysUsecase {
     ]);
 
     if (!user) {
-      throw new NotFoundError(
-        `AddMultipleMealsToMultipleDaysUsecase: user with id ${request.userId} not found`,
+      logNoTest(
+        `AddMultipleMealsToMultipleDaysUsecase: User with id ${request.userId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     for (let i = 0; i < request.recipeIds.length; i++) {
       if (!recipes[i]) {
-        throw new NotFoundError(
-          `AddMultipleMealsToMultipleDaysUsecase: Recipe with id ${request.recipeIds[i]} not found`,
+        logNoTest(
+          `AddMultipleMealsToMultipleDaysUsecase: Recipe with id ${request.recipeIds[i]} not found for user ${request.userId}`,
         );
+
+        throw new NotFoundError("No se pudo encontrar la receta.");
       }
     }
 
