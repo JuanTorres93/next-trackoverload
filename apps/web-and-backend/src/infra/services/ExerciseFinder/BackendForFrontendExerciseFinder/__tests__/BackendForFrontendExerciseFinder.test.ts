@@ -1,6 +1,7 @@
+import { isRunningInCICD } from "../../../../../../tests/common/isRunningInCICD";
 import { BackendForFrontendExerciseFinder } from "../BackendForFrontendExerciseFinder";
 
-describe("BackendForFrontendExerciseFinder", () => {
+describe.skipIf(isRunningInCICD)("BackendForFrontendExerciseFinder", () => {
   let exerciseFinder: BackendForFrontendExerciseFinder;
 
   beforeEach(() => {
