@@ -19,6 +19,7 @@ import {
 } from "../../../interface-adapters/app/use-cases/recipe";
 import { getCurrentUserId } from "../../_utils/auth/getCurrentUserId";
 import { handleActionErrors } from "../common/handleActionErrors";
+import { isNextRedirectError } from "../common/handleNextRedirectError";
 
 export async function getAllRecipesForLoggedInUser(): Promise<
   JSENDResponse<RecipeDTO[]>
@@ -68,16 +69,27 @@ export async function createRecipe({
   name: string;
   ingredientLinesInfo: CreateIngredientLineData[];
   imageFile?: File;
-}) {
-  const userId = await getCurrentUserId();
+}): Promise<JSENDResponse<void>> {
   let imageBuffer: Buffer | undefined;
 
-  if (imageFile && imageFile.size > 0) {
-    const arrayBuffer = await imageFile.arrayBuffer();
-    imageBuffer = Buffer.from(arrayBuffer);
+  try {
+    if (imageFile && imageFile.size > 0) {
+      const arrayBuffer = await imageFile.arrayBuffer();
+
+      imageBuffer = Buffer.from(arrayBuffer);
+    }
+  } catch {
+    return {
+      status: "fail",
+      data: {
+        message: "Error al procesar la imagen. Vuelve a intentarlo.",
+      },
+    };
   }
 
   try {
+    const userId = await getCurrentUserId();
+
     const request = {
       actorUserId: userId,
       targetUserId: userId,
@@ -85,23 +97,33 @@ export async function createRecipe({
       ingredientLinesInfo,
       imageBuffer,
     };
-    await AppCreateRecipeUsecase.execute(request);
-  } catch {
-    // TODO handle error properly
-    return;
-  }
 
-  redirect("/app/recipes");
+    await AppCreateRecipeUsecase.execute(request);
+
+    redirect("/app/recipes");
+  } catch (error) {
+    if (isNextRedirectError(error)) throw error;
+
+    return handleActionErrors(error as Error);
+  }
 }
 
-export async function deleteRecipe(recipeId: string) {
-  await AppDeleteRecipeUsecase.execute({
-    userId: await getCurrentUserId(),
-    id: recipeId,
-  });
+export async function deleteRecipe(
+  recipeId: string,
+): Promise<JSENDResponse<void>> {
+  try {
+    await AppDeleteRecipeUsecase.execute({
+      userId: await getCurrentUserId(),
+      id: recipeId,
+    });
 
-  revalidatePath("/app/recipes");
-  redirect("/app/recipes/");
+    revalidatePath("/app/recipes");
+    redirect("/app/recipes/");
+  } catch (error) {
+    if (isNextRedirectError(error)) throw error;
+
+    return handleActionErrors(error as Error);
+  }
 }
 
 export async function removeIngredientFromRecipe(

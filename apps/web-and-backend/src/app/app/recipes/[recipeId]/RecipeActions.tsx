@@ -47,12 +47,17 @@ export default function RecipeActions({ recipe }: { recipe: RecipeDTO }) {
     setIsDeletingRecipe(true);
 
     try {
-      await deleteRecipe(recipe.id);
+      const jsend = await deleteRecipe(recipe.id);
+
+      if (jsend.status !== "success") {
+        showErrorToast(
+          jsend.data?.message ||
+            "Error al eliminar la receta. Intenta nuevamente.",
+        );
+        return;
+      }
     } catch (error) {
       if (isNextRedirectError(error)) return;
-      showErrorToast(
-        "Error al eliminar la receta. Por favor, inténtalo de nuevo.",
-      );
     } finally {
       setIsDeletingRecipe(false);
       setIsLoading(false);

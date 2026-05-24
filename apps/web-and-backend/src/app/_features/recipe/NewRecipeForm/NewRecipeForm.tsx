@@ -63,19 +63,23 @@ function NewRecipeForm() {
     }
 
     try {
-      await createRecipe({
+      const jsend = await createRecipe({
         name: formState.name,
         imageFile: compressedImageFile,
         ingredientLinesInfo,
       });
 
+      if (jsend.status !== "success") {
+        showErrorToast(
+          jsend.data?.message ||
+            "Error al crear la receta. Intenta nuevamente.",
+        );
+        return;
+      }
+
       resetForm();
     } catch (error) {
       if (isNextRedirectError(error)) return;
-
-      showErrorToast(
-        "Error al crear la receta. Por favor, inténtalo de nuevo.",
-      );
     } finally {
       setIsLoading(false);
     }

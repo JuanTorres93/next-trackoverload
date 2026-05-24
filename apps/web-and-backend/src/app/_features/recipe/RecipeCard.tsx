@@ -1,16 +1,19 @@
-'use client';
-import ConfirmDelete from '../../_ui/ConfirmDeleteModal';
-import Modal from '../../_ui/Modal';
-import { showErrorToast } from '../../_ui/showErrorToast';
-import { formatToInteger } from '../../_utils/format/formatToInteger';
-import { RecipeDTO } from '../../../application-layer/dtos/RecipeDTO';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useState } from 'react';
-import { HiCheck, HiTrash } from 'react-icons/hi';
-import LoadingOverlay from '../common/LoadingOverlay';
-import { isNextRedirectError } from '../common/handleNextRedirectError';
-import { deleteRecipe } from './actions';
+"use client";
+import Image from "next/image";
+import Link from "next/link";
+
+import { useState } from "react";
+
+import { HiCheck, HiTrash } from "react-icons/hi";
+
+import { RecipeDTO } from "../../../application-layer/dtos/RecipeDTO";
+import ConfirmDelete from "../../_ui/ConfirmDeleteModal";
+import Modal from "../../_ui/Modal";
+import { showErrorToast } from "../../_ui/showErrorToast";
+import { formatToInteger } from "../../_utils/format/formatToInteger";
+import LoadingOverlay from "../common/LoadingOverlay";
+import { isNextRedirectError } from "../common/handleNextRedirectError";
+import { deleteRecipe } from "./actions";
 
 function RecipeCard({
   recipe,
@@ -26,7 +29,7 @@ function RecipeCard({
   const [isNavigating, setIsNavigating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const Wrapper = asLink ? Link : 'div';
+  const Wrapper = asLink ? Link : "div";
   const calories = formatToInteger(recipe.calories);
   const protein = formatToInteger(recipe.protein);
 
@@ -38,11 +41,17 @@ function RecipeCard({
     setIsDeleting(true);
 
     try {
-      await deleteRecipe(recipe.id);
+      const jsend = await deleteRecipe(recipe.id);
+
+      if (jsend.status !== "success") {
+        showErrorToast(
+          jsend.data?.message ||
+            "Error al eliminar la receta. Intenta nuevamente.",
+        );
+        return;
+      }
     } catch (error) {
       if (isNextRedirectError(error)) return;
-
-      showErrorToast('Error al eliminar la receta.');
     } finally {
       setIsDeleting(false);
     }
@@ -53,8 +62,8 @@ function RecipeCard({
       <div
         className={`relative rounded-2xl overflow-hidden border shadow-sm hover:shadow-md transition-all bg-surface-card ${
           isSelected
-            ? 'border-primary ring-2 ring-primary/30'
-            : 'border-border/40'
+            ? "border-primary ring-2 ring-primary/30"
+            : "border-border/40"
         }`}
       >
         {(isNavigating || isDeleting) && (
@@ -85,7 +94,7 @@ function RecipeCard({
           {/* Image + gradient + overlaid title */}
           <div className="relative h-44">
             <Image
-              src={recipe.imageUrl ?? '/recipe-no-picture.webp'}
+              src={recipe.imageUrl ?? "/recipe-no-picture.webp"}
               alt={recipe.name}
               fill
               className="object-cover"
