@@ -3,22 +3,35 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { JSENDResponse } from "@/app/_types/JSEND";
+
 import { WorkoutTemplateDTO } from "../../../application-layer/dtos/WorkoutTemplateDTO";
 import { CreateWorkoutTemplateUsecaseRequest } from "../../../application-layer/use-cases/workouttemplate/CreateWorkoutTemplate/CreateWorkoutTemplate.usecase";
 import { AppGetAllWorkoutTemplatesForUserUsecase } from "../../../interface-adapters/app/use-cases/workouttemplate";
 import { AppCreateWorkoutTemplateUsecase } from "../../../interface-adapters/app/use-cases/workouttemplate";
 import { getCurrentUserId } from "../../_utils/auth/getCurrentUserId";
+import { handleActionErrors } from "../common/handleActionErrors";
+import { isNextRedirectError } from "../common/handleNextRedirectError";
 
-export async function getAllWorkoutTemplatesForLoggedInUser() {
-  const userId = await getCurrentUserId();
+export async function getAllWorkoutTemplatesForLoggedInUser(): Promise<
+  JSENDResponse<WorkoutTemplateDTO[]>
+> {
+  try {
+    const userId = await getCurrentUserId();
 
-  const templates: WorkoutTemplateDTO[] =
-    await AppGetAllWorkoutTemplatesForUserUsecase.execute({
-      actorUserId: userId,
-      targetUserId: userId,
-    });
+    const templates: WorkoutTemplateDTO[] =
+      await AppGetAllWorkoutTemplatesForUserUsecase.execute({
+        actorUserId: userId,
+        targetUserId: userId,
+      });
 
-  return templates;
+    return {
+      status: "success",
+      data: templates,
+    };
+  } catch (error) {
+    return handleActionErrors(error as Error);
+  }
 }
 
 export async function createWorkoutTemplateForLoggedInUser(
@@ -26,16 +39,22 @@ export async function createWorkoutTemplateForLoggedInUser(
     CreateWorkoutTemplateUsecaseRequest,
     "actorUserId" | "targetUserId"
   >,
-) {
-  const userId = await getCurrentUserId();
+): Promise<JSENDResponse<void>> {
+  try {
+    const userId = await getCurrentUserId();
 
-  await AppCreateWorkoutTemplateUsecase.execute({
-    actorUserId: userId,
-    targetUserId: userId,
-    ...request,
-  });
+    await AppCreateWorkoutTemplateUsecase.execute({
+      actorUserId: userId,
+      targetUserId: userId,
+      ...request,
+    });
 
-  // TODO Change to redirect to the created template's page when that page is implemented
-  revalidatePath("/app/templates");
-  redirect("/app/templates");
+    // TODO Change to redirect to the created template's page when that page is implemented
+    revalidatePath("/app/templates");
+    redirect("/app/templates");
+  } catch (error) {
+    if (isNextRedirectError(error)) throw error;
+
+    return handleActionErrors(error as Error);
+  }
 }

@@ -1,9 +1,4 @@
 import {
-  WorkoutTemplateDTO,
-  toWorkoutTemplateDTO,
-} from "../../../dtos/WorkoutTemplateDTO";
-import { TransactionContext } from "../../../ports/TransactionContext.port";
-import {
   NotFoundError,
   PermissionError,
   ValidationError,
@@ -15,7 +10,11 @@ import { ExternalExercisesRefRepo } from "../../../../domain/repos/ExternalExerc
 import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
 import { WorkoutTemplatesRepo } from "../../../../domain/repos/WorkoutTemplatesRepo.port";
 import { IdGenerator } from "../../../../domain/services/IdGenerator.port";
-
+import {
+  WorkoutTemplateDTO,
+  toWorkoutTemplateDTO,
+} from "../../../dtos/WorkoutTemplateDTO";
+import { TransactionContext } from "../../../ports/TransactionContext.port";
 import {
   CreateWorkoutTemplateLineData,
   createExercisesAndExternalExercisesForWorkoutTemplateLineNoSaveInRepo,

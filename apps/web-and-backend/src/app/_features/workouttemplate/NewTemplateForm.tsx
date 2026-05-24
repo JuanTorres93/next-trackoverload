@@ -4,10 +4,12 @@ import { HiSearch } from "react-icons/hi";
 import { twMerge } from "tailwind-merge";
 
 import ButtonNew from "@/app/_ui/buttons/ButtonNew";
+import { showErrorToast } from "@/app/_ui/showErrorToast";
 import { CreateWorkoutTemplateLineData } from "@/application-layer/use-cases/workouttemplate/common/createExercisesAndExternalExercisesForWorkoutTemplateLineNoSaveInRepo";
 
 import { useFormSetup } from "../../_hooks/useFormSetup";
 import FormTitleTextArea from "../common/FormTitleInput";
+import { isNextRedirectError } from "../common/handleNextRedirectError";
 import ExerciseSearch, {
   SelectedExerciseEntry,
 } from "../exercise/ExerciseSearch";
@@ -123,17 +125,22 @@ function PreviewCard({
           sets: exerciseEntry.sets,
         }));
 
-      await createWorkoutTemplateForLoggedInUser({
+      const jsend = await createWorkoutTemplateForLoggedInUser({
         name: formState.newTemplateName,
         templateLines,
       });
 
+      if (jsend.status !== "success") {
+        showErrorToast(
+          jsend.data?.message ||
+            "Ocurrió un error al crear la plantilla. Por favor, intenta de nuevo.",
+        );
+        return;
+      }
+
       resetForm();
     } catch (error) {
-      // TODO IMPORTANT HANDLE ERRORS
-      // TODO DELETE THESE DEBUG LOGS
-      console.log("error");
-      console.log(error);
+      if (isNextRedirectError(error)) return;
     } finally {
       setIsLoading(false);
     }

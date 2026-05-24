@@ -1,10 +1,13 @@
 import {
+  NotFoundError,
+  PermissionError,
+} from "../../../../domain/common/errors";
+import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
+import { WorkoutTemplatesRepo } from "../../../../domain/repos/WorkoutTemplatesRepo.port";
+import {
   WorkoutTemplateDTO,
   toWorkoutTemplateDTO,
-} from '../../../dtos/WorkoutTemplateDTO';
-import { NotFoundError, PermissionError } from '../../../../domain/common/errors';
-import { UsersRepo } from '../../../../domain/repos/UsersRepo.port';
-import { WorkoutTemplatesRepo } from '../../../../domain/repos/WorkoutTemplatesRepo.port';
+} from "../../../dtos/WorkoutTemplateDTO";
 
 export type GetAllWorkoutTemplatesForUserUsecaseRequest = {
   actorUserId: string;
