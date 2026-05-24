@@ -231,6 +231,7 @@ function ExerciseSearch({
 
       if (results.length === 0) {
         showErrorToast(`No se encontraron ejercicios para "${term}"`);
+        setFoundExercises([]);
         setHasMoreResults(false);
         return;
       }

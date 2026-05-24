@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { JSENDResponse } from "../../../../_types/JSEND";
-import { getClientId } from "../../../_common/getClientId";
+import { handleKnownErrors } from "@/app/api/_common/handleKnownErrors";
+
 import { IngredientFinderResult } from "../../../../../domain/services/IngredientFinder.port";
 import { createAppFindIngredientByBarcodeUsecase } from "../../../../../interface-adapters/app/use-cases/ingredient/AppFindIngredientByBarcodeUsecase";
+import { JSENDResponse } from "../../../../_types/JSEND";
+import { getClientId } from "../../../_common/getClientId";
 
 export async function GET(
   request: NextRequest,
@@ -35,9 +37,6 @@ export async function GET(
       error,
     );
 
-    return NextResponse.json(
-      { status: "fail", data: { message: "Failed to fetch ingredients" } },
-      { status: 500 },
-    );
+    return handleKnownErrors(error as Error);
   }
 }

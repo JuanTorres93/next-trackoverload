@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { handleKnownErrors } from "@/app/api/_common/handleKnownErrors";
+
 import { ExerciseFinderResult } from "../../../../../domain/services/ExerciseFinder.port";
 import { AppFindExerciseByFuzzyNameUsecase } from "../../../../../interface-adapters/app/use-cases/exercise/AppFindExerciseByFuzzyNameUsecase";
 import { JSENDResponse } from "../../../../_types/JSEND";
@@ -36,9 +38,6 @@ export async function GET(
       error,
     );
 
-    return NextResponse.json(
-      { status: "fail", data: { message: "Failed to fetch exercises" } },
-      { status: 500 },
-    );
+    return handleKnownErrors(error as Error);
   }
 }

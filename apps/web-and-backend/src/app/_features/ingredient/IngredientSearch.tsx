@@ -88,7 +88,8 @@ function BarcodeSearch({ disabled = false }: { disabled?: boolean }) {
           jsendResponse.status === "error"
         ) {
           showErrorToast(
-            "No se encontraron ingredientes para el código de barras escaneado.",
+            jsendResponse.data?.message ||
+              "Error al buscar ingredientes por código de barras",
           );
           return;
         }
@@ -408,10 +409,8 @@ function IngredientSearch({
       const results = await fetchIngredientsPage(term, 1);
 
       if (results.length === 0) {
-        showErrorToast(
-          `No se encontraron ingredientes para el término de búsqueda ${term}`,
-        );
         setHasMoreResults(false);
+        setFoundIngredientsResults([]);
         return;
       }
 
@@ -593,8 +592,13 @@ async function fetchIngredientsPage(
   if (
     jsendResponse.status === "fail" ||
     jsendResponse.status === "error" ||
-    !Array.isArray(jsendResponse.data)
+    !Array.isArray(jsendResponse.data) ||
+    jsendResponse.data.length === 0
   ) {
+    showErrorToast(
+      `No se encontraron ingredientes para el término de búsqueda ${term}`,
+    );
+
     return [];
   }
 
