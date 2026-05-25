@@ -37,7 +37,7 @@ describe("DeleteExerciseUsecase", () => {
 
       await expect(
         deleteExerciseUsecase.execute({ id: "non-existent" }),
-      ).rejects.toThrow(/DeleteExerciseUsecase.*Exercise.*not/);
+      ).rejects.toThrow(/e[jx].*no.*exist/i);
     });
   });
 });

@@ -1,5 +1,7 @@
-import { NotFoundError } from '../../../../domain/common/errors';
-import { ExercisesRepo } from '../../../../domain/repos/ExercisesRepo.port';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { NotFoundError } from "../../../../domain/common/errors";
+import { ExercisesRepo } from "../../../../domain/repos/ExercisesRepo.port";
 
 export type DeleteExerciseUsecaseRequest = {
   id: string;
@@ -13,7 +15,11 @@ export class DeleteExerciseUsecase {
     const exercise = await this.exercisesRepo.getExerciseById(request.id);
 
     if (!exercise) {
-      throw new NotFoundError('DeleteExerciseUsecase: Exercise not found');
+      logNoTest(
+        `DeleteExerciseUsecase: Exercise with id ${request.id} not found`,
+      );
+
+      throw new NotFoundError("El ejercicio no existe.");
     }
 
     await this.exercisesRepo.deleteExercise(request.id);

@@ -1,10 +1,9 @@
-import {
-  ExerciseDTO,
-  toExerciseDTO,
-} from '../../../dtos/ExerciseDTO';
-import { NotFoundError } from '../../../../domain/common/errors';
-import { Exercise } from '../../../../domain/entities/exercise/Exercise';
-import { ExercisesRepo } from '../../../../domain/repos/ExercisesRepo.port';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { NotFoundError } from "../../../../domain/common/errors";
+import { Exercise } from "../../../../domain/entities/exercise/Exercise";
+import { ExercisesRepo } from "../../../../domain/repos/ExercisesRepo.port";
+import { ExerciseDTO, toExerciseDTO } from "../../../dtos/ExerciseDTO";
 
 export type UpdateExerciseUsecaseRequest = {
   id: string;
@@ -20,7 +19,11 @@ export class UpdateExerciseUsecase {
     );
 
     if (!existingExercise) {
-      throw new NotFoundError('UpdateExerciseUsecase: Exercise not found');
+      logNoTest(
+        `UpdateExerciseUsecase: Exercise with id ${request.id} not found`,
+      );
+
+      throw new NotFoundError("El ejercicio no existe.");
     }
 
     const updatedExercise = Exercise.create({

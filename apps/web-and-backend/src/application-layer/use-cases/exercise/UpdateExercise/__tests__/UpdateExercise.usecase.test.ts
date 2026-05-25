@@ -82,15 +82,10 @@ describe("UpdateExerciseUsecase", () => {
           name: "New Name",
         }),
       ).rejects.toThrow(NotFoundError);
-    });
 
-    it("should throw error if exercise does not exist", async () => {
       await expect(
         updateExerciseUsecase.execute({ id: "non-existent", name: "New Name" }),
-      ).rejects.toThrow(NotFoundError);
-      await expect(
-        updateExerciseUsecase.execute({ id: "non-existent", name: "New Name" }),
-      ).rejects.toThrow(/UpdateExerciseUsecase.*Exercise.*not found/);
+      ).rejects.toThrow(/e[jx].*no.*exist/i);
     });
   });
 });
