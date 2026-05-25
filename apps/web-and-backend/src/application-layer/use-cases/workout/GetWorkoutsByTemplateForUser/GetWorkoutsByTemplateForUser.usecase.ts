@@ -1,7 +1,9 @@
-import { WorkoutDTO, toWorkoutDTO } from '../../../dtos/WorkoutDTO';
-import { NotFoundError } from '../../../../domain/common/errors';
-import { WorkoutsRepo } from '../../../../domain/repos/WorkoutsRepo.port';
-import { UsersRepo } from '../../../../domain/repos/UsersRepo.port';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { NotFoundError } from "../../../../domain/common/errors";
+import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
+import { WorkoutsRepo } from "../../../../domain/repos/WorkoutsRepo.port";
+import { WorkoutDTO, toWorkoutDTO } from "../../../dtos/WorkoutDTO";
 
 export type GetWorkoutsByTemplateForUserUsecaseRequest = {
   templateId: string;
@@ -27,9 +29,11 @@ export class GetWorkoutsByTemplateForUserUsecase {
     ]);
 
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `GetWorkoutsByTemplateForUserUsecase: User with id ${request.userId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     return workouts.map(toWorkoutDTO);

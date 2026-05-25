@@ -189,7 +189,7 @@ describe("AddExerciseToWorkoutUsecase", () => {
 
       await expect(
         addExerciseToWorkoutUsecase.execute(request),
-      ).rejects.toThrow(/AddExerciseToWorkoutUsecase.*Workout.*not found/);
+      ).rejects.toThrow(/entren.*no.*exist|workout.*not.*found/i);
     });
 
     it("should throw error if user does not exist", async () => {
@@ -209,7 +209,7 @@ describe("AddExerciseToWorkoutUsecase", () => {
       ).rejects.toThrow(NotFoundError);
       await expect(
         addExerciseToWorkoutUsecase.execute(request),
-      ).rejects.toThrow(/AddExerciseToWorkoutUsecase.*user.*not.*found/);
+      ).rejects.toThrow(/us.*no.*exist/i);
     });
 
     it("should throw error when trying to add exercise to another user's workout", async () => {
@@ -232,7 +232,7 @@ describe("AddExerciseToWorkoutUsecase", () => {
 
       await expect(
         addExerciseToWorkoutUsecase.execute(request),
-      ).rejects.toThrow(/AddExerciseToWorkoutUsecase.*Workout.*not found/);
+      ).rejects.toThrow(/entren.*no.*exist|workout.*not.*found/i);
     });
   });
 });

@@ -168,7 +168,7 @@ describe("RemoveSetFromWorkoutUsecase", () => {
 
       await expect(
         removeSetFromWorkoutUsecase.execute(request),
-      ).rejects.toThrow(/RemoveSetFromWorkoutUsecase.*Workout.*not.*found/);
+      ).rejects.toThrow(/entren.*no.*exist|workout.*not.*found/i);
     });
 
     it("should throw error if user does not exist", async () => {
@@ -185,7 +185,7 @@ describe("RemoveSetFromWorkoutUsecase", () => {
 
       await expect(
         removeSetFromWorkoutUsecase.execute(request),
-      ).rejects.toThrow(/RemoveSetFromWorkoutUsecase.*User.*not.*found/);
+      ).rejects.toThrow(/us.*no.*exist/i);
     });
 
     it("should throw error when trying to remove a set from another user's workout", async () => {
@@ -207,7 +207,7 @@ describe("RemoveSetFromWorkoutUsecase", () => {
 
       await expect(
         removeSetFromWorkoutUsecase.execute(request),
-      ).rejects.toThrow(/RemoveSetFromWorkoutUsecase.*Workout.*not.*found/);
+      ).rejects.toThrow(/entren.*no.*exist|workout.*not.*found/i);
     });
   });
 });

@@ -99,7 +99,7 @@ describe("GetAllWorkoutsUsecase", () => {
       );
 
       await expect(getAllWorkoutsUsecase.execute(request)).rejects.toThrow(
-        /GetAllWorkoutsForUserUsecase.*User.*not.*found/,
+        /us.*no.*exist/i,
       );
     });
 
@@ -120,7 +120,7 @@ describe("GetAllWorkoutsUsecase", () => {
       );
 
       await expect(getAllWorkoutsUsecase.execute(request)).rejects.toThrow(
-        /GetAllWorkoutsForUserUsecase.*cannot.*get.*workouts.*another user/,
+        /no.*puedes.*ver|cannot.*get.*workouts/i,
       );
     });
   });

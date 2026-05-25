@@ -1,6 +1,8 @@
-import { NotFoundError } from '../../../../domain/common/errors';
-import { WorkoutsRepo } from '../../../../domain/repos/WorkoutsRepo.port';
-import { UsersRepo } from '../../../../domain/repos/UsersRepo.port';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { NotFoundError } from "../../../../domain/common/errors";
+import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
+import { WorkoutsRepo } from "../../../../domain/repos/WorkoutsRepo.port";
 
 export type DeleteWorkoutUsecaseRequest = {
   id: string;
@@ -21,13 +23,19 @@ export class DeleteWorkoutUsecase {
     ]);
 
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `DeleteWorkoutUsecase: user with id ${request.userId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     if (!workout) {
-      throw new NotFoundError('DeleteWorkoutUsecase: Workout not found');
+      logNoTest(
+        `DeleteWorkoutUsecase: workout with id ${request.id} not found`,
+      );
+
+      throw new NotFoundError("El entrenamiento no existe.");
     }
 
     await this.workoutsRepo.deleteWorkout(request.id);

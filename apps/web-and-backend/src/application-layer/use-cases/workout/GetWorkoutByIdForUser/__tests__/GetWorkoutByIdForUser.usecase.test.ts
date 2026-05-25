@@ -102,7 +102,7 @@ describe("GetWorkoutByIdUsecase", () => {
           id: workoutTestProps.validWorkoutProps.id,
           userId: "non-existent",
         }),
-      ).rejects.toThrow(/GetWorkoutByIdForUserUsecase.*User.*not.*found/);
+      ).rejects.toThrow(/us.*no.*exist/i);
     });
   });
 });

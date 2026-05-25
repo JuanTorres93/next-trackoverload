@@ -143,7 +143,7 @@ describe("UpdateExerciseInWorkoutUsecase", () => {
 
       await expect(
         updateExerciseInWorkoutUsecase.execute(request),
-      ).rejects.toThrow(/UpdateExerciseInWorkoutUsecase.*Workout.*not.*found/);
+      ).rejects.toThrow(/entren.*no.*exist|workout.*not.*found/i);
     });
 
     it("should throw error if user does not exist", async () => {
@@ -160,7 +160,7 @@ describe("UpdateExerciseInWorkoutUsecase", () => {
 
       await expect(
         updateExerciseInWorkoutUsecase.execute(request),
-      ).rejects.toThrow(/UpdateExerciseInWorkoutUsecase.*User.*not.*found/);
+      ).rejects.toThrow(/us.*no.*exist/i);
     });
 
     it("should throw error when trying to update exercise in another user's workout", async () => {
@@ -183,7 +183,7 @@ describe("UpdateExerciseInWorkoutUsecase", () => {
 
       await expect(
         updateExerciseInWorkoutUsecase.execute(request),
-      ).rejects.toThrow(/UpdateExerciseInWorkoutUsecase.*Workout.*not.*found/);
+      ).rejects.toThrow(/entren.*no.*exist|workout.*not.*found/i);
     });
   });
 });

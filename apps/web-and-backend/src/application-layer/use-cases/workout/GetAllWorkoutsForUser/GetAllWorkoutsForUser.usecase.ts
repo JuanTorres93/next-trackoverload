@@ -1,7 +1,12 @@
-import { WorkoutDTO, toWorkoutDTO } from '../../../dtos/WorkoutDTO';
-import { NotFoundError, PermissionError } from '../../../../domain/common/errors';
-import { WorkoutsRepo } from '../../../../domain/repos/WorkoutsRepo.port';
-import { UsersRepo } from '../../../../domain/repos/UsersRepo.port';
+import { logNoTest } from "@/utils/logNoTest";
+
+import {
+  NotFoundError,
+  PermissionError,
+} from "../../../../domain/common/errors";
+import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
+import { WorkoutsRepo } from "../../../../domain/repos/WorkoutsRepo.port";
+import { WorkoutDTO, toWorkoutDTO } from "../../../dtos/WorkoutDTO";
 
 export type GetAllWorkoutsForUserRequest = {
   actorUserId: string;
@@ -16,8 +21,12 @@ export class GetAllWorkoutsForUserUsecase {
 
   async execute(request: GetAllWorkoutsForUserRequest): Promise<WorkoutDTO[]> {
     if (request.actorUserId !== request.targetUserId) {
-      throw new PermissionError(
+      logNoTest(
         `GetAllWorkoutsForUserUsecase: cannot get workouts for another user`,
+      );
+
+      throw new PermissionError(
+        "No puedes ver los entrenamientos de otro usuario.",
       );
     }
 
@@ -28,9 +37,11 @@ export class GetAllWorkoutsForUserUsecase {
     ]);
 
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `GetAllWorkoutsForUserUsecase: User with id ${request.targetUserId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     return workouts.map(toWorkoutDTO);

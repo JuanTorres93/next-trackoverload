@@ -117,9 +117,7 @@ describe("GetWorkoutsByTemplateUsecase", () => {
 
       await expect(
         getWorkoutsByTemplateUsecase.execute(request),
-      ).rejects.toThrow(
-        /GetWorkoutsByTemplateForUserUsecase.*User.*not.*found/,
-      );
+      ).rejects.toThrow(/us.*no.*exist/i);
     });
   });
 });

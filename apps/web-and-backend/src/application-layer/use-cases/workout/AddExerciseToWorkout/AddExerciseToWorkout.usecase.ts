@@ -1,5 +1,5 @@
-import { WorkoutDTO, toWorkoutDTO } from "../../../dtos/WorkoutDTO";
-import { TransactionContext } from "../../../ports/TransactionContext.port";
+import { logNoTest } from "@/utils/logNoTest";
+
 import { NotFoundError } from "../../../../domain/common/errors";
 import { WorkoutLine } from "../../../../domain/entities/workoutline/WorkoutLine";
 import { ExercisesRepo } from "../../../../domain/repos/ExercisesRepo.port";
@@ -7,7 +7,8 @@ import { ExternalExercisesRefRepo } from "../../../../domain/repos/ExternalExerc
 import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
 import { WorkoutsRepo } from "../../../../domain/repos/WorkoutsRepo.port";
 import { IdGenerator } from "../../../../domain/services/IdGenerator.port";
-
+import { WorkoutDTO, toWorkoutDTO } from "../../../dtos/WorkoutDTO";
+import { TransactionContext } from "../../../ports/TransactionContext.port";
 import { createExercisesAndExternalExercisesNoSaveInRepo } from "../../exercise/common/createExercisesAndExternalExercisesNoSaveInRepo";
 
 export type AddExerciseToWorkoutUsecaseRequest = {
@@ -44,13 +45,19 @@ export class AddExerciseToWorkoutUsecase {
     ]);
 
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `AddExerciseToWorkoutUsecase: user with id ${request.userId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     if (!workout) {
-      throw new NotFoundError("AddExerciseToWorkoutUsecase: Workout not found");
+      logNoTest(
+        `AddExerciseToWorkoutUsecase: workout with id ${request.workoutId} not found`,
+      );
+
+      throw new NotFoundError("El entrenamiento no existe.");
     }
 
     const { createdExercises, createdExternalExercises, allExercises } =

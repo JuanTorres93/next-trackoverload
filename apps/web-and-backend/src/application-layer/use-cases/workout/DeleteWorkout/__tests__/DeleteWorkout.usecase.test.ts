@@ -58,7 +58,7 @@ describe("DeleteWorkoutUsecase", () => {
       );
 
       await expect(deleteWorkoutUsecase.execute(request)).rejects.toThrow(
-        /DeleteWorkoutUsecase.*Workout.*not found/,
+        /entren.*no.*exist|workout.*not.*found/i,
       );
     });
 
@@ -72,7 +72,7 @@ describe("DeleteWorkoutUsecase", () => {
         NotFoundError,
       );
       await expect(deleteWorkoutUsecase.execute(request)).rejects.toThrow(
-        /DeleteWorkoutUsecase.*user.*not.*found/,
+        /us.*no.*exist/i,
       );
     });
 
@@ -94,7 +94,7 @@ describe("DeleteWorkoutUsecase", () => {
       );
 
       await expect(deleteWorkoutUsecase.execute(request)).rejects.toThrow(
-        /DeleteWorkoutUsecase.*Workout.*not found/,
+        /entren.*no.*exist|workout.*not.*found/i,
       );
     });
   });

@@ -85,7 +85,7 @@ describe("UpdateWorkoutUsecase", () => {
       );
 
       await expect(updateWorkoutUsecase.execute(request)).rejects.toThrow(
-        /UpdateWorkoutUsecase.*Workout.*not.*found/,
+        /entren.*no.*exist|workout.*not.*found/i,
       );
     });
 
@@ -101,7 +101,7 @@ describe("UpdateWorkoutUsecase", () => {
       );
 
       await expect(updateWorkoutUsecase.execute(request)).rejects.toThrow(
-        /UpdateWorkoutUsecase.*User.*not.*found/,
+        /us.*no.*exist/i,
       );
     });
 
@@ -123,7 +123,7 @@ describe("UpdateWorkoutUsecase", () => {
       );
 
       await expect(updateWorkoutUsecase.execute(request)).rejects.toThrow(
-        /UpdateWorkoutUsecase.*Workout.*not.*found/,
+        /entren.*no.*exist|workout.*not.*found/i,
       );
     });
   });
