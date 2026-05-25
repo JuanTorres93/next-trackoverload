@@ -122,8 +122,6 @@ function NutritionForToday({
               />
             ))}
           </GridAutoCols>
-
-          <AddFoodButton dayId={assembledDayResult.assembledDay!.id} />
         </>
       )}
 
@@ -144,6 +142,8 @@ function NutritionForToday({
           <ButtonPrimary href="/app/meals">Ver planificador</ButtonPrimary>
         </div>
       )}
+
+      <AddFoodButton dayId={assembledDayResult.assembledDay!.id} />
     </section>
   );
 }
