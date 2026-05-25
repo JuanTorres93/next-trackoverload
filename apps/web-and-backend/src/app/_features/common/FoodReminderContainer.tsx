@@ -2,31 +2,14 @@
 import { HiArrowPath } from "react-icons/hi2";
 import { twMerge } from "tailwind-merge";
 
-import { JSENDResponse } from "@/app/_types/JSEND";
-
 import Modal from "../../_ui/Modal";
-import AddFakeMealForm from "../fakemeal/AddFakeMealForm";
-import SelectRecipeForm from "../recipe/SelectRecipeForm";
-import { MealTypeSelectionModal } from "./MealTypeModal";
-
-export type ReplacementConfig = {
-  replaceMealRequest: (recipeId: string) => Promise<JSENDResponse<void>>;
-
-  replaceFakeMealRequest: (
-    name: string,
-    calories: number,
-    protein: number,
-  ) => Promise<JSENDResponse<void>>;
-};
 
 function FoodReminderContainer({
   children,
   isEaten,
-  replacement,
   ...props
 }: {
   isEaten?: boolean;
-  replacement?: ReplacementConfig;
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
@@ -42,76 +25,21 @@ function FoodReminderContainer({
       >
         {children}
 
-        {replacement && (
-          <Modal.Open opens="replacement-selection">
-            <button
-              type="button"
-              aria-label="Cambiar comida"
-              data-testid="replace-food-button"
-              className={twMerge(
-                "flex items-center cursor-pointer gap-1 text-xs opacity-60 hover:text-primary! transition-colors",
-                isEaten && "hover:opacity-80 hover:text-text-light!",
-              )}
-            >
-              <HiArrowPath className="w-6 h-6" />
-            </button>
-          </Modal.Open>
-        )}
+        {/* 
+        <button
+          type="button"
+          aria-label="Cambiar comida"
+          data-testid="replace-food-button"
+          className={twMerge(
+            "flex items-center cursor-pointer gap-1 text-xs opacity-60 hover:text-primary! transition-colors",
+            isEaten && "hover:opacity-80 hover:text-text-light!",
+          )}
+        >
+          <HiArrowPath className="w-6 h-6" />
+        </button>
+            */}
       </div>
-
-      <Modal.Window name="replacement-selection">
-        <MealTypeSelectionModal />
-      </Modal.Window>
-
-      {replacement && (
-        <>
-          <Modal.Window name="select-recipe" className="p-0 overflow-hidden">
-            <ReplacementRecipeModal replacement={replacement} />
-          </Modal.Window>
-
-          <Modal.Window name="add-fake-meal">
-            <ReplacementFakeMealModal replacement={replacement} />
-          </Modal.Window>
-        </>
-      )}
     </Modal>
-  );
-}
-
-function ReplacementRecipeModal({
-  replacement,
-  onCloseModal,
-}: {
-  replacement: ReplacementConfig;
-  onCloseModal?: () => void;
-}) {
-  return (
-    <SelectRecipeForm
-      addMealsRequest={(recipeIds) =>
-        replacement.replaceMealRequest(recipeIds[0])
-      }
-      onSuccess={onCloseModal}
-    />
-  );
-}
-
-function ReplacementFakeMealModal({
-  replacement,
-  onCloseModal,
-}: {
-  replacement: ReplacementConfig;
-  onCloseModal?: () => void;
-}) {
-  return (
-    <div className="max-w-200 max-h-160 overflow-y-scroll overscroll-contain w-[80dvw] p-4">
-      <AddFakeMealForm
-        submitAction={(name, calories, protein) =>
-          replacement.replaceFakeMealRequest(name, calories, protein)
-        }
-        submitLabel="Reemplazar"
-        onSuccess={onCloseModal}
-      />
-    </div>
   );
 }
 

@@ -48,8 +48,6 @@ function SelectRecipeForm({
         const recipes = jsend.data;
 
         setRecipes(recipes);
-      } catch {
-        showErrorToast("Error al cargar las recetas.");
       } finally {
         setIsFetching(false);
       }

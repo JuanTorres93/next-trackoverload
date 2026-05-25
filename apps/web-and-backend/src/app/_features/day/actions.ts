@@ -14,10 +14,6 @@ import {
   AppGetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays,
   AppGetMultipleAssembledDaysByIds,
   AppRemoveMealFromDayUsecase,
-  AppReplaceFakeMealByAnotherFakeMealForUserInDayUsecase,
-  AppReplaceFakeMealByMealForUserInDayUsecase,
-  AppReplaceMealByAnotherMealForUserInDayUsecase,
-  AppReplaceMealByFakeMealForUserInDayUsecase,
   AppSetCaloriesGoalForDayAndUserUsecase,
   AppUpdateUserWeightForDayUsecase,
 } from "../../../interface-adapters/app/use-cases/day";
@@ -85,114 +81,6 @@ export async function removeMealFromDay(
       dayId: dayId,
       userId: await getCurrentUserId(),
       mealId,
-    });
-
-    revalidatePath(`/app`);
-    revalidatePath(`/app/meals`);
-
-    return {
-      status: "success",
-      data: undefined,
-    };
-  } catch (error) {
-    return handleActionErrors(error as Error);
-  }
-}
-
-export async function replaceFakeMealByMealForUserInDay(
-  fakeMealIdToReplace: string,
-  recipeId: string,
-  dayId: string,
-): Promise<JSENDResponse<void>> {
-  try {
-    await AppReplaceFakeMealByMealForUserInDayUsecase.execute({
-      dayId,
-      userId: await getCurrentUserId(),
-      fakeMealIdToReplace,
-      recipeId,
-    });
-
-    revalidatePath(`/app`);
-    revalidatePath(`/app/meals`);
-
-    return {
-      status: "success",
-      data: undefined,
-    };
-  } catch (error) {
-    return handleActionErrors(error as Error);
-  }
-}
-
-export async function replaceMealByAnotherMealForUserInDay(
-  mealToReplaceId: string,
-  recipeId: string,
-  dayId: string,
-): Promise<JSENDResponse<void>> {
-  try {
-    await AppReplaceMealByAnotherMealForUserInDayUsecase.execute({
-      dayId,
-      userId: await getCurrentUserId(),
-      mealToReplaceId,
-      recipeId,
-    });
-
-    revalidatePath(`/app`);
-    revalidatePath(`/app/meals`);
-
-    return {
-      status: "success",
-      data: undefined,
-    };
-  } catch (error) {
-    return handleActionErrors(error as Error);
-  }
-}
-
-export async function replaceMealByFakeMealForUserInDay(
-  mealIdToReplace: string,
-  name: string,
-  calories: number,
-  protein: number,
-  dayId: string,
-): Promise<JSENDResponse<void>> {
-  try {
-    await AppReplaceMealByFakeMealForUserInDayUsecase.execute({
-      dayId,
-      userId: await getCurrentUserId(),
-      mealIdToReplace,
-      name,
-      calories,
-      protein,
-    });
-
-    revalidatePath(`/app`);
-    revalidatePath(`/app/meals`);
-
-    return {
-      status: "success",
-      data: undefined,
-    };
-  } catch (error) {
-    return handleActionErrors(error as Error);
-  }
-}
-
-export async function replaceFakeMealByAnotherFakeMealForUserInDay(
-  fakeMealIdToReplace: string,
-  name: string,
-  calories: number,
-  protein: number,
-  dayId: string,
-): Promise<JSENDResponse<void>> {
-  try {
-    await AppReplaceFakeMealByAnotherFakeMealForUserInDayUsecase.execute({
-      dayId,
-      userId: await getCurrentUserId(),
-      fakeMealIdToReplace,
-      name,
-      calories,
-      protein,
     });
 
     revalidatePath(`/app`);

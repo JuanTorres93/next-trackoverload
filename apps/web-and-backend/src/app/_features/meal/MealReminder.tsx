@@ -9,10 +9,6 @@ import { showErrorToast } from "../../_ui/showErrorToast";
 import { formatToInteger } from "../../_utils/format/formatToInteger";
 import FoodReminderContainer from "../common/FoodReminderContainer";
 import FoodReminderMacros from "../common/FoodReminderMacros";
-import {
-  replaceMealByAnotherMealForUserInDay,
-  replaceMealByFakeMealForUserInDay,
-} from "../day/actions";
 import { toggleIsEaten } from "./actions";
 
 function MealReminder({ meal, dayId }: { meal: MealDTO; dayId: string }) {
@@ -45,25 +41,10 @@ function MealReminder({ meal, dayId }: { meal: MealDTO; dayId: string }) {
     });
   }
 
-  const replacement = {
-    replaceMealRequest: (recipeId: string) =>
-      replaceMealByAnotherMealForUserInDay(meal.id, recipeId, dayId),
-
-    replaceFakeMealRequest: (name: string, calories: number, protein: number) =>
-      replaceMealByFakeMealForUserInDay(
-        meal.id,
-        name,
-        calories,
-        protein,
-        dayId,
-      ),
-  };
-
   return (
     <FoodReminderContainer
       isEaten={optimisticIsEaten}
       onClick={handleToggleIsEaten}
-      replacement={replacement}
     >
       <div
         className={`grid gap-4 grid-cols-[5rem_1fr] items-center content-center max-bp-navbar-mobile:grid-cols-[4rem_1fr] `}
