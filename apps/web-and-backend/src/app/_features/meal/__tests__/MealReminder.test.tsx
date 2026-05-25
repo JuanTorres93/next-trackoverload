@@ -3,9 +3,6 @@ import userEvent from "@testing-library/user-event";
 
 import { createMockDay } from "../../../../../tests/mocks/days";
 import { TEST_USER_ID } from "../../../../../tests/mocks/nextjs";
-import { createMockRecipes } from "../../../../../tests/mocks/recipes";
-import { createServer } from "../../../../../tests/mocks/server";
-import { RecipeDTO } from "../../../../application-layer/dtos/RecipeDTO";
 import { MemoryDaysRepo } from "../../../../infra/repos/memory/MemoryDaysRepo";
 import { MemoryFakeMealsRepo } from "../../../../infra/repos/memory/MemoryFakeMealsRepo";
 import { MemoryMealsRepo } from "../../../../infra/repos/memory/MemoryMealsRepo";
@@ -69,6 +66,19 @@ describe("MealReminder", () => {
     await waitFor(async () => {
       const saved = await mealsRepo.getMealByIdForUser(meal.id, TEST_USER_ID);
       expect(saved?.isEaten).toBe(false);
+    });
+  });
+
+  it("should delete meal on click delete button", async () => {
+    const { meal } = await setup();
+
+    const deleteButton = screen.getByTestId("delete-food-button");
+    await userEvent.click(deleteButton);
+
+    await waitFor(async () => {
+      const saved = await mealsRepo.getMealByIdForUser(meal.id, TEST_USER_ID);
+
+      expect(saved).toBeNull();
     });
   });
 });

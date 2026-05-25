@@ -1,45 +1,56 @@
 "use client";
+
 import { HiArrowPath } from "react-icons/hi2";
 import { twMerge } from "tailwind-merge";
 
-import Modal from "../../_ui/Modal";
+import ButtonX from "@/app/_ui/buttons/ButtonX";
+
+import LoadingOverlay from "./LoadingOverlay";
 
 function FoodReminderContainer({
   children,
   isEaten,
+  onDelete,
+  isDeleting,
   ...props
 }: {
   isEaten?: boolean;
+  onDelete?: () => Promise<void>;
+  isDeleting?: boolean;
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
-  return (
-    <Modal>
-      <div
-        {...rest}
-        className={twMerge(
-          "bg-surface-card relative grid grid-cols-[1fr_min-content] gap-4 grid-rows-1! shadow-sm p-2 rounded-xl overflow-hidden hover:scale-[1.02] cursor-pointer transition",
-          isEaten && "bg-primary! text-text-light shadow-xs! scale-[0.97]!",
-          className,
-        )}
-      >
-        {children}
+  async function handleDelete(e: React.MouseEvent<HTMLButtonElement>) {
+    e.stopPropagation();
 
-        {/* 
-        <button
-          type="button"
-          aria-label="Cambiar comida"
-          data-testid="replace-food-button"
-          className={twMerge(
-            "flex items-center cursor-pointer gap-1 text-xs opacity-60 hover:text-primary! transition-colors",
-            isEaten && "hover:opacity-80 hover:text-text-light!",
-          )}
-        >
-          <HiArrowPath className="w-6 h-6" />
-        </button>
-            */}
-      </div>
-    </Modal>
+    if (!onDelete) return;
+
+    await onDelete();
+  }
+
+  return (
+    <div
+      {...rest}
+      className={twMerge(
+        "bg-surface-card relative grid grid-cols-[1fr_min-content] gap-4 grid-rows-1! shadow-sm p-2 rounded-xl overflow-hidden hover:scale-[1.02] cursor-pointer transition",
+        isEaten && "bg-primary! text-text-light shadow-xs! scale-[0.97]!",
+        className,
+      )}
+    >
+      {isDeleting && <LoadingOverlay />}
+
+      {children}
+
+      <ButtonX
+        type="button"
+        aria-label="Cambiar comida"
+        data-testid="delete-food-button"
+        className={twMerge(isEaten && "text-text-light!  hover:text-error!")}
+        onClick={handleDelete}
+      >
+        <HiArrowPath className="w-6 h-6" />
+      </ButtonX>
+    </div>
   );
 }
 

@@ -1,9 +1,14 @@
 "use client";
+import { useState } from "react";
+
 import { HiBolt } from "react-icons/hi2";
+
+import { showErrorToast } from "@/app/_ui/showErrorToast";
 
 import { FakeMealDTO } from "../../../application-layer/dtos/FakeMealDTO";
 import FoodReminderContainer from "../common/FoodReminderContainer";
 import FoodReminderMacros from "../common/FoodReminderMacros";
+import { removeFakeMealFromDay } from "./actions";
 
 function EatenFakeMeal({
   fakeMeal,
@@ -12,8 +17,31 @@ function EatenFakeMeal({
   fakeMeal: FakeMealDTO;
   dayId: string;
 }) {
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  async function handleDelete() {
+    setIsDeleting(true);
+
+    try {
+      const jsend = await removeFakeMealFromDay(dayId, fakeMeal.id);
+
+      if (jsend.status === "success") return;
+
+      showErrorToast(
+        jsend.data?.message ||
+          "Ha ocurrido un error al eliminar la comida. Por favor, intenta nuevamente.",
+      );
+    } finally {
+      setIsDeleting(false);
+    }
+  }
+
   return (
-    <FoodReminderContainer isEaten>
+    <FoodReminderContainer
+      isEaten
+      onDelete={handleDelete}
+      isDeleting={isDeleting}
+    >
       <div className="flex items-center min-w-0 gap-3 p-3 cursor-default">
         <div className="flex items-center justify-center rounded-full w-9 h-9 shrink-0 bg-white/20">
           <HiBolt className="text-lg" />
