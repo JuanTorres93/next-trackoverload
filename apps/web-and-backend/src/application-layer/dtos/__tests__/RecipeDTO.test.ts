@@ -37,8 +37,13 @@ describe("RecipeDTO", () => {
           ingredient: {
             id: line.ingredient.id,
             name: line.ingredient.name,
+
             nutritionalInfoPer100g: line.ingredient.nutritionalInfoPer100g,
+
             imageUrl: line.ingredient.imageUrl,
+
+            category: line.ingredient.category,
+
             createdAt: line.ingredient.createdAt.toISOString(),
             updatedAt: line.ingredient.updatedAt.toISOString(),
           },

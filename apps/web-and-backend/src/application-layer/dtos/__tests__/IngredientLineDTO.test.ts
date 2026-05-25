@@ -42,8 +42,13 @@ describe("IngredientLineDTO", () => {
         ingredient: {
           id: ingredient.id,
           name: ingredient.name,
+
           nutritionalInfoPer100g: ingredient.nutritionalInfoPer100g,
+
           imageUrl: ingredient.imageUrl,
+
+          category: ingredient.category,
+
           createdAt: ingredient.createdAt.toISOString(),
           updatedAt: ingredient.updatedAt.toISOString(),
         },

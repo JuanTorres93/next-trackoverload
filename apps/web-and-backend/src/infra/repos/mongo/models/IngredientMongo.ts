@@ -1,11 +1,11 @@
-import mongoose from 'mongoose';
-import { IngredientCreateProps } from '../../../../domain/entities/ingredient/Ingredient';
+import mongoose from "mongoose";
 
+import { IngredientCreateProps } from "../../../../domain/entities/ingredient/Ingredient";
 import {
-  nameTextOptions,
   caloriesFloatOptions,
+  nameTextOptions,
   proteinFloatOptions,
-} from '../../../../domain/entities/ingredient/Ingredient';
+} from "../../../../domain/entities/ingredient/Ingredient";
 
 const ingredientSchema = new mongoose.Schema<IngredientCreateProps>({
   id: {
@@ -18,6 +18,7 @@ const ingredientSchema = new mongoose.Schema<IngredientCreateProps>({
     required: true,
     maxlength: nameTextOptions.maxLength.value,
   },
+
   calories: {
     type: Number,
     required: true,
@@ -28,10 +29,18 @@ const ingredientSchema = new mongoose.Schema<IngredientCreateProps>({
     required: true,
     min: proteinFloatOptions.onlyPositive ? 0 : undefined,
   },
+
   imageUrl: {
     type: String,
     required: false,
   },
+
+  category: {
+    type: String,
+    required: false,
+    default: "other",
+  },
+
   createdAt: {
     type: Date,
     required: true,
@@ -44,6 +53,6 @@ const ingredientSchema = new mongoose.Schema<IngredientCreateProps>({
 
 const IngredientMongo =
   mongoose.models.Ingredient ||
-  mongoose.model<IngredientCreateProps>('Ingredient', ingredientSchema);
+  mongoose.model<IngredientCreateProps>("Ingredient", ingredientSchema);
 
 export default IngredientMongo;

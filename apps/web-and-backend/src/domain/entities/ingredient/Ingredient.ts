@@ -1,4 +1,5 @@
 import { logNoTest } from "@/domain/utils/logNoTest";
+import { IngredientCategory } from "@/domain/value-objects/IngredientCategory/IngredientCategory";
 
 import { ValidationError } from "../../common/errors";
 import { DomainDate } from "../../value-objects/DomainDate/DomainDate";
@@ -18,6 +19,7 @@ export type IngredientCreateProps = {
   calories: number;
   protein: number;
   imageUrl?: string;
+  category?: string;
   createdAt?: Date;
   updatedAt?: Date;
 };
@@ -33,6 +35,7 @@ export type IngredientProps = {
   name: Text;
   nutritionalInfoPer100g: NutritionalInfoPer100g;
   imageUrl?: Text;
+  category: IngredientCategory;
   createdAt: DomainDate;
   updatedAt: DomainDate;
 };
@@ -52,11 +55,18 @@ export class Ingredient {
       ...props,
       id: Id.create(props.id),
       name: Text.create(props.name, nameTextOptions),
+
       nutritionalInfoPer100g: {
         calories: Float.create(props.calories, caloriesFloatOptions),
         protein: Float.create(props.protein, proteinFloatOptions),
       },
+
       imageUrl: props.imageUrl ? Text.create(props.imageUrl) : undefined,
+
+      category: props.category
+        ? IngredientCategory.create(props.category)
+        : IngredientCategory.create("other"),
+
       createdAt: DomainDate.create(props.createdAt),
       updatedAt: DomainDate.create(props.updatedAt),
     };
@@ -99,6 +109,7 @@ export class Ingredient {
       calories: this.nutritionalInfoPer100g.calories,
       protein: this.nutritionalInfoPer100g.protein,
       imageUrl: this.imageUrl,
+      category: this.category,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
     };
@@ -121,6 +132,10 @@ export class Ingredient {
 
   get imageUrl() {
     return this.props.imageUrl?.value;
+  }
+
+  get category() {
+    return this.props.category.value;
   }
 
   get createdAt() {

@@ -47,6 +47,10 @@ describe("Ingredient", () => {
         now.getTime(),
       );
     });
+
+    it("should have a category", async () => {
+      expect(ingredient.category).toBeDefined();
+    });
   });
 
   describe("behaviour", () => {
@@ -68,9 +72,14 @@ describe("Ingredient", () => {
       expect(createProps).toEqual({
         id: ingredient.id,
         name: ingredient.name,
+
         calories: ingredient.nutritionalInfoPer100g.calories,
         protein: ingredient.nutritionalInfoPer100g.protein,
+
         imageUrl: ingredient.imageUrl,
+
+        category: ingredient.category,
+
         createdAt: ingredient.createdAt,
         updatedAt: ingredient.updatedAt,
       });

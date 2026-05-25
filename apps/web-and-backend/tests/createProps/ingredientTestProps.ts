@@ -1,14 +1,15 @@
 import {
   Ingredient,
   IngredientCreateProps,
-} from '../../src/domain/entities/ingredient/Ingredient';
+} from "../../src/domain/entities/ingredient/Ingredient";
 
 export const validIngredientProps = {
-  id: 'ing1',
-  name: 'Chicken Breast',
+  id: "ing1",
+  name: "Chicken Breast",
   calories: 100,
   protein: 15,
-  imageUrl: 'https://example.com/image.jpg',
+  imageUrl: "https://example.com/image.jpg",
+  category: "meat",
   createdAt: new Date(),
   updatedAt: new Date(),
 };
