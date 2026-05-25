@@ -152,24 +152,10 @@ describe("UpdateIngredientLineUsecase", () => {
         await expect(
           updateIngredientLineUsecase.execute(request),
         ).rejects.toThrow(NotFoundError);
-      });
-
-      it("should throw NotFoundError when recipe does not exist", async () => {
-        const request = {
-          userId: userTestProps.userId,
-          parentEntityType: "recipe" as const,
-          parentEntityId: "non-existent-recipe-id",
-          ingredientLineId: testIngredientLine.id,
-          quantityInGrams: 300,
-        };
 
         await expect(
           updateIngredientLineUsecase.execute(request),
-        ).rejects.toThrow(NotFoundError);
-
-        await expect(
-          updateIngredientLineUsecase.execute(request),
-        ).rejects.toThrow(/UpdateIngredientLineUsecase:.*recipe.*not found/i);
+        ).rejects.toThrow(/rec(ipe|eta).*no.*exist/i);
       });
 
       it("should throw NotFoundError when ingredient line does not exist", async () => {
@@ -187,9 +173,7 @@ describe("UpdateIngredientLineUsecase", () => {
 
         await expect(
           updateIngredientLineUsecase.execute(request),
-        ).rejects.toThrow(
-          /UpdateIngredientLineUsecase:.*IngredientLine.*not.*belong.*recipe/i,
-        );
+        ).rejects.toThrow(/(pertenece|belong).*rec(ipe|eta)/i);
       });
 
       it("should throw error when user tries to access another user's recipe", async () => {
@@ -207,9 +191,7 @@ describe("UpdateIngredientLineUsecase", () => {
 
         await expect(
           updateIngredientLineUsecase.execute(request),
-        ).rejects.toThrow(
-          /UpdateIngredientLineUsecase:.*recipe.*not found for user/i,
-        );
+        ).rejects.toThrow(/(permiso|not.*auth).*rec(ipe|eta)/i);
       });
 
       it("should throw error when user tries to access another user's meal", async () => {
@@ -227,9 +209,7 @@ describe("UpdateIngredientLineUsecase", () => {
 
         await expect(
           updateIngredientLineUsecase.execute(request),
-        ).rejects.toThrow(
-          /UpdateIngredientLineUsecase:.*meal.*not found for user/i,
-        );
+        ).rejects.toThrow(/(permiso|not.*auth).*(meal|comida)/i);
       });
     });
   });
@@ -323,7 +303,7 @@ describe("UpdateIngredientLineUsecase", () => {
 
         await expect(
           updateIngredientLineUsecase.execute(request),
-        ).rejects.toThrow(/UpdateIngredientLineUsecase:.*meal.*not found/i);
+        ).rejects.toThrow(/(meal|comida).*no.*exist/i);
       });
 
       it("should throw NotFoundError when ingredient line does not exist", async () => {
@@ -341,9 +321,7 @@ describe("UpdateIngredientLineUsecase", () => {
 
         await expect(
           updateIngredientLineUsecase.execute(request),
-        ).rejects.toThrow(
-          /UpdateIngredientLineUsecase:.*IngredientLine.*not.*belong.*meal/i,
-        );
+        ).rejects.toThrow(/(pertenece|belong).*(meal|comida)/i);
       });
 
       it("should throw error when user tries to access another user's meal", async () => {
@@ -361,9 +339,7 @@ describe("UpdateIngredientLineUsecase", () => {
 
         await expect(
           updateIngredientLineUsecase.execute(request),
-        ).rejects.toThrow(
-          /UpdateIngredientLineUsecase:.*meal.*not found for user/i,
-        );
+        ).rejects.toThrow(/(permiso|not.*auth).*(meal|comida)/i);
       });
     });
   });
@@ -403,9 +379,7 @@ describe("UpdateIngredientLineUsecase", () => {
 
         await expect(
           updateIngredientLineUsecase.execute(request),
-        ).rejects.toThrow(
-          /UpdateIngredientLineUsecase:.*Ingredient.*not found/i,
-        );
+        ).rejects.toThrow(/ingrediente?.*no.*exist/i);
       }
     });
 
@@ -425,7 +399,7 @@ describe("UpdateIngredientLineUsecase", () => {
 
         await expect(
           updateIngredientLineUsecase.execute(request),
-        ).rejects.toThrow(/UpdateIngredientLine.*User.*not.*found/);
+        ).rejects.toThrow(/us.*no.*exist/i);
       }
     });
   });
