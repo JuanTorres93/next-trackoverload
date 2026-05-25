@@ -109,7 +109,7 @@ describe("SetCaloriesGoalForDayAndUserUsecase", () => {
           userId: "non-existent-user",
           newCaloriesGoal: 2000,
         }),
-      ).rejects.toThrow(/SetCaloriesGoalForDayAndUserUsecase.*User.*not found/);
+      ).rejects.toThrow(/us.*no.*exist/i);
     });
   });
 });

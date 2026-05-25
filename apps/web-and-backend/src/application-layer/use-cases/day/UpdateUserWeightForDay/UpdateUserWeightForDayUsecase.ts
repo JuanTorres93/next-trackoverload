@@ -1,3 +1,5 @@
+import { logNoTest } from "@/utils/logNoTest";
+
 import { DayDTO, toDayDTO } from '../../../dtos/DayDTO';
 import { NotFoundError } from '../../../../domain/common/errors';
 import { Day } from '../../../../domain/entities/day/Day';
@@ -28,9 +30,11 @@ export class UpdateUserWeightForDayUsecase {
     ]);
 
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `UpdateUserWeightForDayUsecase: User with id ${request.userId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     let dayToChangeWeight: Day | null = fetchedDay;

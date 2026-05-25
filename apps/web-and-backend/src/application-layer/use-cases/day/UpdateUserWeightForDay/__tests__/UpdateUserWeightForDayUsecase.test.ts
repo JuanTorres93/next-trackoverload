@@ -109,7 +109,7 @@ describe("UpdateUserWeightForDayUsecase", () => {
           userId: "non-existent-user",
           newWeightInKg: 75,
         }),
-      ).rejects.toThrow(/UpdateUserWeightForDayUsecase.*User.*not found/);
+      ).rejects.toThrow(/us.*no.*exist/i);
     });
   });
 });

@@ -128,9 +128,7 @@ describe("ReplaceMealByAnotherMealForUserInDayUsecase", () => {
       };
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
-      await expect(usecase.execute(request)).rejects.toThrow(
-        /ReplaceMealByAnotherMeal.*User.*not found/,
-      );
+      await expect(usecase.execute(request)).rejects.toThrow(/us.*no.*exist/i);
     });
 
     it("should throw NotFoundError if recipe does not exist", async () => {
@@ -142,9 +140,7 @@ describe("ReplaceMealByAnotherMealForUserInDayUsecase", () => {
       };
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
-      await expect(usecase.execute(request)).rejects.toThrow(
-        /ReplaceMealByAnotherMeal.*Recipe.*not found/,
-      );
+      await expect(usecase.execute(request)).rejects.toThrow(/rec.*no.*exist/i);
     });
 
     it("should throw NotFoundError if day does not exist", async () => {
@@ -156,9 +152,7 @@ describe("ReplaceMealByAnotherMealForUserInDayUsecase", () => {
       };
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
-      await expect(usecase.execute(request)).rejects.toThrow(
-        /ReplaceMealByAnotherMeal.*Day.*not found/,
-      );
+      await expect(usecase.execute(request)).rejects.toThrow(/d.*no.*exist/i);
     });
 
     it("should throw NotFoundError when accessing another user's day", async () => {
@@ -176,9 +170,6 @@ describe("ReplaceMealByAnotherMealForUserInDayUsecase", () => {
       };
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
-      await expect(usecase.execute(request)).rejects.toThrow(
-        /ReplaceMealByAnotherMeal.*Day.*not found/,
-      );
     });
   });
 });

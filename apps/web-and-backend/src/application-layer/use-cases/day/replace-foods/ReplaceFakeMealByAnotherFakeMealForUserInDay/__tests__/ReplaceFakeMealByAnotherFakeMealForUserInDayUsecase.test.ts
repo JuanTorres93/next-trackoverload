@@ -127,7 +127,7 @@ describe("ReplaceFakeMealByAnotherFakeMealForUserInDayUsecase", () => {
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
       await expect(usecase.execute(request)).rejects.toThrow(
-        /ReplaceFakeMealByAnotherFakeMeal.*User.*not found/,
+        /us.*no.*exist/i,
       );
     });
 
@@ -141,7 +141,7 @@ describe("ReplaceFakeMealByAnotherFakeMealForUserInDayUsecase", () => {
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
       await expect(usecase.execute(request)).rejects.toThrow(
-        /ReplaceFakeMealByAnotherFakeMeal.*Day.*not found/,
+        /d.*no.*exist/i,
       );
     });
   });

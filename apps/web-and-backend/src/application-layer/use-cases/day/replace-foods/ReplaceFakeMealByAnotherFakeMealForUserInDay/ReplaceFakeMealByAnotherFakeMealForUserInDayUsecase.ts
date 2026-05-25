@@ -1,3 +1,5 @@
+import { logNoTest } from "@/utils/logNoTest";
+
 import { NotFoundError } from "../../../../../domain/common/errors";
 import { FakeMeal } from "../../../../../domain/entities/fakemeal/FakeMeal";
 import { DaysRepo } from "../../../../../domain/repos/DaysRepo.port";
@@ -35,15 +37,19 @@ export class ReplaceFakeMealByAnotherFakeMealForUserInDayUsecase {
     ]);
 
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `ReplaceFakeMealByAnotherFakeMealForUserInDayUsecase: User with id ${request.userId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     if (!day) {
-      throw new NotFoundError(
+      logNoTest(
         `ReplaceFakeMealByAnotherFakeMealForUserInDayUsecase: Day with id ${request.dayId} not found for user ${request.userId}`,
       );
+
+      throw new NotFoundError("El día no existe.");
     }
 
     const newFakeMeal = FakeMeal.create({

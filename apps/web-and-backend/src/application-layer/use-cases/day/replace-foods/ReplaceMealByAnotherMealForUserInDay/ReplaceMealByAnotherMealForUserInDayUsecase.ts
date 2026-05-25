@@ -1,3 +1,5 @@
+import { logNoTest } from "@/utils/logNoTest";
+
 import { DayDTO, toDayDTO } from '../../../../dtos/DayDTO';
 import { TransactionContext } from '../../../../ports/TransactionContext.port';
 import { NotFoundError } from '../../../../../domain/common/errors';
@@ -38,21 +40,27 @@ export class ReplaceMealByAnotherMealForUserInDayUsecase {
     ]);
 
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `ReplaceMealByAnotherMealForUserInDayUsecase: User with id ${request.userId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     if (!recipe) {
-      throw new NotFoundError(
+      logNoTest(
         `ReplaceMealByAnotherMealForUserInDayUsecase: Recipe with id ${request.recipeId} not found`,
       );
+
+      throw new NotFoundError("La receta no existe.");
     }
 
     if (!day) {
-      throw new NotFoundError(
+      logNoTest(
         `ReplaceMealByAnotherMealForUserInDayUsecase: Day with id ${request.dayId} not found for user ${request.userId}`,
       );
+
+      throw new NotFoundError("El día no existe.");
     }
 
     const [newMeal] = createMealsFromRecipes(
