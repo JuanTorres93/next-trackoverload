@@ -47,6 +47,7 @@ export class Exercise {
     if (patch.name) {
       this.props.name = Text.create(patch.name, nameTextOptions);
     }
+
     this.props.updatedAt = DomainDate.create(new Date());
   }
 

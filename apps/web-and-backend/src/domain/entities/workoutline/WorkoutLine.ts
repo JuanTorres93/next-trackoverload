@@ -1,7 +1,7 @@
-import { DomainDate } from '../../value-objects/DomainDate/DomainDate';
-import { Id } from '../../value-objects/Id/Id';
-import { Integer } from '../../value-objects/Integer/Integer';
-import { WeightInKg } from '../../value-objects/WeightInKg/WeightInKg';
+import { DomainDate } from "../../value-objects/DomainDate/DomainDate";
+import { Id } from "../../value-objects/Id/Id";
+import { Integer } from "../../value-objects/Integer/Integer";
+import { WeightInKg } from "../../value-objects/WeightInKg/WeightInKg";
 
 export type WorkoutLineCreateProps = {
   id: string;
@@ -71,6 +71,7 @@ export class WorkoutLine {
     if (patch.weightInKg !== undefined) {
       this.props.weightInKg = WeightInKg.create(patch.weightInKg);
     }
+
     this.props.updatedAt = DomainDate.create();
   }
 

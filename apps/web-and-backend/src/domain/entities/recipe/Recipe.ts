@@ -1,11 +1,13 @@
-import { DomainDate } from '../../value-objects/DomainDate/DomainDate';
-import { Id } from '../../value-objects/Id/Id';
-import { Integer } from '../../value-objects/Integer/Integer';
-import { Text } from '../../value-objects/Text/Text';
-import { ValidationError } from '../../common/errors';
-import { Calories } from '../../interfaces/Calories';
-import { Protein } from '../../interfaces/Protein';
-import { IngredientLine } from '../ingredientline/IngredientLine';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { ValidationError } from "../../common/errors";
+import { Calories } from "../../interfaces/Calories";
+import { Protein } from "../../interfaces/Protein";
+import { DomainDate } from "../../value-objects/DomainDate/DomainDate";
+import { Id } from "../../value-objects/Id/Id";
+import { Integer } from "../../value-objects/Integer/Integer";
+import { Text } from "../../value-objects/Text/Text";
+import { IngredientLine } from "../ingredientline/IngredientLine";
 
 export type RecipeCreateProps = {
   id: string;
@@ -41,8 +43,12 @@ export class Recipe implements Protein, Calories {
       props.ingredientLines.length === 0 ||
       !props.ingredientLines.every((line) => line instanceof IngredientLine)
     ) {
+      logNoTest(
+        "Recipe: ingredientLines must be a non-empty array of IngredientLine",
+      );
+
       throw new ValidationError(
-        'Recipe: ingredientLines must be a non-empty array of IngredientLine',
+        "La receta debe tener al menos un ingrediente.",
       );
     }
 
@@ -53,9 +59,8 @@ export class Recipe implements Protein, Calories {
     const uniqueIngredientIds = new Set(ingredientIds);
 
     if (uniqueIngredientIds.size < ingredientIds.length) {
-      throw new ValidationError(
-        'Recipe: ingredientLines contain duplicate ingredients',
-      );
+      logNoTest("Recipe: ingredientLines contain duplicate ingredients");
+      throw new ValidationError("La receta contiene ingredientes duplicados.");
     }
 
     const recipeProps: RecipeProps = {
@@ -83,7 +88,9 @@ export class Recipe implements Protein, Calories {
 
   addIngredientLine(ingredientLine: IngredientLine): void {
     if (!(ingredientLine instanceof IngredientLine)) {
-      throw new ValidationError('Recipe: Invalid ingredient line');
+      logNoTest("Recipe: Invalid ingredient line");
+
+      throw new ValidationError("La línea de ingrediente no es válida.");
     }
 
     this._throwIfIngredientExists(ingredientLine.ingredient.id);
@@ -101,15 +108,18 @@ export class Recipe implements Protein, Calories {
 
     // Validate that the ingredient line exists
     if (filteredLines.length === this.props.ingredientLines.length) {
-      throw new ValidationError(
+      logNoTest(
         `Recipe: No ingredient line found with ingredient id ${idToRemove}`,
       );
+      throw new ValidationError("El ingrediente no existe en la receta.");
     }
 
     // Validate that we don't leave the recipe empty
     if (filteredLines.length === 0) {
+      logNoTest("Recipe: ingredientLines cannot be empty after removal");
+
       throw new ValidationError(
-        'Recipe: ingredientLines cannot be empty after removal',
+        "La receta debe tener al menos un ingrediente.",
       );
     }
 
@@ -177,9 +187,10 @@ export class Recipe implements Protein, Calories {
     );
 
     if (ingredientAlreadyExists) {
-      throw new ValidationError(
+      logNoTest(
         `Recipe: Ingredient with id ${ingredientId} already exists in recipe`,
       );
+      throw new ValidationError("El ingrediente ya existe en la receta.");
     }
   }
 }

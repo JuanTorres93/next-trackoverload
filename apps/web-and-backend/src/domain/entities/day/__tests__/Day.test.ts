@@ -73,7 +73,7 @@ describe("Day", () => {
 
       expect(() => day.addMeal(newMealId)).toThrow(ValidationError);
       expect(() => day.addMeal(newMealId)).toThrow(
-        /Day.*Meal.*id.*already.*exists/,
+        /(Day.*already.*exists|ya existe)/i,
       );
       expect(day.mealIds).toHaveLength(initialLength);
     });
@@ -91,7 +91,7 @@ describe("Day", () => {
     it("should throw error if removing meal that is not contained in day", async () => {
       expect(() => day.removeMealById("non-existent")).toThrow(ValidationError);
       expect(() => day.removeMealById("non-existent")).toThrow(
-        /Day.*No.*meal.*found.*id/,
+        /(Day.*No.*meal.*found|no existe en el día)/i,
       );
     });
   });
@@ -125,7 +125,7 @@ describe("Day", () => {
 
       expect(() => day.addFakeMeal(fakeMealId)).toThrow(ValidationError);
       expect(() => day.addFakeMeal(fakeMealId)).toThrow(
-        /Day.*FakeMeal.*id.*already.*exists/,
+        /(Day.*FakeMeal.*already.*exists|ya existe)/i,
       );
       expect(day.fakeMealIds).toHaveLength(initialLength);
     });
@@ -145,7 +145,7 @@ describe("Day", () => {
         ValidationError,
       );
       expect(() => day.removeFakeMealById("non-existent")).toThrow(
-        /Day.*No.*fake meal.*found.*id/,
+        /(Day.*No.*fake meal.*found|no existe en el día)/i,
       );
     });
   });

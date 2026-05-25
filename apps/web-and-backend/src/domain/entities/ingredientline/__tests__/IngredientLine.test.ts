@@ -57,7 +57,13 @@ describe("IngredientLine", () => {
         ...validIngredientLineProps,
         ingredient: {} as Ingredient,
       });
-    }).toThrowError(ValidationError);
+    }).toThrow(ValidationError);
+    expect(() => {
+      IngredientLine.create({
+        ...validIngredientLineProps,
+        ingredient: {} as Ingredient,
+      });
+    }).toThrow(/(IngredientLine.*Invalid|no es válido)/i);
   });
 
   it("should throw an error if quantityInGrams is invalid", async () => {
@@ -66,14 +72,14 @@ describe("IngredientLine", () => {
         ...validIngredientLineProps,
         quantityInGrams: -100,
       });
-    }).toThrowError(ValidationError);
+    }).toThrow(ValidationError);
 
     expect(() => {
       IngredientLine.create({
         ...validIngredientLineProps,
         quantityInGrams: 0,
       });
-    }).toThrowError(ValidationError);
+    }).toThrow(ValidationError);
 
     expect(() => {
       IngredientLine.create({
@@ -81,7 +87,7 @@ describe("IngredientLine", () => {
         // @ts-expect-error testing invalid type
         quantityInGrams: "100",
       });
-    }).toThrowError(ValidationError);
+    }).toThrow(ValidationError);
   });
 
   it("should throw error if id is not instance of Id", async () => {
@@ -91,7 +97,7 @@ describe("IngredientLine", () => {
         // @ts-expect-error testing invalid type
         id: 123,
       });
-    }).toThrowError(ValidationError);
+    }).toThrow(ValidationError);
 
     expect(() => {
       IngredientLine.create({
@@ -99,7 +105,7 @@ describe("IngredientLine", () => {
         // @ts-expect-error testing invalid type
         id: 123,
       });
-    }).toThrowError(/(Id|identificador)/i);
+    }).toThrow(/(Id|identificador)/i);
   });
 
   it("should throw error if quantityInGrams is zero", async () => {
@@ -108,14 +114,14 @@ describe("IngredientLine", () => {
         ...validIngredientLineProps,
         quantityInGrams: 0,
       });
-    }).toThrowError(ValidationError);
+    }).toThrow(ValidationError);
 
     expect(() => {
       IngredientLine.create({
         ...validIngredientLineProps,
         quantityInGrams: 0,
       });
-    }).toThrowError(/(Float.*zero|cero)/i);
+    }).toThrow(/(Float.*zero|cero)/i);
   });
 
   it("should throw error if quantityInGrams is negative", async () => {
@@ -124,14 +130,14 @@ describe("IngredientLine", () => {
         ...validIngredientLineProps,
         quantityInGrams: -50,
       });
-    }).toThrowError(ValidationError);
+    }).toThrow(ValidationError);
 
     expect(() => {
       IngredientLine.create({
         ...validIngredientLineProps,
         quantityInGrams: -50,
       });
-    }).toThrowError(/(Float.*positive|positiv)/i);
+    }).toThrow(/(Float.*positive|positiv)/i);
   });
 
   it("should throw error if parent type is different from meal or recipe", async () => {
@@ -141,7 +147,7 @@ describe("IngredientLine", () => {
         // @ts-expect-error testing invalid type
         parentType: "invalidType",
       });
-    }).toThrowError(ValidationError);
+    }).toThrow(ValidationError);
 
     expect(() => {
       IngredientLine.create({
@@ -149,6 +155,6 @@ describe("IngredientLine", () => {
         // @ts-expect-error testing invalid type
         parentType: "invalidType",
       });
-    }).toThrowError(/IngredientLine.*parentType.*meal.*recipe/);
+    }).toThrow(/(IngredientLine.*parentType.*meal.*recipe|tipo de padre)/i);
   });
 });

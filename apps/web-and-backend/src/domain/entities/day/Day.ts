@@ -1,9 +1,11 @@
-import { DayId } from '../../value-objects/DayId/DayId';
-import { DomainDate } from '../../value-objects/DomainDate/DomainDate';
-import { Id } from '../../value-objects/Id/Id';
-import { ValidationError } from '../../common/errors';
-import { WeightInKg } from '../../value-objects/WeightInKg/WeightInKg';
-import { Integer } from '../../value-objects/Integer/Integer';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { ValidationError } from "../../common/errors";
+import { DayId } from "../../value-objects/DayId/DayId";
+import { DomainDate } from "../../value-objects/DomainDate/DomainDate";
+import { Id } from "../../value-objects/Id/Id";
+import { Integer } from "../../value-objects/Integer/Integer";
+import { WeightInKg } from "../../value-objects/WeightInKg/WeightInKg";
 
 export type DayCreateProps = {
   day: number;
@@ -60,9 +62,10 @@ export class Day {
     const validMealId = Id.create(mealId);
 
     if (this.props.mealIds.find((mealId) => mealId.equals(validMealId))) {
-      throw new ValidationError(
+      logNoTest(
         `Day: (Fake)Meal with id ${validMealId} already exists in the day`,
       );
+      throw new ValidationError("La comida ya existe en el día.");
     }
 
     this.props.mealIds.push(validMealId);
@@ -75,9 +78,10 @@ export class Day {
     if (
       this.props.fakeMealIds.find((mealId) => mealId.equals(validFakeMealId))
     ) {
-      throw new ValidationError(
+      logNoTest(
         `Day: FakeMeal with id ${validFakeMealId} already exists in the day`,
       );
+      throw new ValidationError("La comida rápida ya existe en el día.");
     }
 
     this.props.fakeMealIds.push(validFakeMealId);
@@ -93,7 +97,8 @@ export class Day {
     );
 
     if (this.props.mealIds.length === initialLength || initialLength === 0) {
-      throw new ValidationError(`Day: No meal found with id ${mealId}`);
+      logNoTest(`Day: No meal found with id ${mealId}`);
+      throw new ValidationError("La comida no existe en el día.");
     }
     this.props.updatedAt = DomainDate.create(new Date());
   }
@@ -106,9 +111,8 @@ export class Day {
     );
 
     if (!fakeMealExists) {
-      throw new ValidationError(
-        `Day: No fake meal found with id ${fakeMealId}`,
-      );
+      logNoTest(`Day: No fake meal found with id ${fakeMealId}`);
+      throw new ValidationError("La comida rápida no existe en el día.");
     }
 
     this.props.fakeMealIds = this.props.fakeMealIds.filter(

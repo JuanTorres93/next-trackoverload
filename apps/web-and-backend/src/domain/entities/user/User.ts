@@ -1,12 +1,14 @@
-import { DomainDate } from '../../value-objects/DomainDate/DomainDate';
-import { Email } from '../../value-objects/Email/Email';
-import { Id } from '../../value-objects/Id/Id';
-import { Integer } from '../../value-objects/Integer/Integer';
-import { Text } from '../../value-objects/Text/Text';
-import { ValidationError } from '../../common/errors';
-import { HashedPassword } from '../../value-objects/HashedPassword/HashedPassword';
-import { SubscriptionStatus } from '../../value-objects/SubscriptionStatus/SubscriptionStatus';
-import { FREE_TRIAL_DAYS } from '../../common/constants';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { FREE_TRIAL_DAYS } from "../../common/constants";
+import { ValidationError } from "../../common/errors";
+import { DomainDate } from "../../value-objects/DomainDate/DomainDate";
+import { Email } from "../../value-objects/Email/Email";
+import { HashedPassword } from "../../value-objects/HashedPassword/HashedPassword";
+import { Id } from "../../value-objects/Id/Id";
+import { Integer } from "../../value-objects/Integer/Integer";
+import { SubscriptionStatus } from "../../value-objects/SubscriptionStatus/SubscriptionStatus";
+import { Text } from "../../value-objects/Text/Text";
 
 export type UserCreateProps = {
   id: string;
@@ -75,10 +77,14 @@ export class User {
     if (
       !patch ||
       Object.keys(patch).length === 0 ||
-      typeof patch !== 'object' ||
+      typeof patch !== "object" ||
       Object.values(patch).every((value) => value === undefined)
     ) {
-      throw new ValidationError('User update: patch object is required');
+      logNoTest("User update: patch object is required");
+
+      throw new ValidationError(
+        "No se han proporcionado datos para actualizar el usuario.",
+      );
     }
 
     if (patch.name) {
@@ -139,20 +145,20 @@ export class User {
     if (!subscriptionStatus) return false;
 
     if (
-      subscriptionStatus.value === 'active' ||
-      subscriptionStatus.value === 'free'
+      subscriptionStatus.value === "active" ||
+      subscriptionStatus.value === "free"
     ) {
       return true;
     }
 
-    if (subscriptionStatus.value === 'free_trial') {
+    if (subscriptionStatus.value === "free_trial") {
       const trialEndDate = new Date(createdAt.value);
       trialEndDate.setDate(trialEndDate.getDate() + FREE_TRIAL_DAYS);
 
       return new Date() < trialEndDate;
     }
 
-    if (subscriptionStatus.value === 'canceled') {
+    if (subscriptionStatus.value === "canceled") {
       return !!subscriptionEndsAt && subscriptionEndsAt.value > new Date();
     }
 

@@ -1,15 +1,17 @@
-import { Calories } from '../../interfaces/Calories';
-import { Protein } from '../../interfaces/Protein';
-import { DomainDate } from '../../value-objects/DomainDate/DomainDate';
-import { Float } from '../../value-objects/Float/Float';
-import { Id } from '../../value-objects/Id/Id';
-import { ValidationError } from '../../common/errors';
-import { Ingredient } from '../ingredient/Ingredient';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { ValidationError } from "../../common/errors";
+import { Calories } from "../../interfaces/Calories";
+import { Protein } from "../../interfaces/Protein";
+import { DomainDate } from "../../value-objects/DomainDate/DomainDate";
+import { Float } from "../../value-objects/Float/Float";
+import { Id } from "../../value-objects/Id/Id";
+import { Ingredient } from "../ingredient/Ingredient";
 
 export type IngredientLineCreateProps = {
   id: string;
   parentId: string;
-  parentType: 'meal' | 'recipe';
+  parentType: "meal" | "recipe";
   ingredient: Ingredient;
   quantityInGrams: number;
   createdAt?: Date;
@@ -24,7 +26,7 @@ export type IngredientLineUpdateProps = {
 export type IngredientLineProps = {
   id: Id;
   parentId: Id;
-  parentType: 'meal' | 'recipe';
+  parentType: "meal" | "recipe";
   ingredient: Ingredient;
   quantityInGrams: Float;
   createdAt: DomainDate;
@@ -38,13 +40,14 @@ export class IngredientLine implements Calories, Protein {
 
   static create(props: IngredientLineCreateProps) {
     if (!(props.ingredient instanceof Ingredient)) {
-      throw new ValidationError('IngredientLine: Invalid ingredient');
+      logNoTest("IngredientLine: Invalid ingredient");
+
+      throw new ValidationError("El ingrediente no es válido.");
     }
 
-    if (props.parentType !== 'meal' && props.parentType !== 'recipe') {
-      throw new ValidationError(
-        'IngredientLine: parentType must be either meal or recipe',
-      );
+    if (props.parentType !== "meal" && props.parentType !== "recipe") {
+      logNoTest("IngredientLine: parentType must be either meal or recipe");
+      throw new ValidationError("El tipo de padre debe ser 'meal' o 'recipe'.");
     }
 
     const ingredientLineProps: IngredientLineProps = {
@@ -69,14 +72,18 @@ export class IngredientLine implements Calories, Protein {
       Object.keys(patch).length === 0 ||
       Object.values(patch).every((value) => value === undefined)
     ) {
+      logNoTest("IngredientLine update must have at least one field to update");
+
       throw new ValidationError(
-        'IngredientLine update must have at least one field to update',
+        "Se necesita al menos un campo para actualizar.",
       );
     }
 
     if (patch.ingredient && !(patch.ingredient instanceof Ingredient)) {
+      logNoTest("IngredientLine update ingredient must have a valid patch");
+
       throw new ValidationError(
-        'IngredientLine update ingredient must have a valid patch',
+        "El ingrediente de actualización no es válido.",
       );
     }
 

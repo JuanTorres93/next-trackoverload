@@ -1,10 +1,12 @@
-import { DomainDate } from '../../value-objects/DomainDate/DomainDate';
-import { Id } from '../../value-objects/Id/Id';
-import { Integer } from '../../value-objects/Integer/Integer';
-import { Text } from '../../value-objects/Text/Text';
-import { ValidationError } from '../../common/errors';
-import { WorkoutLine } from '../workoutline/WorkoutLine';
-import { setNumberIntegerOptions } from '../workoutline/WorkoutLine';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { ValidationError } from "../../common/errors";
+import { DomainDate } from "../../value-objects/DomainDate/DomainDate";
+import { Id } from "../../value-objects/Id/Id";
+import { Integer } from "../../value-objects/Integer/Integer";
+import { Text } from "../../value-objects/Text/Text";
+import { WorkoutLine } from "../workoutline/WorkoutLine";
+import { setNumberIntegerOptions } from "../workoutline/WorkoutLine";
 
 type WorkoutLineUpdateProps = {
   setNumber?: number;
@@ -46,7 +48,9 @@ export class Workout {
 
   static create(props: WorkoutCreateProps): Workout {
     if (!Array.isArray(props.exercises)) {
-      throw new ValidationError('Workout: exercises must be an array');
+      logNoTest("Workout: exercises must be an array");
+
+      throw new ValidationError("Los ejercicios deben ser un array.");
     }
 
     const workoutProps: WorkoutProps = {
@@ -70,7 +74,9 @@ export class Workout {
         line.setNumber === newLine.setNumber,
     );
     if (existingLine) {
-      throw new ValidationError('Workout: Exercise already exists');
+      logNoTest("Workout: Exercise already exists");
+
+      throw new ValidationError("El ejercicio ya existe en el entrenamiento.");
     }
 
     this.props.exercises.push(newLine);
@@ -92,9 +98,11 @@ export class Workout {
       (line) => line.exerciseId === exerciseId,
     );
     if (!exerciseExists) {
-      throw new ValidationError(
-        'Workout: Cannot remove set from exercise that does not exist in workout',
+      logNoTest(
+        "Workout: Cannot remove set from exercise that does not exist in workout",
       );
+
+      throw new ValidationError("El ejercicio no existe en el entrenamiento.");
     }
 
     const validatedSetNumber = Integer.create(
@@ -133,7 +141,11 @@ export class Workout {
 
   update(patch: WorkoutUpdateProps) {
     if (!patch || Object.keys(patch).length === 0) {
-      throw new ValidationError('Workout: No patch provided for update');
+      logNoTest("Workout: No patch provided for update");
+
+      throw new ValidationError(
+        "No se han proporcionado datos para actualizar.",
+      );
     }
 
     if (patch.name !== undefined) {
@@ -149,7 +161,9 @@ export class Workout {
     );
 
     if (!line) {
-      throw new ValidationError('Workout: Exercise not found');
+      logNoTest("Workout: Exercise not found");
+
+      throw new ValidationError("El ejercicio no existe en el entrenamiento.");
     }
 
     if (updateProps.setNumber !== undefined) {

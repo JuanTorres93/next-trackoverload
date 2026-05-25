@@ -163,7 +163,7 @@ describe("Recipe", () => {
           ...recipeTestProps.recipePropsNoIngredientLines,
           ingredientLines: [],
         });
-      }).toThrowError(ValidationError);
+      }).toThrow(ValidationError);
     });
 
     it("should throw an error if ingredientLines contains invalid items", async () => {
@@ -175,7 +175,7 @@ describe("Recipe", () => {
             {} as unknown as IngredientLine,
           ],
         });
-      }).toThrowError(ValidationError);
+      }).toThrow(ValidationError);
     });
 
     it("should throw an error when adding a duplicate ingredient", async () => {
@@ -191,11 +191,11 @@ describe("Recipe", () => {
 
       expect(() => {
         recipe.addIngredientLine(duplicateIngredientLine);
-      }).toThrowError(ValidationError);
+      }).toThrow(ValidationError);
 
       expect(() => {
         recipe.addIngredientLine(duplicateIngredientLine);
-      }).toThrowError(/already exists in recipe/);
+      }).toThrow(/(already exists in recipe|ya existe en la receta)/i);
     });
 
     it("should throw error if name is greater than 100 characters", async () => {
@@ -205,14 +205,14 @@ describe("Recipe", () => {
           ...validRecipeProps,
           name: longName,
         });
-      }).toThrowError(ValidationError);
+      }).toThrow(ValidationError);
 
       expect(() => {
         Recipe.create({
           ...validRecipeProps,
           name: longName,
         });
-      }).toThrowError(/(exceed|superar)/i);
+      }).toThrow(/(exceed|superar)/i);
     });
 
     it("should throw error if creating recipe with duplicated ingredient", async () => {
@@ -242,7 +242,7 @@ describe("Recipe", () => {
           ...recipeTestProps.recipePropsNoIngredientLines,
           ingredientLines: [ingredientLine1, ingredientLine2],
         });
-      }).toThrow(/Recipe.*duplicate.*ingredients/);
+      }).toThrow(/(Recipe.*duplicate.*ingredients|ingredientes duplicados)/i);
     });
   });
 });

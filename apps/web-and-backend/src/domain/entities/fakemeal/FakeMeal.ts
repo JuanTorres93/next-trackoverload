@@ -1,10 +1,10 @@
-import { DomainDate } from '../../value-objects/DomainDate/DomainDate';
-import { Float } from '../../value-objects/Float/Float';
-import { Id } from '../../value-objects/Id/Id';
-import { Integer } from '../../value-objects/Integer/Integer';
-import { Text } from '../../value-objects/Text/Text';
-import { Calories } from '../../interfaces/Calories';
-import { Protein } from '../../interfaces/Protein';
+import { Calories } from "../../interfaces/Calories";
+import { Protein } from "../../interfaces/Protein";
+import { DomainDate } from "../../value-objects/DomainDate/DomainDate";
+import { Float } from "../../value-objects/Float/Float";
+import { Id } from "../../value-objects/Id/Id";
+import { Integer } from "../../value-objects/Integer/Integer";
+import { Text } from "../../value-objects/Text/Text";
 
 export type FakeMealCreateProps = {
   id: string;
@@ -66,6 +66,7 @@ export class FakeMeal implements Protein, Calories {
     if (patch.protein !== undefined) {
       this.props.protein = Float.create(patch.protein, proteinFloatOptions);
     }
+
     this.props.updatedAt = DomainDate.create(new Date());
   }
 

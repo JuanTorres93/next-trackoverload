@@ -1,12 +1,14 @@
-import { DomainDate } from '../../value-objects/DomainDate/DomainDate';
-import { Id } from '../../value-objects/Id/Id';
-import { Integer } from '../../value-objects/Integer/Integer';
-import { Text } from '../../value-objects/Text/Text';
-import { NotFoundError, ValidationError } from '../../common/errors';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { NotFoundError, ValidationError } from "../../common/errors";
+import { DomainDate } from "../../value-objects/DomainDate/DomainDate";
+import { Id } from "../../value-objects/Id/Id";
+import { Integer } from "../../value-objects/Integer/Integer";
+import { Text } from "../../value-objects/Text/Text";
 import {
   WorkoutTemplateLine,
   WorkoutTemplateLineUpdateProps,
-} from '../workouttemplateline/WorkoutTemplateLine';
+} from "../workouttemplateline/WorkoutTemplateLine";
 
 export type WorkoutTemplateCreateProps = {
   id: string;
@@ -43,18 +45,24 @@ export class WorkoutTemplate {
 
   static create(props: WorkoutTemplateCreateProps): WorkoutTemplate {
     if (!Array.isArray(props.exercises)) {
-      throw new ValidationError('WorkoutTemplate exercises must be an array');
+      logNoTest("WorkoutTemplate exercises must be an array");
+
+      throw new ValidationError("Los ejercicios deben ser un array.");
     }
 
     for (const line of props.exercises) {
       if (
         !line.exerciseId ||
         !line.sets ||
-        typeof line.sets !== 'number' ||
+        typeof line.sets !== "number" ||
         line.sets <= 0
       ) {
+        logNoTest(
+          "WorkoutTemplate exercises must be instances of WorkoutTemplateLine",
+        );
+
         throw new ValidationError(
-          'WorkoutTemplate exercises must be instances of WorkoutTemplateLine',
+          "Los ejercicios de la plantilla no son válidos.",
         );
       }
     }
@@ -78,7 +86,9 @@ export class WorkoutTemplate {
       (line) => line.exerciseId === newWorkoutTemplateLine.exerciseId,
     );
     if (existingLine) {
-      throw new ValidationError('WorkoutTemplate: Exercise already exists');
+      logNoTest("WorkoutTemplate: Exercise already exists");
+
+      throw new ValidationError("El ejercicio ya existe en la plantilla.");
     }
     this.props.exercises.push(newWorkoutTemplateLine);
   }
@@ -88,7 +98,9 @@ export class WorkoutTemplate {
       (line) => line.exerciseId === exerciseId,
     );
     if (!existingLine) {
-      throw new NotFoundError('WorkoutTemplate: Exercise to remove not found');
+      logNoTest("WorkoutTemplate: Exercise to remove not found");
+
+      throw new NotFoundError("El ejercicio no existe en la plantilla.");
     }
 
     this.props.exercises = this.props.exercises.filter(
@@ -105,8 +117,11 @@ export class WorkoutTemplate {
     const exercise = this.props.exercises.find(
       (line) => line.exerciseId === exerciseId,
     );
-    if (!exercise)
-      throw new NotFoundError('WorkoutTemplate: Exercise to reorder not found');
+    if (!exercise) {
+      logNoTest("WorkoutTemplate: Exercise to reorder not found");
+
+      throw new NotFoundError("El ejercicio no existe en la plantilla.");
+    }
 
     this.props.exercises = this.props.exercises.filter(
       (line) => line.exerciseId !== exerciseId,
@@ -120,8 +135,13 @@ export class WorkoutTemplate {
       !patch ||
       Object.keys(patch).length === 0 ||
       Object.values(patch).every((value) => value === undefined)
-    )
-      throw new ValidationError('WorkoutTemplate: No update patch provided');
+    ) {
+      logNoTest("WorkoutTemplate: No update patch provided");
+
+      throw new ValidationError(
+        "No se han proporcionado datos para actualizar.",
+      );
+    }
 
     if (patch.name !== undefined) {
       this.props.name = Text.create(patch.name, nameTextOptions);
@@ -138,7 +158,9 @@ export class WorkoutTemplate {
       this.props.exercises.find((line) => line.exerciseId === exerciseId);
 
     if (!lineToUpdate) {
-      throw new NotFoundError('WorkoutTemplate: Exercise to update not found');
+      logNoTest("WorkoutTemplate: Exercise to update not found");
+
+      throw new NotFoundError("El ejercicio no existe en la plantilla.");
     }
 
     lineToUpdate.update(updateProps);

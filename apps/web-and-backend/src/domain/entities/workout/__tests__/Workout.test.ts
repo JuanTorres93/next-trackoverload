@@ -160,7 +160,7 @@ describe("Workout", () => {
       );
 
       expect(() => workout.addExercise(newWorkoutLine)).toThrow(
-        /Workout.*Exercise.*already.*exists/,
+        /(Workout.*Exercise.*already.*exists|ya existe en el entrenamiento)/i,
       );
     });
 
@@ -177,7 +177,9 @@ describe("Workout", () => {
 
       expect(() =>
         workout.updateExercise("non-existent-exercise", updateProps),
-      ).toThrow(/Workout.*Exercise.*not.*found/);
+      ).toThrow(
+        /(Workout.*Exercise.*not.*found|no existe en el entrenamiento)/i,
+      );
     });
 
     it("should throw error if name is larger that 100 chars", async () => {
@@ -204,7 +206,9 @@ describe("Workout", () => {
       }).toThrow(ValidationError);
       expect(() => {
         workout.removeSet(...args);
-      }).toThrow(/Workout.*remove.*not.*exist/);
+      }).toThrow(
+        /(Workout.*remove.*not.*exist|no existe en el entrenamiento)/i,
+      );
     });
 
     it("should throw error if no patch is provided when updating", async () => {
@@ -214,7 +218,7 @@ describe("Workout", () => {
 
       expect(() => {
         workout.update({});
-      }).toThrow(/Workout.*No.*patch/);
+      }).toThrow(/(Workout.*No.*patch|datos para actualizar)/i);
     });
   });
 });

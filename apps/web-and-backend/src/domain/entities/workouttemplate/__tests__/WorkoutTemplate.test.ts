@@ -329,7 +329,7 @@ describe("WorkoutTemplate", () => {
       expect(() => {
         // @ts-expect-error no patch provided
         workoutTemplate.update();
-      }).toThrow(/WorkoutTemplate.*patch/);
+      }).toThrow(/(WorkoutTemplate.*patch|datos para actualizar)/i);
     });
 
     it("should throw error if trying to remove a non-existent exercise", async () => {
@@ -339,7 +339,9 @@ describe("WorkoutTemplate", () => {
 
       expect(() => {
         workoutTemplate.removeExercise("non-existent-exercise");
-      }).toThrow(/WorkoutTemplate: Exercise to remove not found/);
+      }).toThrow(
+        /(WorkoutTemplate.*Exercise.*remove.*not found|no existe en la plantilla)/i,
+      );
     });
 
     it("should throw error if trying to reorder an exercise that is not contained in the template", async () => {
@@ -349,7 +351,9 @@ describe("WorkoutTemplate", () => {
 
       expect(() => {
         workoutTemplate.reorderExercise("non-existent-exercise", 0);
-      }).toThrow(/WorkoutTemplate.*Exercise.*not found/);
+      }).toThrow(
+        /(WorkoutTemplate.*Exercise.*not found|no existe en la plantilla)/i,
+      );
     });
   });
 });

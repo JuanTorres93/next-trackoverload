@@ -1,12 +1,14 @@
-import { DomainDate } from '../../value-objects/DomainDate/DomainDate';
-import { Id } from '../../value-objects/Id/Id';
-import { Integer } from '../../value-objects/Integer/Integer';
-import { Text } from '../../value-objects/Text/Text';
-import { ValidationError } from '../../common/errors';
-import { Calories } from '../../interfaces/Calories';
-import { Protein } from '../../interfaces/Protein';
-import { IngredientLine } from '../ingredientline/IngredientLine';
-import { Bool } from '../../value-objects/Boolean/Boolean';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { ValidationError } from "../../common/errors";
+import { Calories } from "../../interfaces/Calories";
+import { Protein } from "../../interfaces/Protein";
+import { Bool } from "../../value-objects/Boolean/Boolean";
+import { DomainDate } from "../../value-objects/DomainDate/DomainDate";
+import { Id } from "../../value-objects/Id/Id";
+import { Integer } from "../../value-objects/Integer/Integer";
+import { Text } from "../../value-objects/Text/Text";
+import { IngredientLine } from "../ingredientline/IngredientLine";
 
 export type MealCreateProps = {
   id: string;
@@ -50,8 +52,12 @@ export class Meal implements Calories, Protein {
       props.ingredientLines.length === 0 ||
       !props.ingredientLines.every((line) => line instanceof IngredientLine)
     ) {
+      logNoTest(
+        "Meal: ingredientLines must be a non-empty array of IngredientLine",
+      );
+
       throw new ValidationError(
-        'Meal: ingredientLines must be a non-empty array of IngredientLine',
+        "La comida debe tener al menos un ingrediente.",
       );
     }
 
@@ -72,7 +78,9 @@ export class Meal implements Calories, Protein {
 
   addIngredientLine(ingredientLine: IngredientLine): void {
     if (!(ingredientLine instanceof IngredientLine)) {
-      throw new ValidationError('Meal: Invalid ingredient line');
+      logNoTest("Meal: Invalid ingredient line");
+
+      throw new ValidationError("La línea de ingrediente no es válida.");
     }
 
     const exists = this.props.ingredientLines.some(
@@ -80,9 +88,11 @@ export class Meal implements Calories, Protein {
     );
 
     if (exists) {
-      throw new ValidationError(
+      logNoTest(
         `Meal: Ingredient with id ${ingredientLine.ingredient.id} already exists in the meal`,
       );
+
+      throw new ValidationError("El ingrediente ya existe en la comida.");
     }
 
     this.props.ingredientLines.push(ingredientLine);
@@ -96,15 +106,18 @@ export class Meal implements Calories, Protein {
     );
 
     if (memoryComputation.length === 0) {
+      logNoTest("Meal: At least one ingredient line must exist in the meal");
+
       throw new ValidationError(
-        'Meal: At least one ingredient line must exist in the meal',
+        "La comida debe tener al menos un ingrediente.",
       );
     }
 
     if (memoryComputation.length === initialLength) {
-      throw new ValidationError(
+      logNoTest(
         `Meal: No ingredient line found with ingredient id ${ingredientId}`,
       );
+      throw new ValidationError("El ingrediente no existe en la comida.");
     }
 
     this.props.ingredientLines = memoryComputation;
@@ -117,8 +130,10 @@ export class Meal implements Calories, Protein {
       Object.keys(patch).length === 0 ||
       Object.values(patch).every((value) => value === undefined)
     ) {
+      logNoTest("Meal: No properties provided in patch for update");
+
       throw new ValidationError(
-        'Meal: No properties provided in patch for update',
+        "No se han proporcionado datos para actualizar.",
       );
     }
 

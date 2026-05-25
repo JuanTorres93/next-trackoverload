@@ -144,7 +144,7 @@ describe("Meal", () => {
         ValidationError,
       );
       expect(() => meal.addIngredientLine(duplicateIngredientLine)).toThrow(
-        /Meal:.*ingredient.*already exists.*meal/i,
+        /(Meal.*ingredient.*already exists|ya existe en la comida)/i,
       );
     });
 
@@ -176,7 +176,7 @@ describe("Meal", () => {
       ).toThrow(ValidationError);
       expect(() =>
         meal.removeIngredientLineByIngredientId(ingredientIdToRemove),
-      ).toThrow(/Meal:.*At least one.*ingredient.*line.*exist/i);
+      ).toThrow(/(Meal.*At least one.*ingredient|al menos un ingrediente)/i);
     });
 
     it("should toggle isEaten", async () => {
@@ -207,7 +207,7 @@ describe("Meal", () => {
           ...validMealProps,
           ingredientLines: [],
         }),
-      ).toThrow(/Meal:.*ingredientLines.*non-empty.*array/);
+      ).toThrow(/(Meal.*ingredientLines.*non-empty|al menos un ingrediente)/i);
     });
 
     it("should throw error for invalid ingredient lines", async () => {
@@ -227,7 +227,7 @@ describe("Meal", () => {
             // @ts-expect-error Testing invalid inputs
             ingredientLines: [invalidLine],
           }),
-        ).toThrow(/Meal:.*ingredientLines.*IngredientLine/);
+        ).toThrow(/(Meal.*ingredientLines.*IngredientLine|ingrediente)/i);
       }
     });
 
@@ -249,7 +249,9 @@ describe("Meal", () => {
 
     it("should throw error if no patch is specified when updating", async () => {
       expect(() => meal.update({})).toThrow(ValidationError);
-      expect(() => meal.update({})).toThrow(/Meal.*No.*patch/);
+      expect(() => meal.update({})).toThrow(
+        /(Meal.*No.*patch|datos para actualizar)/i,
+      );
     });
   });
 });

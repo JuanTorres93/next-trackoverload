@@ -239,7 +239,9 @@ describe("User", () => {
       expect(() =>
         // @ts-expect-error Testing invalid inputs
         user.update(),
-      ).toThrowError(/User.*patch.*required/);
+      ).toThrowError(
+        /(User.*patch.*required|datos para actualizar el usuario)/i,
+      );
     });
   });
 });

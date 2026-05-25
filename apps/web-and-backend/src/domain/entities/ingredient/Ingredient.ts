@@ -1,9 +1,11 @@
-import { DomainDate } from '../../value-objects/DomainDate/DomainDate';
-import { Float } from '../../value-objects/Float/Float';
-import { Id } from '../../value-objects/Id/Id';
-import { Integer } from '../../value-objects/Integer/Integer';
-import { Text } from '../../value-objects/Text/Text';
-import { ValidationError } from '../../common/errors';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { ValidationError } from "../../common/errors";
+import { DomainDate } from "../../value-objects/DomainDate/DomainDate";
+import { Float } from "../../value-objects/Float/Float";
+import { Id } from "../../value-objects/Id/Id";
+import { Integer } from "../../value-objects/Integer/Integer";
+import { Text } from "../../value-objects/Text/Text";
 
 type NutritionalInfoPer100g = {
   calories: Float;
@@ -64,7 +66,11 @@ export class Ingredient {
 
   update(patch: IngredientUpdateProps): void {
     if (!patch || Object.keys(patch).length === 0) {
-      throw new ValidationError('Ingredient: No patch provided');
+      logNoTest("Ingredient: No patch provided");
+
+      throw new ValidationError(
+        "No se han proporcionado datos para actualizar.",
+      );
     }
 
     if (patch.name !== undefined) {

@@ -81,10 +81,10 @@ describe("Ingredient", () => {
     it("should throw error if patch is not provided when updating", async () => {
       expect(() => {
         ingredient.update({});
-      }).toThrowError(ValidationError);
+      }).toThrow(ValidationError);
       expect(() => {
         ingredient.update({});
-      }).toThrowError(/Ingredient.*No patch provided/);
+      }).toThrow(/(Ingredient.*No patch|datos para actualizar)/i);
     });
 
     it("should throw error if id is not Id type", async () => {
@@ -94,7 +94,7 @@ describe("Ingredient", () => {
           // @ts-expect-error testing invalid type
           id: 123,
         });
-      }).toThrowError(ValidationError);
+      }).toThrow(ValidationError);
 
       expect(() => {
         Ingredient.create({
@@ -102,7 +102,7 @@ describe("Ingredient", () => {
           // @ts-expect-error testing invalid type
           id: 123,
         });
-      }).toThrowError(/(Id.*string|cadena)/i);
+      }).toThrow(/(Id.*string|cadena)/i);
     });
 
     it("should throw error if name is larger than 100 chars", async () => {
@@ -144,14 +144,14 @@ describe("Ingredient", () => {
           ...ingredientTestProps.validIngredientProps,
           calories: -10,
         });
-      }).toThrowError(ValidationError);
+      }).toThrow(ValidationError);
 
       expect(() => {
         Ingredient.create({
           ...ingredientTestProps.validIngredientProps,
           calories: -10,
         });
-      }).toThrowError(/(Float.*positive|positiv)/i);
+      }).toThrow(/(Float.*positive|positiv)/i);
     });
 
     it("should throw error if protein is below zero", async () => {
@@ -160,14 +160,14 @@ describe("Ingredient", () => {
           ...ingredientTestProps.validIngredientProps,
           protein: -5,
         });
-      }).toThrowError(ValidationError);
+      }).toThrow(ValidationError);
 
       expect(() => {
         Ingredient.create({
           ...ingredientTestProps.validIngredientProps,
           protein: -5,
         });
-      }).toThrowError(/(Float.*positive|positiv)/i);
+      }).toThrow(/(Float.*positive|positiv)/i);
     });
   });
 });
