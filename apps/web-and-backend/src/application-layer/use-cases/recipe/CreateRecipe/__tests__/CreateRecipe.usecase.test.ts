@@ -366,7 +366,7 @@ describe("CreateRecipeUsecase", () => {
         NotFoundError,
       );
       await expect(createRecipeUsecase.execute(request)).rejects.toThrow(
-        /CreateRecipeUsecase.*user.*not.*found/,
+        /us.*no.*exist/i,
       );
     });
 
@@ -382,7 +382,7 @@ describe("CreateRecipeUsecase", () => {
         PermissionError,
       );
       await expect(createRecipeUsecase.execute(request)).rejects.toThrow(
-        /CreateRecipeUsecase.*cannot create.*recipe.*another user/,
+        /(no.*pued.*receta|cannot.*create.*recipe)/i,
       );
     });
   });

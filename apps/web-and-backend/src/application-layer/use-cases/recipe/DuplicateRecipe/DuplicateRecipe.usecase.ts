@@ -1,3 +1,5 @@
+import { logNoTest } from "@/utils/logNoTest";
+
 import { NotFoundError } from "../../../../domain/common/errors";
 import { IngredientLine } from "../../../../domain/entities/ingredientline/IngredientLine";
 import { Recipe } from "../../../../domain/entities/recipe/Recipe";
@@ -29,15 +31,19 @@ export class DuplicateRecipeUsecase {
     ]);
 
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `DuplicateRecipeUsecase: user with id ${request.userId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     if (!originalRecipe) {
-      throw new NotFoundError(
+      logNoTest(
         `DuplicateRecipeUsecase: Recipe with id ${request.recipeId} not found`,
       );
+
+      throw new NotFoundError("La receta no existe.");
     }
 
     const newRecipeId = this.idGenerator.generateId();

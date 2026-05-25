@@ -1,3 +1,5 @@
+import { logNoTest } from "@/utils/logNoTest";
+
 import { NotFoundError } from "../../../../domain/common/errors";
 import { ImagesRepo } from "../../../../domain/repos/ImagesRepo.port";
 import { RecipesRepo } from "../../../../domain/repos/RecipesRepo.port";
@@ -23,15 +25,17 @@ export class DeleteRecipeUsecase {
     ]);
 
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `DeleteRecipeUsecase: user with id ${request.userId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     if (!existingRecipe) {
-      throw new NotFoundError(
-        `DeleteRecipeUsecase: Recipe with id ${request.id} not found`,
-      );
+      logNoTest(`DeleteRecipeUsecase: Recipe with id ${request.id} not found`);
+
+      throw new NotFoundError("La receta no existe.");
     }
 
     // Remove associated image if exists

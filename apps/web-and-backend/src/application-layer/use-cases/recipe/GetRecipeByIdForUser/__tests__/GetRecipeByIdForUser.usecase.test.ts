@@ -80,7 +80,7 @@ describe("GetRecipeByIdForUserUsecase", () => {
         NotFoundError,
       );
       await expect(getRecipeByIdUsecase.execute(request)).rejects.toThrow(
-        /GetRecipeByIdForUserUsecase.*user.*not.*found/,
+        /us.*no.*exist/i,
       );
     });
   });

@@ -142,7 +142,7 @@ describe("GetAllRecipesForUserUsecase", () => {
         NotFoundError,
       );
       await expect(getAllRecipesUsecase.execute(request)).rejects.toThrow(
-        /GetAllRecipesForUserUsecase.*user.*not.*found/,
+        /us.*no.*exist/i,
       );
     });
 
@@ -157,7 +157,7 @@ describe("GetAllRecipesForUserUsecase", () => {
       );
 
       await expect(getAllRecipesUsecase.execute(request)).rejects.toThrow(
-        /GetAllRecipesForUserUsecase.*cannot.*get.*recipes.*another user/,
+        /(no.*pued.*receta|cannot.*get.*recipe)/i,
       );
     });
   });

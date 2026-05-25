@@ -1,3 +1,5 @@
+import { logNoTest } from "@/utils/logNoTest";
+
 import { NotFoundError } from "../../../../domain/common/errors";
 import { RecipesRepo } from "../../../../domain/repos/RecipesRepo.port";
 import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
@@ -24,9 +26,11 @@ export class GetRecipeByIdForUserUsecase {
     ]);
 
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `GetRecipeByIdForUserUsecase: user with id ${request.userId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     return recipe ? toRecipeDTO(recipe) : null;

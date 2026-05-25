@@ -107,7 +107,7 @@ describe("DeleteRecipeUsecase", () => {
       );
 
       await expect(deleteRecipeUsecase.execute(request)).rejects.toThrow(
-        /DeleteRecipeUsecase.*Recipe.*not.*found/,
+        /(rec(ipe|eta)).*no.*exist/i,
       );
     });
 
@@ -118,7 +118,7 @@ describe("DeleteRecipeUsecase", () => {
         NotFoundError,
       );
       await expect(deleteRecipeUsecase.execute(request)).rejects.toThrow(
-        /DeleteRecipeUsecase.*user.*not.*found/,
+        /us.*no.*exist/i,
       );
     });
 
@@ -135,7 +135,7 @@ describe("DeleteRecipeUsecase", () => {
         NotFoundError,
       );
       await expect(deleteRecipeUsecase.execute(request)).rejects.toThrow(
-        /DeleteRecipeUsecase.*Recipe.*not.*found/,
+        /(rec(ipe|eta)).*no.*exist/i,
       );
     });
   });

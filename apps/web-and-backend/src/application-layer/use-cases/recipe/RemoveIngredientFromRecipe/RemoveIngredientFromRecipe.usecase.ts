@@ -1,7 +1,9 @@
-import { RecipeDTO, toRecipeDTO } from '../../../dtos/RecipeDTO';
-import { NotFoundError } from '../../../../domain/common/errors';
-import { RecipesRepo } from '../../../../domain/repos/RecipesRepo.port';
-import { UsersRepo } from '../../../../domain/repos/UsersRepo.port';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { NotFoundError } from "../../../../domain/common/errors";
+import { RecipesRepo } from "../../../../domain/repos/RecipesRepo.port";
+import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
+import { RecipeDTO, toRecipeDTO } from "../../../dtos/RecipeDTO";
 
 export type RemoveIngredientFromRecipeUsecaseRequest = {
   recipeId: string;
@@ -25,15 +27,19 @@ export class RemoveIngredientFromRecipeUsecase {
     ]);
 
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `RemoveIngredientFromRecipeUsecase: user with id ${request.userId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     if (!existingRecipe) {
-      throw new NotFoundError(
+      logNoTest(
         `RemoveIngredientFromRecipeUsecase: Recipe with id ${request.recipeId} not found`,
       );
+
+      throw new NotFoundError("La receta no existe.");
     }
 
     existingRecipe.removeIngredientLineByIngredientId(request.ingredientId);

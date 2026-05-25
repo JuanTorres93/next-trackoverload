@@ -1,20 +1,25 @@
-import { RecipeDTO, toRecipeDTO } from '../../../dtos/RecipeDTO';
-import { NotFoundError, PermissionError } from '../../../../domain/common/errors';
-import { IngredientLine } from '../../../../domain/entities/ingredientline/IngredientLine';
-import { Recipe } from '../../../../domain/entities/recipe/Recipe';
-import { ExternalIngredientsRefRepo } from '../../../../domain/repos/ExternalIngredientsRefRepo.port';
-import { ImagesRepo } from '../../../../domain/repos/ImagesRepo.port';
-import { IngredientsRepo } from '../../../../domain/repos/IngredientsRepo.port';
-import { RecipesRepo } from '../../../../domain/repos/RecipesRepo.port';
-import { UsersRepo } from '../../../../domain/repos/UsersRepo.port';
-import { IdGenerator } from '../../../../domain/services/IdGenerator.port';
-import { ImageProcessor } from '../../../../domain/services/ImageProcessor/ServerImageProcessor.port';
-import { TransactionContext } from '../../../ports/TransactionContext.port';
+import { logNoTest } from "@/utils/logNoTest";
+
 import {
-  createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo,
+  NotFoundError,
+  PermissionError,
+} from "../../../../domain/common/errors";
+import { IngredientLine } from "../../../../domain/entities/ingredientline/IngredientLine";
+import { Recipe } from "../../../../domain/entities/recipe/Recipe";
+import { ExternalIngredientsRefRepo } from "../../../../domain/repos/ExternalIngredientsRefRepo.port";
+import { ImagesRepo } from "../../../../domain/repos/ImagesRepo.port";
+import { IngredientsRepo } from "../../../../domain/repos/IngredientsRepo.port";
+import { RecipesRepo } from "../../../../domain/repos/RecipesRepo.port";
+import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
+import { IdGenerator } from "../../../../domain/services/IdGenerator.port";
+import { ImageProcessor } from "../../../../domain/services/ImageProcessor/ServerImageProcessor.port";
+import { RecipeDTO, toRecipeDTO } from "../../../dtos/RecipeDTO";
+import { TransactionContext } from "../../../ports/TransactionContext.port";
+import {
   CreateIngredientLineData,
-} from '../common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo';
-import { processRecipeImageBufferForUploading } from '../common/processImageBufferForUploading';
+  createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo,
+} from "../common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo";
+import { processRecipeImageBufferForUploading } from "../common/processImageBufferForUploading";
 
 export type CreateRecipeUsecaseRequest = {
   actorUserId: string;
@@ -38,8 +43,10 @@ export class CreateRecipeUsecase {
 
   async execute(request: CreateRecipeUsecaseRequest): Promise<RecipeDTO> {
     if (request.actorUserId !== request.targetUserId) {
+      logNoTest("CreateRecipeUsecase: cannot create recipe for another user");
+
       throw new PermissionError(
-        'CreateRecipeUsecase: cannot create recipe for another user',
+        "No puedes crear una receta para otro usuario.",
       );
     }
 
@@ -63,9 +70,11 @@ export class CreateRecipeUsecase {
     ]);
 
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `CreateRecipeUsecase: user with id ${request.targetUserId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     const ingredientLines: IngredientLine[] = [];
@@ -85,7 +94,7 @@ export class CreateRecipeUsecase {
       const ingredientLine = IngredientLine.create({
         id: this.idGenerator.generateId(),
         parentId: newRecipeId,
-        parentType: 'recipe',
+        parentType: "recipe",
         ingredient: ingredient,
         quantityInGrams: quantityInGrams,
       });

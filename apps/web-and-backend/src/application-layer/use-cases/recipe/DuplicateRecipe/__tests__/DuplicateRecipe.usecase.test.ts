@@ -255,7 +255,7 @@ describe("DuplicateRecipeUsecase", () => {
       );
 
       await expect(duplicateRecipeUsecase.execute(request)).rejects.toThrow(
-        /DuplicateRecipeUsecase:.*Recipe.* not found/,
+        /(rec(ipe|eta)).*no.*exist/i,
       );
     });
 
@@ -269,7 +269,7 @@ describe("DuplicateRecipeUsecase", () => {
         NotFoundError,
       );
       await expect(duplicateRecipeUsecase.execute(request)).rejects.toThrow(
-        /DuplicateRecipeUsecase.*user.*not.*found/,
+        /us.*no.*exist/i,
       );
     });
 
@@ -290,7 +290,7 @@ describe("DuplicateRecipeUsecase", () => {
         NotFoundError,
       );
       await expect(duplicateRecipeUsecase.execute(request)).rejects.toThrow(
-        /DuplicateRecipeUsecase:.*Recipe.* not found/,
+        /(rec(ipe|eta)).*no.*exist/i,
       );
     });
   });

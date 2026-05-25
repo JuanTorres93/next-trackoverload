@@ -1,3 +1,5 @@
+import { logNoTest } from "@/utils/logNoTest";
+
 import { NotFoundError } from "../../../../domain/common/errors";
 import {
   ImageType,
@@ -30,9 +32,11 @@ export class UpdateRecipeImageUsecase {
     );
 
     if (!recipe) {
-      throw new NotFoundError(
+      logNoTest(
         `UpdateRecipeImageUsecase: Recipe with id ${request.recipeId} not found`,
       );
+
+      throw new NotFoundError("La receta no existe.");
     }
 
     // Get image

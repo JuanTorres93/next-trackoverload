@@ -196,7 +196,7 @@ describe("AddIngredientToRecipeUsecase", () => {
 
       await expect(
         addIngredientToRecipeUsecase.execute(request),
-      ).rejects.toThrow(/AddIngredientToRecipeUsecase.*Recipe.*not.*found/);
+      ).rejects.toThrow(/(rec(ipe|eta)).*no.*exist/i);
     });
 
     it("should throw error if user does not exist", async () => {
@@ -216,7 +216,7 @@ describe("AddIngredientToRecipeUsecase", () => {
       ).rejects.toThrow(NotFoundError);
       await expect(
         addIngredientToRecipeUsecase.execute(request),
-      ).rejects.toThrow(/AddIngredientToRecipeUsecase.*user.*not.*found/);
+      ).rejects.toThrow(/us.*no.*exist/i);
     });
 
     it("should throw error when trying to add ingredient another user's recipe", async () => {
@@ -242,7 +242,7 @@ describe("AddIngredientToRecipeUsecase", () => {
 
       await expect(
         addIngredientToRecipeUsecase.execute(request),
-      ).rejects.toThrow(/AddIngredientToRecipeUsecase.*Recipe.*not.*found/);
+      ).rejects.toThrow(/(rec(ipe|eta)).*no.*exist/i);
     });
   });
 });

@@ -163,8 +163,8 @@ describe("UpdateRecipeImageUsecase", () => {
         NotFoundError,
       );
 
-      await expect(usecase.execute(request)).rejects.toThrowError(
-        /UpdateRecipeImageUsecase: Recipe.*not found/,
+      await expect(usecase.execute(request)).rejects.toThrow(
+        /(rec(ipe|eta)).*no.*exist/i,
       );
     });
 
@@ -175,11 +175,9 @@ describe("UpdateRecipeImageUsecase", () => {
         imageData: testImageBuffer,
       };
 
-      await expect(usecase.execute(request)).rejects.toThrowError(
-        NotFoundError,
-      );
-      await expect(usecase.execute(request)).rejects.toThrowError(
-        /UpdateRecipeImageUsecase: Recipe.*not found/,
+      await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+      await expect(usecase.execute(request)).rejects.toThrow(
+        /(rec(ipe|eta)).*no.*exist/i,
       );
     });
   });

@@ -1,3 +1,5 @@
+import { logNoTest } from "@/utils/logNoTest";
+
 import { NotFoundError } from "../../../../domain/common/errors";
 import { IngredientLine } from "../../../../domain/entities/ingredientline/IngredientLine";
 import { ExternalIngredientsRefRepo } from "../../../../domain/repos/ExternalIngredientsRefRepo.port";
@@ -41,15 +43,19 @@ export class AddIngredientToRecipeUsecase {
     ]);
 
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `AddIngredientToRecipeUsecase: user with id ${request.userId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     if (!existingRecipe) {
-      throw new NotFoundError(
+      logNoTest(
         `AddIngredientToRecipeUsecase: Recipe with id ${request.recipeId} not found`,
       );
+
+      throw new NotFoundError("La receta no existe.");
     }
 
     const {

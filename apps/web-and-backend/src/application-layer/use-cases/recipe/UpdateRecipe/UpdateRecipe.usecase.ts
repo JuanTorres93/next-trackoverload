@@ -1,3 +1,5 @@
+import { logNoTest } from "@/utils/logNoTest";
+
 import { NotFoundError } from "../../../../domain/common/errors";
 import { IngredientLine } from "../../../../domain/entities/ingredientline/IngredientLine";
 import { RecipesRepo } from "../../../../domain/repos/RecipesRepo.port";
@@ -25,15 +27,17 @@ export class UpdateRecipeUsecase {
     ]);
 
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `UpdateRecipeUsecase: user with id ${request.userId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     if (!existingRecipe) {
-      throw new NotFoundError(
-        `UpdateRecipeUsecase: Recipe with id ${request.id} not found`,
-      );
+      logNoTest(`UpdateRecipeUsecase: Recipe with id ${request.id} not found`);
+
+      throw new NotFoundError("La receta no existe.");
     }
 
     if (request.name !== undefined) {

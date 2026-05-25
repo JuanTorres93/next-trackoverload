@@ -99,9 +99,7 @@ describe("RemoveIngredientFromRecipeUsecase", () => {
 
       await expect(
         removeIngredientFromRecipeUsecase.execute(request),
-      ).rejects.toThrow(
-        /RemoveIngredientFromRecipeUsecase.*Recipe.*not.*found/,
-      );
+      ).rejects.toThrow(/(rec(ipe|eta)).*no.*exist/i);
     });
 
     it("should throw error if user does not exist", async () => {
@@ -116,7 +114,7 @@ describe("RemoveIngredientFromRecipeUsecase", () => {
       ).rejects.toThrow(NotFoundError);
       await expect(
         removeIngredientFromRecipeUsecase.execute(request),
-      ).rejects.toThrow(/RemoveIngredientFromRecipeUsecase.*user.*not.*found/);
+      ).rejects.toThrow(/us.*no.*exist/i);
     });
 
     it("should throw error if trying to delete another user's recipe", async () => {
@@ -136,9 +134,7 @@ describe("RemoveIngredientFromRecipeUsecase", () => {
       ).rejects.toThrow(NotFoundError);
       await expect(
         removeIngredientFromRecipeUsecase.execute(request),
-      ).rejects.toThrow(
-        /RemoveIngredientFromRecipeUsecase.*Recipe.*not.*found/,
-      );
+      ).rejects.toThrow(/(rec(ipe|eta)).*no.*exist/i);
     });
   });
 });

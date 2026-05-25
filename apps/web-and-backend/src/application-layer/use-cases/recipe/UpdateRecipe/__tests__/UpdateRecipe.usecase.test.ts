@@ -81,7 +81,7 @@ describe("UpdateRecipeUsecase", () => {
       );
 
       await expect(updateRecipeUsecase.execute(request)).rejects.toThrow(
-        /UpdateRecipeUsecase.*Recipe.*not.*found/,
+        /(rec(ipe|eta)).*no.*exist/i,
       );
     });
 
@@ -95,7 +95,7 @@ describe("UpdateRecipeUsecase", () => {
         NotFoundError,
       );
       await expect(updateRecipeUsecase.execute(request)).rejects.toThrow(
-        /UpdateRecipeUsecase.*user.*not.*found/,
+        /us.*no.*exist/i,
       );
     });
 
@@ -115,7 +115,7 @@ describe("UpdateRecipeUsecase", () => {
         NotFoundError,
       );
       await expect(updateRecipeUsecase.execute(request)).rejects.toThrow(
-        /UpdateRecipeUsecase.*Recipe.*not.*found/,
+        /(rec(ipe|eta)).*no.*exist/i,
       );
     });
   });
