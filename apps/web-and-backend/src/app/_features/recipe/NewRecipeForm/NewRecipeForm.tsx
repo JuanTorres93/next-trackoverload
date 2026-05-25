@@ -56,13 +56,14 @@ function NewRecipeForm() {
       computeIngredientLinesInfo(formState);
 
     let compressedImageFile: File | undefined;
-    if (formState.imageFile) {
-      compressedImageFile = await AppClientImageProcessor.compressToMaxMB(
-        formState.imageFile,
-      );
-    }
 
     try {
+      if (formState.imageFile) {
+        compressedImageFile = await AppClientImageProcessor.compressToMaxMB(
+          formState.imageFile,
+        );
+      }
+
       const jsend = await createRecipe({
         name: formState.name,
         imageFile: compressedImageFile,
