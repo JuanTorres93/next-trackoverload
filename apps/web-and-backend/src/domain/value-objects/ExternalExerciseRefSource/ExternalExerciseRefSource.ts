@@ -1,5 +1,6 @@
-import { ValidationError } from "../../common/errors";
+import { logNoTest } from "@/utils/logNoTest";
 
+import { ValidationError } from "../../common/errors";
 import { Text } from "../Text/Text";
 import { ValueObject } from "../ValueObject";
 
@@ -24,11 +25,10 @@ export class ExternalExerciseRefSource extends ValueObject<ExternalExerciseRefSo
     // Validate source
     const source = Text.create(text.value.toLocaleLowerCase());
     if (!VALID_SOURCES.includes(source.value)) {
-      throw new ValidationError(
-        `ExternalExerciseRefSource: value must be one of [${VALID_SOURCES.join(
-          ", ",
-        )}]`,
+      logNoTest(
+        `ExternalExerciseRefSource: value must be one of [${VALID_SOURCES.join(", ")}]`,
       );
+      throw new ValidationError("La fuente del ejercicio no es válida.");
     }
 
     return new ExternalExerciseRefSource({

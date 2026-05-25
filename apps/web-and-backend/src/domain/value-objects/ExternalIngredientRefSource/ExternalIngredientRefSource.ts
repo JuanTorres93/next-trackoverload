@@ -1,12 +1,14 @@
-import { Text } from '../Text/Text';
-import { ValidationError } from '../../common/errors';
-import { ValueObject } from '../ValueObject';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { ValidationError } from "../../common/errors";
+import { Text } from "../Text/Text";
+import { ValueObject } from "../ValueObject";
 
 type ExternalIngredientRefSourceProps = {
   value: string;
 };
 
-export const VALID_SOURCES = ['openfoodfacts'];
+export const VALID_SOURCES = ["openfoodfacts"];
 
 export class ExternalIngredientRefSource extends ValueObject<ExternalIngredientRefSourceProps> {
   private readonly _value: string;
@@ -23,11 +25,10 @@ export class ExternalIngredientRefSource extends ValueObject<ExternalIngredientR
 
     // Validate source
     if (!VALID_SOURCES.includes(source.value)) {
-      throw new ValidationError(
-        `ExternalIngredientRefSource: value must be one of [${VALID_SOURCES.join(
-          ', ',
-        )}]`,
+      logNoTest(
+        `ExternalIngredientRefSource: value must be one of [${VALID_SOURCES.join(", ")}]`,
       );
+      throw new ValidationError("La fuente del ingrediente no es válida.");
     }
 
     return new ExternalIngredientRefSource({

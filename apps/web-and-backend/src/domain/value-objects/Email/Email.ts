@@ -1,5 +1,6 @@
-import { ValidationError } from "../../common/errors";
+import { logNoTest } from "@/utils/logNoTest";
 
+import { ValidationError } from "../../common/errors";
 import { Text } from "../Text/Text";
 import { ValueObject } from "../ValueObject";
 
@@ -23,7 +24,10 @@ export class Email extends ValueObject<EmailProps> {
 
     // Validate email format
     if (!this.EMAIL_REGEX.test(text.value)) {
-      throw new ValidationError("Email: value must be a valid email format");
+      logNoTest("Email: value must be a valid email format");
+      throw new ValidationError(
+        "El formato del correo electrónico no es válido.",
+      );
     }
 
     return new Email({ value: text.value.toLowerCase() });

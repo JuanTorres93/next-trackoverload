@@ -212,7 +212,7 @@ describe("Recipe", () => {
           ...validRecipeProps,
           name: longName,
         });
-      }).toThrowError(/Text.*not exceed/);
+      }).toThrowError(/(exceed|superar)/i);
     });
 
     it("should throw error if creating recipe with duplicated ingredient", async () => {

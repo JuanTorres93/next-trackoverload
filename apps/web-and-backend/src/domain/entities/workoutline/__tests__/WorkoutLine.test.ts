@@ -42,14 +42,14 @@ describe("WorkoutLine", () => {
         ...validWorkoutLineProps,
         id: "",
       });
-    }).toThrowError(ValidationError);
+    }).toThrow(ValidationError);
 
     expect(() => {
       WorkoutLine.create({
         ...validWorkoutLineProps,
         id: "",
       });
-    }).toThrowError(/Id.*empty/);
+    }).toThrow(/(Id.*empty|identificador.*vac.)/i);
   });
 
   it("should throw error if exerciseId is empty", async () => {
@@ -58,14 +58,14 @@ describe("WorkoutLine", () => {
         ...validWorkoutLineProps,
         exerciseId: "",
       });
-    }).toThrowError(ValidationError);
+    }).toThrow(ValidationError);
 
     expect(() => {
       WorkoutLine.create({
         ...validWorkoutLineProps,
         exerciseId: "",
       });
-    }).toThrowError(/Id.*empty/);
+    }).toThrow(/(Id.*empty|identificador.*vac.)/i);
   });
 
   it("should throw error if setNumber is not integer", async () => {
@@ -74,14 +74,14 @@ describe("WorkoutLine", () => {
         ...validWorkoutLineProps,
         setNumber: 2.5,
       });
-    }).toThrowError(ValidationError);
+    }).toThrow(ValidationError);
 
     expect(() => {
       WorkoutLine.create({
         ...validWorkoutLineProps,
         setNumber: 2.5,
       });
-    }).toThrowError(/Integer.*integer/);
+    }).toThrow(/(Integer.*integer|entero)/i);
   });
 
   it("should throw error if setNumber is zero", async () => {
@@ -90,14 +90,14 @@ describe("WorkoutLine", () => {
         ...validWorkoutLineProps,
         setNumber: 0,
       });
-    }).toThrowError(ValidationError);
+    }).toThrow(ValidationError);
 
     expect(() => {
       WorkoutLine.create({
         ...validWorkoutLineProps,
         setNumber: 0,
       });
-    }).toThrowError(/Integer.*zero/);
+    }).toThrow(/(Integer.*zero|cero)/i);
   });
 
   it("should throw error if setNumber is negative", async () => {
@@ -106,14 +106,14 @@ describe("WorkoutLine", () => {
         ...validWorkoutLineProps,
         setNumber: -1,
       });
-    }).toThrowError(ValidationError);
+    }).toThrow(ValidationError);
 
     expect(() => {
       WorkoutLine.create({
         ...validWorkoutLineProps,
         setNumber: -1,
       });
-    }).toThrowError(/Integer.*be positive/);
+    }).toThrow(/(Integer.*positive|positiv)/i);
   });
 
   it("should throw error if reps is negative", async () => {
@@ -122,14 +122,14 @@ describe("WorkoutLine", () => {
         ...validWorkoutLineProps,
         reps: -5,
       });
-    }).toThrowError(ValidationError);
+    }).toThrow(ValidationError);
 
     expect(() => {
       WorkoutLine.create({
         ...validWorkoutLineProps,
         reps: -5,
       });
-    }).toThrowError(/Integer.*be positive/);
+    }).toThrow(/(Integer.*positive|positiv)/i);
   });
 
   it("should throw error if reps has decimals", async () => {
@@ -138,14 +138,14 @@ describe("WorkoutLine", () => {
         ...validWorkoutLineProps,
         reps: 8.2,
       });
-    }).toThrowError(ValidationError);
+    }).toThrow(ValidationError);
 
     expect(() => {
       WorkoutLine.create({
         ...validWorkoutLineProps,
         reps: 8.2,
       });
-    }).toThrowError(/Integer.*integer/);
+    }).toThrow(/(Integer.*integer|entero)/i);
   });
 
   it("should throw error if weight is negative", async () => {
@@ -154,14 +154,14 @@ describe("WorkoutLine", () => {
         ...validWorkoutLineProps,
         weightInKg: -20,
       });
-    }).toThrowError(ValidationError);
+    }).toThrow(ValidationError);
 
     expect(() => {
       WorkoutLine.create({
         ...validWorkoutLineProps,
         weightInKg: -20,
       });
-    }).toThrowError(/Float.*positive/);
+    }).toThrow(/(Float.*positive|positiv)/i);
   });
 
   it("can update setNumber", async () => {

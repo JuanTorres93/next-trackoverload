@@ -284,7 +284,7 @@ describe("WorkoutTemplate", () => {
           ...validWorkoutTemplateProps,
           name: longName,
         });
-      }).toThrow(/Text.*not exceed/);
+      }).toThrow(/(exceed|superar)/i);
     });
 
     it("should throw error if name is empty", async () => {
@@ -300,7 +300,7 @@ describe("WorkoutTemplate", () => {
           ...validWorkoutTemplateProps,
           name: "",
         });
-      }).toThrow(/Text.*empty/);
+      }).toThrow(/(Text.*empty|no.*puede.*vac.)/i);
     });
 
     it("should throw error if reordering to a negative index", async () => {
@@ -318,7 +318,7 @@ describe("WorkoutTemplate", () => {
             .exerciseId,
           -1,
         );
-      }).toThrow(/Integer.*positive/);
+      }).toThrow(/(Integer.*positive|positiv)/i);
     });
 
     it("should throw error if no patch is provided when updating", async () => {

@@ -1,5 +1,7 @@
-import { ValueObject } from '../ValueObject';
-import { ValidationError } from '../../common/errors';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { ValidationError } from "../../common/errors";
+import { ValueObject } from "../ValueObject";
 
 type IdProps = {
   value: string;
@@ -15,13 +17,22 @@ export class Id extends ValueObject<IdProps> {
   }
 
   public static create(value: string) {
-    if (!value) throw new ValidationError('Id: value cannot be empty');
+    if (!value) {
+      logNoTest("Id: value cannot be empty");
+      throw new ValidationError("El identificador no puede estar vacío.");
+    }
 
-    if (typeof value !== 'string')
-      throw new ValidationError('Id: value must be a string');
+    if (typeof value !== "string") {
+      logNoTest("Id: value must be a string");
+      throw new ValidationError(
+        "El identificador debe ser una cadena de texto.",
+      );
+    }
 
-    if (value.trim() === '')
-      throw new ValidationError('Id: value cannot be empty');
+    if (value.trim() === "") {
+      logNoTest("Id: value cannot be empty");
+      throw new ValidationError("El identificador no puede estar vacío.");
+    }
 
     return new Id({ value: value.trim() });
   }

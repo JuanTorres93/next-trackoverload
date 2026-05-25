@@ -1,8 +1,8 @@
-import { ValidationError } from '../../../common/errors';
-import { Integer } from '../Integer';
+import { ValidationError } from "../../../common/errors";
+import { Integer } from "../Integer";
 
-describe('Integer', () => {
-  it('should create a valid positive Integer by default', async () => {
+describe("Integer", () => {
+  it("should create a valid positive Integer by default", async () => {
     const integerValue = 123;
 
     const integer = Integer.create(integerValue);
@@ -10,7 +10,7 @@ describe('Integer', () => {
     expect(integer.value).toBe(integerValue);
   });
 
-  it('should create a valid negative Integer by default', async () => {
+  it("should create a valid negative Integer by default", async () => {
     const integerValue = -123;
 
     const integer = Integer.create(integerValue);
@@ -18,7 +18,7 @@ describe('Integer', () => {
     expect(integer.value).toBe(integerValue);
   });
 
-  it('should create a valid zero Integer by default', async () => {
+  it("should create a valid zero Integer by default", async () => {
     const integerValue = 0;
 
     const integer = Integer.create(integerValue);
@@ -26,19 +26,19 @@ describe('Integer', () => {
     expect(integer.value).toBe(integerValue);
   });
 
-  it('should throw validation error if integer is not a number', async () => {
+  it("should throw validation error if integer is not a number", async () => {
     // @ts-expect-error testing invalid input
-    expect(() => Integer.create('123')).toThrow(ValidationError);
+    expect(() => Integer.create("123")).toThrow(ValidationError);
     // @ts-expect-error testing invalid input
-    expect(() => Integer.create('123')).toThrow(/Integer.*number/);
+    expect(() => Integer.create("123")).toThrow(/(Integer.*number|n.mero)/i);
   });
 
-  it('should throw error if integer has decimals', async () => {
+  it("should throw error if integer has decimals", async () => {
     expect(() => Integer.create(123.45)).toThrow(ValidationError);
-    expect(() => Integer.create(123.45)).toThrow(/Integer.*integer/);
+    expect(() => Integer.create(123.45)).toThrow(/(Integer.*integer|entero)/i);
   });
 
-  it('it should throw error if trying to create a negative Integer when not allowed', async () => {
+  it("it should throw error if trying to create a negative Integer when not allowed", async () => {
     const options = { onlyPositive: true };
 
     expect(() => {
@@ -46,10 +46,10 @@ describe('Integer', () => {
     }).toThrow(ValidationError);
     expect(() => {
       Integer.create(-10, options);
-    }).toThrow(/Integer.*positive/);
+    }).toThrow(/(Integer.*positive|positiv)/i);
   });
 
-  it('should allow zero when onlyPositive is true', async () => {
+  it("should allow zero when onlyPositive is true", async () => {
     const options = { onlyPositive: true };
 
     const integer = Integer.create(0, options);
@@ -57,7 +57,7 @@ describe('Integer', () => {
     expect(integer.value).toBe(0);
   });
 
-  it('should allow creating positive Integer when onlyPositive is true', async () => {
+  it("should allow creating positive Integer when onlyPositive is true", async () => {
     const options = { onlyPositive: true };
     const integerValue = 50;
 
@@ -66,7 +66,7 @@ describe('Integer', () => {
     expect(integer.value).toBe(integerValue);
   });
 
-  it('should allow creating negative Integer when onlyPositive is false', async () => {
+  it("should allow creating negative Integer when onlyPositive is false", async () => {
     const options = { onlyPositive: false };
     const integerValue = -50;
 
@@ -75,7 +75,7 @@ describe('Integer', () => {
     expect(integer.value).toBe(integerValue);
   });
 
-  it('should allow creating zero Integer when onlyPositive is false', async () => {
+  it("should allow creating zero Integer when onlyPositive is false", async () => {
     const options = { onlyPositive: false };
     const integerValue = 0;
 
@@ -84,7 +84,7 @@ describe('Integer', () => {
     expect(integer.value).toBe(integerValue);
   });
 
-  it('should throw error if trying to create zero when it is not allowed', async () => {
+  it("should throw error if trying to create zero when it is not allowed", async () => {
     const options = { canBeZero: false };
 
     expect(() => {
@@ -92,10 +92,10 @@ describe('Integer', () => {
     }).toThrow(ValidationError);
     expect(() => {
       Integer.create(0, options);
-    }).toThrow(/Integer.*zero/);
+    }).toThrow(/(Integer.*zero|cero)/i);
   });
 
-  it('should throw error if min not respected', async () => {
+  it("should throw error if min not respected", async () => {
     const options = { min: 10 };
 
     expect(() => {
@@ -103,10 +103,10 @@ describe('Integer', () => {
     }).toThrow(ValidationError);
     expect(() => {
       Integer.create(5, options);
-    }).toThrow(/Integer.*must.*greater/);
+    }).toThrow(/(must.*greater|mayor.*igual)/i);
   });
 
-  it('should allow creating Integer equal to min', async () => {
+  it("should allow creating Integer equal to min", async () => {
     const options = { min: 10 };
     const integerValue = 10;
 
@@ -115,7 +115,7 @@ describe('Integer', () => {
     expect(integer.value).toBe(integerValue);
   });
 
-  it('should throw error if max is not respected', async () => {
+  it("should throw error if max is not respected", async () => {
     const options = { max: 20 };
 
     expect(() => {
@@ -123,10 +123,10 @@ describe('Integer', () => {
     }).toThrow(ValidationError);
     expect(() => {
       Integer.create(25, options);
-    }).toThrow(/Integer.*must.*less/);
+    }).toThrow(/(must.*less|menor.*igual)/i);
   });
 
-  it('should allow creating Integer equal to max', async () => {
+  it("should allow creating Integer equal to max", async () => {
     const options = { max: 20 };
     const integerValue = 20;
 

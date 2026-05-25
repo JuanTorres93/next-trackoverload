@@ -55,7 +55,7 @@ describe("WorkoutTemplateLine", () => {
         ...workoutTemplateTestProps.validWorkoutTemplateLineProps,
         sets: 0,
       }),
-    ).toThrow(/Integer.*cannot be zero/);
+    ).toThrow(/(Integer.*zero|cero)/i);
   });
 
   it("should throw error if sets is negative", async () => {
@@ -71,7 +71,7 @@ describe("WorkoutTemplateLine", () => {
         ...workoutTemplateTestProps.validWorkoutTemplateLineProps,
         sets: -3,
       }),
-    ).toThrow(/Integer.*be positive/);
+    ).toThrow(/(Integer.*positive|positiv)/i);
   });
 
   it("can update sets", async () => {

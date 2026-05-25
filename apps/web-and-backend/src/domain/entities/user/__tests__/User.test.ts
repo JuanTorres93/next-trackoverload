@@ -210,7 +210,7 @@ describe("User", () => {
           // @ts-expect-error Testing invalid inputs
           customerId: 123,
         }),
-      ).toThrowError(/Id.*string/);
+      ).toThrowError(/(Id.*string|cadena)/i);
     });
 
     it("should throw error if name is larger than 100 characters", async () => {
@@ -227,7 +227,7 @@ describe("User", () => {
           ...validUserProps,
           name: longName,
         }),
-      ).toThrowError(/Text.*not exceed/);
+      ).toThrowError(/(exceed|superar)/i);
     });
 
     it("should throw error if patch is not provided when updating", async () => {

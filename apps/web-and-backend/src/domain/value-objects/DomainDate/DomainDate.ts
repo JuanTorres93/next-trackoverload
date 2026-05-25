@@ -1,5 +1,7 @@
-import { ValueObject } from '../ValueObject';
-import { ValidationError } from '../../common/errors';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { ValidationError } from "../../common/errors";
+import { ValueObject } from "../ValueObject";
 
 type DomainDateProps = {
   value: Date;
@@ -19,7 +21,8 @@ export class DomainDate extends ValueObject<DomainDateProps> {
 
     if (value) {
       if (!(value instanceof Date) || isNaN(value.getTime())) {
-        throw new ValidationError(`DomainDate: date must be a valid date`);
+        logNoTest(`DomainDate: date must be a valid date`);
+        throw new ValidationError("La fecha no es válida.");
       }
 
       return new DomainDate({ value });

@@ -1,6 +1,8 @@
-import { ValidationError } from '../../common/errors';
-import { Integer } from '../Integer/Integer';
-import { ValueObject } from '../ValueObject';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { ValidationError } from "../../common/errors";
+import { Integer } from "../Integer/Integer";
+import { ValueObject } from "../ValueObject";
 
 type DayIdCreateProps = {
   day: number;
@@ -41,8 +43,10 @@ export class DayId extends ValueObject<DayIdProps> {
   }
 
   public static create(props: DayIdCreateProps): DayId {
-    if (!props || !props.day || !props.month || !props.year)
-      throw new ValidationError('DayId: value cannot be empty');
+    if (!props || !props.day || !props.month || !props.year) {
+      logNoTest("DayId: value cannot be empty");
+      throw new ValidationError("La fecha no puede estar vacía.");
+    }
 
     const day = Integer.create(props.day, dayIntegerOptions);
     const month = Integer.create(props.month, monthIntegerOptions);
@@ -51,9 +55,9 @@ export class DayId extends ValueObject<DayIdProps> {
     // Format: YYYYMMDD
     const formattedValue = `${year.value
       .toString()
-      .padStart(4, '0')}${month.value.toString().padStart(2, '0')}${day.value
+      .padStart(4, "0")}${month.value.toString().padStart(2, "0")}${day.value
       .toString()
-      .padStart(2, '0')}`;
+      .padStart(2, "0")}`;
 
     return new DayId({ value: formattedValue });
   }
@@ -81,9 +85,8 @@ export function dayIdToDayMonthYear(dayId: string): {
   year: number;
 } {
   if (!/^\d{8}$/.test(dayId)) {
-    throw new ValidationError(
-      'stringToDayMonthYear: dayId must be in YYYYMMDD format',
-    );
+    logNoTest("stringToDayMonthYear: dayId must be in YYYYMMDD format");
+    throw new ValidationError("El formato de la fecha no es válido.");
   }
 
   const year = parseInt(dayId.slice(0, 4), 10);

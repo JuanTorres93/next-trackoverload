@@ -58,7 +58,7 @@ describe("Exercise", () => {
         // @ts-expect-error testing invalid type
         id: 123,
       });
-    }).toThrowError(/Id/);
+    }).toThrowError(/(Id|identificador)/i);
   });
 
   it("should throw error if name is empty", async () => {
@@ -74,7 +74,7 @@ describe("Exercise", () => {
         ...exerciseTestProps.validExerciseProps,
         name: "",
       });
-    }).toThrowError(/Text.*empty/);
+    }).toThrowError(/(Text.*empty|no.*puede.*vac.)/i);
   });
 
   it("should throw error if name is greater that 100 characters", async () => {
@@ -92,6 +92,6 @@ describe("Exercise", () => {
         ...exerciseTestProps.validExerciseProps,
         name: longName,
       });
-    }).toThrowError(/Text.*not exceed/);
+    }).toThrowError(/(exceed|superar)/i);
   });
 });

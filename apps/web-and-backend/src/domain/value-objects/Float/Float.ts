@@ -1,5 +1,7 @@
-import { ValueObject } from '../ValueObject';
-import { ValidationError } from '../../common/errors';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { ValidationError } from "../../common/errors";
+import { ValueObject } from "../ValueObject";
 
 type FloatProps = {
   value: number;
@@ -20,18 +22,24 @@ export class Float extends ValueObject<FloatProps> {
   }
 
   public static create(value: number, options?: FloatOptions) {
-    if (value === null || value === undefined)
-      throw new ValidationError('Float: value is required');
+    if (value === null || value === undefined) {
+      logNoTest("Float: value is required");
+      throw new ValidationError("El valor es obligatorio.");
+    }
 
-    if (typeof value !== 'number' || isNaN(value))
-      throw new ValidationError('Float: value must be a number');
+    if (typeof value !== "number" || isNaN(value)) {
+      logNoTest("Float: value must be a number");
+      throw new ValidationError("El valor debe ser un número.");
+    }
 
     if (options?.onlyPositive && value < 0) {
-      throw new ValidationError('Float: value must be positive');
+      logNoTest("Float: value must be positive");
+      throw new ValidationError("El valor debe ser positivo.");
     }
 
     if (options?.canBeZero === false && value === 0) {
-      throw new ValidationError('Float: value cannot be zero');
+      logNoTest("Float: value cannot be zero");
+      throw new ValidationError("El valor no puede ser cero.");
     }
 
     return new Float({ value });

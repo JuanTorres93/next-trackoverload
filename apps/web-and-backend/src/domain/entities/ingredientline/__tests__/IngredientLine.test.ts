@@ -99,7 +99,7 @@ describe("IngredientLine", () => {
         // @ts-expect-error testing invalid type
         id: 123,
       });
-    }).toThrowError(/Id/);
+    }).toThrowError(/(Id|identificador)/i);
   });
 
   it("should throw error if quantityInGrams is zero", async () => {
@@ -115,7 +115,7 @@ describe("IngredientLine", () => {
         ...validIngredientLineProps,
         quantityInGrams: 0,
       });
-    }).toThrowError(/Float.*be zero/);
+    }).toThrowError(/(Float.*zero|cero)/i);
   });
 
   it("should throw error if quantityInGrams is negative", async () => {
@@ -131,7 +131,7 @@ describe("IngredientLine", () => {
         ...validIngredientLineProps,
         quantityInGrams: -50,
       });
-    }).toThrowError(/Float.*positive/);
+    }).toThrowError(/(Float.*positive|positiv)/i);
   });
 
   it("should throw error if parent type is different from meal or recipe", async () => {

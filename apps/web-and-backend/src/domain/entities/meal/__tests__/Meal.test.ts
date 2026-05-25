@@ -244,7 +244,7 @@ describe("Meal", () => {
           ...validMealProps,
           name: "a".repeat(101),
         });
-      }).toThrow(/Text.*not exceed/);
+      }).toThrow(/(exceed|superar)/i);
     });
 
     it("should throw error if no patch is specified when updating", async () => {

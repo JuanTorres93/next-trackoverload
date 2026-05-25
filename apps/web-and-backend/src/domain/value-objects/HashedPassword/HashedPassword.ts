@@ -1,6 +1,8 @@
-import { Text } from '../Text/Text';
-import { ValidationError } from '../../common/errors';
-import { ValueObject } from '../ValueObject';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { ValidationError } from "../../common/errors";
+import { Text } from "../Text/Text";
+import { ValueObject } from "../ValueObject";
 
 type HashedPasswordProps = {
   value: string;
@@ -24,9 +26,10 @@ export class HashedPassword extends ValueObject<HashedPasswordProps> {
 
     // Basic validation: a hash should be reasonably long
     if (text.value.length < 10) {
-      throw new ValidationError(
-        'HashedPassword: value appears to be too short to be a valid hash',
+      logNoTest(
+        "HashedPassword: value appears to be too short to be a valid hash",
       );
+      throw new ValidationError("La contraseña no es válida.");
     }
 
     return new HashedPassword({ value: text.value });

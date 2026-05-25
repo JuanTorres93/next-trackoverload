@@ -1,5 +1,4 @@
 import { ValidationError } from "../../../common/errors";
-
 import { ExternalExerciseRefSource } from "../ExternalExerciseRefSource";
 
 describe("ExternalExerciseRefSource", () => {
@@ -29,7 +28,7 @@ describe("ExternalExerciseRefSource", () => {
       ValidationError,
     );
     expect(() => ExternalExerciseRefSource.create("invalidsource")).toThrow(
-      /ExternalExerciseRefSource: value must be one of \[wger, backend-for-frontend\]/,
+      /(wger.*backend|fuente.*ejercicio)/i,
     );
   });
 

@@ -1,5 +1,7 @@
-import { ValueObject } from '../ValueObject';
-import { ValidationError } from '../../common/errors';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { ValidationError } from "../../common/errors";
+import { ValueObject } from "../ValueObject";
 
 type BooleanProps = {
   value: boolean;
@@ -14,11 +16,15 @@ export class Bool extends ValueObject<BooleanProps> {
   }
 
   public static create(value: boolean): Bool {
-    if (value === null || value === undefined)
-      throw new ValidationError('Bool: value is required');
+    if (value === null || value === undefined) {
+      logNoTest("Bool: value is required");
+      throw new ValidationError("El valor es obligatorio.");
+    }
 
-    if (typeof value !== 'boolean')
-      throw new ValidationError('Bool: value must be a boolean');
+    if (typeof value !== "boolean") {
+      logNoTest("Bool: value must be a boolean");
+      throw new ValidationError("El valor debe ser un booleano.");
+    }
 
     return new Bool({ value });
   }

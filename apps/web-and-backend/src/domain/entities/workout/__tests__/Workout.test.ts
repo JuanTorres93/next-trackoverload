@@ -193,7 +193,7 @@ describe("Workout", () => {
 
       expect(() => {
         Workout.create(props);
-      }).toThrow(/Text.*not exceed/);
+      }).toThrow(/(exceed|superar)/i);
     });
 
     it("should throw error if removing set from exercise that does not exist in workout", async () => {

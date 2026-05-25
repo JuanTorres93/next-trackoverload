@@ -1,12 +1,14 @@
-import { ValidationError } from '../../common/errors';
-import { ValueObject } from '../ValueObject';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { ValidationError } from "../../common/errors";
+import { ValueObject } from "../ValueObject";
 
 export const VALID_SUBSCRIPTION_STATUSES = [
-  'active', // Paid subscription
-  'canceled', // User cancelled, but still has access until the end of the billing period
-  'expired', // Subscription ended without renewal
-  'free_trial', // User is on a free trial
-  'free', // User is on a free plan
+  "active", // Paid subscription
+  "canceled", // User cancelled, but still has access until the end of the billing period
+  "expired", // Subscription ended without renewal
+  "free_trial", // User is on a free trial
+  "free", // User is on a free plan
 ];
 
 type SubscriptionStatusProps = {
@@ -23,9 +25,10 @@ export class SubscriptionStatus extends ValueObject<SubscriptionStatusProps> {
 
   public static create(value: string): SubscriptionStatus {
     if (!VALID_SUBSCRIPTION_STATUSES.includes(value)) {
-      throw new ValidationError(
-        `SubscriptionStatus: value must be one of [${VALID_SUBSCRIPTION_STATUSES.join(', ')}]`,
+      logNoTest(
+        `SubscriptionStatus: value must be one of [${VALID_SUBSCRIPTION_STATUSES.join(", ")}]`,
       );
+      throw new ValidationError("El estado de la suscripción no es válido.");
     }
 
     return new SubscriptionStatus({ value: value });

@@ -116,31 +116,35 @@ describe("Password", () => {
       // @ts-expect-error testing invalid input
       expect(() => Password.create(123)).toThrow(ValidationError);
       // @ts-expect-error testing invalid input
-      expect(() => Password.create(123)).toThrow(/string/);
+      expect(() => Password.create(123)).toThrow(/(string|cadena)/i);
     });
 
     it("should throw validation error if password is null", () => {
       // @ts-expect-error testing invalid input
       expect(() => Password.create(null)).toThrow(ValidationError);
       // @ts-expect-error testing invalid input
-      expect(() => Password.create(null)).toThrow(/string/);
+      expect(() => Password.create(null)).toThrow(/(string|cadena)/i);
     });
 
     it("should throw validation error if password is undefined", () => {
       // @ts-expect-error testing invalid input
       expect(() => Password.create(undefined)).toThrow(ValidationError);
       // @ts-expect-error testing invalid input
-      expect(() => Password.create(undefined)).toThrow(/string/);
+      expect(() => Password.create(undefined)).toThrow(/(string|cadena)/i);
     });
 
     it("should throw validation error if password is empty", () => {
       expect(() => Password.create("")).toThrow(ValidationError);
-      expect(() => Password.create("")).toThrow(/cannot be empty/);
+      expect(() => Password.create("")).toThrow(
+        /(cannot.*empty|no.*puede.*vac.)/i,
+      );
     });
 
     it("should throw validation error if password is only whitespace", () => {
       expect(() => Password.create("   ")).toThrow(ValidationError);
-      expect(() => Password.create("   ")).toThrow(/cannot be empty/);
+      expect(() => Password.create("   ")).toThrow(
+        /(cannot.*empty|no.*puede.*vac.)/i,
+      );
     });
   });
 

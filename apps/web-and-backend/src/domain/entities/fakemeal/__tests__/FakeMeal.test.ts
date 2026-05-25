@@ -77,7 +77,7 @@ describe("FakeMeal", () => {
           ...validFakeMealProps,
           name: longName,
         }),
-      ).toThrow(/Text.*exceed/);
+      ).toThrow(/(exceed|superar)/i);
     });
 
     it("should throw validation error for empty name", async () => {
@@ -101,7 +101,7 @@ describe("FakeMeal", () => {
         FakeMeal.create({
           ...props,
         }),
-      ).toThrow(/Float.*positive/);
+      ).toThrow(/(Float.*positive|positiv)/i);
     });
 
     it("should throw validation error for negative proteins", async () => {
@@ -116,7 +116,7 @@ describe("FakeMeal", () => {
         FakeMeal.create({
           ...props,
         }),
-      ).toThrow(/Float.*positive/);
+      ).toThrow(/(Float.*positive|positiv)/i);
     });
 
     it("should throw ValidationError if id is not Instance of Id", async () => {
@@ -134,7 +134,7 @@ describe("FakeMeal", () => {
           // @ts-expect-error testing invalid type
           id: 123,
         }),
-      ).toThrowError(/Id.*string/);
+      ).toThrowError(/(Id.*string|cadena)/i);
     });
 
     it("should throw ValidationError if userId is not instance of Id", async () => {
@@ -152,7 +152,7 @@ describe("FakeMeal", () => {
           // @ts-expect-error testing invalid type
           userId: 123,
         }),
-      ).toThrowError(/Id.*string/);
+      ).toThrowError(/(Id.*string|cadena)/i);
     });
   });
 });

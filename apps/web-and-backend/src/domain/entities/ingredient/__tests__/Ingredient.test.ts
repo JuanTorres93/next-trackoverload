@@ -102,7 +102,7 @@ describe("Ingredient", () => {
           // @ts-expect-error testing invalid type
           id: 123,
         });
-      }).toThrowError(/Id.*string/);
+      }).toThrowError(/(Id.*string|cadena)/i);
     });
 
     it("should throw error if name is larger than 100 chars", async () => {
@@ -119,7 +119,7 @@ describe("Ingredient", () => {
           ...ingredientTestProps.validIngredientProps,
           name: longName,
         }),
-      ).toThrow(/Text.*exceed/);
+      ).toThrow(/(exceed|superar)/i);
     });
 
     it("should throw error if name is empty", async () => {
@@ -135,7 +135,7 @@ describe("Ingredient", () => {
           ...ingredientTestProps.validIngredientProps,
           name: "",
         }),
-      ).toThrow(/Text.*empty/);
+      ).toThrow(/(Text.*empty|no.*puede.*vac.)/i);
     });
 
     it("should throw error if calores are below zero", async () => {
@@ -151,7 +151,7 @@ describe("Ingredient", () => {
           ...ingredientTestProps.validIngredientProps,
           calories: -10,
         });
-      }).toThrowError(/Float.*positive/);
+      }).toThrowError(/(Float.*positive|positiv)/i);
     });
 
     it("should throw error if protein is below zero", async () => {
@@ -167,7 +167,7 @@ describe("Ingredient", () => {
           ...ingredientTestProps.validIngredientProps,
           protein: -5,
         });
-      }).toThrowError(/Float.*positive/);
+      }).toThrowError(/(Float.*positive|positiv)/i);
     });
   });
 });
