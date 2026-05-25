@@ -87,9 +87,7 @@ describe("GetLastDayWithCaloriesGoalForUserUsecase", () => {
 
       await expect(
         usecase.execute({ userId: "non-existent-user" }),
-      ).rejects.toThrow(
-        /GetLastDayWithCaloriesGoalForUserUsecase: User.*not found/,
-      );
+      ).rejects.toThrow(/us.*no.*exist/i);
     });
   });
 });

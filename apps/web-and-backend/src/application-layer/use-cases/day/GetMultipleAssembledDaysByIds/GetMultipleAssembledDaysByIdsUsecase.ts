@@ -1,13 +1,5 @@
-import {
-  AssembledDayDTO,
-  toAssembledDayDTO,
-} from "../../../dtos/AssembledDayDTO";
-import { toDayDTO } from "../../../dtos/DayDTO";
-import {
-  FakeMealDTO,
-  toFakeMealDTO,
-} from "../../../dtos/FakeMealDTO";
-import { MealDTO, toMealDTO } from "../../../dtos/MealDTO";
+import { logNoTest } from "@/utils/logNoTest";
+
 import { NotFoundError } from "../../../../domain/common/errors";
 import { FakeMeal } from "../../../../domain/entities/fakemeal/FakeMeal";
 import { Meal } from "../../../../domain/entities/meal/Meal";
@@ -15,6 +7,13 @@ import { DaysRepo } from "../../../../domain/repos/DaysRepo.port";
 import { FakeMealsRepo } from "../../../../domain/repos/FakeMealsRepo.port";
 import { MealsRepo } from "../../../../domain/repos/MealsRepo.port";
 import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
+import {
+  AssembledDayDTO,
+  toAssembledDayDTO,
+} from "../../../dtos/AssembledDayDTO";
+import { toDayDTO } from "../../../dtos/DayDTO";
+import { FakeMealDTO, toFakeMealDTO } from "../../../dtos/FakeMealDTO";
+import { MealDTO, toMealDTO } from "../../../dtos/MealDTO";
 
 export type GetMultipleAssembledDaysByIdsUsecaseRequest = {
   dayIds: string[];
@@ -42,9 +41,11 @@ export class GetMultipleAssembledDaysByIdsUsecase {
     ]);
 
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `GetMultipleAssembledDaysByIdsUsecase: User with id ${request.userId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     if (days.length === 0) {

@@ -106,7 +106,7 @@ describe("CreateDayUsecase", () => {
         NotFoundError,
       );
       await expect(createDayUsecase.execute(request)).rejects.toThrow(
-        /createDayNoSaveInRepo.*user.*not.*found/,
+        /.*no.*exist/i,
       );
     });
 
@@ -149,7 +149,7 @@ describe("CreateDayUsecase", () => {
         AlreadyExistsError,
       );
       await expect(createDayUsecase.execute(request)).rejects.toThrow(
-        /createDayNoSaveInRepo: day.*already exists/,
+        /ya.*exist.*/,
       );
     });
   });

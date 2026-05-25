@@ -172,7 +172,7 @@ describe("GetMultipleAssembledDaysByIdsUsecase", () => {
         NotFoundError,
       );
       await expect(usecase.execute(request)).rejects.toThrowError(
-        /GetMultipleAssembledDaysByIdsUsecase.*User.*not found/,
+        /us.*no.*exist/i,
       );
     });
   });

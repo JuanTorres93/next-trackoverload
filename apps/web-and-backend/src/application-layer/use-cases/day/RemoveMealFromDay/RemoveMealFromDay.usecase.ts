@@ -1,3 +1,5 @@
+import { logNoTest } from "@/utils/logNoTest";
+
 import { NotFoundError } from "../../../../domain/common/errors";
 import { DaysRepo } from "../../../../domain/repos/DaysRepo.port";
 import { MealsRepo } from "../../../../domain/repos/MealsRepo.port";
@@ -27,15 +29,19 @@ export class RemoveMealFromDayUsecase {
     ]);
 
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `RemoveMealFromDayUsecase: User with id ${request.userId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe");
     }
 
     if (!day) {
-      throw new NotFoundError(
-        `RemoveMealFromDayUsecase: Day not found for date ${request.dayId} and userId ${request.userId}`,
+      logNoTest(
+        `RemoveMealFromDayUsecase: Day with id ${request.dayId} not found for userId ${request.userId}`,
       );
+
+      throw new NotFoundError("El día no existe.");
     }
 
     day.removeMealById(request.mealId);

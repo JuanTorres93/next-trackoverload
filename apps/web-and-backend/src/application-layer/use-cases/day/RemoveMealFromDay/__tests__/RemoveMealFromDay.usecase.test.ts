@@ -121,7 +121,7 @@ describe("RemoveMealFromDayUsecase", () => {
         NotFoundError,
       );
       await expect(removeMealFromDayUsecase.execute(request)).rejects.toThrow(
-        /RemoveMealFromDay.*Day.*not/,
+        /d.*no.*exist/i,
       );
     });
 
@@ -137,7 +137,7 @@ describe("RemoveMealFromDayUsecase", () => {
       );
 
       await expect(removeMealFromDayUsecase.execute(request)).rejects.toThrow(
-        /RemoveMealFromDay.*User.*not.*found/,
+        /us.*no.*exist/i,
       );
     });
 
@@ -159,7 +159,7 @@ describe("RemoveMealFromDayUsecase", () => {
       );
 
       await expect(removeMealFromDayUsecase.execute(request)).rejects.toThrow(
-        /RemoveMealFromDay.*Day.*not/,
+        /d.*no.*exist/i,
       );
     });
   });

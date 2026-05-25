@@ -138,7 +138,7 @@ describe("RemoveFakeMealFromDayUsecase", () => {
       ).rejects.toThrow(NotFoundError);
       await expect(
         removeFakeMealFromDayUsecase.execute(request),
-      ).rejects.toThrow(/RemoveFakeMealFromDay.*Day.*not/);
+      ).rejects.toThrow(/d.*no.*exist/i);
     });
 
     it("should throw error if user does not exist", async () => {
@@ -154,7 +154,7 @@ describe("RemoveFakeMealFromDayUsecase", () => {
 
       await expect(
         removeFakeMealFromDayUsecase.execute(request),
-      ).rejects.toThrow(/RemoveFakeMealFromDay.*User.*not.*found/);
+      ).rejects.toThrow(/us.*no.*exist/i);
     });
 
     it("should throw error when trying to remove meal from another user's day", async () => {
@@ -177,7 +177,7 @@ describe("RemoveFakeMealFromDayUsecase", () => {
 
       await expect(
         removeFakeMealFromDayUsecase.execute(request),
-      ).rejects.toThrow(/RemoveFakeMealFromDayUsecase.*Day.*not.*found/);
+      ).rejects.toThrow(/d.*no.*exist/i);
     });
   });
 });

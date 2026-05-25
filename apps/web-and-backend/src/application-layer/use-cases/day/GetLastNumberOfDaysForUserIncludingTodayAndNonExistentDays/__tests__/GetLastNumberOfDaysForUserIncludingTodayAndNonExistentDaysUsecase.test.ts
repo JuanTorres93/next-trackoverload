@@ -110,12 +110,18 @@ describe("GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase", ()
 
   describe("Errors", () => {
     it("should throw NotFoundError if user does not exist", async () => {
-      await expect(
-        usecase.execute({
-          numberOfDays: 7,
-          userId: "non-existent-user",
-        }),
-      ).rejects.toThrow(NotFoundError);
+      const invalidRequest = {
+        numberOfDays: 7,
+        userId: "non-existent-user",
+      };
+
+      await expect(usecase.execute(invalidRequest)).rejects.toThrow(
+        NotFoundError,
+      );
+
+      await expect(usecase.execute(invalidRequest)).rejects.toThrow(
+        /us.*no.*exist/i,
+      );
     });
   });
 });

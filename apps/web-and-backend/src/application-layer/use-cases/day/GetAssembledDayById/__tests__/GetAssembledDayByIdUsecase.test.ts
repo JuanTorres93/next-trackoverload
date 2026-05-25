@@ -114,12 +114,8 @@ describe("GetAssembledDayByIdUsecase", () => {
         userId: "non-existent-user-id",
       };
 
-      await expect(usecase.execute(request)).rejects.toThrowError(
-        NotFoundError,
-      );
-      await expect(usecase.execute(request)).rejects.toThrowError(
-        /GetAssembledDayByIdUsecase.*User.*not found/,
-      );
+      await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
+      await expect(usecase.execute(request)).rejects.toThrow(/us.*no.*exist/);
     });
   });
 });

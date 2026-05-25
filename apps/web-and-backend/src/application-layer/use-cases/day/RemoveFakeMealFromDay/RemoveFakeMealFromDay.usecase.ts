@@ -1,9 +1,11 @@
-import { DayDTO, toDayDTO } from '../../../dtos/DayDTO';
-import { NotFoundError } from '../../../../domain/common/errors';
-import { DaysRepo } from '../../../../domain/repos/DaysRepo.port';
-import { FakeMealsRepo } from '../../../../domain/repos/FakeMealsRepo.port';
-import { UsersRepo } from '../../../../domain/repos/UsersRepo.port';
-import { TransactionContext } from '../../../ports/TransactionContext.port';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { NotFoundError } from "../../../../domain/common/errors";
+import { DaysRepo } from "../../../../domain/repos/DaysRepo.port";
+import { FakeMealsRepo } from "../../../../domain/repos/FakeMealsRepo.port";
+import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
+import { DayDTO, toDayDTO } from "../../../dtos/DayDTO";
+import { TransactionContext } from "../../../ports/TransactionContext.port";
 
 export type RemoveFakeMealFromDayUsecaseRequest = {
   dayId: string;
@@ -27,15 +29,19 @@ export class RemoveFakeMealFromDayUsecase {
     ]);
 
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `RemoveFakeMealFromDayUsecase: User with id ${request.userId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe");
     }
 
     if (!day) {
-      throw new NotFoundError(
+      logNoTest(
         `RemoveFakeMealFromDayUsecase: Day not found for dayId ${request.dayId} and userId ${request.userId}`,
       );
+
+      throw new NotFoundError("El día no existe");
     }
 
     day.removeFakeMealById(request.fakeMealId);

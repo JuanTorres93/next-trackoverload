@@ -1,13 +1,15 @@
+import { logNoTest } from "@/utils/logNoTest";
+
 import {
   AlreadyExistsError,
   NotFoundError,
   PermissionError,
-} from '../../../../domain/common/errors';
-import { CreateDayUsecaseRequest } from '../CreateDay/CreateDay.usecase';
-import { UsersRepo } from '../../../../domain/repos/UsersRepo.port';
-import { Day } from '../../../../domain/entities/day/Day';
-import { DayId } from '../../../../domain/value-objects/DayId/DayId';
-import { DaysRepo } from '../../../../domain/repos/DaysRepo.port';
+} from "../../../../domain/common/errors";
+import { Day } from "../../../../domain/entities/day/Day";
+import { DaysRepo } from "../../../../domain/repos/DaysRepo.port";
+import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
+import { DayId } from "../../../../domain/value-objects/DayId/DayId";
+import { CreateDayUsecaseRequest } from "../CreateDay/CreateDay.usecase";
 
 export async function createDayNoSaveInRepo(
   usersRepo: UsersRepo,
@@ -16,15 +18,17 @@ export async function createDayNoSaveInRepo(
 ): Promise<Day> {
   if (request.actorUserId !== request.targetUserId) {
     throw new PermissionError(
-      'createDayNoSaveInRepo: cannot create day for another user',
+      "createDayNoSaveInRepo: cannot create day for another user",
     );
   }
 
   const user = await usersRepo.getUserById(request.targetUserId);
   if (!user) {
-    throw new NotFoundError(
+    logNoTest(
       `createDayNoSaveInRepo: user with id ${request.targetUserId} not found`,
     );
+
+    throw new NotFoundError("No existe el usuario.");
   }
 
   const dayId = DayId.create({
@@ -39,9 +43,11 @@ export async function createDayNoSaveInRepo(
   );
 
   if (existingDay) {
-    throw new AlreadyExistsError(
+    logNoTest(
       `createDayNoSaveInRepo: day for date ${request.day}/${request.month}/${request.year} for user with id ${request.targetUserId} already exists`,
     );
+
+    throw new AlreadyExistsError("El día para esa fecha ya existe.");
   }
 
   const newDay = Day.create({
