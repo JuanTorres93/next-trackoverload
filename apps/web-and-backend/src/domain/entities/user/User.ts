@@ -1,4 +1,4 @@
-import { logNoTest } from "@/utils/logNoTest";
+import { logNoTest } from "@/domain/utils/logNoTest";
 
 import { FREE_TRIAL_DAYS } from "../../common/constants";
 import { ValidationError } from "../../common/errors";

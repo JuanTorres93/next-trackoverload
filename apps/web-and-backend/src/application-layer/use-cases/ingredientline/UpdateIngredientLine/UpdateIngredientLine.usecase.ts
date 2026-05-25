@@ -1,4 +1,4 @@
-import { logNoTest } from "@/utils/logNoTest";
+import { logNoTest } from "@/domain/utils/logNoTest";
 
 import { AuthError, NotFoundError } from "../../../../domain/common/errors";
 import { Ingredient } from "../../../../domain/entities/ingredient/Ingredient";

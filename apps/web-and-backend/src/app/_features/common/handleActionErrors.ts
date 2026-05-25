@@ -1,6 +1,6 @@
 import { JSENDFailure } from "@/app/_types/JSEND";
 import { isDomainError } from "@/domain/common/errors";
-import { logNoTest } from "@/utils/logNoTest";
+import { logNoTest } from "@/domain/utils/logNoTest";
 
 export function handleActionErrors(error: Error): JSENDFailure {
   logNoTest(`Error in server action`);

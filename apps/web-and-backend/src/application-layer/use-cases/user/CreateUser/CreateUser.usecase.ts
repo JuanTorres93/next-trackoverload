@@ -1,4 +1,4 @@
-import { logNoTest } from "@/utils/logNoTest";
+import { logNoTest } from "@/domain/utils/logNoTest";
 
 import { AlreadyExistsError } from "../../../../domain/common/errors";
 import { User } from "../../../../domain/entities/user/User";

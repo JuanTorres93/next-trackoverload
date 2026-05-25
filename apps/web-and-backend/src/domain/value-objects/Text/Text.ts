@@ -1,4 +1,4 @@
-import { logNoTest } from "@/utils/logNoTest";
+import { logNoTest } from "@/domain/utils/logNoTest";
 
 import { ValidationError } from "../../common/errors";
 import { Integer } from "../Integer/Integer";
