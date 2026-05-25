@@ -64,9 +64,7 @@ describe("ResumeSubscriptionForUserUsecase", () => {
 
       await expect(
         usecase.execute({ userId: "non-existent-id" }),
-      ).rejects.toThrow(
-        /ResumeSubscriptionForUserUsecase: User with id non-existent-id not found/i,
-      );
+      ).rejects.toThrow(/us.*no.*exist/i);
     });
 
     it("should throw ConflictError if user has no customerId", async () => {
@@ -83,9 +81,7 @@ describe("ResumeSubscriptionForUserUsecase", () => {
 
       await expect(
         usecase.execute({ userId: userWithoutCustomer.id }),
-      ).rejects.toThrow(
-        /ResumeSubscriptionForUserUsecase: User with id user-no-customer has no customerId/i,
-      );
+      ).rejects.toThrow(/(no.*suscripci|no.*subscri)/i);
     });
   });
 });

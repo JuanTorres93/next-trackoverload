@@ -50,6 +50,12 @@ describe("SyncUserSubscriptionStatusUsecase", () => {
           subscriptionStatus: "active",
         }),
       ).rejects.toThrow(NotFoundError);
+      await expect(
+        usecase.execute({
+          customerId: "non-existent-customer",
+          subscriptionStatus: "active",
+        }),
+      ).rejects.toThrow(/us.*no.*exist/i);
     });
   });
 });

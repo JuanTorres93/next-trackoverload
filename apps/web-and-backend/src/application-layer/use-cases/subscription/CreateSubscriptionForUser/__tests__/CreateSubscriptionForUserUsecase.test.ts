@@ -52,9 +52,7 @@ describe("CreateSubscriptionForUserUsecase", () => {
       ).rejects.toThrow(NotFoundError);
       await expect(
         usecase.execute({ userId: "non-existent-id", planId }),
-      ).rejects.toThrow(
-        /CreateSubscriptionForUserUsecase: User with id non-existent-id not found/i,
-      );
+      ).rejects.toThrow(/us.*no.*exist/i);
     });
   });
 });

@@ -1,6 +1,8 @@
-import { NotFoundError } from '../../../../domain/common/errors';
-import { UsersRepo } from '../../../../domain/repos/UsersRepo.port';
-import { PaymentsService } from '../../../../domain/services/PaymentsService.port';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { NotFoundError } from "../../../../domain/common/errors";
+import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
+import { PaymentsService } from "../../../../domain/services/PaymentsService.port";
 
 export type CreateSubscriptionForUserUsecaseRequest = {
   userId: string;
@@ -22,9 +24,11 @@ export class CreateSubscriptionForUserUsecase {
   ): Promise<CreateSubscriptionForUserUsecaseResponse> {
     const user = await this.usersRepo.getUserById(request.userId);
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `CreateSubscriptionForUserUsecase: User with id ${request.userId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     const { redirectUrl, customerId } =

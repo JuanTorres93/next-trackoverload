@@ -1,6 +1,8 @@
-import { NotFoundError } from '../../../../domain/common/errors';
-import { UsersRepo } from '../../../../domain/repos/UsersRepo.port';
-import { SubscriptionStatus } from '../../../../domain/value-objects/SubscriptionStatus/SubscriptionStatus';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { NotFoundError } from "../../../../domain/common/errors";
+import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
+import { SubscriptionStatus } from "../../../../domain/value-objects/SubscriptionStatus/SubscriptionStatus";
 
 export type SyncUserSubscriptionStatusUsecaseRequest = {
   customerId: string;
@@ -17,9 +19,11 @@ export class SyncUserSubscriptionStatusUsecase {
     const user = await this.usersRepo.getUserByCustomerId(request.customerId);
 
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `SyncUserSubscriptionStatusUsecase: User with customerId ${request.customerId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     const validatedNewStatus = SubscriptionStatus.create(

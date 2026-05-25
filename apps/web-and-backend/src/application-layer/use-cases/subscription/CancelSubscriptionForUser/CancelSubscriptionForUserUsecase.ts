@@ -1,6 +1,8 @@
-import { ConflictError, NotFoundError } from '../../../../domain/common/errors';
-import { UsersRepo } from '../../../../domain/repos/UsersRepo.port';
-import { PaymentsService } from '../../../../domain/services/PaymentsService.port';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { ConflictError, NotFoundError } from "../../../../domain/common/errors";
+import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
+import { PaymentsService } from "../../../../domain/services/PaymentsService.port";
 
 export type CancelSubscriptionForUserUsecaseRequest = {
   userId: string;
@@ -22,15 +24,19 @@ export class CancelSubscriptionForUserUsecase {
     const user = await this.usersRepo.getUserById(request.userId);
 
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `CancelSubscriptionForUserUsecase: User with id ${request.userId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     if (!user.customerId) {
-      throw new ConflictError(
+      logNoTest(
         `CancelSubscriptionForUserUsecase: User with id ${request.userId} has no customerId`,
       );
+
+      throw new ConflictError("No tienes ninguna suscripción para cancelar.");
     }
 
     const { redirectUrl } = await this.paymentsService.cancelSubscription(
