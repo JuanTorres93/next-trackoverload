@@ -152,7 +152,7 @@ describe("CreateUserUsecase", () => {
       );
 
       await expect(createUserUsecase.execute(request)).rejects.toThrow(
-        /CreateUserUsecase.*User.*customerId.*already exists/,
+        /client.*ya.*registr|customer.*already/i,
       );
     });
   });

@@ -1,6 +1,8 @@
-import { UserDTO, toUserDTO } from '../../../dtos/UserDTO';
-import { PermissionError } from '../../../../domain/common/errors';
-import { UsersRepo } from '../../../../domain/repos/UsersRepo.port';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { PermissionError } from "../../../../domain/common/errors";
+import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
+import { UserDTO, toUserDTO } from "../../../dtos/UserDTO";
 
 export type GetUserByIdUsecaseRequest = {
   actorUserId: string;
@@ -12,7 +14,11 @@ export class GetUserByIdUsecase {
 
   async execute(request: GetUserByIdUsecaseRequest): Promise<UserDTO | null> {
     if (request.actorUserId !== request.targetUserId) {
-      throw new PermissionError('GetUserByIdUsecase: Access denied.');
+      logNoTest(
+        `GetUserByIdUsecase: Access denied for user ${request.actorUserId} to get user ${request.targetUserId}`,
+      );
+
+      throw new PermissionError("No puedes ver los datos de otro usuario.");
     }
 
     const user = await this.usersRepo.getUserById(request.targetUserId);

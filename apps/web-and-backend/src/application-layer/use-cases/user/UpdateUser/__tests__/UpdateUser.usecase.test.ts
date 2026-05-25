@@ -83,7 +83,7 @@ describe("UpdateUserUsecase", () => {
       );
 
       await expect(updateUserUsecase.execute(request)).rejects.toThrow(
-        /UpdateUserUsecase.*User.*not found/,
+        /us.*no.*exist/i,
       );
     });
 
@@ -99,7 +99,7 @@ describe("UpdateUserUsecase", () => {
       );
 
       await expect(updateUserUsecase.execute(request)).rejects.toThrow(
-        /UpdateUserUsecase.*Access denied/,
+        /no.*puedes.*modific|access.*denied/i,
       );
     });
   });

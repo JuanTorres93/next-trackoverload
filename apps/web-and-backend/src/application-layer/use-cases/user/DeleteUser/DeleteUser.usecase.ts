@@ -1,12 +1,17 @@
-import { NotFoundError, PermissionError } from '../../../../domain/common/errors';
-import { UsersRepo } from '../../../../domain/repos/UsersRepo.port';
-import { DaysRepo } from '../../../../domain/repos/DaysRepo.port';
-import { FakeMealsRepo } from '../../../../domain/repos/FakeMealsRepo.port';
-import { MealsRepo } from '../../../../domain/repos/MealsRepo.port';
-import { RecipesRepo } from '../../../../domain/repos/RecipesRepo.port';
-import { WorkoutsRepo } from '../../../../domain/repos/WorkoutsRepo.port';
-import { WorkoutTemplatesRepo } from '../../../../domain/repos/WorkoutTemplatesRepo.port';
-import { TransactionContext } from '../../../ports/TransactionContext.port';
+import { logNoTest } from "@/utils/logNoTest";
+
+import {
+  NotFoundError,
+  PermissionError,
+} from "../../../../domain/common/errors";
+import { DaysRepo } from "../../../../domain/repos/DaysRepo.port";
+import { FakeMealsRepo } from "../../../../domain/repos/FakeMealsRepo.port";
+import { MealsRepo } from "../../../../domain/repos/MealsRepo.port";
+import { RecipesRepo } from "../../../../domain/repos/RecipesRepo.port";
+import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
+import { WorkoutTemplatesRepo } from "../../../../domain/repos/WorkoutTemplatesRepo.port";
+import { WorkoutsRepo } from "../../../../domain/repos/WorkoutsRepo.port";
+import { TransactionContext } from "../../../ports/TransactionContext.port";
 
 export type DeleteUserUsecaseRequest = {
   actorUserId: string;
@@ -27,15 +32,21 @@ export class DeleteUserUsecase {
 
   async execute(request: DeleteUserUsecaseRequest): Promise<void> {
     if (request.actorUserId !== request.targetUserId) {
+      logNoTest(`DeleteUserUsecase: cannot delete another user`);
+
       throw new PermissionError(
-        'DeleteUserUsecase: cannot delete another user',
+        "No puedes eliminar la cuenta de otro usuario.",
       );
     }
 
     const user = await this.usersRepo.getUserById(request.targetUserId);
 
     if (!user) {
-      throw new NotFoundError('DeleteUserUsecase: User not found');
+      logNoTest(
+        `DeleteUserUsecase: User with id ${request.targetUserId} not found`,
+      );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     await this.transactionContext.run(async () => {

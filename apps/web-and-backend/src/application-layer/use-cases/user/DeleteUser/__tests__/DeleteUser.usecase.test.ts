@@ -210,7 +210,7 @@ describe("DeleteUserUsecase", () => {
       );
 
       await expect(deleteUserUsecase.execute(request)).rejects.toThrow(
-        /DeleteUserUsecase.*User.*not found/,
+        /us.*no.*exist/i,
       );
     });
 
@@ -231,7 +231,7 @@ describe("DeleteUserUsecase", () => {
       );
 
       await expect(deleteUserUsecase.execute(request)).rejects.toThrow(
-        /DeleteUserUsecase.*delete.*another.*user/,
+        /no.*puedes.*elimin|delete.*another/i,
       );
     });
   });

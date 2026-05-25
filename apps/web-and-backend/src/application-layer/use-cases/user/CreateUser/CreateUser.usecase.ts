@@ -1,3 +1,5 @@
+import { logNoTest } from "@/utils/logNoTest";
+
 import { AlreadyExistsError } from "../../../../domain/common/errors";
 import { User } from "../../../../domain/entities/user/User";
 import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
@@ -43,9 +45,9 @@ export class CreateUserUsecase {
     }
 
     if (existingCustomer) {
-      throw new AlreadyExistsError(
-        "CreateUserUsecase: User with this customerId already exists",
-      );
+      logNoTest(`CreateUserUsecase: User with this customerId already exists`);
+
+      throw new AlreadyExistsError("Este cliente ya está registrado.");
     }
 
     const hashedPassword =

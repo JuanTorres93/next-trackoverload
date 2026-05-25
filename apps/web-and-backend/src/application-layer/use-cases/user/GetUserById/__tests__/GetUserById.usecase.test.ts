@@ -70,7 +70,7 @@ describe("GetUserByIdUsecase", () => {
 
       await expect(() =>
         getUserByIdUsecase.execute(request),
-      ).rejects.toThrowError(/GetUserByIdUsecase.*Access denied/);
+      ).rejects.toThrowError(/no.*puedes.*ver|access.*denied/i);
     });
   });
 });
