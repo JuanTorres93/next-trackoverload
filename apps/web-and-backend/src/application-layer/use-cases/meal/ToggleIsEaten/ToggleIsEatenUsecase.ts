@@ -1,7 +1,9 @@
-import { MealDTO, toMealDTO } from '../../../dtos/MealDTO';
-import { NotFoundError } from '../../../../domain/common/errors';
-import { MealsRepo } from '../../../../domain/repos/MealsRepo.port';
-import { UsersRepo } from '../../../../domain/repos/UsersRepo.port';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { NotFoundError } from "../../../../domain/common/errors";
+import { MealsRepo } from "../../../../domain/repos/MealsRepo.port";
+import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
+import { MealDTO, toMealDTO } from "../../../dtos/MealDTO";
 
 export type ToggleIsEatenUsecaseRequest = {
   mealId: string;
@@ -22,13 +24,17 @@ export class ToggleIsEatenUsecase {
     ]);
 
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `ToggleIsEatenUsecase: User with id ${request.userId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     if (!meal) {
-      throw new NotFoundError('ToggleIsEatenUsecase: Meal not found');
+      logNoTest("ToggleIsEatenUsecase: Meal not found");
+
+      throw new NotFoundError("La comida no existe.");
     }
 
     meal.toggleIsEaten();

@@ -68,9 +68,7 @@ describe("ToggleIsEatenUsecase", () => {
       const request = { mealId: meal.id, userId: "non-existent" };
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
-      await expect(usecase.execute(request)).rejects.toThrow(
-        /ToggleIsEatenUsecase.*User.*not.*found/,
-      );
+      await expect(usecase.execute(request)).rejects.toThrow(/us.*no.*exist/i);
     });
 
     it("should throw NotFoundError when meal does not exist", async () => {
@@ -81,7 +79,7 @@ describe("ToggleIsEatenUsecase", () => {
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
       await expect(usecase.execute(request)).rejects.toThrow(
-        /ToggleIsEatenUsecase.*Meal.*not.*found/,
+        /(meal|comida).*no.*exist/i,
       );
     });
 
@@ -96,7 +94,7 @@ describe("ToggleIsEatenUsecase", () => {
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
       await expect(usecase.execute(request)).rejects.toThrow(
-        /ToggleIsEatenUsecase.*Meal.*not.*found/,
+        /(meal|comida).*no.*exist/i,
       );
     });
   });
