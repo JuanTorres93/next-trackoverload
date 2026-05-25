@@ -1,8 +1,5 @@
-import {
-  WorkoutTemplateDTO,
-  toWorkoutTemplateDTO,
-} from "../../../dtos/WorkoutTemplateDTO";
-import { TransactionContext } from "../../../ports/TransactionContext.port";
+import { logNoTest } from "@/utils/logNoTest";
+
 import { NotFoundError } from "../../../../domain/common/errors";
 import { WorkoutTemplateLine } from "../../../../domain/entities/workouttemplateline/WorkoutTemplateLine";
 import { ExercisesRepo } from "../../../../domain/repos/ExercisesRepo.port";
@@ -10,7 +7,11 @@ import { ExternalExercisesRefRepo } from "../../../../domain/repos/ExternalExerc
 import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
 import { WorkoutTemplatesRepo } from "../../../../domain/repos/WorkoutTemplatesRepo.port";
 import { IdGenerator } from "../../../../domain/services/IdGenerator.port";
-
+import {
+  WorkoutTemplateDTO,
+  toWorkoutTemplateDTO,
+} from "../../../dtos/WorkoutTemplateDTO";
+import { TransactionContext } from "../../../ports/TransactionContext.port";
 import { createExercisesAndExternalExercisesNoSaveInRepo } from "../../exercise/common/createExercisesAndExternalExercisesNoSaveInRepo";
 
 export type AddExerciseToWorkoutTemplateUsecaseRequest = {
@@ -45,17 +46,21 @@ export class AddExerciseToWorkoutTemplateUsecase {
     ]);
 
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `AddExerciseToWorkoutTemplateUsecase: User with id ${request.userId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     const isDeleted = workoutTemplate?.isDeleted ?? false;
 
     if (!workoutTemplate || isDeleted) {
-      throw new NotFoundError(
-        "AddExerciseToWorkoutTemplateUsecase: WorkoutTemplate not found",
+      logNoTest(
+        `AddExerciseToWorkoutTemplateUsecase: WorkoutTemplate with id ${request.workoutTemplateId} not found`,
       );
+
+      throw new NotFoundError("La plantilla de entrenamiento no existe.");
     }
 
     const { createdExercises, createdExternalExercises, allExercises } =

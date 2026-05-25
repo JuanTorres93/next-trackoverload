@@ -87,7 +87,7 @@ describe("UpdateWorkoutTemplateUsecase", () => {
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
       await expect(usecase.execute(request)).rejects.toThrow(
-        /UpdateWorkoutTemplate.*WorkoutTemplate.*not found/,
+        /plantilla.*no.*exist|workout.?template.*not.*found/i,
       );
     });
 
@@ -113,9 +113,7 @@ describe("UpdateWorkoutTemplateUsecase", () => {
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
-      await expect(usecase.execute(request)).rejects.toThrow(
-        /UpdateWorkoutTemplateUsecase.*User.*not.*found/,
-      );
+      await expect(usecase.execute(request)).rejects.toThrow(/us.*no.*exist/i);
     });
 
     it("should throw error when trying to update another user's workout template", async () => {
@@ -132,7 +130,7 @@ describe("UpdateWorkoutTemplateUsecase", () => {
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
       await expect(usecase.execute(request)).rejects.toThrow(
-        /UpdateWorkoutTemplateUsecase.*WorkoutTemplate.*not found/,
+        /plantilla.*no.*exist|workout.?template.*not.*found/i,
       );
     });
   });

@@ -1,11 +1,13 @@
+import { logNoTest } from "@/utils/logNoTest";
+
+import { NotFoundError } from "../../../../domain/common/errors";
+import { WorkoutTemplateUpdateProps } from "../../../../domain/entities/workouttemplate/WorkoutTemplate";
+import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
+import { WorkoutTemplatesRepo } from "../../../../domain/repos/WorkoutTemplatesRepo.port";
 import {
   WorkoutTemplateDTO,
   toWorkoutTemplateDTO,
-} from '../../../dtos/WorkoutTemplateDTO';
-import { NotFoundError } from '../../../../domain/common/errors';
-import { WorkoutTemplateUpdateProps } from '../../../../domain/entities/workouttemplate/WorkoutTemplate';
-import { UsersRepo } from '../../../../domain/repos/UsersRepo.port';
-import { WorkoutTemplatesRepo } from '../../../../domain/repos/WorkoutTemplatesRepo.port';
+} from "../../../dtos/WorkoutTemplateDTO";
 
 export type UpdateWorkoutTemplateUsecaseRequest = {
   id: string;
@@ -32,17 +34,21 @@ export class UpdateWorkoutTemplateUsecase {
     ]);
 
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `UpdateWorkoutTemplateUsecase: User with id ${request.userId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     const isDeleted = workoutTemplate?.isDeleted ?? false;
 
     if (!workoutTemplate || isDeleted) {
-      throw new NotFoundError(
-        'UpdateWorkoutTemplateUsecase: WorkoutTemplate not found',
+      logNoTest(
+        `UpdateWorkoutTemplateUsecase: WorkoutTemplate with id ${request.id} not found`,
       );
+
+      throw new NotFoundError("La plantilla de entrenamiento no existe.");
     }
 
     const patch: WorkoutTemplateUpdateProps = {

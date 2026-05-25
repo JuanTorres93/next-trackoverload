@@ -115,7 +115,7 @@ describe("ReorderExerciseInWorkoutTemplateUsecase", () => {
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
       await expect(usecase.execute(request)).rejects.toThrow(
-        /ReorderExerciseInWorkoutTemplate.*WorkoutTemplate.*not.*found/,
+        /plantilla.*no.*exist|workout.?template.*not.*found/i,
       );
     });
 
@@ -134,7 +134,7 @@ describe("ReorderExerciseInWorkoutTemplateUsecase", () => {
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
       await expect(usecase.execute(request)).rejects.toThrow(
-        /ReorderExerciseInWorkoutTemplate.*WorkoutTemplate.*not.*found/,
+        /plantilla.*no.*exist|workout.?template.*not.*found/i,
       );
     });
 
@@ -148,9 +148,7 @@ describe("ReorderExerciseInWorkoutTemplateUsecase", () => {
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
-      await expect(usecase.execute(request)).rejects.toThrow(
-        /ReorderExerciseInWorkoutTemplateUsecase.*User.*not.*found/,
-      );
+      await expect(usecase.execute(request)).rejects.toThrow(/us.*no.*exist/i);
     });
 
     it("should throw error when trying to reorder exercise in another user's workout template", async () => {
@@ -168,7 +166,7 @@ describe("ReorderExerciseInWorkoutTemplateUsecase", () => {
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
       await expect(usecase.execute(request)).rejects.toThrow(
-        /ReorderExerciseInWorkoutTemplateUsecase.*WorkoutTemplate.*not.*found/,
+        /plantilla.*no.*exist|workout.?template.*not.*found/i,
       );
     });
   });

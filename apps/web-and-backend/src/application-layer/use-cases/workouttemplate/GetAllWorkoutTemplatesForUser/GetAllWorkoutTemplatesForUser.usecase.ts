@@ -1,3 +1,5 @@
+import { logNoTest } from "@/utils/logNoTest";
+
 import {
   NotFoundError,
   PermissionError,
@@ -24,8 +26,12 @@ export class GetAllWorkoutTemplatesForUserUsecase {
     request: GetAllWorkoutTemplatesForUserUsecaseRequest,
   ): Promise<WorkoutTemplateDTO[]> {
     if (request.actorUserId !== request.targetUserId) {
-      throw new PermissionError(
+      logNoTest(
         `GetAllWorkoutTemplatesForUserUsecase: cannot get workout templates for another user`,
+      );
+
+      throw new PermissionError(
+        "No puedes ver las plantillas de otro usuario.",
       );
     }
 
@@ -38,9 +44,11 @@ export class GetAllWorkoutTemplatesForUserUsecase {
     ]);
 
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `GetAllWorkoutTemplatesForUserUsecase: User with id ${request.targetUserId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     return workoutTemplates.map(toWorkoutTemplateDTO) || [];

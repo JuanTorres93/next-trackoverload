@@ -1,6 +1,8 @@
-import { NotFoundError } from '../../../../domain/common/errors';
-import { UsersRepo } from '../../../../domain/repos/UsersRepo.port';
-import { WorkoutTemplatesRepo } from '../../../../domain/repos/WorkoutTemplatesRepo.port';
+import { logNoTest } from "@/utils/logNoTest";
+
+import { NotFoundError } from "../../../../domain/common/errors";
+import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
+import { WorkoutTemplatesRepo } from "../../../../domain/repos/WorkoutTemplatesRepo.port";
 
 export type DeleteWorkoutTemplateUsecaseRequest = {
   id: string;
@@ -24,17 +26,21 @@ export class DeleteWorkoutTemplateUsecase {
     ]);
 
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `DeleteWorkoutTemplateUsecase: User with id ${request.userId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     const isDeleted = workoutTemplate?.isDeleted ?? false;
 
     if (!workoutTemplate || isDeleted) {
-      throw new NotFoundError(
-        ' DeleteWorkoutTemplateUsecase: WorkoutTemplate not found',
+      logNoTest(
+        `DeleteWorkoutTemplateUsecase: WorkoutTemplate with id ${request.id} not found`,
       );
+
+      throw new NotFoundError("La plantilla de entrenamiento no existe.");
     }
 
     workoutTemplate.markAsDeleted();

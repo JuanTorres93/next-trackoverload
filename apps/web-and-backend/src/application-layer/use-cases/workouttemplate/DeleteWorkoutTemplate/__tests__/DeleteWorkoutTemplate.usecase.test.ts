@@ -60,7 +60,7 @@ describe("DeleteWorkoutTemplateUsecase", () => {
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
       await expect(usecase.execute(request)).rejects.toThrow(
-        /DeleteWorkoutTemplateUsecase.*WorkoutTemplate.*not.*found/,
+        /plantilla.*no.*exist|workout.?template.*not.*found/i,
       );
     });
 
@@ -73,7 +73,7 @@ describe("DeleteWorkoutTemplateUsecase", () => {
       // Try deleting it again
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
       await expect(usecase.execute(request)).rejects.toThrow(
-        /DeleteWorkoutTemplateUsecase.*WorkoutTemplate.*not.*found/,
+        /plantilla.*no.*exist|workout.?template.*not.*found/i,
       );
     });
 
@@ -85,9 +85,7 @@ describe("DeleteWorkoutTemplateUsecase", () => {
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
-      await expect(usecase.execute(request)).rejects.toThrow(
-        /DeleteWorkoutTemplateUsecase.*User.*not.*found/,
-      );
+      await expect(usecase.execute(request)).rejects.toThrow(/us.*no.*exist/i);
     });
 
     it("should throw error when trying to delete another user's template", async () => {
@@ -104,7 +102,7 @@ describe("DeleteWorkoutTemplateUsecase", () => {
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
       await expect(usecase.execute(request)).rejects.toThrow(
-        /DeleteWorkoutTemplateUsecase.*WorkoutTemplate.*not.*found/,
+        /plantilla.*no.*exist|workout.?template.*not.*found/i,
       );
     });
   });

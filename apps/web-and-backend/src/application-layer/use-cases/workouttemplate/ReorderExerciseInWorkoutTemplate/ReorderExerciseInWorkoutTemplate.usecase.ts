@@ -1,10 +1,12 @@
+import { logNoTest } from "@/utils/logNoTest";
+
+import { NotFoundError } from "../../../../domain/common/errors";
+import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
+import { WorkoutTemplatesRepo } from "../../../../domain/repos/WorkoutTemplatesRepo.port";
 import {
   WorkoutTemplateDTO,
   toWorkoutTemplateDTO,
-} from '../../../dtos/WorkoutTemplateDTO';
-import { NotFoundError } from '../../../../domain/common/errors';
-import { UsersRepo } from '../../../../domain/repos/UsersRepo.port';
-import { WorkoutTemplatesRepo } from '../../../../domain/repos/WorkoutTemplatesRepo.port';
+} from "../../../dtos/WorkoutTemplateDTO";
 
 export type ReorderExerciseInWorkoutTemplateUsecaseRequest = {
   userId: string;
@@ -32,17 +34,21 @@ export class ReorderExerciseInWorkoutTemplateUsecase {
     ]);
 
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `ReorderExerciseInWorkoutTemplateUsecase: User with id ${request.userId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     const isDeleted = workoutTemplate?.isDeleted ?? false;
 
     if (!workoutTemplate || isDeleted) {
-      throw new NotFoundError(
-        'ReorderExerciseInWorkoutTemplateUsecase: WorkoutTemplate not found',
+      logNoTest(
+        `ReorderExerciseInWorkoutTemplateUsecase: WorkoutTemplate with id ${request.workoutTemplateId} not found`,
       );
+
+      throw new NotFoundError("La plantilla de entrenamiento no existe.");
     }
 
     workoutTemplate.reorderExercise(request.exerciseId, request.newIndex);

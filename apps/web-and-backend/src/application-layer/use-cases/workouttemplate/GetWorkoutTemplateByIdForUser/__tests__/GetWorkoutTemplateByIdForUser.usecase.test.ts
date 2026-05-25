@@ -107,9 +107,7 @@ describe("GetWorkoutTemplateByIdForUserUsecase", () => {
           id: template.id,
           userId: "non-existent",
         }),
-      ).rejects.toThrow(
-        /GetWorkoutTemplateByIdForUserUsecase.*User.*not.*found/,
-      );
+      ).rejects.toThrow(/us.*no.*exist/i);
     });
   });
 });

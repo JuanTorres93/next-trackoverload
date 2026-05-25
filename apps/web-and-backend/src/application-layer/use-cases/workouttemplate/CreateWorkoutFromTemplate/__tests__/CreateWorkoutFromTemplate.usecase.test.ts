@@ -127,7 +127,7 @@ describe("CreateWorkoutFromTemplateUsecase", () => {
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
       await expect(usecase.execute(request)).rejects.toThrow(
-        /CreateWorkoutFromTemplateUsecase:.*WorkoutTemplate not found/,
+        /plantilla.*no.*exist|workout.?template.*not.*found/i,
       );
     });
 
@@ -146,7 +146,7 @@ describe("CreateWorkoutFromTemplateUsecase", () => {
       await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
 
       await expect(usecase.execute(request)).rejects.toThrow(
-        /CreateWorkoutFromTemplateUsecase.*Cannot.*from.*empty template/,
+        /plantilla.*vac[ií]a|cannot.*empty.*template/i,
       );
     });
 
@@ -161,7 +161,7 @@ describe("CreateWorkoutFromTemplateUsecase", () => {
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
       await expect(usecase.execute(request)).rejects.toThrow(
-        /CreateWorkoutFromTemplateUsecase:.*WorkoutTemplate.*not found/,
+        /plantilla.*no.*exist|workout.?template.*not.*found/i,
       );
     });
 
@@ -173,9 +173,7 @@ describe("CreateWorkoutFromTemplateUsecase", () => {
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
-      await expect(usecase.execute(request)).rejects.toThrow(
-        /CreateWorkoutFromTemplateUsecase.*User.*not.*found/,
-      );
+      await expect(usecase.execute(request)).rejects.toThrow(/us.*no.*exist/i);
     });
 
     it("should throw error when trying to create workout from another user's workout template", async () => {
@@ -192,7 +190,7 @@ describe("CreateWorkoutFromTemplateUsecase", () => {
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
       await expect(usecase.execute(request)).rejects.toThrow(
-        /CreateWorkoutFromTemplateUsecase:.*WorkoutTemplate not found/,
+        /plantilla.*no.*exist|workout.?template.*not.*found/i,
       );
     });
   });

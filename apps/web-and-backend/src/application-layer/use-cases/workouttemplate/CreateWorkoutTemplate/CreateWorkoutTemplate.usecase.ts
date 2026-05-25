@@ -1,3 +1,5 @@
+import { logNoTest } from "@/utils/logNoTest";
+
 import {
   NotFoundError,
   PermissionError,
@@ -41,22 +43,32 @@ export class CreateWorkoutTemplateUsecase {
     request: CreateWorkoutTemplateUsecaseRequest,
   ): Promise<WorkoutTemplateDTO> {
     if (request.actorUserId !== request.targetUserId) {
+      logNoTest(
+        `CreateWorkoutTemplateUsecase: cannot create workout template for another user`,
+      );
+
       throw new PermissionError(
-        "CreateWorkoutTemplateUsecase: cannot create workout template for another user",
+        "No puedes crear una plantilla para otro usuario.",
       );
     }
 
     if (!request.templateLines || request.templateLines.length === 0) {
+      logNoTest(
+        `CreateWorkoutTemplateUsecase: at least one exercise must be included in the workout template`,
+      );
+
       throw new ValidationError(
-        "CreateWorkoutTemplateUsecase: at least one exercise must be included in the workout template",
+        "La plantilla debe incluir al menos un ejercicio.",
       );
     }
 
     const user = await this.usersRepo.getUserById(request.targetUserId);
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `CreateWorkoutTemplateUsecase: User with id ${request.targetUserId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     const { setsMapByExternalId, createdExercises, createdExternalExercises } =

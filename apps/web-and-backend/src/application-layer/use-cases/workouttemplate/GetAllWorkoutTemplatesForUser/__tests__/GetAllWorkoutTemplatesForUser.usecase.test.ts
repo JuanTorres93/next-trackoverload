@@ -117,9 +117,7 @@ describe("GetAllWorkoutTemplatesForUserUsecase", () => {
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
-      await expect(usecase.execute(request)).rejects.toThrow(
-        /GetAllWorkoutTemplatesForUserUsecase.*User.*not.*found/,
-      );
+      await expect(usecase.execute(request)).rejects.toThrow(/us.*no.*exist/i);
     });
 
     it("should throw error when trying to get another users workout templates", async () => {
@@ -137,7 +135,7 @@ describe("GetAllWorkoutTemplatesForUserUsecase", () => {
       await expect(usecase.execute(request)).rejects.toThrow(PermissionError);
 
       await expect(usecase.execute(request)).rejects.toThrow(
-        /GetAllWorkoutTemplatesForUserUsecase.*cannot.*get.*workout templates.*another user/,
+        /no.*puedes.*ver|cannot.*get.*workout.?template/i,
       );
     });
   });

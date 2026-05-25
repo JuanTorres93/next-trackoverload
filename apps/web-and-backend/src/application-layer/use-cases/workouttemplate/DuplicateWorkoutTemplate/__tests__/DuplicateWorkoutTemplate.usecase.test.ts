@@ -167,7 +167,7 @@ describe("DuplicateWorkoutTemplateUsecase", () => {
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
       await expect(usecase.execute(request)).rejects.toThrow(
-        /DuplicateWorkoutTemplateUsecase.*WorkoutTemplate.*not found/,
+        /plantilla.*no.*exist|workout.?template.*not.*found/i,
       );
 
       // Verify no template was saved
@@ -188,7 +188,7 @@ describe("DuplicateWorkoutTemplateUsecase", () => {
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
       await expect(usecase.execute(request)).rejects.toThrow(
-        /DuplicateWorkoutTemplateUsecase.*WorkoutTemplate.*not found/,
+        /plantilla.*no.*exist|workout.?template.*not.*found/i,
       );
     });
 
@@ -206,7 +206,7 @@ describe("DuplicateWorkoutTemplateUsecase", () => {
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
       await expect(usecase.execute(request)).rejects.toThrow(
-        /DuplicateWorkoutTemplateUsecase.*WorkoutTemplate.*not found/,
+        /plantilla.*no.*exist|workout.?template.*not.*found/i,
       );
     });
 
@@ -223,7 +223,7 @@ describe("DuplicateWorkoutTemplateUsecase", () => {
           userId: "non-existent",
           originalTemplateId: originalTemplate.id,
         }),
-      ).rejects.toThrow(/DuplicateWorkoutTemplateUsecase.*User.*not.*found/);
+      ).rejects.toThrow(/us.*no.*exist/i);
     });
   });
 });

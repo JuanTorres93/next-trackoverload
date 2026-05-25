@@ -1,13 +1,15 @@
+import { logNoTest } from "@/utils/logNoTest";
+
+import { NotFoundError } from "../../../../domain/common/errors";
+import { WorkoutTemplate } from "../../../../domain/entities/workouttemplate/WorkoutTemplate";
+import { WorkoutTemplateLine } from "../../../../domain/entities/workouttemplateline/WorkoutTemplateLine";
+import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
+import { WorkoutTemplatesRepo } from "../../../../domain/repos/WorkoutTemplatesRepo.port";
+import { IdGenerator } from "../../../../domain/services/IdGenerator.port";
 import {
   WorkoutTemplateDTO,
   toWorkoutTemplateDTO,
-} from '../../../dtos/WorkoutTemplateDTO';
-import { NotFoundError } from '../../../../domain/common/errors';
-import { WorkoutTemplate } from '../../../../domain/entities/workouttemplate/WorkoutTemplate';
-import { WorkoutTemplateLine } from '../../../../domain/entities/workouttemplateline/WorkoutTemplateLine';
-import { UsersRepo } from '../../../../domain/repos/UsersRepo.port';
-import { WorkoutTemplatesRepo } from '../../../../domain/repos/WorkoutTemplatesRepo.port';
-import { IdGenerator } from '../../../../domain/services/IdGenerator.port';
+} from "../../../dtos/WorkoutTemplateDTO";
 
 export type DuplicateWorkoutTemplateUsecaseRequest = {
   userId: string;
@@ -35,17 +37,21 @@ export class DuplicateWorkoutTemplateUsecase {
     ]);
 
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `DuplicateWorkoutTemplateUsecase: User with id ${request.userId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     const isDeleted = originalTemplate?.isDeleted ?? false;
 
     if (!originalTemplate || isDeleted) {
-      throw new NotFoundError(
-        'DuplicateWorkoutTemplateUsecase: WorkoutTemplate not found',
+      logNoTest(
+        `DuplicateWorkoutTemplateUsecase: WorkoutTemplate with id ${request.originalTemplateId} not found`,
       );
+
+      throw new NotFoundError("La plantilla de entrenamiento no existe.");
     }
 
     const newTemplateName =

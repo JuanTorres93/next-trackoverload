@@ -1,11 +1,16 @@
-import { WorkoutDTO, toWorkoutDTO } from '../../../dtos/WorkoutDTO';
-import { NotFoundError, ValidationError } from '../../../../domain/common/errors';
-import { Workout } from '../../../../domain/entities/workout/Workout';
-import { WorkoutLine } from '../../../../domain/entities/workoutline/WorkoutLine';
-import { UsersRepo } from '../../../../domain/repos/UsersRepo.port';
-import { WorkoutTemplatesRepo } from '../../../../domain/repos/WorkoutTemplatesRepo.port';
-import { WorkoutsRepo } from '../../../../domain/repos/WorkoutsRepo.port';
-import { IdGenerator } from '../../../../domain/services/IdGenerator.port';
+import { logNoTest } from "@/utils/logNoTest";
+
+import {
+  NotFoundError,
+  ValidationError,
+} from "../../../../domain/common/errors";
+import { Workout } from "../../../../domain/entities/workout/Workout";
+import { WorkoutLine } from "../../../../domain/entities/workoutline/WorkoutLine";
+import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
+import { WorkoutTemplatesRepo } from "../../../../domain/repos/WorkoutTemplatesRepo.port";
+import { WorkoutsRepo } from "../../../../domain/repos/WorkoutsRepo.port";
+import { IdGenerator } from "../../../../domain/services/IdGenerator.port";
+import { WorkoutDTO, toWorkoutDTO } from "../../../dtos/WorkoutDTO";
 
 export type CreateWorkoutFromTemplateUsecaseRequest = {
   userId: string;
@@ -34,22 +39,31 @@ export class CreateWorkoutFromTemplateUsecase {
     ]);
 
     if (!user) {
-      throw new NotFoundError(
+      logNoTest(
         `CreateWorkoutFromTemplateUsecase: User with id ${request.userId} not found`,
       );
+
+      throw new NotFoundError("El usuario no existe.");
     }
 
     const isDeleted = workoutTemplate?.isDeleted ?? false;
 
     if (!workoutTemplate || isDeleted) {
-      throw new NotFoundError(
-        'CreateWorkoutFromTemplateUsecase: WorkoutTemplate not found',
+      logNoTest(
+        `CreateWorkoutFromTemplateUsecase: WorkoutTemplate with id ${request.workoutTemplateId} not found`,
       );
+
+      throw new NotFoundError("La plantilla de entrenamiento no existe.");
     }
 
     if (workoutTemplate.exercises.length === 0)
+      logNoTest(
+        `CreateWorkoutFromTemplateUsecase: Cannot create workout from an empty template`,
+      );
+
+    if (workoutTemplate.exercises.length === 0)
       throw new ValidationError(
-        'CreateWorkoutFromTemplateUsecase: Cannot create workout from an empty template',
+        "No puedes crear un entrenamiento desde una plantilla vacía.",
       );
 
     const newWorkoutId = this.idGenerator.generateId();

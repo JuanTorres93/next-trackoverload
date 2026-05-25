@@ -189,9 +189,7 @@ describe("CreateWorkoutTemplateUsecase", () => {
 
       await expect(usecase.execute(request)).rejects.toThrow(NotFoundError);
 
-      await expect(usecase.execute(request)).rejects.toThrow(
-        /CreateWorkoutTemplateUsecase.*User.*not.*found/,
-      );
+      await expect(usecase.execute(request)).rejects.toThrow(/us.*no.*exist/i);
     });
 
     it("should throw error when trying to create a workout template for another user", async () => {
@@ -203,7 +201,7 @@ describe("CreateWorkoutTemplateUsecase", () => {
       await expect(usecase.execute(request)).rejects.toThrow(PermissionError);
 
       await expect(usecase.execute(request)).rejects.toThrow(
-        /CreateWorkoutTemplateUsecase.*cannot create.*template for.*another user/,
+        /no.*puedes.*crear|cannot.*create.*template.*another/i,
       );
     });
 
@@ -216,7 +214,7 @@ describe("CreateWorkoutTemplateUsecase", () => {
       // Assuming that the use case should throw an error if no template lines are provided
       await expect(usecase.execute(request)).rejects.toThrow(ValidationError);
       await expect(usecase.execute(request)).rejects.toThrow(
-        /CreateWorkoutTemplateUsecase.*at least one.*must/,
+        /al.*menos|at least one.*must/i,
       );
     });
   });
