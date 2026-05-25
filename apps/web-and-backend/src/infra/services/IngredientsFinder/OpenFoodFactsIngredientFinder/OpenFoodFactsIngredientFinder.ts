@@ -3,6 +3,7 @@ import {
   IngredientFinder,
   IngredientFinderResult,
 } from "../../../../domain/services/IngredientFinder.port";
+import { IngredientCategoryValue } from "../../../../domain/value-objects/IngredientCategory/IngredientCategory";
 import { RateLimiter } from "../../interfaces/RateLimiter.port";
 
 // DOCS: https://openfoodfacts.github.io/openfoodfacts-server/api/
@@ -200,6 +201,7 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
             product.image_thumb_url ||
             product.image_front_url ||
             computeImageUrlFromArray(product.code, product.images),
+          category: mapCategoryTagsToDomainCategory(product.categories_tags),
         };
 
         const externalRef = {
@@ -251,6 +253,88 @@ type OpenFoodFactProduct = {
   nova_group?: number;
   categories_tags?: string[];
 };
+
+type CategoryKeywordMap = {
+  category: IngredientCategoryValue;
+  keywords: string[];
+};
+
+const CATEGORY_KEYWORD_MAP: CategoryKeywordMap[] = [
+  {
+    category: "vegetables",
+    keywords: ["vegetable", "veggie", "salad", "mushroom", "herb", "tomato"],
+  },
+  { category: "fruits", keywords: ["fruit", "berry", "citrus"] },
+  {
+    category: "meat",
+    keywords: ["meat", "poultry", "chicken", "beef", "pork", "lamb", "turkey"],
+  },
+  {
+    category: "fish",
+    keywords: ["fish", "seafood", "shellfish", "crustacean", "salmon", "tuna"],
+  },
+  {
+    category: "dairy",
+    keywords: ["dairy", "milk", "cheese", "yogurt", "egg", "cream", "butter"],
+  },
+  {
+    category: "grains",
+    keywords: [
+      "cereal",
+      "bread",
+      "pasta",
+      "rice",
+      "grain",
+      "flour",
+      "wheat",
+      "oat",
+      "corn",
+      "potato",
+    ],
+  },
+  {
+    category: "legumes",
+    keywords: ["legume", "bean", "lentil", "pea", "chickpea", "soy"],
+  },
+  {
+    category: "nuts",
+    keywords: ["nut", "seed", "almond", "cashew", "walnut", "peanut"],
+  },
+  { category: "fats", keywords: ["oil", "fat", "margarine"] },
+  {
+    category: "beverages",
+    keywords: [
+      "beverage",
+      "drink",
+      "juice",
+      "water",
+      "tea",
+      "coffee",
+      "wine",
+      "beer",
+    ],
+  },
+  {
+    category: "supplements",
+    keywords: ["supplement", "protein-powder", "vitamin", "mineral", "sport"],
+  },
+];
+
+function mapCategoryTagsToDomainCategory(
+  tags: string[] | undefined,
+): IngredientCategoryValue {
+  if (!tags || tags.length === 0) return "other";
+
+  const slugs = tags.map((tag) => tag.split(":").pop() ?? "");
+
+  for (const { category, keywords } of CATEGORY_KEYWORD_MAP) {
+    if (slugs.some((slug) => keywords.some((kw) => slug.includes(kw)))) {
+      return category;
+    }
+  }
+
+  return "other";
+}
 
 function isNamedImage(
   image: OpenFoodFactNamedImage | OpenFoodFactRawImage,

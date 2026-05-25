@@ -60,6 +60,15 @@ describe.skipIf(shouldSkip)("OpenFoodFactsIngredientFinder", () => {
       expect(externalRef).toHaveProperty("source");
       expect(externalRef.source).toBeDefined();
     });
+
+    it("should map category to ingredient", async () => {
+      const resultWithCategory = results.find(
+        (result) => result.ingredient.category,
+      );
+
+      expect(resultWithCategory).toBeDefined();
+      expect(resultWithCategory!.ingredient.category).toBeDefined();
+    });
   });
 
   describe("Find by barcode", () => {
