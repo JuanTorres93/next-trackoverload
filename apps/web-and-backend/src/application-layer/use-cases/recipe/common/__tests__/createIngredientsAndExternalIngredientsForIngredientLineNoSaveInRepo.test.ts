@@ -23,6 +23,7 @@ describe("createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo",
     caloriesPer100g: 165,
     proteinPer100g: 31,
     quantityInGrams: 250,
+    category: "meat",
   };
 
   beforeEach(() => {
@@ -88,6 +89,22 @@ describe("createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo",
       expect(createdIngredient.nutritionalInfoPer100g.protein).toBe(
         newIngredientLineInfo.proteinPer100g,
       );
+    });
+
+    it("should include category field", async () => {
+      const result =
+        await createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo(
+          [newIngredientLineInfo],
+          ingredientsRepo,
+          externalIngredientsRefRepo,
+          idGenerator,
+        );
+
+      const createdIngredient =
+        result.createdIngredients[newIngredientLineInfo.externalIngredientId];
+
+      expect(createdIngredient.category).not.toBeUndefined();
+      expect(createdIngredient.category).toBe(newIngredientLineInfo.category);
     });
 
     it("should populate quantitiesMapByExternalId for the created ingredient", async () => {

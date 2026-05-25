@@ -15,11 +15,16 @@ export type AddIngredientToRecipeUsecaseRequest = {
   recipeId: string;
   userId: string;
   externalIngredientId: string;
+
   source: string;
   name: string;
   caloriesPer100g: number;
   proteinPer100g: number;
+
   imageUrl?: string;
+
+  category?: string;
+
   quantityInGrams: number;
 };
 
@@ -69,10 +74,15 @@ export class AddIngredientToRecipeUsecase {
           {
             externalIngredientId: request.externalIngredientId,
             source: request.source,
+
             name: request.name,
             caloriesPer100g: request.caloriesPer100g,
             proteinPer100g: request.proteinPer100g,
+
             imageUrl: request.imageUrl,
+
+            category: request.category,
+
             quantityInGrams: request.quantityInGrams,
           },
         ],

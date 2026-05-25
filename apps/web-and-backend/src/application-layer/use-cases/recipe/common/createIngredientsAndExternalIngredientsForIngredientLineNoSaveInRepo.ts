@@ -1,16 +1,22 @@
-import { ExternalIngredientRef } from '../../../../domain/entities/externalingredientref/ExternalIngredientRef';
-import { Ingredient } from '../../../../domain/entities/ingredient/Ingredient';
-import { ExternalIngredientsRefRepo } from '../../../../domain/repos/ExternalIngredientsRefRepo.port';
-import { IngredientsRepo } from '../../../../domain/repos/IngredientsRepo.port';
-import { IdGenerator } from '../../../../domain/services/IdGenerator.port';
+import { ExternalIngredientRef } from "../../../../domain/entities/externalingredientref/ExternalIngredientRef";
+import { Ingredient } from "../../../../domain/entities/ingredient/Ingredient";
+import { ExternalIngredientsRefRepo } from "../../../../domain/repos/ExternalIngredientsRefRepo.port";
+import { IngredientsRepo } from "../../../../domain/repos/IngredientsRepo.port";
+import { IdGenerator } from "../../../../domain/services/IdGenerator.port";
 
 export type CreateIngredientLineData = {
   externalIngredientId: string;
   source: string;
+
   name: string;
+
   caloriesPer100g: number;
   proteinPer100g: number;
+
   imageUrl?: string;
+
+  category?: string;
+
   quantityInGrams: number;
 };
 
@@ -67,6 +73,7 @@ export async function createIngredientsAndExternalIngredientsForIngredientLineNo
         calories: lineInfo.caloriesPer100g,
         protein: lineInfo.proteinPer100g,
         imageUrl: lineInfo.imageUrl,
+        category: lineInfo.category,
       });
     }
   }
