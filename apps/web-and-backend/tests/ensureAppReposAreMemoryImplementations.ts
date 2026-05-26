@@ -99,13 +99,24 @@ function assertAllReposHaveAdapters(): void {
     __dirname,
     "../src/interface-adapters/app/repos",
   );
+  const testReposDir = join(__dirname, "./repos");
+
   const repoAdapterFiles = readdirSync(repoAdaptersDir).filter((f) =>
+    f.endsWith(".ts"),
+  );
+  const testReposFiles = readdirSync(testReposDir).filter((f) =>
     f.endsWith(".ts"),
   );
 
   if (repoAdapterFiles.length !== appRepos.length) {
     throw new Error(
-      `TESTS GLOBAL SETUP: Mismatch: found ${repoAdapterFiles.length} repo adapters but only ${appRepos.length} are registered in tests/setup.ts`,
+      `TESTS GLOBAL SETUP: Mismatch: found ${repoAdapterFiles.length} repo adapters but ${appRepos.length} are registered in tests/setup.ts`,
+    );
+  }
+
+  if (testReposFiles.length !== appRepos.length) {
+    throw new Error(
+      `TESTS GLOBAL SETUP: Mismatch: found ${testReposFiles.length} test repos but ${appRepos.length} are registered in tests/setup.ts`,
     );
   }
 }
