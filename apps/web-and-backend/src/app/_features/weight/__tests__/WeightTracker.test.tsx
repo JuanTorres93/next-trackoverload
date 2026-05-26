@@ -2,13 +2,10 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { createMultipleMockDaysWithWeights } from "../../../../../tests/mocks/days";
+import { TestDaysRepo } from "../../../../../tests/repos/TestDaysRepo";
 import { fromDayDTO } from "../../../../application-layer/dtos/DayDTO";
 import { DayEntry } from "../../../../application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase";
-import { MemoryDaysRepo } from "../../../../infra/repos/memory/MemoryDaysRepo";
-import { AppDaysRepo } from "../../../../interface-adapters/app/repos/AppDaysRepo";
 import WeightTracker from "../WeightTracker";
-
-const daysRepo = AppDaysRepo as MemoryDaysRepo;
 
 async function createMockDays(): Promise<DayEntry[]> {
   const mockDays = await createMultipleMockDaysWithWeights(7);
@@ -22,7 +19,7 @@ async function createMockDays(): Promise<DayEntry[]> {
 }
 
 async function setup(removeLastDayWeight = false) {
-  daysRepo.clearForTesting();
+  TestDaysRepo.clearForTesting();
 
   const days = await createMockDays();
   const lastDayEntry = days[days.length - 1];
@@ -34,7 +31,7 @@ async function setup(removeLastDayWeight = false) {
 
     const day = fromDayDTO(lastDay!);
 
-    await daysRepo.saveDay(day);
+    await TestDaysRepo.saveDay(day);
   }
 
   render(<WeightTracker days={days} />);
@@ -70,7 +67,7 @@ describe("WeightTracker", () => {
     await userEvent.type(weightInput, "1300");
 
     await waitFor(async () => {
-      const updatedDay = await daysRepo.getDayById(lastDayEntry.date);
+      const updatedDay = await TestDaysRepo.getDayById(lastDayEntry.date);
 
       expect(updatedDay?.userWeightInKg).toBe(1300);
     });
@@ -83,7 +80,7 @@ describe("WeightTracker", () => {
     await userEvent.type(weightInput, "1300");
 
     await waitFor(async () => {
-      const updatedDay = await daysRepo.getDayById(lastDayEntry.date);
+      const updatedDay = await TestDaysRepo.getDayById(lastDayEntry.date);
 
       expect(updatedDay?.userWeightInKg).toBe(1300);
     });

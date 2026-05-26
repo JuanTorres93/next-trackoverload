@@ -1,48 +1,38 @@
 import * as dayTestProps from "../../../../../../../../tests/createProps/dayTestProps";
 import * as fakeMealTestProps from "../../../../../../../../tests/createProps/fakeMealTestProps";
 import * as userTestProps from "../../../../../../../../tests/createProps/userTestProps";
+import { TestDaysRepo } from "../../../../../../../../tests/repos/TestDaysRepo";
+import { TestFakeMealsRepo } from "../../../../../../../../tests/repos/TestFakeMealsRepo";
+import { TestUsersRepo } from "../../../../../../../../tests/repos/TestUsersRepo";
 import { Day } from "../../../../../../../domain/entities/day/Day";
 import { FakeMeal } from "../../../../../../../domain/entities/fakemeal/FakeMeal";
 import { User } from "../../../../../../../domain/entities/user/User";
-import { MemoryDaysRepo } from "../../../../../../../infra/repos/memory/MemoryDaysRepo";
-import { MemoryFakeMealsRepo } from "../../../../../../../infra/repos/memory/MemoryFakeMealsRepo";
-import { MemoryUsersRepo } from "../../../../../../../infra/repos/memory/MemoryUsersRepo";
-import { AppDaysRepo } from "../../../../../../../interface-adapters/app/repos/AppDaysRepo";
-import { AppFakeMealsRepo } from "../../../../../../../interface-adapters/app/repos/AppFakeMealsRepo";
-import { AppUsersRepo } from "../../../../../../../interface-adapters/app/repos/AppUsersRepo";
 import { loginInAPITests } from "../../../../../__tests__/loginInAPITests";
 import { logoutInAPITests } from "../../../../../__tests__/logoutInAPITests";
 import { registerUserInAPITests } from "../../../../../__tests__/registerUserInAPITests";
 import { DELETE } from "../route";
 
 describe("DELETE /api/day/[dayId]/fakemeal/[fakeMealId]", () => {
-  let daysRepo: MemoryDaysRepo;
-  let fakeMealsRepo: MemoryFakeMealsRepo;
-  let usersRepo: MemoryUsersRepo;
   let user1: User;
   let user1Id: string;
   let testDay: Day;
   let testFakeMeal: FakeMeal;
 
   beforeEach(async () => {
-    daysRepo = AppDaysRepo as MemoryDaysRepo;
-    fakeMealsRepo = AppFakeMealsRepo as MemoryFakeMealsRepo;
-    usersRepo = AppUsersRepo as MemoryUsersRepo;
-
-    daysRepo.clearForTesting();
-    fakeMealsRepo.clearForTesting();
-    usersRepo.clearForTesting();
+    TestDaysRepo.clearForTesting();
+    TestFakeMealsRepo.clearForTesting();
+    TestUsersRepo.clearForTesting();
 
     user1 = userTestProps.createTestUser();
     await registerUserInAPITests(user1.email, user1.name);
-    user1Id = (await usersRepo.getUserByEmail(user1.email))!.id;
+    user1Id = (await TestUsersRepo.getUserByEmail(user1.email))!.id;
 
     testFakeMeal = fakeMealTestProps.createTestFakeMeal({ userId: user1Id });
-    await fakeMealsRepo.saveFakeMeal(testFakeMeal);
+    await TestFakeMealsRepo.saveFakeMeal(testFakeMeal);
 
     testDay = dayTestProps.createEmptyTestDay({ userId: user1Id });
     testDay.addFakeMeal(testFakeMeal.id);
-    await daysRepo.saveDay(testDay);
+    await TestDaysRepo.saveDay(testDay);
 
     await logoutInAPITests();
   });

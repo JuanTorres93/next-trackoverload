@@ -2,11 +2,8 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { createMockRecipes } from "../../../../../tests/mocks/recipes";
-import { MemoryRecipesRepo } from "../../../../infra/repos/memory/MemoryRecipesRepo";
-import { AppRecipesRepo } from "../../../../interface-adapters/app/repos/AppRecipesRepo";
+import { TestRecipesRepo } from "../../../../../tests/repos/TestRecipesRepo";
 import RecipeCard from "../RecipeCard";
-
-const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
 
 const { mockRecipes } = await createMockRecipes();
 
@@ -42,14 +39,14 @@ describe("RecipeCard", () => {
 
     expect(deleteButton).toBeInTheDocument();
 
-    expect(recipesRepo.countForTesting()).toBeGreaterThan(0);
-    const recipesBeforeDelete = await recipesRepo.countForTesting();
+    expect(TestRecipesRepo.countForTesting()).toBeGreaterThan(0);
+    const recipesBeforeDelete = await TestRecipesRepo.countForTesting();
     await userEvent.click(deleteButton);
 
     const confirmButton = screen.getByRole("button", { name: /eliminar/i });
     await userEvent.click(confirmButton);
 
-    expect(recipesRepo.countForTesting()).toBe(recipesBeforeDelete - 1);
+    expect(TestRecipesRepo.countForTesting()).toBe(recipesBeforeDelete - 1);
   });
 
   it("travels to recipe id page when clicked and asLink is not false", async () => {

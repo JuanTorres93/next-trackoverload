@@ -3,20 +3,11 @@ import userEvent from "@testing-library/user-event";
 
 import { createMockDay } from "../../../../../tests/mocks/days";
 import { TEST_USER_ID } from "../../../../../tests/mocks/nextjs";
-import { MemoryDaysRepo } from "../../../../infra/repos/memory/MemoryDaysRepo";
-import { MemoryFakeMealsRepo } from "../../../../infra/repos/memory/MemoryFakeMealsRepo";
-import { MemoryMealsRepo } from "../../../../infra/repos/memory/MemoryMealsRepo";
-import { MemoryRecipesRepo } from "../../../../infra/repos/memory/MemoryRecipesRepo";
-import { AppDaysRepo } from "../../../../interface-adapters/app/repos/AppDaysRepo";
-import { AppFakeMealsRepo } from "../../../../interface-adapters/app/repos/AppFakeMealsRepo";
-import { AppMealsRepo } from "../../../../interface-adapters/app/repos/AppMealsRepo";
-import { AppRecipesRepo } from "../../../../interface-adapters/app/repos/AppRecipesRepo";
+import { TestDaysRepo } from "../../../../../tests/repos/TestDaysRepo";
+import { TestFakeMealsRepo } from "../../../../../tests/repos/TestFakeMealsRepo";
+import { TestMealsRepo } from "../../../../../tests/repos/TestMealsRepo";
+import { TestRecipesRepo } from "../../../../../tests/repos/TestRecipesRepo";
 import MealReminder from "../MealReminder";
-
-const mealsRepo = AppMealsRepo as MemoryMealsRepo;
-const daysRepo = AppDaysRepo as MemoryDaysRepo;
-const fakeMealsRepo = AppFakeMealsRepo as MemoryFakeMealsRepo;
-const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
 
 async function setup() {
   const dayWithMeal = await createMockDay(1, 1, 2000, {
@@ -34,10 +25,10 @@ async function setup() {
 
 describe("MealReminder", () => {
   afterEach(() => {
-    mealsRepo.clearForTesting();
-    daysRepo.clearForTesting();
-    fakeMealsRepo.clearForTesting();
-    recipesRepo.clearForTesting();
+    TestMealsRepo.clearForTesting();
+    TestDaysRepo.clearForTesting();
+    TestFakeMealsRepo.clearForTesting();
+    TestRecipesRepo.clearForTesting();
   });
 
   it("should toggle isEaten to true when clicking an uneaten meal", async () => {
@@ -46,7 +37,10 @@ describe("MealReminder", () => {
     await userEvent.click(card);
 
     await waitFor(async () => {
-      const saved = await mealsRepo.getMealByIdForUser(meal.id, TEST_USER_ID);
+      const saved = await TestMealsRepo.getMealByIdForUser(
+        meal.id,
+        TEST_USER_ID,
+      );
       expect(saved?.isEaten).toBe(true);
     });
   });
@@ -57,14 +51,20 @@ describe("MealReminder", () => {
     await userEvent.click(card);
 
     await waitFor(async () => {
-      const saved = await mealsRepo.getMealByIdForUser(meal.id, TEST_USER_ID);
+      const saved = await TestMealsRepo.getMealByIdForUser(
+        meal.id,
+        TEST_USER_ID,
+      );
       expect(saved?.isEaten).toBe(true);
     });
 
     await userEvent.click(card);
 
     await waitFor(async () => {
-      const saved = await mealsRepo.getMealByIdForUser(meal.id, TEST_USER_ID);
+      const saved = await TestMealsRepo.getMealByIdForUser(
+        meal.id,
+        TEST_USER_ID,
+      );
       expect(saved?.isEaten).toBe(false);
     });
   });
@@ -76,7 +76,10 @@ describe("MealReminder", () => {
     await userEvent.click(deleteButton);
 
     await waitFor(async () => {
-      const saved = await mealsRepo.getMealByIdForUser(meal.id, TEST_USER_ID);
+      const saved = await TestMealsRepo.getMealByIdForUser(
+        meal.id,
+        TEST_USER_ID,
+      );
 
       expect(saved).toBeNull();
     });

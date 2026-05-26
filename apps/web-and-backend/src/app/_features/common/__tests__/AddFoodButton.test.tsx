@@ -5,21 +5,13 @@ import { createMockDay } from "../../../../../tests/mocks/days";
 import { TEST_USER_ID } from "../../../../../tests/mocks/nextjs";
 import { createMockRecipes } from "../../../../../tests/mocks/recipes";
 import { createServer } from "../../../../../tests/mocks/server";
+import { TestDaysRepo } from "../../../../../tests/repos/TestDaysRepo";
+import { TestFakeMealsRepo } from "../../../../../tests/repos/TestFakeMealsRepo";
+import { TestMealsRepo } from "../../../../../tests/repos/TestMealsRepo";
+import { TestRecipesRepo } from "../../../../../tests/repos/TestRecipesRepo";
 import { RecipeDTO } from "../../../../application-layer/dtos/RecipeDTO";
-import { MemoryDaysRepo } from "../../../../infra/repos/memory/MemoryDaysRepo";
-import { MemoryFakeMealsRepo } from "../../../../infra/repos/memory/MemoryFakeMealsRepo";
-import { MemoryMealsRepo } from "../../../../infra/repos/memory/MemoryMealsRepo";
-import { MemoryRecipesRepo } from "../../../../infra/repos/memory/MemoryRecipesRepo";
 import { AppDaysRepo } from "../../../../interface-adapters/app/repos/AppDaysRepo";
-import { AppFakeMealsRepo } from "../../../../interface-adapters/app/repos/AppFakeMealsRepo";
-import { AppMealsRepo } from "../../../../interface-adapters/app/repos/AppMealsRepo";
-import { AppRecipesRepo } from "../../../../interface-adapters/app/repos/AppRecipesRepo";
 import AddFoodButton from "../AddFoodButton";
-
-const daysRepo = AppDaysRepo as MemoryDaysRepo;
-const mealsRepo = AppMealsRepo as MemoryMealsRepo;
-const fakeMealsRepo = AppFakeMealsRepo as MemoryFakeMealsRepo;
-const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
 
 describe("AddFoodButton", () => {
   let mockRecipesForApi: RecipeDTO[] = [];
@@ -33,10 +25,11 @@ describe("AddFoodButton", () => {
   ]);
 
   afterEach(() => {
-    daysRepo.clearForTesting();
-    mealsRepo.clearForTesting();
-    fakeMealsRepo.clearForTesting();
-    recipesRepo.clearForTesting();
+    TestDaysRepo.clearForTesting();
+    TestMealsRepo.clearForTesting();
+    TestFakeMealsRepo.clearForTesting();
+    TestRecipesRepo.clearForTesting();
+
     mockRecipesForApi = [];
   });
 
@@ -86,7 +79,7 @@ describe("AddFoodButton", () => {
     );
 
     await waitFor(async () => {
-      const updatedDay = await daysRepo.getDayByIdAndUserId(
+      const updatedDay = await AppDaysRepo.getDayByIdAndUserId(
         day.id,
         TEST_USER_ID,
       );
@@ -121,7 +114,7 @@ describe("AddFoodButton", () => {
     );
 
     await waitFor(async () => {
-      const updatedDay = await daysRepo.getDayByIdAndUserId(
+      const updatedDay = await AppDaysRepo.getDayByIdAndUserId(
         day.id,
         TEST_USER_ID,
       );

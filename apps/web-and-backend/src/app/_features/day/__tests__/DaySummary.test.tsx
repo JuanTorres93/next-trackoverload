@@ -3,17 +3,10 @@ import userEvent from "@testing-library/user-event";
 
 import { createMockDay } from "../../../../../tests/mocks/days";
 import { createMockRecipes } from "../../../../../tests/mocks/recipes";
-import { MemoryDaysRepo } from "../../../../infra/repos/memory/MemoryDaysRepo";
-import { MemoryFakeMealsRepo } from "../../../../infra/repos/memory/MemoryFakeMealsRepo";
-import { MemoryMealsRepo } from "../../../../infra/repos/memory/MemoryMealsRepo";
-import { AppDaysRepo } from "../../../../interface-adapters/app/repos/AppDaysRepo";
-import { AppFakeMealsRepo } from "../../../../interface-adapters/app/repos/AppFakeMealsRepo";
-import { AppMealsRepo } from "../../../../interface-adapters/app/repos/AppMealsRepo";
+import { TestDaysRepo } from "../../../../../tests/repos/TestDaysRepo";
+import { TestFakeMealsRepo } from "../../../../../tests/repos/TestFakeMealsRepo";
+import { TestMealsRepo } from "../../../../../tests/repos/TestMealsRepo";
 import DaySummary from "../DaySummary";
-
-const mealsRepo = AppMealsRepo as MemoryMealsRepo;
-const fakeMealsRepo = AppFakeMealsRepo as MemoryFakeMealsRepo;
-const daysRepo = AppDaysRepo as MemoryDaysRepo;
 
 const { mockRecipes } = await createMockRecipes();
 
@@ -56,9 +49,9 @@ async function setup() {
 
 describe("DaySummary", () => {
   afterEach(() => {
-    mealsRepo.clearForTesting();
-    fakeMealsRepo.clearForTesting();
-    daysRepo.clearForTesting();
+    TestMealsRepo.clearForTesting();
+    TestFakeMealsRepo.clearForTesting();
+    TestDaysRepo.clearForTesting();
   });
 
   it("should show meals info", async () => {
@@ -168,13 +161,13 @@ describe("DaySummary", () => {
   it("should remove meal on button click", async () => {
     const { deleteMealButton } = await setup();
 
-    const mealsBefore = mealsRepo.countForTesting();
+    const mealsBefore = TestMealsRepo.countForTesting();
     expect(mealsBefore).toBe(1);
 
     await userEvent.click(deleteMealButton[0]);
 
     await waitFor(() => {
-      const mealsAfter = mealsRepo.countForTesting();
+      const mealsAfter = TestMealsRepo.countForTesting();
       expect(mealsAfter).toBe(0);
     });
   });
@@ -182,13 +175,13 @@ describe("DaySummary", () => {
   it("should remove fake meal on button click", async () => {
     const { deleteFakeMealButton } = await setup();
 
-    const fakeMealsBefore = fakeMealsRepo.countForTesting();
+    const fakeMealsBefore = TestFakeMealsRepo.countForTesting();
     expect(fakeMealsBefore).toBe(1);
 
     await userEvent.click(deleteFakeMealButton);
 
     await waitFor(() => {
-      const fakeMealsAfter = fakeMealsRepo.countForTesting();
+      const fakeMealsAfter = TestFakeMealsRepo.countForTesting();
       expect(fakeMealsAfter).toBe(0);
     });
   });
@@ -208,12 +201,12 @@ describe("DaySummary", () => {
       name: /añadir comidas/i,
     });
 
-    const initialMealsCount = mealsRepo.countForTesting();
+    const initialMealsCount = TestMealsRepo.countForTesting();
 
     await userEvent.click(addMealsButton);
 
     await waitFor(() => {
-      expect(mealsRepo.countForTesting()).toBe(initialMealsCount + 1);
+      expect(TestMealsRepo.countForTesting()).toBe(initialMealsCount + 1);
     });
   });
 

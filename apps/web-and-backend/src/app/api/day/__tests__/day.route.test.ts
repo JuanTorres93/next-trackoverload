@@ -1,34 +1,27 @@
 import type { NextRequest } from "next/server";
 
 import * as userTestProps from "../../../../../tests/createProps/userTestProps";
+import { TestDaysRepo } from "../../../../../tests/repos/TestDaysRepo";
+import { TestUsersRepo } from "../../../../../tests/repos/TestUsersRepo";
 import { User } from "../../../../domain/entities/user/User";
-import { MemoryDaysRepo } from "../../../../infra/repos/memory/MemoryDaysRepo";
-import { MemoryUsersRepo } from "../../../../infra/repos/memory/MemoryUsersRepo";
-import { AppDaysRepo } from "../../../../interface-adapters/app/repos/AppDaysRepo";
-import { AppUsersRepo } from "../../../../interface-adapters/app/repos/AppUsersRepo";
 import { loginInAPITests } from "../../__tests__/loginInAPITests";
 import { logoutInAPITests } from "../../__tests__/logoutInAPITests";
 import { registerUserInAPITests } from "../../__tests__/registerUserInAPITests";
 import { CreateDayBody, POST } from "../route";
 
 describe("POST /api/day", () => {
-  let daysRepo: MemoryDaysRepo;
-  let usersRepo: MemoryUsersRepo;
   let user1: User;
   let user1Id: string;
 
   let validBody: CreateDayBody;
 
   beforeEach(async () => {
-    daysRepo = AppDaysRepo as MemoryDaysRepo;
-    usersRepo = AppUsersRepo as MemoryUsersRepo;
-
-    daysRepo.clearForTesting();
-    usersRepo.clearForTesting();
+    TestDaysRepo.clearForTesting();
+    TestUsersRepo.clearForTesting();
 
     user1 = userTestProps.createTestUser();
     await registerUserInAPITests(user1.email, user1.name);
-    user1Id = (await usersRepo.getUserByEmail(user1.email))!.id;
+    user1Id = (await TestUsersRepo.getUserByEmail(user1.email))!.id;
 
     validBody = { targetUserId: user1Id, day: 1, month: 10, year: 2023 };
 

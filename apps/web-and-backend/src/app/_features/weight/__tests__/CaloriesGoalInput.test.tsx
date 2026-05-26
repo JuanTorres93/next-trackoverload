@@ -2,14 +2,11 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { createMultipleMockDaysWithWeights } from "../../../../../tests/mocks/days";
+import { TestDaysRepo } from "../../../../../tests/repos/TestDaysRepo";
 import { fromDayDTO } from "../../../../application-layer/dtos/DayDTO";
 import { DayEntry } from "../../../../application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase";
-import { MemoryDaysRepo } from "../../../../infra/repos/memory/MemoryDaysRepo";
-import { AppDaysRepo } from "../../../../interface-adapters/app/repos/AppDaysRepo";
 import { AppSetCaloriesGoalForDayAndUserUsecase } from "../../../../interface-adapters/app/use-cases/day";
 import CaloriesGoalInput from "../CaloriesGoalInput";
-
-const daysRepo = AppDaysRepo as MemoryDaysRepo;
 
 async function createMockDays(): Promise<DayEntry[]> {
   const mockDays = await createMultipleMockDaysWithWeights(7);
@@ -23,7 +20,7 @@ async function createMockDays(): Promise<DayEntry[]> {
 }
 
 async function setup(withCaloriesGoal = true, defaultCaloriesGoal?: number) {
-  daysRepo.clearForTesting();
+  TestDaysRepo.clearForTesting();
 
   const days = await createMockDays();
   const lastDayEntry = days[days.length - 1];
@@ -43,7 +40,7 @@ async function setup(withCaloriesGoal = true, defaultCaloriesGoal?: number) {
     lastDay.updatedCaloriesGoal = undefined;
 
     const day = fromDayDTO(lastDay);
-    await daysRepo.saveDay(day);
+    await TestDaysRepo.saveDay(day);
   }
 
   render(
@@ -86,7 +83,7 @@ describe("CaloriesGoalInput", () => {
     await userEvent.type(input, "2500");
 
     await waitFor(async () => {
-      const updatedDay = await daysRepo.getDayById(lastDayEntry.date);
+      const updatedDay = await TestDaysRepo.getDayById(lastDayEntry.date);
 
       expect(updatedDay?.updatedCaloriesGoal).toBe(2500);
     });
@@ -101,7 +98,7 @@ describe("CaloriesGoalInput", () => {
     await userEvent.type(input, "2500");
 
     await waitFor(async () => {
-      const updatedDay = await daysRepo.getDayById(lastDayEntry.date);
+      const updatedDay = await TestDaysRepo.getDayById(lastDayEntry.date);
 
       expect(updatedDay?.updatedCaloriesGoal).toBe(2500);
     });

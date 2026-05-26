@@ -2,14 +2,9 @@ import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { createMockDay } from "../../../../../tests/mocks/days";
-import { MemoryDaysRepo } from "../../../../infra/repos/memory/MemoryDaysRepo";
-import { MemoryFakeMealsRepo } from "../../../../infra/repos/memory/MemoryFakeMealsRepo";
-import { AppDaysRepo } from "../../../../interface-adapters/app/repos/AppDaysRepo";
-import { AppFakeMealsRepo } from "../../../../interface-adapters/app/repos/AppFakeMealsRepo";
+import { TestDaysRepo } from "../../../../../tests/repos/TestDaysRepo";
+import { TestFakeMealsRepo } from "../../../../../tests/repos/TestFakeMealsRepo";
 import FakeMeal from "../FakeMeal";
-
-const daysRepo = AppDaysRepo as MemoryDaysRepo;
-const fakeMealsRepo = AppFakeMealsRepo as MemoryFakeMealsRepo;
 
 async function setup() {
   const day = await createMockDay(1, 1, 2000, {
@@ -26,8 +21,8 @@ async function setup() {
 
 describe("FakeMeal", () => {
   afterEach(() => {
-    daysRepo.clearForTesting();
-    fakeMealsRepo.clearForTesting();
+    TestDaysRepo.clearForTesting();
+    TestFakeMealsRepo.clearForTesting();
   });
 
   it("should render fake meal name", async () => {
@@ -61,7 +56,7 @@ describe("FakeMeal", () => {
   it("should remove fake meal from day on delete button click", async () => {
     const { day } = await setup();
 
-    const dayInRepo = await daysRepo.getDayById(day.id);
+    const dayInRepo = await TestDaysRepo.getDayById(day.id);
     expect(dayInRepo!.fakeMealIds).toHaveLength(1);
 
     const deleteButton = screen.getByTestId("remove-fake-meal");
@@ -69,7 +64,7 @@ describe("FakeMeal", () => {
     userEvent.click(deleteButton);
 
     await waitFor(async () => {
-      const dayInRepoAfter = await daysRepo.getDayById(day.id);
+      const dayInRepoAfter = await TestDaysRepo.getDayById(day.id);
 
       expect(dayInRepoAfter!.fakeMealIds).toHaveLength(0);
     });
@@ -78,7 +73,7 @@ describe("FakeMeal", () => {
   it("should remove fake meal from repo on delete button click", async () => {
     const { fakeMeal } = await setup();
 
-    const fakeMealInRepo = await fakeMealsRepo.getFakeMealById(fakeMeal.id);
+    const fakeMealInRepo = await TestFakeMealsRepo.getFakeMealById(fakeMeal.id);
     expect(fakeMealInRepo).not.toBeNull();
 
     const deleteButton = screen.getByTestId("remove-fake-meal");
@@ -88,7 +83,7 @@ describe("FakeMeal", () => {
     });
 
     await waitFor(async () => {
-      const fakeMealInRepoAfter = await fakeMealsRepo.getFakeMealById(
+      const fakeMealInRepoAfter = await TestFakeMealsRepo.getFakeMealById(
         fakeMeal.id,
       );
 

@@ -5,16 +5,11 @@ import { mockExerciseApiFetch } from "../../../../../tests/mocks/exerciseApi";
 import { createMockExercises } from "../../../../../tests/mocks/exercises";
 import { TEST_USER_ID } from "../../../../../tests/mocks/nextjs";
 import { createMockUser } from "../../../../../tests/mocks/user";
-import { MemoryExercisesRepo } from "../../../../infra/repos/memory/MemoryExercisesRepo";
-import { MemoryWorkoutTemplatesRepo } from "../../../../infra/repos/memory/MemoryWorkoutTemplatesRepo";
-import { AppExercisesRepo } from "../../../../interface-adapters/app/repos/AppExercisesRepo";
-import { AppWorkoutsTemplatesRepo } from "../../../../interface-adapters/app/repos/AppWorkoutsTemplatesRepo";
+import { TestExercisesRepo } from "../../../../../tests/repos/TestExercisesRepo";
+import { TestWorkoutsTemplatesRepo } from "../../../../../tests/repos/TestWorkoutsTemplatesRepo";
 import NewTemplateForm from "../NewTemplateForm";
 
 await createMockUser();
-
-const exercisesRepo = AppExercisesRepo as MemoryExercisesRepo;
-const templatesRepo = AppWorkoutsTemplatesRepo as MemoryWorkoutTemplatesRepo;
 
 async function setup() {
   const mockExercises = await createMockExercises();
@@ -45,8 +40,8 @@ describe("NewTemplateForm", () => {
   });
 
   afterEach(() => {
-    exercisesRepo.clearForTesting();
-    templatesRepo.clearForTesting();
+    TestExercisesRepo.clearForTesting();
+    TestWorkoutsTemplatesRepo.clearForTesting();
   });
 
   it("should render exercise search input", async () => {
@@ -138,7 +133,9 @@ describe("NewTemplateForm", () => {
 
       await waitFor(async () => {
         const createdTemplates =
-          await templatesRepo.getAllWorkoutTemplatesByUserId(TEST_USER_ID);
+          await TestWorkoutsTemplatesRepo.getAllWorkoutTemplatesByUserId(
+            TEST_USER_ID,
+          );
 
         expect(createdTemplates.length).toBe(1);
         expect(createdTemplates[0].name).toBe(templateName);

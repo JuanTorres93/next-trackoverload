@@ -3,20 +3,10 @@ import userEvent from "@testing-library/user-event";
 
 import { createMockDay } from "../../../../../tests/mocks/days";
 import { TEST_USER_ID } from "../../../../../tests/mocks/nextjs";
-import { createMockRecipes } from "../../../../../tests/mocks/recipes";
-import { createServer } from "../../../../../tests/mocks/server";
-import { RecipeDTO } from "../../../../application-layer/dtos/RecipeDTO";
-import { MemoryDaysRepo } from "../../../../infra/repos/memory/MemoryDaysRepo";
-import { MemoryFakeMealsRepo } from "../../../../infra/repos/memory/MemoryFakeMealsRepo";
-import { MemoryMealsRepo } from "../../../../infra/repos/memory/MemoryMealsRepo";
-import { AppDaysRepo } from "../../../../interface-adapters/app/repos/AppDaysRepo";
-import { AppFakeMealsRepo } from "../../../../interface-adapters/app/repos/AppFakeMealsRepo";
-import { AppMealsRepo } from "../../../../interface-adapters/app/repos/AppMealsRepo";
+import { TestDaysRepo } from "../../../../../tests/repos/TestDaysRepo";
+import { TestFakeMealsRepo } from "../../../../../tests/repos/TestFakeMealsRepo";
+import { TestMealsRepo } from "../../../../../tests/repos/TestMealsRepo";
 import EatenFakeMeal from "../EatenFakeMeal";
-
-const daysRepo = AppDaysRepo as MemoryDaysRepo;
-const fakeMealsRepo = AppFakeMealsRepo as MemoryFakeMealsRepo;
-const mealsRepo = AppMealsRepo as MemoryMealsRepo;
 
 async function setup() {
   const dayWithFakeMeal = await createMockDay(1, 1, 2000, {
@@ -32,9 +22,9 @@ async function setup() {
 
 describe("EatenFakeMeal", () => {
   afterEach(() => {
-    daysRepo.clearForTesting();
-    fakeMealsRepo.clearForTesting();
-    mealsRepo.clearForTesting();
+    TestDaysRepo.clearForTesting();
+    TestFakeMealsRepo.clearForTesting();
+    TestMealsRepo.clearForTesting();
   });
 
   it("should delete fake meal when clicking delete button", async () => {
@@ -45,7 +35,7 @@ describe("EatenFakeMeal", () => {
     await userEvent.click(deleteButton);
 
     await waitFor(async () => {
-      const savedFakeMeal = await fakeMealsRepo.getFakeMealByIdAndUserId(
+      const savedFakeMeal = await TestFakeMealsRepo.getFakeMealByIdAndUserId(
         fakeMeal.id,
         TEST_USER_ID,
       );

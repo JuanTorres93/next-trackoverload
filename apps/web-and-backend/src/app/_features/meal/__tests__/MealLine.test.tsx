@@ -2,14 +2,9 @@ import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { createMockDay } from "../../../../../tests/mocks/days";
-import { MemoryDaysRepo } from "../../../../infra/repos/memory/MemoryDaysRepo";
-import { MemoryMealsRepo } from "../../../../infra/repos/memory/MemoryMealsRepo";
-import { AppDaysRepo } from "../../../../interface-adapters/app/repos/AppDaysRepo";
-import { AppMealsRepo } from "../../../../interface-adapters/app/repos/AppMealsRepo";
+import { TestDaysRepo } from "../../../../../tests/repos/TestDaysRepo";
+import { TestMealsRepo } from "../../../../../tests/repos/TestMealsRepo";
 import MealLine from "../MealLine";
-
-const daysRepo = AppDaysRepo as MemoryDaysRepo;
-const mealsRepo = AppMealsRepo as MemoryMealsRepo;
 
 const DELETE_BUTTON_TEST_ID = "nutritional-summary-delete-button";
 
@@ -29,8 +24,8 @@ async function setup() {
 
 describe("MealLine", () => {
   afterEach(() => {
-    daysRepo.clearForTesting();
-    mealsRepo.clearForTesting();
+    TestDaysRepo.clearForTesting();
+    TestMealsRepo.clearForTesting();
   });
 
   it("should render meal name", async () => {
@@ -66,14 +61,14 @@ describe("MealLine", () => {
   it("should remove meal from day on delete button click", async () => {
     const { deleteButton, day } = await setup();
 
-    const dayInRepo = await daysRepo.getDayById(day.id);
+    const dayInRepo = await TestDaysRepo.getDayById(day.id);
 
     expect(dayInRepo!.mealIds).toHaveLength(1);
 
     userEvent.click(deleteButton);
 
     await waitFor(async () => {
-      const dayInRepoAfter = await daysRepo.getDayById(day.id);
+      const dayInRepoAfter = await TestDaysRepo.getDayById(day.id);
 
       expect(dayInRepoAfter!.mealIds).toHaveLength(0);
     });
@@ -82,7 +77,7 @@ describe("MealLine", () => {
   it("should remove meal from repo on delete button click", async () => {
     const { deleteButton, meal } = await setup();
 
-    const mealInRepo = await mealsRepo.getMealById(meal.id);
+    const mealInRepo = await TestMealsRepo.getMealById(meal.id);
 
     expect(mealInRepo).not.toBeNull();
 
@@ -91,7 +86,7 @@ describe("MealLine", () => {
     });
 
     await waitFor(async () => {
-      const mealInRepoAfter = await mealsRepo.getMealById(meal.id);
+      const mealInRepoAfter = await TestMealsRepo.getMealById(meal.id);
 
       expect(mealInRepoAfter).toBeNull();
     });

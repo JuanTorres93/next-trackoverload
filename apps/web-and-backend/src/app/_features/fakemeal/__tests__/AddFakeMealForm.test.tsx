@@ -6,15 +6,10 @@ import { mockIngredientApiFetch } from "../../../../../tests/mocks/ingredientApi
 import { TEST_USER_ID } from "../../../../../tests/mocks/nextjs";
 import { createMockUser } from "../../../../../tests/mocks/user";
 import { mockDecodeFromConstraints } from "../../../../../tests/mocks/zxing";
-import { MemoryDaysRepo } from "../../../../infra/repos/memory/MemoryDaysRepo";
-import { MemoryFakeMealsRepo } from "../../../../infra/repos/memory/MemoryFakeMealsRepo";
-import { AppDaysRepo } from "../../../../interface-adapters/app/repos/AppDaysRepo";
-import { AppFakeMealsRepo } from "../../../../interface-adapters/app/repos/AppFakeMealsRepo";
+import { TestDaysRepo } from "../../../../../tests/repos/TestDaysRepo";
+import { TestFakeMealsRepo } from "../../../../../tests/repos/TestFakeMealsRepo";
 import { SCAN_WINDOW_SIZE } from "../../ingredient/ZXingBarcodeScanner";
 import AddFakeMealForm from "../AddFakeMealForm";
-
-const fakeMealsRepo = AppFakeMealsRepo as MemoryFakeMealsRepo;
-const daysRepo = AppDaysRepo as MemoryDaysRepo;
 
 await createMockUser();
 
@@ -31,6 +26,7 @@ mockIngredientApiFetch({
         calories: MOCK_CALORIES_PER_100G,
         protein: MOCK_PROTEIN_PER_100G,
       },
+      category: "other",
       imageUrl: undefined,
     },
     externalRef: {
@@ -41,13 +37,13 @@ mockIngredientApiFetch({
 });
 
 async function setup() {
-  daysRepo.clearForTesting();
-  fakeMealsRepo.clearForTesting();
+  TestDaysRepo.clearForTesting();
+  TestFakeMealsRepo.clearForTesting();
 
   const day = createEmptyTestDay({
     userId: TEST_USER_ID,
   });
-  await daysRepo.saveDay(day);
+  await TestDaysRepo.saveDay(day);
 
   render(<AddFakeMealForm dayId={day.id} />);
 
@@ -98,7 +94,7 @@ describe("AddFakeMealForm", () => {
     await userEvent.click(submitButton);
 
     await waitFor(async () => {
-      const createdFakeMeals = await fakeMealsRepo.getAllFakeMeals();
+      const createdFakeMeals = await TestFakeMealsRepo.getAllFakeMeals();
       const createdFakeMeal = createdFakeMeals[0];
 
       expect(createdFakeMeal).toBeDefined();
@@ -165,7 +161,7 @@ describe("AddFakeMealForm", () => {
   it("submits correct values when barcode fills the form", async () => {
     simulateBarcodeScan(MOCK_BARCODE);
 
-    const { barcodeScannerButton, submitButton, dayId } = await setup();
+    const { barcodeScannerButton, submitButton } = await setup();
 
     await userEvent.click(barcodeScannerButton);
 
@@ -175,11 +171,11 @@ describe("AddFakeMealForm", () => {
       ),
     );
 
-    fakeMealsRepo.clearForTesting();
+    TestFakeMealsRepo.clearForTesting();
     await userEvent.click(submitButton);
 
     await waitFor(async () => {
-      const createdFakeMeals = await fakeMealsRepo.getAllFakeMeals();
+      const createdFakeMeals = await TestFakeMealsRepo.getAllFakeMeals();
       const createdFakeMeal = createdFakeMeals[0];
 
       expect(createdFakeMeal).toBeDefined();

@@ -5,12 +5,9 @@ import { mockIngredientApiFetch } from "../../../../../../tests/mocks/ingredient
 import { createMockIngredients } from "../../../../../../tests/mocks/ingredients";
 import { createMockUser } from "../../../../../../tests/mocks/user";
 import { mockDecodeFromConstraints } from "../../../../../../tests/mocks/zxing";
-import { MemoryRecipesRepo } from "../../../../../infra/repos/memory/MemoryRecipesRepo";
-import { AppRecipesRepo } from "../../../../../interface-adapters/app/repos/AppRecipesRepo";
+import { TestRecipesRepo } from "../../../../../../tests/repos/TestRecipesRepo";
 import { SCAN_WINDOW_SIZE } from "../../../ingredient/ZXingBarcodeScanner";
 import NewRecipeForm from "../NewRecipeForm";
-
-const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
 
 await createMockIngredients();
 await createMockUser();
@@ -153,11 +150,11 @@ describe("NewRecipeForm", () => {
 
     expect(createButton).toBeDisabled();
 
-    expect(recipesRepo.countForTesting()).toBe(0);
+    expect(TestRecipesRepo.countForTesting()).toBe(0);
 
     await userEvent.click(createButton);
 
-    expect(recipesRepo.countForTesting()).toBe(0);
+    expect(TestRecipesRepo.countForTesting()).toBe(0);
   });
 
   it("does not create recipe if at least one ingredient's quantity is zero", async () => {
@@ -174,11 +171,11 @@ describe("NewRecipeForm", () => {
 
     expect(createButton).toBeDisabled();
 
-    expect(recipesRepo.countForTesting()).toBe(0);
+    expect(TestRecipesRepo.countForTesting()).toBe(0);
 
     await userEvent.click(createButton);
 
-    expect(recipesRepo.countForTesting()).toBe(0);
+    expect(TestRecipesRepo.countForTesting()).toBe(0);
   });
 
   it("ingredient has a default quantity of 100g", async () => {
@@ -216,10 +213,10 @@ describe("NewRecipeForm", () => {
 
     expect(createButton).toBeEnabled();
 
-    expect(recipesRepo.countForTesting()).toBe(0);
+    expect(TestRecipesRepo.countForTesting()).toBe(0);
 
     await userEvent.click(createButton);
 
-    expect(recipesRepo.countForTesting()).toBe(1);
+    expect(TestRecipesRepo.countForTesting()).toBe(1);
   });
 });
