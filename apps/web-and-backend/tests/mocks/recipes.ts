@@ -5,7 +5,7 @@ import { TestUsersRepo } from "../repos/TestUsersRepo";
 import { createAndPersistTestIngredients } from "./ingredients";
 import { createAndPersistTestUser } from "./user";
 
-export const createAndPersistTestRecipes = async () => {
+export const createAndPersistTest_Recipes_Ingredients_User = async () => {
   const mockIngredients = await createAndPersistTestIngredients();
   const mockUser = await createAndPersistTestUser();
 

@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { createAndPersistTestRecipes } from "../../../../../../tests/mocks/recipes";
+import { createAndPersistTest_Recipes_Ingredients_User } from "../../../../../../tests/mocks/recipes";
 import { TestRecipesRepo } from "../../../../../../tests/repos/TestRecipesRepo";
 import { TestUsersRepo } from "../../../../../../tests/repos/TestUsersRepo";
 import { RecipeDTO } from "../../../../../application-layer/dtos/RecipeDTO";
@@ -10,7 +10,7 @@ import UpdateRecipeTitle from "../UpdateRecipeTitle";
 let recipe: RecipeDTO;
 
 async function setup() {
-  const { mockRecipes } = await createAndPersistTestRecipes();
+  const { mockRecipes } = await createAndPersistTest_Recipes_Ingredients_User();
   recipe = mockRecipes[0];
 
   render(

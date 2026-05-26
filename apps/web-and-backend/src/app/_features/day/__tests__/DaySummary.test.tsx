@@ -2,13 +2,13 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { createAndPersistTestDay } from "../../../../../tests/mocks/days";
-import { createAndPersistTestRecipes } from "../../../../../tests/mocks/recipes";
+import { createAndPersistTest_Recipes_Ingredients_User } from "../../../../../tests/mocks/recipes";
 import { TestDaysRepo } from "../../../../../tests/repos/TestDaysRepo";
 import { TestFakeMealsRepo } from "../../../../../tests/repos/TestFakeMealsRepo";
 import { TestMealsRepo } from "../../../../../tests/repos/TestMealsRepo";
 import DaySummary from "../DaySummary";
 
-const { mockRecipes } = await createAndPersistTestRecipes();
+const { mockRecipes } = await createAndPersistTest_Recipes_Ingredients_User();
 
 async function setup() {
   const assembledDayDTO = await createAndPersistTestDay(1, 1, 2000, {

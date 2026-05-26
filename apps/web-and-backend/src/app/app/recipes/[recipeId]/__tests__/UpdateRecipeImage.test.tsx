@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
 import { createTestImage } from "../../../../../../tests/helpers/imageTestHelpers";
-import { createAndPersistTestRecipes } from "../../../../../../tests/mocks/recipes";
+import { createAndPersistTest_Recipes_Ingredients_User } from "../../../../../../tests/mocks/recipes";
 import { TestRecipesRepo } from "../../../../../../tests/repos/TestRecipesRepo";
 import { TestUsersRepo } from "../../../../../../tests/repos/TestUsersRepo";
 import { RecipeDTO } from "../../../../../application-layer/dtos/RecipeDTO";
@@ -18,7 +18,7 @@ vi.mock("@/interface-adapters/app/services/AppClientImageProcessor", () => ({
 let recipe: RecipeDTO;
 
 async function setup() {
-  const { mockRecipes } = await createAndPersistTestRecipes();
+  const { mockRecipes } = await createAndPersistTest_Recipes_Ingredients_User();
   recipe = mockRecipes[0];
 
   render(<UpdateRecipeImage recipe={recipe} />);

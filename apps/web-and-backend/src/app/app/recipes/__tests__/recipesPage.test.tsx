@@ -1,7 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { createAndPersistTestRecipes } from "../../../../../tests/mocks/recipes";
+import { createAndPersistTest_Recipes_Ingredients_User } from "../../../../../tests/mocks/recipes";
 import { createAndPersistTestUser } from "../../../../../tests/mocks/user";
 import { TestRecipesRepo } from "../../../../../tests/repos/TestRecipesRepo";
 import RecipesPage from "../page";
@@ -22,7 +22,8 @@ describe("RecipesPage", () => {
   });
 
   describe("With recipes", async () => {
-    const { mockRecipes } = await createAndPersistTestRecipes();
+    const { mockRecipes } =
+      await createAndPersistTest_Recipes_Ingredients_User();
 
     it("Renders all recipes", async () => {
       await setup();
