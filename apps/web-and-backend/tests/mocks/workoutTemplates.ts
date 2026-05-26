@@ -1,21 +1,17 @@
-import { AppExercisesRepo } from "../../src/interface-adapters/app/repos/AppExercisesRepo";
-import { AppExternalExercisesRefRepo } from "../../src/interface-adapters/app/repos/AppExternalExercisesRefRepo";
-import { AppUsersRepo } from "../../src/interface-adapters/app/repos/AppUsersRepo";
-import { AppWorkoutsTemplatesRepo } from "../../src/interface-adapters/app/repos/AppWorkoutsTemplatesRepo";
 import {
   AppAddExerciseToWorkoutTemplateUsecase,
   AppCreateWorkoutTemplateUsecase,
 } from "../../src/interface-adapters/app/use-cases/workouttemplate";
+import { TestExercisesRepo } from "../../tests/repos/TestExercisesRepo";
+import { TestExternalExercisesRefRepo } from "../../tests/repos/TestExternalExercisesRefRepo";
+import { TestUsersRepo } from "../../tests/repos/TestUsersRepo";
+import { TestWorkoutsTemplatesRepo } from "../../tests/repos/TestWorkoutsTemplatesRepo";
 import { mockExercisesForExerciseFinder } from "./exercises";
 import { createAndPersistTestUser } from "./user";
 
 const setsForExercises = [3, 4, 5];
 
-export const createMockWorkoutTemplates = async () => {
-  if (process.env.NODE_ENV !== "test") {
-    throw new Error("createMockWorkoutTemplates should only be used in tests");
-  }
-
+export const createAndPersistTestWorkoutTemplates = async () => {
   const mockUser = await createAndPersistTestUser();
 
   const firstExercise = mockExercisesForExerciseFinder[0];
@@ -55,14 +51,10 @@ export const createMockWorkoutTemplates = async () => {
   }
 
   afterAll(() => {
-    // @ts-expect-error AppExercisesRepo will always be MemoryExercisesRepo
-    AppExercisesRepo.clearForTesting();
-    // @ts-expect-error AppWorkoutsTemplatesRepo will always be MemoryWorkoutTemplatesRepo
-    AppWorkoutsTemplatesRepo.clearForTesting();
-    // @ts-expect-error AppExternalExercisesRefRepo will always be MemoryExternalExercisesRefRepo
-    AppExternalExercisesRefRepo.clearForTesting();
-    // @ts-expect-error AppUsersRepo will always be MemoryUsersRepo
-    AppUsersRepo.clearForTesting();
+    TestExercisesRepo.clearForTesting();
+    TestWorkoutsTemplatesRepo.clearForTesting();
+    TestExternalExercisesRefRepo.clearForTesting();
+    TestUsersRepo.clearForTesting();
   });
 
   return { mockTemplate, mockUser, exercisesForTemplates };

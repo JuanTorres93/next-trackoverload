@@ -1,11 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { createMockWorkoutTemplates } from "../../../../../tests/mocks/workoutTemplates";
-
+import { createAndPersistTestWorkoutTemplates } from "../../../../../tests/mocks/workoutTemplates";
 import WorkoutTemplate from "../WorkoutTemplate";
 
-const { mockTemplate } = await createMockWorkoutTemplates();
+const { mockTemplate } = await createAndPersistTestWorkoutTemplates();
 
 function setup() {
   render(<WorkoutTemplate workoutTemplate={mockTemplate} />);

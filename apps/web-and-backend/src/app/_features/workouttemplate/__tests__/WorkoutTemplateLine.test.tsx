@@ -1,12 +1,12 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { createMockWorkoutTemplates } from "../../../../../tests/mocks/workoutTemplates";
+import { createAndPersistTestWorkoutTemplates } from "../../../../../tests/mocks/workoutTemplates";
 import { WorkoutTemplateLineDTO } from "../../../../application-layer/dtos/WorkoutTemplateLineDTO";
 import WorkoutTemplateLine from "../WorkoutTemplateLine";
 
 const { mockTemplate, exercisesForTemplates } =
-  await createMockWorkoutTemplates();
+  await createAndPersistTestWorkoutTemplates();
 const mockLine: WorkoutTemplateLineDTO = mockTemplate.exercises[0];
 const mockExerciseName = exercisesForTemplates[0].name;
 
