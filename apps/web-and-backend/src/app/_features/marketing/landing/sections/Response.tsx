@@ -24,6 +24,7 @@ function Response() {
           <ButtonCTA
             href="/auth/register"
             className="!bg-white !text-primary hover:!bg-gray-100 px-8 py-4 text-lg font-semibold rounded-full shadow-xl hover:scale-105 transition-all duration-300 group"
+            showIcon={false}
           >
             <span className="flex items-center gap-2">
               Registrarme gratis

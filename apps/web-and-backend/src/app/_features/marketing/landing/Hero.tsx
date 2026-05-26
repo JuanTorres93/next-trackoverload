@@ -116,6 +116,7 @@ function HeroCTA() {
         <ButtonCTA
           href="/auth/register"
           className="relative !bg-primary hover:!bg-primary-light text-white px-8 py-4 text-lg font-semibold rounded-full shadow-xl transition-all duration-300 hover:scale-105"
+          showIcon={false}
         >
           Empieza ahora
         </ButtonCTA>

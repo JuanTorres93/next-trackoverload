@@ -5,7 +5,6 @@ import Link from "next/link";
 import Logo from "../../../_ui/Logo";
 import ButtonPrimary from "../../../_ui/buttons/ButtonPrimary";
 import { getCurrentUserId } from "../../../_utils/auth/getCurrentUserId";
-
 import ButtonCTA from "./ButtonCTA";
 
 async function NavBar({ ...props }: React.HTMLAttributes<HTMLElement>) {
@@ -52,6 +51,7 @@ async function NavBar({ ...props }: React.HTMLAttributes<HTMLElement>) {
           <ButtonCTA
             href="/auth/register"
             className="bg-primary text-text-light hover:bg-primary-light hover:border-primary-light maxp-bp-marketing-navbar-mobile:px-4 max-bp-marketing-navbar-mobile:py-2 max-bp-marketing-navbar-mobile:text-sm"
+            showIcon={false}
           >
             Regístrate
           </ButtonCTA>

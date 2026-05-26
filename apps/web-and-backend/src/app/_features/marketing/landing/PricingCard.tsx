@@ -50,6 +50,7 @@ export default function PricingCard({
         <ButtonCTA
           href={ctaHref}
           className="w-full justify-center !bg-white !text-primary hover:!bg-gray-100"
+          showIcon={false}
         >
           {ctaText}
         </ButtonCTA>

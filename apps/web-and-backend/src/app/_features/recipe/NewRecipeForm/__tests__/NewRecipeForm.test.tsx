@@ -11,6 +11,7 @@ import NewRecipeForm from "../NewRecipeForm";
 
 await createAndPersistTestIngredients();
 await createAndPersistTestUser();
+
 mockIngredientApiFetch();
 
 async function setup() {
