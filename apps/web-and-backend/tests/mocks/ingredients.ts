@@ -6,16 +6,19 @@ const ingredientPropsForUseCase = [
     name: "Carrot",
     calories: 41,
     protein: 0.9,
+    category: "vegetable",
   },
   {
     name: "Cabbage",
     calories: 25,
     protein: 1.3,
+    category: "vegetable",
   },
   {
     name: "Celery",
     calories: 16,
     protein: 0.7,
+    category: "vegetable",
   },
 ];
 
@@ -29,6 +32,7 @@ export const mockIngredientsForIngredientFinder = ingredientPropsForUseCase.map(
           protein: props.protein,
         },
         imageUrl: undefined,
+        category: props.category,
       },
 
       externalRef: {

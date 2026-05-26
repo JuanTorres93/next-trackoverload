@@ -1,7 +1,6 @@
 import { vi } from "vitest";
 
 import { IngredientFinderResult } from "../../src/domain/services/IngredientFinder.port";
-
 import { mockIngredientsForIngredientFinder } from "./ingredients";
 
 export const DEFAULT_BARCODE_INGREDIENT: IngredientFinderResult = {
@@ -9,6 +8,7 @@ export const DEFAULT_BARCODE_INGREDIENT: IngredientFinderResult = {
     name: "Avena Integral",
     nutritionalInfoPer100g: { calories: 370, protein: 13 },
     imageUrl: undefined,
+    category: "other",
   },
   externalRef: { externalId: "8414807558305", source: "openfoodfacts" },
 };
@@ -16,8 +16,8 @@ export const DEFAULT_BARCODE_INGREDIENT: IngredientFinderResult = {
 type FuzzyResolver = (term: string, page: number) => IngredientFinderResult[];
 
 function defaultFuzzyResolver(term: string): IngredientFinderResult[] {
-  return mockIngredientsForIngredientFinder.filter((i) =>
-    i.ingredient.name.toLowerCase().includes(term.toLowerCase()),
+  return mockIngredientsForIngredientFinder.filter((ingredient) =>
+    ingredient.ingredient.name.toLowerCase().includes(term.toLowerCase()),
   );
 }
 
