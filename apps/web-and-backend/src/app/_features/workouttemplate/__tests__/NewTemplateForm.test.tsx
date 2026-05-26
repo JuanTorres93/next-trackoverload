@@ -4,12 +4,12 @@ import userEvent from "@testing-library/user-event";
 import { mockExerciseApiFetch } from "../../../../../tests/mocks/exerciseApi";
 import { createMockExercises } from "../../../../../tests/mocks/exercises";
 import { TEST_USER_ID } from "../../../../../tests/mocks/nextjs";
-import { createMockUser } from "../../../../../tests/mocks/user";
+import { createAndPersistTestUser } from "../../../../../tests/mocks/user";
 import { TestExercisesRepo } from "../../../../../tests/repos/TestExercisesRepo";
 import { TestWorkoutsTemplatesRepo } from "../../../../../tests/repos/TestWorkoutsTemplatesRepo";
 import NewTemplateForm from "../NewTemplateForm";
 
-await createMockUser();
+await createAndPersistTestUser();
 
 async function setup() {
   const mockExercises = await createMockExercises();

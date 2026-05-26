@@ -2,9 +2,8 @@ import { AppIngredientsRepo } from "../../src/interface-adapters/app/repos/AppIn
 import { AppRecipesRepo } from "../../src/interface-adapters/app/repos/AppRecipesRepo";
 import { AppUsersRepo } from "../../src/interface-adapters/app/repos/AppUsersRepo";
 import { AppCreateRecipeUsecase } from "../../src/interface-adapters/app/use-cases/recipe";
-
 import { createMockIngredients } from "./ingredients";
-import { createMockUser } from "./user";
+import { createAndPersistTestUser } from "./user";
 
 export const createMockRecipes = async () => {
   if (process.env.NODE_ENV !== "test") {
@@ -12,7 +11,7 @@ export const createMockRecipes = async () => {
   }
 
   const mockIngredients = await createMockIngredients();
-  const mockUser = await createMockUser();
+  const mockUser = await createAndPersistTestUser();
 
   const recipesPropsForUseCase = [
     {

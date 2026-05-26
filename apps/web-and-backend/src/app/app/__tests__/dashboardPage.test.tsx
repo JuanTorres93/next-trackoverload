@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 
 import { validFakeMealProps } from "../../../../tests/createProps/fakeMealTestProps";
 import { createMockDay } from "../../../../tests/mocks/days";
-import { createMockUser } from "../../../../tests/mocks/user";
+import { createAndPersistTestUser } from "../../../../tests/mocks/user";
 import { TestDaysRepo } from "../../../../tests/repos/TestDaysRepo";
 import { TestFakeMealsRepo } from "../../../../tests/repos/TestFakeMealsRepo";
 import { TestMealsRepo } from "../../../../tests/repos/TestMealsRepo";
@@ -10,7 +10,7 @@ import { dateToDayId } from "../../../domain/value-objects/DayId/DayId";
 import DashboardPage from "../page";
 
 async function setup() {
-  await createMockUser();
+  await createAndPersistTestUser();
 
   const todayId = dateToDayId(new Date());
   const dayWithMeals = await createMockDay(

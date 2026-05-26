@@ -2,7 +2,7 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { createMockRecipes } from "../../../../../tests/mocks/recipes";
-import { createMockUser } from "../../../../../tests/mocks/user";
+import { createAndPersistTestUser } from "../../../../../tests/mocks/user";
 import { TestRecipesRepo } from "../../../../../tests/repos/TestRecipesRepo";
 import RecipesPage from "../page";
 
@@ -57,7 +57,7 @@ describe("RecipesPage", () => {
   describe("Without recipes", () => {
     beforeAll(async () => {
       TestRecipesRepo.clearForTesting();
-      await createMockUser();
+      await createAndPersistTestUser();
     });
 
     it("Renders no recipe text", async () => {

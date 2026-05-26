@@ -6,9 +6,8 @@ import {
   AppAddExerciseToWorkoutTemplateUsecase,
   AppCreateWorkoutTemplateUsecase,
 } from "../../src/interface-adapters/app/use-cases/workouttemplate";
-
 import { mockExercisesForExerciseFinder } from "./exercises";
-import { createMockUser } from "./user";
+import { createAndPersistTestUser } from "./user";
 
 const setsForExercises = [3, 4, 5];
 
@@ -17,7 +16,7 @@ export const createMockWorkoutTemplates = async () => {
     throw new Error("createMockWorkoutTemplates should only be used in tests");
   }
 
-  const mockUser = await createMockUser();
+  const mockUser = await createAndPersistTestUser();
 
   const firstExercise = mockExercisesForExerciseFinder[0];
 

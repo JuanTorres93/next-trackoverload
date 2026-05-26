@@ -4,14 +4,14 @@ import userEvent from "@testing-library/user-event";
 import { createEmptyTestDay } from "../../../../../tests/createProps/dayTestProps";
 import { mockIngredientApiFetch } from "../../../../../tests/mocks/ingredientApi";
 import { TEST_USER_ID } from "../../../../../tests/mocks/nextjs";
-import { createMockUser } from "../../../../../tests/mocks/user";
+import { createAndPersistTestUser } from "../../../../../tests/mocks/user";
 import { mockDecodeFromConstraints } from "../../../../../tests/mocks/zxing";
 import { TestDaysRepo } from "../../../../../tests/repos/TestDaysRepo";
 import { TestFakeMealsRepo } from "../../../../../tests/repos/TestFakeMealsRepo";
 import { SCAN_WINDOW_SIZE } from "../../ingredient/ZXingBarcodeScanner";
 import AddFakeMealForm from "../AddFakeMealForm";
 
-await createMockUser();
+await createAndPersistTestUser();
 
 const MOCK_BARCODE = "8480000543745";
 const MOCK_INGREDIENT_NAME = "Leche Entera";

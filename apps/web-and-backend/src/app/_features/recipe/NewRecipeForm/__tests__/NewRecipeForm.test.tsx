@@ -3,14 +3,14 @@ import userEvent from "@testing-library/user-event";
 
 import { mockIngredientApiFetch } from "../../../../../../tests/mocks/ingredientApi";
 import { createMockIngredients } from "../../../../../../tests/mocks/ingredients";
-import { createMockUser } from "../../../../../../tests/mocks/user";
+import { createAndPersistTestUser } from "../../../../../../tests/mocks/user";
 import { mockDecodeFromConstraints } from "../../../../../../tests/mocks/zxing";
 import { TestRecipesRepo } from "../../../../../../tests/repos/TestRecipesRepo";
 import { SCAN_WINDOW_SIZE } from "../../../ingredient/ZXingBarcodeScanner";
 import NewRecipeForm from "../NewRecipeForm";
 
 await createMockIngredients();
-await createMockUser();
+await createAndPersistTestUser();
 mockIngredientApiFetch();
 
 async function setup() {

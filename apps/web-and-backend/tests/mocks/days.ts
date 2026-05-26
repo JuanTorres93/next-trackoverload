@@ -13,7 +13,7 @@ import {
 } from "../../src/interface-adapters/app/use-cases/day";
 import { TestDaysRepo } from "../repos/TestDaysRepo";
 import { createMockRecipes } from "./recipes";
-import { createMockUser } from "./user";
+import { createAndPersistTestUser } from "./user";
 
 type CreateMockDayOptions = {
   alternativeUserProps?: Partial<UserCreateProps>;
@@ -51,7 +51,7 @@ export async function createMockDay(
     throw new Error("createMockDay should only be used in tests");
   }
 
-  const mockUser = await createMockUser(alternativeUserProps);
+  const mockUser = await createAndPersistTestUser(alternativeUserProps);
 
   const dayPropsForUseCase: CreateDayUsecaseRequest = {
     actorUserId: mockUser.id,
@@ -110,7 +110,7 @@ export async function createMultipleMockDaysWithWeights(
     );
   }
 
-  const mockUser = await createMockUser();
+  const mockUser = await createAndPersistTestUser();
 
   const createdDays: DayDTO[] = [];
 

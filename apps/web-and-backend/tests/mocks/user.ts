@@ -1,21 +1,16 @@
 import { User, UserCreateProps } from "../../src/domain/entities/user/User";
-import { AppUsersRepo } from "../../src/interface-adapters/app/repos/AppUsersRepo";
-
 import { validUserProps } from "../createProps/userTestProps";
+import { TestUsersRepo } from "../repos/TestUsersRepo";
 
-export const createMockUser = async (
+export const createAndPersistTestUser = async (
   alternativeUserProps?: Partial<UserCreateProps>,
 ) => {
-  if (process.env.NODE_ENV !== "test") {
-    throw new Error("createMockUser should only be used in tests");
-  }
-
   const user = User.create({
     ...validUserProps,
     ...alternativeUserProps,
   });
 
-  await AppUsersRepo.saveUser(user);
+  await TestUsersRepo.saveUser(user);
 
   const mockUser = {
     id: user.id,
@@ -28,10 +23,7 @@ export const createMockUser = async (
   };
 
   afterAll(async () => {
-    // Clean up the mock user after tests
-
-    // @ts-expect-error AppUsersRepo will always be MemoryUsersRepo
-    await AppUsersRepo.clearForTesting(mockUser.id);
+    TestUsersRepo.clearForTesting();
   });
 
   return mockUser;
