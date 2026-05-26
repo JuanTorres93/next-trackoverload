@@ -1,11 +1,11 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { createMockRecipes } from "../../../../../tests/mocks/recipes";
+import { createAndPersistTestRecipes } from "../../../../../tests/mocks/recipes";
 import { TestRecipesRepo } from "../../../../../tests/repos/TestRecipesRepo";
 import RecipeCard from "../RecipeCard";
 
-const { mockRecipes } = await createMockRecipes();
+const { mockRecipes } = await createAndPersistTestRecipes();
 
 async function setup() {
   render(<RecipeCard recipe={mockRecipes[0]} />);

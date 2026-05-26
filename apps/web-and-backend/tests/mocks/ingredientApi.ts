@@ -13,32 +13,27 @@ export const DEFAULT_BARCODE_INGREDIENT: IngredientFinderResult = {
   externalRef: { externalId: "8414807558305", source: "openfoodfacts" },
 };
 
-type FuzzyResolver = (term: string, page: number) => IngredientFinderResult[];
-
-function defaultFuzzyResolver(term: string): IngredientFinderResult[] {
-  return mockIngredientsForIngredientFinder.filter((ingredient) =>
-    ingredient.ingredient.name.toLowerCase().includes(term.toLowerCase()),
-  );
-}
-
 export function mockIngredientApiFetch(options?: {
   barcodeIngredient?: IngredientFinderResult;
   fuzzyResolver?: FuzzyResolver;
 }) {
   const barcodeIngredient =
     options?.barcodeIngredient ?? DEFAULT_BARCODE_INGREDIENT;
-  const fuzzyResolver = options?.fuzzyResolver ?? defaultFuzzyResolver;
+
+  const fuzzyResolver = options?.fuzzyResolver ?? lowercaseFuzzyResolver;
 
   vi.spyOn(global, "fetch").mockImplementation((input) => {
     const url = typeof input === "string" ? input : input.toString();
 
     if (url.includes("/api/ingredient/fuzzy/")) {
       const [path, query] = url.split("/api/ingredient/fuzzy/")[1].split("?");
+
       const term = decodeURIComponent(path);
       const page = parseInt(
         new URLSearchParams(query ?? "").get("page") ?? "1",
         10,
       );
+
       const data = fuzzyResolver(term, page);
 
       return Promise.resolve(
@@ -59,4 +54,12 @@ export function mockIngredientApiFetch(options?: {
 
     return Promise.reject(new Error(`Unexpected fetch call: ${url}`));
   });
+}
+
+type FuzzyResolver = (term: string, page: number) => IngredientFinderResult[];
+
+function lowercaseFuzzyResolver(term: string): IngredientFinderResult[] {
+  return mockIngredientsForIngredientFinder.filter((ingredient) =>
+    ingredient.ingredient.name.toLowerCase().includes(term.toLowerCase()),
+  );
 }

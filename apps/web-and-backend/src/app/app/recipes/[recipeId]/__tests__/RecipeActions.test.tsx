@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 
 import { mockIngredientApiFetch } from "../../../../../../tests/mocks/ingredientApi";
 import { createAndPersistTestIngredients } from "../../../../../../tests/mocks/ingredients";
-import { createMockRecipes } from "../../../../../../tests/mocks/recipes";
+import { createAndPersistTestRecipes } from "../../../../../../tests/mocks/recipes";
 import { mockDecodeFromConstraints } from "../../../../../../tests/mocks/zxing";
 import { TestRecipesRepo } from "../../../../../../tests/repos/TestRecipesRepo";
 import { TestUsersRepo } from "../../../../../../tests/repos/TestUsersRepo";
@@ -17,7 +17,7 @@ await createAndPersistTestIngredients();
 mockIngredientApiFetch();
 
 async function setup() {
-  const { mockRecipes } = await createMockRecipes();
+  const { mockRecipes } = await createAndPersistTestRecipes();
   recipe = mockRecipes[0];
 
   render(<RecipeActions recipe={recipe} />);

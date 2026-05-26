@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 
 import { createMockDay } from "../../../../../tests/mocks/days";
 import { TEST_USER_ID } from "../../../../../tests/mocks/nextjs";
-import { createMockRecipes } from "../../../../../tests/mocks/recipes";
+import { createAndPersistTestRecipes } from "../../../../../tests/mocks/recipes";
 import { createServer } from "../../../../../tests/mocks/server";
 import { TestDaysRepo } from "../../../../../tests/repos/TestDaysRepo";
 import { TestFakeMealsRepo } from "../../../../../tests/repos/TestFakeMealsRepo";
@@ -58,7 +58,7 @@ describe("AddFoodButton", () => {
   });
 
   it("adds a meal from a recipe to the day", async () => {
-    const { mockRecipes } = await createMockRecipes();
+    const { mockRecipes } = await createAndPersistTestRecipes();
     const day = await createMockDay(1, 1, 2000, {
       createWithMeal: true,
       mealRecipeId: mockRecipes[0].id,

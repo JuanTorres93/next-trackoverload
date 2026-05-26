@@ -1,15 +1,11 @@
-import { AppIngredientsRepo } from "../../src/interface-adapters/app/repos/AppIngredientsRepo";
-import { AppRecipesRepo } from "../../src/interface-adapters/app/repos/AppRecipesRepo";
-import { AppUsersRepo } from "../../src/interface-adapters/app/repos/AppUsersRepo";
 import { AppCreateRecipeUsecase } from "../../src/interface-adapters/app/use-cases/recipe";
+import { TestIngredientsRepo } from "../repos/TestIngredientsRepo";
+import { TestRecipesRepo } from "../repos/TestRecipesRepo";
+import { TestUsersRepo } from "../repos/TestUsersRepo";
 import { createAndPersistTestIngredients } from "./ingredients";
 import { createAndPersistTestUser } from "./user";
 
-export const createMockRecipes = async () => {
-  if (process.env.NODE_ENV !== "test") {
-    throw new Error("createMockRecipes should only be used in tests");
-  }
-
+export const createAndPersistTestRecipes = async () => {
   const mockIngredients = await createAndPersistTestIngredients();
   const mockUser = await createAndPersistTestUser();
 
@@ -99,13 +95,9 @@ export const createMockRecipes = async () => {
   }
 
   afterAll(() => {
-    // Clean up after tests
-    // @ts-expect-error AppIngredientsRepo will always be MemoryIngredientsRepo
-    AppIngredientsRepo.clearForTesting();
-    // @ts-expect-error AppRecipesRepo will always be MemoryRecipesRepo
-    AppRecipesRepo.clearForTesting();
-    // @ts-expect-error AppUsersRepo will always be MemoryUsersRepo
-    AppUsersRepo.clearForTesting();
+    TestIngredientsRepo.clearForTesting();
+    TestRecipesRepo.clearForTesting();
+    TestUsersRepo.clearForTesting();
   });
 
   return { mockRecipes, mockIngredients, mockUser };

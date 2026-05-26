@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 
-import { createMockRecipes } from "../../../../../../tests/mocks/recipes";
+import { createAndPersistTestRecipes } from "../../../../../../tests/mocks/recipes";
 import { TestRecipesRepo } from "../../../../../../tests/repos/TestRecipesRepo";
 import { TestUsersRepo } from "../../../../../../tests/repos/TestUsersRepo";
 import { RecipeDTO } from "../../../../../application-layer/dtos/RecipeDTO";
@@ -10,7 +10,7 @@ let mockRecipes: RecipeDTO[] = [];
 
 async function setup() {
   // Recreate mock recipes for each test to ensure a clean state
-  const { mockRecipes: recipes } = await createMockRecipes();
+  const { mockRecipes: recipes } = await createAndPersistTestRecipes();
   mockRecipes = recipes;
 
   const renderedRecipe = recipes[0];

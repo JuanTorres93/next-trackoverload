@@ -1,9 +1,9 @@
 import { act, renderHook } from "@testing-library/react";
 
-import { createMockRecipes } from "../../../../../tests/mocks/recipes";
+import { createAndPersistTestRecipes } from "../../../../../tests/mocks/recipes";
 import { useRecipeSearch } from "../useRecipeSearch";
 
-const { mockRecipes } = await createMockRecipes();
+const { mockRecipes } = await createAndPersistTestRecipes();
 
 describe("useRecipeSearch", () => {
   it("returns all recipes when query is empty", () => {

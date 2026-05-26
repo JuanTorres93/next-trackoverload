@@ -12,7 +12,7 @@ import {
   AppUpdateUserWeightForDayUsecase,
 } from "../../src/interface-adapters/app/use-cases/day";
 import { TestDaysRepo } from "../repos/TestDaysRepo";
-import { createMockRecipes } from "./recipes";
+import { createAndPersistTestRecipes } from "./recipes";
 import { createAndPersistTestUser } from "./user";
 
 type CreateMockDayOptions = {
@@ -65,7 +65,7 @@ export async function createMockDay(
 
   if (createWithMeal) {
     const recipeIdToAdd =
-      mealRecipeId ?? (await createMockRecipes()).mockRecipes[0].id;
+      mealRecipeId ?? (await createAndPersistTestRecipes()).mockRecipes[0].id;
 
     const addMealsToDayProps: AddMultipleMealsToDayUsecaseRequest = {
       dayId: createdDay.id,
