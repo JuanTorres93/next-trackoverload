@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { createMultipleMockDaysWithWeights } from "../../../../../tests/mocks/days";
+import { createAndPersistMultipleTestDaysWithWeights } from "../../../../../tests/mocks/days";
 import { TestDaysRepo } from "../../../../../tests/repos/TestDaysRepo";
 import { fromDayDTO } from "../../../../application-layer/dtos/DayDTO";
 import { DayEntry } from "../../../../application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase";
@@ -9,7 +9,7 @@ import { AppSetCaloriesGoalForDayAndUserUsecase } from "../../../../interface-ad
 import CaloriesGoalInput from "../CaloriesGoalInput";
 
 async function createMockDays(): Promise<DayEntry[]> {
-  const mockDays = await createMultipleMockDaysWithWeights(7);
+  const mockDays = await createAndPersistMultipleTestDaysWithWeights(7);
 
   const dayEntries: DayEntry[] = mockDays.map((day) => ({
     date: day.id,

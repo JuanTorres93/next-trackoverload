@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { createMockDay } from "../../../../../tests/mocks/days";
+import { createAndPersistTestDay } from "../../../../../tests/mocks/days";
 import { TEST_USER_ID } from "../../../../../tests/mocks/nextjs";
 import { TestDaysRepo } from "../../../../../tests/repos/TestDaysRepo";
 import { TestFakeMealsRepo } from "../../../../../tests/repos/TestFakeMealsRepo";
@@ -10,7 +10,7 @@ import { TestRecipesRepo } from "../../../../../tests/repos/TestRecipesRepo";
 import MealReminder from "../MealReminder";
 
 async function setup() {
-  const dayWithMeal = await createMockDay(1, 1, 2000, {
+  const dayWithMeal = await createAndPersistTestDay(1, 1, 2000, {
     createWithMeal: true,
     returnAssembled: true,
   });

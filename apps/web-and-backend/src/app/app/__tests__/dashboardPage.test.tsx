@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 
 import { validFakeMealProps } from "../../../../tests/createProps/fakeMealTestProps";
-import { createMockDay } from "../../../../tests/mocks/days";
+import { createAndPersistTestDay } from "../../../../tests/mocks/days";
 import { createAndPersistTestUser } from "../../../../tests/mocks/user";
 import { TestDaysRepo } from "../../../../tests/repos/TestDaysRepo";
 import { TestFakeMealsRepo } from "../../../../tests/repos/TestFakeMealsRepo";
@@ -13,7 +13,7 @@ async function setup() {
   await createAndPersistTestUser();
 
   const todayId = dateToDayId(new Date());
-  const dayWithMeals = await createMockDay(
+  const dayWithMeals = await createAndPersistTestDay(
     todayId.day,
     todayId.month,
     todayId.year,

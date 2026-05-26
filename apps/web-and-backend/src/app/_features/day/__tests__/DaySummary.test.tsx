@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { createMockDay } from "../../../../../tests/mocks/days";
+import { createAndPersistTestDay } from "../../../../../tests/mocks/days";
 import { createAndPersistTestRecipes } from "../../../../../tests/mocks/recipes";
 import { TestDaysRepo } from "../../../../../tests/repos/TestDaysRepo";
 import { TestFakeMealsRepo } from "../../../../../tests/repos/TestFakeMealsRepo";
@@ -11,7 +11,7 @@ import DaySummary from "../DaySummary";
 const { mockRecipes } = await createAndPersistTestRecipes();
 
 async function setup() {
-  const assembledDayDTO = await createMockDay(1, 1, 2000, {
+  const assembledDayDTO = await createAndPersistTestDay(1, 1, 2000, {
     createWithMeal: true,
     mealRecipeId: mockRecipes[0].id,
     fakeMeals: {

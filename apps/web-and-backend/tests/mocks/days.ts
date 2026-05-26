@@ -23,22 +23,25 @@ type CreateMockDayOptions = {
   returnAssembled?: boolean;
 };
 
-export async function createMockDay(
+export async function createAndPersistTestDay(
   day: number,
   month: number,
   year: number,
+
   options: CreateMockDayOptions & { returnAssembled: true },
 ): Promise<AssembledDayDTO>;
-export async function createMockDay(
+export async function createAndPersistTestDay(
   day?: number,
   month?: number,
   year?: number,
+
   options?: CreateMockDayOptions & { returnAssembled?: false },
 ): Promise<DayDTO>;
-export async function createMockDay(
+export async function createAndPersistTestDay(
   day = 1,
   month = 1,
   year = 2000,
+
   {
     alternativeUserProps,
     createWithMeal = false,
@@ -47,10 +50,6 @@ export async function createMockDay(
     returnAssembled = false,
   }: CreateMockDayOptions = {},
 ): Promise<DayDTO | AssembledDayDTO> {
-  if (process.env.NODE_ENV !== "test") {
-    throw new Error("createMockDay should only be used in tests");
-  }
-
   const mockUser = await createAndPersistTestUser(alternativeUserProps);
 
   const dayPropsForUseCase: CreateDayUsecaseRequest = {
@@ -101,15 +100,9 @@ export async function createMockDay(
   return createdDay;
 }
 
-export async function createMultipleMockDaysWithWeights(
+export async function createAndPersistMultipleTestDaysWithWeights(
   numberOfDays: number,
 ): Promise<DayDTO[]> {
-  if (process.env.NODE_ENV !== "test") {
-    throw new Error(
-      "createMultipleMockDaysWithWeights should only be used in tests",
-    );
-  }
-
   const mockUser = await createAndPersistTestUser();
 
   const createdDays: DayDTO[] = [];
@@ -119,7 +112,7 @@ export async function createMultipleMockDaysWithWeights(
     const month = 1;
     const year = 2000;
 
-    const createdDay = await createMockDay(day, month, year);
+    const createdDay = await createAndPersistTestDay(day, month, year);
 
     const weightForDay = 70 + i; // Just an example weight that changes each day
 

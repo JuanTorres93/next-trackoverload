@@ -1,11 +1,11 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { createMockDay } from "../../../../../tests/mocks/days";
+import { createAndPersistTestDay } from "../../../../../tests/mocks/days";
 import { IngredientLineDTO } from "../../../../application-layer/dtos/IngredientLineDTO";
 import IngredientLineItem from "../IngredientLineItem";
 
-const mockDay = await createMockDay(1, 1, 2000, {
+const mockDay = await createAndPersistTestDay(1, 1, 2000, {
   createWithMeal: true,
   returnAssembled: true,
 });

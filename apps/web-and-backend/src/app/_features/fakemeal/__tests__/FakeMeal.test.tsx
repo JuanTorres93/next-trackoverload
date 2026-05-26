@@ -1,13 +1,13 @@
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { createMockDay } from "../../../../../tests/mocks/days";
+import { createAndPersistTestDay } from "../../../../../tests/mocks/days";
 import { TestDaysRepo } from "../../../../../tests/repos/TestDaysRepo";
 import { TestFakeMealsRepo } from "../../../../../tests/repos/TestFakeMealsRepo";
 import FakeMeal from "../FakeMeal";
 
 async function setup() {
-  const day = await createMockDay(1, 1, 2000, {
+  const day = await createAndPersistTestDay(1, 1, 2000, {
     fakeMeals: { name: "Test Fake Meal", calories: 400, protein: 25 },
     returnAssembled: true,
   });

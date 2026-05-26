@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { createMultipleMockDaysWithWeights } from "../../../../../tests/mocks/days";
+import { createAndPersistMultipleTestDaysWithWeights } from "../../../../../tests/mocks/days";
 import { TestDaysRepo } from "../../../../../tests/repos/TestDaysRepo";
 import { TestUsersRepo } from "../../../../../tests/repos/TestUsersRepo";
 import { dateToDayId } from "../../../../domain/value-objects/DayId/DayId";
@@ -175,7 +175,7 @@ describe("MealsDisplay", () => {
 async function createAssembledDays(
   count: number,
 ): Promise<AssembledDayResult[]> {
-  const mockDays = await createMultipleMockDaysWithWeights(count);
+  const mockDays = await createAndPersistMultipleTestDaysWithWeights(count);
 
   return mockDays.map((day) => ({
     dayId: day.id,
