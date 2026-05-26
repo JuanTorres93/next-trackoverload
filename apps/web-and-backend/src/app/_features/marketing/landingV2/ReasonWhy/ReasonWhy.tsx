@@ -11,7 +11,7 @@ function ReasonWhy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <LandingSection
       className={twMerge("", className)}
-      title="Why traditional fitness apps make you quit"
+      title="Why traditional fitness apps make you quit."
       subtitle="You're not failing because you're lazy. You're failing because the tools and advice weren't designed for someone starting where you are."
       {...rest}
     >

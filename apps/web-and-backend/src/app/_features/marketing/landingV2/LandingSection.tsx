@@ -2,6 +2,7 @@ import { twMerge } from "tailwind-merge";
 
 import SectionTitle from "./SectionTitle";
 
+// TODO IMPORTANT: Finish styling when design is done
 function LandingSection({
   title,
   subtitle,
@@ -15,7 +16,10 @@ function LandingSection({
   const { className, ...rest } = props;
 
   return (
-    <section className={twMerge("flex flex-col gap-10", className)} {...rest}>
+    <section
+      className={twMerge("flex flex-col py-12 gap-10", className)}
+      {...rest}
+    >
       <SectionTitle title={title} subtitle={subtitle} />
 
       {children}

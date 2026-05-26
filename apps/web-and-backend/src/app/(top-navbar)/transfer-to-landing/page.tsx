@@ -1,4 +1,5 @@
 import Hero from "@/app/_features/marketing/landingV2/Hero/Hero";
+import HowItWorks from "@/app/_features/marketing/landingV2/HowItWorks/HowItWorks";
 import NavBar from "@/app/_features/marketing/landingV2/NavBar";
 import ReasonWhy from "@/app/_features/marketing/landingV2/ReasonWhy/ReasonWhy";
 
@@ -10,6 +11,7 @@ export default function LandingPage() {
       <NavBar />
       <Hero />
       <ReasonWhy />
+      <HowItWorks />
     </main>
   );
 }
