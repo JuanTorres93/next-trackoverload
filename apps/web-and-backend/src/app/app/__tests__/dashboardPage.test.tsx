@@ -3,18 +3,11 @@ import { render, screen } from "@testing-library/react";
 import { validFakeMealProps } from "../../../../tests/createProps/fakeMealTestProps";
 import { createMockDay } from "../../../../tests/mocks/days";
 import { createMockUser } from "../../../../tests/mocks/user";
+import { TestDaysRepo } from "../../../../tests/repos/TestDaysRepo";
+import { TestFakeMealsRepo } from "../../../../tests/repos/TestFakeMealsRepo";
+import { TestMealsRepo } from "../../../../tests/repos/TestMealsRepo";
 import { dateToDayId } from "../../../domain/value-objects/DayId/DayId";
-import { MemoryDaysRepo } from "../../../infra/repos/memory/MemoryDaysRepo";
-import { MemoryFakeMealsRepo } from "../../../infra/repos/memory/MemoryFakeMealsRepo";
-import { MemoryMealsRepo } from "../../../infra/repos/memory/MemoryMealsRepo";
-import { AppDaysRepo } from "../../../interface-adapters/app/repos/AppDaysRepo";
-import { AppFakeMealsRepo } from "../../../interface-adapters/app/repos/AppFakeMealsRepo";
-import { AppMealsRepo } from "../../../interface-adapters/app/repos/AppMealsRepo";
 import DashboardPage from "../page";
-
-const mealsRepo = AppMealsRepo as MemoryMealsRepo;
-const fakeMealsRepo = AppFakeMealsRepo as MemoryFakeMealsRepo;
-const daysRepo = AppDaysRepo as MemoryDaysRepo;
 
 async function setup() {
   await createMockUser();
@@ -41,9 +34,9 @@ async function setup() {
 
 describe("DashboardPage", () => {
   afterEach(() => {
-    mealsRepo.clearForTesting();
-    fakeMealsRepo.clearForTesting();
-    daysRepo.clearForTesting();
+    TestMealsRepo.clearForTesting();
+    TestFakeMealsRepo.clearForTesting();
+    TestDaysRepo.clearForTesting();
   });
 
   describe("Today's meals", async () => {

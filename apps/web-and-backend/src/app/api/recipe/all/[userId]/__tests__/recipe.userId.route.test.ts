@@ -1,19 +1,15 @@
 import * as recipeTestProps from "../../../../../../../tests/createProps/recipeTestProps";
 import * as userTestProps from "../../../../../../../tests/createProps/userTestProps";
+import { TestRecipesRepo } from "../../../../../../../tests/repos/TestRecipesRepo";
+import { TestUsersRepo } from "../../../../../../../tests/repos/TestUsersRepo";
 import { Recipe } from "../../../../../../domain/entities/recipe/Recipe";
 import { User } from "../../../../../../domain/entities/user/User";
-import { MemoryRecipesRepo } from "../../../../../../infra/repos/memory/MemoryRecipesRepo";
-import { MemoryUsersRepo } from "../../../../../../infra/repos/memory/MemoryUsersRepo";
-import { AppRecipesRepo } from "../../../../../../interface-adapters/app/repos/AppRecipesRepo";
-import { AppUsersRepo } from "../../../../../../interface-adapters/app/repos/AppUsersRepo";
 import { loginInAPITests } from "../../../../__tests__/loginInAPITests";
 import { logoutInAPITests } from "../../../../__tests__/logoutInAPITests";
 import { registerUserInAPITests } from "../../../../__tests__/registerUserInAPITests";
 import { GET } from "../route";
 
 describe("GET /api/recipe/[userId]", () => {
-  let recipesRepo: MemoryRecipesRepo;
-  let usersRepo: MemoryUsersRepo;
   let testRecipes: Recipe[];
 
   let user1: User;
@@ -21,11 +17,8 @@ describe("GET /api/recipe/[userId]", () => {
   let user2Id: string;
 
   beforeEach(async () => {
-    recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
-    usersRepo = AppUsersRepo as MemoryUsersRepo;
-
-    recipesRepo.clearForTesting();
-    usersRepo.clearForTesting();
+    TestRecipesRepo.clearForTesting();
+    TestUsersRepo.clearForTesting();
 
     user1 = userTestProps.createTestUser();
 
@@ -37,8 +30,8 @@ describe("GET /api/recipe/[userId]", () => {
 
     await registerUserInAPITests(user2.email, user2.name);
 
-    user1Id = (await usersRepo.getUserByEmail(user1.email))!.id;
-    user2Id = (await usersRepo.getUserByEmail(user2.email))!.id;
+    user1Id = (await TestUsersRepo.getUserByEmail(user1.email))!.id;
+    user2Id = (await TestUsersRepo.getUserByEmail(user2.email))!.id;
 
     testRecipes = [
       recipeTestProps.createTestRecipe(
@@ -57,7 +50,7 @@ describe("GET /api/recipe/[userId]", () => {
     ];
 
     for (const recipe of testRecipes) {
-      await recipesRepo.saveRecipe(recipe);
+      await TestRecipesRepo.saveRecipe(recipe);
     }
 
     await logoutInAPITests();

@@ -4,11 +4,9 @@ import { vi } from "vitest";
 
 import { createTestImage } from "../../../../../../tests/helpers/imageTestHelpers";
 import { createMockRecipes } from "../../../../../../tests/mocks/recipes";
+import { TestRecipesRepo } from "../../../../../../tests/repos/TestRecipesRepo";
+import { TestUsersRepo } from "../../../../../../tests/repos/TestUsersRepo";
 import { RecipeDTO } from "../../../../../application-layer/dtos/RecipeDTO";
-import { MemoryRecipesRepo } from "../../../../../infra/repos/memory/MemoryRecipesRepo";
-import { MemoryUsersRepo } from "../../../../../infra/repos/memory/MemoryUsersRepo";
-import { AppRecipesRepo } from "../../../../../interface-adapters/app/repos/AppRecipesRepo";
-import { AppUsersRepo } from "../../../../../interface-adapters/app/repos/AppUsersRepo";
 import UpdateRecipeImage from "../UpdateRecipeImage";
 
 // Mock AppClientImageProcessor to avoid browser API incompatibilities in the test environment
@@ -17,9 +15,6 @@ vi.mock("@/interface-adapters/app/services/AppClientImageProcessor", () => ({
     compressToMaxMB: vi.fn((file: File) => Promise.resolve(file)),
   },
 }));
-
-const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
-const usersRepo = AppUsersRepo as MemoryUsersRepo;
 let recipe: RecipeDTO;
 
 async function setup() {
@@ -32,8 +27,8 @@ async function setup() {
 }
 
 afterEach(() => {
-  recipesRepo.clearForTesting();
-  usersRepo.clearForTesting();
+  TestRecipesRepo.clearForTesting();
+  TestUsersRepo.clearForTesting();
 });
 
 describe("UpdateRecipeImage", () => {
@@ -65,7 +60,7 @@ describe("UpdateRecipeImage", () => {
     await userEvent.upload(updateImageInput, testImageFile);
 
     await waitFor(async () => {
-      const updatedRecipe = await recipesRepo.getRecipeById(recipe.id);
+      const updatedRecipe = await TestRecipesRepo.getRecipeById(recipe.id);
 
       expect(updatedRecipe).not.toBeNull();
       expect(updatedRecipe!.imageUrl).toBeDefined();

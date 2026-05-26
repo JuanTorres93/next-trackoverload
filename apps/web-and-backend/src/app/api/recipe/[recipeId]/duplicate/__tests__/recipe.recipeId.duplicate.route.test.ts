@@ -2,40 +2,29 @@ import type { NextRequest } from "next/server";
 
 import * as recipeTestProps from "../../../../../../../tests/createProps/recipeTestProps";
 import * as userTestProps from "../../../../../../../tests/createProps/userTestProps";
+import { TestImagesRepo } from "../../../../../../../tests/repos/TestImagesRepo";
+import { TestRecipesRepo } from "../../../../../../../tests/repos/TestRecipesRepo";
+import { TestUsersRepo } from "../../../../../../../tests/repos/TestUsersRepo";
 import { Recipe } from "../../../../../../domain/entities/recipe/Recipe";
 import { User } from "../../../../../../domain/entities/user/User";
-import { MemoryImagesRepo } from "../../../../../../infra/repos/memory/MemoryImagesRepo";
-import { MemoryRecipesRepo } from "../../../../../../infra/repos/memory/MemoryRecipesRepo";
-import { MemoryUsersRepo } from "../../../../../../infra/repos/memory/MemoryUsersRepo";
-import { AppImagesRepo } from "../../../../../../interface-adapters/app/repos/AppImagesRepo";
-import { AppRecipesRepo } from "../../../../../../interface-adapters/app/repos/AppRecipesRepo";
-import { AppUsersRepo } from "../../../../../../interface-adapters/app/repos/AppUsersRepo";
 import { loginInAPITests } from "../../../../__tests__/loginInAPITests";
 import { logoutInAPITests } from "../../../../__tests__/logoutInAPITests";
 import { registerUserInAPITests } from "../../../../__tests__/registerUserInAPITests";
 import { POST } from "../route";
 
 describe("POST /api/recipe/[recipeId]/duplicate", () => {
-  let recipesRepo: MemoryRecipesRepo;
-  let usersRepo: MemoryUsersRepo;
-  let imagesRepo: MemoryImagesRepo;
-
   let user1: User;
   let user1Id: string;
   let testRecipe: Recipe;
 
   beforeEach(async () => {
-    recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
-    usersRepo = AppUsersRepo as MemoryUsersRepo;
-    imagesRepo = AppImagesRepo as MemoryImagesRepo;
-
-    recipesRepo.clearForTesting();
-    usersRepo.clearForTesting();
-    imagesRepo.clearForTesting();
+    TestRecipesRepo.clearForTesting();
+    TestUsersRepo.clearForTesting();
+    TestImagesRepo.clearForTesting();
 
     user1 = userTestProps.createTestUser();
     await registerUserInAPITests(user1.email, user1.name);
-    user1Id = (await usersRepo.getUserByEmail(user1.email))!.id;
+    user1Id = (await TestUsersRepo.getUserByEmail(user1.email))!.id;
 
     const recipeProps = recipeTestProps.validRecipePropsWithIngredientLines(1);
     testRecipe = Recipe.create({
@@ -43,7 +32,7 @@ describe("POST /api/recipe/[recipeId]/duplicate", () => {
       userId: user1Id,
       imageUrl: undefined,
     });
-    await recipesRepo.saveRecipe(testRecipe);
+    await TestRecipesRepo.saveRecipe(testRecipe);
 
     await logoutInAPITests();
   });

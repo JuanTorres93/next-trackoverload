@@ -4,26 +4,16 @@ import { AddMultipleMealsToDayUsecaseRequest } from "../../src/application-layer
 import { CreateDayUsecaseRequest } from "../../src/application-layer/use-cases/day/CreateDay/CreateDay.usecase";
 import { FakeMealCreateProps } from "../../src/domain/entities/fakemeal/FakeMeal";
 import { UserCreateProps } from "../../src/domain/entities/user/User";
-import { MemoryDaysRepo } from "../../src/infra/repos/memory/MemoryDaysRepo";
-import { MemoryFakeMealsRepo } from "../../src/infra/repos/memory/MemoryFakeMealsRepo";
-import { MemoryMealsRepo } from "../../src/infra/repos/memory/MemoryMealsRepo";
-import { AppDaysRepo } from "../../src/interface-adapters/app/repos/AppDaysRepo";
-import { AppFakeMealsRepo } from "../../src/interface-adapters/app/repos/AppFakeMealsRepo";
-import { AppMealsRepo } from "../../src/interface-adapters/app/repos/AppMealsRepo";
 import {
   AppAddFakeMealToDayUsecase,
+  AppAddMultipleMealsToDayUsecase,
   AppCreateDayUsecase,
   AppGetAssembledDayById,
+  AppUpdateUserWeightForDayUsecase,
 } from "../../src/interface-adapters/app/use-cases/day";
-import { AppAddMultipleMealsToDayUsecase } from "../../src/interface-adapters/app/use-cases/day";
-import { AppUpdateUserWeightForDayUsecase } from "../../src/interface-adapters/app/use-cases/day";
-
+import { TestDaysRepo } from "../repos/TestDaysRepo";
 import { createMockRecipes } from "./recipes";
 import { createMockUser } from "./user";
-
-const daysRepo = AppDaysRepo as MemoryDaysRepo;
-const mealsRepo = AppMealsRepo as MemoryMealsRepo;
-const fakeMealsRepo = AppFakeMealsRepo as MemoryFakeMealsRepo;
 
 type CreateMockDayOptions = {
   alternativeUserProps?: Partial<UserCreateProps>;
@@ -97,7 +87,7 @@ export async function createMockDay(
   }
 
   afterAll(() => {
-    daysRepo.clearForTesting();
+    TestDaysRepo.clearForTesting();
   });
 
   if (returnAssembled) {
@@ -143,7 +133,7 @@ export async function createMultipleMockDaysWithWeights(
   }
 
   afterAll(() => {
-    daysRepo.clearForTesting();
+    TestDaysRepo.clearForTesting();
   });
 
   return createdDays;

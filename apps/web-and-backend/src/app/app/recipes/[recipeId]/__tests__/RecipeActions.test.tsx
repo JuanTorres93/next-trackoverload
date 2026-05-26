@@ -5,16 +5,12 @@ import { mockIngredientApiFetch } from "../../../../../../tests/mocks/ingredient
 import { createMockIngredients } from "../../../../../../tests/mocks/ingredients";
 import { createMockRecipes } from "../../../../../../tests/mocks/recipes";
 import { mockDecodeFromConstraints } from "../../../../../../tests/mocks/zxing";
+import { TestRecipesRepo } from "../../../../../../tests/repos/TestRecipesRepo";
+import { TestUsersRepo } from "../../../../../../tests/repos/TestUsersRepo";
 import { RecipeDTO } from "../../../../../application-layer/dtos/RecipeDTO";
-import { MemoryRecipesRepo } from "../../../../../infra/repos/memory/MemoryRecipesRepo";
-import { MemoryUsersRepo } from "../../../../../infra/repos/memory/MemoryUsersRepo";
-import { AppRecipesRepo } from "../../../../../interface-adapters/app/repos/AppRecipesRepo";
-import { AppUsersRepo } from "../../../../../interface-adapters/app/repos/AppUsersRepo";
 import { SCAN_WINDOW_SIZE } from "../../../../_features/ingredient/ZXingBarcodeScanner";
 import RecipeActions from "../RecipeActions";
 
-const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
-const usersRepo = AppUsersRepo as MemoryUsersRepo;
 let recipe: RecipeDTO;
 
 await createMockIngredients();
@@ -30,8 +26,8 @@ async function setup() {
 }
 
 afterEach(() => {
-  recipesRepo.clearForTesting();
-  usersRepo.clearForTesting();
+  TestRecipesRepo.clearForTesting();
+  TestUsersRepo.clearForTesting();
 });
 
 describe("RecipeActions", () => {
@@ -91,13 +87,13 @@ describe("RecipeActions", () => {
       expect(quantityInput).toHaveValue("500");
 
       await waitFor(async () => {
-        const updatedIngredientLine = await recipesRepo
-          .getRecipeById(recipe.id)
-          .then((r) =>
-            r?.ingredientLines.find(
-              (line) => line.ingredient.id === lineToUpdate.ingredient.id,
-            ),
-          );
+        const updatedIngredientLine = await TestRecipesRepo.getRecipeById(
+          recipe.id,
+        ).then((r) =>
+          r?.ingredientLines.find(
+            (line) => line.ingredient.id === lineToUpdate.ingredient.id,
+          ),
+        );
 
         expect(updatedIngredientLine?.quantityInGrams).toBe(
           parseInt(newQuantity),
@@ -145,14 +141,14 @@ describe("RecipeActions", () => {
     it("duplicates recipe", async () => {
       await setup();
 
-      const initialRecipes = recipesRepo.countForTesting();
+      const initialRecipes = TestRecipesRepo.countForTesting();
 
       const duplicateButton = screen.getByTestId("duplicate-recipe-button");
 
       await userEvent.click(duplicateButton);
 
       await waitFor(() => {
-        const allRecipes = recipesRepo.countForTesting();
+        const allRecipes = TestRecipesRepo.countForTesting();
         expect(allRecipes).toBe(initialRecipes + 1);
       });
     });
@@ -160,7 +156,7 @@ describe("RecipeActions", () => {
     it("deletes recipe", async () => {
       await setup();
 
-      const initialRecipes = recipesRepo.countForTesting();
+      const initialRecipes = TestRecipesRepo.countForTesting();
 
       const deleteButton = screen.getByTestId("delete-recipe-button");
       await userEvent.click(deleteButton);
@@ -171,7 +167,7 @@ describe("RecipeActions", () => {
       await userEvent.click(confirmButton);
 
       await waitFor(() => {
-        const allRecipes = recipesRepo.countForTesting();
+        const allRecipes = TestRecipesRepo.countForTesting();
         expect(allRecipes).toBe(initialRecipes - 1);
       });
     });
@@ -194,7 +190,7 @@ describe("RecipeActions", () => {
       await userEvent.click(removeButton);
 
       await waitFor(async () => {
-        const updatedRecipe = await recipesRepo.getRecipeById(recipe.id);
+        const updatedRecipe = await TestRecipesRepo.getRecipeById(recipe.id);
         expect(updatedRecipe).not.toBeNull();
         expect(updatedRecipe!.ingredientLines.length).toBe(
           initialIngredientLinesCount - 1,
@@ -215,13 +211,13 @@ describe("RecipeActions", () => {
         await userEvent.click(button);
       }
 
-      const updatedRecipe = await recipesRepo.getRecipeById(recipe.id);
+      const updatedRecipe = await TestRecipesRepo.getRecipeById(recipe.id);
       expect(updatedRecipe).not.toBeNull();
       expect(updatedRecipe!.ingredientLines.length).toBe(1);
 
       await userEvent.click(lastButton);
 
-      const finalRecipe = await recipesRepo.getRecipeById(recipe.id);
+      const finalRecipe = await TestRecipesRepo.getRecipeById(recipe.id);
       expect(finalRecipe).not.toBeNull();
       expect(finalRecipe!.ingredientLines.length).toBe(1);
     });
@@ -258,7 +254,7 @@ describe("RecipeActions", () => {
       await userEvent.click(addButton);
 
       await waitFor(() => {
-        recipesRepo.getRecipeById(recipe.id).then((updatedRecipe) => {
+        TestRecipesRepo.getRecipeById(recipe.id).then((updatedRecipe) => {
           expect(updatedRecipe).not.toBeNull();
           expect(updatedRecipe!.ingredientLines.length).toBe(
             initialIngredientLinesCount + 1,

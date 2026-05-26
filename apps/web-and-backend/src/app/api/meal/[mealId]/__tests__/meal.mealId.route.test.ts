@@ -1,37 +1,29 @@
 import * as mealTestProps from "../../../../../../tests/createProps/mealTestProps";
 import * as userTestProps from "../../../../../../tests/createProps/userTestProps";
+import { TestMealsRepo } from "../../../../../../tests/repos/TestMealsRepo";
+import { TestUsersRepo } from "../../../../../../tests/repos/TestUsersRepo";
 import { Meal } from "../../../../../domain/entities/meal/Meal";
 import { User } from "../../../../../domain/entities/user/User";
-import { MemoryMealsRepo } from "../../../../../infra/repos/memory/MemoryMealsRepo";
-import { MemoryUsersRepo } from "../../../../../infra/repos/memory/MemoryUsersRepo";
-import { AppMealsRepo } from "../../../../../interface-adapters/app/repos/AppMealsRepo";
-import { AppUsersRepo } from "../../../../../interface-adapters/app/repos/AppUsersRepo";
 import { loginInAPITests } from "../../../__tests__/loginInAPITests";
 import { logoutInAPITests } from "../../../__tests__/logoutInAPITests";
 import { registerUserInAPITests } from "../../../__tests__/registerUserInAPITests";
 import { PUT } from "../route";
 
 describe("PUT /api/meal/[mealId]", () => {
-  let mealsRepo: MemoryMealsRepo;
-  let usersRepo: MemoryUsersRepo;
-
   let user1: User;
   let user1Id: string;
   let testMeal: Meal;
 
   beforeEach(async () => {
-    mealsRepo = AppMealsRepo as MemoryMealsRepo;
-    usersRepo = AppUsersRepo as MemoryUsersRepo;
-
-    mealsRepo.clearForTesting();
-    usersRepo.clearForTesting();
+    TestMealsRepo.clearForTesting();
+    TestUsersRepo.clearForTesting();
 
     user1 = userTestProps.createTestUser();
     await registerUserInAPITests(user1.email, user1.name);
-    user1Id = (await usersRepo.getUserByEmail(user1.email))!.id;
+    user1Id = (await TestUsersRepo.getUserByEmail(user1.email))!.id;
 
     testMeal = mealTestProps.createTestMeal({ userId: user1Id });
-    await mealsRepo.saveMeal(testMeal);
+    await TestMealsRepo.saveMeal(testMeal);
 
     await logoutInAPITests();
   });

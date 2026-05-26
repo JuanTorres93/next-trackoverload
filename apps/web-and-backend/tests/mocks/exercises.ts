@@ -1,7 +1,6 @@
 import { ExerciseFinderResult } from "../../src/domain/services/ExerciseFinder.port";
-import { MemoryExercisesRepo } from "../../src/infra/repos/memory/MemoryExercisesRepo";
-import { AppExercisesRepo } from "../../src/interface-adapters/app/repos/AppExercisesRepo";
 import { AppCreateExerciseUsecase } from "../../src/interface-adapters/app/use-cases/exercise";
+import { TestExercisesRepo } from "../../tests/repos/TestExercisesRepo";
 
 const exercisePropsForUseCase = [
   { name: "Bench Press" },
@@ -36,9 +35,7 @@ export const createMockExercises = async () => {
   }
 
   afterAll(() => {
-    if (AppExercisesRepo instanceof MemoryExercisesRepo) {
-      AppExercisesRepo.clearForTesting();
-    }
+    TestExercisesRepo.clearForTesting();
   });
 
   return createdExercises;

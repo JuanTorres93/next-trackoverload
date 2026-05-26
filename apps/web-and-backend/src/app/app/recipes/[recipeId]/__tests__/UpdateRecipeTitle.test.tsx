@@ -2,15 +2,11 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { createMockRecipes } from "../../../../../../tests/mocks/recipes";
+import { TestRecipesRepo } from "../../../../../../tests/repos/TestRecipesRepo";
+import { TestUsersRepo } from "../../../../../../tests/repos/TestUsersRepo";
 import { RecipeDTO } from "../../../../../application-layer/dtos/RecipeDTO";
-import { MemoryRecipesRepo } from "../../../../../infra/repos/memory/MemoryRecipesRepo";
-import { MemoryUsersRepo } from "../../../../../infra/repos/memory/MemoryUsersRepo";
-import { AppRecipesRepo } from "../../../../../interface-adapters/app/repos/AppRecipesRepo";
-import { AppUsersRepo } from "../../../../../interface-adapters/app/repos/AppUsersRepo";
 import UpdateRecipeTitle from "../UpdateRecipeTitle";
 
-const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
-const usersRepo = AppUsersRepo as MemoryUsersRepo;
 let recipe: RecipeDTO;
 
 async function setup() {
@@ -25,8 +21,8 @@ async function setup() {
 }
 
 afterEach(() => {
-  recipesRepo.clearForTesting();
-  usersRepo.clearForTesting();
+  TestRecipesRepo.clearForTesting();
+  TestUsersRepo.clearForTesting();
 });
 
 describe("UpdateRecipeTitle", () => {
@@ -43,7 +39,7 @@ describe("UpdateRecipeTitle", () => {
     await userEvent.type(titleInput, newTitle);
 
     await waitFor(async () => {
-      const updatedRecipe = await recipesRepo.getRecipeById(recipe.id);
+      const updatedRecipe = await TestRecipesRepo.getRecipeById(recipe.id);
 
       expect(updatedRecipe).not.toBeNull();
       expect(updatedRecipe!.name).toBe(newTitle);

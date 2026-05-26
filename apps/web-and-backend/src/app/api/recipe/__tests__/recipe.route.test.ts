@@ -1,16 +1,12 @@
 import type { NextRequest } from "next/server";
 
 import * as userTestProps from "../../../../../tests/createProps/userTestProps";
+import { TestExternalIngredientsRefRepo } from "../../../../../tests/repos/TestExternalIngredientsRefRepo";
+import { TestIngredientsRepo } from "../../../../../tests/repos/TestIngredientsRepo";
+import { TestRecipesRepo } from "../../../../../tests/repos/TestRecipesRepo";
+import { TestUsersRepo } from "../../../../../tests/repos/TestUsersRepo";
 import { CreateIngredientLineData } from "../../../../application-layer/use-cases/recipe/common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo";
 import { User } from "../../../../domain/entities/user/User";
-import { MemoryExternalIngredientsRefRepo } from "../../../../infra/repos/memory/MemoryExternalIngredientsRefRepo";
-import { MemoryIngredientsRepo } from "../../../../infra/repos/memory/MemoryIngredientsRepo";
-import { MemoryRecipesRepo } from "../../../../infra/repos/memory/MemoryRecipesRepo";
-import { MemoryUsersRepo } from "../../../../infra/repos/memory/MemoryUsersRepo";
-import { AppExternalIngredientsRefRepo } from "../../../../interface-adapters/app/repos/AppExternalIngredientsRefRepo";
-import { AppIngredientsRepo } from "../../../../interface-adapters/app/repos/AppIngredientsRepo";
-import { AppRecipesRepo } from "../../../../interface-adapters/app/repos/AppRecipesRepo";
-import { AppUsersRepo } from "../../../../interface-adapters/app/repos/AppUsersRepo";
 import { loginInAPITests } from "../../__tests__/loginInAPITests";
 import { logoutInAPITests } from "../../__tests__/logoutInAPITests";
 import { registerUserInAPITests } from "../../__tests__/registerUserInAPITests";
@@ -28,26 +24,15 @@ const validIngredientLinesInfo: CreateIngredientLineData[] = [
 ];
 
 describe("POST /api/recipe", () => {
-  let recipesRepo: MemoryRecipesRepo;
-  let usersRepo: MemoryUsersRepo;
-  let ingredientsRepo: MemoryIngredientsRepo;
-  let externalIngredientsRefRepo: MemoryExternalIngredientsRefRepo;
-
   let user1: User;
   let user1Id: string;
   let user2Id: string;
 
   beforeEach(async () => {
-    recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
-    usersRepo = AppUsersRepo as MemoryUsersRepo;
-    ingredientsRepo = AppIngredientsRepo as MemoryIngredientsRepo;
-    externalIngredientsRefRepo =
-      AppExternalIngredientsRefRepo as MemoryExternalIngredientsRefRepo;
-
-    recipesRepo.clearForTesting();
-    usersRepo.clearForTesting();
-    ingredientsRepo.clearForTesting();
-    externalIngredientsRefRepo.clearForTesting();
+    TestRecipesRepo.clearForTesting();
+    TestUsersRepo.clearForTesting();
+    TestIngredientsRepo.clearForTesting();
+    TestExternalIngredientsRefRepo.clearForTesting();
 
     user1 = userTestProps.createTestUser();
 
@@ -58,8 +43,8 @@ describe("POST /api/recipe", () => {
     await registerUserInAPITests(user1.email, user1.name);
     await registerUserInAPITests(user2.email, user2.name);
 
-    user1Id = (await usersRepo.getUserByEmail(user1.email))!.id;
-    user2Id = (await usersRepo.getUserByEmail(user2.email))!.id;
+    user1Id = (await TestUsersRepo.getUserByEmail(user1.email))!.id;
+    user2Id = (await TestUsersRepo.getUserByEmail(user2.email))!.id;
 
     await logoutInAPITests();
   });

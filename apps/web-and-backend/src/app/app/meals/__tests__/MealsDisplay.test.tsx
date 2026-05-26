@@ -2,20 +2,15 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { createMultipleMockDaysWithWeights } from "../../../../../tests/mocks/days";
+import { TestDaysRepo } from "../../../../../tests/repos/TestDaysRepo";
+import { TestUsersRepo } from "../../../../../tests/repos/TestUsersRepo";
 import { dateToDayId } from "../../../../domain/value-objects/DayId/DayId";
-import { MemoryDaysRepo } from "../../../../infra/repos/memory/MemoryDaysRepo";
-import { MemoryUsersRepo } from "../../../../infra/repos/memory/MemoryUsersRepo";
-import { AppDaysRepo } from "../../../../interface-adapters/app/repos/AppDaysRepo";
-import { AppUsersRepo } from "../../../../interface-adapters/app/repos/AppUsersRepo";
 import { AssembledDayResult } from "../../../_features/day/actions";
 import MealsDisplay from "../MealsDisplay";
 
-const usersRepo = AppUsersRepo as MemoryUsersRepo;
-const daysRepo = AppDaysRepo as MemoryDaysRepo;
-
 afterEach(() => {
-  usersRepo.clearForTesting();
-  daysRepo.clearForTesting();
+  TestUsersRepo.clearForTesting();
+  TestDaysRepo.clearForTesting();
 });
 
 async function setup() {

@@ -1,6 +1,5 @@
-import { MemoryIngredientsRepo } from "../../src/infra/repos/memory/MemoryIngredientsRepo";
-import { AppIngredientsRepo } from "../../src/interface-adapters/app/repos/AppIngredientsRepo";
 import { AppCreateIngredientUsecase } from "../../src/interface-adapters/app/use-cases/ingredient";
+import { TestIngredientsRepo } from "../../tests/repos/TestIngredientsRepo";
 
 const ingredientPropsForUseCase = [
   {
@@ -53,10 +52,7 @@ export const createMockIngredients = async () => {
   }
 
   afterAll(() => {
-    // Clean up after tests
-    if (AppIngredientsRepo instanceof MemoryIngredientsRepo) {
-      AppIngredientsRepo.clearForTesting();
-    }
+    TestIngredientsRepo.clearForTesting();
   });
 
   return createdIngredients;

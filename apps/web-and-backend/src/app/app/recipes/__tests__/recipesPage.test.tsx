@@ -3,11 +3,8 @@ import userEvent from "@testing-library/user-event";
 
 import { createMockRecipes } from "../../../../../tests/mocks/recipes";
 import { createMockUser } from "../../../../../tests/mocks/user";
-import { MemoryRecipesRepo } from "../../../../infra/repos/memory/MemoryRecipesRepo";
-import { AppRecipesRepo } from "../../../../interface-adapters/app/repos/AppRecipesRepo";
+import { TestRecipesRepo } from "../../../../../tests/repos/TestRecipesRepo";
 import RecipesPage from "../page";
-
-const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
 
 async function setup() {
   // IMPORTANT DOC: RecipesPage is a server component and vitest has not idea about that concept. If we just plain render it, it tries to render it as a client component. The solution is to first execute it to get the UI and then render that UI.
@@ -44,7 +41,7 @@ describe("RecipesPage", () => {
 
       const deleteButtons = within(recipesContainer).getAllByRole("button");
 
-      const recipesBefore = recipesRepo.countForTesting();
+      const recipesBefore = TestRecipesRepo.countForTesting();
       expect(recipesBefore).toBeGreaterThan(0);
 
       await userEvent.click(deleteButtons[0]);
@@ -52,14 +49,14 @@ describe("RecipesPage", () => {
       const confirmButton = screen.getByRole("button", { name: /eliminar/i });
       await userEvent.click(confirmButton);
 
-      const recipesAfter = recipesRepo.countForTesting();
+      const recipesAfter = TestRecipesRepo.countForTesting();
       expect(recipesAfter).toBe(recipesBefore - 1);
     });
   });
 
   describe("Without recipes", () => {
     beforeAll(async () => {
-      recipesRepo.clearForTesting();
+      TestRecipesRepo.clearForTesting();
       await createMockUser();
     });
 

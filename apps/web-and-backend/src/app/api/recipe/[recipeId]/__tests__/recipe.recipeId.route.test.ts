@@ -3,51 +3,35 @@ import type { NextRequest } from "next/server";
 import * as recipeTestProps from "../../../../../../tests/createProps/recipeTestProps";
 import * as userTestProps from "../../../../../../tests/createProps/userTestProps";
 import { createTestImage } from "../../../../../../tests/helpers/imageTestHelpers";
+import { TestExternalIngredientsRefRepo } from "../../../../../../tests/repos/TestExternalIngredientsRefRepo";
+import { TestImagesRepo } from "../../../../../../tests/repos/TestImagesRepo";
+import { TestIngredientsRepo } from "../../../../../../tests/repos/TestIngredientsRepo";
+import { TestRecipesRepo } from "../../../../../../tests/repos/TestRecipesRepo";
+import { TestUsersRepo } from "../../../../../../tests/repos/TestUsersRepo";
 import { Recipe } from "../../../../../domain/entities/recipe/Recipe";
 import { User } from "../../../../../domain/entities/user/User";
-import { MemoryExternalIngredientsRefRepo } from "../../../../../infra/repos/memory/MemoryExternalIngredientsRefRepo";
-import { MemoryImagesRepo } from "../../../../../infra/repos/memory/MemoryImagesRepo";
-import { MemoryIngredientsRepo } from "../../../../../infra/repos/memory/MemoryIngredientsRepo";
-import { MemoryRecipesRepo } from "../../../../../infra/repos/memory/MemoryRecipesRepo";
-import { MemoryUsersRepo } from "../../../../../infra/repos/memory/MemoryUsersRepo";
-import { AppExternalIngredientsRefRepo } from "../../../../../interface-adapters/app/repos/AppExternalIngredientsRefRepo";
-import { AppImagesRepo } from "../../../../../interface-adapters/app/repos/AppImagesRepo";
-import { AppIngredientsRepo } from "../../../../../interface-adapters/app/repos/AppIngredientsRepo";
-import { AppRecipesRepo } from "../../../../../interface-adapters/app/repos/AppRecipesRepo";
-import { AppUsersRepo } from "../../../../../interface-adapters/app/repos/AppUsersRepo";
 import { loginInAPITests } from "../../../__tests__/loginInAPITests";
 import { logoutInAPITests } from "../../../__tests__/logoutInAPITests";
 import { registerUserInAPITests } from "../../../__tests__/registerUserInAPITests";
 import { DELETE, POST, PUT } from "../route";
 
 describe("POST /api/recipe/[recipeId]", () => {
-  let recipesRepo: MemoryRecipesRepo;
-  let usersRepo: MemoryUsersRepo;
-  let ingredientsRepo: MemoryIngredientsRepo;
-  let externalIngredientsRefRepo: MemoryExternalIngredientsRefRepo;
-
   let user1: User;
   let user1Id: string;
   let testRecipe: Recipe;
 
   beforeEach(async () => {
-    recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
-    usersRepo = AppUsersRepo as MemoryUsersRepo;
-    ingredientsRepo = AppIngredientsRepo as MemoryIngredientsRepo;
-    externalIngredientsRefRepo =
-      AppExternalIngredientsRefRepo as MemoryExternalIngredientsRefRepo;
-
-    recipesRepo.clearForTesting();
-    usersRepo.clearForTesting();
-    ingredientsRepo.clearForTesting();
-    externalIngredientsRefRepo.clearForTesting();
+    TestRecipesRepo.clearForTesting();
+    TestUsersRepo.clearForTesting();
+    TestIngredientsRepo.clearForTesting();
+    TestExternalIngredientsRefRepo.clearForTesting();
 
     user1 = userTestProps.createTestUser();
     await registerUserInAPITests(user1.email, user1.name);
-    user1Id = (await usersRepo.getUserByEmail(user1.email))!.id;
+    user1Id = (await TestUsersRepo.getUserByEmail(user1.email))!.id;
 
     testRecipe = recipeTestProps.createTestRecipe({ userId: user1Id }, 1);
-    await recipesRepo.saveRecipe(testRecipe);
+    await TestRecipesRepo.saveRecipe(testRecipe);
 
     await logoutInAPITests();
   });
@@ -156,26 +140,20 @@ describe("POST /api/recipe/[recipeId]", () => {
 });
 
 describe("DELETE /api/recipe/[recipeId]", () => {
-  let recipesRepo: MemoryRecipesRepo;
-  let usersRepo: MemoryUsersRepo;
-
   let user1: User;
   let user1Id: string;
   let testRecipe: Recipe;
 
   beforeEach(async () => {
-    recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
-    usersRepo = AppUsersRepo as MemoryUsersRepo;
-
-    recipesRepo.clearForTesting();
-    usersRepo.clearForTesting();
+    TestRecipesRepo.clearForTesting();
+    TestUsersRepo.clearForTesting();
 
     user1 = userTestProps.createTestUser();
     await registerUserInAPITests(user1.email, user1.name);
-    user1Id = (await usersRepo.getUserByEmail(user1.email))!.id;
+    user1Id = (await TestUsersRepo.getUserByEmail(user1.email))!.id;
 
     testRecipe = recipeTestProps.createTestRecipe({ userId: user1Id }, 1);
-    await recipesRepo.saveRecipe(testRecipe);
+    await TestRecipesRepo.saveRecipe(testRecipe);
 
     await logoutInAPITests();
   });
@@ -225,7 +203,7 @@ describe("DELETE /api/recipe/[recipeId]", () => {
     expect(response.status).toBe(200);
     expect(data.data).toBeNull();
 
-    const deleted = await recipesRepo.getRecipeByIdAndUserId(
+    const deleted = await TestRecipesRepo.getRecipeByIdAndUserId(
       testRecipe.id,
       user1Id,
     );
@@ -268,10 +246,6 @@ describe("DELETE /api/recipe/[recipeId]", () => {
 });
 
 describe("PUT /api/recipe/[recipeId]", () => {
-  let recipesRepo: MemoryRecipesRepo;
-  let usersRepo: MemoryUsersRepo;
-  let imagesRepo: MemoryImagesRepo;
-
   let user1: User;
   let user1Id: string;
   let testRecipe: Recipe;
@@ -282,20 +256,16 @@ describe("PUT /api/recipe/[recipeId]", () => {
   });
 
   beforeEach(async () => {
-    recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
-    usersRepo = AppUsersRepo as MemoryUsersRepo;
-    imagesRepo = AppImagesRepo as MemoryImagesRepo;
-
-    recipesRepo.clearForTesting();
-    usersRepo.clearForTesting();
-    imagesRepo.clearForTesting();
+    TestRecipesRepo.clearForTesting();
+    TestUsersRepo.clearForTesting();
+    TestImagesRepo.clearForTesting();
 
     user1 = userTestProps.createTestUser();
     await registerUserInAPITests(user1.email, user1.name);
-    user1Id = (await usersRepo.getUserByEmail(user1.email))!.id;
+    user1Id = (await TestUsersRepo.getUserByEmail(user1.email))!.id;
 
     testRecipe = recipeTestProps.createTestRecipe({ userId: user1Id }, 1);
-    await recipesRepo.saveRecipe(testRecipe);
+    await TestRecipesRepo.saveRecipe(testRecipe);
 
     await logoutInAPITests();
   });

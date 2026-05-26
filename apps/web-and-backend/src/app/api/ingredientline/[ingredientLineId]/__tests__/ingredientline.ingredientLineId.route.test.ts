@@ -4,53 +4,39 @@ import * as ingredientTestProps from "../../../../../../tests/createProps/ingred
 import * as mealTestProps from "../../../../../../tests/createProps/mealTestProps";
 import * as recipeTestProps from "../../../../../../tests/createProps/recipeTestProps";
 import * as userTestProps from "../../../../../../tests/createProps/userTestProps";
+import { TestIngredientsRepo } from "../../../../../../tests/repos/TestIngredientsRepo";
+import { TestMealsRepo } from "../../../../../../tests/repos/TestMealsRepo";
+import { TestRecipesRepo } from "../../../../../../tests/repos/TestRecipesRepo";
+import { TestUsersRepo } from "../../../../../../tests/repos/TestUsersRepo";
 import { Meal } from "../../../../../domain/entities/meal/Meal";
 import { Recipe } from "../../../../../domain/entities/recipe/Recipe";
 import { User } from "../../../../../domain/entities/user/User";
-import { MemoryIngredientsRepo } from "../../../../../infra/repos/memory/MemoryIngredientsRepo";
-import { MemoryMealsRepo } from "../../../../../infra/repos/memory/MemoryMealsRepo";
-import { MemoryRecipesRepo } from "../../../../../infra/repos/memory/MemoryRecipesRepo";
-import { MemoryUsersRepo } from "../../../../../infra/repos/memory/MemoryUsersRepo";
-import { AppIngredientsRepo } from "../../../../../interface-adapters/app/repos/AppIngredientsRepo";
-import { AppMealsRepo } from "../../../../../interface-adapters/app/repos/AppMealsRepo";
-import { AppRecipesRepo } from "../../../../../interface-adapters/app/repos/AppRecipesRepo";
-import { AppUsersRepo } from "../../../../../interface-adapters/app/repos/AppUsersRepo";
 import { loginInAPITests } from "../../../__tests__/loginInAPITests";
 import { logoutInAPITests } from "../../../__tests__/logoutInAPITests";
 import { registerUserInAPITests } from "../../../__tests__/registerUserInAPITests";
 import { PUT } from "../route";
 
 describe("PUT /api/ingredientline/[ingredientLineId]", () => {
-  let recipesRepo: MemoryRecipesRepo;
-  let mealsRepo: MemoryMealsRepo;
-  let usersRepo: MemoryUsersRepo;
-  let ingredientsRepo: MemoryIngredientsRepo;
-
   let user1: User;
   let user1Id: string;
   let testRecipe: Recipe;
   let testMeal: Meal;
 
   beforeEach(async () => {
-    recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
-    mealsRepo = AppMealsRepo as MemoryMealsRepo;
-    usersRepo = AppUsersRepo as MemoryUsersRepo;
-    ingredientsRepo = AppIngredientsRepo as MemoryIngredientsRepo;
-
-    recipesRepo.clearForTesting();
-    mealsRepo.clearForTesting();
-    usersRepo.clearForTesting();
-    ingredientsRepo.clearForTesting();
+    TestRecipesRepo.clearForTesting();
+    TestMealsRepo.clearForTesting();
+    TestUsersRepo.clearForTesting();
+    TestIngredientsRepo.clearForTesting();
 
     user1 = userTestProps.createTestUser();
     await registerUserInAPITests(user1.email, user1.name);
-    user1Id = (await usersRepo.getUserByEmail(user1.email))!.id;
+    user1Id = (await TestUsersRepo.getUserByEmail(user1.email))!.id;
 
     testRecipe = recipeTestProps.createTestRecipe({ userId: user1Id }, 1);
-    await recipesRepo.saveRecipe(testRecipe);
+    await TestRecipesRepo.saveRecipe(testRecipe);
 
     testMeal = mealTestProps.createTestMeal({ userId: user1Id });
-    await mealsRepo.saveMeal(testMeal);
+    await TestMealsRepo.saveMeal(testMeal);
 
     await logoutInAPITests();
   });
@@ -150,7 +136,7 @@ describe("PUT /api/ingredientline/[ingredientLineId]", () => {
     const newIngredient = ingredientTestProps.createTestIngredient({
       id: "new-ingredient-id",
     });
-    await ingredientsRepo.saveIngredient(newIngredient);
+    await TestIngredientsRepo.saveIngredient(newIngredient);
 
     const response = await PUT(
       new Request(

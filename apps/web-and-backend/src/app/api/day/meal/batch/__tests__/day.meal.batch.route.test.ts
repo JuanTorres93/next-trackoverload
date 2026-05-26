@@ -2,26 +2,18 @@ import type { NextRequest } from "next/server";
 
 import * as recipeTestProps from "../../../../../../../tests/createProps/recipeTestProps";
 import * as userTestProps from "../../../../../../../tests/createProps/userTestProps";
+import { TestDaysRepo } from "../../../../../../../tests/repos/TestDaysRepo";
+import { TestMealsRepo } from "../../../../../../../tests/repos/TestMealsRepo";
+import { TestRecipesRepo } from "../../../../../../../tests/repos/TestRecipesRepo";
+import { TestUsersRepo } from "../../../../../../../tests/repos/TestUsersRepo";
 import { Recipe } from "../../../../../../domain/entities/recipe/Recipe";
 import { User } from "../../../../../../domain/entities/user/User";
-import { MemoryDaysRepo } from "../../../../../../infra/repos/memory/MemoryDaysRepo";
-import { MemoryMealsRepo } from "../../../../../../infra/repos/memory/MemoryMealsRepo";
-import { MemoryRecipesRepo } from "../../../../../../infra/repos/memory/MemoryRecipesRepo";
-import { MemoryUsersRepo } from "../../../../../../infra/repos/memory/MemoryUsersRepo";
-import { AppDaysRepo } from "../../../../../../interface-adapters/app/repos/AppDaysRepo";
-import { AppMealsRepo } from "../../../../../../interface-adapters/app/repos/AppMealsRepo";
-import { AppRecipesRepo } from "../../../../../../interface-adapters/app/repos/AppRecipesRepo";
-import { AppUsersRepo } from "../../../../../../interface-adapters/app/repos/AppUsersRepo";
 import { loginInAPITests } from "../../../../__tests__/loginInAPITests";
 import { logoutInAPITests } from "../../../../__tests__/logoutInAPITests";
 import { registerUserInAPITests } from "../../../../__tests__/registerUserInAPITests";
 import { POST } from "../route";
 
 describe("POST /api/day/meal/batch", () => {
-  let daysRepo: MemoryDaysRepo;
-  let mealsRepo: MemoryMealsRepo;
-  let recipesRepo: MemoryRecipesRepo;
-  let usersRepo: MemoryUsersRepo;
   let user1: User;
   let user1Id: string;
   let testRecipe: Recipe;
@@ -29,22 +21,17 @@ describe("POST /api/day/meal/batch", () => {
   const dayIds = ["20231001", "20231002"];
 
   beforeEach(async () => {
-    daysRepo = AppDaysRepo as MemoryDaysRepo;
-    mealsRepo = AppMealsRepo as MemoryMealsRepo;
-    recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
-    usersRepo = AppUsersRepo as MemoryUsersRepo;
-
-    daysRepo.clearForTesting();
-    mealsRepo.clearForTesting();
-    recipesRepo.clearForTesting();
-    usersRepo.clearForTesting();
+    TestDaysRepo.clearForTesting();
+    TestMealsRepo.clearForTesting();
+    TestRecipesRepo.clearForTesting();
+    TestUsersRepo.clearForTesting();
 
     user1 = userTestProps.createTestUser();
     await registerUserInAPITests(user1.email, user1.name);
-    user1Id = (await usersRepo.getUserByEmail(user1.email))!.id;
+    user1Id = (await TestUsersRepo.getUserByEmail(user1.email))!.id;
 
     testRecipe = recipeTestProps.createTestRecipe({ userId: user1Id }, 1);
-    await recipesRepo.saveRecipe(testRecipe);
+    await TestRecipesRepo.saveRecipe(testRecipe);
 
     await logoutInAPITests();
   });

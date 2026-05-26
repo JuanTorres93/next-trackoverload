@@ -1,16 +1,11 @@
-import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { render, screen } from "@testing-library/react";
 
 import { createMockRecipes } from "../../../../../../tests/mocks/recipes";
+import { TestRecipesRepo } from "../../../../../../tests/repos/TestRecipesRepo";
+import { TestUsersRepo } from "../../../../../../tests/repos/TestUsersRepo";
 import { RecipeDTO } from "../../../../../application-layer/dtos/RecipeDTO";
-import { MemoryRecipesRepo } from "../../../../../infra/repos/memory/MemoryRecipesRepo";
-import { MemoryUsersRepo } from "../../../../../infra/repos/memory/MemoryUsersRepo";
-import { AppRecipesRepo } from "../../../../../interface-adapters/app/repos/AppRecipesRepo";
-import { AppUsersRepo } from "../../../../../interface-adapters/app/repos/AppUsersRepo";
 import RecipePage from "../page";
 
-const recipesRepo = AppRecipesRepo as MemoryRecipesRepo;
-const usersRepo = AppUsersRepo as MemoryUsersRepo;
 let mockRecipes: RecipeDTO[] = [];
 
 async function setup() {
@@ -30,8 +25,8 @@ async function setup() {
 }
 
 afterEach(() => {
-  recipesRepo.clearForTesting();
-  usersRepo.clearForTesting();
+  TestRecipesRepo.clearForTesting();
+  TestUsersRepo.clearForTesting();
 });
 
 describe("RecipePage", () => {
