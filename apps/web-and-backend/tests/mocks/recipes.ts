@@ -2,7 +2,7 @@ import { AppIngredientsRepo } from "../../src/interface-adapters/app/repos/AppIn
 import { AppRecipesRepo } from "../../src/interface-adapters/app/repos/AppRecipesRepo";
 import { AppUsersRepo } from "../../src/interface-adapters/app/repos/AppUsersRepo";
 import { AppCreateRecipeUsecase } from "../../src/interface-adapters/app/use-cases/recipe";
-import { createMockIngredients } from "./ingredients";
+import { createAndPersistTestIngredients } from "./ingredients";
 import { createAndPersistTestUser } from "./user";
 
 export const createMockRecipes = async () => {
@@ -10,7 +10,7 @@ export const createMockRecipes = async () => {
     throw new Error("createMockRecipes should only be used in tests");
   }
 
-  const mockIngredients = await createMockIngredients();
+  const mockIngredients = await createAndPersistTestIngredients();
   const mockUser = await createAndPersistTestUser();
 
   const recipesPropsForUseCase = [

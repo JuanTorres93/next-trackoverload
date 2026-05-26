@@ -43,11 +43,7 @@ export const mockIngredientsForIngredientFinder = ingredientPropsForUseCase.map(
   },
 );
 
-export const createMockIngredients = async () => {
-  if (process.env.NODE_ENV !== "test") {
-    throw new Error("createMockIngredients should only be used in tests");
-  }
-
+export const createAndPersistTestIngredients = async () => {
   const createdIngredients = [];
 
   for (const props of ingredientPropsForUseCase) {

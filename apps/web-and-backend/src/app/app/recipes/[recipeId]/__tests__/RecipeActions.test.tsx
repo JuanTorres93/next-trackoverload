@@ -2,7 +2,7 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { mockIngredientApiFetch } from "../../../../../../tests/mocks/ingredientApi";
-import { createMockIngredients } from "../../../../../../tests/mocks/ingredients";
+import { createAndPersistTestIngredients } from "../../../../../../tests/mocks/ingredients";
 import { createMockRecipes } from "../../../../../../tests/mocks/recipes";
 import { mockDecodeFromConstraints } from "../../../../../../tests/mocks/zxing";
 import { TestRecipesRepo } from "../../../../../../tests/repos/TestRecipesRepo";
@@ -13,7 +13,7 @@ import RecipeActions from "../RecipeActions";
 
 let recipe: RecipeDTO;
 
-await createMockIngredients();
+await createAndPersistTestIngredients();
 mockIngredientApiFetch();
 
 async function setup() {

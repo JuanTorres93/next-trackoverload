@@ -2,14 +2,14 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { mockIngredientApiFetch } from "../../../../../../tests/mocks/ingredientApi";
-import { createMockIngredients } from "../../../../../../tests/mocks/ingredients";
+import { createAndPersistTestIngredients } from "../../../../../../tests/mocks/ingredients";
 import { createAndPersistTestUser } from "../../../../../../tests/mocks/user";
 import { mockDecodeFromConstraints } from "../../../../../../tests/mocks/zxing";
 import { TestRecipesRepo } from "../../../../../../tests/repos/TestRecipesRepo";
 import { SCAN_WINDOW_SIZE } from "../../../ingredient/ZXingBarcodeScanner";
 import NewRecipeForm from "../NewRecipeForm";
 
-await createMockIngredients();
+await createAndPersistTestIngredients();
 await createAndPersistTestUser();
 mockIngredientApiFetch();
 

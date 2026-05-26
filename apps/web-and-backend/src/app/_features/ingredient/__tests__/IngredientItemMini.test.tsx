@@ -1,11 +1,11 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { createMockIngredients } from "../../../../../tests/mocks/ingredients";
+import { createAndPersistTestIngredients } from "../../../../../tests/mocks/ingredients";
 import { IngredientDTO } from "../../../../application-layer/dtos/IngredientDTO";
 import IngredientItemMini from "../IngredientItemMini";
 
-const mockIngredients = await createMockIngredients();
+const mockIngredients = await createAndPersistTestIngredients();
 const mockIngredient: IngredientDTO = mockIngredients[0];
 
 async function setup(ingredient = mockIngredient, isSelected = false) {

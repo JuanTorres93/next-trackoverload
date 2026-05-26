@@ -4,13 +4,12 @@ import { vi } from "vitest";
 
 import { mockIngredientApiFetch } from "../../../../../tests/mocks/ingredientApi";
 import {
-  createMockIngredients,
+  createAndPersistTestIngredients,
   mockIngredientsForIngredientFinder,
 } from "../../../../../tests/mocks/ingredients";
-
 import IngredientSearch from "../IngredientSearch";
 
-await createMockIngredients();
+await createAndPersistTestIngredients();
 
 const PAGE_1_RESULTS = mockIngredientsForIngredientFinder.slice(0, 2);
 const PAGE_2_RESULTS = mockIngredientsForIngredientFinder.slice(2);
