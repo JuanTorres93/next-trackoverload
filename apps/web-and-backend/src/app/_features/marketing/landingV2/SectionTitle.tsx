@@ -12,8 +12,18 @@ function SectionTitle({
 
   // TODO IMPORTANT: Finish styling when design is done
   return (
-    <div className={twMerge("flex justify-between gap-4", className)} {...rest}>
-      <h2 className="max-w-[33%] text-4xl font-semibold">{title}</h2>
+    <div
+      className={twMerge(
+        `flex gap-4 ${subtitle ? "justify-between" : "justify-center"}`,
+        className,
+      )}
+      {...rest}
+    >
+      <h2
+        className={`text-4xl font-semibold ${subtitle ? "max-w-[33%]" : "max-w-[60%]"}`}
+      >
+        {title}
+      </h2>
 
       {subtitle && (
         <p className="max-w-[45%] text-base text-text-minor-emphasis">

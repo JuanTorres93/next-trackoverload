@@ -4,6 +4,7 @@ import { twMerge } from "tailwind-merge";
 
 import afterImage from "@/../public/after.jpg";
 
+// TODO IMPORTANT: Finish styling when design is done
 function HeroImage({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
@@ -12,12 +13,13 @@ function HeroImage({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       <PopupOverlay />
       <div>Image</div>
 
-      <div className="relative my-4 mx-10 aspect-square md:aspect-[4/5] w-full rounded-3xl overflow-hidden">
+      <div className="relative w-full mx-10 my-4 overflow-hidden aspect-square md:aspect-4/5 rounded-3xl">
         <Image
           src={afterImage}
           alt={"Hero Image"}
           fill
           className="object-cover"
+          priority
         />
       </div>
     </div>
