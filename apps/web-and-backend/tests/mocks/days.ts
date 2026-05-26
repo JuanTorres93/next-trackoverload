@@ -23,21 +23,21 @@ type CreateMockDayOptions = {
   returnAssembled?: boolean;
 };
 
-export async function createAndPersistTestDay(
+export async function createAndPersistTest_Day_Recipes_Ingredients_User(
   day: number,
   month: number,
   year: number,
 
   options: CreateMockDayOptions & { returnAssembled: true },
 ): Promise<AssembledDayDTO>;
-export async function createAndPersistTestDay(
+export async function createAndPersistTest_Day_Recipes_Ingredients_User(
   day?: number,
   month?: number,
   year?: number,
 
   options?: CreateMockDayOptions & { returnAssembled?: false },
 ): Promise<DayDTO>;
-export async function createAndPersistTestDay(
+export async function createAndPersistTest_Day_Recipes_Ingredients_User(
   day = 1,
   month = 1,
   year = 2000,
@@ -95,6 +95,7 @@ export async function createAndPersistTestDay(
       dayId: createdDay.id,
       userId: createdDay.userId,
     });
+
     return assembledDay!;
   }
 
@@ -113,7 +114,11 @@ export async function createAndPersistMultipleTestDaysWithWeights(
     const month = 1;
     const year = 2000;
 
-    const createdDay = await createAndPersistTestDay(day, month, year);
+    const createdDay = await createAndPersistTest_Day_Recipes_Ingredients_User(
+      day,
+      month,
+      year,
+    );
 
     const weightForDay = 70 + i; // Just an example weight that changes each day
 

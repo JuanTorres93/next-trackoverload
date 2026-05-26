@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { createAndPersistTestDay } from "../../../../../tests/mocks/days";
+import { createAndPersistTest_Day_Recipes_Ingredients_User } from "../../../../../tests/mocks/days";
 import { TEST_USER_ID } from "../../../../../tests/mocks/nextjs";
 import { TestDaysRepo } from "../../../../../tests/repos/TestDaysRepo";
 import { TestFakeMealsRepo } from "../../../../../tests/repos/TestFakeMealsRepo";
@@ -9,10 +9,11 @@ import { TestMealsRepo } from "../../../../../tests/repos/TestMealsRepo";
 import EatenFakeMeal from "../EatenFakeMeal";
 
 async function setup() {
-  const dayWithFakeMeal = await createAndPersistTestDay(1, 1, 2000, {
-    returnAssembled: true,
-    fakeMeals: { name: "Test Fake Meal", calories: 400, protein: 25 },
-  });
+  const dayWithFakeMeal =
+    await createAndPersistTest_Day_Recipes_Ingredients_User(1, 1, 2000, {
+      returnAssembled: true,
+      fakeMeals: { name: "Test Fake Meal", calories: 400, protein: 25 },
+    });
   const fakeMeal = dayWithFakeMeal.fakeMeals[0];
 
   render(<EatenFakeMeal fakeMeal={fakeMeal} dayId={dayWithFakeMeal.id} />);

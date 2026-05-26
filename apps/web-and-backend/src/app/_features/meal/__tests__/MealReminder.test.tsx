@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { createAndPersistTestDay } from "../../../../../tests/mocks/days";
+import { createAndPersistTest_Day_Recipes_Ingredients_User } from "../../../../../tests/mocks/days";
 import { TEST_USER_ID } from "../../../../../tests/mocks/nextjs";
 import { TestDaysRepo } from "../../../../../tests/repos/TestDaysRepo";
 import { TestFakeMealsRepo } from "../../../../../tests/repos/TestFakeMealsRepo";
@@ -10,10 +10,15 @@ import { TestRecipesRepo } from "../../../../../tests/repos/TestRecipesRepo";
 import MealReminder from "../MealReminder";
 
 async function setup() {
-  const dayWithMeal = await createAndPersistTestDay(1, 1, 2000, {
-    createWithMeal: true,
-    returnAssembled: true,
-  });
+  const dayWithMeal = await createAndPersistTest_Day_Recipes_Ingredients_User(
+    1,
+    1,
+    2000,
+    {
+      createWithMeal: true,
+      returnAssembled: true,
+    },
+  );
   const meal = dayWithMeal.meals[0];
 
   render(<MealReminder meal={meal} dayId={dayWithMeal.id} />);

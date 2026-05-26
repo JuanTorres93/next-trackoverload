@@ -1,16 +1,21 @@
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { createAndPersistTestDay } from "../../../../../tests/mocks/days";
+import { createAndPersistTest_Day_Recipes_Ingredients_User } from "../../../../../tests/mocks/days";
 import { TestDaysRepo } from "../../../../../tests/repos/TestDaysRepo";
 import { TestFakeMealsRepo } from "../../../../../tests/repos/TestFakeMealsRepo";
 import FakeMeal from "../FakeMeal";
 
 async function setup() {
-  const day = await createAndPersistTestDay(1, 1, 2000, {
-    fakeMeals: { name: "Test Fake Meal", calories: 400, protein: 25 },
-    returnAssembled: true,
-  });
+  const day = await createAndPersistTest_Day_Recipes_Ingredients_User(
+    1,
+    1,
+    2000,
+    {
+      fakeMeals: { name: "Test Fake Meal", calories: 400, protein: 25 },
+      returnAssembled: true,
+    },
+  );
 
   const fakeMeal = day.fakeMeals[0];
 

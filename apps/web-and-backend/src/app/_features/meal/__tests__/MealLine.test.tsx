@@ -1,7 +1,7 @@
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { createAndPersistTestDay } from "../../../../../tests/mocks/days";
+import { createAndPersistTest_Day_Recipes_Ingredients_User } from "../../../../../tests/mocks/days";
 import { TestDaysRepo } from "../../../../../tests/repos/TestDaysRepo";
 import { TestMealsRepo } from "../../../../../tests/repos/TestMealsRepo";
 import MealLine from "../MealLine";
@@ -9,10 +9,15 @@ import MealLine from "../MealLine";
 const DELETE_BUTTON_TEST_ID = "nutritional-summary-delete-button";
 
 async function setup() {
-  const day = await createAndPersistTestDay(1, 1, 2000, {
-    createWithMeal: true,
-    returnAssembled: true,
-  });
+  const day = await createAndPersistTest_Day_Recipes_Ingredients_User(
+    1,
+    1,
+    2000,
+    {
+      createWithMeal: true,
+      returnAssembled: true,
+    },
+  );
   const meal = day.meals[0];
 
   render(<MealLine meal={meal} dayId={day.id} />);
@@ -93,10 +98,15 @@ describe("MealLine", () => {
   });
 
   it("should not render delete button if dayId is not provided", async () => {
-    const day = await createAndPersistTestDay(1, 1, 2000, {
-      createWithMeal: true,
-      returnAssembled: true,
-    });
+    const day = await createAndPersistTest_Day_Recipes_Ingredients_User(
+      1,
+      1,
+      2000,
+      {
+        createWithMeal: true,
+        returnAssembled: true,
+      },
+    );
 
     const meal = day.meals[0];
 

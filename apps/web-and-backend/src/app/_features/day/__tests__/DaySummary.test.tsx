@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { createAndPersistTestDay } from "../../../../../tests/mocks/days";
+import { createAndPersistTest_Day_Recipes_Ingredients_User } from "../../../../../tests/mocks/days";
 import { createAndPersistTest_Recipes_Ingredients_User } from "../../../../../tests/mocks/recipes";
 import { TestDaysRepo } from "../../../../../tests/repos/TestDaysRepo";
 import { TestFakeMealsRepo } from "../../../../../tests/repos/TestFakeMealsRepo";
@@ -11,16 +11,17 @@ import DaySummary from "../DaySummary";
 const { mockRecipes } = await createAndPersistTest_Recipes_Ingredients_User();
 
 async function setup() {
-  const assembledDayDTO = await createAndPersistTestDay(1, 1, 2000, {
-    createWithMeal: true,
-    mealRecipeId: mockRecipes[0].id,
-    fakeMeals: {
-      name: "Fake Meal 1",
-      calories: 100,
-      protein: 10,
-    },
-    returnAssembled: true,
-  });
+  const assembledDayDTO =
+    await createAndPersistTest_Day_Recipes_Ingredients_User(1, 1, 2000, {
+      createWithMeal: true,
+      mealRecipeId: mockRecipes[0].id,
+      fakeMeals: {
+        name: "Fake Meal 1",
+        calories: 100,
+        protein: 10,
+      },
+      returnAssembled: true,
+    });
 
   const meal = assembledDayDTO.meals[0];
   const fakeMeal = assembledDayDTO.fakeMeals[0];

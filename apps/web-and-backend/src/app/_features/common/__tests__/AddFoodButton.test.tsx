@@ -1,7 +1,7 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { createAndPersistTestDay } from "../../../../../tests/mocks/days";
+import { createAndPersistTest_Day_Recipes_Ingredients_User } from "../../../../../tests/mocks/days";
 import { TEST_USER_ID } from "../../../../../tests/mocks/nextjs";
 import { createAndPersistTest_Recipes_Ingredients_User } from "../../../../../tests/mocks/recipes";
 import { createServer } from "../../../../../tests/mocks/server";
@@ -34,14 +34,14 @@ describe("AddFoodButton", () => {
   });
 
   it("renders an add food button", async () => {
-    const day = await createAndPersistTestDay();
+    const day = await createAndPersistTest_Day_Recipes_Ingredients_User();
     render(<AddFoodButton dayId={day.id} />);
 
     expect(screen.getByTestId("add-food-button")).toBeInTheDocument();
   });
 
   it("shows food type selection modal when the add food button is clicked", async () => {
-    const day = await createAndPersistTestDay();
+    const day = await createAndPersistTest_Day_Recipes_Ingredients_User();
     render(<AddFoodButton dayId={day.id} />);
 
     await userEvent.click(screen.getByTestId("add-food-button"));
@@ -60,11 +60,16 @@ describe("AddFoodButton", () => {
   it("adds a meal from a recipe to the day", async () => {
     const { mockRecipes } =
       await createAndPersistTest_Recipes_Ingredients_User();
-    const day = await createAndPersistTestDay(1, 1, 2000, {
-      createWithMeal: true,
-      mealRecipeId: mockRecipes[0].id,
-      returnAssembled: true,
-    });
+    const day = await createAndPersistTest_Day_Recipes_Ingredients_User(
+      1,
+      1,
+      2000,
+      {
+        createWithMeal: true,
+        mealRecipeId: mockRecipes[0].id,
+        returnAssembled: true,
+      },
+    );
     const originalMealCount = day.meals.length;
 
     render(<AddFoodButton dayId={day.id} />);
@@ -89,10 +94,15 @@ describe("AddFoodButton", () => {
   });
 
   it("adds a fake meal to the day", async () => {
-    const day = await createAndPersistTestDay(1, 1, 2000, {
-      createWithMeal: true,
-      returnAssembled: true,
-    });
+    const day = await createAndPersistTest_Day_Recipes_Ingredients_User(
+      1,
+      1,
+      2000,
+      {
+        createWithMeal: true,
+        returnAssembled: true,
+      },
+    );
     const originalFakeMealCount = day.fakeMeals.length;
 
     render(<AddFoodButton dayId={day.id} />);

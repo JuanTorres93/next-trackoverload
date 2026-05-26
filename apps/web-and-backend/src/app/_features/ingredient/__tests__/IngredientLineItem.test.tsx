@@ -1,14 +1,19 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { createAndPersistTestDay } from "../../../../../tests/mocks/days";
+import { createAndPersistTest_Day_Recipes_Ingredients_User } from "../../../../../tests/mocks/days";
 import { IngredientLineDTO } from "../../../../application-layer/dtos/IngredientLineDTO";
 import IngredientLineItem from "../IngredientLineItem";
 
-const mockDay = await createAndPersistTestDay(1, 1, 2000, {
-  createWithMeal: true,
-  returnAssembled: true,
-});
+const mockDay = await createAndPersistTest_Day_Recipes_Ingredients_User(
+  1,
+  1,
+  2000,
+  {
+    createWithMeal: true,
+    returnAssembled: true,
+  },
+);
 const mockIngredientLine: IngredientLineDTO =
   mockDay.meals[0].ingredientLines[0];
 
