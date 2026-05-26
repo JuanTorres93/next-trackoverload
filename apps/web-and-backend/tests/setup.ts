@@ -6,6 +6,7 @@ import { cleanup } from "@testing-library/react";
 import { configure as reactConfigure } from "@testing-library/react";
 import { afterEach, expect, vi } from "vitest";
 
+import "./ensureAppReposAreMemoryImplementations";
 import "./mocks/nextjs";
 
 vi.mock("@zxing/library", () => import("./mocks/zxing"));
