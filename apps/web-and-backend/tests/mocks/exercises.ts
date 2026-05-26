@@ -22,11 +22,7 @@ export const mockExercisesForExerciseFinder: ExerciseFinderResult[] =
     };
   });
 
-export const createMockExercises = async () => {
-  if (process.env.NODE_ENV !== "test") {
-    throw new Error("createMockExercises should only be used in tests");
-  }
-
+export const createAndPersistTestExercises = async () => {
   const createdExercises = [];
 
   for (const props of exercisePropsForUseCase) {

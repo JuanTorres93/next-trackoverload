@@ -2,7 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { mockExerciseApiFetch } from "../../../../../tests/mocks/exerciseApi";
-import { createMockExercises } from "../../../../../tests/mocks/exercises";
+import { createAndPersistTestExercises } from "../../../../../tests/mocks/exercises";
 import { TEST_USER_ID } from "../../../../../tests/mocks/nextjs";
 import { createAndPersistTestUser } from "../../../../../tests/mocks/user";
 import { TestExercisesRepo } from "../../../../../tests/repos/TestExercisesRepo";
@@ -12,7 +12,7 @@ import NewTemplateForm from "../NewTemplateForm";
 await createAndPersistTestUser();
 
 async function setup() {
-  const mockExercises = await createMockExercises();
+  const mockExercises = await createAndPersistTestExercises();
 
   render(<NewTemplateForm />);
 

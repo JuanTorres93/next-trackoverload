@@ -1,10 +1,10 @@
 import { render, screen } from "@testing-library/react";
 
-import { createMockExercises } from "../../../../../tests/mocks/exercises";
+import { createAndPersistTestExercises } from "../../../../../tests/mocks/exercises";
 import { ExerciseDTO } from "../../../../application-layer/dtos/ExerciseDTO";
 import Exercise from "../Exercise";
 
-const mockExercises = await createMockExercises();
+const mockExercises = await createAndPersistTestExercises();
 const mockExercise: ExerciseDTO = mockExercises[0];
 
 function renderExercise(isSelected = false) {
