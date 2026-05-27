@@ -9,10 +9,10 @@ import ReasonWhy from "@/app/_features/marketing/landingV2/ReasonWhy/ReasonWhy";
 
 export default function LandingPage() {
   return (
-    <main className="bg-surface-light">
+    <main className="bg-white">
       <div className="mt-15"></div>
 
-      <div className="flex flex-col mx-auto gap-28 max-w-400">
+      <div className="flex flex-col mx-auto overflow-hidden gap-28 max-w-400">
         <NavBar />
         <Hero />
         <ReasonWhy />

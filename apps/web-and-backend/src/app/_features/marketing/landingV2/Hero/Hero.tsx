@@ -1,5 +1,6 @@
 import { twMerge } from "tailwind-merge";
 
+import LandingSection from "../LandingSection";
 import HeroCopy from "./HeroCopy";
 import HeroImage from "./HeroImage";
 
@@ -8,13 +9,15 @@ function Hero({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
   return (
-    <section className={twMerge("", className)} {...rest}>
-      <div className="grid grid-cols-[1fr_.8fr] items-center gap-10 mt-6">
+    <LandingSection className={twMerge("relative", className)} {...rest}>
+      <div className="grid relative z-3 grid-cols-[1fr_.8fr] items-center gap-10 mt-6">
         <HeroCopy />
 
         <HeroImage />
       </div>
-    </section>
+
+      <div className="z-2 absolute inset-0 bg-[linear-gradient(to_top,var(--color-primary-lightest)_0%,transparent_60%)]" />
+    </LandingSection>
   );
 }
 

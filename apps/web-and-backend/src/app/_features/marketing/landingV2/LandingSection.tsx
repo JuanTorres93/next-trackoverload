@@ -9,15 +9,18 @@ function LandingSection({
   children,
   ...props
 }: {
-  title: string;
+  title?: string;
   subtitle?: string;
   children: React.ReactNode;
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
   return (
-    <section className={twMerge("flex flex-col gap-10", className)} {...rest}>
-      <SectionTitle title={title} subtitle={subtitle} />
+    <section
+      className={twMerge("flex px-35 flex-col gap-10", className)}
+      {...rest}
+    >
+      {title && <SectionTitle title={title} subtitle={subtitle} />}
 
       {children}
     </section>
