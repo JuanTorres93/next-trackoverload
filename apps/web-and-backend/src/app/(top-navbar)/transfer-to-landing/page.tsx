@@ -1,4 +1,5 @@
 import CEOMessage from "@/app/_features/marketing/landingV2/CEOMessage/CEOMessage";
+import Features from "@/app/_features/marketing/landingV2/Features/Features";
 import Hero from "@/app/_features/marketing/landingV2/Hero/Hero";
 import HowItWorks from "@/app/_features/marketing/landingV2/HowItWorks/HowItWorks";
 import NavBar from "@/app/_features/marketing/landingV2/NavBar";
@@ -14,7 +15,7 @@ export default function LandingPage() {
         <Hero />
         <ReasonWhy />
         <HowItWorks />
-        {/* Features here */}
+        <Features />
         <CEOMessage />
       </div>
     </main>
