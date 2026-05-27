@@ -1,8 +1,11 @@
 "use client";
 
+import Image from "next/image";
+
 import { createContext, useContext, useState } from "react";
 
 import { FaCheck } from "react-icons/fa6";
+import { twMerge } from "tailwind-merge";
 
 type FeaturesPreviewContextType = {
   currentFeaturePreviewId: string;
@@ -53,11 +56,7 @@ export function FeatureSummary({ feature }: { feature: FeatureItemType }) {
       className={`grid grid-cols-[max-content_1fr] gap-3  py-4 px-2 rounded-2xl cursor-default transition ${isSelected ? "bg-primary-light/10" : "bg-gray-200"}`}
       onClick={handleSelectFeature}
     >
-      <div
-        className={`flex items-center self-center justify-center bg-white rounded-lg aspect-square size-10 shrink-0 transition ${isSelected ? "text-primary-light" : "text-gray-500"}`}
-      >
-        {feature.logo}
-      </div>
+      <LogoBox logo={feature.logo} isSelected={isSelected} />
 
       <div className="flex flex-col gap-2">
         <h4 className="text-lg font-semibold">{feature.summaryTitle}</h4>
@@ -76,27 +75,68 @@ export function FeatureDescription() {
   const feature = allFeatures.find((f) => f.id === currentFeaturePreviewId);
 
   return (
-    <div className="grid grid-rows-[min-content_1fr] gap-6 bg-primary-light/10 p-6 rounded-3xl">
-      <div>
-        <h3>{feature!.mainTitle}</h3>
-        <span>{feature!.mainSubtitle}</span>
+    <div className="flex flex-col gap-6 p-6 bg-primary-light/10 rounded-3xl">
+      <div className="flex items-start gap-4">
+        <LogoBox logo={feature!.logo} isSelected={true} />
+
+        <div className="flex flex-col gap-2">
+          <h3 className="text-2xl font-semibold">{feature!.mainTitle}</h3>
+
+          <span className="text-text-minor-emphasis">
+            {feature!.mainSubtitle}
+          </span>
+        </div>
       </div>
 
-      <div className="flex flex-col gap-8 text-sm">
-        <p>{feature!.mainDescription}</p>
+      <div className="grid grid-cols-[1fr_.5fr] gap-6">
+        <div className="flex flex-col gap-8 text-sm">
+          <p>{feature!.mainDescription}</p>
 
-        <ul className="flex flex-col gap-2 list-inside">
-          {feature!.mainBullets.map((bullet, index) => (
-            <li className="flex items-center gap-2 " key={index}>
-              <div className="flex items-center justify-center p-1 rounded-full bg-primary-light/20 ">
-                <FaCheck size={10} className="text-primary" />
-              </div>
+          <ul className="flex flex-col gap-2 list-inside">
+            {feature!.mainBullets.map((bullet, index) => (
+              <li className="flex items-center gap-2 " key={index}>
+                <div className="flex items-center justify-center p-1 rounded-full bg-primary-light/20 ">
+                  <FaCheck size={10} className="text-primary" />
+                </div>
 
-              <span className="text-text-minor-emphasis">{bullet}</span>
-            </li>
-          ))}
-        </ul>
+                <span className="text-text-minor-emphasis">{bullet}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="relative w-full overflow-hidden aspect-square rounded-2xl">
+          <Image
+            src={feature!.mainImageUrl}
+            alt={feature!.mainTitle}
+            className="object-cover"
+            fill
+          />
+        </div>
       </div>
+    </div>
+  );
+}
+
+function LogoBox({
+  logo,
+  isSelected,
+  ...props
+}: {
+  logo: React.ReactNode;
+  isSelected: boolean;
+} & React.HTMLAttributes<HTMLDivElement>) {
+  const { className, ...rest } = props;
+
+  return (
+    <div
+      className={twMerge(
+        `flex items-center self-center justify-center bg-white rounded-lg aspect-square size-10 shrink-0 transition ${isSelected ? "text-primary-light" : "text-gray-500"}`,
+        className,
+      )}
+      {...rest}
+    >
+      {logo}
     </div>
   );
 }
