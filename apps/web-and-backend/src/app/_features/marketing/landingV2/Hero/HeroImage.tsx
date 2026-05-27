@@ -11,9 +11,8 @@ function HeroImage({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div className={twMerge("relative h-full", className)} {...rest}>
       <PopupOverlay />
-      <div>Image</div>
 
-      <div className="relative w-full mx-10 my-4 overflow-hidden aspect-square md:aspect-4/5 rounded-3xl">
+      <div className="relative bg-primary-lightest ml-8 mt-8 h-[92%] w-[92%] overflow-hidden rounded-3xl">
         <Image
           src={afterImage}
           alt={"Hero Image"}

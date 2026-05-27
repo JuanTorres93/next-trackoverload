@@ -29,7 +29,7 @@ function HeroCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
         <ButtonCTA>Start Your Journey</ButtonCTA>
 
         <ButtonCTASecondary>
-          <MdOutlineVideoSettings size={20} className="mr-2" />
+          <MdOutlineVideoSettings size={20} className="my-auto mr-2" />
           See How It Works
         </ButtonCTASecondary>
       </div>
