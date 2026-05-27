@@ -36,9 +36,9 @@ async function NavBar({
       {...rest}
     >
       <Link href="/" className="flex items-center gap-2">
-        <Logo size={45} />
+        <Logo size={40} />
 
-        <span>Cimientos</span>
+        <span className="text-2xl font-medium">Cimientos</span>
       </Link>
 
       <ul className="flex items-center justify-center gap-8">
@@ -79,7 +79,7 @@ const navItems: NavItemType[] = [
 
 function NavItem({ navItem }: { navItem: NavItemType }) {
   return (
-    <Link href={navItem.href} className="">
+    <Link href={navItem.href} className="text-base">
       {navItem.name}
     </Link>
   );

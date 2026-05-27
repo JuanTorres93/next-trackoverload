@@ -12,7 +12,7 @@ export default function LandingPage() {
     <main className="bg-white">
       <div className="mt-15"></div>
 
-      <div className="flex flex-col mx-auto overflow-hidden gap-28 max-w-400">
+      <div className="flex flex-col mx-auto overflow-hidden gap-25 max-w-400">
         <NavBar />
         <Hero />
         <ReasonWhy />

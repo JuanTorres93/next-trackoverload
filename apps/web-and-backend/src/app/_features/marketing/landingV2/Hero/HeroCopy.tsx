@@ -12,20 +12,20 @@ function HeroCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
     <div className={twMerge("flex flex-col gap-4", className)} {...rest}>
       <Eyebrow />
 
-      <h1 className="text-4xl font-bold leading-snug text-text">
+      <h1 className="text-6xl font-semibold text-text leading-18">
         Build the body that{" "}
         <span className="text-primary">gives you confidence</span> without
         obsessing over every gram.
       </h1>
 
-      <p className="text-text-light-copy">
+      <p className="pt-1 text-text-light-copy">
         Cimientos helps you simplify nutrition, stay consistent, and create a
         practical foundation for muscle gain, fat loss, and real
         self-confidence. No confusing plans. No extreme tracking. Just a clear
         path forward.
       </p>
 
-      <div className="flex gap-4">
+      <div className="flex gap-4 pt-4">
         <ButtonCTA>Start Your Journey</ButtonCTA>
 
         <ButtonCTASecondary>

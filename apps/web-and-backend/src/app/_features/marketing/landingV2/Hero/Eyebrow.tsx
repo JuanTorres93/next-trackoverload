@@ -7,7 +7,7 @@ function Eyebrow({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <h3
       className={twMerge(
-        "uppercase inline-block text-primary p-4 rounded-full bg-primary-lightest",
+        "uppercase inline-block text-primary py-2.75 px-5 w-fit rounded-full bg-primary-lightest text-sm",
         className,
       )}
       {...rest}

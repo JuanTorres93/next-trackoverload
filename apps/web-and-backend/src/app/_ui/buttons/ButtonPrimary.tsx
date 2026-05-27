@@ -18,7 +18,7 @@ function ButtonPrimary({
     "opacity-50 cursor-not-allowed hover:cursor-not-allowed hover:bg-transparent hover:border-current hover:text-current";
 
   const buttonStyle = twMerge(
-    `px-4 py-2 text-sm font-semibold text-primary transition-all border border-primary rounded-lg hover:cursor-pointer hover:bg-primary hover:text-text-light`,
+    `px-4 py-[14px] text-lg font-semibold text-primary transition-all border border-primary rounded-lg hover:cursor-pointer hover:bg-primary hover:text-text-light`,
     className,
     disabled ? disabledStyle : "",
   );
