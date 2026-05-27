@@ -9,12 +9,14 @@ export default function LandingPage() {
     <main className="bg-surface-light">
       <div className="mt-15"></div>
 
-      <NavBar />
-      <Hero />
-      <ReasonWhy />
-      <HowItWorks />
-      {/* Features here */}
-      <CEOMessage />
+      <div className="flex flex-col mx-auto gap-28 max-w-400">
+        <NavBar />
+        <Hero />
+        <ReasonWhy />
+        <HowItWorks />
+        {/* Features here */}
+        <CEOMessage />
+      </div>
     </main>
   );
 }
