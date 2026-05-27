@@ -16,7 +16,7 @@ function Hero({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
         <HeroImage />
       </div>
 
-      <div className="z-2 absolute inset-0 bg-[linear-gradient(to_top,var(--color-primary-lightest)_0%,transparent_60%)]" />
+      <div className="z-2 absolute inset-0 opacity-70 bg-[linear-gradient(to_top,var(--color-primary-lightest)_0%,transparent_60%)]" />
     </LandingSection>
   );
 }

@@ -13,8 +13,12 @@ export default function LandingPage() {
       <div className="mt-15"></div>
 
       <div className="flex flex-col mx-auto overflow-hidden gap-25 max-w-400">
-        <NavBar />
-        <Hero />
+        <div className="flex flex-col gap-25 bg-[linear-gradient(to_right,rgba(17,24,39,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(17,24,39,0.06)_1px,transparent_1px)] bg-size-[100px_100px]">
+          <NavBar />
+
+          <Hero />
+        </div>
+
         <ReasonWhy />
         <HowItWorks />
         <Features />
