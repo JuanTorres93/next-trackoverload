@@ -10,12 +10,12 @@ function Step({
   return (
     <div
       className={twMerge(
-        "bg-primary-light/10 py-8 px-6 rounded-3xl flex flex-col gap-4",
+        "bg-primary-lightest py-8 px-6 rounded-3xl flex flex-col gap-4",
         className,
       )}
       {...rest}
     >
-      <span className="self-start p-3 text-4xl text-white rounded-2xl bg-primary-light/70">
+      <span className="self-start p-3 text-4xl text-white rounded-2xl bg-primary-light">
         {step.numberString}
       </span>
 

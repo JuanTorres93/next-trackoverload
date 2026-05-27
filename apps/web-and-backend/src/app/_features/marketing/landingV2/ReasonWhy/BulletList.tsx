@@ -17,14 +17,14 @@ function BulletList({
 
   return (
     <div className={twMerge("flex flex-col gap-8", className)} {...rest}>
-      <h3 className={`text-3xl ${isGood && " text-primary-light/50"}`}>
+      <h3 className={`text-3xl ${isGood && " text-primary-light"}`}>
         {listTitle}
       </h3>
 
       <div
         className={twMerge(
           "p-6 rounded-3xl",
-          `${isGood ? "bg-primary-light/50" : "bg-text-minor-emphasis/5"}`,
+          `${isGood ? "bg-primary-light" : "bg-text-minor-emphasis/5"}`,
         )}
         {...rest}
       >

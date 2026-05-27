@@ -32,7 +32,7 @@ function PopupOverlay({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={twMerge(
-        "p-6 bg-primary-light absolute top-0 left-0 text-white rounded-lg shadow-lg z-2",
+        "p-6 bg-primary-light absolute top-0 left-0 text-white rounded-lg shadow-2xl z-2",
         className,
       )}
       {...rest}

@@ -12,7 +12,7 @@ function CEOCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       )}
       {...rest}
     >
-      <h3 className="text-xl font-semibold text-primary-light">
+      <h3 className="text-xl font-semibold text-primary">
         Why I Created This App?
       </h3>
 

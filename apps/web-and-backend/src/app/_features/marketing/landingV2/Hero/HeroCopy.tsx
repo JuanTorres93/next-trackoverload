@@ -18,7 +18,7 @@ function HeroCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
         obsessing over every gram.
       </h1>
 
-      <p className="text-text-minor-emphasis">
+      <p className="text-text-light-copy">
         Cimientos helps you simplify nutrition, stay consistent, and create a
         practical foundation for muscle gain, fat loss, and real
         self-confidence. No confusing plans. No extreme tracking. Just a clear
@@ -27,6 +27,7 @@ function HeroCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
 
       <div className="flex gap-4">
         <ButtonCTA>Start Your Journey</ButtonCTA>
+
         <ButtonCTASecondary>
           <MdOutlineVideoSettings size={20} className="mr-2" />
           See How It Works

@@ -4,16 +4,18 @@
 @theme inline {
   /* Primary */
 
-  /* green from tailwind */
-  --color-primary-light: #00a63e;
-  --color-primary: #008236;
+  --color-primary-lightest: #e6f6ec;
+  --color-primary-light: #33b865;
+  --color-primary: #00a63e;
   --color-primary-shade: #0d542b;
 
   /* Neutral */
 
-  /* zinc from tailwind */
   --color-text: #18181b;
-  --color-text-minor-emphasis: #71717a;
+  --color-text-light-copy: #464649;
+  --color-text-minor-emphasis: #646466;
+
+  /* zinc from tailwind */
   --color-text-light: #f4f4f5;
   --color-background: #fafafa;
   --color-surface-dark: #3f3f46;
@@ -32,8 +34,8 @@
 
   /* emerald from tailwind */
   --color-success: #047857;
-  /* red from tailwind */
-  --color-error: #dc2626;
+
+  --color-error: #ff5353;
 
   /* blue from tailwind */
   --color-info: #60a5fa;

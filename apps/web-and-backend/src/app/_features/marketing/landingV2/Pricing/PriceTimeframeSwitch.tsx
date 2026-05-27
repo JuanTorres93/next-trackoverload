@@ -21,7 +21,7 @@ function PriceTimeframeSwitch({
   return (
     <div
       className={twMerge(
-        "flex gap-2 border border-primary p-1 rounded-xl",
+        "flex gap-2 border border-primary-light p-1 rounded-xl",
         className,
       )}
       {...rest}
@@ -33,7 +33,9 @@ function PriceTimeframeSwitch({
           <div
             key={timeframe}
             className={`px-3 py-1 rounded-lg text-sm font-medium transition cursor-pointer ${
-              isSelected ? "bg-primary text-text-light" : " hover:bg-gray-200"
+              isSelected
+                ? "bg-primary-light text-text-light"
+                : " hover:bg-gray-200"
             }`}
             onClick={() => setSelectedTimeframe(timeframe)}
           >

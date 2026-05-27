@@ -13,10 +13,7 @@ function ButtonCTA({
 }: { showIcon?: boolean } & ButtonCTAProps) {
   return (
     <ButtonPrimary
-      className={twMerge(
-        "bg-primary-light border-primary-light text-text-light hover:bg-primary-light/50 hover:border-primary-light/50!",
-        className,
-      )}
+      className={twMerge("bg-primary border-primary text-white", className)}
       {...rest}
     >
       {children}
@@ -35,7 +32,7 @@ export function ButtonCTASecondary({
     <ButtonCTA
       showIcon={false}
       className={twMerge(
-        "bg-transparent flex border-primary-light text-primary-light hover:bg-primary-light/10 hover:border-primary-light/50!",
+        "bg-transparent flex border-primary text-primary hover:bg-transparent hover:border-primary hover:text-primary",
         className,
       )}
       {...rest}

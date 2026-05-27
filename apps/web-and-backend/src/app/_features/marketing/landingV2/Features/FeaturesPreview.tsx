@@ -53,7 +53,7 @@ export function FeatureSummary({ feature }: { feature: FeatureItemType }) {
 
   return (
     <div
-      className={`grid grid-cols-[max-content_1fr] gap-3  py-4 px-2 rounded-2xl cursor-default transition ${isSelected ? "bg-primary-light/10" : "bg-gray-200"}`}
+      className={`grid grid-cols-[max-content_1fr] gap-3  py-4 px-2 rounded-2xl cursor-default transition ${isSelected ? "bg-primary-lightest" : "bg-gray-200"}`}
       onClick={handleSelectFeature}
     >
       <LogoBox logo={feature.logo} isSelected={isSelected} />
@@ -75,7 +75,7 @@ export function FeatureDescription() {
   const feature = allFeatures.find((f) => f.id === currentFeaturePreviewId);
 
   return (
-    <div className="flex flex-col gap-6 p-6 bg-primary-light/10 rounded-3xl">
+    <div className="flex flex-col gap-6 p-6 bg-primary-lightest rounded-3xl">
       <div className="flex items-start gap-4">
         <LogoBox logo={feature!.logo} isSelected={true} />
 
@@ -94,8 +94,8 @@ export function FeatureDescription() {
 
           <ul className="flex flex-col gap-2 list-inside">
             {feature!.mainBullets.map((bullet, index) => (
-              <li className="flex items-center gap-2 " key={index}>
-                <div className="flex items-center justify-center p-1 rounded-full bg-primary-light/20 ">
+              <li className="flex items-center gap-2" key={index}>
+                <div className="flex items-center justify-center p-1 rounded-full bg-primary-light/30 ">
                   <FaCheck size={10} className="text-primary" />
                 </div>
 

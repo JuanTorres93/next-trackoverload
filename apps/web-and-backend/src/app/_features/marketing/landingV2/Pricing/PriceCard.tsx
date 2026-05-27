@@ -20,7 +20,7 @@ function PriceCard({
       className={twMerge(
         `
         p-4 rounded-2xl flex flex-col gap-6 max-w-106 w-full
-        ${price.isFlagship ? "bg-primary-light text-white" : "bg-gray-200"}
+        ${price.isFlagship ? "bg-primary text-white" : "bg-gray-200"}
         `,
         className,
       )}
@@ -43,7 +43,7 @@ function PriceCard({
         {price.features.map((feature, index) => (
           <li key={index} className="flex items-center gap-3">
             <div
-              className={`flex items-center justify-center p-1 rounded-full ${price.isFlagship ? "bg-primary-shade/50 text-white" : "bg-gray-300 text-gray-600"}`}
+              className={`flex items-center justify-center p-1 rounded-full ${price.isFlagship ? "bg-primary-lightest/40 text-white" : "bg-gray-300 text-gray-600"}`}
             >
               <FaCheck size={8} />
             </div>
