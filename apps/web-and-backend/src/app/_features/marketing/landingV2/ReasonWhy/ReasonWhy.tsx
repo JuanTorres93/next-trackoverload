@@ -15,7 +15,7 @@ function ReasonWhy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       subtitle="You're not failing because you're lazy. You're failing because the tools and advice weren't designed for someone starting where you are."
       {...rest}
     >
-      <div className="grid grid-cols-3 gap-8">
+      <div className="grid items-end grid-cols-3 gap-8">
         <BulletList
           listTitle="What is draining your confidence:"
           bullets={badBullets}
@@ -57,7 +57,7 @@ const badBullets: BulletItemType[] = [
 
 const goodBullets: BulletItemType[] = [
   {
-    description:
+    intro:
       "Meals are measured by grams, and estimates from food packages are fine. Each meal is weighed once and saved as a reusable recipe for easy tracking and repeat use",
   },
   {

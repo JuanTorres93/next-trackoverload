@@ -7,6 +7,7 @@
   --color-primary-lightest: #e6f6ec;
   --color-primary-light: #33b865;
   --color-primary: #00a63e;
+
   --color-primary-shade: #0d542b;
 
   /* Neutral */
@@ -14,6 +15,8 @@
   --color-text: #18181b;
   --color-text-light-copy: #464649;
   --color-text-minor-emphasis: #646466;
+
+  --color-neutral: #efefef;
 
   /* zinc from tailwind */
   --color-text-light: #f4f4f5;

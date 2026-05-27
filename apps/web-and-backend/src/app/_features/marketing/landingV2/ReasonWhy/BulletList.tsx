@@ -17,14 +17,16 @@ function BulletList({
 
   return (
     <div className={twMerge("flex flex-col gap-8", className)} {...rest}>
-      <h3 className={`text-3xl ${isGood && " text-primary-light"}`}>
+      <h3
+        className={`text-[28px] font-medium leading-[124%] ${isGood && " text-primary-light"}`}
+      >
         {listTitle}
       </h3>
 
       <div
         className={twMerge(
           "p-6 rounded-3xl",
-          `${isGood ? "bg-primary-light" : "bg-text-minor-emphasis/5"}`,
+          `${isGood ? "bg-primary-light" : "bg-neutral"}`,
         )}
         {...rest}
       >
@@ -42,7 +44,7 @@ function BulletList({
 
 export type BulletItemType = {
   intro?: string;
-  description: string;
+  description?: string;
 };
 
 function BulletItem({
@@ -53,21 +55,21 @@ function BulletItem({
   isGood?: boolean;
 }) {
   return (
-    <div className="grid grid-cols-[auto_1fr] gap-2 items-start ">
-      <div>
+    <div className="flex items-start gap-2.5">
+      <div className="mt-1">
         {isGood ? (
-          <FaCircleCheck size={20} className="text-white" />
+          <FaCircleCheck size={17} className="text-white" />
         ) : (
-          <CiCircleRemove size={20} className="text-error" />
+          <CiCircleRemove size={19} strokeWidth={0.5} className="text-error" />
         )}
       </div>
 
       <div
-        className={`text-sm ${isGood ? "text-white" : "text-text-minor-emphasis"}`}
+        className={`text-base ${isGood ? "text-white" : "text-text-minor-emphasis"}`}
       >
         {item.intro && <span className="font-semibold">{item.intro} </span>}
 
-        <span>{item.description}</span>
+        {item.description && <span>{item.description}</span>}
       </div>
     </div>
   );

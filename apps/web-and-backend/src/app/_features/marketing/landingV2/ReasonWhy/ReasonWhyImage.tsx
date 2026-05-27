@@ -9,8 +9,8 @@ function ReasonWhyImage({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
   return (
-    <div className={twMerge("relative", className)} {...rest}>
-      <div className="relative w-full overflow-hidden md:aspect-4/5 rounded-3xl">
+    <div className={twMerge("relative h-full", className)} {...rest}>
+      <div className="relative h-full overflow-hidden rounded-3xl">
         <PopupOverlay />
 
         <Image
@@ -30,16 +30,19 @@ function PopupOverlay({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={twMerge(
-        "grid grid-cols-[min-content_1fr] gap-2 p-6 bg-emerald-700/40 border border-emerald-700/70 backdrop-blur-xs absolute bottom-0 left-0 right-0 m-3 text-white rounded-3xl shadow-lg z-2",
+        "grid grid-cols-[min-content_1fr] gap-2 py-6 px-3.5  overflow-hidden border border-emerald-700/70 backdrop-blur-xs absolute bottom-0 left-0 right-0 m-3  rounded-3xl shadow-lg z-2",
         className,
       )}
       {...rest}
     >
-      <div>USERS</div>
-      <p>
+      <div className="z-3">USERS</div>
+
+      <p className="text-base font-medium text-white z-3">
         Trusted by our early users who started their fitness journey from
         scratch
       </p>
+
+      <div className="z-2 absolute inset-0 opacity-40 bg-[linear-gradient(to_bottom,var(--color-emerald-700)_0%,var(--color-emerald-700)_60%,white_100%,white_100%)]" />
     </div>
   );
 }

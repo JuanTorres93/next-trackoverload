@@ -20,13 +20,13 @@ function SectionTitle({
       {...rest}
     >
       <h2
-        className={`text-4xl font-semibold ${subtitle ? "max-w-[33%]" : "max-w-[60%]"}`}
+        className={`text-4xl font-medium ${subtitle ? "max-w-[33%]" : "max-w-[60%]"}`}
       >
         {title}
       </h2>
 
       {subtitle && (
-        <p className="max-w-[45%] text-base text-text-minor-emphasis">
+        <p className="max-w-[45%] text-lg text-text-minor-emphasis">
           {subtitle}
         </p>
       )}
