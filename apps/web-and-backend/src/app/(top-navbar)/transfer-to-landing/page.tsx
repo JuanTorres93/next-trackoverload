@@ -3,6 +3,7 @@ import Features from "@/app/_features/marketing/landingV2/Features/Features";
 import Hero from "@/app/_features/marketing/landingV2/Hero/Hero";
 import HowItWorks from "@/app/_features/marketing/landingV2/HowItWorks/HowItWorks";
 import NavBar from "@/app/_features/marketing/landingV2/NavBar";
+import Pricing from "@/app/_features/marketing/landingV2/Pricing/Pricing";
 import ReasonWhy from "@/app/_features/marketing/landingV2/ReasonWhy/ReasonWhy";
 
 export default function LandingPage() {
@@ -17,6 +18,7 @@ export default function LandingPage() {
         <HowItWorks />
         <Features />
         <CEOMessage />
+        <Pricing />
       </div>
     </main>
   );
