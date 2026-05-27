@@ -54,7 +54,8 @@ function PriceCard({
       </ul>
 
       <ButtonPrimary
-        className={`mt-auto ${price.isFlagship ? "bg-white border-white" : "bg-transparent text-text border-text hover:bg-gray-300 hover:text-text"}`}
+        href="/auth/register"
+        className={`mt-auto text-center ${price.isFlagship ? "bg-white border-white" : "bg-transparent text-text border-text hover:bg-gray-300 hover:text-text"}`}
       >
         {price.ctaText}
       </ButtonPrimary>

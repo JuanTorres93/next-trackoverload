@@ -4,6 +4,7 @@ import { FREE_TRIAL_DAYS } from "@/domain/common/constants";
 
 import LandingSection from "../LandingSection";
 import PriceCard, { PriceItemType } from "./PriceCard";
+import PriceTimeframeSwitch from "./PriceTimeframeSwitch";
 
 // TODO IMPORTANT: Finish styling when design is done
 function Pricing({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
@@ -16,7 +17,7 @@ function Pricing({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       {...rest}
     >
       <div className="flex flex-col items-center gap-6">
-        <div>MONTHLY / ANNUALLY</div>
+        <PriceTimeframeSwitch />
 
         <div className="grid grid-cols-2 gap-6">
           {priceItems.map((item, index) => (

@@ -2,8 +2,6 @@ import Link from "next/link";
 
 import { twMerge } from "tailwind-merge";
 
-import TextRegular from "../typography/TextRegular";
-
 function ButtonPrimary({
   children,
   href,
@@ -27,17 +25,15 @@ function ButtonPrimary({
 
   if (href) {
     return (
-      <TextRegular>
-        <Link
-          href={href}
-          className={twMerge(buttonStyle, "inline-block")}
-          onClick={
-            restProps.onClick as unknown as React.MouseEventHandler<HTMLAnchorElement>
-          }
-        >
-          {children}
-        </Link>
-      </TextRegular>
+      <Link
+        href={href}
+        className={buttonStyle}
+        onClick={
+          restProps.onClick as unknown as React.MouseEventHandler<HTMLAnchorElement>
+        }
+      >
+        {children}
+      </Link>
     );
   }
   return (
