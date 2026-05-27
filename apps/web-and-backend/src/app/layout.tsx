@@ -1,4 +1,4 @@
-import { Inter } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 
 import type { Metadata, Viewport } from "next";
 
@@ -10,7 +10,7 @@ import TextRegular from "./_ui/typography/TextRegular";
 import FixCSSInDevelopment from "./_utils/FixCSSInDevelopment";
 import "./globals.css";
 
-const inter = Inter({
+const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
   display: "swap",
 });
@@ -64,7 +64,7 @@ export default function RootLayout({
       style={{ backgroundColor: "#fafafa" }}
     >
       <body
-        className={`${inter.className} antialiased overflow-y-scroll text-text bg-background`}
+        className={`${plusJakartaSans.className} antialiased overflow-y-scroll text-text bg-background`}
       >
         <Providers>
           <TextRegular
