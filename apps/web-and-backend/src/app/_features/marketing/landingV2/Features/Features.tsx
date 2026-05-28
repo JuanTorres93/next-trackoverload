@@ -1,5 +1,10 @@
-import { FaApple } from "react-icons/fa";
+import { FiActivity } from "react-icons/fi";
+import { LiaDumbbellSolid } from "react-icons/lia";
+import { TbApple } from "react-icons/tb";
 import { twMerge } from "tailwind-merge";
+
+import nutritionTrackingImage from "@/../public/recipes.webp";
+import weightLogImage from "@/../public/weight.webp";
 
 import LandingSection from "../LandingSection";
 import FeaturesPreview, {
@@ -20,8 +25,8 @@ function Features({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       {...rest}
     >
       <FeaturesPreview features={featuresData}>
-        <div className="grid grid-cols-[.5fr_1fr] gap-6">
-          <div className="flex flex-col gap-4">
+        <div className="grid grid-cols-[.7fr_1fr] gap-6">
+          <div className="flex flex-col gap-6 justify-stretch">
             {featuresData.map((feature) => (
               <FeatureSummary key={feature.id} feature={feature} />
             ))}
@@ -38,7 +43,7 @@ const featuresData: FeatureItemType[] = [
   {
     id: "1",
 
-    logo: <FaApple size={24} />,
+    logo: <TbApple size={30} strokeWidth={1.4} />,
 
     summaryTitle: "Simple Nutrition Tracking",
     summarySubtitle: "No micro scale pressure. Intuitive daily estimates.",
@@ -53,13 +58,12 @@ const featuresData: FeatureItemType[] = [
       "Quick-log templates for fast tracking on the go.",
     ],
     // TODO IMPORTANT: change image
-    mainImageUrl:
-      "https://res.cloudinary.com/dwzqysf1x/image/upload/v1772479251/recipe_4d877b2b-8984-43bf-9bf5-ae1984f8c695_1772479250994_1772479250997.jpg",
+    mainImageUrl: nutritionTrackingImage,
   },
   {
     id: "2",
 
-    logo: <FaApple size={24} />,
+    logo: <FiActivity size={30} strokeWidth={1.4} />,
 
     summaryTitle: "Calm Trends & Weight Log",
     summarySubtitle:
@@ -70,12 +74,12 @@ const featuresData: FeatureItemType[] = [
     mainSubtitle: "",
     mainDescription: "",
     mainBullets: [],
-    mainImageUrl: "",
+    mainImageUrl: weightLogImage,
   },
   {
     id: "3",
 
-    logo: <FaApple size={24} />,
+    logo: <LiaDumbbellSolid size={30} strokeWidth={0.1} />,
 
     summaryTitle: "Exercise Systems",
     summarySubtitle: "Straightforward gym & home routines to build strength.",
@@ -85,7 +89,8 @@ const featuresData: FeatureItemType[] = [
     mainSubtitle: "",
     mainDescription: "",
     mainBullets: [],
-    mainImageUrl: "",
+    // TODO IMPORTANT: change image
+    mainImageUrl: weightLogImage,
   },
 ];
 

@@ -18,7 +18,7 @@ function ButtonCTA({
     >
       {children}
 
-      {showIcon && <LuArrowUpRight size={20} className="inline-block ml-2" />}
+      {showIcon && <LuArrowUpRight size={26} className="pt-0.5 ml-2" />}
     </ButtonPrimary>
   );
 }

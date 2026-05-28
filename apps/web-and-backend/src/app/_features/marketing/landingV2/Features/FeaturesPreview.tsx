@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 
 import { createContext, useContext, useState } from "react";
 
@@ -53,14 +53,18 @@ export function FeatureSummary({ feature }: { feature: FeatureItemType }) {
 
   return (
     <div
-      className={`grid grid-cols-[max-content_1fr] gap-3  py-4 px-2 rounded-2xl cursor-default transition ${isSelected ? "bg-primary-lightest" : "bg-gray-200"}`}
+      className={`grid grid-cols-[max-content_1fr] gap-4 p-6 rounded-2xl cursor-default transition ${isSelected ? "bg-primary-lightest" : "bg-gray-200"}`}
       onClick={handleSelectFeature}
     >
-      <LogoBox logo={feature.logo} isSelected={isSelected} />
+      <LogoBox
+        logo={feature.logo}
+        isSelected={isSelected}
+        className="self-center"
+      />
 
       <div className="flex flex-col gap-2">
-        <h4 className="text-lg font-semibold">{feature.summaryTitle}</h4>
-        <span className="text-sm text-text-minor-emphasis">
+        <h4 className="text-2xl font-medium">{feature.summaryTitle}</h4>
+        <span className="text-lg text-text-minor-emphasis">
           {feature.summarySubtitle}
         </span>
       </div>
@@ -75,26 +79,26 @@ export function FeatureDescription() {
   const feature = allFeatures.find((f) => f.id === currentFeaturePreviewId);
 
   return (
-    <div className="flex flex-col gap-6 p-6 bg-primary-lightest rounded-3xl">
-      <div className="flex items-start gap-4">
-        <LogoBox logo={feature!.logo} isSelected={true} />
+    <div className="flex flex-col p-6 gap-9 bg-primary-lightest rounded-3xl">
+      <div className="flex gap-4">
+        <LogoBox className="mt-2" logo={feature!.logo} isSelected={true} />
 
         <div className="flex flex-col gap-2">
-          <h3 className="text-2xl font-semibold">{feature!.mainTitle}</h3>
+          <h3 className="text-[28px] font-medium">{feature!.mainTitle}</h3>
 
-          <span className="text-text-minor-emphasis">
+          <span className="text-lg text-text-minor-emphasis">
             {feature!.mainSubtitle}
           </span>
         </div>
       </div>
 
-      <div className="grid grid-cols-[1fr_.5fr] gap-6">
-        <div className="flex flex-col gap-8 text-sm">
+      <div className="grid grid-cols-[1fr_.6fr] h-full gap-6">
+        <div className="flex flex-col text-base gap-9">
           <p>{feature!.mainDescription}</p>
 
           <ul className="flex flex-col gap-2 list-inside">
             {feature!.mainBullets.map((bullet, index) => (
-              <li className="flex items-center gap-2" key={index}>
+              <li className="flex items-center gap-4.5" key={index}>
                 <div className="flex items-center justify-center p-1 rounded-full bg-primary-light/30 ">
                   <FaCheck size={10} className="text-primary" />
                 </div>
@@ -105,7 +109,7 @@ export function FeatureDescription() {
           </ul>
         </div>
 
-        <div className="relative w-full overflow-hidden aspect-square rounded-2xl">
+        <div className="relative h-full overflow-hidden rounded-2xl">
           <Image
             src={feature!.mainImageUrl}
             alt={feature!.mainTitle}
@@ -131,7 +135,7 @@ function LogoBox({
   return (
     <div
       className={twMerge(
-        `flex items-center self-center justify-center bg-white rounded-lg aspect-square size-10 shrink-0 transition ${isSelected ? "text-primary-light" : "text-gray-500"}`,
+        `flex items-center justify-center bg-white rounded-lg aspect-square size-12 transition ${isSelected ? "text-primary" : "text-text"}`,
         className,
       )}
       {...rest}
@@ -165,7 +169,7 @@ export type FeatureItemType = {
   mainSubtitle: string;
   mainDescription: string;
   mainBullets: string[];
-  mainImageUrl: string;
+  mainImageUrl: string | StaticImageData;
 };
 
 FeaturesPreview.FeatureSummary = FeatureSummary;

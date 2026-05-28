@@ -10,7 +10,7 @@ function Step({
   return (
     <div
       className={twMerge(
-        "bg-primary-lightest py-8 px-6 rounded-3xl flex flex-col gap-4",
+        "bg-primary-lightest py-10 px-7.5 rounded-3xl flex flex-col gap-6",
         className,
       )}
       {...rest}

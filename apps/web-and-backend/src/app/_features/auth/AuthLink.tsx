@@ -1,11 +1,11 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 function AuthLink({ children, ...props }: React.ComponentProps<typeof Link>) {
   const { className, ...rest } = props;
 
   return (
     <Link
-      className={`inline font-bold transition text-primary hover:text-primary-light ${className}`}
+      className={`inline my-auto font-bold transition text-primary hover:text-primary-light ${className}`}
       {...rest}
     >
       {children}

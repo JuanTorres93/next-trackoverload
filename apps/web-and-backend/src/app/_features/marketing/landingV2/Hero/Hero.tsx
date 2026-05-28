@@ -9,7 +9,13 @@ function Hero({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
   return (
-    <LandingSection className={twMerge("relative pb-20", className)} {...rest}>
+    <LandingSection
+      className={twMerge(
+        "relative pb-20 rounded-b-4xl overflow-hidden",
+        className,
+      )}
+      {...rest}
+    >
       <div className="grid relative z-3 grid-cols-[1fr_.75fr] items-stretch gap-10 mt-6">
         <HeroCopy />
 
