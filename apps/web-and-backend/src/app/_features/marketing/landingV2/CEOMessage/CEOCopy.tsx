@@ -7,16 +7,16 @@ function CEOCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={twMerge(
-        "bg-white flex flex-col gap-6 justify-center px-8 rounded-2xl",
+        "bg-white flex flex-col gap-6 justify-center px-8.5 py-13 rounded-2xl",
         className,
       )}
       {...rest}
     >
-      <h3 className="text-xl font-semibold text-primary">
+      <h3 className="text-[28px] font-medium text-primary">
         Why I Created This App?
       </h3>
 
-      <div className="flex flex-col gap-4 text-sm ">
+      <div className="flex flex-col gap-4.5 text-lg ">
         <p>
           When I first started with fitness, I struggled to find an app that
           made the process simple and clear for beginners. Tracking workouts,
@@ -29,7 +29,7 @@ function CEOCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
           stay motivated.
         </p>
 
-        <p>What You Can Do:</p>
+        <p className="pt-2">What You Can Do:</p>
 
         <ul className="list-disc list-inside ">
           <li>

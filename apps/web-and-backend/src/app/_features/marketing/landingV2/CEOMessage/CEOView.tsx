@@ -10,7 +10,7 @@ function CEOView({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
 
   return (
     <div
-      className={twMerge("flex flex-col gap-4 text-white", className)}
+      className={twMerge("flex flex-col gap-5 text-white", className)}
       {...rest}
     >
       <div className="relative w-full overflow-hidden aspect-4/5 rounded-2xl">
@@ -22,7 +22,7 @@ function CEOView({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
         />
       </div>
 
-      <div className="p-2 bg-primary-light rounded-2xl">
+      <div className="px-4 py-2 bg-primary-light rounded-2xl">
         <h3 className="text-2xl font-semibold">Juan Torres</h3>
         <h4>Founder & CEO of Cimientos</h4>
       </div>
