@@ -13,6 +13,7 @@ function ReasonWhy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       className={twMerge("", className)}
       title="Why traditional fitness apps make you quit."
       subtitle="You're not failing because you're lazy. You're failing because the tools and advice weren't designed for someone starting where you are."
+      id="about"
       {...rest}
     >
       <div className="grid items-end grid-cols-3 gap-8">

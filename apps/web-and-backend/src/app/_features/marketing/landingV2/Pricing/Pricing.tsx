@@ -20,6 +20,7 @@ async function Pricing({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       <LandingSection
         className={twMerge("", className)}
         title="Start with nutrition. Build the foundation."
+        id="pricing"
         {...rest}
       >
         <div className="p-4 mb-6 text-red-800 bg-red-100 rounded">
@@ -65,6 +66,7 @@ async function Pricing({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
     <LandingSection
       className={twMerge("", className)}
       title="Start with nutrition. Build the foundation."
+      id="pricing"
       {...rest}
     >
       <div className="flex flex-col items-center gap-12">

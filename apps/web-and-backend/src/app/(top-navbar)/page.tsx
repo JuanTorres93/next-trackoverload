@@ -17,7 +17,7 @@ export default function LandingPage() {
         <ReasonWhy />
         <HowItWorks />
         <Features />
-        <CEOMessage />
+        <CEOMessage id="testimonials" />
         <Pricing />
         <FinalCTA />
       </div>

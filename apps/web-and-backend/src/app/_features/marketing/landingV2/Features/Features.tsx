@@ -22,6 +22,7 @@ function Features({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       className={twMerge("", className)}
       title="Designed for clarity, built to eliminate complexity."
       subtitle="Everything you need to regain control over your nutrition, habits, and self-belief."
+      id="features"
       {...rest}
     >
       <FeaturesPreview features={featuresData}>

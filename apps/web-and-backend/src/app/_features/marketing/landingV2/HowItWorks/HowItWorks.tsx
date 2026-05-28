@@ -12,6 +12,7 @@ function HowItWorks({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       className={twMerge("", className)}
       title="Three steps to your foundation."
       subtitle="Real physical transformation doesn't require living in the gym. We help you design your plan to blend into your current lifestyle seamlessly."
+      id="how-it-works"
       {...rest}
     >
       <div className="grid grid-cols-3 gap-6">
