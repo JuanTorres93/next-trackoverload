@@ -4,6 +4,8 @@ import { twMerge } from "tailwind-merge";
 
 import afterImage from "@/../public/after.jpg";
 
+import UserAvatar from "./UserAvatar";
+
 // TODO IMPORTANT: Finish styling when design is done
 function ReasonWhyImage({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
@@ -35,7 +37,18 @@ function PopupOverlay({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       )}
       {...rest}
     >
-      <div className="z-3">USERS</div>
+      <div className="relative w-24 z-3">
+        {userPictures.map((user, index) => (
+          <UserAvatar
+            className="absolute top-3"
+            key={index}
+            image={user.src}
+            style={{
+              left: `${index * 22}px`,
+            }}
+          />
+        ))}
+      </div>
 
       <p className="text-base font-medium text-white z-3">
         Trusted by our early users who started their fitness journey from
@@ -46,5 +59,17 @@ function PopupOverlay({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
     </div>
   );
 }
+
+const userPictures = [
+  {
+    src: afterImage,
+  },
+  {
+    src: afterImage,
+  },
+  {
+    src: afterImage,
+  },
+];
 
 export default ReasonWhyImage;
