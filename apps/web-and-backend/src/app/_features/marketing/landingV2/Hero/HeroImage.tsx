@@ -1,8 +1,11 @@
 import Image from "next/image";
 
+import { PiFireDuotone } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
 
 import afterImage from "@/../public/after.jpg";
+
+import { SemiCircleProgress } from "../SemicircleProgress";
 
 // TODO IMPORTANT: Finish styling when design is done
 function HeroImage({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
@@ -31,13 +34,21 @@ function PopupOverlay({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={twMerge(
-        "p-6 bg-primary-light absolute top-0 left-0 text-white rounded-lg shadow-2xl z-2",
+        "bg-primary-light absolute flex flex-col gap-2 top-0 left-0 z-2 w-fit rounded-[18px] p-3 pb-1 text-white shadow-2xl",
         className,
       )}
       {...rest}
     >
-      <h2 className="mb-4 text-xl font-bold">Popup Content</h2>
-      <p>This is a popup overlay.</p>
+      <span className="text-[10px] font-semibold leading-none ">
+        Monday, June 25
+      </span>
+
+      <SemiCircleProgress
+        value={1250}
+        max={1800}
+        unit="kcal"
+        icon={<PiFireDuotone size={16} />}
+      />
     </div>
   );
 }
