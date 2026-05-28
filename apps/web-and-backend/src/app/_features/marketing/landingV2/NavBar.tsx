@@ -8,12 +8,13 @@ import Logo from "../../../_ui/Logo";
 import ButtonPrimary from "../../../_ui/buttons/ButtonPrimary";
 import { getCurrentUserId } from "../../../_utils/auth/getCurrentUserId";
 import ButtonCTA from "../landing/ButtonCTA";
+import { NavLinkType } from "./NavLinkType";
 
 async function NavBar({
   items = navItems,
   ...props
 }: {
-  items?: NavItemType[];
+  items?: NavLinkType[];
 } & React.HTMLAttributes<HTMLElement>) {
   const { className, ...rest } = props;
 
@@ -64,12 +65,7 @@ async function NavBar({
   );
 }
 
-type NavItemType = {
-  name: string;
-  href: string;
-};
-
-const navItems: NavItemType[] = [
+const navItems: NavLinkType[] = [
   { name: "About", href: "/#about" },
   { name: "How it works", href: "/#how-it-works" },
   { name: "Features", href: "/#features" },
@@ -77,7 +73,7 @@ const navItems: NavItemType[] = [
   { name: "Pricing", href: "/#pricing" },
 ];
 
-function NavItem({ navItem }: { navItem: NavItemType }) {
+function NavItem({ navItem }: { navItem: NavLinkType }) {
   return (
     <Link
       href={navItem.href}
