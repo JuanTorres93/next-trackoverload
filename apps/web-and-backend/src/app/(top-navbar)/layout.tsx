@@ -1,4 +1,5 @@
 // import { Suspense } from "react";
+import Footer from "../_features/marketing/landingV2/Footer/Footer";
 import NavBar from "../_features/marketing/landingV2/NavBar";
 
 // import NavBar from "../_features/marketing/landing/NavBar";
@@ -39,6 +40,8 @@ export default function MarketingLayout({
 
         {children}
       </main>
+
+      <Footer />
     </div>
   );
 }
