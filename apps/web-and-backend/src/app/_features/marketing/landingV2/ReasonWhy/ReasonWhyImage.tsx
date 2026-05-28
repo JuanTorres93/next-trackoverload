@@ -32,7 +32,7 @@ function PopupOverlay({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={twMerge(
-        "grid grid-cols-[min-content_1fr] gap-2 py-6 px-3.5  overflow-hidden border border-emerald-700/70 backdrop-blur-xs absolute bottom-0 left-0 right-0 m-3  rounded-3xl shadow-lg z-2",
+        "grid grid-cols-[min-content_1fr] gap-2 py-6 px-3.5  overflow-hidden border border-primary/70 backdrop-blur-xs absolute bottom-0 left-0 right-0 m-3  rounded-3xl shadow-lg z-2",
         className,
       )}
       {...rest}
@@ -55,7 +55,7 @@ function PopupOverlay({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
         scratch
       </p>
 
-      <div className="z-2 absolute inset-0 opacity-40 bg-[linear-gradient(to_bottom,var(--color-emerald-700)_0%,var(--color-emerald-700)_60%,white_100%,white_100%)]" />
+      <div className="absolute inset-0 z-2 opacity-40 bg-linear-to-b from-primary-light to-primary-lightest"></div>
     </div>
   );
 }
