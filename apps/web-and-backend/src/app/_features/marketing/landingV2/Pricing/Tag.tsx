@@ -10,7 +10,7 @@ function Tag({
   return (
     <div
       className={twMerge(
-        "inline-flex w-fit items-center text-sm py-1 px-3 border rounded-full",
+        "inline-flex w-fit items-center py-1 px-3 border rounded-full",
         className,
       )}
       {...rest}

@@ -67,8 +67,9 @@ async function Pricing({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       title="Start with nutrition. Build the foundation."
       {...rest}
     >
-      <div className="flex flex-col items-center gap-6">
-        <PriceTimeframeSwitch />
+      <div className="flex flex-col items-center gap-12">
+        {/* <PriceTimeframeSwitch /> */}
+        <div></div>
 
         <div className="grid grid-cols-2 gap-6">
           {priceItems.map((item, index) => (
