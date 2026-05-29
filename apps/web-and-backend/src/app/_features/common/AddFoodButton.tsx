@@ -1,6 +1,4 @@
 "use client";
-import { useRouter } from "next/navigation";
-
 import { HiPlus } from "react-icons/hi2";
 
 import Modal from "../../_ui/Modal";
@@ -46,18 +44,10 @@ function AddRecipeModal({
   dayId: string;
   onCloseModal?: () => void;
 }) {
-  const router = useRouter();
-
-  const handleCloseModal = () => {
-    router.refresh();
-
-    onCloseModal?.();
-  };
-
   return (
     <SelectRecipeForm
       addMealsRequest={(recipeIds) => addMealsToDay(dayId, recipeIds)}
-      onSuccess={handleCloseModal}
+      onSuccess={onCloseModal}
     />
   );
 }
@@ -69,17 +59,9 @@ function AddFakeMealModal({
   dayId: string;
   onCloseModal?: () => void;
 }) {
-  const router = useRouter();
-
-  const handleCloseModal = () => {
-    router.refresh();
-
-    onCloseModal?.();
-  };
-
   return (
     <div className="max-w-200 max-h-160 overflow-y-scroll overscroll-contain w-[80dvw] p-4">
-      <AddFakeMealForm dayId={dayId} onSuccess={handleCloseModal} />
+      <AddFakeMealForm dayId={dayId} onSuccess={onCloseModal} />
     </div>
   );
 }

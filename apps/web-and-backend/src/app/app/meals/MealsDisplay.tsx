@@ -1,7 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-
 import { useState } from "react";
 
 import { format } from "date-fns";
@@ -31,8 +29,6 @@ function MealsDisplay({
 }: {
   assembledDays: AssembledDayResult[];
 }) {
-  const router = useRouter();
-
   const [selectedDaysIds, setSelectedDaysIds] = useState<string[]>([]);
   const [activeDayIndex, setActiveDayIndex] = useState<number>(() =>
     findTodayIndex(assembledDays),
@@ -59,10 +55,7 @@ function MealsDisplay({
     recipesIds: string[],
   ): Promise<JSENDResponse<void>> {
     const response = await addMealsToMultipleDays(selectedDaysIds, recipesIds);
-
     setSelectedDaysIds([]);
-
-    router.refresh();
 
     return response;
   }

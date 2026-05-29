@@ -1,7 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { HiLightningBolt } from "react-icons/hi";
@@ -32,16 +30,10 @@ function DaySummary({
 }) {
   const { isToday, isPast } = getAssembledDayInfo(assembledDay);
 
-  const router = useRouter();
-
   async function addMealsRequest(
     recipesIds: string[],
   ): Promise<JSENDResponse<void>> {
-    const response = await addMealsToDay(dayId, recipesIds);
-
-    router.refresh();
-
-    return response;
+    return await addMealsToDay(dayId, recipesIds);
   }
 
   return (
