@@ -86,14 +86,14 @@ export async function removeMealFromDay(
     revalidatePath(`/app`);
     revalidatePath(`/app/meals`);
 
-    refresh();
-
     return {
       status: "success",
       data: undefined,
     };
   } catch (error) {
     return handleActionErrors(error as Error);
+  } finally {
+    refresh();
   }
 }
 
@@ -154,14 +154,14 @@ export async function addMealsToDay(
     revalidatePath(`/app`);
     revalidatePath(`/app/meals`);
 
-    refresh();
-
     return {
       status: "success",
       data: undefined,
     };
   } catch (error) {
     return handleActionErrors(error as Error);
+  } finally {
+    refresh();
   }
 }
 
@@ -179,14 +179,14 @@ export async function addMealsToMultipleDays(
     revalidatePath(`/app`);
     revalidatePath(`/app/meals`);
 
-    refresh();
-
     return {
       status: "success",
       data: undefined,
     };
   } catch (error) {
     return handleActionErrors(error as Error);
+  } finally {
+    refresh();
   }
 }
 

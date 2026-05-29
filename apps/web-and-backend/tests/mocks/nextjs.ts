@@ -57,5 +57,6 @@ vi.mock("next/navigation", () => {
 vi.mock("next/cache", () => {
   return {
     revalidatePath: vi.fn(),
+    refresh: vi.fn(),
   };
 });
