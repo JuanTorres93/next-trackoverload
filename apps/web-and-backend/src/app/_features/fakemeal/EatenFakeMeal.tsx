@@ -1,6 +1,4 @@
 "use client";
-import { useRouter } from "next/navigation";
-
 import { useState } from "react";
 
 import { HiBolt } from "react-icons/hi2";
@@ -19,7 +17,6 @@ function EatenFakeMeal({
   fakeMeal: FakeMealDTO;
   dayId: string;
 }) {
-  const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
 
   async function handleDelete() {
@@ -28,10 +25,7 @@ function EatenFakeMeal({
     try {
       const jsend = await removeFakeMealFromDay(dayId, fakeMeal.id);
 
-      if (jsend.status === "success") {
-        router.refresh();
-        return;
-      }
+      if (jsend.status === "success") return;
 
       showErrorToast(
         jsend.data?.message ||

@@ -15,8 +15,10 @@ import {
 } from "../../../domain/value-objects/DayId/DayId";
 import DaySummary from "../../_features/day/DaySummary";
 import WeekSelector from "../../_features/day/WeekSelector";
-import { addMealsToMultipleDays } from "../../_features/day/actions";
-import type { AssembledDayResult } from "../../_features/day/queries";
+import {
+  AssembledDayResult,
+  addMealsToMultipleDays,
+} from "../../_features/day/actions";
 import SelectRecipeModal from "../../_features/recipe/SelectRecipeModal";
 import useSwipe from "../../_hooks/useSwipe";
 import GridAutoCols from "../../_ui/GridAutoCols";

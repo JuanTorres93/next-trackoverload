@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 
 import { useOptimistic, useState, useTransition } from "react";
 
@@ -14,7 +13,6 @@ import { removeMealFromDay } from "../day/actions";
 import { toggleIsEaten } from "./actions";
 
 function MealReminder({ meal, dayId }: { meal: MealDTO; dayId: string }) {
-  const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
 
   const [isPending, startTransition] = useTransition();
@@ -54,10 +52,7 @@ function MealReminder({ meal, dayId }: { meal: MealDTO; dayId: string }) {
     try {
       const jsend = await removeMealFromDay(dayId, meal.id);
 
-      if (jsend.status === "success") {
-        router.refresh();
-        return;
-      }
+      if (jsend.status === "success") return;
 
       showErrorToast(
         jsend.data?.message ||

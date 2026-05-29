@@ -1,6 +1,4 @@
 "use client";
-import { useRouter } from "next/navigation";
-
 import { HiPlus } from "react-icons/hi2";
 
 import { JSENDResponse } from "@/app/_types/JSEND";
@@ -48,18 +46,10 @@ function AddRecipeModal({
   dayId: string;
   onCloseModal?: () => void;
 }) {
-  const router = useRouter();
-
   async function handleAddMeals(
     recipeIds: string[],
   ): Promise<JSENDResponse<void>> {
-    const response = await addMealsToDay(dayId, recipeIds);
-
-    if (response.status === "success") {
-      router.refresh();
-    }
-
-    return response;
+    return await addMealsToDay(dayId, recipeIds);
   }
 
   return (
