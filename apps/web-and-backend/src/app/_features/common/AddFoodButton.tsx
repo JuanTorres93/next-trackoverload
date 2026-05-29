@@ -3,6 +3,8 @@ import { useRouter } from "next/navigation";
 
 import { HiPlus } from "react-icons/hi2";
 
+import { JSENDResponse } from "@/app/_types/JSEND";
+
 import Modal from "../../_ui/Modal";
 import { addMealsToDay } from "../day/actions";
 import AddFakeMealForm from "../fakemeal/AddFakeMealForm";
@@ -48,16 +50,20 @@ function AddRecipeModal({
 }) {
   const router = useRouter();
 
-  const handleCloseModal = () => {
+  async function handleAddMeals(
+    recipeIds: string[],
+  ): Promise<JSENDResponse<void>> {
+    const response = await addMealsToDay(dayId, recipeIds);
+
     router.refresh();
 
-    onCloseModal?.();
-  };
+    return response;
+  }
 
   return (
     <SelectRecipeForm
-      addMealsRequest={(recipeIds) => addMealsToDay(dayId, recipeIds)}
-      onSuccess={handleCloseModal}
+      addMealsRequest={(recipeIds) => handleAddMeals(recipeIds)}
+      onSuccess={onCloseModal}
     />
   );
 }
@@ -69,17 +75,9 @@ function AddFakeMealModal({
   dayId: string;
   onCloseModal?: () => void;
 }) {
-  const router = useRouter();
-
-  const handleCloseModal = () => {
-    router.refresh();
-
-    onCloseModal?.();
-  };
-
   return (
     <div className="max-w-200 max-h-160 overflow-y-scroll overscroll-contain w-[80dvw] p-4">
-      <AddFakeMealForm dayId={dayId} onSuccess={handleCloseModal} />
+      <AddFakeMealForm dayId={dayId} onSuccess={onCloseModal} />
     </div>
   );
 }
