@@ -1,5 +1,5 @@
 "use server";
-import { revalidatePath } from "next/cache";
+import { refresh, revalidatePath } from "next/cache";
 
 import { JSENDResponse } from "@/app/_types/JSEND";
 import { DayDTO } from "@/application-layer/dtos/DayDTO";
@@ -86,6 +86,8 @@ export async function removeMealFromDay(
     revalidatePath(`/app`);
     revalidatePath(`/app/meals`);
 
+    refresh();
+
     return {
       status: "success",
       data: undefined,
@@ -152,6 +154,8 @@ export async function addMealsToDay(
     revalidatePath(`/app`);
     revalidatePath(`/app/meals`);
 
+    refresh();
+
     return {
       status: "success",
       data: undefined,
@@ -174,6 +178,8 @@ export async function addMealsToMultipleDays(
 
     revalidatePath(`/app`);
     revalidatePath(`/app/meals`);
+
+    refresh();
 
     return {
       status: "success",
