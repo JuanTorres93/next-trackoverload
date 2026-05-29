@@ -2,13 +2,14 @@
 
 import Image from "next/image";
 
-import { useOptimistic, useState, useTransition } from "react";
+import { useState } from "react";
 
 import { MealDTO } from "../../../application-layer/dtos/MealDTO";
 import { showErrorToast } from "../../_ui/showErrorToast";
 import { formatToInteger } from "../../_utils/format/formatToInteger";
 import FoodReminderContainer from "../common/FoodReminderContainer";
 import FoodReminderMacros from "../common/FoodReminderMacros";
+import LoadingOverlay from "../common/LoadingOverlay";
 import { removeMealFromDay } from "../day/actions";
 import { toggleIsEaten } from "./actions";
 
@@ -24,27 +25,21 @@ function MealReminder({
   const handleDataChanged = onDataChanged ?? (() => {});
 
   const [isDeleting, setIsDeleting] = useState(false);
-
-  const [isPending, startTransition] = useTransition();
-
-  const [optimisticIsEaten, setOptimisticIsEaten] = useOptimistic(
-    meal.isEaten ?? false,
-    (_: boolean, newValue: boolean) => newValue,
-  );
+  const [isToggleingEaten, setIsToggleingEaten] = useState(false);
 
   const defaultImageUrl = "/recipe-no-picture.webp";
 
   const calories = formatToInteger(meal.calories);
   const protein = formatToInteger(meal.protein);
 
-  function handleToggleIsEaten() {
-    if (isPending) return;
+  async function handleToggleIsEaten() {
+    if (isToggleingEaten) return;
 
-    startTransition(() => {
-      setOptimisticIsEaten(!optimisticIsEaten);
-    });
+    setIsToggleingEaten(true);
 
-    toggleIsEaten(meal.id).then((jsend) => {
+    try {
+      const jsend = await toggleIsEaten(meal.id);
+
       if (jsend.status === "success") {
         handleDataChanged();
         return;
@@ -54,7 +49,10 @@ function MealReminder({
         jsend.data?.message ||
           "Ha ocurrido un error al marcar la comida como comida. Por favor, intenta nuevamente.",
       );
-    });
+    } catch {
+    } finally {
+      setIsToggleingEaten(false);
+    }
   }
 
   async function handleDelete() {
@@ -81,11 +79,12 @@ function MealReminder({
 
   return (
     <FoodReminderContainer
-      isEaten={optimisticIsEaten}
+      isEaten={meal.isEaten}
       onClick={handleToggleIsEaten}
       onDelete={handleDelete}
       isDeleting={isDeleting}
     >
+      {isToggleingEaten && <LoadingOverlay />}
       <div
         className={`grid gap-4 grid-cols-[5rem_1fr] items-center content-center max-bp-navbar-mobile:grid-cols-[4rem_1fr] `}
       >

@@ -32,6 +32,7 @@ export default function Dashboard() {
   const [daysHistory, setDaysHistory] = useState<DayEntry[] | null>(null);
   const [errorInDaysHistoryResult, setErrorInDaysHistoryResult] =
     useState(false);
+
   const [reloadToken, setReloadToken] = useState(0);
 
   function reloadDashboardData() {
@@ -111,16 +112,8 @@ function NutritionForToday({
     locale: es,
   });
 
-  // Sort by isEaten last
-  mealsForToday.sort((a, b) => {
-    if (a.isEaten === b.isEaten) return 0;
-    if (a.isEaten) return 1;
-    return -1;
-  });
-
-  // TODO DELETE THESE DEBUG LOGS
-  console.log("mealsForToday FROM COMPONENT");
-  console.log(mealsForToday);
+  // Sort meals
+  mealsForToday.sort((a, b) => b.calories - a.calories);
 
   return (
     <section className="flex flex-col gap-4">
