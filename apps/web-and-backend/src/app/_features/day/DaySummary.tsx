@@ -1,7 +1,5 @@
 "use client";
 
-import { useTransition } from "react";
-
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { HiLightningBolt } from "react-icons/hi";
@@ -31,16 +29,11 @@ function DaySummary({
   isSelected?: boolean;
 }) {
   const { isToday, isPast } = getAssembledDayInfo(assembledDay);
-  const [, startTransition] = useTransition();
 
   async function addMealsRequest(
     recipesIds: string[],
   ): Promise<JSENDResponse<void>> {
-    return await new Promise<JSENDResponse<void>>((resolve, reject) => {
-      startTransition(() => {
-        void addMealsToDay(dayId, recipesIds).then(resolve, reject);
-      });
-    });
+    return await addMealsToDay(dayId, recipesIds);
   }
 
   return (

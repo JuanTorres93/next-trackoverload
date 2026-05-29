@@ -1,14 +1,11 @@
 "use client";
-import { useTransition } from "react";
-
 import { HiPlus } from "react-icons/hi2";
 
-import { JSENDResponse } from "@/app/_types/JSEND";
-
-import Modal from "../../_ui/Modal";
 import { addMealsToDay } from "../day/actions";
 import AddFakeMealForm from "../fakemeal/AddFakeMealForm";
 import SelectRecipeForm from "../recipe/SelectRecipeForm";
+import Modal from "../../_ui/Modal";
+
 import { MealTypeSelectionModal } from "./MealTypeModal";
 
 function AddFoodButton({ dayId }: { dayId: string }) {
@@ -48,21 +45,9 @@ function AddRecipeModal({
   dayId: string;
   onCloseModal?: () => void;
 }) {
-  const [, startTransition] = useTransition();
-
-  async function handleAddMeals(
-    recipeIds: string[],
-  ): Promise<JSENDResponse<void>> {
-    return await new Promise<JSENDResponse<void>>((resolve, reject) => {
-      startTransition(() => {
-        void addMealsToDay(dayId, recipeIds).then(resolve, reject);
-      });
-    });
-  }
-
   return (
     <SelectRecipeForm
-      addMealsRequest={(recipeIds) => handleAddMeals(recipeIds)}
+      addMealsRequest={(recipeIds) => addMealsToDay(dayId, recipeIds)}
       onSuccess={onCloseModal}
     />
   );

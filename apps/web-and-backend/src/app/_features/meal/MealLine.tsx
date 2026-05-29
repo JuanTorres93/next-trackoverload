@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 
-import { useState, useTransition } from "react";
+import { useState } from "react";
 
 import { showErrorToast } from "@/app/_ui/showErrorToast";
 
@@ -21,26 +21,21 @@ function MealLine({
   dayId?: string;
 }) {
   const [isLoading, setIsLoading] = useState(false);
-  const [, startTransition] = useTransition();
 
   async function handleRemove() {
     if (!dayId) return;
-
     setIsLoading(true);
+    try {
+      const jsend = await removeMealFromDay(dayId, meal.id);
 
-    startTransition(async () => {
-      try {
-        const jsend = await removeMealFromDay(dayId, meal.id);
-
-        if (jsend.status !== "success")
-          showErrorToast(
-            jsend.data?.message ||
-              "Error al eliminar la comida. Por favor, intenta de nuevo.",
-          );
-      } finally {
-        setIsLoading(false);
-      }
-    });
+      if (jsend.status !== "success")
+        showErrorToast(
+          jsend.data?.message ||
+            "Error al eliminar la comida. Por favor, intenta de nuevo.",
+        );
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   const imageUrl = meal.imageUrl || "/recipe-no-picture.webp";
