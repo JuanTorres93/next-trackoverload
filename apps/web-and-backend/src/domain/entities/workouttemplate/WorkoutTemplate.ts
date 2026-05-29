@@ -1,4 +1,4 @@
-import { logNoTest } from "@/domain/utils/logNoTest";
+import { logNoTest } from "@/utils/logNoTest";
 
 import { NotFoundError, ValidationError } from "../../common/errors";
 import { DomainDate } from "../../value-objects/DomainDate/DomainDate";

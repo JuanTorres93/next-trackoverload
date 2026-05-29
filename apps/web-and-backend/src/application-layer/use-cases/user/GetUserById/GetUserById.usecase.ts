@@ -1,4 +1,4 @@
-import { logNoTest } from "@/domain/utils/logNoTest";
+import { logNoTest } from "@/utils/logNoTest";
 
 import { PermissionError } from "../../../../domain/common/errors";
 import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";

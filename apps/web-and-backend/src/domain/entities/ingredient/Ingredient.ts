@@ -1,4 +1,4 @@
-import { logNoTest } from "@/domain/utils/logNoTest";
+import { logNoTest } from "@/utils/logNoTest";
 import { IngredientCategory } from "@/domain/value-objects/IngredientCategory/IngredientCategory";
 
 import { ValidationError } from "../../common/errors";

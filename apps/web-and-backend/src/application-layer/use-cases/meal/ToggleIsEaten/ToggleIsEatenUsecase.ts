@@ -1,4 +1,4 @@
-import { logNoTest } from "@/domain/utils/logNoTest";
+import { logNoTest } from "@/utils/logNoTest";
 
 import { NotFoundError } from "../../../../domain/common/errors";
 import { MealsRepo } from "../../../../domain/repos/MealsRepo.port";
