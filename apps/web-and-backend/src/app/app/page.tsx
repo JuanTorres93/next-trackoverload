@@ -22,8 +22,6 @@ import PageWrapper from "../_ui/PageWrapper";
 import ButtonPrimary from "../_ui/buttons/ButtonPrimary";
 import PageTitle from "../_ui/typography/PageTitle";
 
-export const revalidate = 0;
-
 export default async function Dashboard() {
   const todayId = dateToDayId(new Date());
 
