@@ -34,6 +34,14 @@ export default async function Dashboard() {
   const [assembledDayResultJSEND, daysHistoryJSEND] =
     await Promise.all(promises);
 
+  // TODO DELETE THESE DEBUG LOGS
+  console.log("assembledDayResultJSEND");
+  console.log(assembledDayResultJSEND);
+
+  // TODO DELETE THESE DEBUG LOGS
+  console.log("daysHistoryJSEND");
+  console.log(daysHistoryJSEND);
+
   const errorInAssembledDayResult =
     assembledDayResultJSEND.status !== "success";
 
