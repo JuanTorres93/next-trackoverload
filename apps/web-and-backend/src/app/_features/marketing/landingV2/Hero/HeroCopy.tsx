@@ -1,6 +1,8 @@
 import { MdOutlineVideoSettings } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
 
+import { secondaryFont } from "@/app/layout";
+
 import ButtonCTA, { ButtonCTASecondary } from "../../landing/ButtonCTA";
 import Eyebrow from "./Eyebrow";
 
@@ -18,7 +20,7 @@ function HeroCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
         obsessing over every gram.
       </h1>
 
-      <p className="pt-1 text-text-light-copy">
+      <p className={`pt-1 text-text-minor-emphasis ${secondaryFont.className}`}>
         Cimientos helps you simplify nutrition, stay consistent, and create a
         practical foundation for muscle gain, fat loss, and real
         self-confidence. No confusing plans. No extreme tracking. Just a clear

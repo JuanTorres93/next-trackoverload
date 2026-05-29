@@ -1,13 +1,12 @@
 import { twMerge } from "tailwind-merge";
 
-// TODO IMPORTANT: Finish styling when design is done
 function CEOCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
   return (
     <div
       className={twMerge(
-        "bg-white flex flex-col gap-6 justify-center px-8.5 py-13 rounded-2xl",
+        "bg-white flex flex-col gap-6 justify-center px-8.5 py-13 rounded-2xl font-secondary",
         className,
       )}
       {...rest}

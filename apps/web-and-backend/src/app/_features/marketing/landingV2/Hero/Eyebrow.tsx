@@ -1,13 +1,14 @@
 import { twMerge } from "tailwind-merge";
 
+import { secondaryFont } from "@/app/layout";
+
 function Eyebrow({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
-  // TODO IMPORTANT: Finish styling when design is finished
   return (
     <h3
       className={twMerge(
-        "uppercase inline-block text-primary py-2.75 px-5 w-fit rounded-full bg-primary-lightest text-sm",
+        `uppercase inline-block text-primary py-2.75 px-5 w-fit rounded-full bg-primary-lightest text-sm ${secondaryFont.className}`,
         className,
       )}
       {...rest}

@@ -1,5 +1,7 @@
 import { twMerge } from "tailwind-merge";
 
+import { secondaryFont } from "@/app/layout";
+
 function SectionTitle({
   title,
   subtitle,
@@ -10,7 +12,6 @@ function SectionTitle({
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
-  // TODO IMPORTANT: Finish styling when design is done
   return (
     <div
       className={twMerge(
@@ -26,7 +27,9 @@ function SectionTitle({
       </h2>
 
       {subtitle && (
-        <p className="max-w-[45%] text-lg text-text-minor-emphasis">
+        <p
+          className={`max-w-[45%] text-lg text-text-minor-emphasis ${secondaryFont.className}`}
+        >
           {subtitle}
         </p>
       )}

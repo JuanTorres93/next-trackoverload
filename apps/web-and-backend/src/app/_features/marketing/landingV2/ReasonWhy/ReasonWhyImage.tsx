@@ -3,10 +3,10 @@ import Image from "next/image";
 import { twMerge } from "tailwind-merge";
 
 import afterImage from "@/../public/after.jpg";
+import { secondaryFont } from "@/app/layout";
 
 import UserAvatar from "./UserAvatar";
 
-// TODO IMPORTANT: Finish styling when design is done
 function ReasonWhyImage({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
@@ -50,7 +50,9 @@ function PopupOverlay({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
         ))}
       </div>
 
-      <p className="text-base font-medium text-white z-3">
+      <p
+        className={`text-base font-medium text-white z-3 ${secondaryFont.className}`}
+      >
         Trusted by our early users who started their fitness journey from
         scratch
       </p>

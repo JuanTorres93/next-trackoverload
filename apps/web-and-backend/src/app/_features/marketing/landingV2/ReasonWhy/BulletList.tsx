@@ -2,6 +2,8 @@ import { CiCircleRemove } from "react-icons/ci";
 import { FaCircleCheck } from "react-icons/fa6";
 import { twMerge } from "tailwind-merge";
 
+import { secondaryFont } from "@/app/layout";
+
 // TODO IMPORTANT: Finish styling when design is done
 function BulletList({
   bullets,
@@ -65,7 +67,7 @@ function BulletItem({
       </div>
 
       <div
-        className={`text-base ${isGood ? "text-white" : "text-text-minor-emphasis"}`}
+        className={`text-base ${isGood ? "text-white" : "text-text-minor-emphasis"} ${secondaryFont.className}`}
       >
         {item.intro && <span className="font-semibold">{item.intro} </span>}
 

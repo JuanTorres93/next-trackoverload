@@ -33,13 +33,13 @@ function PriceCard({
           <span className="text-6xl font-semibold">
             {formatPrice(price.priceInEurosCents)}
           </span>
-          <span className="text-xl">/month</span>
+          <span className="text-xl font-secondary">/month</span>
         </div>
 
-        <div className="text-lg">{price.shortDescription}</div>
+        <div className="text-lg font-secondary">{price.shortDescription}</div>
       </div>
 
-      <ul className="flex flex-col gap-2 py-4 text-lg list-inside">
+      <ul className="flex flex-col gap-2 py-4 text-lg list-inside font-secondary">
         {price.features.map((feature, index) => (
           <li key={index} className="flex items-center gap-3">
             <div

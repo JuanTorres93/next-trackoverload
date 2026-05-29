@@ -4,6 +4,8 @@ import Link from "next/link";
 
 import { twMerge } from "tailwind-merge";
 
+import { secondaryFont } from "@/app/layout";
+
 import Logo from "../../../_ui/Logo";
 import ButtonPrimary from "../../../_ui/buttons/ButtonPrimary";
 import { getCurrentUserId } from "../../../_utils/auth/getCurrentUserId";
@@ -27,19 +29,18 @@ async function NavBar({
     isLoggedIn = false;
   }
 
-  // TODO IMPORTANT: Finish styling when design is finished
   return (
     <nav
       className={twMerge(
-        `grid grid-rows-1 grid-cols-[max-content_1fr_max-content] px-8 items-center gap-24 py-4 z-20`,
+        `grid grid-rows-1 grid-cols-[max-content_1fr_max-content] px-8 items-center gap-24 py-4 z-20 ${secondaryFont.className}`,
         className,
       )}
       {...rest}
     >
-      <Link href="/" className="flex items-center gap-2">
+      <Link href="/" className="flex items-center justify-center gap-2">
         <Logo size={40} />
 
-        <span className="text-2xl font-medium">Cimientos</span>
+        <span className="mt-1 text-2xl font-medium">Cimientos</span>
       </Link>
 
       <ul className="flex items-center justify-center ">

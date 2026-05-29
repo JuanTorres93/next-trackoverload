@@ -111,11 +111,11 @@ function HeroCTA() {
   return (
     <div className="flex justify-center mt-10">
       <div className="relative group">
-        <div className="absolute transition-opacity rounded-full opacity-50 -inset-1 bg-gradient-to-r from-primary to-primary-light blur-xl group-hover:opacity-75" />
+        <div className="absolute transition-opacity rounded-full opacity-50 -inset-1 bg-linear-to-r from-primary to-primary-light blur-xl group-hover:opacity-75" />
 
         <ButtonCTA
           href="/auth/register"
-          className="relative !bg-primary hover:!bg-primary-light text-white px-8 py-4 text-lg font-semibold rounded-full shadow-xl transition-all duration-300 hover:scale-105"
+          className="relative bg-primary! hover:bg-primary-light! text-white px-8 py-4 text-lg font-semibold rounded-full shadow-xl transition-all duration-300 hover:scale-105"
           showIcon={false}
         >
           Empieza ahora

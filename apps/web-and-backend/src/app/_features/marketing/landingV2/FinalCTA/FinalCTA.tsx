@@ -21,7 +21,7 @@ function FinalCTA({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
           <span>Build a strong foundation.</span>
         </h2>
 
-        <p className="text-lg text-[#aeaead]">
+        <p className="text-lg font-secondary text-[#aeaead]">
           No more overthinking or waiting for the perfect moment. Take the first
           step today with Cimientos and create something meaningful for
           yourself.

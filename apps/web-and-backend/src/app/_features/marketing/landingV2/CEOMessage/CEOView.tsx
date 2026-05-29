@@ -4,7 +4,6 @@ import { twMerge } from "tailwind-merge";
 
 import ceoImage from "@/../public/yo-cimientos.webp";
 
-// TODO IMPORTANT: Finish styling when design is done
 function CEOView({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
@@ -24,7 +23,8 @@ function CEOView({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
 
       <div className="px-4 py-2 bg-primary-light rounded-2xl">
         <h3 className="text-2xl font-semibold">Juan Torres</h3>
-        <h4>Founder & CEO of Cimientos</h4>
+
+        <h4 className="font-secondary">Founder & CEO of Cimientos</h4>
       </div>
     </div>
   );

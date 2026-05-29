@@ -40,7 +40,6 @@ function FeaturesPreview({
   );
 }
 
-// TODO IMPORTANT: Finish styling when design is done
 export function FeatureSummary({ feature }: { feature: FeatureItemType }) {
   const { setCurrentFeaturePreviewId, currentFeaturePreviewId } =
     useFeaturesPreviewContext();
@@ -53,7 +52,7 @@ export function FeatureSummary({ feature }: { feature: FeatureItemType }) {
 
   return (
     <div
-      className={`grid grid-cols-[max-content_1fr] gap-4 p-6 rounded-2xl cursor-default transition ${isSelected ? "bg-primary-lightest" : "bg-gray-200"}`}
+      className={`grid grid-cols-[max-content_1fr] gap-4 p-6 rounded-2xl cursor-default transition ${isSelected ? "bg-primary-lightest font-secondary" : "bg-gray-200"}`}
       onClick={handleSelectFeature}
     >
       <LogoBox
@@ -64,6 +63,7 @@ export function FeatureSummary({ feature }: { feature: FeatureItemType }) {
 
       <div className="flex flex-col gap-2">
         <h4 className="text-2xl font-medium">{feature.summaryTitle}</h4>
+
         <span className="text-lg text-text-minor-emphasis">
           {feature.summarySubtitle}
         </span>
@@ -72,7 +72,6 @@ export function FeatureSummary({ feature }: { feature: FeatureItemType }) {
   );
 }
 
-// TODO IMPORTANT: Finish styling when design is done
 export function FeatureDescription() {
   const { currentFeaturePreviewId, allFeatures } = useFeaturesPreviewContext();
 
@@ -80,19 +79,19 @@ export function FeatureDescription() {
 
   return (
     <div className="flex flex-col p-6 gap-9 bg-primary-lightest rounded-3xl">
-      <div className="flex gap-4">
+      <div className="flex gap-4 ">
         <LogoBox className="mt-2" logo={feature!.logo} isSelected={true} />
 
         <div className="flex flex-col gap-2">
           <h3 className="text-[28px] font-medium">{feature!.mainTitle}</h3>
 
-          <span className="text-lg text-text-minor-emphasis">
+          <span className="text-lg font-secondary text-text-minor-emphasis">
             {feature!.mainSubtitle}
           </span>
         </div>
       </div>
 
-      <div className="grid grid-cols-[1fr_.6fr] h-full gap-6">
+      <div className="grid grid-cols-[1fr_.6fr] font-secondary h-full gap-6">
         <div className="flex flex-col text-base gap-9">
           <p>{feature!.mainDescription}</p>
 

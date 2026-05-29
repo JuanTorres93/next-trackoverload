@@ -1,5 +1,7 @@
 import { twMerge } from "tailwind-merge";
 
+import { secondaryFont } from "@/app/layout";
+
 // TODO IMPORTANT: Finish styling when design is done
 function Step({
   step,
@@ -23,7 +25,11 @@ function Step({
 
       <h3 className="text-2xl font-semibold">{step.title}</h3>
 
-      <p className="text-base text-text-minor-emphasis">{step.description}</p>
+      <p
+        className={`text-base text-text-minor-emphasis ${secondaryFont.className}`}
+      >
+        {step.description}
+      </p>
     </div>
   );
 }

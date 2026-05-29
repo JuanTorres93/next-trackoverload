@@ -48,6 +48,9 @@
   --color-surface-hover: #f0fdf4;
   --color-day-today-accent: #bbf7d0;
 
+  /* Secondary fonts */
+  --font-secondary: var(--font-secondary);
+
   /* Breakpoints */
   --breakpoint-bp-recipe-page: 863px;
   --breakpoint-bp-recipe-page-second: 445px;

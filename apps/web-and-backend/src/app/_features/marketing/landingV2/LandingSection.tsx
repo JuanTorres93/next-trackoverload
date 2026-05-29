@@ -2,7 +2,6 @@ import { twMerge } from "tailwind-merge";
 
 import SectionTitle from "./SectionTitle";
 
-// TODO IMPORTANT: Finish styling when design is done
 function LandingSection({
   title,
   subtitle,

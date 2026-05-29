@@ -1,4 +1,4 @@
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 
 import type { Metadata, Viewport } from "next";
 
@@ -13,6 +13,12 @@ import "./globals.css";
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
   display: "swap",
+});
+
+export const secondaryFont = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-secondary",
 });
 
 export const metadata: Metadata = {
@@ -64,7 +70,7 @@ export default function RootLayout({
       style={{ backgroundColor: "#fafafa" }}
     >
       <body
-        className={`${plusJakartaSans.className} antialiased overflow-y-scroll text-text bg-background`}
+        className={`${plusJakartaSans.className} ${secondaryFont.variable} antialiased overflow-y-scroll text-text bg-background`}
       >
         <Providers>
           <TextRegular

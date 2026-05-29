@@ -1,6 +1,8 @@
 import { LuArrowUpRight } from "react-icons/lu";
 import { twMerge } from "tailwind-merge";
 
+import { secondaryFont } from "@/app/layout";
+
 import ButtonPrimary from "../../../_ui/buttons/ButtonPrimary";
 
 type ButtonCTAProps = React.ComponentProps<typeof ButtonPrimary>;
@@ -13,7 +15,10 @@ function ButtonCTA({
 }: { showIcon?: boolean } & ButtonCTAProps) {
   return (
     <ButtonPrimary
-      className={twMerge("bg-primary border-primary text-white", className)}
+      className={twMerge(
+        `bg-primary border-primary font-medium text-lg text-white rounded-2xl ${secondaryFont.className}`,
+        className,
+      )}
       {...rest}
     >
       {children}
