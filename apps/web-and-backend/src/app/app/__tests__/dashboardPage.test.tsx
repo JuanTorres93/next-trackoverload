@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 
 import { validFakeMealProps } from "../../../../tests/createProps/fakeMealTestProps";
+import { mockDayApiFetch } from "../../../../tests/mocks/dayApi";
 import { createAndPersistTest_Day_Recipes_Ingredients_User } from "../../../../tests/mocks/days";
 import { createAndPersistTestUser } from "../../../../tests/mocks/user";
 import { TestDaysRepo } from "../../../../tests/repos/TestDaysRepo";
@@ -11,6 +12,7 @@ import DashboardPage from "../page";
 
 async function setup() {
   await createAndPersistTestUser();
+  mockDayApiFetch();
 
   const todayId = dateToDayId(new Date());
   const dayWithMeals = await createAndPersistTest_Day_Recipes_Ingredients_User(
@@ -24,10 +26,9 @@ async function setup() {
     },
   );
 
-  const ui = await DashboardPage();
-  render(ui);
+  render(<DashboardPage />);
 
-  const weightInput = screen.getByTestId("input-weight");
+  const weightInput = await screen.findByTestId("input-weight");
 
   return { weightInput, dayWithMeals, todayId };
 }
@@ -37,6 +38,7 @@ describe("DashboardPage", () => {
     TestMealsRepo.clearForTesting();
     TestFakeMealsRepo.clearForTesting();
     TestDaysRepo.clearForTesting();
+    vi.restoreAllMocks();
   });
 
   describe("Today's meals", async () => {

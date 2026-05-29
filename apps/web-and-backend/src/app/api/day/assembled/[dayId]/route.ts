@@ -1,10 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-import { JSENDResponse } from "../../../../_types/JSEND";
-import { ensureLoggedInUser } from "../../../_common/ensureLoggedInUser";
 import { AssembledDayDTO } from "../../../../../application-layer/dtos/AssembledDayDTO";
 import { AppGetAssembledDayById } from "../../../../../interface-adapters/app/use-cases/day";
-
+import { JSENDResponse } from "../../../../_types/JSEND";
+import { ensureLoggedInUser } from "../../../_common/ensureLoggedInUser";
 import { handleKnownErrors } from "../../../_common/handleKnownErrors";
 
 export async function GET(

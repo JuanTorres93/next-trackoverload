@@ -13,10 +13,14 @@ import { removeFakeMealFromDay } from "./actions";
 function EatenFakeMeal({
   fakeMeal,
   dayId,
+  onDataChanged,
 }: {
   fakeMeal: FakeMealDTO;
   dayId: string;
+  onDataChanged?: () => void;
 }) {
+  const handleDataChanged = onDataChanged ?? (() => {});
+
   const [isDeleting, setIsDeleting] = useState(false);
 
   async function handleDelete() {
@@ -25,7 +29,10 @@ function EatenFakeMeal({
     try {
       const jsend = await removeFakeMealFromDay(dayId, fakeMeal.id);
 
-      if (jsend.status === "success") return;
+      if (jsend.status === "success") {
+        handleDataChanged();
+        return;
+      }
 
       showErrorToast(
         jsend.data?.message ||

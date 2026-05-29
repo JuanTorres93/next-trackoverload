@@ -12,7 +12,17 @@ import FoodReminderMacros from "../common/FoodReminderMacros";
 import { removeMealFromDay } from "../day/actions";
 import { toggleIsEaten } from "./actions";
 
-function MealReminder({ meal, dayId }: { meal: MealDTO; dayId: string }) {
+function MealReminder({
+  meal,
+  dayId,
+  onDataChanged,
+}: {
+  meal: MealDTO;
+  dayId: string;
+  onDataChanged?: () => void;
+}) {
+  const handleDataChanged = onDataChanged ?? (() => {});
+
   const [isDeleting, setIsDeleting] = useState(false);
 
   const [isPending, startTransition] = useTransition();
@@ -35,7 +45,10 @@ function MealReminder({ meal, dayId }: { meal: MealDTO; dayId: string }) {
     });
 
     toggleIsEaten(meal.id).then((jsend) => {
-      if (jsend.status === "success") return;
+      if (jsend.status === "success") {
+        handleDataChanged();
+        return;
+      }
 
       showErrorToast(
         jsend.data?.message ||
@@ -52,7 +65,10 @@ function MealReminder({ meal, dayId }: { meal: MealDTO; dayId: string }) {
     try {
       const jsend = await removeMealFromDay(dayId, meal.id);
 
-      if (jsend.status === "success") return;
+      if (jsend.status === "success") {
+        handleDataChanged();
+        return;
+      }
 
       showErrorToast(
         jsend.data?.message ||

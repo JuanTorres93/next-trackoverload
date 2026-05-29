@@ -1,17 +1,18 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { HiCalendar } from "react-icons/hi";
+
+import { AssembledDayDTO } from "@/application-layer/dtos/AssembledDayDTO";
 
 import { FakeMealDTO } from "../../application-layer/dtos/FakeMealDTO";
 import { MealDTO } from "../../application-layer/dtos/MealDTO";
 import { DayEntry } from "../../application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase";
 import { dateToDayId } from "../../domain/value-objects/DayId/DayId";
 import AddFoodButton from "../_features/common/AddFoodButton";
-import {
-  AssembledDayResult,
-  getAssembledDayById,
-  getLastNumberOfDaysIncludingToday,
-} from "../_features/day/actions";
 import EatenFakeMeal from "../_features/fakemeal/EatenFakeMeal";
 import EatenMealsNutritionTracker from "../_features/meal/EatenMealsNutritionTracker";
 import MealReminder from "../_features/meal/MealReminder";
@@ -22,45 +23,72 @@ import PageWrapper from "../_ui/PageWrapper";
 import ButtonPrimary from "../_ui/buttons/ButtonPrimary";
 import PageTitle from "../_ui/typography/PageTitle";
 
-export default async function Dashboard() {
-  const todayId = dateToDayId(new Date());
+export default function Dashboard() {
+  const [todayAssembledDay, setTodayAssembledDay] =
+    useState<AssembledDayDTO | null>(null);
+  const [errorInAssembledDayResult, setErrorInAssembledDayResult] =
+    useState(false);
 
-  const promises = [
-    getAssembledDayById(todayId.value),
+  const [daysHistory, setDaysHistory] = useState<DayEntry[] | null>(null);
+  const [errorInDaysHistoryResult, setErrorInDaysHistoryResult] =
+    useState(false);
+  const [reloadToken, setReloadToken] = useState(0);
 
-    getLastNumberOfDaysIncludingToday(90),
-  ] as const;
+  function reloadDashboardData() {
+    setReloadToken((current) => current + 1);
+  }
 
-  const [assembledDayResultJSEND, daysHistoryJSEND] =
-    await Promise.all(promises);
+  useEffect(() => {
+    async function fetchData() {
+      const todayId = dateToDayId(new Date()).value;
 
-  const errorInAssembledDayResult =
-    assembledDayResultJSEND.status !== "success";
+      const [assembledDayResultJSEND, daysHistoryJSEND] = await Promise.all([
+        fetch(`/api/day/assembled/${todayId}`, {
+          cache: "no-store",
+        }).then((res) => res.json()),
 
-  const errorInDaysHistoryResult = daysHistoryJSEND.status !== "success";
+        fetch(`/api/day/last/90`).then((res) => res.json()),
+      ]);
+
+      const errorInAssembledDayResult =
+        assembledDayResultJSEND.status !== "success";
+
+      const errorInDaysHistoryResult = daysHistoryJSEND.status !== "success";
+
+      setErrorInAssembledDayResult(errorInAssembledDayResult);
+      setErrorInDaysHistoryResult(errorInDaysHistoryResult);
+
+      if (!errorInAssembledDayResult) {
+        setTodayAssembledDay(assembledDayResultJSEND.data);
+      }
+
+      if (!errorInDaysHistoryResult) {
+        setDaysHistory(daysHistoryJSEND.data);
+      }
+    }
+
+    fetchData();
+  }, [reloadToken]);
 
   return (
     <PageWrapper className="flex flex-col max-w-5xl gap-12">
       {errorInAssembledDayResult && (
-        <ErrorBox>
-          {assembledDayResultJSEND.data?.message ||
-            "Error al cargar los datos de hoy."}
-        </ErrorBox>
+        <ErrorBox>{"Error al cargar los datos de hoy."}</ErrorBox>
       )}
 
-      {!errorInAssembledDayResult && (
-        <NutritionForToday assembledDayResult={assembledDayResultJSEND.data} />
+      {!errorInAssembledDayResult && todayAssembledDay && (
+        <NutritionForToday
+          assembledDayResult={todayAssembledDay}
+          onDataChanged={reloadDashboardData}
+        />
       )}
 
       {errorInDaysHistoryResult && (
-        <ErrorBox>
-          {daysHistoryJSEND.data?.message ||
-            "Error al cargar el historial de días."}
-        </ErrorBox>
+        <ErrorBox>{"Error al cargar el historial de días."}</ErrorBox>
       )}
 
-      {!errorInDaysHistoryResult && (
-        <WeightManagement daysHistory={daysHistoryJSEND.data} />
+      {!errorInDaysHistoryResult && daysHistory && (
+        <WeightManagement daysHistory={daysHistory} />
       )}
     </PageWrapper>
   );
@@ -68,13 +96,14 @@ export default async function Dashboard() {
 
 function NutritionForToday({
   assembledDayResult,
+  onDataChanged,
 }: {
-  assembledDayResult: AssembledDayResult;
+  assembledDayResult: AssembledDayDTO;
+  onDataChanged: () => void;
 }) {
-  const mealsForToday: MealDTO[] = assembledDayResult.assembledDay?.meals || [];
+  const mealsForToday: MealDTO[] = assembledDayResult?.meals || [];
 
-  const fakeMealsForToday: FakeMealDTO[] =
-    assembledDayResult.assembledDay?.fakeMeals || [];
+  const fakeMealsForToday: FakeMealDTO[] = assembledDayResult?.fakeMeals || [];
 
   const todayHasMeals = [...mealsForToday, ...fakeMealsForToday].length > 0;
 
@@ -88,6 +117,10 @@ function NutritionForToday({
     if (a.isEaten) return 1;
     return -1;
   });
+
+  // TODO DELETE THESE DEBUG LOGS
+  console.log("mealsForToday FROM COMPONENT");
+  console.log(mealsForToday);
 
   return (
     <section className="flex flex-col gap-4">
@@ -110,7 +143,8 @@ function NutritionForToday({
               <MealReminder
                 key={meal.id}
                 meal={meal}
-                dayId={assembledDayResult.assembledDay!.id}
+                dayId={assembledDayResult.id}
+                onDataChanged={onDataChanged}
               />
             ))}
 
@@ -118,12 +152,16 @@ function NutritionForToday({
               <EatenFakeMeal
                 key={fakeMeal.id}
                 fakeMeal={fakeMeal}
-                dayId={assembledDayResult.assembledDay!.id}
+                dayId={assembledDayResult.id}
+                onDataChanged={onDataChanged}
               />
             ))}
           </GridAutoCols>
 
-          <AddFoodButton dayId={assembledDayResult.assembledDay!.id} />
+          <AddFoodButton
+            dayId={assembledDayResult.id}
+            onDataChanged={onDataChanged}
+          />
         </>
       )}
 
@@ -157,8 +195,3 @@ function WeightManagement({ daysHistory }: { daysHistory: DayEntry[] }) {
     </section>
   );
 }
-
-export const metadata = {
-  title: "Dashboard",
-  description: "Cimientos dashboard",
-};

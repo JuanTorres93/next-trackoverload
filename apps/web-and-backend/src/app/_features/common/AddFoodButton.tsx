@@ -9,7 +9,15 @@ import AddFakeMealForm from "../fakemeal/AddFakeMealForm";
 import SelectRecipeForm from "../recipe/SelectRecipeForm";
 import { MealTypeSelectionModal } from "./MealTypeModal";
 
-function AddFoodButton({ dayId }: { dayId: string }) {
+function AddFoodButton({
+  dayId,
+  onDataChanged,
+}: {
+  dayId: string;
+  onDataChanged?: () => void;
+}) {
+  const handleDataChanged = onDataChanged ?? (() => {});
+
   return (
     <Modal>
       <Modal.Open opens="add-food-selection">
@@ -29,11 +37,11 @@ function AddFoodButton({ dayId }: { dayId: string }) {
       </Modal.Window>
 
       <Modal.Window name="select-recipe" className="p-0 overflow-hidden">
-        <AddRecipeModal dayId={dayId} />
+        <AddRecipeModal dayId={dayId} onDataChanged={handleDataChanged} />
       </Modal.Window>
 
       <Modal.Window name="add-fake-meal">
-        <AddFakeMealModal dayId={dayId} />
+        <AddFakeMealModal dayId={dayId} onDataChanged={handleDataChanged} />
       </Modal.Window>
     </Modal>
   );
@@ -42,9 +50,11 @@ function AddFoodButton({ dayId }: { dayId: string }) {
 function AddRecipeModal({
   dayId,
   onCloseModal,
+  onDataChanged,
 }: {
   dayId: string;
   onCloseModal?: () => void;
+  onDataChanged: () => void;
 }) {
   async function handleAddMeals(
     recipeIds: string[],
@@ -55,7 +65,10 @@ function AddRecipeModal({
   return (
     <SelectRecipeForm
       addMealsRequest={(recipeIds) => handleAddMeals(recipeIds)}
-      onSuccess={onCloseModal}
+      onSuccess={() => {
+        onCloseModal?.();
+        onDataChanged?.();
+      }}
     />
   );
 }
@@ -63,13 +76,21 @@ function AddRecipeModal({
 function AddFakeMealModal({
   dayId,
   onCloseModal,
+  onDataChanged,
 }: {
   dayId: string;
   onCloseModal?: () => void;
+  onDataChanged: () => void;
 }) {
   return (
     <div className="max-w-200 max-h-160 overflow-y-scroll overscroll-contain w-[80dvw] p-4">
-      <AddFakeMealForm dayId={dayId} onSuccess={onCloseModal} />
+      <AddFakeMealForm
+        dayId={dayId}
+        onSuccess={() => {
+          onCloseModal?.();
+          onDataChanged?.();
+        }}
+      />
     </div>
   );
 }
