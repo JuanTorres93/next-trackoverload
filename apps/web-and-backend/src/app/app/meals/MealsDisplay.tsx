@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -29,6 +29,8 @@ function MealsDisplay({
 }: {
   assembledDays: AssembledDayResult[];
 }) {
+  const [, startTransition] = useTransition();
+
   const [selectedDaysIds, setSelectedDaysIds] = useState<string[]>([]);
   const [activeDayIndex, setActiveDayIndex] = useState<number>(() =>
     findTodayIndex(assembledDays),
@@ -54,10 +56,16 @@ function MealsDisplay({
   async function addMealsRequest(
     recipesIds: string[],
   ): Promise<JSENDResponse<void>> {
-    const response = await addMealsToMultipleDays(selectedDaysIds, recipesIds);
-    setSelectedDaysIds([]);
-
-    return response;
+    return await new Promise<JSENDResponse<void>>((resolve, reject) => {
+      startTransition(() => {
+        void addMealsToMultipleDays(selectedDaysIds, recipesIds)
+          .then((response) => {
+            setSelectedDaysIds([]);
+            resolve(response);
+          })
+          .catch(reject);
+      });
+    });
   }
 
   return (

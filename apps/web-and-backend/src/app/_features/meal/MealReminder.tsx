@@ -49,18 +49,20 @@ function MealReminder({ meal, dayId }: { meal: MealDTO; dayId: string }) {
 
     setIsDeleting(true);
 
-    try {
-      const jsend = await removeMealFromDay(dayId, meal.id);
+    startTransition(async () => {
+      try {
+        const jsend = await removeMealFromDay(dayId, meal.id);
 
-      if (jsend.status === "success") return;
+        if (jsend.status === "success") return;
 
-      showErrorToast(
-        jsend.data?.message ||
-          "Ha ocurrido un error al eliminar la comida. Por favor, intenta nuevamente.",
-      );
-    } finally {
-      setIsDeleting(false);
-    }
+        showErrorToast(
+          jsend.data?.message ||
+            "Ha ocurrido un error al eliminar la comida. Por favor, intenta nuevamente.",
+        );
+      } finally {
+        setIsDeleting(false);
+      }
+    });
   }
 
   return (
