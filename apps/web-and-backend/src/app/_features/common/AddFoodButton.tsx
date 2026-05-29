@@ -1,11 +1,12 @@
 "use client";
 import { HiPlus } from "react-icons/hi2";
 
+import { JSENDResponse } from "@/app/_types/JSEND";
+
+import Modal from "../../_ui/Modal";
 import { addMealsToDay } from "../day/actions";
 import AddFakeMealForm from "../fakemeal/AddFakeMealForm";
 import SelectRecipeForm from "../recipe/SelectRecipeForm";
-import Modal from "../../_ui/Modal";
-
 import { MealTypeSelectionModal } from "./MealTypeModal";
 
 function AddFoodButton({ dayId }: { dayId: string }) {
@@ -45,9 +46,15 @@ function AddRecipeModal({
   dayId: string;
   onCloseModal?: () => void;
 }) {
+  async function handleAddMeals(
+    recipeIds: string[],
+  ): Promise<JSENDResponse<void>> {
+    return await addMealsToDay(dayId, recipeIds);
+  }
+
   return (
     <SelectRecipeForm
-      addMealsRequest={(recipeIds) => addMealsToDay(dayId, recipeIds)}
+      addMealsRequest={(recipeIds) => handleAddMeals(recipeIds)}
       onSuccess={onCloseModal}
     />
   );

@@ -86,8 +86,6 @@ export async function removeMealFromDay(
     revalidatePath(`/app`);
     revalidatePath(`/app/meals`);
 
-    await new Promise((resolve) => setTimeout(resolve, 50));
-
     return {
       status: "success",
       data: undefined,
@@ -156,8 +154,6 @@ export async function addMealsToDay(
     revalidatePath(`/app`);
     revalidatePath(`/app/meals`);
 
-    await new Promise((resolve) => setTimeout(resolve, 50));
-
     return {
       status: "success",
       data: undefined,
@@ -182,8 +178,6 @@ export async function addMealsToMultipleDays(
 
     revalidatePath(`/app`);
     revalidatePath(`/app/meals`);
-
-    await new Promise((resolve) => setTimeout(resolve, 50));
 
     return {
       status: "success",
