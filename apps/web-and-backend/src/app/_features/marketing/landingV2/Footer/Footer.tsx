@@ -9,10 +9,7 @@ function Footer({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
 
   return (
     <footer
-      className={twMerge(
-        "flex flex-col bg-text mt-15 text-white font-secondary",
-        className,
-      )}
+      className={twMerge("flex flex-col bg-text mt-15 text-white", className)}
       {...rest}
     >
       <div className={twMerge("mx-auto w-full max-w-400 py-10", className)}>

@@ -1,7 +1,5 @@
 import { twMerge } from "tailwind-merge";
 
-import { secondaryFont } from "@/app/layout";
-
 // TODO IMPORTANT: Finish styling when design is done
 function Step({
   step,
@@ -17,19 +15,15 @@ function Step({
       )}
       {...rest}
     >
-      <span className="self-start p-3 text-4xl text-white rounded-2xl bg-primary-light">
+      <span className="self-start p-3 text-4xl text-white rounded-2xl bg-primary-light font-secondary">
         {step.numberString}
       </span>
 
       <div></div>
 
-      <h3 className="text-2xl font-semibold">{step.title}</h3>
+      <h3 className="text-2xl font-medium font-secondary">{step.title}</h3>
 
-      <p
-        className={`text-base text-text-minor-emphasis ${secondaryFont.className}`}
-      >
-        {step.description}
-      </p>
+      <p className={`text-base text-text-minor-emphasis`}>{step.description}</p>
     </div>
   );
 }

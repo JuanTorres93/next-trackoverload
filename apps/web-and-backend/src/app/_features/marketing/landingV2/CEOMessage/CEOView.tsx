@@ -22,9 +22,9 @@ function CEOView({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       </div>
 
       <div className="px-4 py-2 bg-primary-light rounded-2xl">
-        <h3 className="text-2xl font-semibold">Juan Torres</h3>
+        <h3 className="text-2xl font-semibold font-secondary">Juan Torres</h3>
 
-        <h4 className="font-secondary">Founder & CEO of Cimientos</h4>
+        <h4>Founder & CEO of Cimientos</h4>
       </div>
     </div>
   );

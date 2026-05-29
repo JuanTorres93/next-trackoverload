@@ -4,8 +4,6 @@ import Link from "next/link";
 
 import { twMerge } from "tailwind-merge";
 
-import { secondaryFont } from "@/app/layout";
-
 import Logo from "../../../_ui/Logo";
 import ButtonPrimary from "../../../_ui/buttons/ButtonPrimary";
 import { getCurrentUserId } from "../../../_utils/auth/getCurrentUserId";
@@ -32,7 +30,7 @@ async function NavBar({
   return (
     <nav
       className={twMerge(
-        `grid grid-rows-1 grid-cols-[max-content_1fr_max-content] px-8 items-center gap-24 py-4 z-20 ${secondaryFont.className}`,
+        `grid grid-rows-1 grid-cols-[max-content_1fr_max-content] px-8 items-center gap-24 py-4 z-20`,
         className,
       )}
       {...rest}

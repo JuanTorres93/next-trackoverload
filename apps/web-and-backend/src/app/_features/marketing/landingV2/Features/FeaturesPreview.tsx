@@ -52,7 +52,7 @@ export function FeatureSummary({ feature }: { feature: FeatureItemType }) {
 
   return (
     <div
-      className={`grid grid-cols-[max-content_1fr] gap-4 p-6 rounded-2xl cursor-default transition ${isSelected ? "bg-primary-lightest font-secondary" : "bg-gray-200"}`}
+      className={`grid grid-cols-[max-content_1fr] gap-4 p-6 rounded-2xl cursor-default transition ${isSelected ? "bg-primary-lightest" : "bg-gray-200"}`}
       onClick={handleSelectFeature}
     >
       <LogoBox
@@ -83,15 +83,17 @@ export function FeatureDescription() {
         <LogoBox className="mt-2" logo={feature!.logo} isSelected={true} />
 
         <div className="flex flex-col gap-2">
-          <h3 className="text-[28px] font-medium">{feature!.mainTitle}</h3>
+          <h3 className="text-[28px] font-medium font-secondary">
+            {feature!.mainTitle}
+          </h3>
 
-          <span className="text-lg font-secondary text-text-minor-emphasis">
+          <span className="text-lg text-text-minor-emphasis">
             {feature!.mainSubtitle}
           </span>
         </div>
       </div>
 
-      <div className="grid grid-cols-[1fr_.6fr] font-secondary h-full gap-6">
+      <div className="grid grid-cols-[1fr_.6fr] h-full gap-6">
         <div className="flex flex-col text-base gap-9">
           <p>{feature!.mainDescription}</p>
 

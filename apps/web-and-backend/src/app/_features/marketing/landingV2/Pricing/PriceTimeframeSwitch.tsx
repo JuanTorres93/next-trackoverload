@@ -21,7 +21,7 @@ function PriceTimeframeSwitch({
   return (
     <div
       className={twMerge(
-        "flex gap-2 border border-primary-light p-1 rounded-2xl font-secondary",
+        "flex gap-2 border border-primary-light p-1 rounded-2xl",
         className,
       )}
       {...rest}

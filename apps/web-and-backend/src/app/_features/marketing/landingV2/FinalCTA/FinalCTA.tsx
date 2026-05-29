@@ -15,13 +15,13 @@ function FinalCTA({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       {...rest}
     >
       <div className="flex flex-col gap-6 text-center text-white z-3 max-w-180">
-        <h2 className="flex flex-col gap-2 text-5xl font-semibold">
+        <h2 className="flex flex-col gap-2 text-5xl font-semibold font-secondary">
           <span>Start your journey with nutrition.</span>
 
           <span>Build a strong foundation.</span>
         </h2>
 
-        <p className="text-lg font-secondary text-[#aeaead]">
+        <p className="text-lg text-[#aeaead]">
           No more overthinking or waiting for the perfect moment. Take the first
           step today with Cimientos and create something meaningful for
           yourself.

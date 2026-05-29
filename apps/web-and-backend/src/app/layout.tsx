@@ -10,12 +10,13 @@ import TextRegular from "./_ui/typography/TextRegular";
 import FixCSSInDevelopment from "./_utils/FixCSSInDevelopment";
 import "./globals.css";
 
-const plusJakartaSans = Plus_Jakarta_Sans({
+export const primaryFont = Inter({
   subsets: ["latin"],
   display: "swap",
+  variable: "--font-primary",
 });
 
-export const secondaryFont = Inter({
+const secondaryFont = Plus_Jakarta_Sans({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-secondary",
@@ -70,7 +71,7 @@ export default function RootLayout({
       style={{ backgroundColor: "#fafafa" }}
     >
       <body
-        className={`${plusJakartaSans.className} ${secondaryFont.variable} antialiased overflow-y-scroll text-text bg-background`}
+        className={`${primaryFont.className} ${secondaryFont.variable} antialiased overflow-y-scroll text-text bg-background`}
       >
         <Providers>
           <TextRegular

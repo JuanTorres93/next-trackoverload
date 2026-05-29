@@ -2,9 +2,6 @@ import { CiCircleRemove } from "react-icons/ci";
 import { FaCircleCheck } from "react-icons/fa6";
 import { twMerge } from "tailwind-merge";
 
-import { secondaryFont } from "@/app/layout";
-
-// TODO IMPORTANT: Finish styling when design is done
 function BulletList({
   bullets,
   listTitle,
@@ -20,7 +17,7 @@ function BulletList({
   return (
     <div className={twMerge("flex flex-col gap-8", className)} {...rest}>
       <h3
-        className={`text-[28px] font-medium leading-[124%] ${isGood && " text-primary-light"}`}
+        className={`text-[28px] font-medium leading-[124%] font-secondary ${isGood && " text-primary-light"}`}
       >
         {listTitle}
       </h3>
@@ -67,7 +64,7 @@ function BulletItem({
       </div>
 
       <div
-        className={`text-base ${isGood ? "text-white" : "text-text-minor-emphasis"} ${secondaryFont.className}`}
+        className={`text-base ${isGood ? "text-white" : "text-text-minor-emphasis"}`}
       >
         {item.intro && <span className="font-semibold">{item.intro} </span>}
 
