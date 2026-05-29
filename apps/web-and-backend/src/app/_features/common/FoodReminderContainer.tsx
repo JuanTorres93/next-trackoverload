@@ -1,7 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-
 import { HiArrowPath } from "react-icons/hi2";
 import { twMerge } from "tailwind-merge";
 
@@ -22,16 +20,12 @@ function FoodReminderContainer({
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
-  const router = useRouter();
-
   async function handleDelete(e: React.MouseEvent<HTMLButtonElement>) {
     e.stopPropagation();
 
     if (!onDelete) return;
 
     await onDelete();
-
-    router.refresh();
   }
 
   return (

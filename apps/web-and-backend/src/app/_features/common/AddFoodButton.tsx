@@ -1,10 +1,11 @@
 "use client";
 import { HiPlus } from "react-icons/hi2";
 
-import Modal from "../../_ui/Modal";
 import { addMealsToDay } from "../day/actions";
 import AddFakeMealForm from "../fakemeal/AddFakeMealForm";
 import SelectRecipeForm from "../recipe/SelectRecipeForm";
+import Modal from "../../_ui/Modal";
+
 import { MealTypeSelectionModal } from "./MealTypeModal";
 
 function AddFoodButton({ dayId }: { dayId: string }) {
