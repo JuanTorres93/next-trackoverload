@@ -5,7 +5,7 @@ import { createAndPersistMultipleTestDaysWithWeights } from "../../../../../test
 import { TestDaysRepo } from "../../../../../tests/repos/TestDaysRepo";
 import { TestUsersRepo } from "../../../../../tests/repos/TestUsersRepo";
 import { dateToDayId } from "../../../../domain/value-objects/DayId/DayId";
-import { AssembledDayResult } from "../../../_features/day/actions";
+import { AssembledDayResult } from "../../../_features/day/queries";
 import MealsDisplay from "../MealsDisplay";
 
 afterEach(() => {

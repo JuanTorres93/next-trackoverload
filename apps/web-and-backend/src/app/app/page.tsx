@@ -11,7 +11,7 @@ import {
   AssembledDayResult,
   getAssembledDayById,
   getLastNumberOfDaysIncludingToday,
-} from "../_features/day/actions";
+} from "../_features/day/queries";
 import EatenFakeMeal from "../_features/fakemeal/EatenFakeMeal";
 import EatenMealsNutritionTracker from "../_features/meal/EatenMealsNutritionTracker";
 import MealReminder from "../_features/meal/MealReminder";

@@ -3,7 +3,7 @@ import { eachDayOfInterval, endOfWeek, startOfWeek } from "date-fns";
 import ErrorBox from "@/app/_ui/ErrorBox";
 
 import { DayId } from "../../../domain/value-objects/DayId/DayId";
-import { getAssembledDaysByIds } from "../../_features/day/actions";
+import { getAssembledDaysByIds } from "../../_features/day/queries";
 import { parseFilterValueToDate } from "../../_features/day/utils/parseFilterValueToDate";
 import PageWrapper from "../../_ui/PageWrapper";
 import MealsDisplay from "./MealsDisplay";
