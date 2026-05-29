@@ -1,4 +1,6 @@
 "use client";
+import { useRouter } from "next/navigation";
+
 import { useTransition } from "react";
 
 import { HiPlus } from "react-icons/hi2";
@@ -48,6 +50,7 @@ function AddRecipeModal({
   dayId: string;
   onCloseModal?: () => void;
 }) {
+  const router = useRouter();
   const [, startTransition] = useTransition();
 
   async function handleAddMeals(
@@ -55,7 +58,15 @@ function AddRecipeModal({
   ): Promise<JSENDResponse<void>> {
     return await new Promise<JSENDResponse<void>>((resolve, reject) => {
       startTransition(() => {
-        void addMealsToDay(dayId, recipeIds).then(resolve, reject);
+        void addMealsToDay(dayId, recipeIds)
+          .then((jsend) => {
+            if (jsend.status === "success") {
+              router.refresh();
+            }
+
+            resolve(jsend);
+          })
+          .catch(reject);
       });
     });
   }
