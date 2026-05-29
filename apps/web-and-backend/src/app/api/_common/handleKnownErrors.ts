@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { isTestRuntime } from "../../../application-layer/utils/isTestRuntime";
 import {
   AlreadyExistsError,
   DomainError,
@@ -19,7 +20,7 @@ export function handleKnownErrors(error: Error): NextResponse<JSENDFailure> {
   let errorMessage =
     "Ha ocurrido un error inesperado. Por favor, intenta nuevamente más tarde.";
 
-  if (process.env.NODE_ENV !== "test") console.error("Domain error:", error);
+  if (!isTestRuntime()) console.error("Domain error:", error);
 
   if (isDomainError(error)) {
     errorMessage = error.message;

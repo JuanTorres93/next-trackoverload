@@ -1,3 +1,4 @@
+import { isTestRuntime } from "../../../application-layer/utils/isTestRuntime";
 import { IngredientFinder } from "../../../domain/services/IngredientFinder.port";
 import { MemoryIngredientFinder } from "../../../infra/services/IngredientsFinder/MemoryIngredientFinder/MemoryIngredientFinder";
 import {
@@ -8,10 +9,9 @@ import { BottleneckRateLimiter } from "../../../infra/services/RateLimiter/Bottl
 import { MemoryTokenBucketRateLimiter } from "../../../infra/services/RateLimiter/MemoryTokenBucketRateLimiter/MemoryTokenBucketRateLimiter";
 import { RateLimiter } from "../../../infra/services/interfaces/RateLimiter.port";
 
-const RateLimiterImpl =
-  process.env.NODE_ENV === "test"
-    ? MemoryTokenBucketRateLimiter
-    : BottleneckRateLimiter;
+const RateLimiterImpl = isTestRuntime()
+  ? MemoryTokenBucketRateLimiter
+  : BottleneckRateLimiter;
 
 const searchRateLimiter: RateLimiter = new RateLimiterImpl(
   READ_RATE_LIMITS.searchQueries.requests,
@@ -24,7 +24,7 @@ const barcodeRateLimiter: RateLimiter = new RateLimiterImpl(
 );
 
 export function createAppIngredientFinder(clientId: string): IngredientFinder {
-  if (process.env.NODE_ENV === "test") {
+  if (isTestRuntime()) {
     return new MemoryIngredientFinder();
   }
 
