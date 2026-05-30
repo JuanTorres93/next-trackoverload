@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -8,6 +8,8 @@ import { HiCheck, HiX } from "react-icons/hi";
 import { HiPlus } from "react-icons/hi2";
 
 import { JSENDResponse } from "@/app/_types/JSEND";
+import { showErrorToast } from "@/app/_ui/showErrorToast";
+import { AssembledDayDTO } from "@/application-layer/dtos/AssembledDayDTO";
 
 import {
   dateToDayId,
@@ -24,11 +26,10 @@ import useSwipe from "../../_hooks/useSwipe";
 import GridAutoCols from "../../_ui/GridAutoCols";
 import Modal from "../../_ui/Modal";
 
-function MealsDisplay({
-  assembledDays,
-}: {
-  assembledDays: AssembledDayResult[];
-}) {
+function MealsDisplay({ dayIds }: { dayIds: string[] }) {
+  const [assembledDays, setAssembledDays] = useState<AssembledDayResult[]>([]);
+  useState(false);
+
   const [selectedDaysIds, setSelectedDaysIds] = useState<string[]>([]);
   const [activeDayIndex, setActiveDayIndex] = useState<number>(() =>
     findTodayIndex(assembledDays),
@@ -42,6 +43,50 @@ function MealsDisplay({
 
     onSwipeRight: () => setActiveDayIndex((prev) => Math.max(prev - 1, 0)),
   });
+
+  useEffect(() => {
+    async function fetchData() {
+      const queryParam = dayIds.join(",");
+
+      const response = await fetch(`/api/day/assembled?ids=${queryParam}`, {
+        cache: "no-store",
+      });
+
+      const assembledDayResultJSEND = await response.json();
+
+      const errorInAssembledDayResult =
+        assembledDayResultJSEND.status !== "success";
+
+      if (!errorInAssembledDayResult) {
+        const assembledDaysById = new Map<string, AssembledDayDTO>();
+
+        assembledDayResultJSEND.data.forEach(
+          (assembledDayDTO: AssembledDayDTO) => {
+            assembledDaysById.set(assembledDayDTO.id, assembledDayDTO);
+          },
+        );
+
+        const assembledDaysResult: AssembledDayResult[] = dayIds.map(
+          (dayId) => ({
+            dayId,
+            assembledDay: assembledDaysById.get(dayId) || null,
+          }),
+        );
+
+        setAssembledDays(assembledDaysResult);
+        setActiveDayIndex(findTodayIndex(assembledDaysResult));
+      } else {
+        setAssembledDays([]);
+
+        showErrorToast(
+          assembledDayResultJSEND.data?.message ||
+            "Ha ocurrido un error al cargar los datos de los días. Por favor, intenta nuevamente.",
+        );
+      }
+    }
+
+    fetchData();
+  }, [dayIds]);
 
   function handleSelectDay(dayId: string) {
     setSelectedDaysIds((prev) =>

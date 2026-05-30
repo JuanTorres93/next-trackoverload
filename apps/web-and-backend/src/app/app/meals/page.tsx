@@ -1,9 +1,6 @@
 import { eachDayOfInterval, endOfWeek, startOfWeek } from "date-fns";
 
-import ErrorBox from "@/app/_ui/ErrorBox";
-
 import { DayId } from "../../../domain/value-objects/DayId/DayId";
-import { getAssembledDaysByIds } from "../../_features/day/actions";
 import { parseFilterValueToDate } from "../../_features/day/utils/parseFilterValueToDate";
 import PageWrapper from "../../_ui/PageWrapper";
 import MealsDisplay from "./MealsDisplay";
@@ -44,19 +41,9 @@ export default async function MealsPage({
       }).value,
   );
 
-  const assembledDaysJSEND = await getAssembledDaysByIds(dayIds);
-
-  const hasError = assembledDaysJSEND.status !== "success";
-
   return (
     <PageWrapper>
-      {hasError && (
-        <ErrorBox>
-          {assembledDaysJSEND.data?.message ||
-            "Ocurrió un error al cargar las comidas. Por favor, intenta de nuevo."}
-        </ErrorBox>
-      )}
-      {!hasError && <MealsDisplay assembledDays={assembledDaysJSEND.data} />}
+      <MealsDisplay dayIds={dayIds} />
     </PageWrapper>
   );
 }
