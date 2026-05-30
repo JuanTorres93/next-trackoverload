@@ -6,11 +6,11 @@ import NavBar from "../_features/marketing/landingV2/NavBar";
 
 // Shown instantly while NavBar is resolving its async work (reading the auth cookie).
 // Matches NavBar's height so the layout doesn't shift when it streams in.
-function NavBarFallback() {
-  return (
-    <div className="fixed top-0 left-0 z-10 w-full h-16.25 bg-surface-card shadow-sm" />
-  );
-}
+//function NavBarFallback() {
+//  return (
+//    <div className="fixed top-0 left-0 z-10 w-full h-16.25 bg-surface-card shadow-sm" />
+//  );
+//}
 
 export default function MarketingLayout({
   children,

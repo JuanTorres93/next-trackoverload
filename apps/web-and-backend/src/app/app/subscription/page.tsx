@@ -4,7 +4,6 @@ import SubscriptionCard from "../../_features/subscription/SubscriptionCard";
 import { getPlanInfo } from "../../_features/subscription/actions";
 import { getLoggedInUser } from "../../_features/user/actions";
 import PageWrapper from "../../_ui/PageWrapper";
-import SectionHeading from "../../_ui/typography/SectionHeading";
 import SubscriptionSuccessRedirect from "./SubscriptionSuccessRedirect";
 
 export const metadata = {

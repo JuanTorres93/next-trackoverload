@@ -1,8 +1,6 @@
-import { AdapterError } from "../../../domain/common/errors";
 import { MemoryUsersRepo } from "../../../infra/repos/memory/MemoryUsersRepo";
 import { MongoUsersRepo } from "../../../infra/repos/mongo/MongoUsersRepo";
 import { injectFor_ProductionDevelopment_Test } from "../../common/injectFor_ProductionDevelopment_Test";
-
 import { mongooseInitPromise } from "./common/initMongoose";
 
 const AppUsersRepo: MemoryUsersRepo | MongoUsersRepo =

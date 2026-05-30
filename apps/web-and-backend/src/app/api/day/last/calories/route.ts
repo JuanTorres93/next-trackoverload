@@ -1,15 +1,14 @@
 import { NextResponse } from "next/server";
 
-import { JSENDResponse } from "../../../../_types/JSEND";
-import { ensureLoggedInUser } from "../../../_common/ensureLoggedInUser";
 import { DayDTO } from "../../../../../application-layer/dtos/DayDTO";
 import { AppGetLastDayWithCaloriesGoalForUserUsecase } from "../../../../../interface-adapters/app/use-cases/day";
-
+import { JSENDResponse } from "../../../../_types/JSEND";
+import { ensureLoggedInUser } from "../../../_common/ensureLoggedInUser";
 import { handleKnownErrors } from "../../../_common/handleKnownErrors";
 
-export async function GET(
-  _req: Request,
-): Promise<NextResponse<JSENDResponse<DayDTO | null>>> {
+export async function GET(): Promise<
+  NextResponse<JSENDResponse<DayDTO | null>>
+> {
   try {
     const { currentUserId, notLoggedInResponse } = await ensureLoggedInUser();
     if (notLoggedInResponse) return notLoggedInResponse;

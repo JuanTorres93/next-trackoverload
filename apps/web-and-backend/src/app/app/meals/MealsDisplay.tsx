@@ -270,7 +270,7 @@ function MobileDayTab({
       }}
       aria-current={isActive ? "date" : undefined}
       data-testid={`mobile-day-tab-${dayId}`}
-      className={`flex flex-col items-center px-3 py-1.5 rounded-xl transition-all cursor-pointer min-w-[2.75rem] relative
+      className={`flex flex-col items-center px-3 py-1.5 rounded-xl transition-all cursor-pointer min-w-11 relative
         ${isActive ? "bg-primary text-white" : "text-text-minor-emphasis hover:bg-surface-light"}
         ${isToday && !isActive ? "font-semibold text-primary" : ""}
       `}
