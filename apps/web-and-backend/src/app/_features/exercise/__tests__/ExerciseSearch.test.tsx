@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
@@ -9,8 +9,8 @@ import ExerciseSearch from "../ExerciseSearch";
 const [BENCH_PRESS, INCLINE_BENCH_PRESS, SQUAT] =
   mockExercisesForExerciseFinder;
 
-beforeEach(() => {
-  mockExerciseApiFetch();
+beforeEach(async () => {
+  await mockExerciseApiFetch();
 });
 
 function renderExerciseSearch() {
@@ -153,35 +153,32 @@ describe("ExerciseSearch — sets", () => {
 });
 
 describe("ExerciseSearch — infinite scroll", () => {
-  const PAGE_1 = mockExercisesForExerciseFinder.slice(0, 2);
-  const PAGE_2 = mockExercisesForExerciseFinder.slice(2);
+  const PRESS_RESULTS = mockExercisesForExerciseFinder.filter((item) =>
+    item.exercise.name.toLowerCase().includes("press"),
+  );
 
   let observerCallback: IntersectionObserverCallback | null = null;
 
   beforeEach(() => {
     observerCallback = null;
+
     vi.stubGlobal(
       "IntersectionObserver",
       vi.fn((callback: IntersectionObserverCallback) => {
         observerCallback = callback;
+
         return { observe: vi.fn(), disconnect: vi.fn(), unobserve: vi.fn() };
       }),
     );
-
-    mockExerciseApiFetch({
-      fuzzyResolver: (_term, page) => {
-        if (page === 1) return PAGE_1;
-        if (page === 2) return PAGE_2;
-        return [];
-      },
-    });
   });
 
-  function triggerBottomReached() {
-    observerCallback?.(
-      [{ isIntersecting: true }] as IntersectionObserverEntry[],
-      {} as IntersectionObserver,
-    );
+  async function triggerBottomReached() {
+    await act(async () => {
+      observerCallback?.(
+        [{ isIntersecting: true }] as IntersectionObserverEntry[],
+        {} as IntersectionObserver,
+      );
+    });
   }
 
   async function setupWithResults() {
@@ -194,42 +191,55 @@ describe("ExerciseSearch — infinite scroll", () => {
   }
 
   it("fetches the next page when reaching the end of the list", async () => {
+    const fetchSpy = vi.spyOn(global, "fetch");
+
     await setupWithResults();
-    const list = screen.getByTestId("exercise-list");
+    expect(fetchSpy).toHaveBeenCalledWith(expect.stringContaining("page=1"));
 
-    expect(list.children).toHaveLength(2);
+    await triggerBottomReached();
 
-    triggerBottomReached();
-
-    await waitFor(() => expect(list.children).toHaveLength(3));
+    await waitFor(() => {
+      expect(fetchSpy).toHaveBeenCalledWith(expect.stringContaining("page=2"));
+    });
   });
 
   it("preserves existing results when appending the next page", async () => {
     await setupWithResults();
+
     const list = screen.getByTestId("exercise-list");
+    const initialLength = list.children.length;
 
-    triggerBottomReached();
+    expect(initialLength).toBe(PRESS_RESULTS.length);
 
-    await waitFor(() => expect(list.children).toHaveLength(3));
+    await triggerBottomReached();
 
-    expect(list.children[0]).toHaveTextContent(PAGE_1[0].exercise.name);
-    expect(list.children[1]).toHaveTextContent(PAGE_1[1].exercise.name);
-    expect(list.children[2]).toHaveTextContent(PAGE_2[0].exercise.name);
+    await waitFor(() => {
+      expect(list.children.length).toBe(initialLength * 2);
+    });
+
+    expect(list.children[0]).toHaveTextContent(PRESS_RESULTS[0].exercise.name);
+    expect(list.children[1]).toHaveTextContent(PRESS_RESULTS[1].exercise.name);
   });
 
-  it("stops fetching when the API returns no more results", async () => {
+  it("requests subsequent pages on repeated bottom intersections", async () => {
+    const fetchSpy = vi.spyOn(global, "fetch");
+
     await setupWithResults();
     const list = screen.getByTestId("exercise-list");
+    const initialLength = list.children.length;
 
-    triggerBottomReached();
-    await waitFor(() => expect(list.children).toHaveLength(3));
+    await triggerBottomReached();
+    await waitFor(() => {
+      expect(fetchSpy).toHaveBeenCalledWith(expect.stringContaining("page=2"));
+    });
 
-    // page 3 → empty
-    triggerBottomReached();
-    await waitFor(() => expect(list.children).toHaveLength(3));
+    await triggerBottomReached();
+    await waitFor(() => {
+      expect(fetchSpy).toHaveBeenCalledWith(expect.stringContaining("page=3"));
+    });
 
-    // further triggers should not change anything
-    triggerBottomReached();
-    await waitFor(() => expect(list.children).toHaveLength(3));
+    await waitFor(() => {
+      expect(list.children.length).toBe(initialLength * 3);
+    });
   });
 });

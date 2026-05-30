@@ -2,7 +2,7 @@ import { ExerciseFinderResult } from "../../src/domain/services/ExerciseFinder.p
 import { AppCreateExerciseUsecase } from "../../src/interface-adapters/app/use-cases/exercise";
 import { TestExercisesRepo } from "../../tests/repos/TestExercisesRepo";
 
-const exercisePropsForUseCase = [
+export const exercisePropsForUseCase = [
   { name: "Bench Press" },
   { name: "Incline Bench Press" },
   { name: "Squat" },

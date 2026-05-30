@@ -1,15 +1,21 @@
 import { vi } from "vitest";
 
-import { ExerciseFinderResult } from "../../src/domain/services/ExerciseFinder.port";
-import { mockExercisesForExerciseFinder } from "./exercises";
+import { CreateExerciseUsecase } from "@/application-layer/use-cases/exercise/CreateExercise/CreateExercise.usecase";
+import { FindExerciseByFuzzyNameUsecase } from "@/application-layer/use-cases/exercise/FindExerciseByFuzzyName/FindExerciseByFuzzyNameUsecase";
+import { MemoryExercisesRepo } from "@/infra/repos/memory/MemoryExercisesRepo";
+import MemoryExerciseFinder from "@/infra/services/ExerciseFinder/MemoryExerciseFinder/MemoryExerciseFinder";
+import { Uuidv4IdGenerator } from "@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator";
 
-export function mockExerciseApiFetch(options?: {
-  fuzzyResolver?: FuzzyResolver;
-}) {
-  const fuzzyResolver = options?.fuzzyResolver ?? lowerCaseFuzzyResolver;
+import {
+  exercisePropsForUseCase,
+  mockExercisesForExerciseFinder,
+} from "./exercises";
 
-  vi.spyOn(global, "fetch").mockImplementation((input) => {
-    const url = typeof input === "string" ? input : input.toString();
+export async function mockExerciseApiFetch() {
+  const { findExerciseByFuzzyNameUsecase } = await initializeMockAPI();
+
+  vi.spyOn(global, "fetch").mockImplementation(async (fetchURL) => {
+    const url = typeof fetchURL === "string" ? fetchURL : fetchURL.toString();
 
     if (url.includes("/api/exercise/fuzzy/")) {
       const [path, query] = url.split("/api/exercise/fuzzy/")[1].split("?");
@@ -20,7 +26,10 @@ export function mockExerciseApiFetch(options?: {
         10,
       );
 
-      const data = fuzzyResolver(term, page);
+      const data = await findExerciseByFuzzyNameUsecase.execute({
+        name: term,
+        page,
+      });
 
       return Promise.resolve(
         new Response(JSON.stringify({ status: "success", data }), {
@@ -33,10 +42,31 @@ export function mockExerciseApiFetch(options?: {
   });
 }
 
-type FuzzyResolver = (term: string, page: number) => ExerciseFinderResult[];
-
-function lowerCaseFuzzyResolver(term: string): ExerciseFinderResult[] {
-  return mockExercisesForExerciseFinder.filter((e) =>
-    e.exercise.name.toLowerCase().includes(term.toLowerCase()),
+async function initializeMockAPI() {
+  const mockExercisesRepo = new MemoryExercisesRepo();
+  const mockExerciseFinder = new MemoryExerciseFinder(
+    mockExercisesForExerciseFinder,
   );
+
+  const createExerciseUsecase = new CreateExerciseUsecase(
+    mockExercisesRepo,
+    new Uuidv4IdGenerator(),
+  );
+  const findExerciseByFuzzyNameUsecase = new FindExerciseByFuzzyNameUsecase(
+    mockExerciseFinder,
+  );
+
+  const promises = exercisePropsForUseCase.map((exercise) =>
+    createExerciseUsecase.execute({
+      name: exercise.name,
+    }),
+  );
+
+  await Promise.all(promises);
+
+  return {
+    mockExercisesRepo,
+    createExerciseUsecase,
+    findExerciseByFuzzyNameUsecase,
+  };
 }
