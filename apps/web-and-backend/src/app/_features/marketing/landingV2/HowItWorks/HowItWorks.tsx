@@ -15,7 +15,7 @@ function HowItWorks({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       id="how-it-works"
       {...rest}
     >
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-3 gap-6 max-bp-landing-steps:grid-cols-2 max-bp-landing-steps-smallest:grid-cols-1">
         {steps.map((step) => (
           <Step key={step.numberString} step={step} />
         ))}

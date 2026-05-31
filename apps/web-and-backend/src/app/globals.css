@@ -59,6 +59,8 @@
   --breakpoint-bp-landing-reason-why: 1010px;
   --breakpoint-bp-landing-reason-why-mobile: 640px;
   --breakpoint-bp-landing-hero: 875px;
+  --breakpoint-bp-landing-steps: 947px;
+  --breakpoint-bp-landing-steps-smallest: 653px;
 
   --breakpoint-bp-recipe-page: 863px;
   --breakpoint-bp-recipe-page-second: 445px;
