@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { FaCheck } from "react-icons/fa";
 import { twMerge } from "tailwind-merge";
 
@@ -8,7 +9,7 @@ import TextMassive from "@/app/_ui/typography/TextMassive";
 
 import Tag from "./Tag";
 
-function PriceCard({
+async function PriceCard({
   price,
   ...props
 }: {
@@ -16,6 +17,7 @@ function PriceCard({
   isHighlighted?: boolean;
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
+  const t = await getTranslations("");
 
   return (
     <div
@@ -28,7 +30,7 @@ function PriceCard({
       )}
       {...rest}
     >
-      <Tag>{price.tagline}</Tag>
+      <Tag>{t(price.taglineTranslationKey)}</Tag>
 
       <div className="flex flex-col gap-2.5">
         <div>
@@ -39,11 +41,11 @@ function PriceCard({
           <TextExtraLarge as="span">/month</TextExtraLarge>
         </div>
 
-        <TextLarge>{price.shortDescription}</TextLarge>
+        <TextLarge>{t(price.shortDescriptionTranslationKey)}</TextLarge>
       </div>
 
       <TextLarge as="ul" className="flex flex-col gap-2 py-4 list-inside">
-        {price.features.map((feature, index) => (
+        {price.featuresTranslationKeys.map((featureTranslationKey, index) => (
           <li key={index} className="flex items-center gap-3">
             <div
               className={`flex items-center justify-center p-1 rounded-full ${price.isFlagship ? "bg-primary-lightest/40 text-white" : "bg-gray-300 text-gray-600"}`}
@@ -51,7 +53,7 @@ function PriceCard({
               <FaCheck size={8} />
             </div>
 
-            <span>{feature}</span>
+            <span>{t(featureTranslationKey)}</span>
           </li>
         ))}
       </TextLarge>
@@ -60,7 +62,7 @@ function PriceCard({
         href="/auth/register"
         className={`mt-auto text-center ${price.isFlagship ? "bg-white border-white" : "bg-transparent text-text border-text hover:bg-gray-300 hover:text-text"}`}
       >
-        {price.ctaText}
+        {t(price.ctaTextTranslationKey)}
       </ButtonPrimary>
     </div>
   );
@@ -74,10 +76,10 @@ function formatPrice(priceInEurosCents: number) {
 
 export type PriceItemType = {
   priceInEurosCents: number;
-  tagline: string;
-  shortDescription: string;
-  features: string[];
-  ctaText: string;
+  taglineTranslationKey: string;
+  shortDescriptionTranslationKey: string;
+  featuresTranslationKeys: string[];
+  ctaTextTranslationKey: string;
   isFlagship?: boolean;
 };
 

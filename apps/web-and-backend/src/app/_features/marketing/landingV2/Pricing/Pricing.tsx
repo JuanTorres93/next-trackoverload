@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { twMerge } from "tailwind-merge";
 
 import { getPlanInfo } from "@/app/_features/subscription/actions";
@@ -9,7 +10,10 @@ import PriceTimeframeSwitch from "./PriceTimeframeSwitch";
 
 async function Pricing({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
-  const sectionTitle = "Build the foundation.";
+
+  const t = await getTranslations("LandingPage.pricing");
+
+  const sectionTitle = t("heading");
 
   const planInfoJsend = await getPlanInfo();
 
@@ -24,6 +28,7 @@ async function Pricing({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
         {...rest}
       >
         <div className="p-4 mb-6 text-red-800 bg-red-100 rounded">
+          {/* TODO translate */}
           Hubo un error al recuperar la información de precios. Por favor,
           inténtalo de nuevo.
         </div>
@@ -41,23 +46,28 @@ async function Pricing({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
     );
   }
 
-  const flagshipPrice = {
+  const flagshipPrice: PriceItemType = {
     priceInEurosCents: planInfoJsend.data.priceInEurCents,
-    tagline: "Pro",
-    shortDescription: `The complete foundation system`,
-    features: [
-      "Essential macro tracking (protein and calories).",
-      "Advanced progress dashboard.",
-      "Custom food & meals templates.",
+    taglineTranslationKey: "LandingPage.pricing.paid.tag",
+    shortDescriptionTranslationKey: "LandingPage.pricing.paid.subtitle",
+    featuresTranslationKeys: [
+      "LandingPage.pricing.common-bullets.0",
+      "LandingPage.pricing.common-bullets.1",
+      "LandingPage.pricing.common-bullets.2",
+      "LandingPage.pricing.common-bullets.3",
       // TODO IMPORTANT: update when exercise module is released
-      "Exercise tracking (when released).",
-      "Priority support.",
+      "LandingPage.pricing.paid.bullets.0",
     ],
-    ctaText: "Start Building Your Foundation",
+    ctaTextTranslationKey: "LandingPage.pricing.paid.cta",
     isFlagship: true,
   };
 
-  if (!priceItems.some((item) => item.tagline === flagshipPrice.tagline))
+  if (
+    !priceItems.some(
+      (item) =>
+        item.taglineTranslationKey === flagshipPrice.taglineTranslationKey,
+    )
+  )
     priceItems.push(flagshipPrice);
 
   return (
@@ -85,16 +95,16 @@ async function Pricing({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
 const priceItems: PriceItemType[] = [
   {
     priceInEurosCents: 0,
-    tagline: "Free",
-    shortDescription: `Free Trial to ${FREE_TRIAL_DAYS} days`,
-    features: [
-      "Essential macro tracking (protein and calories).",
-      "Advanced progress dashboard.",
-      "Custom food & meals templates.",
+    taglineTranslationKey: "LandingPage.pricing.free.tag",
+    shortDescriptionTranslationKey: "LandingPage.pricing.free.subtitle",
+    featuresTranslationKeys: [
+      "LandingPage.pricing.common-bullets.0",
+      "LandingPage.pricing.common-bullets.1",
+      "LandingPage.pricing.common-bullets.2",
       // TODO IMPORTANT: update when exercise module is released
-      "Exercise tracking (when released).",
+      "LandingPage.pricing.common-bullets.3",
     ],
-    ctaText: "Get Started Free",
+    ctaTextTranslationKey: "LandingPage.pricing.free.cta",
   },
 ];
 

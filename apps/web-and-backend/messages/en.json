@@ -150,6 +150,30 @@
           "p4": "This app removes friction, helps build consistency, and gives you a practical, sustainable system to transform your body with confidence."
         }
       }
+    },
+    "pricing": {
+      "heading": "Build the foundation.",
+      "subheading": "",
+      "month": "month",
+      "free": {
+        "tag": "Free",
+        "subtitle": "Free Trial to 14 days",
+        "cta": "Get Started Free"
+      },
+      "paid": {
+        "tag": "Pro",
+        "subtitle": "The complete foundation system",
+        "bullets": {
+          "0": "Priority support."
+        },
+        "cta": "Start Building Your Foundation"
+      },
+      "common-bullets": {
+        "0": "Essential macro tracking (protein and calories).",
+        "1": "Advanced progress dashboard.",
+        "2": "Custom food & meals templates.",
+        "3": "Exercise tracking (when released)."
+      }
     }
   }
 }
