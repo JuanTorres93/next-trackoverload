@@ -1,12 +1,12 @@
-function TextRegular({
-  as: Component = "div",
+import type { PolymorphicProps } from "./polymorphicType";
+
+function TextRegular<T extends React.ElementType = "div">({
+  as,
   children,
-  ...props
-}: {
-  as?: React.ElementType;
-  children: React.ReactNode;
-} & React.HTMLAttributes<HTMLElement>) {
-  const { className, ...rest } = props;
+  className,
+  ...rest
+}: PolymorphicProps<T>) {
+  const Component = (as || "div") as React.ElementType;
 
   return (
     <Component
