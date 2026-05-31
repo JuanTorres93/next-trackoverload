@@ -131,6 +131,25 @@
           "1": "Clear progression systems to build strength without confusion."
         }
       }
+    },
+    "ceo": {
+      "heading": "A Message from Our CEO: Simple, Focused Fitness for Real Results.",
+      "subheading": "",
+      "company-position": "Founder & CEO of Cimientos",
+      "quote": {
+        "title": "Why I Created This App?",
+        "description": {
+          "p1": "When I first started with fitness, I struggled to find an app that made the process simple and clear for beginners. Tracking workouts, meals and progress across multiple apps was overwhelming.",
+          "p2": "I created this app to make fitness simple, focused, and straightforward so users can see progress early, adjust quickly, and stay motivated.",
+          "p3": "What You Can Do:",
+          "bullets": {
+            "0": "Plan meals with focus on calories and protein, and create reusable recipes.",
+            "1": "Build and customize workout templates.",
+            "2": "Track strength progress and body weight over time."
+          },
+          "p4": "This app removes friction, helps build consistency, and gives you a practical, sustainable system to transform your body with confidence."
+        }
+      }
     }
   }
 }

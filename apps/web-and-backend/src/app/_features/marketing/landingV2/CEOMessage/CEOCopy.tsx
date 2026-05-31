@@ -1,9 +1,12 @@
+import { getTranslations } from "next-intl/server";
 import { twMerge } from "tailwind-merge";
 
 import TextLarge from "@/app/_ui/typography/TextLarge";
 
-function CEOCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
+async function CEOCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
+
+  const t = await getTranslations("LandingPage.ceo");
 
   return (
     <div
@@ -14,39 +17,25 @@ function CEOCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       {...rest}
     >
       <h3 className="text-[28px] font-medium text-primary">
-        Why I Created This App?
+        {t("quote.title")}
       </h3>
 
       <TextLarge as="div" className="flex flex-col gap-4.5">
-        <p>
-          When I first started with fitness, I struggled to find an app that
-          made the process simple and clear for beginners. Tracking workouts,
-          meals and progress across multiple apps was overwhelming.
-        </p>
+        <p>{t("quote.description.p1")}</p>
 
-        <p>
-          I created this app to make fitness simple, focused, and
-          straightforward so users can see progress early, adjust quickly, and
-          stay motivated.
-        </p>
+        <p>{t("quote.description.p2")}</p>
 
-        <p className="pt-2">What You Can Do:</p>
+        <p className="pt-2">{t("quote.description.p3")}</p>
 
         <ul className="list-disc list-inside ">
-          <li>
-            Plan meals with focus on calories and protein, and create reusable
-            recipes.
-          </li>
+          <li>{t("quote.description.bullets.0")}</li>
 
-          <li>Build and customize workout templates.</li>
+          <li>{t("quote.description.bullets.1")}</li>
 
-          <li>Track strength progress and body weight over time.</li>
+          <li>{t("quote.description.bullets.2")}</li>
         </ul>
 
-        <p>
-          This app removes friction, helps build consistency, and gives you a
-          practical, sustainable system to transform your body with confidence.
-        </p>
+        <p>{t("quote.description.p4")}</p>
       </TextLarge>
     </div>
   );

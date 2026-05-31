@@ -1,11 +1,14 @@
+import { getTranslations } from "next-intl/server";
 import { twMerge } from "tailwind-merge";
 
 import LandingSection from "../LandingSection";
 import CEOCopy from "./CEOCopy";
 import CEOView from "./CEOView";
 
-function CEOMessage({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
+async function CEOMessage({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
+
+  const t = await getTranslations("LandingPage.ceo");
 
   return (
     <LandingSection
@@ -13,7 +16,7 @@ function CEOMessage({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
         "relative overflow-hidden rounded-4xl py-20 max-bp-landing-CEO-smallest:pb-0",
         className,
       )}
-      title="A Message from Our CEO: Simple, Focused Fitness for Real Results."
+      title={t("heading")}
       {...rest}
     >
       <div className="relative z-3 grid grid-cols-[.35fr_1fr] gap-7.5 max-bp-landing-CEO:grid-cols-[.55fr_1fr] max-bp-landing-CEO-smallest:grid-cols-1 max-bp-landing-CEO-smallest:gap-12">

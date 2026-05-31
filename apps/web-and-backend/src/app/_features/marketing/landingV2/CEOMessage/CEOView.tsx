@@ -1,12 +1,15 @@
 import Image from "next/image";
 
+import { getTranslations } from "next-intl/server";
 import { twMerge } from "tailwind-merge";
 
 import ceoImage from "@/../public/yo-cimientos.webp";
 import TextEnormous from "@/app/_ui/typography/TextEnormous";
 
-function CEOView({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
+async function CEOView({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
+
+  const t = await getTranslations("LandingPage.ceo");
 
   return (
     <div
@@ -27,7 +30,7 @@ function CEOView({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
           Juan Torres
         </TextEnormous>
 
-        <h4>Founder & CEO of Cimientos</h4>
+        <h4>{t("company-position")}</h4>
       </div>
     </div>
   );
