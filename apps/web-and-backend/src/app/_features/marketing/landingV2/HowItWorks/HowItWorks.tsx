@@ -28,9 +28,8 @@ const steps: StepItemType[] = [
   {
     numberString: "01",
     title: "Establish Your Baseline",
-    // TODO IMPORTANT: Pendiente de que Rishad lo actualice
     description:
-      "No rigid guidelines or high pressure. We begin by calculating basic nutritional boundaries centered on your schedule and favorite foods. No scales required.",
+      "No rigid rules or high pressure. We begin by defining personalized nutrition and exercise guidelines based on your goals, schedule, activity level, and food preferences.",
   },
   {
     numberString: "02",

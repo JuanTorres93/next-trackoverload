@@ -70,11 +70,14 @@ const featuresData: FeatureItemType[] = [
     summarySubtitle:
       "Track your actual progress over time and easily reuse previous meals for consistency.",
 
-    // TODO IMPORTANT: I need to get this from Rishad
-    mainTitle: "",
-    mainSubtitle: "",
-    mainDescription: "",
-    mainBullets: [],
+    mainTitle: "Calm weight tracking & short to long term trends.",
+    mainSubtitle: "Track real physical progress without daily scale anxiety.",
+    mainDescription:
+      "Daily weight fluctuations can be discouraging. Cimientos helps you stay focused with clear 13, 30, an 90-day progress trends, while smart meal memory lets you save and reuse pre-calculated protein and calorie-focused meals with a single tap.",
+    mainBullets: [
+      "Short, medium, and long-term trend analysis.",
+      "Instant duplication & reuse of pre-calculated staple meals.",
+    ],
     mainImageUrl: weightLogImage,
   },
   {
@@ -85,11 +88,14 @@ const featuresData: FeatureItemType[] = [
     summaryTitle: "Exercise Systems",
     summarySubtitle: "Straightforward gym & home routines to build strength.",
 
-    // TODO IMPORTANT: I need to get this from Rishad
-    mainTitle: "",
-    mainSubtitle: "",
-    mainDescription: "",
-    mainBullets: [],
+    mainTitle: "Clear workout routines designed for shy guys.",
+    mainSubtitle: "No complicated gym machines or complex fitness jargon.",
+    mainDescription:
+      "Going to a busy gym when you feel insecure can be overwhelming. Cimientos' upcoming exercise feature will provide ste-by-step home templates and introductory dumbbell routines. No flashy posing just foundational physical strength.",
+    mainBullets: [
+      "Simplified workout routines to avoid overthinking.",
+      "Clear progression systems to build strength without confusion.",
+    ],
     // TODO IMPORTANT: change image
     mainImageUrl: weightLogImage,
   },
