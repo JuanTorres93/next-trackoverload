@@ -17,8 +17,6 @@ async function BulletList({
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
-  const t = await getTranslations("LandingPage");
-
   return (
     <div className={twMerge("flex flex-col gap-8", className)} {...rest}>
       <h3

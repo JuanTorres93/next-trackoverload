@@ -1,14 +1,17 @@
+import { getTranslations } from "next-intl/server";
 import { twMerge } from "tailwind-merge";
 
 import TextEnormous from "@/app/_ui/typography/TextEnormous";
 import TextLessHuge from "@/app/_ui/typography/TextLessHuge";
 import TextRegular from "@/app/_ui/typography/TextRegular";
 
-function Step({
+async function Step({
   step,
   ...props
 }: { step: StepItemType } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
+
+  const t = await getTranslations("");
 
   return (
     <div
@@ -28,11 +31,11 @@ function Step({
       <div></div>
 
       <TextEnormous as="h3" className="font-medium font-secondary">
-        {step.title}
+        {t(step.titleTranslationKey)}
       </TextEnormous>
 
       <TextRegular as="p" className={`text-text-minor-emphasis`}>
-        {step.description}
+        {t(step.descriptionTranslationKey)}
       </TextRegular>
     </div>
   );
@@ -40,8 +43,8 @@ function Step({
 
 export type StepItemType = {
   numberString: string;
-  title: string;
-  description: string;
+  titleTranslationKey: string;
+  descriptionTranslationKey: string;
 };
 
 export default Step;

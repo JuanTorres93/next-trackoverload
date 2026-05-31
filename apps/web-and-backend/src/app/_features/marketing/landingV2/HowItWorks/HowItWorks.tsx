@@ -1,16 +1,18 @@
+import { getTranslations } from "next-intl/server";
 import { twMerge } from "tailwind-merge";
 
 import LandingSection from "../LandingSection";
 import Step, { StepItemType } from "./Step";
 
-function HowItWorks({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
+async function HowItWorks({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
+  const t = await getTranslations("LandingPage.how-it-works");
 
   return (
     <LandingSection
       className={twMerge("", className)}
-      title="Three steps to your foundation."
-      subtitle="Real physical transformation doesn't require living in the gym. We help you design your plan to blend into your current lifestyle seamlessly."
+      title={t("heading")}
+      subtitle={t("subheading")}
       id="how-it-works"
       {...rest}
     >
@@ -26,21 +28,18 @@ function HowItWorks({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
 const steps: StepItemType[] = [
   {
     numberString: "01",
-    title: "Establish Your Baseline",
-    description:
-      "No rigid rules or high pressure. We begin by defining personalized nutrition and exercise guidelines based on your goals, schedule, activity level, and food preferences.",
+    titleTranslationKey: "LandingPage.how-it-works.step-1.title",
+    descriptionTranslationKey: "LandingPage.how-it-works.step-1.description",
   },
   {
     numberString: "02",
-    title: "Set Once, Repeat Forever",
-    description:
-      "Since manufacturer labels estimate protein and calories, precise daily weighing is useless. Calculate your favorite staple meals once using standard labels or a scale, and duplicate them with one tap.",
+    titleTranslationKey: "LandingPage.how-it-works.step-2.title",
+    descriptionTranslationKey: "LandingPage.how-it-works.step-2.description",
   },
   {
     numberString: "03",
-    title: "Build Self Respect",
-    description:
-      "Watch your physical body change as your self-esteem and clarity improve. Develop healthy consistency that carries over into career, social life, and mindset.",
+    titleTranslationKey: "LandingPage.how-it-works.step-3.title",
+    descriptionTranslationKey: "LandingPage.how-it-works.step-3.description",
   },
 ];
 
