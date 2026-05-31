@@ -10,11 +10,14 @@ function CEOMessage({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
 
   return (
     <LandingSection
-      className={twMerge("relative overflow-hidden rounded-4xl", className)}
+      className={twMerge(
+        "relative overflow-hidden rounded-4xl py-20 max-bp-landing-CEO-smallest:pb-0",
+        className,
+      )}
       title="A Message from Our CEO: Simple, Focused Fitness for Real Results."
       {...rest}
     >
-      <div className="relative z-3 py-20 grid grid-cols-[.35fr_1fr] gap-7.5 max-bp-landing-CEO:grid-cols-[.55fr_1fr]">
+      <div className="relative z-3 grid grid-cols-[.35fr_1fr] gap-7.5 max-bp-landing-CEO:grid-cols-[.55fr_1fr] max-bp-landing-CEO-smallest:grid-cols-1 max-bp-landing-CEO-smallest:gap-12">
         <CEOView />
 
         <CEOCopy />

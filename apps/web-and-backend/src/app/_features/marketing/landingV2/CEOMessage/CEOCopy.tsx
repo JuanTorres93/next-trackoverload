@@ -8,7 +8,7 @@ function CEOCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={twMerge(
-        "bg-white flex flex-col gap-6 justify-center px-8.5 py-13 rounded-2xl",
+        "bg-white flex flex-col gap-6 justify-center px-8.5 py-13 rounded-2xl max-bp-landing-CEO-smallest:border max-bp-landing-CEO-smallest:border-primary-lightest",
         className,
       )}
       {...rest}

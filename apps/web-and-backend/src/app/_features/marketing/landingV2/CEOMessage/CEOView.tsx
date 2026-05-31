@@ -13,7 +13,7 @@ function CEOView({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       className={twMerge("flex flex-col gap-5 text-white", className)}
       {...rest}
     >
-      <div className="relative h-full overflow-hidden aspect-4/5 rounded-2xl">
+      <div className="relative h-full overflow-hidden aspect-4/5 rounded-2xl max-bp-landing-CEO-smallest:h-120 max-bp-landing-CEO-smallest:aspect-auto">
         <Image
           src={ceoImage}
           alt={"Hero Image"}

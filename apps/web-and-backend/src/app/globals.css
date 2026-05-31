@@ -53,6 +53,7 @@
 
   /* Breakpoints */
   --breakpoint-bp-landing-CEO: 1353px;
+  --breakpoint-bp-landing-CEO-smallest: 820px;
   --breakpoint-bp-change-font: 1321px;
   --breakpoint-bp-landing-reduce-padding: 1250px;
   --breakpoint-bp-landing-reduce-more-padding: 1080px;
