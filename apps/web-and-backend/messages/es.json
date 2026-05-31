@@ -1,0 +1,180 @@
+{
+  "LandingPage": {
+    "navbar": {
+      "about": "Nosotros",
+      "how-it-works": "Cómo funciona",
+      "features": "Funcionalidades",
+      "testimonials": "Testimonios",
+      "pricing": "Precios",
+      "cta": "Empieza tu camino"
+    },
+    "hero": {
+      "eyebrow": "Fitness centrado en la nutrición para hombres que buscan claridad, no presión.",
+      "heading-1": "Construye el cuerpo que",
+      "heading-highlight": "te da confianza",
+      "heading-2": "sin obsesionarte con cada gramo.",
+      "subheading": "Cimientos te ayuda a simplificar la nutrición, mantener la constancia y crear una base práctica para ganar músculo, perder grasa y ganar confianza real. Sin planes confusos. Sin registros extremos. Solo un camino claro hacia adelante.",
+      "cta": "Empieza tu camino",
+      "seeHowItWorks": "Ver cómo funciona"
+    },
+    "footer": {
+      "copy": "Un sistema simple de bases de fitness para hombres que quieren un cuerpo mejor y una vida con más confianza, sin agobios.",
+      "home": "Inicio",
+      "about": "Nosotros",
+      "how-it-works": "Cómo funciona",
+      "features": "Funcionalidades",
+      "testimonials": "Testimonios",
+      "pricing": "Precios",
+      "pricing-column": {
+        "basic": "Plan Básico",
+        "premium": "Plan Premium"
+      },
+      "copyright": "Todos los derechos reservados."
+    },
+    "about": {
+      "heading": "Por qué las apps de fitness tradicionales te hacen abandonar.",
+      "subheading": "No estás fallando por pereza. Fallas porque las herramientas y consejos no se diseñaron para alguien que empieza justo donde tú estás.",
+      "badge": "La confianza de nuestros primeros usuarios, que empezaron su camino fitness desde cero",
+      "bad": {
+        "title": "Lo que agota tu confianza:",
+        "item-1": {
+          "intro": "Controlar al milímetro cada gramo:",
+          "description": "Escanear códigos de barras por cada hoja de lechuga genera estrés mental y ansiedad profunda."
+        },
+        "item-2": {
+          "intro": "Foco obsesivo en culturistas extremos:",
+          "description": "Los anuncios incesantes de abdominales perfectos hacen que el progreso normal parezca inútil."
+        },
+        "item-3": {
+          "intro": "Sistemas de rachas estrictos y agresivos:",
+          "description": "Fallar un solo día activa alertas que te humillan y te bloquean por completo."
+        },
+        "item-4": {
+          "intro": "Pensar y planificar demasiado:",
+          "description": "Pasar 3 horas buscando la rutina perfecta sin llegar a levantar una sola pesa."
+        }
+      },
+      "good": {
+        "title": "Cómo Cimientos cambia las reglas del juego:",
+        "item-1": {
+          "intro": "Las comidas se miden por gramos, y las estimaciones de los envases son válidas. Cada comida se pesa una vez y se guarda como receta reutilizable para registrarla fácilmente y volver a usarla.",
+          "description": ""
+        },
+        "item-2": {
+          "intro": "El respeto por uno mismo primero:",
+          "description": "Diseñado para hombres introvertidos o tímidos que buscan ganar confianza y fuerza desde cero."
+        },
+        "item-3": {
+          "intro": "Métricas de constancia adaptativas:",
+          "description": "Un día perdido no es un fracaso, solo un descanso humano normal. El registro se recalcula automáticamente."
+        },
+        "item-4": {
+          "intro": "",
+          "description": "Tus necesidades calóricas evolucionan de forma natural. Aprende a ajustarlas según las señales de tu propio cuerpo con nuestra guía sencilla paso a paso."
+        }
+      }
+    },
+    "how-it-works": {
+      "heading": "Tres pasos para construir tus cimientos.",
+      "subheading": "La transformación física real no requiere vivir en el gimnasio. Te ayudamos a diseñar tu plan para que se integre en tu estilo de vida actual sin esfuerzo.",
+      "step-1": {
+        "title": "Establece tu base",
+        "description": "Sin reglas rígidas ni presiones. Comenzamos definiendo pautas personalizadas de nutrición y ejercicio basadas en tus objetivos, horarios, nivel de actividad y preferencias alimentarias."
+      },
+      "step-2": {
+        "title": "Configura una vez, repite siempre",
+        "description": "Como las etiquetas de los fabricantes estiman las proteínas y calorías, pesar al milímetro cada día no sirve de nada. Calcula tus comidas habituales una vez usando las etiquetas o la báscula, y duplícalas con un solo toque."
+      },
+      "step-3": {
+        "title": "Desarrolla respeto propio",
+        "description": "Mira cómo cambia tu físico a medida que mejoran tu autoestima y tu claridad mental. Desarrolla una constancia saludable que se trasladará a tu carrera, vida social y mentalidad."
+      }
+    },
+    "features": {
+      "heading": "Diseñado para dar claridad, creado para eliminar la complejidad.",
+      "subheading": "Todo lo que necesitas para recuperar el control de tu nutrición, tus hábitos y la confianza en ti mismo.",
+      "feat-1": {
+        "summaryTitle": "Registro de nutrición simple",
+        "summarySubtitle": "Sin la presión de la báscula al milímetro. Estimaciones diarias intuitivas.",
+        "mainTitle": "Registra tu nutrición sin agobiarte.",
+        "mainSubtitle": "Dile adiós a las básculas estresantes y al escaneo hiperdetallado.",
+        "mainDescription": "Cimientos se enfoca exclusivamente en lo que importa: calorías y proteínas diarias. Priorizamos los indicadores visuales frente a los sistemas de pesaje extremos. Esta es la base de nutrición simple creada para una constancia a largo plazo.",
+        "mainBullets": {
+          "0": "Límites de macros personalizados adaptados a tus comidas favoritas.",
+          "1": "Plantillas de registro rápido para apuntar sobre la marcha fácilmente."
+        }
+      },
+      "feat-2": {
+        "summaryTitle": "Tendencias sin estrés y registro de peso",
+        "summarySubtitle": "Sigue tu progreso real a lo largo del tiempo y reutiliza comidas anteriores para mantener la constancia.",
+        "mainTitle": "Registro de peso sin estrés y tendencias a corto y largo plazo.",
+        "mainSubtitle": "Sigue un progreso físico real sin la ansiedad diaria de la báscula.",
+        "mainDescription": "Las fluctuaciones diarias de peso pueden desmotivar. Cimientos te ayuda a mantener el foco con tendencias claras de progreso a 13, 30 y 90 días, mientras que el historial inteligente te permite guardar y reutilizar comidas ya calculadas con un solo toque.",
+        "mainBullets": {
+          "0": "Análisis de tendencias a corto, medio y largo plazo.",
+          "1": "Duplicación instantánea y reutilización de tus comidas habituales."
+        }
+      },
+      "feat-3": {
+        "summaryTitle": "Sistemas de ejercicio",
+        "summarySubtitle": "Rutinas directas en casa y en el gimnasio para ganar fuerza.",
+        "mainTitle": "Rutinas de entrenamiento claras, pensadas para hombres tímidos.",
+        "mainSubtitle": "Sin máquinas de gimnasio complicadas ni jerga fitness compleja.",
+        "mainDescription": "Ir a un gimnasio lleno cuando te sientes insecure puede ser abrumador. La próxima función de ejercicio de Cimientos ofrecerá plantillas paso a paso para casa y rutinas de iniciación con mancuernas. Sin poses ni postureo, solo fuerza física fundamental.",
+        "mainBullets": {
+          "0": "Rutinas de entrenamiento simplificadas para evitar pensar de más.",
+          "1": "Sistemas de progresión claros para ganar fuerza sin confusiones."
+        }
+      }
+    },
+    "ceo": {
+      "heading": "Un mensaje de nuestro CEO: Fitness simple y enfocado para resultados reales.",
+      "subheading": "",
+      "company-position": "Fundador y CEO de Cimientos",
+      "quote": {
+        "title": "¿Por qué creé esta aplicación?",
+        "description": {
+          "p1": "Cuando empecé en el fitness, me costó encontrar una app que hiciera el proceso simple y claro para principiantes. Registrar entrenamientos, comidas y progresos en varias apps diferentes era abrumador.",
+          "p2": "Creé esta app para que el fitness sea simple, enfocado y directo, de modo que los usuarios puedan ver resultados pronto, ajustarse rápido y mantenerse motivados.",
+          "p3": "Lo que puedes hacer:",
+          "bullets": {
+            "0": "Planificar comidas enfocadas en calorías y proteínas, y crear recetas reutilizables.",
+            "1": "Crear y personalizar plantillas de entrenamiento.",
+            "2": "Registrar el progreso de fuerza y el peso corporal a lo largo del tiempo."
+          },
+          "p4": "Esta app elimina la fricción, te ayuda a crear constancia y te da un sistema práctico y sostenible para transformar tu cuerpo con confianza."
+        }
+      }
+    },
+    "pricing": {
+      "heading": "Construye los cimientos.",
+      "subheading": "",
+      "month": "mes",
+      "free": {
+        "tag": "Gratis",
+        "subtitle": "Prueba gratuita de 14 días",
+        "cta": "Empieza gratis"
+      },
+      "paid": {
+        "tag": "Pro",
+        "subtitle": "El sistema completo de cimientos",
+        "bullets": {
+          "0": "Soporte prioritario."
+        },
+        "cta": "Empieza a construir tus cimientos"
+      },
+      "common-bullets": {
+        "0": "Registro macro esencial (proteínas y calorías).",
+        "1": "Panel de progreso avanzado.",
+        "2": "Plantillas personalizadas de alimentos y comidas.",
+        "3": "Registro de ejercicios (cuando esté disponible)."
+      }
+    },
+    "final-cta": {
+      "heading": "Empieza tu camino fitness con una nutrición equilibrada y ejercicio constante.",
+      "subheading": "Basta de pensar de más o de esperar el momento perfecto. Da el primer paso hoy con Cimientos y crea algo significativo para ti.",
+      "cta": "Empieza tu camino",
+      "cta-secondary": "Explorar funcionalidades"
+    }
+  }
+}
