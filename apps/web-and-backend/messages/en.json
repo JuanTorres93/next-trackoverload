@@ -30,6 +30,49 @@
         "premium": "Premium Plan"
       },
       "copyright": "All rights reserved."
+    },
+    "about": {
+      "heading": "Why traditional fitness apps make you quit.",
+      "subheading": "You're not failing because you're lazy. You're failing because the tools and advice weren't designed for someone starting where you are.",
+      "badge": "Trusted by our early users who started their fitness journey from scratch",
+      "bad": {
+        "title": "What is draining your confidence:",
+        "item-1": {
+          "intro": "Micromanaging every single gram:",
+          "description": "Scanning barcodes for every single lettuce leaf breeds mental stress and deep anxiety."
+        },
+        "item-2": {
+          "intro": "Hyper-focused on extreme bodybuilders:",
+          "description": "Relentless six-pack ads make normal progress feel worthless."
+        },
+        "item-3": {
+          "intro": "Aggresive, strict streak systems:",
+          "description": "Missing one day triggers alerts that himiliate you into complete paralysis."
+        },
+        "item-4": {
+          "intro": "Overthinking & overplanning:",
+          "description": "Spending 3 hours researching perfect routines without ever lifting a single weight."
+        }
+      },
+      "good": {
+        "title": "How Cimientos changes the game:",
+        "item-1": {
+          "intro": "Meals are measured by grams, and estimates from food packages are fine. Each meal is weighed once and saved as a reusable recipe for easy tracking and repeat use.",
+          "description": ""
+        },
+        "item-2": {
+          "intro": "Self-respect first:",
+          "description": "Designed for introverted or timid guys looking to build confidence and strength from scratch."
+        },
+        "item-3": {
+          "intro": "Adaptive consistency metrics:",
+          "description": "A missed day isn't a failure, it's just a normal human break. The tracking recalculates automatically."
+        },
+        "item-4": {
+          "intro": "",
+          "description": "Your calorie requirements evolve naturally. Learn how to adjust them based on your own body's feedback with our simple step-by-step guidance."
+        }
+      }
     }
   }
 }

@@ -1,10 +1,11 @@
+import { getTranslations } from "next-intl/server";
 import { CiCircleRemove } from "react-icons/ci";
 import { FaCircleCheck } from "react-icons/fa6";
 import { twMerge } from "tailwind-merge";
 
 import TextRegular from "@/app/_ui/typography/TextRegular";
 
-function BulletList({
+async function BulletList({
   bullets,
   listTitle,
   isGood,
@@ -15,6 +16,8 @@ function BulletList({
   isGood?: boolean;
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
+
+  const t = await getTranslations("LandingPage");
 
   return (
     <div className={twMerge("flex flex-col gap-8", className)} {...rest}>
@@ -44,17 +47,19 @@ function BulletList({
 }
 
 export type BulletItemType = {
-  intro?: string;
-  description?: string;
+  introTranslationKey?: string;
+  descriptionTranslationKey?: string;
 };
 
-function BulletItem({
+async function BulletItem({
   item,
   isGood,
 }: {
   item: BulletItemType;
   isGood?: boolean;
 }) {
+  const t = await getTranslations("");
+
   return (
     <div className="flex items-start gap-2.5">
       <div className="mt-1">
@@ -68,9 +73,13 @@ function BulletItem({
       <TextRegular
         className={`${isGood ? "text-white" : "text-text-minor-emphasis"}`}
       >
-        {item.intro && <span className="font-semibold">{item.intro} </span>}
+        {item.introTranslationKey && (
+          <span className="font-semibold">{t(item.introTranslationKey)} </span>
+        )}
 
-        {item.description && <span>{item.description}</span>}
+        {item.descriptionTranslationKey && (
+          <span>{t(item.descriptionTranslationKey)}</span>
+        )}
       </TextRegular>
     </div>
   );

@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import { getTranslations } from "next-intl/server";
 import { twMerge } from "tailwind-merge";
 
 import afterImage from "@/../public/after.jpg";
@@ -7,7 +8,9 @@ import TextRegular from "@/app/_ui/typography/TextRegular";
 
 import UserAvatar from "./UserAvatar";
 
-function ReasonWhyImage({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
+async function ReasonWhyImage({
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
   return (
@@ -26,8 +29,12 @@ function ReasonWhyImage({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   );
 }
 
-function PopupOverlay({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
+async function PopupOverlay({
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
+
+  const t = await getTranslations("LandingPage.about");
 
   return (
     <div
@@ -53,8 +60,7 @@ function PopupOverlay({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       </div>
 
       <TextRegular as="p" className={`font-medium text-white z-3`}>
-        Trusted by our early users who started their fitness journey from
-        scratch
+        {t("badge")}
       </TextRegular>
 
       <div className="absolute inset-0 z-2 opacity-40 bg-linear-to-b from-primary-light to-primary-lightest"></div>
