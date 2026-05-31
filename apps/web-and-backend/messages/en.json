@@ -89,6 +89,48 @@
         "title": "Build Self Respect",
         "description": "Watch your physical body change as your self-esteem and clarity improve. Develop healthy consistency that carries over into career, social life, and mindset."
       }
+    },
+    "features": {
+      "heading": "Designed for clarity, built to eliminate complexity.",
+      "subheading": "Everything you need to regain control over your nutrition, habits, and self-belief.",
+      "feat-1": {
+        "summaryTitle": "Simple Nutrition Tracking",
+        "summarySubtitle": "No micro scale pressure. Intuitive daily estimates.",
+
+        "mainTitle": "Track nutrition without getting overwhelmed.",
+        "mainSubtitle": "Say goodbye to stressful scales and hyper-detailed scanning.",
+        "mainDescription": "Cimientos focuses exclusively on what matters: daily calories and protein. We prioritize visual indicators over extreme weighing systems. This is the simple nutrition foundation built for long-term consistency.",
+        "mainBullets": {
+          "0": "Custom macro boundaries created around your favorite meals.",
+          "1": "Quick-log templates for fast tracking on the go."
+        }
+      },
+
+      "feat-2": {
+        "summaryTitle": "Calm Trends & Weight Log",
+        "summarySubtitle": "Track your actual progress over time and easily reuse previous meals for consistency.",
+
+        "mainTitle": "Calm weight tracking & short to long term trends.",
+        "mainSubtitle": "Track real physical progress without daily scale anxiety.",
+        "mainDescription": "Daily weight fluctuations can be discouraging. Cimientos helps you stay focused with clear 13, 30, an 90-day progress trends, while smart meal memory lets you save and reuse pre-calculated protein and calorie-focused meals with a single tap.",
+        "mainBullets": {
+          "0": "Short, medium, and long-term trend analysis.",
+          "1": "Instant duplication & reuse of pre-calculated staple meals."
+        }
+      },
+
+      "feat-3": {
+        "summaryTitle": "Exercise Systems",
+        "summarySubtitle": "Straightforward gym & home routines to build strength.",
+
+        "mainTitle": "Clear workout routines designed for shy guys.",
+        "mainSubtitle": "No complicated gym machines or complex fitness jargon.",
+        "mainDescription": "Going to a busy gym when you feel insecure can be overwhelming. Cimientos' upcoming exercise feature will provide ste-by-step home templates and introductory dumbbell routines. No flashy posing just foundational physical strength.",
+        "mainBullets": {
+          "0": "Simplified workout routines to avoid overthinking.",
+          "1": "Clear progression systems to build strength without confusion."
+        }
+      }
     }
   }
 }

@@ -1,9 +1,9 @@
 "use client";
-
 import Image, { StaticImageData } from "next/image";
 
 import { createContext, useContext, useState } from "react";
 
+import { useTranslations } from "next-intl";
 import { FaCheck } from "react-icons/fa6";
 import { twMerge } from "tailwind-merge";
 
@@ -48,6 +48,8 @@ export function FeatureSummary({ feature }: { feature: FeatureItemType }) {
   const { setCurrentFeaturePreviewId, currentFeaturePreviewId } =
     useFeaturesPreviewContext();
 
+  const t = useTranslations("");
+
   const isSelected = currentFeaturePreviewId === feature.id;
 
   function handleSelectFeature() {
@@ -67,11 +69,11 @@ export function FeatureSummary({ feature }: { feature: FeatureItemType }) {
 
       <div className="flex flex-col gap-2">
         <TextEnormous as="h4" className="font-medium">
-          {feature.summaryTitle}
+          {t(feature.summaryTitleTranslationKey)}
         </TextEnormous>
 
         <TextLarge as="span" className="text-text-minor-emphasis">
-          {feature.summarySubtitle}
+          {t(feature.summarySubtitleTranslationKey)}
         </TextLarge>
       </div>
     </div>
@@ -80,6 +82,8 @@ export function FeatureSummary({ feature }: { feature: FeatureItemType }) {
 
 export function FeatureDescription() {
   const { currentFeaturePreviewId, allFeatures } = useFeaturesPreviewContext();
+
+  const t = useTranslations("");
 
   const feature = allFeatures.find((f) => f.id === currentFeaturePreviewId);
 
@@ -90,36 +94,40 @@ export function FeatureDescription() {
 
         <div className="flex flex-col gap-2">
           <h3 className="text-[28px] font-medium font-secondary max-bp-change-font:text-[26px]">
-            {feature!.mainTitle}
+            {t(feature!.mainTitleTranslationKey)}
           </h3>
 
           <TextLarge as="span" className="text-text-minor-emphasis">
-            {feature!.mainSubtitle}
+            {t(feature!.mainSubtitleTranslationKey)}
           </TextLarge>
         </div>
       </div>
 
       <div className="grid grid-cols-[1fr_.6fr] h-full gap-6 max-bp-landing-features-smallest:grid-cols-1 max-bp-landing-features-smallest:gap-10">
         <TextRegular className="flex flex-col gap-9">
-          <p>{feature!.mainDescription}</p>
+          <p>{t(feature!.mainDescriptionTranslationKey)}</p>
 
           <ul className="flex flex-col gap-2 list-inside">
-            {feature!.mainBullets.map((bullet, index) => (
-              <li className="flex items-center gap-4.5" key={index}>
-                <div className="flex items-center justify-center p-1 rounded-full bg-primary-light/30 ">
-                  <FaCheck size={10} className="text-primary" />
-                </div>
+            {feature!.mainBulletsTranslationKeys.map(
+              (bulletTranslationKey, index) => (
+                <li className="flex items-center gap-4.5" key={index}>
+                  <div className="flex items-center justify-center p-1 rounded-full bg-primary-light/30 ">
+                    <FaCheck size={10} className="text-primary" />
+                  </div>
 
-                <span className="text-text-minor-emphasis">{bullet}</span>
-              </li>
-            ))}
+                  <span className="text-text-minor-emphasis">
+                    {t(bulletTranslationKey)}
+                  </span>
+                </li>
+              ),
+            )}
           </ul>
         </TextRegular>
 
         <div className="relative h-full overflow-hidden rounded-2xl max-bp-landing-features-smallest:h-60">
           <Image
             src={feature!.mainImageUrl}
-            alt={feature!.mainTitle}
+            alt={feature!.mainTitleTranslationKey}
             className="object-cover"
             fill
           />
@@ -169,13 +177,14 @@ export type FeatureItemType = {
 
   logo: React.ReactNode;
 
-  summaryTitle: string;
-  summarySubtitle: string;
+  summaryTitleTranslationKey: string;
+  summarySubtitleTranslationKey: string;
 
-  mainTitle: string;
-  mainSubtitle: string;
-  mainDescription: string;
-  mainBullets: string[];
+  mainTitleTranslationKey: string;
+  mainSubtitleTranslationKey: string;
+  mainDescriptionTranslationKey: string;
+  mainBulletsTranslationKeys: string[];
+
   mainImageUrl: string | StaticImageData;
 };
 
