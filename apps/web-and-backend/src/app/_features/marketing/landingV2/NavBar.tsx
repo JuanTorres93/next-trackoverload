@@ -10,7 +10,7 @@ import TextRegular from "@/app/_ui/typography/TextRegular";
 import Logo from "../../../_ui/Logo";
 import ButtonPrimary from "../../../_ui/buttons/ButtonPrimary";
 import { getCurrentUserId } from "../../../_utils/auth/getCurrentUserId";
-import ButtonCTA from "../landing/ButtonCTA";
+import ButtonCTA from "../ButtonCTA";
 import { NavLinkType } from "./NavLinkType";
 
 async function NavBar({

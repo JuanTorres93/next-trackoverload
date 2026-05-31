@@ -3,7 +3,7 @@ import { twMerge } from "tailwind-merge";
 import TextHuge from "@/app/_ui/typography/TextHuge";
 import TextLarge from "@/app/_ui/typography/TextLarge";
 
-import ButtonCTA, { ButtonCTASecondary } from "../../landing/ButtonCTA";
+import ButtonCTA, { ButtonCTASecondary } from "../../ButtonCTA";
 import LandingSection from "../LandingSection";
 
 function FinalCTA({ ...props }: React.HTMLAttributes<HTMLDivElement>) {

@@ -5,7 +5,7 @@ import Link from "next/link";
 import Logo from "../../../_ui/Logo";
 import ButtonPrimary from "../../../_ui/buttons/ButtonPrimary";
 import { getCurrentUserId } from "../../../_utils/auth/getCurrentUserId";
-import ButtonCTA from "./ButtonCTA";
+import ButtonCTA from "../ButtonCTA";
 
 async function NavBar({ ...props }: React.HTMLAttributes<HTMLElement>) {
   const { className, ...rest } = props;

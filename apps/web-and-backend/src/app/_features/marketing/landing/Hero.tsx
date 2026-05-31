@@ -2,7 +2,7 @@ import Image from "next/image";
 
 import heroImage from "@/../public/hero.webp";
 
-import ButtonCTA from "./ButtonCTA";
+import ButtonCTA from "../ButtonCTA";
 
 const BENEFITS = [
   "Dónde nace tu insatisfacción.",

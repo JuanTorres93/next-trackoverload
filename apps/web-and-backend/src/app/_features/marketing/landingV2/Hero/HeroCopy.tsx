@@ -3,7 +3,7 @@ import { twMerge } from "tailwind-merge";
 
 import TextMassive from "@/app/_ui/typography/TextMassive";
 
-import ButtonCTA, { ButtonCTASecondary } from "../../landing/ButtonCTA";
+import ButtonCTA, { ButtonCTASecondary } from "../../ButtonCTA";
 import Eyebrow from "./Eyebrow";
 
 // TODO IMPORTANT: Finish styling when design is done

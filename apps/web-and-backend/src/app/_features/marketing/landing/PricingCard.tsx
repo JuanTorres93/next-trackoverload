@@ -1,6 +1,6 @@
 import { FaCheck } from "react-icons/fa";
 
-import ButtonCTA from "./ButtonCTA";
+import ButtonCTA from "../ButtonCTA";
 
 interface PricingCardProps {
   title: string;

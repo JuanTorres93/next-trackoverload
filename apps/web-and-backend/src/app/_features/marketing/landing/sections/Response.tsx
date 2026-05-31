@@ -1,6 +1,6 @@
 import { FaArrowRight } from "react-icons/fa";
 
-import ButtonCTA from "../ButtonCTA";
+import ButtonCTA from "../../ButtonCTA";
 import Section from "../Section";
 import SectionHeading from "../SectionHeading";
 

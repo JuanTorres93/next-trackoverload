@@ -1,7 +1,7 @@
 import { LuArrowUpRight } from "react-icons/lu";
 import { twMerge } from "tailwind-merge";
 
-import ButtonPrimary from "../../../_ui/buttons/ButtonPrimary";
+import ButtonPrimary from "../../_ui/buttons/ButtonPrimary";
 
 type ButtonCTAProps = React.ComponentProps<typeof ButtonPrimary>;
 
