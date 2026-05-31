@@ -3,6 +3,7 @@ import Image from "next/image";
 import { twMerge } from "tailwind-merge";
 
 import afterImage from "@/../public/after.jpg";
+import TextRegular from "@/app/_ui/typography/TextRegular";
 
 import UserAvatar from "./UserAvatar";
 
@@ -49,10 +50,10 @@ function PopupOverlay({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
         ))}
       </div>
 
-      <p className={`text-base font-medium text-white z-3`}>
+      <TextRegular as="p" className={`font-medium text-white z-3`}>
         Trusted by our early users who started their fitness journey from
         scratch
-      </p>
+      </TextRegular>
 
       <div className="absolute inset-0 z-2 opacity-40 bg-linear-to-b from-primary-light to-primary-lightest"></div>
     </div>

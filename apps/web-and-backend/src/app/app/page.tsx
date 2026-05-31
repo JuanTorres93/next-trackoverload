@@ -22,6 +22,7 @@ import GridAutoCols from "../_ui/GridAutoCols";
 import PageWrapper from "../_ui/PageWrapper";
 import ButtonPrimary from "../_ui/buttons/ButtonPrimary";
 import PageTitle from "../_ui/typography/PageTitle";
+import TextSmall from "../_ui/typography/TextSmall";
 
 export default function Dashboard() {
   const [todayAssembledDay, setTodayAssembledDay] =
@@ -167,9 +168,9 @@ function NutritionForToday({
               No hay comidas planificadas para hoy
             </p>
 
-            <p className="mt-1 text-sm opacity-60">
+            <TextSmall as="p" className="mt-1 opacity-60">
               Planifica tus comidas en el planificador semanal
-            </p>
+            </TextSmall>
           </div>
 
           <ButtonPrimary href="/app/meals">Ver planificador</ButtonPrimary>

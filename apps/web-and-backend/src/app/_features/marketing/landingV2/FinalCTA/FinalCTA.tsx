@@ -1,5 +1,8 @@
 import { twMerge } from "tailwind-merge";
 
+import TextHuge from "@/app/_ui/typography/TextHuge";
+import TextLarge from "@/app/_ui/typography/TextLarge";
+
 import ButtonCTA, { ButtonCTASecondary } from "../../landing/ButtonCTA";
 import LandingSection from "../LandingSection";
 
@@ -15,16 +18,19 @@ function FinalCTA({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       {...rest}
     >
       <div className="flex flex-col gap-6 text-center text-white z-3 max-w-180">
-        <h2 className="flex flex-col gap-2 text-5xl font-semibold leading-15 font-secondary">
+        <TextHuge
+          as="h2"
+          className="flex flex-col gap-2 font-semibold leading-15 font-secondary"
+        >
           Start your fitness journey with balanced nutrition and consistent
           exercise.
-        </h2>
+        </TextHuge>
 
-        <p className="text-lg text-[#aeaead]">
+        <TextLarge as="p" className="text-[#aeaead]">
           No more overthinking or waiting for the perfect moment. Take the first
           step today with Cimientos and create something meaningful for
           yourself.
-        </p>
+        </TextLarge>
 
         <div className="flex items-stretch justify-center gap-4 pt-6">
           <ButtonCTA>Start Your Journey</ButtonCTA>

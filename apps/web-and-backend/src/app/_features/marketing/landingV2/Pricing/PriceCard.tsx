@@ -2,6 +2,9 @@ import { FaCheck } from "react-icons/fa";
 import { twMerge } from "tailwind-merge";
 
 import ButtonPrimary from "@/app/_ui/buttons/ButtonPrimary";
+import TextExtraLarge from "@/app/_ui/typography/TextExtraLarge";
+import TextLarge from "@/app/_ui/typography/TextLarge";
+import TextMassive from "@/app/_ui/typography/TextMassive";
 
 import Tag from "./Tag";
 
@@ -30,16 +33,17 @@ function PriceCard({
 
       <div className="flex flex-col gap-2.5">
         <div>
-          <span className="text-6xl font-semibold font-secondary">
+          <TextMassive as="span" className="font-semibold font-secondary">
             {formatPrice(price.priceInEurosCents)}
-          </span>
-          <span className="text-xl">/month</span>
+          </TextMassive>
+
+          <TextExtraLarge as="span">/month</TextExtraLarge>
         </div>
 
-        <div className="text-lg">{price.shortDescription}</div>
+        <TextLarge>{price.shortDescription}</TextLarge>
       </div>
 
-      <ul className="flex flex-col gap-2 py-4 text-lg list-inside">
+      <TextLarge as="ul" className="flex flex-col gap-2 py-4 list-inside">
         {price.features.map((feature, index) => (
           <li key={index} className="flex items-center gap-3">
             <div
@@ -51,11 +55,11 @@ function PriceCard({
             <span>{feature}</span>
           </li>
         ))}
-      </ul>
+      </TextLarge>
 
       <ButtonPrimary
         href="/auth/register"
-        className={`mt-auto  text-center text-lg ${price.isFlagship ? "bg-white border-white" : "bg-transparent text-text border-text hover:bg-gray-300 hover:text-text"}`}
+        className={`mt-auto text-center ${price.isFlagship ? "bg-white border-white" : "bg-transparent text-text border-text hover:bg-gray-300 hover:text-text"}`}
       >
         {price.ctaText}
       </ButtonPrimary>

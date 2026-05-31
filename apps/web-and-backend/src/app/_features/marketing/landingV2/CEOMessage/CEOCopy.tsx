@@ -1,5 +1,7 @@
 import { twMerge } from "tailwind-merge";
 
+import TextLarge from "@/app/_ui/typography/TextLarge";
+
 function CEOCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
@@ -15,7 +17,7 @@ function CEOCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
         Why I Created This App?
       </h3>
 
-      <div className="flex flex-col gap-4.5 text-lg ">
+      <TextLarge as="div" className="flex flex-col gap-4.5">
         <p>
           When I first started with fitness, I struggled to find an app that
           made the process simple and clear for beginners. Tracking workouts,
@@ -45,7 +47,7 @@ function CEOCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
           This app removes friction, helps build consistency, and gives you a
           practical, sustainable system to transform your body with confidence.
         </p>
-      </div>
+      </TextLarge>
     </div>
   );
 }

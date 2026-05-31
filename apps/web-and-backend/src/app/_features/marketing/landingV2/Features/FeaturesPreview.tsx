@@ -7,6 +7,10 @@ import { createContext, useContext, useState } from "react";
 import { FaCheck } from "react-icons/fa6";
 import { twMerge } from "tailwind-merge";
 
+import TextEnormous from "@/app/_ui/typography/TextEnormous";
+import TextLarge from "@/app/_ui/typography/TextLarge";
+import TextRegular from "@/app/_ui/typography/TextRegular";
+
 type FeaturesPreviewContextType = {
   currentFeaturePreviewId: string;
   setCurrentFeaturePreviewId?: (id: string) => void;
@@ -62,11 +66,13 @@ export function FeatureSummary({ feature }: { feature: FeatureItemType }) {
       />
 
       <div className="flex flex-col gap-2">
-        <h4 className="text-2xl font-medium">{feature.summaryTitle}</h4>
+        <TextEnormous as="h4" className="font-medium">
+          {feature.summaryTitle}
+        </TextEnormous>
 
-        <span className="text-lg text-text-minor-emphasis">
+        <TextLarge as="span" className="text-text-minor-emphasis">
           {feature.summarySubtitle}
-        </span>
+        </TextLarge>
       </div>
     </div>
   );
@@ -87,14 +93,14 @@ export function FeatureDescription() {
             {feature!.mainTitle}
           </h3>
 
-          <span className="text-lg text-text-minor-emphasis">
+          <TextLarge as="span" className="text-text-minor-emphasis">
             {feature!.mainSubtitle}
-          </span>
+          </TextLarge>
         </div>
       </div>
 
       <div className="grid grid-cols-[1fr_.6fr] h-full gap-6">
-        <div className="flex flex-col text-base gap-9">
+        <TextRegular className="flex flex-col gap-9">
           <p>{feature!.mainDescription}</p>
 
           <ul className="flex flex-col gap-2 list-inside">
@@ -108,7 +114,7 @@ export function FeatureDescription() {
               </li>
             ))}
           </ul>
-        </div>
+        </TextRegular>
 
         <div className="relative h-full overflow-hidden rounded-2xl">
           <Image

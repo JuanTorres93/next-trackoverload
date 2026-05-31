@@ -2,6 +2,8 @@ import Link from "next/link";
 
 import { twMerge } from "tailwind-merge";
 
+import TextLarge from "../typography/TextLarge";
+
 function ButtonPrimary({
   children,
   href,
@@ -18,14 +20,15 @@ function ButtonPrimary({
     "opacity-50 cursor-not-allowed hover:cursor-not-allowed hover:bg-transparent hover:border-current hover:text-current";
 
   const buttonStyle = twMerge(
-    `inline-flex items-center justify-center px-4 py-3.5 text-lg leading-none font-semibold text-primary transition-all border border-primary rounded-lg hover:cursor-pointer hover:bg-primary hover:text-text-light`,
+    `inline-flex items-center justify-center px-4 py-3.5 leading-none font-semibold text-primary transition-all border border-primary rounded-lg hover:cursor-pointer hover:bg-primary hover:text-text-light`,
     className,
     disabled ? disabledStyle : "",
   );
 
   if (href) {
     return (
-      <Link
+      <TextLarge
+        as={Link}
         href={href}
         className={buttonStyle}
         onClick={
@@ -33,13 +36,18 @@ function ButtonPrimary({
         }
       >
         {children}
-      </Link>
+      </TextLarge>
     );
   }
   return (
-    <button className={buttonStyle} disabled={disabled} {...restProps}>
+    <TextLarge
+      as="button"
+      className={buttonStyle}
+      disabled={disabled}
+      {...restProps}
+    >
       {children}
-    </button>
+    </TextLarge>
   );
 }
 

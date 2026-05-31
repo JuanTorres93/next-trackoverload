@@ -2,6 +2,8 @@ import { CiCircleRemove } from "react-icons/ci";
 import { FaCircleCheck } from "react-icons/fa6";
 import { twMerge } from "tailwind-merge";
 
+import TextRegular from "@/app/_ui/typography/TextRegular";
+
 function BulletList({
   bullets,
   listTitle,
@@ -63,13 +65,13 @@ function BulletItem({
         )}
       </div>
 
-      <div
-        className={`text-base ${isGood ? "text-white" : "text-text-minor-emphasis"}`}
+      <TextRegular
+        className={`${isGood ? "text-white" : "text-text-minor-emphasis"}`}
       >
         {item.intro && <span className="font-semibold">{item.intro} </span>}
 
         {item.description && <span>{item.description}</span>}
-      </div>
+      </TextRegular>
     </div>
   );
 }

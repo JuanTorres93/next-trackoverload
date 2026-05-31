@@ -3,6 +3,7 @@ import Image from "next/image";
 import { twMerge } from "tailwind-merge";
 
 import ceoImage from "@/../public/yo-cimientos.webp";
+import TextEnormous from "@/app/_ui/typography/TextEnormous";
 
 function CEOView({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
@@ -22,7 +23,9 @@ function CEOView({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       </div>
 
       <div className="px-4 py-2 bg-primary-light rounded-2xl">
-        <h3 className="text-2xl font-semibold font-secondary">Juan Torres</h3>
+        <TextEnormous as="h3" className="font-semibold font-secondary">
+          Juan Torres
+        </TextEnormous>
 
         <h4>Founder & CEO of Cimientos</h4>
       </div>

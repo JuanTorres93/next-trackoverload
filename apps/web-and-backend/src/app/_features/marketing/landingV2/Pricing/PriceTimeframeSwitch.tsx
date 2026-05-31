@@ -4,6 +4,8 @@ import { useState } from "react";
 
 import { twMerge } from "tailwind-merge";
 
+import TextLarge from "@/app/_ui/typography/TextLarge";
+
 const PRICE_TIMEFRAMES = {
   MONTHLY: "MONTHLY",
   ANNUALLY: "ANNUALLY",
@@ -30,15 +32,15 @@ function PriceTimeframeSwitch({
         const isSelected = selectedTimeframe === timeframe;
 
         return (
-          <div
+          <TextLarge
             key={timeframe}
-            className={`px-3 py-1 rounded-xl text-lg  transition cursor-pointer ${
+            className={`px-3 py-1 rounded-xl transition cursor-pointer ${
               isSelected ? "bg-primary-light text-white" : " hover:bg-neutral"
             }`}
             onClick={() => setSelectedTimeframe(timeframe)}
           >
             {timeframe === PRICE_TIMEFRAMES.MONTHLY ? "Monthly" : "Annually"}
-          </div>
+          </TextLarge>
         );
       })}
     </div>

@@ -1,5 +1,8 @@
 import { twMerge } from "tailwind-merge";
 
+import TextLarge from "@/app/_ui/typography/TextLarge";
+import TextLessHuge from "@/app/_ui/typography/TextLessHuge";
+
 function SectionTitle({
   title,
   subtitle,
@@ -18,16 +21,17 @@ function SectionTitle({
       )}
       {...rest}
     >
-      <h2
-        className={`text-4xl font-medium font-secondary ${subtitle ? "max-w-[33%]" : "max-w-[60%]"}`}
+      <TextLessHuge
+        as="h2"
+        className={`font-medium font-secondary ${subtitle ? "max-w-[33%]" : "max-w-[60%]"}`}
       >
         {title}
-      </h2>
+      </TextLessHuge>
 
       {subtitle && (
-        <p className={`max-w-[45%] text-lg text-text-minor-emphasis`}>
+        <TextLarge as="p" className={`max-w-[45%] text-text-minor-emphasis`}>
           {subtitle}
-        </p>
+        </TextLarge>
       )}
     </div>
   );

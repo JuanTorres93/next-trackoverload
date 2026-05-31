@@ -1,5 +1,9 @@
 import { twMerge } from "tailwind-merge";
 
+import TextEnormous from "@/app/_ui/typography/TextEnormous";
+import TextLessHuge from "@/app/_ui/typography/TextLessHuge";
+import TextRegular from "@/app/_ui/typography/TextRegular";
+
 // TODO IMPORTANT: Finish styling when design is done
 function Step({
   step,
@@ -15,15 +19,22 @@ function Step({
       )}
       {...rest}
     >
-      <span className="self-start p-3 text-4xl text-white rounded-2xl bg-primary-light font-secondary">
+      <TextLessHuge
+        as="span"
+        className="self-start p-3 text-white rounded-2xl bg-primary-light font-secondary"
+      >
         {step.numberString}
-      </span>
+      </TextLessHuge>
 
       <div></div>
 
-      <h3 className="text-2xl font-medium font-secondary">{step.title}</h3>
+      <TextEnormous as="h3" className="font-medium font-secondary">
+        {step.title}
+      </TextEnormous>
 
-      <p className={`text-base text-text-minor-emphasis`}>{step.description}</p>
+      <TextRegular as="p" className={`text-text-minor-emphasis`}>
+        {step.description}
+      </TextRegular>
     </div>
   );
 }

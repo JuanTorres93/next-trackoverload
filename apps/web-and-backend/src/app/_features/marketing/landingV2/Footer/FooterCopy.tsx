@@ -1,6 +1,8 @@
 import { twMerge } from "tailwind-merge";
 
 import Logo from "@/app/_ui/Logo";
+import TextEnormous from "@/app/_ui/typography/TextEnormous";
+import TextSmall from "@/app/_ui/typography/TextSmall";
 
 function FooterCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
@@ -10,13 +12,15 @@ function FooterCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       <div className="flex items-center gap-2">
         <Logo size={36} />
 
-        <span className="text-2xl font-medium">Cimientos</span>
+        <TextEnormous as="span" className="font-medium">
+          Cimientos
+        </TextEnormous>
       </div>
 
-      <p className="text-sm max-w-102">
+      <TextSmall as="p" className="max-w-102">
         A simple fitness foundation system for men who want to build a better
         body and a more confident life without the overwhelm.
-      </p>
+      </TextSmall>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-function TextSmall({
+function TextHuge({
   as: Component = "div",
   children,
   ...props
@@ -9,10 +9,10 @@ function TextSmall({
   const { className, ...rest } = props;
 
   return (
-    <Component {...rest} className={`text-sm ${className || ""}`}>
+    <Component {...rest} className={`text-5xl ${className || ""}`}>
       {children}
     </Component>
   );
 }
 
-export default TextSmall;
+export default TextHuge;

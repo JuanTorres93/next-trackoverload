@@ -1,6 +1,8 @@
 import { MdOutlineVideoSettings } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
 
+import TextMassive from "@/app/_ui/typography/TextMassive";
+
 import ButtonCTA, { ButtonCTASecondary } from "../../landing/ButtonCTA";
 import Eyebrow from "./Eyebrow";
 
@@ -12,11 +14,14 @@ function HeroCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
     <div className={twMerge("flex flex-col gap-4", className)} {...rest}>
       <Eyebrow />
 
-      <h1 className="text-6xl font-semibold text-text leading-18 font-secondary">
+      <TextMassive
+        as="h1"
+        className="font-semibold text-text leading-18 font-secondary"
+      >
         Build the body that{" "}
         <span className="text-primary">gives you confidence</span> without
         obsessing over every gram.
-      </h1>
+      </TextMassive>
 
       <p className={`pt-1 text-text-minor-emphasis`}>
         Cimientos helps you simplify nutrition, stay consistent, and create a

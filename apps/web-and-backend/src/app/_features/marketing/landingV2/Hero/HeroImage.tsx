@@ -5,6 +5,8 @@ import { twMerge } from "tailwind-merge";
 
 import afterImage from "@/../public/after.jpg";
 
+import AppStoreButton from "../AppStoreButton";
+import GooglePlayButton from "../GooglePlayButton";
 import { SemiCircleProgress } from "../SemicircleProgress";
 
 // TODO IMPORTANT: Finish styling when design is done

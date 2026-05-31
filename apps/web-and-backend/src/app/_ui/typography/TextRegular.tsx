@@ -1,15 +1,17 @@
 function TextRegular({
+  as: Component = "div",
   children,
   ...props
 }: {
+  as?: React.ElementType;
   children: React.ReactNode;
-} & React.HTMLAttributes<HTMLDivElement>) {
+} & React.HTMLAttributes<HTMLElement>) {
   const { className, ...rest } = props;
 
   return (
-    <div {...rest} className={`text-base ${className || ''}`}>
+    <Component {...rest} className={`text-base ${className || ""}`}>
       {children}
-    </div>
+    </Component>
   );
 }
 

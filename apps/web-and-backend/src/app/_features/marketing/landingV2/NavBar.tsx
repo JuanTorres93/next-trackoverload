@@ -4,6 +4,9 @@ import Link from "next/link";
 
 import { twMerge } from "tailwind-merge";
 
+import TextEnormous from "@/app/_ui/typography/TextEnormous";
+import TextRegular from "@/app/_ui/typography/TextRegular";
+
 import Logo from "../../../_ui/Logo";
 import ButtonPrimary from "../../../_ui/buttons/ButtonPrimary";
 import { getCurrentUserId } from "../../../_utils/auth/getCurrentUserId";
@@ -38,7 +41,9 @@ async function NavBar({
       <Link href="/" className="flex items-center justify-center gap-2">
         <Logo size={40} />
 
-        <span className="mt-1 text-2xl font-medium">Cimientos</span>
+        <TextEnormous as="span" className="mt-1 font-medium">
+          Cimientos
+        </TextEnormous>
       </Link>
 
       <ul className="flex items-center justify-center ">
@@ -74,12 +79,13 @@ const navItems: NavLinkType[] = [
 
 function NavItem({ navItem }: { navItem: NavLinkType }) {
   return (
-    <Link
+    <TextRegular
+      as={Link}
       href={navItem.href}
-      className="px-4 py-2 text-base transition rounded-full hover:bg-neutral"
+      className="px-4 rounded-full py-2transition hover:bg-neutral"
     >
       {navItem.name}
-    </Link>
+    </TextRegular>
   );
 }
 

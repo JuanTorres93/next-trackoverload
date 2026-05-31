@@ -2,6 +2,8 @@ import Link from "next/link";
 
 import { twMerge } from "tailwind-merge";
 
+import TextLarge from "@/app/_ui/typography/TextLarge";
+
 import { NavLinkType } from "../NavLinkType";
 
 function LinksColumn({
@@ -16,7 +18,9 @@ function LinksColumn({
 
   return (
     <div className={twMerge("flex flex-col gap-9", className)} {...rest}>
-      <h5 className="text-lg font-medium">{columnTitle}</h5>
+      <TextLarge as="h5" className="font-medium">
+        {columnTitle}
+      </TextLarge>
 
       <ul className="flex flex-col gap-3">
         {links.map((link, index) => (

@@ -1,5 +1,8 @@
 import { twMerge } from "tailwind-merge";
 
+import TextEnormous from "./TextEnormous";
+import TextSmall from "./TextSmall";
+
 function PageTitle({
   title,
   subtitle,
@@ -12,9 +15,14 @@ function PageTitle({
 
   return (
     <div className={twMerge("", className)} {...rest}>
-      <h1 className="text-2xl font-bold text-text">{title}</h1>
+      <TextEnormous as="h1" className="font-bold text-text">
+        {title}
+      </TextEnormous>
+
       {subtitle && (
-        <p className="text-sm text-text-minor-emphasis">{subtitle}</p>
+        <TextSmall as="p" className="text-text-minor-emphasis">
+          {subtitle}
+        </TextSmall>
       )}
     </div>
   );
