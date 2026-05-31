@@ -14,7 +14,7 @@ import RecipeActions from "../RecipeActions";
 let recipe: RecipeDTO;
 
 await createAndPersistTestIngredients();
-mockIngredientApiFetch();
+await mockIngredientApiFetch();
 
 async function setup() {
   const { mockRecipes } = await createAndPersistTest_Recipes_Ingredients_User();

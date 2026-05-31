@@ -18,7 +18,7 @@ const MOCK_INGREDIENT_NAME = "Leche Entera";
 const MOCK_CALORIES_PER_100G = 66;
 const MOCK_PROTEIN_PER_100G = 3;
 
-mockIngredientApiFetch({
+await mockIngredientApiFetch({
   barcodeIngredient: {
     ingredient: {
       name: MOCK_INGREDIENT_NAME,

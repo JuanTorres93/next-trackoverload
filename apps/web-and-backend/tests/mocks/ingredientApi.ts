@@ -1,7 +1,16 @@
 import { vi } from "vitest";
 
+import { CreateIngredientUsecase } from "@/application-layer/use-cases/ingredient/CreateIngredient/CreateIngredient.usecase";
+import { FindIngredientByFuzzyNameUsecase } from "@/application-layer/use-cases/ingredient/FindIngredientByFuzzyName/FindIngredientByFuzzyNameUsecase";
+import { MemoryIngredientsRepo } from "@/infra/repos/memory/MemoryIngredientsRepo";
+import { Uuidv4IdGenerator } from "@/infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator";
+import MemoryIngredientFinder from "@/infra/services/IngredientsFinder/MemoryIngredientFinder/MemoryIngredientFinder";
+
 import { IngredientFinderResult } from "../../src/domain/services/IngredientFinder.port";
-import { mockIngredientsForIngredientFinder } from "./ingredients";
+import {
+  ingredientPropsForUseCase,
+  mockIngredientsForIngredientFinder,
+} from "./ingredients";
 
 export const DEFAULT_BARCODE_INGREDIENT: IngredientFinderResult = {
   ingredient: {
@@ -13,10 +22,12 @@ export const DEFAULT_BARCODE_INGREDIENT: IngredientFinderResult = {
   externalRef: { externalId: "8414807558305", source: "openfoodfacts" },
 };
 
-export function mockIngredientApiFetch(options?: {
+export async function mockIngredientApiFetch(options?: {
   barcodeIngredient?: IngredientFinderResult;
   fuzzyResolver?: FuzzyResolver;
 }) {
+  await initializeMockAPI();
+
   const barcodeIngredient =
     options?.barcodeIngredient ?? DEFAULT_BARCODE_INGREDIENT;
 
@@ -62,4 +73,31 @@ function lowercaseFuzzyResolver(term: string): IngredientFinderResult[] {
   return mockIngredientsForIngredientFinder.filter((ingredient) =>
     ingredient.ingredient.name.toLowerCase().includes(term.toLowerCase()),
   );
+}
+
+async function initializeMockAPI() {
+  const mockIngredientsRepo = new MemoryIngredientsRepo();
+  const mockIngredientFinder = new MemoryIngredientFinder(
+    mockIngredientsForIngredientFinder,
+  );
+
+  const createIngredientUsecase = new CreateIngredientUsecase(
+    mockIngredientsRepo,
+    new Uuidv4IdGenerator(),
+  );
+  const findIngredientByFuzzyNameUsecase = new FindIngredientByFuzzyNameUsecase(
+    mockIngredientFinder,
+  );
+
+  const promises = ingredientPropsForUseCase.map((ingredient) =>
+    createIngredientUsecase.execute(ingredient),
+  );
+
+  await Promise.all(promises);
+
+  return {
+    mockIngredientsRepo,
+    createIngredientUsecase,
+    findIngredientByFuzzyNameUsecase,
+  };
 }

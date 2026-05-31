@@ -1,7 +1,7 @@
 import { AppCreateIngredientUsecase } from "../../src/interface-adapters/app/use-cases/ingredient";
 import { TestIngredientsRepo } from "../../tests/repos/TestIngredientsRepo";
 
-const ingredientPropsForUseCase = [
+export const ingredientPropsForUseCase = [
   {
     name: "Carrot",
     calories: 41,
