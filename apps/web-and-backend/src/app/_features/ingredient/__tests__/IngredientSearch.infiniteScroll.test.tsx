@@ -3,24 +3,11 @@ import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
 import { mockIngredientApiFetch } from "../../../../../tests/mocks/ingredientApi";
-import {
-  createAndPersistTestIngredients,
-  mockIngredientsForIngredientFinder,
-} from "../../../../../tests/mocks/ingredients";
+import { createAndPersistTestIngredients } from "../../../../../tests/mocks/ingredients";
 import IngredientSearch from "../IngredientSearch";
 
 await createAndPersistTestIngredients();
-
-const PAGE_1_RESULTS = mockIngredientsForIngredientFinder.slice(0, 2);
-const PAGE_2_RESULTS = mockIngredientsForIngredientFinder.slice(2);
-
-await mockIngredientApiFetch({
-  fuzzyResolver: (_term, page) => {
-    if (page === 1) return PAGE_1_RESULTS;
-    if (page === 2) return PAGE_2_RESULTS;
-    return [];
-  },
-});
+await mockIngredientApiFetch();
 
 let observerCallback: IntersectionObserverCallback | null = null;
 

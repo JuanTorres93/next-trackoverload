@@ -24,16 +24,13 @@ export const DEFAULT_BARCODE_INGREDIENT: IngredientFinderResult = {
 
 export async function mockIngredientApiFetch(options?: {
   barcodeIngredient?: IngredientFinderResult;
-  fuzzyResolver?: FuzzyResolver;
 }) {
-  await initializeMockAPI();
+  const { findIngredientByFuzzyNameUsecase } = await initializeMockAPI();
 
   const barcodeIngredient =
     options?.barcodeIngredient ?? DEFAULT_BARCODE_INGREDIENT;
 
-  const fuzzyResolver = options?.fuzzyResolver ?? lowercaseFuzzyResolver;
-
-  vi.spyOn(global, "fetch").mockImplementation((input) => {
+  vi.spyOn(global, "fetch").mockImplementation(async (input) => {
     const url = typeof input === "string" ? input : input.toString();
 
     if (url.includes("/api/ingredient/fuzzy/")) {
@@ -45,7 +42,10 @@ export async function mockIngredientApiFetch(options?: {
         10,
       );
 
-      const data = fuzzyResolver(term, page);
+      const data = await findIngredientByFuzzyNameUsecase.execute({
+        name: term,
+        page,
+      });
 
       return Promise.resolve(
         new Response(JSON.stringify({ status: "success", data }), {
@@ -67,18 +67,11 @@ export async function mockIngredientApiFetch(options?: {
   });
 }
 
-type FuzzyResolver = (term: string, page: number) => IngredientFinderResult[];
-
-function lowercaseFuzzyResolver(term: string): IngredientFinderResult[] {
-  return mockIngredientsForIngredientFinder.filter((ingredient) =>
-    ingredient.ingredient.name.toLowerCase().includes(term.toLowerCase()),
-  );
-}
-
 async function initializeMockAPI() {
   const mockIngredientsRepo = new MemoryIngredientsRepo();
   const mockIngredientFinder = new MemoryIngredientFinder(
     mockIngredientsForIngredientFinder,
+    2,
   );
 
   const createIngredientUsecase = new CreateIngredientUsecase(

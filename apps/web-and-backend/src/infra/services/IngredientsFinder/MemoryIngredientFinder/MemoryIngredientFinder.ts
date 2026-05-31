@@ -4,18 +4,24 @@ import {
 } from "../../../../domain/services/IngredientFinder.port";
 
 export class MemoryIngredientFinder implements IngredientFinder {
-  constructor(private seed: IngredientFinderResult[] = []) {}
+  constructor(
+    private seed: IngredientFinderResult[] = [],
+    private pageSize = 1000,
+  ) {}
 
   async findIngredientsByFuzzyName(
     name: string,
-    _page = 1,
+    page = 1,
   ): Promise<IngredientFinderResult[] | []> {
     const q = name.trim().toLowerCase();
     if (!q) return [];
 
-    return this.seed.filter((item) =>
+    const matches = this.seed.filter((item) =>
       (item.ingredient.name || "").toLowerCase().includes(q),
     );
+
+    const start = (Math.max(1, page) - 1) * this.pageSize;
+    return matches.slice(start, start + this.pageSize);
   }
 
   async findIngredientsByBarcode(

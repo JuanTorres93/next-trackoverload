@@ -46,8 +46,8 @@ describe("NewRecipeForm", () => {
 
     expect(ingredientList).toBeInTheDocument();
 
-    // expect ingredientList to have 3 children (data in mock handler)
-    expect(ingredientList.children.length).toBe(3);
+    // expect ingredientList to have the first page of results
+    expect(ingredientList.children.length).toBe(2);
   });
 
   it("fetches ingredients through barcode", async () => {
