@@ -1,6 +1,10 @@
+"use client";
+
 import Link from "next/link";
 
-import { CgMenuRight } from "react-icons/cg";
+import { useState } from "react";
+
+import { CgClose, CgMenuRight } from "react-icons/cg";
 import { twMerge } from "tailwind-merge";
 
 import TextEnormous from "@/app/_ui/typography/TextEnormous";
@@ -8,13 +12,10 @@ import TextRegular from "@/app/_ui/typography/TextRegular";
 
 import Logo from "../../../_ui/Logo";
 import ButtonPrimary from "../../../_ui/buttons/ButtonPrimary";
-import { getCurrentUserId } from "../../../_utils/auth/getCurrentUserId";
 import ButtonCTA from "../ButtonCTA";
 import { NavLinkType } from "./NavLinkType";
 
-// TODO NEXT: Add responsive menu
-
-async function NavBar({
+function NavBar({
   items = navItems,
   ...props
 }: {
@@ -22,13 +23,12 @@ async function NavBar({
 } & React.HTMLAttributes<HTMLElement>) {
   const { className, ...rest } = props;
 
-  let isLoggedIn;
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  try {
-    await getCurrentUserId();
-    isLoggedIn = true;
-  } catch {
-    isLoggedIn = false;
+  const isLoggedIn = false;
+
+  function toggleMenu() {
+    setIsMenuOpen((prev) => !prev);
   }
 
   return (
@@ -39,14 +39,13 @@ async function NavBar({
       )}
       {...rest}
     >
-      <CgMenuRight
-        className="hidden cursor-pointer transform-[rotateY(180deg)] max-bp-landing-navbar:block"
-        size={24}
-      />
+      <ButtonMenu toggleMenu={toggleMenu} isMenuOpen={isMenuOpen} />
+
+      <Menu isOpen={isMenuOpen} items={items} toggleMenu={toggleMenu} />
 
       <Link
         href="/"
-        className="flex items-center justify-center gap-2 max-bp-landing-navbar:pr-21"
+        className="z-10 flex items-center justify-center gap-2 max-bp-landing-navbar:pr-24"
       >
         <Logo size={40} />
 
@@ -72,7 +71,7 @@ async function NavBar({
       {!isLoggedIn && (
         <ButtonCTA
           href="/auth/register"
-          className="border-none bg-text text-text-light hover:bg-text/80 max-bp-landing-navbar:hidden"
+          className="py-3! border-none bg-text text-text-light hover:bg-text/80 max-bp-landing-navbar:hidden"
           showIcon={false}
         >
           Start Your Journey
@@ -82,13 +81,29 @@ async function NavBar({
   );
 }
 
-const navItems: NavLinkType[] = [
-  { name: "About", href: "/#about" },
-  { name: "How it works", href: "/#how-it-works" },
-  { name: "Features", href: "/#features" },
-  { name: "Testimonials", href: "/#testimonials" },
-  { name: "Pricing", href: "/#pricing" },
-];
+function Menu({
+  isOpen,
+  items = navItems,
+  toggleMenu,
+}: {
+  isOpen: boolean;
+  items: NavLinkType[];
+  toggleMenu: () => void;
+}) {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-white z-5">
+      <ul className="flex flex-col items-center justify-start h-full gap-8 pt-35">
+        {items.map((item) => (
+          <li key={item.name} onClick={toggleMenu}>
+            <NavItem navItem={item} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
 function NavItem({ navItem }: { navItem: NavLinkType }) {
   return (
@@ -101,5 +116,31 @@ function NavItem({ navItem }: { navItem: NavLinkType }) {
     </TextRegular>
   );
 }
+
+function ButtonMenu({
+  toggleMenu,
+  isMenuOpen,
+}: {
+  toggleMenu: () => void;
+  isMenuOpen: boolean;
+}) {
+  return (
+    <button className="hidden p-1 z-10 cursor-pointer transform-[rotateY(180deg)] max-bp-landing-navbar:block">
+      {isMenuOpen ? (
+        <CgClose size={24} onClick={toggleMenu} />
+      ) : (
+        <CgMenuRight size={24} onClick={toggleMenu} />
+      )}
+    </button>
+  );
+}
+
+const navItems: NavLinkType[] = [
+  { name: "About", href: "/#about" },
+  { name: "How it works", href: "/#how-it-works" },
+  { name: "Features", href: "/#features" },
+  { name: "Testimonials", href: "/#testimonials" },
+  { name: "Pricing", href: "/#pricing" },
+];
 
 export default NavBar;

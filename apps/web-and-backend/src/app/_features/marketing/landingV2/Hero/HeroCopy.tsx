@@ -31,12 +31,14 @@ function HeroCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       </p>
 
       <div className="flex gap-4 pt-4 max-bp-landing-hero-smallest:flex-col">
-        <ButtonCTA>Start Your Journey</ButtonCTA>
+        <ButtonCTA href="/auth/register">Start Your Journey</ButtonCTA>
 
+        {/* 
         <ButtonCTASecondary>
           <MdOutlineVideoSettings size={20} className="my-auto mr-2" />
           See How It Works
         </ButtonCTASecondary>
+          */}
       </div>
     </div>
   );

@@ -27,7 +27,7 @@ function FinalCTA({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
         </TextLarge>
 
         <div className="flex items-stretch justify-center gap-4 pt-6 z-3 max-bp-landing-final-cta:flex-col max-bp-landing-final-cta:w-full">
-          <ButtonCTA>Start Your Journey</ButtonCTA>
+          <ButtonCTA href="/auth/register">Start Your Journey</ButtonCTA>
 
           <ButtonCTASecondary href="/#features">
             Explore Features
