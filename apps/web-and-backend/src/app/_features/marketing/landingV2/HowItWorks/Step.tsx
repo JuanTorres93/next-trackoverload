@@ -4,7 +4,6 @@ import TextEnormous from "@/app/_ui/typography/TextEnormous";
 import TextLessHuge from "@/app/_ui/typography/TextLessHuge";
 import TextRegular from "@/app/_ui/typography/TextRegular";
 
-// TODO IMPORTANT: Finish styling when design is done
 function Step({
   step,
   ...props

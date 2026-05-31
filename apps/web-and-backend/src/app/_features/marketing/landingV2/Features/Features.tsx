@@ -13,7 +13,6 @@ import FeaturesPreview, {
   FeatureSummary,
 } from "./FeaturesPreview";
 
-// TODO IMPORTANT: Finish styling when design is done
 function Features({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 

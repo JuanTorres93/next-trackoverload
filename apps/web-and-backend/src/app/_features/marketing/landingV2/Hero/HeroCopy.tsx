@@ -6,7 +6,6 @@ import TextMassive from "@/app/_ui/typography/TextMassive";
 import ButtonCTA, { ButtonCTASecondary } from "../../ButtonCTA";
 import Eyebrow from "./Eyebrow";
 
-// TODO IMPORTANT: Finish styling when design is done
 function HeroCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 

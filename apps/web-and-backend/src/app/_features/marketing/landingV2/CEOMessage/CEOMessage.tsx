@@ -4,7 +4,6 @@ import LandingSection from "../LandingSection";
 import CEOCopy from "./CEOCopy";
 import CEOView from "./CEOView";
 
-// TODO IMPORTANT: Finish styling when design is done
 function CEOMessage({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 

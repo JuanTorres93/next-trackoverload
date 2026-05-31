@@ -7,7 +7,6 @@ import afterImage from "@/../public/after.jpg";
 
 import { SemiCircleProgress } from "../SemicircleProgress";
 
-// TODO IMPORTANT: Finish styling when design is done
 function HeroImage({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 

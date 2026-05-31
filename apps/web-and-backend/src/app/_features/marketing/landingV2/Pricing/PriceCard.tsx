@@ -8,7 +8,6 @@ import TextMassive from "@/app/_ui/typography/TextMassive";
 
 import Tag from "./Tag";
 
-// TODO IMPORTANT: Finish styling when design is done
 function PriceCard({
   price,
   ...props

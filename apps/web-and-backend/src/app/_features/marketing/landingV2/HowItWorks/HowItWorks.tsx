@@ -3,7 +3,6 @@ import { twMerge } from "tailwind-merge";
 import LandingSection from "../LandingSection";
 import Step, { StepItemType } from "./Step";
 
-// TODO IMPORTANT: Finish styling when design is done
 function HowItWorks({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 

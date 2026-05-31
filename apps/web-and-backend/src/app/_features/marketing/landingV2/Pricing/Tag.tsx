@@ -1,6 +1,5 @@
 import { twMerge } from "tailwind-merge";
 
-// TODO IMPORTANT: Finish styling when design is done
 function Tag({
   children,
   ...props

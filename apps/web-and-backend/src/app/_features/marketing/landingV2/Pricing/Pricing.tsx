@@ -7,7 +7,6 @@ import LandingSection from "../LandingSection";
 import PriceCard, { PriceItemType } from "./PriceCard";
 import PriceTimeframeSwitch from "./PriceTimeframeSwitch";
 
-// TODO IMPORTANT: Finish styling when design is done
 async function Pricing({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
   const sectionTitle = "Build the foundation.";

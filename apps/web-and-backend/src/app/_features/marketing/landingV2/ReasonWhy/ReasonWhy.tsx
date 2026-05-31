@@ -4,7 +4,6 @@ import LandingSection from "../LandingSection";
 import BulletList, { BulletItemType } from "./BulletList";
 import ReasonWhyImage from "./ReasonWhyImage";
 
-// TODO IMPORTANT: Finish styling when design is done
 function ReasonWhy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 

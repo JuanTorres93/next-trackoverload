@@ -4,7 +4,6 @@ import LandingSection from "../LandingSection";
 import HeroCopy from "./HeroCopy";
 import HeroImage from "./HeroImage";
 
-// TODO IMPORTANT: Finish styling when design is done
 function Hero({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
