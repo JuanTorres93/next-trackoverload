@@ -1,7 +1,11 @@
+import { getTranslations } from "next-intl/server";
 import { twMerge } from "tailwind-merge";
 
-function CopyrightNote({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
+async function CopyrightNote({
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
+  const t = await getTranslations("LandingPage");
 
   return (
     <div
@@ -11,7 +15,7 @@ function CopyrightNote({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       )}
       {...rest}
     >
-      &copy; {new Date().getFullYear()} Cimientos. All rights reserved.
+      &copy; {new Date().getFullYear()} Cimientos. {t("footer.copyright")}
     </div>
   );
 }

@@ -1,5 +1,13 @@
 {
   "LandingPage": {
+    "navbar": {
+      "about": "About",
+      "how-it-works": "How It Works",
+      "features": "Features",
+      "testimonials": "Testimonials",
+      "pricing": "Pricing",
+      "cta": "Start Your Journey"
+    },
     "hero": {
       "eyebrow": "Nutrition first fitness for men who want clarity, not pressure.",
       "heading-1": "Build the body that",
@@ -8,6 +16,20 @@
       "subheading": "Cimientos helps you simplify nutrition, stay consistent, and create a practical foundation for muscle gain, fat loss, and real self-confidence. No confusing plans. No extreme tracking. Just a clear path forward.",
       "cta": "Start Your Journey",
       "seeHowItWorks": "See How It Works"
+    },
+    "footer": {
+      "copy": "A simple fitness foundation system for men who want to build a better body and a more confident life without the overwhelm.",
+      "home": "Home",
+      "about": "About",
+      "how-it-works": "How It Works",
+      "features": "Features",
+      "testimonials": "Testimonials",
+      "pricing": "Pricing",
+      "pricing-column": {
+        "basic": "Basic Plan",
+        "premium": "Premium Plan"
+      },
+      "copyright": "All rights reserved."
     }
   }
 }

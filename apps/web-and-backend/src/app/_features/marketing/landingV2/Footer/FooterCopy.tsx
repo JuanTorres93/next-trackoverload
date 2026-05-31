@@ -1,11 +1,13 @@
+import { getTranslations } from "next-intl/server";
 import { twMerge } from "tailwind-merge";
 
 import Logo from "@/app/_ui/Logo";
 import TextEnormous from "@/app/_ui/typography/TextEnormous";
 import TextSmall from "@/app/_ui/typography/TextSmall";
 
-function FooterCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
+async function FooterCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
+  const t = await getTranslations("LandingPage");
 
   return (
     <div
@@ -27,8 +29,7 @@ function FooterCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
         as="p"
         className="max-w-102 max-bp-landing-footer-smallest:max-w-none"
       >
-        A simple fitness foundation system for men who want to build a better
-        body and a more confident life without the overwhelm.
+        {t("footer.copy")}
       </TextSmall>
     </div>
   );

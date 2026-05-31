@@ -1,4 +1,4 @@
 export type NavLinkType = {
-  name: string;
+  translationKey: string;
   href: string;
 };

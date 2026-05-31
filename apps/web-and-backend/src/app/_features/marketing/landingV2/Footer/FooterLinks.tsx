@@ -1,8 +1,10 @@
+import { getTranslations } from "next-intl/server";
 import { twMerge } from "tailwind-merge";
 
 import LinksColumn from "./LinksColumn";
 
-function FooterLinks({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
+async function FooterLinks({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  const t = await getTranslations("LandingPage");
   const { className, ...rest } = props;
 
   return (
@@ -13,7 +15,7 @@ function FooterLinks({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       {footerLinks.map((column, index) => (
         <LinksColumn
           key={index}
-          columnTitle={column.columnTitle}
+          columnTitle={t(`footer.${column.columnTitle}`)}
           links={column.links}
         />
       ))}
@@ -23,29 +25,29 @@ function FooterLinks({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
 
 const footerLinks = [
   {
-    columnTitle: "Home",
+    columnTitle: "home",
     links: [
-      { name: "About Us", href: "/#about" },
-      { name: "How It Works", href: "/#how-it-works" },
-      { name: "Features", href: "/#features" },
-      { name: "Testimonials", href: "/#testimonials" },
-      { name: "Pricing", href: "/#pricing" },
+      { translationKey: "about", href: "/#about" },
+      { translationKey: "how-it-works", href: "/#how-it-works" },
+      { translationKey: "features", href: "/#features" },
+      { translationKey: "testimonials", href: "/#testimonials" },
+      { translationKey: "pricing", href: "/#pricing" },
     ],
   },
   //{
   //  columnTitle: "Features",
   //  links: [
-  //    { name: "Feature 1", href: "#" },
-  //    { name: "Feature 2", href: "#" },
-  //    { name: "Feature 3", href: "#" },
-  //    { name: "ETC...", href: "#" },
+  //    { translationKey: "Feature 1", href: "#" },
+  //    { translationKey: "Feature 2", href: "#" },
+  //    { translationKey: "Feature 3", href: "#" },
+  //    { translationKey: "ETC...", href: "#" },
   //  ],
   //},
   {
-    columnTitle: "Pricing",
+    columnTitle: "pricing",
     links: [
-      { name: "Basic plan", href: "/#pricing" },
-      { name: "Premium plan", href: "/#pricing" },
+      { translationKey: "pricing-column.basic", href: "/#pricing" },
+      { translationKey: "pricing-column.premium", href: "/#pricing" },
     ],
   },
 ];

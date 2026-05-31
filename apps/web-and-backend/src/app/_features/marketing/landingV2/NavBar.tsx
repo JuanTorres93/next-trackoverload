@@ -1,9 +1,9 @@
 "use client";
-
 import Link from "next/link";
 
 import { useState } from "react";
 
+import { useTranslations } from "next-intl";
 import { CgClose, CgMenuRight } from "react-icons/cg";
 import { twMerge } from "tailwind-merge";
 
@@ -22,6 +22,7 @@ function NavBar({
   items?: NavLinkType[];
 } & React.HTMLAttributes<HTMLElement>) {
   const { className, ...rest } = props;
+  const t = useTranslations("LandingPage");
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -56,7 +57,7 @@ function NavBar({
 
       <ul className="flex items-center justify-center max-bp-landing-navbar:hidden ">
         {items.map((item) => (
-          <li key={item.name}>
+          <li key={item.translationKey}>
             <NavItem navItem={item} />
           </li>
         ))}
@@ -74,7 +75,7 @@ function NavBar({
           className="py-3! border-none bg-text text-text-light hover:bg-text/80 max-bp-landing-navbar:hidden"
           showIcon={false}
         >
-          Start Your Journey
+          {t("navbar.cta")}
         </ButtonCTA>
       )}
     </nav>
@@ -96,7 +97,7 @@ function Menu({
     <div className="fixed inset-0 bg-white z-5">
       <ul className="flex flex-col items-center justify-start h-full gap-8 pt-35">
         {items.map((item) => (
-          <li key={item.name} onClick={toggleMenu}>
+          <li key={item.translationKey} onClick={toggleMenu}>
             <NavItem navItem={item} />
           </li>
         ))}
@@ -106,13 +107,15 @@ function Menu({
 }
 
 function NavItem({ navItem }: { navItem: NavLinkType }) {
+  const t = useTranslations("LandingPage");
+
   return (
     <TextRegular
       as={Link}
       href={navItem.href}
       className="px-4 py-2 transition rounded-full hover:bg-neutral"
     >
-      {navItem.name}
+      {t(navItem.translationKey)}
     </TextRegular>
   );
 }
@@ -136,11 +139,11 @@ function ButtonMenu({
 }
 
 const navItems: NavLinkType[] = [
-  { name: "About", href: "/#about" },
-  { name: "How it works", href: "/#how-it-works" },
-  { name: "Features", href: "/#features" },
-  { name: "Testimonials", href: "/#testimonials" },
-  { name: "Pricing", href: "/#pricing" },
+  { translationKey: "navbar.about", href: "/#about" },
+  { translationKey: "navbar.how-it-works", href: "/#how-it-works" },
+  { translationKey: "navbar.features", href: "/#features" },
+  { translationKey: "navbar.testimonials", href: "/#testimonials" },
+  { translationKey: "navbar.pricing", href: "/#pricing" },
 ];
 
 export default NavBar;

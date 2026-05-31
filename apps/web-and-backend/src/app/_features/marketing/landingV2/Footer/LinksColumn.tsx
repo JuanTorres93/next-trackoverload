@@ -1,12 +1,13 @@
 import Link from "next/link";
 
+import { getTranslations } from "next-intl/server";
 import { twMerge } from "tailwind-merge";
 
 import TextLarge from "@/app/_ui/typography/TextLarge";
 
 import { NavLinkType } from "../NavLinkType";
 
-function LinksColumn({
+async function LinksColumn({
   columnTitle,
   links,
   ...props
@@ -15,6 +16,7 @@ function LinksColumn({
   links: NavLinkType[];
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
+  const t = await getTranslations("LandingPage.footer");
 
   return (
     <div
@@ -31,7 +33,7 @@ function LinksColumn({
       <ul className="flex flex-col gap-3">
         {links.map((link, index) => (
           <li key={index}>
-            <Link href={link.href}>{link.name}</Link>
+            <Link href={link.href}>{t(link.translationKey)}</Link>
           </li>
         ))}
       </ul>
