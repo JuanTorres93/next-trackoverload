@@ -26,8 +26,8 @@ function Features({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       {...rest}
     >
       <FeaturesPreview features={featuresData}>
-        <div className="grid grid-cols-[.7fr_1fr] gap-6">
-          <div className="flex flex-col gap-6 justify-stretch">
+        <div className="grid grid-cols-[.7fr_1fr] gap-6 max-bp-landing-features:grid-cols-1 max-bp-landing-features:gap-10">
+          <div className="flex flex-col gap-6 justify-stretch max-bp-landing-features:gap-4">
             {featuresData.map((feature) => (
               <FeatureSummary key={feature.id} feature={feature} />
             ))}

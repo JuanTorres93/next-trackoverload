@@ -62,7 +62,7 @@ export function FeatureSummary({ feature }: { feature: FeatureItemType }) {
       <LogoBox
         logo={feature.logo}
         isSelected={isSelected}
-        className="self-center"
+        className="self-center max-bp-landing-features-smallest:self-start"
       />
 
       <div className="flex flex-col gap-2">
@@ -89,7 +89,7 @@ export function FeatureDescription() {
         <LogoBox className="mt-2" logo={feature!.logo} isSelected={true} />
 
         <div className="flex flex-col gap-2">
-          <h3 className="text-[28px] font-medium font-secondary">
+          <h3 className="text-[28px] font-medium font-secondary max-bp-change-font:text-[26px]">
             {feature!.mainTitle}
           </h3>
 
@@ -99,7 +99,7 @@ export function FeatureDescription() {
         </div>
       </div>
 
-      <div className="grid grid-cols-[1fr_.6fr] h-full gap-6">
+      <div className="grid grid-cols-[1fr_.6fr] h-full gap-6 max-bp-landing-features-smallest:grid-cols-1 max-bp-landing-features-smallest:gap-10">
         <TextRegular className="flex flex-col gap-9">
           <p>{feature!.mainDescription}</p>
 
@@ -116,7 +116,7 @@ export function FeatureDescription() {
           </ul>
         </TextRegular>
 
-        <div className="relative h-full overflow-hidden rounded-2xl">
+        <div className="relative h-full overflow-hidden rounded-2xl max-bp-landing-features-smallest:h-60">
           <Image
             src={feature!.mainImageUrl}
             alt={feature!.mainTitle}
@@ -142,7 +142,7 @@ function LogoBox({
   return (
     <div
       className={twMerge(
-        `flex items-center justify-center bg-white rounded-lg aspect-square size-12 transition ${isSelected ? "text-primary" : "text-text"}`,
+        `flex items-center justify-center bg-white rounded-lg aspect-square size-12 transition ${isSelected ? "text-primary" : "text-text"} max-bp-landing-features-smallest:size-10`,
         className,
       )}
       {...rest}

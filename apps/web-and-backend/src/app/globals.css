@@ -62,6 +62,8 @@
   --breakpoint-bp-landing-hero-smallest: 505px;
   --breakpoint-bp-landing-steps: 947px;
   --breakpoint-bp-landing-steps-smallest: 653px;
+  --breakpoint-bp-landing-features: 955px;
+  --breakpoint-bp-landing-features-smallest: 677px;
 
   --breakpoint-bp-recipe-page: 863px;
   --breakpoint-bp-recipe-page-second: 445px;
