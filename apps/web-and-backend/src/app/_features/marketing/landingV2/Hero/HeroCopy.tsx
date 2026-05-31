@@ -16,7 +16,7 @@ function HeroCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
 
       <TextMassive
         as="h1"
-        className="font-semibold text-text leading-18 font-secondary"
+        className="font-semibold text-text leading-18 font-secondary max-bp-landing-hero:leading-14"
       >
         Build the body that{" "}
         <span className="text-primary">gives you confidence</span> without

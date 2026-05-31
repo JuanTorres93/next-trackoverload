@@ -16,7 +16,7 @@ function Hero({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       )}
       {...rest}
     >
-      <div className="grid relative z-3 grid-cols-[1fr_.75fr] items-stretch gap-10 mt-6">
+      <div className="grid relative z-3 grid-cols-[1fr_.75fr] items-stretch gap-10 mt-6 max-bp-landing-hero:grid-cols-1 max-bp-landing-hero:gap-16">
         <HeroCopy />
 
         <HeroImage />

@@ -5,8 +5,6 @@ import { twMerge } from "tailwind-merge";
 
 import afterImage from "@/../public/after.jpg";
 
-import AppStoreButton from "../AppStoreButton";
-import GooglePlayButton from "../GooglePlayButton";
 import { SemiCircleProgress } from "../SemicircleProgress";
 
 // TODO IMPORTANT: Finish styling when design is done
@@ -17,7 +15,7 @@ function HeroImage({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
     <div className={twMerge("relative h-full", className)} {...rest}>
       <PopupOverlay />
 
-      <div className="relative bg-primary-lightest ml-8 mt-8 h-[92%] w-[92%] overflow-hidden rounded-3xl">
+      <div className="relative bg-primary-lightest ml-8 mt-8 h-[92%] w-[92%] overflow-hidden rounded-3xl max-bp-landing-hero:h-160 ">
         <Image
           src={afterImage}
           alt={"Hero Image"}
