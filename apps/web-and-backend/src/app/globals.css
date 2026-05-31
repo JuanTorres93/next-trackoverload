@@ -54,6 +54,8 @@
   /* Breakpoints */
   --breakpoint-bp-landing-CEO: 1353px;
   --breakpoint-bp-change-font: 1321px;
+  --breakpoint-bp-landing-reduce-padding: 1250px;
+  --breakpoint-bp-landing-reduce-more-padding: 1080px;
 
   --breakpoint-bp-recipe-page: 863px;
   --breakpoint-bp-recipe-page-second: 445px;

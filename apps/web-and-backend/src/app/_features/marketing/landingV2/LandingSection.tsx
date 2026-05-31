@@ -16,7 +16,10 @@ function LandingSection({
 
   return (
     <section
-      className={twMerge("flex px-35 flex-col gap-10", className)}
+      className={twMerge(
+        "flex px-35 flex-col gap-10 max-bp-landing-reduce-padding:px-15 max-bp-landing-reduce-more-padding:px-8",
+        className,
+      )}
       {...rest}
     >
       {title && <SectionTitle title={title} subtitle={subtitle} />}
