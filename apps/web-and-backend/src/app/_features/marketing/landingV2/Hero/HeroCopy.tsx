@@ -30,7 +30,7 @@ function HeroCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
         path forward.
       </p>
 
-      <div className="flex gap-4 pt-4">
+      <div className="flex gap-4 pt-4 max-bp-landing-hero-smallest:flex-col">
         <ButtonCTA>Start Your Journey</ButtonCTA>
 
         <ButtonCTASecondary>
