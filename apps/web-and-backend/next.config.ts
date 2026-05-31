@@ -1,15 +1,16 @@
-import type { NextConfig } from 'next';
+import type { NextConfig } from "next";
 
+import createNextIntlPlugin from "next-intl/plugin";
 
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = process.env.NODE_ENV === "development";
 
 const ContentSecurityPolicy = [
   "default-src 'self'",
 
   // Scripts
   "script-src 'self' 'unsafe-inline'" +
-    (isDev ? " 'unsafe-eval'" : '') +
-    ' https://vercel.live',
+    (isDev ? " 'unsafe-eval'" : "") +
+    " https://vercel.live",
 
   // Styles — 'unsafe-inline' needed for Next.js inline <style> tags
   "style-src 'self' 'unsafe-inline'",
@@ -27,39 +28,39 @@ const ContentSecurityPolicy = [
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",
-].join('; ');
+].join("; ");
 
 const securityHeaders = [
   {
     // Content Security Policy: restricts where resources can be loaded from
-    key: 'Content-Security-Policy',
+    key: "Content-Security-Policy",
     value: ContentSecurityPolicy,
   },
   {
     // Prevents the browser from guessing the MIME type (stops MIME-sniffing attacks)
-    key: 'X-Content-Type-Options',
-    value: 'nosniff',
+    key: "X-Content-Type-Options",
+    value: "nosniff",
   },
   {
     // Stops the page from being embedded in an iframe (clickjacking protection)
-    key: 'X-Frame-Options',
-    value: 'DENY',
+    key: "X-Frame-Options",
+    value: "DENY",
   },
   {
     // Controls how much referrer info is sent with requests
-    key: 'Referrer-Policy',
-    value: 'strict-origin-when-cross-origin',
+    key: "Referrer-Policy",
+    value: "strict-origin-when-cross-origin",
   },
   {
     // Restricts which browser features the page can use
-    key: 'Permissions-Policy',
-    value: 'camera=(self), microphone=(), geolocation=()',
+    key: "Permissions-Policy",
+    value: "camera=(self), microphone=(), geolocation=()",
   },
 
   // Only makes sense in real production (but doesn't break in preview)
   {
-    key: 'Strict-Transport-Security',
-    value: 'max-age=63072000; includeSubDomains; preload',
+    key: "Strict-Transport-Security",
+    value: "max-age=63072000; includeSubDomains; preload",
   },
 ];
 
@@ -67,7 +68,7 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: '/:path*',
+        source: "/:path*",
         headers: securityHeaders,
       },
     ];
@@ -75,19 +76,20 @@ const nextConfig: NextConfig = {
 
   images: {
     remotePatterns:
-      process.env.NODE_ENV === 'development'
+      process.env.NODE_ENV === "development"
         ? [
-            { protocol: 'https', hostname: '**' },
-            { protocol: 'http', hostname: '**' },
+            { protocol: "https", hostname: "**" },
+            { protocol: "http", hostname: "**" },
           ]
         : [
             // Restrict to specific host in production
             // NOTE: Defense in server, sync above with Content-Security-Policy img-src
-            { protocol: 'https', hostname: 'res.cloudinary.com' },
-            { protocol: 'https', hostname: 'images.openfoodfacts.org' },
-            { protocol: 'https', hostname: 'images.openfoodfacts.net' },
+            { protocol: "https", hostname: "res.cloudinary.com" },
+            { protocol: "https", hostname: "images.openfoodfacts.org" },
+            { protocol: "https", hostname: "images.openfoodfacts.net" },
           ],
   },
 };
 
-export default nextConfig;
+const withNextIntl = createNextIntlPlugin();
+export default withNextIntl(nextConfig);

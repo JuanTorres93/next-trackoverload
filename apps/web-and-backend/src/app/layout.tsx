@@ -4,6 +4,7 @@ import type { Metadata, Viewport } from "next";
 
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { NextIntlClientProvider } from "next-intl";
 
 import { Providers } from "./_providers/Providers";
 import TextRegular from "./_ui/typography/TextRegular";
@@ -73,14 +74,16 @@ export default function RootLayout({
       <body
         className={`${primaryFont.className} ${secondaryFont.variable} antialiased overflow-y-scroll text-text bg-background`}
       >
-        <Providers>
-          <TextRegular
-            id="wrapper-all-always"
-            className="w-full overflow-x-hidden"
-          >
-            {children}
-          </TextRegular>
-        </Providers>
+        <NextIntlClientProvider>
+          <Providers>
+            <TextRegular
+              id="wrapper-all-always"
+              className="w-full overflow-x-hidden"
+            >
+              {children}
+            </TextRegular>
+          </Providers>
+        </NextIntlClientProvider>
 
         <Analytics />
         <SpeedInsights />

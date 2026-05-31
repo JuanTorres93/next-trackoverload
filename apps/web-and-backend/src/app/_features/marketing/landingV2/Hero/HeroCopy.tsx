@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { MdOutlineVideoSettings } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
 
@@ -6,7 +7,8 @@ import TextMassive from "@/app/_ui/typography/TextMassive";
 import ButtonCTA, { ButtonCTASecondary } from "../../ButtonCTA";
 import Eyebrow from "./Eyebrow";
 
-function HeroCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
+async function HeroCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  const t = await getTranslations("LandingPage");
   const { className, ...rest } = props;
 
   return (
@@ -17,25 +19,21 @@ function HeroCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
         as="h1"
         className="font-semibold text-text leading-18 font-secondary max-bp-landing-hero:leading-14"
       >
-        Build the body that{" "}
-        <span className="text-primary">gives you confidence</span> without
-        obsessing over every gram.
+        {t("hero.heading-1")}{" "}
+        <span className="text-primary">{t("hero.heading-highlight")}</span>{" "}
+        {t("hero.heading-2")}
       </TextMassive>
 
-      <p className={`pt-1 text-text-minor-emphasis`}>
-        Cimientos helps you simplify nutrition, stay consistent, and create a
-        practical foundation for muscle gain, fat loss, and real
-        self-confidence. No confusing plans. No extreme tracking. Just a clear
-        path forward.
-      </p>
+      <p className={`pt-1 text-text-minor-emphasis`}>{t("hero.subheading")}</p>
 
       <div className="flex gap-4 pt-4 max-bp-landing-hero-smallest:flex-col">
-        <ButtonCTA href="/auth/register">Start Your Journey</ButtonCTA>
+        <ButtonCTA href="/auth/register">{t("hero.cta")}</ButtonCTA>
 
+        {/* TODO: Uncomment when I have a published video/resource */}
         {/* 
         <ButtonCTASecondary>
           <MdOutlineVideoSettings size={20} className="my-auto mr-2" />
-          See How It Works
+          {t("hero.seeHowItWorks")}
         </ButtonCTASecondary>
           */}
       </div>

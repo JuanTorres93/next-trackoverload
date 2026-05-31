@@ -1,9 +1,11 @@
+import { getTranslations } from "next-intl/server";
 import { twMerge } from "tailwind-merge";
 
 import TextSmall from "@/app/_ui/typography/TextSmall";
 
-function Eyebrow({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
+async function Eyebrow({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
+  const t = await getTranslations("LandingPage");
 
   return (
     <TextSmall
@@ -14,7 +16,7 @@ function Eyebrow({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       )}
       {...rest}
     >
-      Nutrition first fitness for men who want clarity, not pressure.
+      {t("hero.eyebrow")}
     </TextSmall>
   );
 }
