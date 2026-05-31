@@ -1,7 +1,6 @@
-"use server";
-
 import Link from "next/link";
 
+import { CgMenuRight } from "react-icons/cg";
 import { twMerge } from "tailwind-merge";
 
 import TextEnormous from "@/app/_ui/typography/TextEnormous";
@@ -12,6 +11,8 @@ import ButtonPrimary from "../../../_ui/buttons/ButtonPrimary";
 import { getCurrentUserId } from "../../../_utils/auth/getCurrentUserId";
 import ButtonCTA from "../ButtonCTA";
 import { NavLinkType } from "./NavLinkType";
+
+// TODO NEXT: Add responsive menu
 
 async function NavBar({
   items = navItems,
@@ -33,12 +34,20 @@ async function NavBar({
   return (
     <nav
       className={twMerge(
-        `grid grid-rows-1 grid-cols-[max-content_1fr_max-content] px-8 items-center gap-24 py-4 z-20`,
+        `grid relative grid-rows-1 grid-cols-[max-content_1fr_max-content] px-8 items-center gap-24 py-4 z-20 max-bp-landing-navbar:grid-cols-[min-content_1fr]`,
         className,
       )}
       {...rest}
     >
-      <Link href="/" className="flex items-center justify-center gap-2">
+      <CgMenuRight
+        className="hidden cursor-pointer transform-[rotateY(180deg)] max-bp-landing-navbar:block"
+        size={24}
+      />
+
+      <Link
+        href="/"
+        className="flex items-center justify-center gap-2 max-bp-landing-navbar:pr-21"
+      >
         <Logo size={40} />
 
         <TextEnormous as="span" className="mt-1 font-medium">
@@ -46,7 +55,7 @@ async function NavBar({
         </TextEnormous>
       </Link>
 
-      <ul className="flex items-center justify-center ">
+      <ul className="flex items-center justify-center max-bp-landing-navbar:hidden ">
         {items.map((item) => (
           <li key={item.name}>
             <NavItem navItem={item} />
@@ -54,12 +63,16 @@ async function NavBar({
         ))}
       </ul>
 
-      {isLoggedIn && <ButtonPrimary href="/app">Ir a la app</ButtonPrimary>}
+      {isLoggedIn && (
+        <ButtonPrimary className="max-bp-landing-navbar:hidden" href="/app">
+          Ir a la app
+        </ButtonPrimary>
+      )}
 
       {!isLoggedIn && (
         <ButtonCTA
           href="/auth/register"
-          className="border-none bg-text text-text-light hover:bg-text/80"
+          className="border-none bg-text text-text-light hover:bg-text/80 max-bp-landing-navbar:hidden"
           showIcon={false}
         >
           Start Your Journey

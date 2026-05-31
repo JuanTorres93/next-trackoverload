@@ -52,6 +52,7 @@
   --font-secondary: var(--font-secondary);
 
   /* Breakpoints */
+  --breakpoint-bp-landing-navbar: 1053px;
   --breakpoint-bp-landing-CEO: 1353px;
   --breakpoint-bp-landing-CEO-smallest: 820px;
   --breakpoint-bp-change-font: 1321px;
