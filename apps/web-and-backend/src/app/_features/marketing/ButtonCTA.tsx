@@ -35,7 +35,7 @@ export function ButtonCTASecondary({
     <ButtonCTA
       showIcon={false}
       className={twMerge(
-        "bg-transparent flex border-primary text-primary hover:bg-transparent hover:border-primary hover:text-primary",
+        "bg-transparent flex border-primary text-primary hover:bg-transparent hover:border-primary hover:text-primary max-bp-change-font:py-3.25",
         className,
       )}
       {...rest}
