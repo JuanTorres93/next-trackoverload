@@ -56,7 +56,7 @@ export function FeatureSummary({ feature }: { feature: FeatureItemType }) {
 
   return (
     <div
-      className={`grid grid-cols-[max-content_1fr] gap-4 p-6 rounded-2xl cursor-default transition ${isSelected ? "bg-primary-lightest" : "bg-gray-200"}`}
+      className={`grid grid-cols-[max-content_1fr] gap-4 p-6 cursor-pointer rounded-2xl  transition ${isSelected ? "bg-primary-lightest" : "bg-gray-200 hover:bg-gray-300/80"}`}
       onClick={handleSelectFeature}
     >
       <LogoBox
