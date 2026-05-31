@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { twMerge } from "tailwind-merge";
 
 import TextHuge from "@/app/_ui/typography/TextHuge";
@@ -6,8 +7,10 @@ import TextLarge from "@/app/_ui/typography/TextLarge";
 import ButtonCTA, { ButtonCTASecondary } from "../../ButtonCTA";
 import LandingSection from "../LandingSection";
 
-function FinalCTA({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
+async function FinalCTA({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
+
+  const t = await getTranslations("LandingPage.final-cta");
 
   return (
     <LandingSection className={twMerge("", className)} {...rest}>
@@ -16,21 +19,18 @@ function FinalCTA({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
           as="h2"
           className="flex flex-col gap-2 font-semibold leading-15 z-3 font-secondary max-bp-change-font:leading-12"
         >
-          Start your fitness journey with balanced nutrition and consistent
-          exercise.
+          {t("heading")}
         </TextHuge>
 
         <TextLarge as="p" className=" z-3 text-[#aeaead]">
-          No more overthinking or waiting for the perfect moment. Take the first
-          step today with Cimientos and create something meaningful for
-          yourself.
+          {t("subheading")}
         </TextLarge>
 
         <div className="flex items-stretch justify-center gap-4 pt-6 z-3 max-bp-landing-final-cta:flex-col max-bp-landing-final-cta:w-full">
-          <ButtonCTA href="/auth/register">Start Your Journey</ButtonCTA>
+          <ButtonCTA href="/auth/register">{t("cta")}</ButtonCTA>
 
           <ButtonCTASecondary href="/#features">
-            Explore Features
+            {t("cta-secondary")}
           </ButtonCTASecondary>
         </div>
         <div className="z-2 absolute inset-0 bg-[radial-gradient(circle,var(--color-primary-shade)_0%,transparent_70%)] " />

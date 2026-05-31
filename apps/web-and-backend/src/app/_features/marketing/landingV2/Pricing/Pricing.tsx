@@ -2,7 +2,6 @@ import { getTranslations } from "next-intl/server";
 import { twMerge } from "tailwind-merge";
 
 import { getPlanInfo } from "@/app/_features/subscription/actions";
-import { FREE_TRIAL_DAYS } from "@/domain/common/constants";
 
 import LandingSection from "../LandingSection";
 import PriceCard, { PriceItemType } from "./PriceCard";
@@ -91,7 +90,6 @@ async function Pricing({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   );
 }
 
-// TODO IMPORTANT: Rishad tiene que darme el texto actualizado
 const priceItems: PriceItemType[] = [
   {
     priceInEurosCents: 0,
