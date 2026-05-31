@@ -14,7 +14,7 @@ function CEOMessage({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       title="A Message from Our CEO: Simple, Focused Fitness for Real Results."
       {...rest}
     >
-      <div className="relative z-3 py-20 grid grid-cols-[.35fr_1fr] gap-7.5">
+      <div className="relative z-3 py-20 grid grid-cols-[.35fr_1fr] gap-7.5 max-bp-landing-CEO:grid-cols-[.55fr_1fr]">
         <CEOView />
 
         <CEOCopy />

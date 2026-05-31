@@ -9,7 +9,10 @@ function TextRegular({
   const { className, ...rest } = props;
 
   return (
-    <Component {...rest} className={`text-base ${className || ""}`}>
+    <Component
+      {...rest}
+      className={`text-base max-bp-change-font:text-sm ${className || ""}`}
+    >
       {children}
     </Component>
   );

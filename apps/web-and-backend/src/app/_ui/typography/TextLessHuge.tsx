@@ -9,7 +9,10 @@ function TextLessHuge({
   const { className, ...rest } = props;
 
   return (
-    <Component {...rest} className={`text-4xl ${className || ""}`}>
+    <Component
+      {...rest}
+      className={`text-4xl max-bp-change-font:text-3xl ${className || ""}`}
+    >
       {children}
     </Component>
   );

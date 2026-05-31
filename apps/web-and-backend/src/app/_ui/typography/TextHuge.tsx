@@ -9,7 +9,10 @@ function TextHuge({
   const { className, ...rest } = props;
 
   return (
-    <Component {...rest} className={`text-5xl ${className || ""}`}>
+    <Component
+      {...rest}
+      className={`text-5xl max-bp-change-font:text-4xl ${className || ""}`}
+    >
       {children}
     </Component>
   );

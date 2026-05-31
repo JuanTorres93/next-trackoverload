@@ -9,7 +9,10 @@ function TextLarge({
   const { className, ...rest } = props;
 
   return (
-    <Component {...rest} className={`text-lg ${className || ""}`}>
+    <Component
+      {...rest}
+      className={`text-lg max-bp-change-font:text-base ${className || ""}`}
+    >
       {children}
     </Component>
   );

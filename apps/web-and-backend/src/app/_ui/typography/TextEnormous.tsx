@@ -9,7 +9,10 @@ function TextEnormous({
   const { className, ...rest } = props;
 
   return (
-    <Component {...rest} className={`text-2xl ${className || ""}`}>
+    <Component
+      {...rest}
+      className={`text-2xl max-bp-change-font:text-xl ${className || ""}`}
+    >
       {children}
     </Component>
   );

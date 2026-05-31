@@ -9,7 +9,10 @@ function TextMassive({
   const { className, ...rest } = props;
 
   return (
-    <Component {...rest} className={`text-6xl ${className || ""}`}>
+    <Component
+      {...rest}
+      className={`text-6xl max-bp-change-font:text-5xl ${className || ""}`}
+    >
       {children}
     </Component>
   );

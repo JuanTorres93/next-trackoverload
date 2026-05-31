@@ -9,7 +9,10 @@ function TextExtraLarge({
   const { className, ...rest } = props;
 
   return (
-    <Component {...rest} className={`text-xl ${className || ""}`}>
+    <Component
+      {...rest}
+      className={`text-xl max-bp-change-font:text-lg ${className || ""}`}
+    >
       {children}
     </Component>
   );

@@ -9,7 +9,10 @@ function TextSmall({
   const { className, ...rest } = props;
 
   return (
-    <Component {...rest} className={`text-sm ${className || ""}`}>
+    <Component
+      {...rest}
+      className={`text-sm max-bp-change-font:text-xs ${className || ""}`}
+    >
       {children}
     </Component>
   );
