@@ -82,7 +82,7 @@ function NavItem({ navItem }: { navItem: NavLinkType }) {
     <TextRegular
       as={Link}
       href={navItem.href}
-      className="px-4 rounded-full py-2transition hover:bg-neutral"
+      className="px-4 py-2 transition rounded-full hover:bg-neutral"
     >
       {navItem.name}
     </TextRegular>
