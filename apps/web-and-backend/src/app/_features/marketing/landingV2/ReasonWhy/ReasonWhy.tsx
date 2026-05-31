@@ -16,18 +16,20 @@ function ReasonWhy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       id="about"
       {...rest}
     >
-      <div className="grid items-end grid-cols-3 gap-8">
+      <div className="grid items-end grid-cols-3 gap-8 max-bp-landing-reason-why:grid-cols-2 max-bp-landing-reason-why:grid-rows-2 max-bp-landing-reason-why-mobile:grid-cols-1 max-bp-landing-reason-why-mobile:grid-rows-auto">
         <BulletList
           listTitle="What is draining your confidence:"
           bullets={badBullets}
+          className="max-bp-landing-reason-why:row-start-1"
         />
 
-        <ReasonWhyImage />
+        <ReasonWhyImage className="max-bp-landing-reason-why:row-start-2 max-bp-landing-reason-why:col-span-2 max-bp-landing-reason-why-mobile:col-span-1" />
 
         <BulletList
           listTitle="How Cimientos changes the game:"
           bullets={goodBullets}
           isGood
+          className="max-bp-landing-reason-why:row-start-1 max-bp-landing-reason-why-mobile:row-start-3"
         />
       </div>
     </LandingSection>
