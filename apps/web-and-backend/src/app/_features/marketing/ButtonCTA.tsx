@@ -14,7 +14,7 @@ function ButtonCTA({
   return (
     <ButtonPrimary
       className={twMerge(
-        `bg-primary border-primary font-medium text-lg text-white rounded-2xl`,
+        `bg-primary border-primary font-medium text-white rounded-2xl max-bp-change-font:py-2`,
         className,
       )}
       {...rest}
