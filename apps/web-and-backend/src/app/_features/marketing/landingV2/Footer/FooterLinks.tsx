@@ -6,7 +6,10 @@ function FooterLinks({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
   return (
-    <div className={twMerge("flex gap-32", className)} {...rest}>
+    <div
+      className={twMerge("flex gap-32 max-bp-landing-footer:gap-16", className)}
+      {...rest}
+    >
       {footerLinks.map((column, index) => (
         <LinksColumn
           key={index}

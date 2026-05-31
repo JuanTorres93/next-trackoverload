@@ -67,6 +67,9 @@
   --breakpoint-bp-landing-features-smallest: 677px;
   --breakpoint-bp-landing-price: 740px;
   --breakpoint-bp-landing-final-cta: 638px;
+  --breakpoint-bp-landing-footer: 1130px;
+  --breakpoint-bp-landing-footer-small: 720px;
+  --breakpoint-bp-landing-footer-smallest: 540px;
 
   --breakpoint-bp-recipe-page: 863px;
   --breakpoint-bp-recipe-page-second: 445px;

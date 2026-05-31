@@ -8,8 +8,14 @@ function FooterCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
   return (
-    <div className={twMerge("flex flex-col gap-4", className)} {...rest}>
-      <div className="flex items-center gap-2">
+    <div
+      className={twMerge(
+        "flex flex-col gap-4 max-bp-landing-footer-smallest:items-center ",
+        className,
+      )}
+      {...rest}
+    >
+      <div className="flex items-center gap-2 max-bp-landing-footer-smallest:justify-center">
         <Logo size={36} />
 
         <TextEnormous as="span" className="font-medium">
@@ -17,7 +23,10 @@ function FooterCopy({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
         </TextEnormous>
       </div>
 
-      <TextSmall as="p" className="max-w-102">
+      <TextSmall
+        as="p"
+        className="max-w-102 max-bp-landing-footer-smallest:max-w-none"
+      >
         A simple fitness foundation system for men who want to build a better
         body and a more confident life without the overwhelm.
       </TextSmall>

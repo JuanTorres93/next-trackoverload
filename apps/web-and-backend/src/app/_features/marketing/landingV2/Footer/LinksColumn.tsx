@@ -17,7 +17,13 @@ function LinksColumn({
   const { className, ...rest } = props;
 
   return (
-    <div className={twMerge("flex flex-col gap-9", className)} {...rest}>
+    <div
+      className={twMerge(
+        "flex flex-col gap-9 max-bp-landing-footer-smallest:gap-6",
+        className,
+      )}
+      {...rest}
+    >
       <TextLarge as="h5" className="font-medium">
         {columnTitle}
       </TextLarge>
