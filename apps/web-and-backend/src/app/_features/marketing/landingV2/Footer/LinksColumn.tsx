@@ -32,7 +32,7 @@ async function LinksColumn({
 
       <ul className="flex flex-col gap-3">
         {links.map((link, index) => (
-          <li key={index}>
+          <li key={index} className="transition hover:text-primary-light">
             <Link href={link.href}>{t(link.translationKey)}</Link>
           </li>
         ))}
