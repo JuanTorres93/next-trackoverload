@@ -26,6 +26,7 @@ async function ReasonWhyImage({
           alt={"About image"}
           fill
           className="object-cover"
+          priority
         />
       </div>
     </div>

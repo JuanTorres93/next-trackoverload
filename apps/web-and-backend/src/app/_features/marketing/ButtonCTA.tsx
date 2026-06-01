@@ -14,7 +14,7 @@ function ButtonCTA({
   return (
     <ButtonPrimary
       className={twMerge(
-        `bg-primary border-primary font-medium text-white rounded-2xl max-bp-change-font:py-2`,
+        `bg-primary border-primary font-medium text-white max-bp-change-font:py-2 duration-300 hover:bg-text hover:border-text`,
         className,
       )}
       {...rest}
@@ -35,7 +35,7 @@ export function ButtonCTASecondary({
     <ButtonCTA
       showIcon={false}
       className={twMerge(
-        "bg-transparent flex border-primary text-primary hover:bg-transparent hover:border-primary hover:text-primary max-bp-change-font:py-3.25",
+        "bg-transparent flex border-primary text-primary hover:border-primary hover:text-white hover:bg-primary max-bp-change-font:py-3.25",
         className,
       )}
       {...rest}

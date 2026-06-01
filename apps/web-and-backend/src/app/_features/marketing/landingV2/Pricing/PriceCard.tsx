@@ -2,11 +2,11 @@ import { getTranslations } from "next-intl/server";
 import { FaCheck } from "react-icons/fa";
 import { twMerge } from "tailwind-merge";
 
-import ButtonPrimary from "@/app/_ui/buttons/ButtonPrimary";
 import TextExtraLarge from "@/app/_ui/typography/TextExtraLarge";
 import TextLarge from "@/app/_ui/typography/TextLarge";
 import TextMassive from "@/app/_ui/typography/TextMassive";
 
+import ButtonCTA from "../../ButtonCTA";
 import Tag from "./Tag";
 
 async function PriceCard({
@@ -58,12 +58,13 @@ async function PriceCard({
         ))}
       </TextLarge>
 
-      <ButtonPrimary
+      <ButtonCTA
         href="/auth/register"
-        className={`mt-auto text-center ${price.isFlagship ? "bg-white border-white" : "bg-transparent text-text border-text hover:bg-gray-300 hover:text-text"}`}
+        className={`mt-auto text-center text-text ${price.isFlagship ? "bg-white border-white" : "bg-transparent border-text"}`}
+        showIcon={false}
       >
         {t(price.ctaTextTranslationKey)}
-      </ButtonPrimary>
+      </ButtonCTA>
     </div>
   );
 }

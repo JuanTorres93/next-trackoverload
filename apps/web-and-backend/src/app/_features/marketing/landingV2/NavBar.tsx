@@ -72,7 +72,7 @@ function NavBar({
       {!isLoggedIn && (
         <ButtonCTA
           href="/auth/register"
-          className="py-3! border-none bg-text text-text-light hover:bg-text/80 max-bp-landing-navbar:hidden"
+          className="py-3! border-none bg-text text-text-light hover:bg-primary max-bp-landing-navbar:hidden"
           showIcon={false}
         >
           {t("navbar.cta")}
