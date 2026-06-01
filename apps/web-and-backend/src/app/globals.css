@@ -13,7 +13,6 @@
   /* Neutral */
 
   --color-text: #18181b;
-  --color-text-light-copy: #464649;
   --color-text-minor-emphasis: #646466;
 
   --color-neutral: #efefef;
@@ -80,8 +79,6 @@
   --breakpoint-bp-add-multiple-meals-modal: 581px;
 
   --breakpoint-bp-weight-input: 472px;
-
-  --breakpoint-bp-marketing-navbar-mobile: 440px;
 
   --breakpoint-bp-week-selector: 590px;
 
