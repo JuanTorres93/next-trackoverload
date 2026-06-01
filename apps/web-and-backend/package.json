@@ -9,7 +9,7 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest run -w --exclude '**/*.(ratelimit|credits).test.ts'",
-    "start:test": "APP_ENV=test next dev"
+    "start:test": "APP_ENV=test next dev -p 3033"
   },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.19",
