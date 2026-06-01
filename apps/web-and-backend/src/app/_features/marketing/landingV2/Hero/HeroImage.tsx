@@ -3,7 +3,7 @@ import Image from "next/image";
 import { PiFireDuotone } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
 
-import heroImage from "@/../public/hero.webp";
+import heroImage from "@/../public/marketing/hero.webp";
 
 import { SemiCircleProgress } from "../SemicircleProgress";
 
