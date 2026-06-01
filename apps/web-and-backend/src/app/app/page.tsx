@@ -20,6 +20,7 @@ import WeightTracker from "../_features/weight/WeightTracker";
 import ErrorBox from "../_ui/ErrorBox";
 import GridAutoCols from "../_ui/GridAutoCols";
 import PageWrapper from "../_ui/PageWrapper";
+import Spinner from "../_ui/Spinner";
 import ButtonPrimary from "../_ui/buttons/ButtonPrimary";
 import PageTitle from "../_ui/typography/PageTitle";
 import TextSmall from "../_ui/typography/TextSmall";
@@ -34,6 +35,8 @@ export default function Dashboard() {
   const [errorInDaysHistoryResult, setErrorInDaysHistoryResult] =
     useState(false);
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const [reloadToken, setReloadToken] = useState(0);
 
   function reloadDashboardData() {
@@ -44,28 +47,35 @@ export default function Dashboard() {
     async function fetchData() {
       const todayId = dateToDayId(new Date()).value;
 
-      const [assembledDayResultJSEND, daysHistoryJSEND] = await Promise.all([
-        fetch(`/api/day/assembled/${todayId}`, {
-          cache: "no-store",
-        }).then((res) => res.json()),
+      try {
+        setIsLoading(true);
 
-        fetch(`/api/day/last/90`).then((res) => res.json()),
-      ]);
+        const [assembledDayResultJSEND, daysHistoryJSEND] = await Promise.all([
+          fetch(`/api/day/assembled/${todayId}`, {
+            cache: "no-store",
+          }).then((res) => res.json()),
 
-      const errorInAssembledDayResult =
-        assembledDayResultJSEND.status !== "success";
+          fetch(`/api/day/last/90`).then((res) => res.json()),
+        ]);
 
-      const errorInDaysHistoryResult = daysHistoryJSEND.status !== "success";
+        const errorInAssembledDayResult =
+          assembledDayResultJSEND.status !== "success";
 
-      setErrorInAssembledDayResult(errorInAssembledDayResult);
-      setErrorInDaysHistoryResult(errorInDaysHistoryResult);
+        const errorInDaysHistoryResult = daysHistoryJSEND.status !== "success";
 
-      if (!errorInAssembledDayResult) {
-        setTodayAssembledDay(assembledDayResultJSEND.data);
-      }
+        setErrorInAssembledDayResult(errorInAssembledDayResult);
+        setErrorInDaysHistoryResult(errorInDaysHistoryResult);
 
-      if (!errorInDaysHistoryResult) {
-        setDaysHistory(daysHistoryJSEND.data);
+        if (!errorInAssembledDayResult) {
+          setTodayAssembledDay(assembledDayResultJSEND.data);
+        }
+
+        if (!errorInDaysHistoryResult) {
+          setDaysHistory(daysHistoryJSEND.data);
+        }
+      } catch {
+      } finally {
+        setIsLoading(false);
       }
     }
 
@@ -74,6 +84,8 @@ export default function Dashboard() {
 
   return (
     <PageWrapper className="flex flex-col max-w-5xl gap-12">
+      {isLoading && <Spinner className="self-center" size={60} />}
+
       {errorInAssembledDayResult && (
         <ErrorBox>{"Error al cargar los datos de hoy."}</ErrorBox>
       )}
