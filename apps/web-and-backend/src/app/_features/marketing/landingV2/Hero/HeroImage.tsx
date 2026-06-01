@@ -3,7 +3,7 @@ import Image from "next/image";
 import { PiFireDuotone } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
 
-import afterImage from "@/../public/after.jpg";
+import heroImage from "@/../public/hero.webp";
 
 import { SemiCircleProgress } from "../SemicircleProgress";
 
@@ -16,7 +16,7 @@ function HeroImage({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
 
       <div className="relative bg-primary-lightest ml-8 mt-8 h-[92%] w-[92%] overflow-hidden rounded-3xl max-bp-landing-hero:h-160 ">
         <Image
-          src={afterImage}
+          src={heroImage}
           alt={"Hero Image"}
           fill
           className="object-cover"

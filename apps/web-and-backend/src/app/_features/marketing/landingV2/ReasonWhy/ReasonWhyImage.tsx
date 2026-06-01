@@ -3,7 +3,10 @@ import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { twMerge } from "tailwind-merge";
 
-import afterImage from "@/../public/after.jpg";
+import reasonsWhyImage from "@/../public/marketing/about.webp";
+import user1Image from "@/../public/marketing/user-1.jpg";
+import user2Image from "@/../public/marketing/user-2.jpg";
+import user3Image from "@/../public/marketing/user-3.jpg";
 import TextRegular from "@/app/_ui/typography/TextRegular";
 
 import UserAvatar from "./UserAvatar";
@@ -19,8 +22,8 @@ async function ReasonWhyImage({
         <PopupOverlay />
 
         <Image
-          src={afterImage}
-          alt={"Hero Image"}
+          src={reasonsWhyImage}
+          alt={"About image"}
           fill
           className="object-cover"
         />
@@ -70,13 +73,13 @@ async function PopupOverlay({
 
 const userPictures = [
   {
-    src: afterImage,
+    src: user1Image,
   },
   {
-    src: afterImage,
+    src: user3Image,
   },
   {
-    src: afterImage,
+    src: user2Image,
   },
 ];
 
