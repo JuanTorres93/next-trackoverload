@@ -1,16 +1,9 @@
-import { WorkoutTemplateLine } from '../../domain/entities/workouttemplateline/WorkoutTemplateLine';
+import { WorkoutTemplateLineDTO } from "shared";
 
-export type WorkoutTemplateLineDTO = {
-  id: string;
-  templateId: string;
-  exerciseId: string;
-  sets: number;
-  createdAt: string;
-  updatedAt: string;
-};
+import { WorkoutTemplateLine } from "../../domain/entities/workouttemplateline/WorkoutTemplateLine";
 
 export function toWorkoutTemplateLineDTO(
-  workoutTemplateLine: WorkoutTemplateLine
+  workoutTemplateLine: WorkoutTemplateLine,
 ): WorkoutTemplateLineDTO {
   return {
     id: workoutTemplateLine.id,

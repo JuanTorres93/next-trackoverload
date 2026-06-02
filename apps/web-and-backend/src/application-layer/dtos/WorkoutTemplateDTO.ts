@@ -1,20 +1,7 @@
+import { WorkoutTemplateDTO } from "shared";
+
 import { WorkoutTemplate } from "../../domain/entities/workouttemplate/WorkoutTemplate";
-
-import {
-  WorkoutTemplateLineDTO,
-  toWorkoutTemplateLineDTO,
-} from "./WorkoutTemplateLineDTO";
-
-export type WorkoutTemplateDTO = {
-  id: string;
-  userId: string;
-  name: string;
-  exercises: WorkoutTemplateLineDTO[];
-  createdAt: string;
-  updatedAt: string;
-  deletedAt?: string;
-  isDeleted: boolean;
-};
+import { toWorkoutTemplateLineDTO } from "./WorkoutTemplateLineDTO";
 
 export function toWorkoutTemplateDTO(
   workoutTemplate: WorkoutTemplate,

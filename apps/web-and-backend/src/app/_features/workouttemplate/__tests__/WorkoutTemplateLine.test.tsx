@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { WorkoutTemplateLineDTO } from "shared";
 
 import { createAndPersistTestWorkoutTemplates } from "../../../../../tests/mocks/workoutTemplates";
-import { WorkoutTemplateLineDTO } from "../../../../application-layer/dtos/WorkoutTemplateLineDTO";
 import WorkoutTemplateLine from "../WorkoutTemplateLine";
 
 const { mockTemplate, exercisesForTemplates } =

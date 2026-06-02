@@ -5,10 +5,10 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { HiPlay, HiRectangleStack } from "react-icons/hi2";
+import { WorkoutTemplateDTO } from "shared";
 import { twMerge } from "tailwind-merge";
 
 import SpinnerMini from "../../_ui/SpinnerMini";
-import { WorkoutTemplateDTO } from "../../../application-layer/dtos/WorkoutTemplateDTO";
 
 function WorkoutTemplate({
   workoutTemplate,

@@ -2,12 +2,11 @@
 import { useState } from "react";
 
 import { HiBolt } from "react-icons/hi2";
+import { WorkoutTemplateLineDTO } from "shared";
 import { twMerge } from "tailwind-merge";
 
 import Input from "../../_ui/Input";
 import ButtonX from "../../_ui/buttons/ButtonX";
-import { WorkoutTemplateLineDTO } from "../../../application-layer/dtos/WorkoutTemplateLineDTO";
-
 import LoadingOverlay from "../common/LoadingOverlay";
 
 function WorkoutTemplateLine({

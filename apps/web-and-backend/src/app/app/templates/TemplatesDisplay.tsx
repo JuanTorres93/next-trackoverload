@@ -3,10 +3,10 @@
 import { useState } from "react";
 
 import { HiMagnifyingGlass, HiRectangleStack } from "react-icons/hi2";
+import { WorkoutTemplateDTO } from "shared";
 
 import PageTitle from "@/app/_ui/typography/PageTitle";
 
-import { WorkoutTemplateDTO } from "../../../application-layer/dtos/WorkoutTemplateDTO";
 import WorkoutTemplatesGrid from "../../_features/workouttemplate/WorkoutTemplatesGrid";
 import { useWorkoutTemplateSearch } from "../../_features/workouttemplate/useWorkoutTemplateSearch";
 import SearchInput from "../../_ui/SearchInput";

@@ -1,3 +1,5 @@
+import { WorkoutTemplateDTO } from "shared";
+
 import { logNoTest } from "@/utils/logNoTest";
 
 import { NotFoundError } from "../../../../domain/common/errors";
@@ -6,10 +8,7 @@ import { WorkoutTemplateLine } from "../../../../domain/entities/workouttemplate
 import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
 import { WorkoutTemplatesRepo } from "../../../../domain/repos/WorkoutTemplatesRepo.port";
 import { IdGenerator } from "../../../../domain/services/IdGenerator.port";
-import {
-  WorkoutTemplateDTO,
-  toWorkoutTemplateDTO,
-} from "../../../dtos/WorkoutTemplateDTO";
+import { toWorkoutTemplateDTO } from "../../../dtos/WorkoutTemplateDTO";
 
 export type DuplicateWorkoutTemplateUsecaseRequest = {
   userId: string;

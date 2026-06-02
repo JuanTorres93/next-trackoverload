@@ -1,8 +1,7 @@
+import { WorkoutTemplateDTO } from "shared";
 import { twMerge } from "tailwind-merge";
 
 import GridAutoCols from "../../_ui/GridAutoCols";
-import { WorkoutTemplateDTO } from "../../../application-layer/dtos/WorkoutTemplateDTO";
-
 import WorkoutTemplate from "./WorkoutTemplate";
 
 function WorkoutTemplatesGrid({

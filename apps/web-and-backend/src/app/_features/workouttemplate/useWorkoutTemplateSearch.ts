@@ -1,8 +1,7 @@
 import { useMemo, useState } from "react";
 
 import Fuse from "fuse.js";
-
-import { WorkoutTemplateDTO } from "../../../application-layer/dtos/WorkoutTemplateDTO";
+import { WorkoutTemplateDTO } from "shared";
 
 export function useWorkoutTemplateSearch(templates: WorkoutTemplateDTO[]) {
   const [query, setQuery] = useState("");

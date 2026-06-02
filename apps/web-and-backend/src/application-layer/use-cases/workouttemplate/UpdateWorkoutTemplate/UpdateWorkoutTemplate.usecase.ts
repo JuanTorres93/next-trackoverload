@@ -1,13 +1,12 @@
+import { WorkoutTemplateDTO } from "shared";
+
 import { logNoTest } from "@/utils/logNoTest";
 
 import { NotFoundError } from "../../../../domain/common/errors";
 import { WorkoutTemplateUpdateProps } from "../../../../domain/entities/workouttemplate/WorkoutTemplate";
 import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
 import { WorkoutTemplatesRepo } from "../../../../domain/repos/WorkoutTemplatesRepo.port";
-import {
-  WorkoutTemplateDTO,
-  toWorkoutTemplateDTO,
-} from "../../../dtos/WorkoutTemplateDTO";
+import { toWorkoutTemplateDTO } from "../../../dtos/WorkoutTemplateDTO";
 
 export type UpdateWorkoutTemplateUsecaseRequest = {
   id: string;

@@ -1,10 +1,9 @@
+import { WorkoutTemplateDTO } from "shared";
+
 import * as workoutTemplateTestProps from "../../../../tests/createProps/workoutTemplateTestProps";
 import * as dto from "../../../../tests/dtoProperties";
 import { WorkoutTemplate } from "../../../domain/entities/workouttemplate/WorkoutTemplate";
-import {
-  WorkoutTemplateDTO,
-  toWorkoutTemplateDTO,
-} from "../WorkoutTemplateDTO";
+import { toWorkoutTemplateDTO } from "../WorkoutTemplateDTO";
 
 describe("WorkoutTemplateDTO", () => {
   let workoutTemplate: WorkoutTemplate;

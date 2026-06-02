@@ -1,3 +1,5 @@
+import { WorkoutTemplateDTO } from "shared";
+
 import { logNoTest } from "@/utils/logNoTest";
 
 import {
@@ -6,10 +8,7 @@ import {
 } from "../../../../domain/common/errors";
 import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
 import { WorkoutTemplatesRepo } from "../../../../domain/repos/WorkoutTemplatesRepo.port";
-import {
-  WorkoutTemplateDTO,
-  toWorkoutTemplateDTO,
-} from "../../../dtos/WorkoutTemplateDTO";
+import { toWorkoutTemplateDTO } from "../../../dtos/WorkoutTemplateDTO";
 
 export type GetAllWorkoutTemplatesForUserUsecaseRequest = {
   actorUserId: string;
