@@ -1,20 +1,4 @@
-import { DayDTO } from "./DayDTO";
-import { FakeMealDTO } from "./FakeMealDTO";
-import { MealDTO } from "./MealDTO";
-
-export type AssembledDayDTO = DayDTO & {
-  meals: MealDTO[];
-  fakeMeals: FakeMealDTO[];
-  totalCalories: number;
-  totalProtein: number;
-  isToday: boolean;
-  isPast: boolean;
-};
-
-type AssembledDayDTOProps = DayDTO & {
-  meals: MealDTO[];
-  fakeMeals: FakeMealDTO[];
-};
+import { AssembledDayDTO, AssembledDayDTOProps } from "shared";
 
 export function toAssembledDayDTO(data: AssembledDayDTOProps): AssembledDayDTO {
   return {

@@ -1,10 +1,11 @@
 "use server";
 import { refresh, revalidatePath } from "next/cache";
 
+import { AssembledDayDTO } from "shared";
+
 import { JSENDResponse } from "@/app/_types/JSEND";
 import { DayDTO } from "@/application-layer/dtos/DayDTO";
 
-import { AssembledDayDTO } from "../../../application-layer/dtos/AssembledDayDTO";
 import { DayEntry } from "../../../application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase";
 import {
   AppAddMultipleMealsToDayUsecase,

@@ -1,3 +1,5 @@
+import { AssembledDayDTO } from "shared";
+
 import { logNoTest } from "@/utils/logNoTest";
 
 import { NotFoundError } from "../../../../domain/common/errors";
@@ -7,10 +9,7 @@ import { DaysRepo } from "../../../../domain/repos/DaysRepo.port";
 import { FakeMealsRepo } from "../../../../domain/repos/FakeMealsRepo.port";
 import { MealsRepo } from "../../../../domain/repos/MealsRepo.port";
 import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
-import {
-  AssembledDayDTO,
-  toAssembledDayDTO,
-} from "../../../dtos/AssembledDayDTO";
+import { toAssembledDayDTO } from "../../../dtos/AssembledDayDTO";
 import { toDayDTO } from "../../../dtos/DayDTO";
 import { FakeMealDTO, toFakeMealDTO } from "../../../dtos/FakeMealDTO";
 import { MealDTO, toMealDTO } from "../../../dtos/MealDTO";

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { AssembledDayDTO } from "../../../../application-layer/dtos/AssembledDayDTO";
+import { AssembledDayDTO } from "shared";
+
 import { AppGetMultipleAssembledDaysByIds } from "../../../../interface-adapters/app/use-cases/day";
 import { JSENDResponse } from "../../../_types/JSEND";
 import { ensureLoggedInUser } from "../../_common/ensureLoggedInUser";

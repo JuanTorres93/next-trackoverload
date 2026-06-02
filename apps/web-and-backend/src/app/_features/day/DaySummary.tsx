@@ -4,10 +4,10 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { HiLightningBolt } from "react-icons/hi";
 import { HiPlus } from "react-icons/hi2";
+import { AssembledDayDTO } from "shared";
 
 import { JSENDResponse } from "@/app/_types/JSEND";
 
-import { AssembledDayDTO } from "../../../application-layer/dtos/AssembledDayDTO";
 import { dayIdToDayMonthYear } from "../../../domain/value-objects/DayId/DayId";
 import Modal from "../../_ui/Modal";
 import { formatToInteger } from "../../_utils/format/formatToInteger";
