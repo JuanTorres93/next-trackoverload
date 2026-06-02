@@ -9,7 +9,7 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest run -w --exclude '**/*.(ratelimit|credits).test.ts'",
-    "start:test": "APP_ENV=test next dev -p 3033"
+    "start:test": "MOBILE_TESTING=true next dev -p 3033"
   },
   "dependencies": {
     "shared": "*",

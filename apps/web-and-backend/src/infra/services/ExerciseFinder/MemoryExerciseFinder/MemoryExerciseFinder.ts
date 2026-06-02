@@ -1,10 +1,17 @@
+import { isTestingMobile } from "@/application-layer/utils/isTestRuntime";
+
+import { mockExercisesForExerciseFinder } from "../../../../../tests/mocks/exercises";
 import {
   ExerciseFinder,
   ExerciseFinderResult,
 } from "../../../../domain/services/ExerciseFinder.port";
 
 export class MemoryExerciseFinder implements ExerciseFinder {
-  constructor(private seed: ExerciseFinderResult[] = []) {}
+  constructor(private seed: ExerciseFinderResult[] = []) {
+    if (isTestingMobile()) {
+      this.seed = mockExercisesForExerciseFinder;
+    }
+  }
 
   async findExercisesByFuzzyName(
     name: string,

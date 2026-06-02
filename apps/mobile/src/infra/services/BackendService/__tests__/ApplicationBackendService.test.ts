@@ -7,9 +7,13 @@ describe("ApplicationBackendService", () => {
     backendService = new TestApplicationBackendService();
   });
 
-  describe("Messages", () => {
-    it("MOCK TEST: DELETE OR CHANGE", async () => {
-      const response = await backendService.getExerciseByFuzzyName("test");
+  describe("Exercises", () => {
+    // TODO Extract ExerciseFinderResult type to shared package
+    it("should return exercises by fuzzy name", async () => {
+      const response = await backendService.getExerciseByFuzzyName("press");
+
+      expect(response.status).toBe("success");
+      expect(response.data.length).toBeGreaterThan(0);
     });
   });
 });
