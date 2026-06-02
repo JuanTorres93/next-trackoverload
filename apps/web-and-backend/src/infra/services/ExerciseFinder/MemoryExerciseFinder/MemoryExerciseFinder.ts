@@ -1,10 +1,9 @@
+import { ExerciseFinderResult } from "shared";
+
 import { isTestingMobile } from "@/application-layer/utils/isTestRuntime";
 
 import { mockExercisesForExerciseFinder } from "../../../../../tests/mocks/exercises";
-import {
-  ExerciseFinder,
-  ExerciseFinderResult,
-} from "../../../../domain/services/ExerciseFinder.port";
+import { ExerciseFinder } from "../../../../domain/services/ExerciseFinder.port";
 
 export class MemoryExerciseFinder implements ExerciseFinder {
   constructor(private seed: ExerciseFinderResult[] = []) {

@@ -8,7 +8,6 @@ describe("ApplicationBackendService", () => {
   });
 
   describe("Exercises", () => {
-    // TODO Extract ExerciseFinderResult type to shared package
     it("should return exercises by fuzzy name", async () => {
       const response = await backendService.getExerciseByFuzzyName("press");
 

@@ -1,4 +1,5 @@
-import { ExerciseFinderResult } from "../../src/domain/services/ExerciseFinder.port";
+import { ExerciseFinderResult } from "shared";
+
 import { AppCreateExerciseUsecase } from "../../src/interface-adapters/app/use-cases/exercise";
 import { TestExercisesRepo } from "../../tests/repos/TestExercisesRepo";
 

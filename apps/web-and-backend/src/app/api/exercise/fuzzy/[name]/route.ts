@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { JSENDResponse } from "shared";
+import { ExerciseFinderResult } from "shared";
 
 import { handleKnownErrors } from "@/app/api/_common/handleKnownErrors";
 
-import { ExerciseFinderResult } from "../../../../../domain/services/ExerciseFinder.port";
 import { AppFindExerciseByFuzzyNameUsecase } from "../../../../../interface-adapters/app/use-cases/exercise/AppFindExerciseByFuzzyNameUsecase";
 
 export async function GET(

@@ -2,10 +2,10 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 import { JSENDResponse } from "shared";
+import { ExerciseFinderResult } from "shared";
 
 import SearchInput from "@/app/_ui/SearchInput";
 
-import { ExerciseFinderResult } from "../../../domain/services/ExerciseFinder.port";
 import { useDebounce } from "../../_hooks/useDebounce";
 import { useOutsideClick } from "../../_hooks/useOutsideClick";
 import Spinner from "../../_ui/Spinner";

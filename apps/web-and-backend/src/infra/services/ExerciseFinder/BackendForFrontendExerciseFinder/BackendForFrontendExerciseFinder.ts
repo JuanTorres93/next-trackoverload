@@ -1,11 +1,8 @@
 import dotenv from "dotenv";
-import { JSENDSuccess } from "shared";
+import { ExerciseFinderResult, JSENDSuccess } from "shared";
 
 import { InfrastructureError } from "../../../../domain/common/errors";
-import {
-  ExerciseFinder,
-  ExerciseFinderResult,
-} from "../../../../domain/services/ExerciseFinder.port";
+import { ExerciseFinder } from "../../../../domain/services/ExerciseFinder.port";
 import { EXERCISES_PER_PAGE } from "../../../../domain/services/ExerciseFinder.port";
 
 dotenv.config();

@@ -1,7 +1,6 @@
-import {
-  ExerciseFinder,
-  ExerciseFinderResult,
-} from "../../../../domain/services/ExerciseFinder.port";
+import { ExerciseFinderResult } from "shared";
+
+import { ExerciseFinder } from "../../../../domain/services/ExerciseFinder.port";
 
 export type FindExerciseByFuzzyNameRequest = {
   name: string;
