@@ -1,4 +1,4 @@
-import { ExerciseDTO, JSENDResponse, UserDTO } from "shared";
+import { ExerciseFinderResult, JSENDResponse, UserDTO } from "shared";
 
 import { BackendService } from "@/application-layer/services/BackendService.port";
 import { FetchInfraError } from "@/infra/common/infraErrors";
@@ -14,10 +14,9 @@ export class ApplicationBackendService implements BackendService {
     this.baseUrl = baseUrl;
   }
 
-  // TODO Finish implementation
   async getExerciseByFuzzyName(
     name: string,
-  ): Promise<JSENDResponse<ExerciseDTO[]>> {
+  ): Promise<JSENDResponse<ExerciseFinderResult[]>> {
     const response = await fetch(`${this.baseUrl}/exercise/fuzzy/${name}`);
 
     if (!response.ok) {
@@ -27,10 +26,8 @@ export class ApplicationBackendService implements BackendService {
     }
 
     const data = await response.json();
-    console.log("RESPONSE DATA:", data);
 
-    // TODO make a valid implementation
-    return data as JSENDResponse<ExerciseDTO[]>;
+    return data;
   }
 
   async createUser(

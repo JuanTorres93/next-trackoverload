@@ -1,3 +1,5 @@
+import { ExerciseFinderResult } from "shared/src/application-layer/types/ExerciseFinderResult";
+
 import { TestApplicationBackendService } from "../TestApplicationBackendService";
 
 describe("ApplicationBackendService", () => {
@@ -12,7 +14,18 @@ describe("ApplicationBackendService", () => {
       const response = await backendService.getExerciseByFuzzyName("press");
 
       expect(response.status).toBe("success");
-      expect(response.data.length).toBeGreaterThan(0);
+      expect(response!.data!.length).toBeGreaterThan(0);
+    });
+
+    it("should return array of ExerciseFinderResult", async () => {
+      const response = await backendService.getExerciseByFuzzyName("press");
+
+      expect(response.status).toBe("success");
+
+      const data = response!.data as ExerciseFinderResult[];
+
+      expect(data[0]).toHaveProperty("exercise");
+      expect(data[0]).toHaveProperty("externalRef");
     });
   });
 });
