@@ -77,7 +77,7 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
     if (await this.searchRateLimiter.isRateLimited(this.clientId)) {
       // TODO throw RateLimitError instead
       throw new InfrastructureError(
-        "OpenFoodFactsIngredientFinder: Rate limit exceeded for search queries",
+        "Has hecho demasiadas peticiones. Vuelve a intentarlo en unos minutos.",
       );
     }
 
@@ -92,7 +92,7 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
 
     if (!response.ok) {
       throw new InfrastructureError(
-        `OpenFoodFactsIngredientFinder: Failed to fetch ingredients by name "${name}". Status: ${response.status}`,
+        `Error al buscar "${name}. Inténtalo otra vez".`,
       );
     }
 
@@ -105,7 +105,7 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
     if (await this.barcodeRateLimiter.isRateLimited(this.clientId)) {
       // TODO throw RateLimitError instead
       throw new InfrastructureError(
-        "OpenFoodFactsIngredientFinder: Rate limit exceeded for barcode queries",
+        "Has hecho demasiadas peticiones. Vuelve a intentarlo en unos minutos.",
       );
     }
 
@@ -120,7 +120,7 @@ export class OpenFoodFactsIngredientFinder implements IngredientFinder {
 
     if (!response.ok) {
       throw new InfrastructureError(
-        `OpenFoodFactsIngredientFinder: Failed to fetch ingredients by barcode "${barcode}". Status: ${response.status}`,
+        `Error al buscar el código de barras. Inténtalo otra vez.`,
       );
     }
 
