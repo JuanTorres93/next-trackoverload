@@ -1,4 +1,9 @@
-import { ExerciseFinderResult, JSENDResponse, UserDTO } from "shared";
+import {
+  ExerciseFinderResult,
+  JSENDResponse,
+  RecipeDTO,
+  UserDTO,
+} from "shared";
 
 export interface BackendService {
   getExerciseByFuzzyName(
@@ -10,4 +15,12 @@ export interface BackendService {
     plainPassword: string,
     email: string,
   ): Promise<JSENDResponse<UserDTO>>;
+
+  createRecipe(
+    userId: string,
+    recipeName: string,
+    // TODO NEXT: export CreateIngredientLineData to shared and use it here
+    ingredientLinesInfo: { line: string; ingredients: string[] }[],
+    imageBuffer?: Buffer,
+  ): Promise<JSENDResponse<RecipeDTO>>;
 }
