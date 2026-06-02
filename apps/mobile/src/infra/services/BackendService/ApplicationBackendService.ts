@@ -1,3 +1,5 @@
+import { ExerciseDTO, JSENDResponse } from "shared";
+
 import { BackendService } from "@/application-layer/services/BackendService.port";
 import { FetchInfraError } from "@/infra/common/infraErrors";
 
@@ -12,7 +14,10 @@ export class ApplicationBackendService implements BackendService {
     this.baseUrl = baseUrl;
   }
 
-  async getExerciseByFuzzyName(name: string): Promise<void> {
+  // TODO Finish implementation
+  async getExerciseByFuzzyName(
+    name: string,
+  ): Promise<JSENDResponse<ExerciseDTO[]>> {
     const response = await fetch(`${this.baseUrl}/exercise/fuzzy/${name}`);
 
     if (!response.ok) {
@@ -23,5 +28,33 @@ export class ApplicationBackendService implements BackendService {
 
     const data = await response.json();
     console.log("RESPONSE DATA:", data);
+
+    // TODO make a valid implementation
+    return data as JSENDResponse<ExerciseDTO[]>;
+  }
+
+  async createUser(
+    name: string,
+    plainPassword: string,
+    email: string,
+  ): Promise<JSENDResponse<UserDTO>> {
+    const response = await fetch(`${this.baseUrl}/auth/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, plainPassword, email }),
+    });
+
+    if (!response.ok) {
+      throw new FetchInfraError(
+        `Failed to create user: ${response.statusText}`,
+      );
+    }
+
+    const data = await response.json();
+    console.log("RESPONSE DATA:", data);
+
+    return data as JSENDResponse<UserDTO>;
   }
 }
