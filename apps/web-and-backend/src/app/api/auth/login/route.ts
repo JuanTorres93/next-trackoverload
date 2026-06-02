@@ -1,9 +1,10 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
+import { JSENDResponse } from "shared";
+
 import { AppAuthService } from "../../../../interface-adapters/app/services/AppAuthService";
 import { AppLoginUsecase } from "../../../../interface-adapters/app/use-cases/auth/Login/login";
-import { JSENDResponse } from "../../../_types/JSEND";
 import { handleKnownErrors } from "../../_common/handleKnownErrors";
 import { cookieSessionMaxAgeInSeconds, cookieSessionName } from "../cookie";
 

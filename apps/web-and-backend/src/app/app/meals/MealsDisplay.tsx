@@ -7,8 +7,8 @@ import { es } from "date-fns/locale";
 import { HiCheck, HiX } from "react-icons/hi";
 import { HiPlus } from "react-icons/hi2";
 import { AssembledDayDTO } from "shared";
+import { JSENDResponse } from "shared";
 
-import { JSENDResponse } from "@/app/_types/JSEND";
 import { showErrorToast } from "@/app/_ui/showErrorToast";
 
 import {

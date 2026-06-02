@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { JSENDResponse } from "shared";
+
 import { handleKnownErrors } from "@/app/api/_common/handleKnownErrors";
 
 import { IngredientFinderResult } from "../../../../../domain/services/IngredientFinder.port";
 import { createAppFindIngredientByBarcodeUsecase } from "../../../../../interface-adapters/app/use-cases/ingredient/AppFindIngredientByBarcodeUsecase";
-import { JSENDResponse } from "../../../../_types/JSEND";
 import { getClientId } from "../../../_common/getClientId";
 
 export async function GET(

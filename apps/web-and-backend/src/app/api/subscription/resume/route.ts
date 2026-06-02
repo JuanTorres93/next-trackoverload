@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 
+import { JSENDResponse } from "shared";
+
 import { AppResumeSubscriptionForUserUsecase } from "../../../../interface-adapters/app/use-cases/subscription";
-import { JSENDResponse } from "../../../_types/JSEND";
 import { getCurrentUserId } from "../../../_utils/auth/getCurrentUserId";
 
 export async function POST(): Promise<

@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 
 import { MealDTO } from "shared";
+import { JSENDResponse } from "shared";
 
 import { AppToggleIsEatenUsecase } from "../../../../interface-adapters/app/use-cases/meal";
-import { JSENDResponse } from "../../../_types/JSEND";
 import { ensureLoggedInUser } from "../../_common/ensureLoggedInUser";
 import { handleKnownErrors } from "../../_common/handleKnownErrors";
 

@@ -1,6 +1,7 @@
 "use server";
 
-import { JSENDResponse } from "@/app/_types/JSEND";
+import { JSENDResponse } from "shared";
+
 import { PlanInfo } from "@/domain/services/PaymentsService.port";
 
 import { AppGetPlanInfoUsecase } from "../../../interface-adapters/app/use-cases/subscription";

@@ -1,7 +1,6 @@
 import { HiOutlineEmojiSad } from "react-icons/hi";
 import { RecipeDTO } from "shared";
-
-import { JSENDResponse } from "@/app/_types/JSEND";
+import { JSENDResponse } from "shared";
 
 import { getRecipeByIdForLoggedInUser } from "../../../_features/recipe/actions";
 import PageWrapper from "../../../_ui/PageWrapper";

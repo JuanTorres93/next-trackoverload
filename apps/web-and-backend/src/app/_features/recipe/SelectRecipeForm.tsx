@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import { RecipeDTO } from "shared";
-
-import { JSENDResponse } from "@/app/_types/JSEND";
+import { JSENDResponse } from "shared";
 
 import SearchInput from "../../_ui/SearchInput";
 import ButtonNew from "../../_ui/buttons/ButtonNew";

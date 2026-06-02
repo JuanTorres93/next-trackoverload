@@ -1,4 +1,4 @@
-import { JSENDResponse } from "@/app/_types/JSEND";
+import { JSENDResponse } from "shared";
 
 import SelectRecipeForm from "./SelectRecipeForm";
 

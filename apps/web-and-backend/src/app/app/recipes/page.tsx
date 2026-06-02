@@ -1,6 +1,6 @@
 import { RecipeDTO } from "shared";
+import { JSENDResponse } from "shared";
 
-import { JSENDResponse } from "@/app/_types/JSEND";
 import ErrorBox from "@/app/_ui/ErrorBox";
 
 import { getAllRecipesForLoggedInUser } from "../../_features/recipe/actions";

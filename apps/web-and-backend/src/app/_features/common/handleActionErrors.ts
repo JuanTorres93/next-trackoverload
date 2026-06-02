@@ -1,4 +1,5 @@
-import { JSENDFailure } from "@/app/_types/JSEND";
+import { JSENDFailure } from "shared";
+
 import { isDomainError } from "@/domain/common/errors";
 import { logNoTest } from "@/utils/logNoTest";
 

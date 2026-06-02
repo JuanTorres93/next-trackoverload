@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+import { JSENDFailure } from "shared";
+
 import { isTestRuntime } from "../../../application-layer/utils/isTestRuntime";
 import {
   AlreadyExistsError,
@@ -9,7 +11,6 @@ import {
   ValidationError,
   isDomainError,
 } from "../../../domain/common/errors";
-import { JSENDFailure } from "../../_types/JSEND";
 
 export function handleKnownErrors(error: Error): NextResponse<JSENDFailure> {
   const jsend: JSENDFailure = {

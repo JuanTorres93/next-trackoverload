@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
-import { JSENDResponse } from "../../../_types/JSEND";
+import { JSENDResponse } from "shared";
+
 import { PlanInfo } from "../../../../domain/services/PaymentsService.port";
 import { AppGetPlanInfoUsecase } from "../../../../interface-adapters/app/use-cases/subscription";
 

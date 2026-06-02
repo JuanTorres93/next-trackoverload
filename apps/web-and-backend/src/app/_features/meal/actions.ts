@@ -1,7 +1,7 @@
 "use server";
 import { revalidatePath } from "next/cache";
 
-import { JSENDResponse } from "@/app/_types/JSEND";
+import { JSENDResponse } from "shared";
 
 import { AppToggleIsEatenUsecase } from "../../../interface-adapters/app/use-cases/meal";
 import { getCurrentUserId } from "../../_utils/auth/getCurrentUserId";

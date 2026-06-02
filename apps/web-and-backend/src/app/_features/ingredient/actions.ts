@@ -2,8 +2,7 @@
 import { revalidatePath } from "next/cache";
 
 import { IngredientLineDTO } from "shared";
-
-import { JSENDResponse } from "@/app/_types/JSEND";
+import { JSENDResponse } from "shared";
 
 import { AppUpdateIngredientLineUsecase } from "../../../interface-adapters/app/use-cases/ingredientline";
 import { getCurrentUserId } from "../../_utils/auth/getCurrentUserId";

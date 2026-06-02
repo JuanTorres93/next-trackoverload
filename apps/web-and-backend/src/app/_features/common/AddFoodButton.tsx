@@ -1,7 +1,6 @@
 "use client";
 import { HiPlus } from "react-icons/hi2";
-
-import { JSENDResponse } from "@/app/_types/JSEND";
+import { JSENDResponse } from "shared";
 
 import Modal from "../../_ui/Modal";
 import { addMealsToDay } from "../day/actions";

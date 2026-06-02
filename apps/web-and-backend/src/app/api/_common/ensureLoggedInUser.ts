@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
-import { JSENDFailure } from "../../_types/JSEND";
+import { JSENDFailure } from "shared";
+
 import { getCurrentUserId } from "../../_utils/auth/getCurrentUserId";
 
 export async function ensureLoggedInUser(): Promise<{

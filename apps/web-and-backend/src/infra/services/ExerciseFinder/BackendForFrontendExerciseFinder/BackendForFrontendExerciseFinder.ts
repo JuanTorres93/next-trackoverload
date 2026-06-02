@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
+import { JSENDSuccess } from "shared";
 
-import { JSENDSuccess } from "../../../../app/_types/JSEND";
 import { InfrastructureError } from "../../../../domain/common/errors";
 import {
   ExerciseFinder,

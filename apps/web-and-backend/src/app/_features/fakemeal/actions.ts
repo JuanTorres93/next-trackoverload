@@ -1,7 +1,7 @@
 "use server";
 import { revalidatePath } from "next/cache";
 
-import { JSENDResponse } from "@/app/_types/JSEND";
+import { JSENDResponse } from "shared";
 
 import { AppAddFakeMealToDayUsecase } from "../../../interface-adapters/app/use-cases/day";
 import { AppRemoveFakeMealFromDayUsecase } from "../../../interface-adapters/app/use-cases/day/AppRemoveFakeMealFromDayUsecase";

@@ -1,7 +1,9 @@
-import { AppCancelSubscriptionForUserUsecase } from '../../../../interface-adapters/app/use-cases/subscription';
-import { getCurrentUserId } from '../../../_utils/auth/getCurrentUserId';
-import { NextResponse } from 'next/server';
-import { JSENDResponse } from '../../../_types/JSEND';
+import { NextResponse } from "next/server";
+
+import { JSENDResponse } from "shared";
+
+import { AppCancelSubscriptionForUserUsecase } from "../../../../interface-adapters/app/use-cases/subscription";
+import { getCurrentUserId } from "../../../_utils/auth/getCurrentUserId";
 
 export async function POST(): Promise<
   NextResponse<JSENDResponse<{ redirectUrl: string }>>
@@ -14,17 +16,17 @@ export async function POST(): Promise<
     });
 
     return NextResponse.json(
-      { status: 'success', data: { redirectUrl } },
+      { status: "success", data: { redirectUrl } },
       { status: 200 },
     );
   } catch (error) {
     console.log(
-      'api/subscription/cancel: Error canceling subscription:',
+      "api/subscription/cancel: Error canceling subscription:",
       error,
     );
 
     return NextResponse.json(
-      { status: 'fail', data: { message: 'Failed to cancel subscription' } },
+      { status: "fail", data: { message: "Failed to cancel subscription" } },
       { status: 500 },
     );
   }

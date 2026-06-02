@@ -1,12 +1,13 @@
 "use client";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 
+import { JSENDResponse } from "shared";
+
 import SearchInput from "@/app/_ui/SearchInput";
 
 import { ExerciseFinderResult } from "../../../domain/services/ExerciseFinder.port";
 import { useDebounce } from "../../_hooks/useDebounce";
 import { useOutsideClick } from "../../_hooks/useOutsideClick";
-import { JSENDResponse } from "../../_types/JSEND";
 import Spinner from "../../_ui/Spinner";
 import { showErrorToast } from "../../_ui/showErrorToast";
 import WorkoutTemplateLine from "../workouttemplate/WorkoutTemplateLine";

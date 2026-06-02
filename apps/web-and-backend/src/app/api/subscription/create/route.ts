@@ -1,7 +1,9 @@
-import { AppCreateSubscriptionForUserUsecase } from '../../../../interface-adapters/app/use-cases/subscription';
-import { getCurrentUserId } from '../../../_utils/auth/getCurrentUserId';
-import { NextResponse } from 'next/server';
-import { JSENDResponse } from '../../../_types/JSEND';
+import { NextResponse } from "next/server";
+
+import { JSENDResponse } from "shared";
+
+import { AppCreateSubscriptionForUserUsecase } from "../../../../interface-adapters/app/use-cases/subscription";
+import { getCurrentUserId } from "../../../_utils/auth/getCurrentUserId";
 
 export async function POST(): Promise<
   NextResponse<JSENDResponse<{ redirectUrl: string }>>
@@ -12,8 +14,8 @@ export async function POST(): Promise<
     if (!planId) {
       return NextResponse.json(
         {
-          status: 'fail',
-          data: { message: 'STRIPE_PRICE_ID is not configured' },
+          status: "fail",
+          data: { message: "STRIPE_PRICE_ID is not configured" },
         },
         { status: 500 },
       );
@@ -27,14 +29,14 @@ export async function POST(): Promise<
     });
 
     return NextResponse.json(
-      { status: 'success', data: { redirectUrl } },
+      { status: "success", data: { redirectUrl } },
       { status: 200 },
     );
   } catch (error) {
-    console.log('api/subscription/create: Error creating subscription:', error);
+    console.log("api/subscription/create: Error creating subscription:", error);
 
     return NextResponse.json(
-      { status: 'fail', data: { message: 'Failed to create subscription' } },
+      { status: "fail", data: { message: "Failed to create subscription" } },
       { status: 500 },
     );
   }

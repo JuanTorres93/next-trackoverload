@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { DayDTO } from "shared";
+import { JSENDResponse } from "shared";
 
 import { SetCaloriesGoalForDayAndUserUsecaseRequest } from "../../../../application-layer/use-cases/day/SetCaloriesGoalForDayAndUser/SetCaloriesGoalForDayAndUserUsecase";
 import { UpdateUserWeightForDayUsecaseRequest } from "../../../../application-layer/use-cases/day/UpdateUserWeightForDay/UpdateUserWeightForDayUsecase";
@@ -8,7 +9,6 @@ import {
   AppSetCaloriesGoalForDayAndUserUsecase,
   AppUpdateUserWeightForDayUsecase,
 } from "../../../../interface-adapters/app/use-cases/day";
-import { JSENDResponse } from "../../../_types/JSEND";
 import { ensureLoggedInUser } from "../../_common/ensureLoggedInUser";
 import { handleKnownErrors } from "../../_common/handleKnownErrors";
 

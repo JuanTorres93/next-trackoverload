@@ -8,6 +8,7 @@ import React, {
 } from "react";
 
 import { IngredientLineDTO } from "shared";
+import { JSENDResponse } from "shared";
 import { twMerge } from "tailwind-merge";
 
 import SearchInput from "@/app/_ui/SearchInput";
@@ -15,7 +16,6 @@ import SearchInput from "@/app/_ui/SearchInput";
 import { IngredientFinderResult } from "../../../domain/services/IngredientFinder.port";
 import { useDebounce } from "../../_hooks/useDebounce";
 import { useOutsideClick } from "../../_hooks/useOutsideClick";
-import { JSENDResponse } from "../../_types/JSEND";
 import Spinner from "../../_ui/Spinner";
 import { showErrorToast } from "../../_ui/showErrorToast";
 import TextSmall from "../../_ui/typography/TextSmall";

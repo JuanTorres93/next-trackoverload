@@ -1,17 +1,17 @@
 export type JSENDSuccess<T> = {
-  status: 'success';
+  status: "success";
   data: T;
 };
 
 export type JSENDFailure = {
-  status: 'fail';
+  status: "fail";
   data: {
     [key: string]: string;
   };
 };
 
 export type JSENDError = {
-  status: 'error';
+  status: "error";
   message: string;
   code?: number;
   data?: {

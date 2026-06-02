@@ -3,10 +3,10 @@
 import { useState } from "react";
 
 import { HiLockClosed } from "react-icons/hi";
+import { JSENDResponse } from "shared";
 
 import { IngredientFinderResult } from "../../../domain/services/IngredientFinder.port";
 import { useFormSetup } from "../../_hooks/useFormSetup";
-import { JSENDResponse } from "../../_types/JSEND";
 import Input from "../../_ui/Input";
 import SpinnerMini from "../../_ui/SpinnerMini";
 import ButtonNew from "../../_ui/buttons/ButtonNew";

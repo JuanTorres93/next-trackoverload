@@ -5,8 +5,7 @@ import { es } from "date-fns/locale";
 import { HiLightningBolt } from "react-icons/hi";
 import { HiPlus } from "react-icons/hi2";
 import { AssembledDayDTO } from "shared";
-
-import { JSENDResponse } from "@/app/_types/JSEND";
+import { JSENDResponse } from "shared";
 
 import { dayIdToDayMonthYear } from "../../../domain/value-objects/DayId/DayId";
 import Modal from "../../_ui/Modal";

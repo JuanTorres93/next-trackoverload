@@ -1,8 +1,7 @@
 "use server";
 
 import { UserDTO } from "shared";
-
-import { JSENDResponse } from "@/app/_types/JSEND";
+import { JSENDResponse } from "shared";
 
 import { AppGetUserByIdUsecase } from "../../../interface-adapters/app/use-cases/user";
 import { getCurrentUserId } from "../../_utils/auth/getCurrentUserId";
