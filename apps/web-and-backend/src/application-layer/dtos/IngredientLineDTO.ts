@@ -1,24 +1,10 @@
-import { IngredientLine } from '../../domain/entities/ingredientline/IngredientLine';
-import {
-  fromIngredientDTO,
-  IngredientDTO,
-  toIngredientDTO,
-} from './IngredientDTO';
+import { IngredientLineDTO } from "shared";
 
-export type IngredientLineDTO = {
-  id: string;
-  parentId: string;
-  parentType: 'meal' | 'recipe';
-  ingredient: IngredientDTO;
-  quantityInGrams: number;
-  calories: number;
-  protein: number;
-  createdAt: string; // ISO 8601
-  updatedAt: string; // ISO 8601
-};
+import { IngredientLine } from "../../domain/entities/ingredientline/IngredientLine";
+import { fromIngredientDTO, toIngredientDTO } from "./IngredientDTO";
 
 export function toIngredientLineDTO(
-  ingredientLine: IngredientLine
+  ingredientLine: IngredientLine,
 ): IngredientLineDTO {
   return {
     id: ingredientLine.id,

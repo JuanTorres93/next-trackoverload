@@ -4,8 +4,8 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 
 import { HiCamera } from "react-icons/hi";
+import { RecipeDTO } from "shared";
 
-import { RecipeDTO } from "../../../../application-layer/dtos/RecipeDTO";
 import { AppClientImageProcessor } from "../../../../interface-adapters/app/services/AppClientImageProcessor";
 import LoadingOverlay from "../../../_features/common/LoadingOverlay";
 import { updateRecipeImage } from "../../../_features/recipe/actions";

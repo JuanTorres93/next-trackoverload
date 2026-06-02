@@ -3,8 +3,8 @@
 import { useState } from "react";
 
 import { HiOutlineDuplicate, HiOutlineTrash } from "react-icons/hi";
+import { RecipeDTO } from "shared";
 
-import { RecipeDTO } from "../../../../application-layer/dtos/RecipeDTO";
 import { isNextRedirectError } from "../../../_features/common/handleNextRedirectError";
 import ArrangedIngredientSearch from "../../../_features/ingredient/ArrangedIngredientSearch";
 import IngredientLineItem from "../../../_features/ingredient/IngredientLineItem";

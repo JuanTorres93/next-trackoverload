@@ -1,3 +1,5 @@
+import { RecipeDTO } from "shared";
+
 import { logNoTest } from "@/utils/logNoTest";
 
 import { NotFoundError } from "../../../../domain/common/errors";
@@ -7,7 +9,7 @@ import {
 } from "../../../../domain/repos/ImagesRepo.port";
 import { RecipesRepo } from "../../../../domain/repos/RecipesRepo.port";
 import { ImageProcessor } from "../../../../domain/services/ImageProcessor/ServerImageProcessor.port";
-import { RecipeDTO, toRecipeDTO } from "../../../dtos/RecipeDTO";
+import { toRecipeDTO } from "../../../dtos/RecipeDTO";
 import { processRecipeImageBufferForUploading } from "../common/processImageBufferForUploading";
 
 export type UpdateRecipeImageUsecaseRequest = {

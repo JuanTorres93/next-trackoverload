@@ -1,9 +1,9 @@
 import Image from "next/image";
 
 import { HiCheck } from "react-icons/hi";
+import { IngredientDTO } from "shared";
 
 import { formatToInteger } from "../../_utils/format/formatToInteger";
-import { IngredientDTO } from "../../../application-layer/dtos/IngredientDTO";
 
 const blurDataURL =
   "data:image/svg+xml;base64," +

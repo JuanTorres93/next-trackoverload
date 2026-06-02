@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { JSENDResponse } from "../../_types/JSEND";
-import { ensureLoggedInUser } from "../_common/ensureLoggedInUser";
-import { RecipeDTO } from "../../../application-layer/dtos/RecipeDTO";
+import { RecipeDTO } from "shared";
+
 import { CreateRecipeUsecaseRequest } from "../../../application-layer/use-cases/recipe/CreateRecipe/CreateRecipe.usecase";
 import { AppCreateRecipeUsecase } from "../../../interface-adapters/app/use-cases/recipe";
-
+import { JSENDResponse } from "../../_types/JSEND";
+import { ensureLoggedInUser } from "../_common/ensureLoggedInUser";
 import { handleKnownErrors } from "../_common/handleKnownErrors";
 
 type CreateRecipeBody = Omit<CreateRecipeUsecaseRequest, "actorUserId">;

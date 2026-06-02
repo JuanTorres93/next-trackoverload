@@ -3,11 +3,11 @@ import Image from "next/image";
 
 import { useState } from "react";
 
+import { IngredientLineDTO } from "shared";
+
 import Input from "../../_ui/Input";
 import ButtonX from "../../_ui/buttons/ButtonX";
 import { formatToInteger } from "../../_utils/format/formatToInteger";
-import { IngredientLineDTO } from "../../../application-layer/dtos/IngredientLineDTO";
-
 import LoadingOverlay from "../common/LoadingOverlay";
 
 function IngredientLineItem({

@@ -4,7 +4,8 @@ import Image from "next/image";
 
 import { useState } from "react";
 
-import { MealDTO } from "../../../application-layer/dtos/MealDTO";
+import { MealDTO } from "shared";
+
 import { showErrorToast } from "../../_ui/showErrorToast";
 import { formatToInteger } from "../../_utils/format/formatToInteger";
 import FoodReminderContainer from "../common/FoodReminderContainer";

@@ -1,6 +1,7 @@
-'use client';
-import NutritionSummary from '../../_ui/NutritionSummary';
-import { RecipeDTO } from '../../../application-layer/dtos/RecipeDTO';
+"use client";
+import { RecipeDTO } from "shared";
+
+import NutritionSummary from "../../_ui/NutritionSummary";
 
 function RecipeLine({ recipe }: { recipe: RecipeDTO }) {
   return <NutritionSummary line={recipe} />;

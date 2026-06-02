@@ -1,3 +1,5 @@
+import { MealDTO } from "shared";
+
 import * as ingredientTestProps from "../../../../tests/createProps/ingredientTestProps";
 import * as mealTestProps from "../../../../tests/createProps/mealTestProps";
 import * as recipeTestProps from "../../../../tests/createProps/recipeTestProps";
@@ -5,7 +7,7 @@ import * as dto from "../../../../tests/dtoProperties";
 import { Ingredient } from "../../../domain/entities/ingredient/Ingredient";
 import { IngredientLine } from "../../../domain/entities/ingredientline/IngredientLine";
 import { Meal } from "../../../domain/entities/meal/Meal";
-import { MealDTO, fromMealDTO, toMealDTO } from "../MealDTO";
+import { fromMealDTO, toMealDTO } from "../MealDTO";
 
 describe("MealDTO", () => {
   let meal: Meal;

@@ -1,9 +1,11 @@
+import { MealDTO } from "shared";
+
 import { logNoTest } from "@/utils/logNoTest";
 
 import { NotFoundError } from "../../../../domain/common/errors";
 import { MealsRepo } from "../../../../domain/repos/MealsRepo.port";
 import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
-import { MealDTO, toMealDTO } from "../../../dtos/MealDTO";
+import { toMealDTO } from "../../../dtos/MealDTO";
 
 export type ToggleIsEatenUsecaseRequest = {
   mealId: string;

@@ -1,8 +1,9 @@
 "use server";
 import { revalidatePath } from "next/cache";
 
+import { IngredientLineDTO } from "shared";
+
 import { JSENDResponse } from "@/app/_types/JSEND";
-import { IngredientLineDTO } from "@/application-layer/dtos/IngredientLineDTO";
 
 import { AppUpdateIngredientLineUsecase } from "../../../interface-adapters/app/use-cases/ingredientline";
 import { getCurrentUserId } from "../../_utils/auth/getCurrentUserId";

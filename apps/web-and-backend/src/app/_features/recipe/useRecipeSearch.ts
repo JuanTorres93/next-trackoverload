@@ -1,14 +1,15 @@
-import Fuse from 'fuse.js';
-import { useMemo, useState } from 'react';
-import { RecipeDTO } from '../../../application-layer/dtos/RecipeDTO';
+import { useMemo, useState } from "react";
+
+import Fuse from "fuse.js";
+import { RecipeDTO } from "shared";
 
 export function useRecipeSearch(recipes: RecipeDTO[]) {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
 
   const fuse = useMemo(
     () =>
       new Fuse(recipes, {
-        keys: ['name'],
+        keys: ["name"],
         threshold: 0.4,
         includeScore: true,
       }),

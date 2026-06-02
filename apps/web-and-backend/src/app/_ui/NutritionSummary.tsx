@@ -1,14 +1,15 @@
-'use client';
-import Input from './Input';
-import { IngredientLineDTO } from '../../application-layer/dtos/IngredientLineDTO';
-import { RecipeDTO } from '../../application-layer/dtos/RecipeDTO';
-import Image from 'next/image';
-import CaloriesAndProtein from '../_features/common/CaloriesAndProtein';
-import LoadingOverlay from '../_features/common/LoadingOverlay';
-import LoggedMealContainer from '../_features/common/LoggedMealContainer';
-import ButtonX from './buttons/ButtonX';
+"use client";
+import Image from "next/image";
 
-const quantityStyle = 'w-full text-right border-none outline-none';
+import { IngredientLineDTO, RecipeDTO } from "shared";
+
+import CaloriesAndProtein from "../_features/common/CaloriesAndProtein";
+import LoadingOverlay from "../_features/common/LoadingOverlay";
+import LoggedMealContainer from "../_features/common/LoggedMealContainer";
+import Input from "./Input";
+import ButtonX from "./buttons/ButtonX";
+
+const quantityStyle = "w-full text-right border-none outline-none";
 
 function NutritionSummary({
   line,
@@ -25,9 +26,9 @@ function NutritionSummary({
   disabled?: boolean;
   isLoading?: boolean;
 }) {
-  const isIngredientLine = 'ingredient' in line;
-  const defaultImageUrlIngredient = '/ingredient-no-picture.webp';
-  const defaultImageUrlRecipe = '/recipe-no-picture.webp';
+  const isIngredientLine = "ingredient" in line;
+  const defaultImageUrlIngredient = "/ingredient-no-picture.webp";
+  const defaultImageUrlRecipe = "/recipe-no-picture.webp";
 
   const imageUrl = isIngredientLine
     ? line.ingredient.imageUrl || defaultImageUrlIngredient

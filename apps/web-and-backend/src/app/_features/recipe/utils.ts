@@ -1,11 +1,12 @@
-import { IngredientLineDTO } from '../../../application-layer/dtos/IngredientLineDTO';
-import { IngredientFinderResult } from '../../../domain/services/IngredientFinder.port';
+import { IngredientLineDTO } from "shared";
+
+import { IngredientFinderResult } from "../../../domain/services/IngredientFinder.port";
 
 export function createInMemoryRecipeIngredientLine(
   ingredientFinderResult: IngredientFinderResult,
 ): {
   ingredientLine: IngredientLineDTO;
-  ingredientExternalRef: IngredientFinderResult['externalRef'];
+  ingredientExternalRef: IngredientFinderResult["externalRef"];
 } {
   const fakeIngredient = {
     ...ingredientFinderResult.ingredient,
@@ -16,9 +17,9 @@ export function createInMemoryRecipeIngredientLine(
   const externalRef = ingredientFinderResult.externalRef;
 
   const ingredientLine: IngredientLineDTO = {
-    id: 'temp-id-' + externalRef.externalId,
-    parentId: 'temp-parent-id',
-    parentType: 'recipe',
+    id: "temp-id-" + externalRef.externalId,
+    parentId: "temp-parent-id",
+    parentType: "recipe",
     ingredient: fakeIngredient,
     quantityInGrams: 100,
     calories: Number(fakeIngredient.nutritionalInfoPer100g.calories) || 1,

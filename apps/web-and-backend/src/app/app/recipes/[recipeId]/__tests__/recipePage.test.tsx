@@ -1,9 +1,9 @@
 import { render, screen } from "@testing-library/react";
+import { RecipeDTO } from "shared";
 
 import { createAndPersistTest_Recipes_Ingredients_User } from "../../../../../../tests/mocks/recipes";
 import { TestRecipesRepo } from "../../../../../../tests/repos/TestRecipesRepo";
 import { TestUsersRepo } from "../../../../../../tests/repos/TestUsersRepo";
-import { RecipeDTO } from "../../../../../application-layer/dtos/RecipeDTO";
 import RecipePage from "../page";
 
 let mockRecipes: RecipeDTO[] = [];

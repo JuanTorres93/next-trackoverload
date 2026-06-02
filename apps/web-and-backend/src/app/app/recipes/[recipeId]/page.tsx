@@ -1,8 +1,8 @@
 import { HiOutlineEmojiSad } from "react-icons/hi";
+import { RecipeDTO } from "shared";
 
 import { JSENDResponse } from "@/app/_types/JSEND";
 
-import { RecipeDTO } from "../../../../application-layer/dtos/RecipeDTO";
 import { getRecipeByIdForLoggedInUser } from "../../../_features/recipe/actions";
 import PageWrapper from "../../../_ui/PageWrapper";
 import ButtonPrimary from "../../../_ui/buttons/ButtonPrimary";

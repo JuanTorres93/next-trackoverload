@@ -1,7 +1,8 @@
+import { RecipeDTO } from "shared";
+
 import { JSENDResponse } from "@/app/_types/JSEND";
 import ErrorBox from "@/app/_ui/ErrorBox";
 
-import { RecipeDTO } from "../../../application-layer/dtos/RecipeDTO";
 import { getAllRecipesForLoggedInUser } from "../../_features/recipe/actions";
 import PageWrapper from "../../_ui/PageWrapper";
 import RecipesDisplay from "./RecipesDisplay";

@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { JSENDResponse } from "../../../_types/JSEND";
-import { ensureLoggedInUser } from "../../_common/ensureLoggedInUser";
-import { IngredientLineDTO } from "../../../../application-layer/dtos/IngredientLineDTO";
+import { IngredientLineDTO } from "shared";
+
 import { UpdateIngredientLineUsecaseRequest } from "../../../../application-layer/use-cases/ingredientline/UpdateIngredientLine/UpdateIngredientLine.usecase";
 import { AppUpdateIngredientLineUsecase } from "../../../../interface-adapters/app/use-cases/ingredientline";
-
+import { JSENDResponse } from "../../../_types/JSEND";
+import { ensureLoggedInUser } from "../../_common/ensureLoggedInUser";
 import { handleKnownErrors } from "../../_common/handleKnownErrors";
 
 export async function PUT(

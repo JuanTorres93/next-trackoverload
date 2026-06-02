@@ -1,4 +1,4 @@
-import { AssembledDayDTO, FakeMealDTO } from "shared";
+import { AssembledDayDTO, FakeMealDTO, MealDTO } from "shared";
 
 import { logNoTest } from "@/utils/logNoTest";
 
@@ -12,7 +12,7 @@ import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
 import { toAssembledDayDTO } from "../../../dtos/AssembledDayDTO";
 import { toDayDTO } from "../../../dtos/DayDTO";
 import { toFakeMealDTO } from "../../../dtos/FakeMealDTO";
-import { MealDTO, toMealDTO } from "../../../dtos/MealDTO";
+import { toMealDTO } from "../../../dtos/MealDTO";
 
 export type GetAssembledDayByIdUsecaseRequest = {
   dayId: string;

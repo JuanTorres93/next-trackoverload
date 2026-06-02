@@ -3,10 +3,10 @@
 import { useState } from "react";
 
 import { HiBookOpen, HiMagnifyingGlass } from "react-icons/hi2";
+import { RecipeDTO } from "shared";
 
 import PageTitle from "@/app/_ui/typography/PageTitle";
 
-import { RecipeDTO } from "../../../application-layer/dtos/RecipeDTO";
 import RecipesGrid from "../../_features/recipe/RecipesGrid";
 import { useRecipeSearch } from "../../_features/recipe/useRecipeSearch";
 import SearchInput from "../../_ui/SearchInput";

@@ -1,3 +1,5 @@
+import { RecipeDTO } from "shared";
+
 import { logNoTest } from "@/utils/logNoTest";
 
 import {
@@ -6,7 +8,7 @@ import {
 } from "../../../../domain/common/errors";
 import { RecipesRepo } from "../../../../domain/repos/RecipesRepo.port";
 import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
-import { RecipeDTO, toRecipeDTO } from "../../../dtos/RecipeDTO";
+import { toRecipeDTO } from "../../../dtos/RecipeDTO";
 
 export type GetAllRecipesForUserUsecaseRequest = {
   actorUserId: string;

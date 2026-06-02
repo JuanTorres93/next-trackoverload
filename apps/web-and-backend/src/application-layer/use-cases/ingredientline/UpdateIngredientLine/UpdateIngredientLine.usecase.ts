@@ -1,3 +1,5 @@
+import { IngredientLineDTO } from "shared";
+
 import { logNoTest } from "@/utils/logNoTest";
 
 import { AuthError, NotFoundError } from "../../../../domain/common/errors";
@@ -9,10 +11,7 @@ import { IngredientsRepo } from "../../../../domain/repos/IngredientsRepo.port";
 import { MealsRepo } from "../../../../domain/repos/MealsRepo.port";
 import { RecipesRepo } from "../../../../domain/repos/RecipesRepo.port";
 import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
-import {
-  IngredientLineDTO,
-  toIngredientLineDTO,
-} from "../../../dtos/IngredientLineDTO";
+import { toIngredientLineDTO } from "../../../dtos/IngredientLineDTO";
 
 export type UpdateIngredientLineUsecaseRequest = {
   userId: string;

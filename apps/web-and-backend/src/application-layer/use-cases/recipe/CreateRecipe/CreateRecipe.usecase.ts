@@ -1,3 +1,5 @@
+import { RecipeDTO } from "shared";
+
 import { logNoTest } from "@/utils/logNoTest";
 
 import {
@@ -13,7 +15,7 @@ import { RecipesRepo } from "../../../../domain/repos/RecipesRepo.port";
 import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
 import { IdGenerator } from "../../../../domain/services/IdGenerator.port";
 import { ImageProcessor } from "../../../../domain/services/ImageProcessor/ServerImageProcessor.port";
-import { RecipeDTO, toRecipeDTO } from "../../../dtos/RecipeDTO";
+import { toRecipeDTO } from "../../../dtos/RecipeDTO";
 import { TransactionContext } from "../../../ports/TransactionContext.port";
 import {
   CreateIngredientLineData,

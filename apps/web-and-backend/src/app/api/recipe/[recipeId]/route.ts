@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { JSENDResponse } from "../../../_types/JSEND";
-import { ensureLoggedInUser } from "../../_common/ensureLoggedInUser";
-import { RecipeDTO } from "../../../../application-layer/dtos/RecipeDTO";
+import { RecipeDTO } from "shared";
+
 import { AddIngredientToRecipeUsecaseRequest } from "../../../../application-layer/use-cases/recipe/AddIngredientToRecipe/AddIngredientToRecipe.usecase";
 import { UpdateRecipeUsecaseRequest } from "../../../../application-layer/use-cases/recipe/UpdateRecipe/UpdateRecipe.usecase";
 import { UpdateRecipeImageUsecaseRequest } from "../../../../application-layer/use-cases/recipe/UpdateRecipeImage/UpdateRecipeImageUsecase";
@@ -12,7 +11,8 @@ import {
   AppUpdateRecipeImageUsecase,
   AppUpdateRecipeUsecase,
 } from "../../../../interface-adapters/app/use-cases/recipe";
-
+import { JSENDResponse } from "../../../_types/JSEND";
+import { ensureLoggedInUser } from "../../_common/ensureLoggedInUser";
 import { handleKnownErrors } from "../../_common/handleKnownErrors";
 
 export async function POST(

@@ -5,8 +5,8 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { HiCheck, HiTrash } from "react-icons/hi";
+import { RecipeDTO } from "shared";
 
-import { RecipeDTO } from "../../../application-layer/dtos/RecipeDTO";
 import ConfirmDelete from "../../_ui/ConfirmDeleteModal";
 import Modal from "../../_ui/Modal";
 import { showErrorToast } from "../../_ui/showErrorToast";

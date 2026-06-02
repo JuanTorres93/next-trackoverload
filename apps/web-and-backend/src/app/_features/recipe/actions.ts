@@ -2,9 +2,10 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { RecipeDTO } from "shared";
+
 import { JSENDResponse } from "@/app/_types/JSEND";
 
-import { RecipeDTO } from "../../../application-layer/dtos/RecipeDTO";
 import { CreateIngredientLineData } from "../../../application-layer/use-cases/recipe/common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo";
 import {
   AppAddIngredientToRecipeUsecase,

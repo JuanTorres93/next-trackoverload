@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 
+import { RecipeDTO } from "shared";
+
+import { AppRemoveIngredientFromRecipeUsecase } from "../../../../../../interface-adapters/app/use-cases/recipe";
 import { JSENDResponse } from "../../../../../_types/JSEND";
 import { ensureLoggedInUser } from "../../../../_common/ensureLoggedInUser";
-import { RecipeDTO } from "../../../../../../application-layer/dtos/RecipeDTO";
-import { AppRemoveIngredientFromRecipeUsecase } from "../../../../../../interface-adapters/app/use-cases/recipe";
-
 import { handleKnownErrors } from "../../../../_common/handleKnownErrors";
 
 export async function DELETE(

@@ -1,11 +1,9 @@
+import { IngredientDTO } from "shared";
+
 import * as ingredientTestProps from "../../../../tests/createProps/ingredientTestProps";
 import * as dto from "../../../../tests/dtoProperties";
 import { Ingredient } from "../../../domain/entities/ingredient/Ingredient";
-import {
-  IngredientDTO,
-  fromIngredientDTO,
-  toIngredientDTO,
-} from "../IngredientDTO";
+import { fromIngredientDTO, toIngredientDTO } from "../IngredientDTO";
 
 describe("IngredientDTO", () => {
   let ingredient: Ingredient;

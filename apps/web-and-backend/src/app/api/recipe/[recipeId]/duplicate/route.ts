@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { JSENDResponse } from "../../../../_types/JSEND";
-import { ensureLoggedInUser } from "../../../_common/ensureLoggedInUser";
-import { RecipeDTO } from "../../../../../application-layer/dtos/RecipeDTO";
+import { RecipeDTO } from "shared";
+
 import { DuplicateRecipeUsecaseRequest } from "../../../../../application-layer/use-cases/recipe/DuplicateRecipe/DuplicateRecipe.usecase";
 import { AppDuplicateRecipeUsecase } from "../../../../../interface-adapters/app/use-cases/recipe";
-
+import { JSENDResponse } from "../../../../_types/JSEND";
+import { ensureLoggedInUser } from "../../../_common/ensureLoggedInUser";
 import { handleKnownErrors } from "../../../_common/handleKnownErrors";
 
 type DuplicateRecipeBody = Pick<DuplicateRecipeUsecaseRequest, "newName">;

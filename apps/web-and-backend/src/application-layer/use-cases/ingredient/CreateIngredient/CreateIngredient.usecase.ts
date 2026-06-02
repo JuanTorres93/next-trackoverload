@@ -1,10 +1,9 @@
-import {
-  IngredientDTO,
-  toIngredientDTO,
-} from "../../../dtos/IngredientDTO";
+import { IngredientDTO } from "shared";
+
 import { Ingredient } from "../../../../domain/entities/ingredient/Ingredient";
 import { IngredientsRepo } from "../../../../domain/repos/IngredientsRepo.port";
 import { IdGenerator } from "../../../../domain/services/IdGenerator.port";
+import { toIngredientDTO } from "../../../dtos/IngredientDTO";
 
 export type CreateIngredientUsecaseRequest = {
   name: string;

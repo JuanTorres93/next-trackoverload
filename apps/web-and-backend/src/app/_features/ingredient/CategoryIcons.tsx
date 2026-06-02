@@ -11,9 +11,8 @@ import {
   LuWheat,
 } from "react-icons/lu";
 import { TbBottle, TbMeat } from "react-icons/tb";
+import { IngredientDTO } from "shared";
 import { twMerge } from "tailwind-merge";
-
-import { IngredientDTO } from "@/application-layer/dtos/IngredientDTO";
 
 const ICON_SIZE = 20;
 

@@ -1,6 +1,4 @@
-import { ExternalIngredientRefDTO } from "shared";
-
-import { IngredientDTO } from "../../application-layer/dtos/IngredientDTO";
+import { ExternalIngredientRefDTO, IngredientDTO } from "shared";
 
 export type IngredientFinderResult = {
   ingredient: Omit<IngredientDTO, "id" | "createdAt" | "updatedAt">;

@@ -1,21 +1,10 @@
-import { Recipe } from '../../domain/entities/recipe/Recipe';
-import {
-  IngredientLineDTO,
-  toIngredientLineDTO,
-  fromIngredientLineDTO,
-} from './IngredientLineDTO';
+import { RecipeDTO } from "shared";
 
-export type RecipeDTO = {
-  id: string;
-  userId: string;
-  name: string;
-  imageUrl?: string;
-  ingredientLines: IngredientLineDTO[];
-  calories: number;
-  protein: number;
-  createdAt: string;
-  updatedAt: string;
-};
+import { Recipe } from "../../domain/entities/recipe/Recipe";
+import {
+  fromIngredientLineDTO,
+  toIngredientLineDTO,
+} from "./IngredientLineDTO";
 
 export function toRecipeDTO(recipe: Recipe): RecipeDTO {
   return {

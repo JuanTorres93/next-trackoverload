@@ -1,23 +1,10 @@
-import { Meal } from '../../domain/entities/meal/Meal';
-import {
-  IngredientLineDTO,
-  toIngredientLineDTO,
-  fromIngredientLineDTO,
-} from './IngredientLineDTO';
+import { MealDTO } from "shared";
 
-export type MealDTO = {
-  id: string;
-  userId: string;
-  name: string;
-  ingredientLines: IngredientLineDTO[];
-  calories: number;
-  protein: number;
-  createdFromRecipeId: string;
-  imageUrl?: string;
-  isEaten?: boolean;
-  createdAt: string;
-  updatedAt: string;
-};
+import { Meal } from "../../domain/entities/meal/Meal";
+import {
+  fromIngredientLineDTO,
+  toIngredientLineDTO,
+} from "./IngredientLineDTO";
 
 export function toMealDTO(meal: Meal): MealDTO {
   return {

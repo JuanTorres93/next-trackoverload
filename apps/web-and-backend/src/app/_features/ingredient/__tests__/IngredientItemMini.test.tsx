@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { IngredientDTO } from "shared";
 
 import { createAndPersistTestIngredients } from "../../../../../tests/mocks/ingredients";
-import { IngredientDTO } from "../../../../application-layer/dtos/IngredientDTO";
 import IngredientItemMini from "../IngredientItemMini";
 
 const mockIngredients = await createAndPersistTestIngredients();

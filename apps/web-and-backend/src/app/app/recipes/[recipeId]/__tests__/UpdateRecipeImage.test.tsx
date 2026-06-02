@@ -1,12 +1,12 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { RecipeDTO } from "shared";
 import { vi } from "vitest";
 
 import { createTestImage } from "../../../../../../tests/helpers/imageTestHelpers";
 import { createAndPersistTest_Recipes_Ingredients_User } from "../../../../../../tests/mocks/recipes";
 import { TestRecipesRepo } from "../../../../../../tests/repos/TestRecipesRepo";
 import { TestUsersRepo } from "../../../../../../tests/repos/TestUsersRepo";
-import { RecipeDTO } from "../../../../../application-layer/dtos/RecipeDTO";
 import UpdateRecipeImage from "../UpdateRecipeImage";
 
 // Mock AppClientImageProcessor to avoid browser API incompatibilities in the test environment

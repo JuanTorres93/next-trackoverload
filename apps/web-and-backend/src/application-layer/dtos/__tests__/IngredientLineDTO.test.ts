@@ -1,10 +1,11 @@
+import { IngredientLineDTO } from "shared";
+
 import * as ingredientTestProps from "../../../../tests/createProps/ingredientTestProps";
 import * as recipeTestProps from "../../../../tests/createProps/recipeTestProps";
 import * as dto from "../../../../tests/dtoProperties";
 import { Ingredient } from "../../../domain/entities/ingredient/Ingredient";
 import { IngredientLine } from "../../../domain/entities/ingredientline/IngredientLine";
 import {
-  IngredientLineDTO,
   fromIngredientLineDTO,
   toIngredientLineDTO,
 } from "../IngredientLineDTO";

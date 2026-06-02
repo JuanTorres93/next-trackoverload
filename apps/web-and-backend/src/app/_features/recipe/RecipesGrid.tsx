@@ -1,7 +1,8 @@
-import { twMerge } from 'tailwind-merge';
-import { RecipeDTO } from '../../../application-layer/dtos/RecipeDTO';
-import RecipeCard from './RecipeCard';
-import GridAutoCols from '../../_ui/GridAutoCols';
+import { RecipeDTO } from "shared";
+import { twMerge } from "tailwind-merge";
+
+import GridAutoCols from "../../_ui/GridAutoCols";
+import RecipeCard from "./RecipeCard";
 
 function RecipesGrid({
   recipes,
@@ -14,12 +15,12 @@ function RecipesGrid({
   selectedRecipesIds?: string[];
   asLink?: boolean;
   onClick?: (recipeId: string) => void;
-} & Omit<React.HTMLAttributes<HTMLDivElement>, 'onClick'>) {
+} & Omit<React.HTMLAttributes<HTMLDivElement>, "onClick">) {
   const { className, ...rest } = props;
 
   return (
     <GridAutoCols
-      className={twMerge('gap-4', className)}
+      className={twMerge("gap-4", className)}
       fitOrFill="fill"
       min="14rem"
       max="1fr"

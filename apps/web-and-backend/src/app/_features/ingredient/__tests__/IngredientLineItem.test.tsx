@@ -1,8 +1,8 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { IngredientLineDTO } from "shared";
 
 import { createAndPersistTest_Day_Recipes_Ingredients_User } from "../../../../../tests/mocks/days";
-import { IngredientLineDTO } from "../../../../application-layer/dtos/IngredientLineDTO";
 import IngredientLineItem from "../IngredientLineItem";
 
 const mockDay = await createAndPersistTest_Day_Recipes_Ingredients_User(

@@ -1,5 +1,6 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { RecipeDTO } from "shared";
 
 import { createAndPersistTest_Day_Recipes_Ingredients_User } from "../../../../../tests/mocks/days";
 import { TEST_USER_ID } from "../../../../../tests/mocks/nextjs";
@@ -9,7 +10,6 @@ import { TestDaysRepo } from "../../../../../tests/repos/TestDaysRepo";
 import { TestFakeMealsRepo } from "../../../../../tests/repos/TestFakeMealsRepo";
 import { TestMealsRepo } from "../../../../../tests/repos/TestMealsRepo";
 import { TestRecipesRepo } from "../../../../../tests/repos/TestRecipesRepo";
-import { RecipeDTO } from "../../../../application-layer/dtos/RecipeDTO";
 import { AppDaysRepo } from "../../../../interface-adapters/app/repos/AppDaysRepo";
 import AddFoodButton from "../AddFoodButton";
 

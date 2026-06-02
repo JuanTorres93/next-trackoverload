@@ -1,5 +1,6 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { RecipeDTO } from "shared";
 
 import { mockIngredientApiFetch } from "../../../../../../tests/mocks/ingredientApi";
 import { createAndPersistTestIngredients } from "../../../../../../tests/mocks/ingredients";
@@ -7,7 +8,6 @@ import { createAndPersistTest_Recipes_Ingredients_User } from "../../../../../..
 import { mockDecodeFromConstraints } from "../../../../../../tests/mocks/zxing";
 import { TestRecipesRepo } from "../../../../../../tests/repos/TestRecipesRepo";
 import { TestUsersRepo } from "../../../../../../tests/repos/TestUsersRepo";
-import { RecipeDTO } from "../../../../../application-layer/dtos/RecipeDTO";
 import { SCAN_WINDOW_SIZE } from "../../../../_features/ingredient/ZXingBarcodeScanner";
 import RecipeActions from "../RecipeActions";
 

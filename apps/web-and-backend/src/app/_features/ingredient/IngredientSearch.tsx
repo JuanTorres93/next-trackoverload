@@ -7,11 +7,11 @@ import React, {
   useState,
 } from "react";
 
+import { IngredientLineDTO } from "shared";
 import { twMerge } from "tailwind-merge";
 
 import SearchInput from "@/app/_ui/SearchInput";
 
-import { IngredientLineDTO } from "../../../application-layer/dtos/IngredientLineDTO";
 import { IngredientFinderResult } from "../../../domain/services/IngredientFinder.port";
 import { useDebounce } from "../../_hooks/useDebounce";
 import { useOutsideClick } from "../../_hooks/useOutsideClick";
