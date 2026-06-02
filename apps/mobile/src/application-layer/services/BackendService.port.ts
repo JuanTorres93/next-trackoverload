@@ -1,4 +1,4 @@
-import { ExerciseDTO, JSENDResponse } from "shared";
+import { ExerciseDTO, JSENDResponse, UserDTO } from "shared";
 
 export interface BackendService {
   getExerciseByFuzzyName(name: string): Promise<JSENDResponse<ExerciseDTO[]>>;
@@ -7,5 +7,5 @@ export interface BackendService {
     name: string,
     plainPassword: string,
     email: string,
-  ): Promise<JSENDResponse<string>>;
+  ): Promise<JSENDResponse<UserDTO>>;
 }

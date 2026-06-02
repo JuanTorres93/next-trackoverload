@@ -1,4 +1,4 @@
-import { ExerciseDTO, JSENDResponse } from "shared";
+import { ExerciseDTO, JSENDResponse, UserDTO } from "shared";
 
 import { BackendService } from "@/application-layer/services/BackendService.port";
 import { FetchInfraError } from "@/infra/common/infraErrors";
@@ -37,7 +37,7 @@ export class ApplicationBackendService implements BackendService {
     name: string,
     plainPassword: string,
     email: string,
-  ): Promise<JSENDResponse<string>> {
+  ): Promise<JSENDResponse<UserDTO>> {
     const response = await fetch(`${this.baseUrl}/auth/register`, {
       method: "POST",
       headers: {
@@ -54,6 +54,6 @@ export class ApplicationBackendService implements BackendService {
 
     const data = await response.json();
 
-    return data as JSENDResponse<string>;
+    return data;
   }
 }

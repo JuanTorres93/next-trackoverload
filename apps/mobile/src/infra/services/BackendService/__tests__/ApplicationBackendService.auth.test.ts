@@ -1,3 +1,5 @@
+import { UserDTO } from "shared/src/application-layer/dtos/UserDTO";
+
 import { userTestProps } from "../../../../../tests/mocks/user";
 import { TestApplicationBackendService } from "../TestApplicationBackendService";
 
@@ -19,6 +21,11 @@ describe("ApplicationBackendService - Authentication", () => {
       email,
     );
 
+    const user = response!.data as UserDTO;
+
     expect(response.status).toBe("success");
+
+    expect(user.name).toBe(userTestProps.name);
+    expect(user.email).toBe(email);
   });
 });
