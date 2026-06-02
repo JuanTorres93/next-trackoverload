@@ -1,7 +1,9 @@
+import { UserDTO } from "shared";
+
 import * as userTestProps from "../../../../tests/createProps/userTestProps";
 import * as dto from "../../../../tests/dtoProperties";
 import { User } from "../../../domain/entities/user/User";
-import { UserDTO, toUserDTO } from "../UserDTO";
+import { toUserDTO } from "../UserDTO";
 
 describe("UserDTO", () => {
   let user: User;

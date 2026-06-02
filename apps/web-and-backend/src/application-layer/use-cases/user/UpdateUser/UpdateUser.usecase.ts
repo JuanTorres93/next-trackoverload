@@ -1,3 +1,5 @@
+import { UserDTO } from "shared";
+
 import { logNoTest } from "@/utils/logNoTest";
 
 import {
@@ -6,7 +8,7 @@ import {
 } from "../../../../domain/common/errors";
 import { UserUpdateProps } from "../../../../domain/entities/user/User";
 import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
-import { UserDTO, toUserDTO } from "../../../dtos/UserDTO";
+import { toUserDTO } from "../../../dtos/UserDTO";
 
 export type UpdateUserUsecaseRequest = {
   actorUserId: string;

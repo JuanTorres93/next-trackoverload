@@ -1,3 +1,5 @@
+import { WorkoutDTO } from "shared";
+
 import { logNoTest } from "@/utils/logNoTest";
 
 import {
@@ -10,7 +12,7 @@ import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
 import { WorkoutTemplatesRepo } from "../../../../domain/repos/WorkoutTemplatesRepo.port";
 import { WorkoutsRepo } from "../../../../domain/repos/WorkoutsRepo.port";
 import { IdGenerator } from "../../../../domain/services/IdGenerator.port";
-import { WorkoutDTO, toWorkoutDTO } from "../../../dtos/WorkoutDTO";
+import { toWorkoutDTO } from "../../../dtos/WorkoutDTO";
 
 export type CreateWorkoutFromTemplateUsecaseRequest = {
   userId: string;

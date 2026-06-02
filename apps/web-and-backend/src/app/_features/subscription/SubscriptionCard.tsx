@@ -1,14 +1,15 @@
-'use client';
+"use client";
 
-import { HiCheckCircle, HiSparkles } from 'react-icons/hi2';
+import { useState } from "react";
 
-import ButtonDanger from '../../_ui/buttons/ButtonDanger';
-import ButtonPrimary from '../../_ui/buttons/ButtonPrimary';
-import { UserDTO } from '../../../application-layer/dtos/UserDTO';
-import { formatPriceInEurCentsToString } from './formatPriceInEurCentsToString';
-import { isFreeTrialExpired } from './isFreeTrialExpired';
-import { useState } from 'react';
-import SpinnerMini from '../../_ui/SpinnerMini';
+import { HiCheckCircle, HiSparkles } from "react-icons/hi2";
+import { UserDTO } from "shared";
+
+import SpinnerMini from "../../_ui/SpinnerMini";
+import ButtonDanger from "../../_ui/buttons/ButtonDanger";
+import ButtonPrimary from "../../_ui/buttons/ButtonPrimary";
+import { formatPriceInEurCentsToString } from "./formatPriceInEurCentsToString";
+import { isFreeTrialExpired } from "./isFreeTrialExpired";
 
 export type SubscriptionCardProps = {
   title: string;
@@ -35,13 +36,13 @@ function SubscriptionCard({
       <h2 className="text-2xl font-bold text-center text-text/80">{title}</h2>
 
       <HorizontalLine />
-      {subscriptionStatus === 'active' ? (
+      {subscriptionStatus === "active" ? (
         <ActiveSubscriptionContent periodEndDate={periodEndDate} />
-      ) : subscriptionStatus === 'canceled' ? (
+      ) : subscriptionStatus === "canceled" ? (
         <CanceledSubscriptionContent periodEndDate={periodEndDate} />
-      ) : subscriptionStatus === 'free' ? (
+      ) : subscriptionStatus === "free" ? (
         <FreeSubscriptionContent />
-      ) : subscriptionStatus === 'free_trial' &&
+      ) : subscriptionStatus === "free_trial" &&
         isFreeTrialExpired(createdAt) ? (
         <ExpiredFreeTrialContent
           description={description}
@@ -62,13 +63,13 @@ function StatusBadge({ active }: { active: boolean }) {
     <span
       data-testid="status-badge"
       className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium ${
-        active ? 'bg-primary/10 text-primary' : 'bg-error/10 text-error'
+        active ? "bg-primary/10 text-primary" : "bg-error/10 text-error"
       }`}
     >
       <span
-        className={`w-2 h-2 rounded-full ${active ? 'bg-primary' : 'bg-error'}`}
+        className={`w-2 h-2 rounded-full ${active ? "bg-primary" : "bg-error"}`}
       />
-      {active ? 'Activa' : 'Cancelada'}
+      {active ? "Activa" : "Cancelada"}
     </span>
   );
 }
@@ -88,12 +89,12 @@ function NoSubscriptionContent({
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/subscription/create', {
-        method: 'POST',
+      const response = await fetch("/api/subscription/create", {
+        method: "POST",
       });
       const json = await response.json();
 
-      if (json.status === 'success') {
+      if (json.status === "success") {
         window.location.assign(json.data.redirectUrl);
       }
     } catch {
@@ -129,12 +130,12 @@ function ExpiredFreeTrialContent({
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/subscription/create', {
-        method: 'POST',
+      const response = await fetch("/api/subscription/create", {
+        method: "POST",
       });
       const json = await response.json();
 
-      if (json.status === 'success') {
+      if (json.status === "success") {
         window.location.assign(json.data.redirectUrl);
       }
     } catch {
@@ -174,12 +175,12 @@ function ActiveSubscriptionContent({
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/subscription/cancel', {
-        method: 'POST',
+      const response = await fetch("/api/subscription/cancel", {
+        method: "POST",
       });
       const json = await response.json();
 
-      if (json.status === 'success') {
+      if (json.status === "success") {
         window.location.assign(json.data.redirectUrl);
       }
     } catch {
@@ -196,7 +197,7 @@ function ActiveSubscriptionContent({
       </div>
       {periodEndDate && (
         <p data-testid="period-end-date">
-          Próximo pago:{' '}
+          Próximo pago:{" "}
           <span className="font-medium text-text/80">
             {formatDate(periodEndDate)}
           </span>
@@ -210,7 +211,7 @@ function ActiveSubscriptionContent({
         disabled={isLoading}
         onClick={handleCancel}
       >
-        {!isLoading && 'Cancelar suscripción'}
+        {!isLoading && "Cancelar suscripción"}
         {isLoading && <SpinnerMini className="mx-auto" />}
       </ButtonDanger>
     </>
@@ -230,12 +231,12 @@ function CanceledSubscriptionContent({
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/subscription/resume', {
-        method: 'POST',
+      const response = await fetch("/api/subscription/resume", {
+        method: "POST",
       });
       const json = await response.json();
 
-      if (json.status === 'success') {
+      if (json.status === "success") {
         window.location.assign(json.data.redirectUrl);
       }
     } catch {
@@ -252,7 +253,7 @@ function CanceledSubscriptionContent({
       </div>
       {periodEndDate && (
         <p data-testid="period-end-date">
-          Activa hasta:{' '}
+          Activa hasta:{" "}
           <span className="font-medium text-text/80">
             {formatDate(periodEndDate)}
           </span>
@@ -262,7 +263,7 @@ function CanceledSubscriptionContent({
       <HorizontalLine />
 
       <ButtonPrimary disabled={isLoading} onClick={handleResume}>
-        {!isLoading && 'Reactivar suscripción'}
+        {!isLoading && "Reactivar suscripción"}
         {isLoading && <SpinnerMini className="mx-auto" />}
       </ButtonPrimary>
     </>
@@ -338,7 +339,7 @@ function SuscriptionInfoAndAction({
       </p>
       <HorizontalLine />
       <ButtonPrimary disabled={isLoading} onClick={handleSubscribe}>
-        {!isLoading && 'Suscribirme'}
+        {!isLoading && "Suscribirme"}
         {isLoading && <SpinnerMini className="mx-auto" />}
       </ButtonPrimary>
     </>
@@ -347,7 +348,7 @@ function SuscriptionInfoAndAction({
 
 function formatDate(date: Date): string {
   const day = date.getDate();
-  const month = date.toLocaleDateString('es-ES', { month: 'long' });
+  const month = date.toLocaleDateString("es-ES", { month: "long" });
   return `${day} ${month.charAt(0).toUpperCase()}${month.slice(1)}`;
 }
 

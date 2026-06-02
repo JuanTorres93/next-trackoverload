@@ -1,3 +1,5 @@
+import { WorkoutDTO } from "shared";
+
 import { logNoTest } from "@/utils/logNoTest";
 
 import { NotFoundError } from "../../../../domain/common/errors";
@@ -7,7 +9,7 @@ import { ExternalExercisesRefRepo } from "../../../../domain/repos/ExternalExerc
 import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
 import { WorkoutsRepo } from "../../../../domain/repos/WorkoutsRepo.port";
 import { IdGenerator } from "../../../../domain/services/IdGenerator.port";
-import { WorkoutDTO, toWorkoutDTO } from "../../../dtos/WorkoutDTO";
+import { toWorkoutDTO } from "../../../dtos/WorkoutDTO";
 import { TransactionContext } from "../../../ports/TransactionContext.port";
 import { createExercisesAndExternalExercisesNoSaveInRepo } from "../../exercise/common/createExercisesAndExternalExercisesNoSaveInRepo";
 

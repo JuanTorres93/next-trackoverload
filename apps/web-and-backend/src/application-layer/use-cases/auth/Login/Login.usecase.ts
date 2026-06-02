@@ -1,8 +1,10 @@
+import { UserDTO } from "shared";
+
 import { AuthError } from "../../../../domain/common/errors";
 import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
 import { PasswordEncryptorService } from "../../../../domain/services/PasswordEncryptorService.port";
 import { Email } from "../../../../domain/value-objects/Email/Email";
-import { UserDTO, toUserDTO } from "../../../dtos/UserDTO";
+import { toUserDTO } from "../../../dtos/UserDTO";
 
 export type LoginUsecaseRequest = {
   email: string;

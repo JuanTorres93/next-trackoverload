@@ -1,9 +1,11 @@
+import { WorkoutDTO } from "shared";
+
 import { logNoTest } from "@/utils/logNoTest";
 
 import { NotFoundError } from "../../../../domain/common/errors";
 import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
 import { WorkoutsRepo } from "../../../../domain/repos/WorkoutsRepo.port";
-import { WorkoutDTO, toWorkoutDTO } from "../../../dtos/WorkoutDTO";
+import { toWorkoutDTO } from "../../../dtos/WorkoutDTO";
 
 export type RemoveSetFromWorkoutUsecaseRequest = {
   userId: string;

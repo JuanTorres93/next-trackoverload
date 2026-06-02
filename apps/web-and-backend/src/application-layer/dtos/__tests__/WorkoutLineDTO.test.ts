@@ -1,7 +1,9 @@
+import { WorkoutLineDTO } from "shared";
+
 import * as workoutTestProps from "../../../../tests/createProps/workoutTestProps";
 import * as dto from "../../../../tests/dtoProperties";
 import { WorkoutLine } from "../../../domain/entities/workoutline/WorkoutLine";
-import { WorkoutLineDTO, toWorkoutLineDTO } from "../WorkoutLineDTO";
+import { toWorkoutLineDTO } from "../WorkoutLineDTO";
 
 describe("WorkoutLineDTO", () => {
   let workoutLine: WorkoutLine;

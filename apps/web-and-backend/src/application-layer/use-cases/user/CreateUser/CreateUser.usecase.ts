@@ -1,3 +1,5 @@
+import { UserDTO } from "shared";
+
 import { logNoTest } from "@/utils/logNoTest";
 
 import { AlreadyExistsError } from "../../../../domain/common/errors";
@@ -7,7 +9,7 @@ import { IdGenerator } from "../../../../domain/services/IdGenerator.port";
 import { PasswordEncryptorService } from "../../../../domain/services/PasswordEncryptorService.port";
 import { Email } from "../../../../domain/value-objects/Email/Email";
 import { Password } from "../../../../domain/value-objects/Password/Password";
-import { UserDTO, toUserDTO } from "../../../dtos/UserDTO";
+import { toUserDTO } from "../../../dtos/UserDTO";
 
 export type CreateUserUsecaseRequest = {
   name: string;

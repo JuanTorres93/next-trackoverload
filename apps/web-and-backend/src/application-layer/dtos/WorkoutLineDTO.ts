@@ -1,15 +1,6 @@
-import { WorkoutLine } from '../../domain/entities/workoutline/WorkoutLine';
+import { WorkoutLineDTO } from "shared";
 
-export type WorkoutLineDTO = {
-  id: string;
-  workoutId: string;
-  exerciseId: string;
-  setNumber: number;
-  reps: number;
-  weightInKg: number;
-  createdAt: string;
-  updatedAt: string;
-};
+import { WorkoutLine } from "../../domain/entities/workoutline/WorkoutLine";
 
 export function toWorkoutLineDTO(workoutLine: WorkoutLine): WorkoutLineDTO {
   return {

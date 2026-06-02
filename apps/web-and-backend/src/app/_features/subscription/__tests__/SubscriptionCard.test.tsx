@@ -1,9 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { UserDTO } from "shared";
 import { vi } from "vitest";
 
 import { validUserProps } from "../../../../../tests/createProps/userTestProps";
-import { UserDTO, toUserDTO } from "../../../../application-layer/dtos/UserDTO";
+import { toUserDTO } from "../../../../application-layer/dtos/UserDTO";
 import { User } from "../../../../domain/entities/user/User";
 import SubscriptionCard from "../SubscriptionCard";
 

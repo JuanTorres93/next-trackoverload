@@ -1,8 +1,10 @@
+import { UserDTO } from "shared";
+
 import { logNoTest } from "@/utils/logNoTest";
 
 import { PermissionError } from "../../../../domain/common/errors";
 import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
-import { UserDTO, toUserDTO } from "../../../dtos/UserDTO";
+import { toUserDTO } from "../../../dtos/UserDTO";
 
 export type GetUserByIdUsecaseRequest = {
   actorUserId: string;

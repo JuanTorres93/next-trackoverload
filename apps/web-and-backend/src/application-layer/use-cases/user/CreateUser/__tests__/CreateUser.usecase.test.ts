@@ -1,3 +1,5 @@
+import { UserDTO } from "shared";
+
 import * as userTestProps from "../../../../../../tests/createProps/userTestProps";
 import * as dto from "../../../../../../tests/dtoProperties";
 import { AlreadyExistsError } from "../../../../../domain/common/errors";
@@ -5,7 +7,7 @@ import { User } from "../../../../../domain/entities/user/User";
 import { MemoryUsersRepo } from "../../../../../infra/repos/memory/MemoryUsersRepo";
 import { Uuidv4IdGenerator } from "../../../../../infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator";
 import { DummyPasswordEncryptorService } from "../../../../../infra/services/PasswordEncryptorService/DummyPasswordEncryptorService/DummyPasswordEncryptorService";
-import { UserDTO, toUserDTO } from "../../../../dtos/UserDTO";
+import { toUserDTO } from "../../../../dtos/UserDTO";
 import { CreateUserUsecase } from "../CreateUser.usecase";
 
 describe("CreateUserUsecase", () => {
