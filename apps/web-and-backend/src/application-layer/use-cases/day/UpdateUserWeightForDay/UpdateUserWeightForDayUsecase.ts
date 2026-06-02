@@ -1,3 +1,5 @@
+import { DayDTO } from "shared";
+
 import { logNoTest } from "@/utils/logNoTest";
 
 import { NotFoundError } from "../../../../domain/common/errors";
@@ -5,7 +7,7 @@ import { Day } from "../../../../domain/entities/day/Day";
 import { DaysRepo } from "../../../../domain/repos/DaysRepo.port";
 import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
 import { dayIdToDayMonthYear } from "../../../../domain/value-objects/DayId/DayId";
-import { DayDTO, toDayDTO } from "../../../dtos/DayDTO";
+import { toDayDTO } from "../../../dtos/DayDTO";
 import { createDayNoSaveInRepo } from "../common/createDayNoSaveInRepo";
 
 export type UpdateUserWeightForDayUsecaseRequest = {

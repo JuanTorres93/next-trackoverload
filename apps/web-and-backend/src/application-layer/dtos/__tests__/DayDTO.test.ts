@@ -1,3 +1,5 @@
+import { DayDTO } from "shared";
+
 import * as dayTestProps from "../../../../tests/createProps/dayTestProps";
 import * as fakeMealTestProps from "../../../../tests/createProps/fakeMealTestProps";
 import * as mealTestProps from "../../../../tests/createProps/mealTestProps";
@@ -5,7 +7,7 @@ import * as dto from "../../../../tests/dtoProperties";
 import { Day } from "../../../domain/entities/day/Day";
 import { FakeMeal } from "../../../domain/entities/fakemeal/FakeMeal";
 import { Meal } from "../../../domain/entities/meal/Meal";
-import { DayDTO, fromDayDTO, toDayDTO } from "../DayDTO";
+import { fromDayDTO, toDayDTO } from "../DayDTO";
 
 describe("DayDTO", () => {
   let day: Day;

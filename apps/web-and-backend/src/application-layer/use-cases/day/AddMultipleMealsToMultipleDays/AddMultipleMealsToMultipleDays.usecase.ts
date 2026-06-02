@@ -1,3 +1,5 @@
+import { DayDTO } from "shared";
+
 import { logNoTest } from "@/utils/logNoTest";
 
 import {
@@ -12,7 +14,7 @@ import { RecipesRepo } from "../../../../domain/repos/RecipesRepo.port";
 import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
 import { IdGenerator } from "../../../../domain/services/IdGenerator.port";
 import { dayIdToDayMonthYear } from "../../../../domain/value-objects/DayId/DayId";
-import { DayDTO, toDayDTO } from "../../../dtos/DayDTO";
+import { toDayDTO } from "../../../dtos/DayDTO";
 import { TransactionContext } from "../../../ports/TransactionContext.port";
 import { createDayNoSaveInRepo } from "../common/createDayNoSaveInRepo";
 import { createMealsFromRecipes } from "../common/createMealsFromRecipes";

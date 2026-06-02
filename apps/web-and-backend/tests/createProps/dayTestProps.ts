@@ -1,14 +1,12 @@
-import {
-  AssembledDayDTO,
-  toAssembledDayDTO,
-} from "../../src/application-layer/dtos/AssembledDayDTO";
+import { AssembledDayDTO } from "shared";
+
+import { toAssembledDayDTO } from "../../src/application-layer/dtos/AssembledDayDTO";
 import { toDayDTO } from "../../src/application-layer/dtos/DayDTO";
 import { toFakeMealDTO } from "../../src/application-layer/dtos/FakeMealDTO";
 import { toMealDTO } from "../../src/application-layer/dtos/MealDTO";
 import { Day, DayCreateProps } from "../../src/domain/entities/day/Day";
 import { FakeMeal } from "../../src/domain/entities/fakemeal/FakeMeal";
 import { Meal } from "../../src/domain/entities/meal/Meal";
-
 import { createTestFakeMeal } from "./fakeMealTestProps";
 import { createTestMeal } from "./mealTestProps";
 import { userId } from "./userTestProps";

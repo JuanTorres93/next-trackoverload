@@ -2,9 +2,9 @@
 import { refresh, revalidatePath } from "next/cache";
 
 import { AssembledDayDTO } from "shared";
+import { DayDTO } from "shared";
 
 import { JSENDResponse } from "@/app/_types/JSEND";
-import { DayDTO } from "@/application-layer/dtos/DayDTO";
 
 import { DayEntry } from "../../../application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase";
 import {

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
-import { DayDTO } from "../../../../../application-layer/dtos/DayDTO";
+import { DayDTO } from "shared";
+
 import { AppGetLastDayWithCaloriesGoalForUserUsecase } from "../../../../../interface-adapters/app/use-cases/day";
 import { JSENDResponse } from "../../../../_types/JSEND";
 import { ensureLoggedInUser } from "../../../_common/ensureLoggedInUser";

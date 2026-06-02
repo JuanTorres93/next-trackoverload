@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { JSENDResponse } from "../../_types/JSEND";
-import { ensureLoggedInUser } from "../_common/ensureLoggedInUser";
-import { DayDTO } from "../../../application-layer/dtos/DayDTO";
+import { DayDTO } from "shared";
+
 import { CreateDayUsecaseRequest } from "../../../application-layer/use-cases/day/CreateDay/CreateDay.usecase";
 import { AppCreateDayUsecase } from "../../../interface-adapters/app/use-cases/day";
-
+import { JSENDResponse } from "../../_types/JSEND";
+import { ensureLoggedInUser } from "../_common/ensureLoggedInUser";
 import { handleKnownErrors } from "../_common/handleKnownErrors";
 
 export type CreateDayBody = Omit<CreateDayUsecaseRequest, "actorUserId">;

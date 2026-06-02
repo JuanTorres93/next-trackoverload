@@ -1,5 +1,5 @@
-import { AssembledDayDTO } from "../../src/application-layer/dtos/AssembledDayDTO";
-import { DayDTO } from "../../src/application-layer/dtos/DayDTO";
+import { AssembledDayDTO, DayDTO } from "shared";
+
 import { AddMultipleMealsToDayUsecaseRequest } from "../../src/application-layer/use-cases/day/AddMultipleMealsToDay/AddMultipleMealsToDay.usecase";
 import { CreateDayUsecaseRequest } from "../../src/application-layer/use-cases/day/CreateDay/CreateDay.usecase";
 import { FakeMealCreateProps } from "../../src/domain/entities/fakemeal/FakeMeal";

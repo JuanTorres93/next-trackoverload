@@ -1,7 +1,9 @@
-import { DayDTO, toDayDTO } from '../../../dtos/DayDTO';
-import { DaysRepo } from '../../../../domain/repos/DaysRepo.port';
-import { UsersRepo } from '../../../../domain/repos/UsersRepo.port';
-import { createDayNoSaveInRepo } from '../common/createDayNoSaveInRepo';
+import { DayDTO } from "shared";
+
+import { DaysRepo } from "../../../../domain/repos/DaysRepo.port";
+import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
+import { toDayDTO } from "../../../dtos/DayDTO";
+import { createDayNoSaveInRepo } from "../common/createDayNoSaveInRepo";
 
 export type CreateDayUsecaseRequest = {
   day: number;

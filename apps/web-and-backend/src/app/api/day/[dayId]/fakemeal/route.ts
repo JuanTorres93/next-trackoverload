@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { JSENDResponse } from "../../../../_types/JSEND";
-import { ensureLoggedInUser } from "../../../_common/ensureLoggedInUser";
-import { DayDTO } from "../../../../../application-layer/dtos/DayDTO";
+import { DayDTO } from "shared";
+
 import { AddFakeMealToDayUsecaseRequest } from "../../../../../application-layer/use-cases/day/AddFakeMealToDay/AddFakeMealToDay.usecase";
 import { AppAddFakeMealToDayUsecase } from "../../../../../interface-adapters/app/use-cases/day";
-
+import { JSENDResponse } from "../../../../_types/JSEND";
+import { ensureLoggedInUser } from "../../../_common/ensureLoggedInUser";
 import { handleKnownErrors } from "../../../_common/handleKnownErrors";
 
 type AddFakeMealBody = Omit<AddFakeMealToDayUsecaseRequest, "dayId" | "userId">;

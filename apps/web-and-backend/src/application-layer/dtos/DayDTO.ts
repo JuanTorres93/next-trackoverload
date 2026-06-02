@@ -1,19 +1,7 @@
+import { DayDTO } from "shared";
+
 import { Day } from "../../domain/entities/day/Day";
 import { dayIdToDayMonthYear } from "../../domain/value-objects/DayId/DayId";
-
-export type DayDTO = {
-  id: string; // Date as YYYYMMDD
-  userId: string;
-  mealIds: string[];
-  fakeMealIds: string[];
-  createdAt: string;
-  userWeightInKg?: number;
-  updatedCaloriesGoal?: number;
-  day: number;
-  month: number;
-  year: number;
-  updatedAt: string;
-};
 
 export function toDayDTO(day: Day): DayDTO {
   return {

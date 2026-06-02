@@ -1,10 +1,12 @@
+import { DayDTO } from "shared";
+
 import { logNoTest } from "@/utils/logNoTest";
 
 import { NotFoundError } from "../../../../domain/common/errors";
 import { DaysRepo } from "../../../../domain/repos/DaysRepo.port";
 import { FakeMealsRepo } from "../../../../domain/repos/FakeMealsRepo.port";
 import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
-import { DayDTO, toDayDTO } from "../../../dtos/DayDTO";
+import { toDayDTO } from "../../../dtos/DayDTO";
 import { TransactionContext } from "../../../ports/TransactionContext.port";
 
 export type RemoveFakeMealFromDayUsecaseRequest = {

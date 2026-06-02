@@ -1,9 +1,11 @@
+import { DayDTO } from "shared";
+
 import { logNoTest } from "@/utils/logNoTest";
 
 import { NotFoundError } from "../../../../domain/common/errors";
 import { DaysRepo } from "../../../../domain/repos/DaysRepo.port";
 import { UsersRepo } from "../../../../domain/repos/UsersRepo.port";
-import { DayDTO, toDayDTO } from "../../../dtos/DayDTO";
+import { toDayDTO } from "../../../dtos/DayDTO";
 
 export type GetLastDayWithCaloriesGoalForUserRequest = {
   userId: string;
