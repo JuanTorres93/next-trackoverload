@@ -37,7 +37,7 @@ export class ApplicationBackendService implements BackendService {
     name: string,
     plainPassword: string,
     email: string,
-  ): Promise<JSENDResponse<UserDTO>> {
+  ): Promise<JSENDResponse<string>> {
     const response = await fetch(`${this.baseUrl}/auth/register`, {
       method: "POST",
       headers: {
@@ -53,8 +53,7 @@ export class ApplicationBackendService implements BackendService {
     }
 
     const data = await response.json();
-    console.log("RESPONSE DATA:", data);
 
-    return data as JSENDResponse<UserDTO>;
+    return data as JSENDResponse<string>;
   }
 }

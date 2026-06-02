@@ -6,15 +6,17 @@ describe("ApplicationBackendService - Authentication", () => {
 
   beforeEach(() => {
     backendService = new TestApplicationBackendService();
-
-    // TODO clean data before each test. Create a test-only executable endpoint in the backend
   });
 
   it("Creates a new user", async () => {
+    const noDuplicate = crypto.randomUUID();
+
+    const email = `${noDuplicate}-${userTestProps.email}`;
+
     const response = await backendService.createUser(
       userTestProps.name,
       userTestProps.plainPassword,
-      userTestProps.email,
+      email,
     );
 
     expect(response.status).toBe("success");
