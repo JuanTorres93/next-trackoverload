@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
+import { ExerciseDTO } from "shared";
 
 import { createAndPersistTestExercises } from "../../../../../tests/mocks/exercises";
-import { ExerciseDTO } from "../../../../application-layer/dtos/ExerciseDTO";
 import Exercise from "../Exercise";
 
 const mockExercises = await createAndPersistTestExercises();

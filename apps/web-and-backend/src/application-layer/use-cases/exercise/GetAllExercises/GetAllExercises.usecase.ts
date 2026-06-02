@@ -1,8 +1,7 @@
-import { ExercisesRepo } from '../../../../domain/repos/ExercisesRepo.port';
-import {
-  ExerciseDTO,
-  toExerciseDTO,
-} from '../../../dtos/ExerciseDTO';
+import { ExerciseDTO } from "shared";
+
+import { ExercisesRepo } from "../../../../domain/repos/ExercisesRepo.port";
+import { toExerciseDTO } from "../../../dtos/ExerciseDTO";
 
 export class GetAllExercisesUsecase {
   constructor(private exercisesRepo: ExercisesRepo) {}

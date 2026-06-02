@@ -1,10 +1,9 @@
-import { ExercisesRepo } from '../../../../domain/repos/ExercisesRepo.port';
-import { Exercise } from '../../../../domain/entities/exercise/Exercise';
-import {
-  ExerciseDTO,
-  toExerciseDTO,
-} from '../../../dtos/ExerciseDTO';
-import { IdGenerator } from '../../../../domain/services/IdGenerator.port';
+import { ExerciseDTO } from "shared";
+
+import { Exercise } from "../../../../domain/entities/exercise/Exercise";
+import { ExercisesRepo } from "../../../../domain/repos/ExercisesRepo.port";
+import { IdGenerator } from "../../../../domain/services/IdGenerator.port";
+import { toExerciseDTO } from "../../../dtos/ExerciseDTO";
 
 export type CreateExerciseUsecaseRequest = {
   name: string;

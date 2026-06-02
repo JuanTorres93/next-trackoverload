@@ -1,9 +1,11 @@
+import { ExerciseDTO } from "shared";
+
 import { logNoTest } from "@/utils/logNoTest";
 
 import { NotFoundError } from "../../../../domain/common/errors";
 import { Exercise } from "../../../../domain/entities/exercise/Exercise";
 import { ExercisesRepo } from "../../../../domain/repos/ExercisesRepo.port";
-import { ExerciseDTO, toExerciseDTO } from "../../../dtos/ExerciseDTO";
+import { toExerciseDTO } from "../../../dtos/ExerciseDTO";
 
 export type UpdateExerciseUsecaseRequest = {
   id: string;

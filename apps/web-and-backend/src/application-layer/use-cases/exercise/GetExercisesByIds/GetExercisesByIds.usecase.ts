@@ -1,6 +1,8 @@
+import { ExerciseDTO } from "shared";
+
 import { Exercise } from "../../../../domain/entities/exercise/Exercise";
 import { ExercisesRepo } from "../../../../domain/repos/ExercisesRepo.port";
-import { ExerciseDTO, toExerciseDTO } from "../../../dtos/ExerciseDTO";
+import { toExerciseDTO } from "../../../dtos/ExerciseDTO";
 
 export type GetExercisesByIdsUsecaseRequest = {
   ids: string[];

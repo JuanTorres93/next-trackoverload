@@ -1,12 +1,6 @@
-import { Exercise } from "../../domain/entities/exercise/Exercise";
+import { ExerciseDTO } from "shared";
 
-export type ExerciseDTO = {
-  id: string;
-  name: string;
-  userId?: string;
-  createdAt: string;
-  updatedAt: string;
-};
+import { Exercise } from "../../domain/entities/exercise/Exercise";
 
 export function toExerciseDTO(exercise: Exercise): ExerciseDTO {
   return {

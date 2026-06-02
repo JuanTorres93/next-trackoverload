@@ -1,5 +1,7 @@
+import { ExerciseDTO } from "shared";
+
 import { ExercisesRepo } from "../../../../domain/repos/ExercisesRepo.port";
-import { ExerciseDTO, toExerciseDTO } from "../../../dtos/ExerciseDTO";
+import { toExerciseDTO } from "../../../dtos/ExerciseDTO";
 
 export type GetExerciseByIdUsecaseRequest = {
   id: string;

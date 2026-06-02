@@ -1,7 +1,6 @@
 import { HiBolt } from "react-icons/hi2";
+import { ExerciseDTO } from "shared";
 import { twMerge } from "tailwind-merge";
-
-import { ExerciseDTO } from "../../../application-layer/dtos/ExerciseDTO";
 
 function Exercise({
   exercise,
