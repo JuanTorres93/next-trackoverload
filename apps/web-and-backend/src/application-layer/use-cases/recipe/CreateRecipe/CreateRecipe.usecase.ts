@@ -1,4 +1,4 @@
-import { RecipeDTO } from "shared";
+import { CreateIngredientLineData, RecipeDTO } from "shared";
 
 import { logNoTest } from "@/utils/logNoTest";
 
@@ -17,10 +17,7 @@ import { IdGenerator } from "../../../../domain/services/IdGenerator.port";
 import { ImageProcessor } from "../../../../domain/services/ImageProcessor/ServerImageProcessor.port";
 import { toRecipeDTO } from "../../../dtos/RecipeDTO";
 import { TransactionContext } from "../../../ports/TransactionContext.port";
-import {
-  CreateIngredientLineData,
-  createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo,
-} from "../common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo";
+import { createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo } from "../common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo";
 import { processRecipeImageBufferForUploading } from "../common/processImageBufferForUploading";
 
 export type CreateRecipeUsecaseRequest = {

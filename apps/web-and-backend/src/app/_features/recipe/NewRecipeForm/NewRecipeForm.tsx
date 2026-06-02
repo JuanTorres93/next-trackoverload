@@ -1,6 +1,7 @@
 "use client";
 
-import { CreateIngredientLineData } from "../../../../application-layer/use-cases/recipe/common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo";
+import { CreateIngredientLineData } from "shared";
+
 import { AppClientImageProcessor } from "../../../../interface-adapters/app/services/AppClientImageProcessor";
 import { useFormSetup } from "../../../_hooks/useFormSetup";
 import { showErrorToast } from "../../../_ui/showErrorToast";

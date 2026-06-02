@@ -1,3 +1,5 @@
+import { CreateIngredientLineData } from "shared";
+
 import * as externalIngredientRefTestProps from "../../../../../../tests/createProps/externalIngredientRefTestProps";
 import * as ingredientTestProps from "../../../../../../tests/createProps/ingredientTestProps";
 import * as userTestProps from "../../../../../../tests/createProps/userTestProps";
@@ -19,7 +21,6 @@ import { Uuidv4IdGenerator } from "../../../../../infra/services/IdGenerator/Uui
 import { SharpServerImageProcessor } from "../../../../../infra/services/ImageProcessor/ServerImageProcessor/SharpServerImageProcessor/SharpServerImageProcessor";
 import { MemoryTransactionContext } from "../../../../../infra/transaction-context/MemoryTransactionContext/MemoryTransactionContext";
 import { toRecipeDTO } from "../../../../dtos/RecipeDTO";
-import { CreateIngredientLineData } from "../../common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo";
 import { CreateRecipeUsecase } from "../CreateRecipe.usecase";
 
 describe("CreateRecipeUsecase", () => {

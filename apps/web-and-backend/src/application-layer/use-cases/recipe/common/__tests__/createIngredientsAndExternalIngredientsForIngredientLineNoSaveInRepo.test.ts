@@ -1,3 +1,4 @@
+import { CreateIngredientLineData } from "shared";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import * as externalIngredientRefTestProps from "../../../../../../tests/createProps/externalIngredientRefTestProps";
@@ -5,10 +6,7 @@ import * as ingredientTestProps from "../../../../../../tests/createProps/ingred
 import { MemoryExternalIngredientsRefRepo } from "../../../../../infra/repos/memory/MemoryExternalIngredientsRefRepo";
 import { MemoryIngredientsRepo } from "../../../../../infra/repos/memory/MemoryIngredientsRepo";
 import { Uuidv4IdGenerator } from "../../../../../infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator";
-import {
-  CreateIngredientLineData,
-  createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo,
-} from "../createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo";
+import { createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo } from "../createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo";
 
 describe("createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo", () => {
   let ingredientsRepo: MemoryIngredientsRepo;

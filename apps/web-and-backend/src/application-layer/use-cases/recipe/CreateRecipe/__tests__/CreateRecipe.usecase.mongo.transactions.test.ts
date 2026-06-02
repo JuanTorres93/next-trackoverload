@@ -1,3 +1,4 @@
+import { CreateIngredientLineData } from "shared";
 import { beforeEach, describe } from "vitest";
 
 import * as userTestProps from "../../../../../../tests/createProps/userTestProps";
@@ -16,7 +17,6 @@ import {
 import { Uuidv4IdGenerator } from "../../../../../infra/services/IdGenerator/Uuidv4IdGenerator/Uuidv4IdGenerator";
 import { SharpServerImageProcessor } from "../../../../../infra/services/ImageProcessor/ServerImageProcessor/SharpServerImageProcessor/SharpServerImageProcessor";
 import { MongoTransactionContext } from "../../../../../infra/transaction-context/MongoTransactionContext/MongoTransactionContext";
-import { CreateIngredientLineData } from "../../common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo";
 import { CreateRecipeUsecase } from "../CreateRecipe.usecase";
 
 describe("CreateRecipeUsecase", () => {

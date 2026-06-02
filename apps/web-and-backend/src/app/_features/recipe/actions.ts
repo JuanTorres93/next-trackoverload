@@ -4,8 +4,8 @@ import { redirect } from "next/navigation";
 
 import { RecipeDTO } from "shared";
 import { JSENDResponse } from "shared";
+import { CreateIngredientLineData } from "shared";
 
-import { CreateIngredientLineData } from "../../../application-layer/use-cases/recipe/common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo";
 import {
   AppAddIngredientToRecipeUsecase,
   AppCreateRecipeUsecase,

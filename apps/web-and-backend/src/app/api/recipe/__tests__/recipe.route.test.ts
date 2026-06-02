@@ -1,11 +1,12 @@
 import type { NextRequest } from "next/server";
 
+import { CreateIngredientLineData } from "shared";
+
 import * as userTestProps from "../../../../../tests/createProps/userTestProps";
 import { TestExternalIngredientsRefRepo } from "../../../../../tests/repos/TestExternalIngredientsRefRepo";
 import { TestIngredientsRepo } from "../../../../../tests/repos/TestIngredientsRepo";
 import { TestRecipesRepo } from "../../../../../tests/repos/TestRecipesRepo";
 import { TestUsersRepo } from "../../../../../tests/repos/TestUsersRepo";
-import { CreateIngredientLineData } from "../../../../application-layer/use-cases/recipe/common/createIngredientsAndExternalIngredientsForIngredientLineNoSaveInRepo";
 import { User } from "../../../../domain/entities/user/User";
 import { loginInAPITests } from "../../__tests__/loginInAPITests";
 import { logoutInAPITests } from "../../__tests__/logoutInAPITests";
