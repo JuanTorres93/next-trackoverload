@@ -12,6 +12,7 @@
     "start:test": "APP_ENV=test next dev -p 3033"
   },
   "dependencies": {
+    "shared": "*",
     "@tailwindcss/typography": "^0.5.19",
     "@vercel/analytics": "^1.6.1",
     "@vercel/speed-insights": "^1.3.1",

@@ -3,7 +3,8 @@
   "private": true,
   "workspaces": [
     "apps/web-and-backend",
-    "apps/mobile"
+    "apps/mobile",
+    "shared"
   ],
   "scripts": {
     "install-app": "npm install --workspaces=false && npm install --w=apps/web-and-backend && npm install --w=apps/mobile",

@@ -65,6 +65,7 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  transpilePackages: ["shared"],
   async headers() {
     return [
       {
