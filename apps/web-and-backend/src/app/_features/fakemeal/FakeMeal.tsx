@@ -1,8 +1,9 @@
 import { useState } from "react";
 
+import { FakeMealDTO } from "shared";
+
 import { showErrorToast } from "@/app/_ui/showErrorToast";
 
-import { FakeMealDTO } from "../../../application-layer/dtos/FakeMealDTO";
 import ButtonX from "../../_ui/buttons/ButtonX";
 import { formatToInteger } from "../../_utils/format/formatToInteger";
 import LoadingOverlay from "../common/LoadingOverlay";

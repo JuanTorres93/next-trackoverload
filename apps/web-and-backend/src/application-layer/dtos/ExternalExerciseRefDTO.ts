@@ -1,11 +1,6 @@
-import { ExternalExerciseRef } from "../../domain/entities/externalexerciseref/ExternalExerciseRef";
+import { ExternalExerciseRefDTO } from "shared";
 
-export type ExternalExerciseRefDTO = {
-  externalId: string;
-  source: string;
-  exerciseId: string;
-  createdAt: string; // ISO 8601
-};
+import { ExternalExerciseRef } from "../../domain/entities/externalexerciseref/ExternalExerciseRef";
 
 export function toExternalExerciseRefDTO(
   externalExerciseRef: ExternalExerciseRef,

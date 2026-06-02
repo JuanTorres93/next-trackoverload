@@ -1,4 +1,5 @@
-import { FakeMealDTO } from "../../../application-layer/dtos/FakeMealDTO";
+import { FakeMealDTO } from "shared";
+
 import { MealDTO } from "../../../application-layer/dtos/MealDTO";
 
 function EatenMealsNutritionTracker({

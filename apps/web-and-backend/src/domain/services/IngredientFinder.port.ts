@@ -1,4 +1,5 @@
-import { ExternalIngredientRefDTO } from "../../application-layer/dtos/ExternalIngredientRefDTO";
+import { ExternalIngredientRefDTO } from "shared";
+
 import { IngredientDTO } from "../../application-layer/dtos/IngredientDTO";
 
 export type IngredientFinderResult = {

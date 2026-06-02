@@ -1,6 +1,5 @@
 import { ExerciseDTO } from "shared";
-
-import { ExternalExerciseRefDTO } from "../../application-layer/dtos/ExternalExerciseRefDTO";
+import { ExternalExerciseRefDTO } from "shared";
 
 export const EXERCISES_PER_PAGE = 20;
 

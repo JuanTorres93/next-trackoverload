@@ -1,7 +1,9 @@
+import { FakeMealDTO } from "shared";
+
 import * as fakeMealTestProps from "../../../../tests/createProps/fakeMealTestProps";
 import * as dto from "../../../../tests/dtoProperties";
 import { FakeMeal } from "../../../domain/entities/fakemeal/FakeMeal";
-import { FakeMealDTO, fromFakeMealDTO, toFakeMealDTO } from "../FakeMealDTO";
+import { fromFakeMealDTO, toFakeMealDTO } from "../FakeMealDTO";
 
 describe("FakeMealDTO", () => {
   let fakeMeal: FakeMeal;

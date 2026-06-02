@@ -1,8 +1,9 @@
+import { ExternalExerciseRefDTO } from "shared";
+
 import * as externalExerciseRefTestProps from "../../../../tests/createProps/externalExerciseRefTestProps";
 import * as dto from "../../../../tests/dtoProperties";
 import { ExternalExerciseRef } from "../../../domain/entities/externalexerciseref/ExternalExerciseRef";
 import {
-  ExternalExerciseRefDTO,
   fromExternalExerciseRefDTO,
   toExternalExerciseRefDTO,
 } from "../ExternalExerciseRefDTO";

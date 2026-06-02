@@ -1,8 +1,9 @@
+import { ExternalIngredientRefDTO } from "shared";
+
 import * as externalIngredientRefTestProps from "../../../../tests/createProps/externalIngredientRefTestProps";
 import * as dto from "../../../../tests/dtoProperties";
 import { ExternalIngredientRef } from "../../../domain/entities/externalingredientref/ExternalIngredientRef";
 import {
-  ExternalIngredientRefDTO,
   fromExternalIngredientRefDTO,
   toExternalIngredientRefDTO,
 } from "../ExternalIngredientRefDTO";

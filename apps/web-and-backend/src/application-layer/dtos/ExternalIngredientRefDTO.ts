@@ -1,14 +1,9 @@
-import { ExternalIngredientRef } from '../../domain/entities/externalingredientref/ExternalIngredientRef';
+import { ExternalIngredientRefDTO } from "shared";
 
-export type ExternalIngredientRefDTO = {
-  externalId: string;
-  source: string;
-  ingredientId: string;
-  createdAt: string; // ISO 8601
-};
+import { ExternalIngredientRef } from "../../domain/entities/externalingredientref/ExternalIngredientRef";
 
 export function toExternalIngredientRefDTO(
-  externalIngredientRef: ExternalIngredientRef
+  externalIngredientRef: ExternalIngredientRef,
 ): ExternalIngredientRefDTO {
   return {
     externalId: externalIngredientRef.externalId,
@@ -19,7 +14,7 @@ export function toExternalIngredientRefDTO(
 }
 
 export function fromExternalIngredientRefDTO(
-  dto: ExternalIngredientRefDTO
+  dto: ExternalIngredientRefDTO,
 ): ExternalIngredientRef {
   return ExternalIngredientRef.create({
     externalId: dto.externalId,

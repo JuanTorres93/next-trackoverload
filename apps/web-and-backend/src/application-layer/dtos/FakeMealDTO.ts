@@ -1,14 +1,6 @@
-import { FakeMeal } from '../../domain/entities/fakemeal/FakeMeal';
+import { FakeMealDTO } from "shared";
 
-export type FakeMealDTO = {
-  id: string;
-  userId: string;
-  name: string;
-  calories: number;
-  protein: number;
-  createdAt: string;
-  updatedAt: string;
-};
+import { FakeMeal } from "../../domain/entities/fakemeal/FakeMeal";
 
 export function toFakeMealDTO(fakeMeal: FakeMeal): FakeMealDTO {
   return {

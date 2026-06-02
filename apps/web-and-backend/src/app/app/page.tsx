@@ -5,9 +5,8 @@ import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { HiCalendar } from "react-icons/hi";
-import { AssembledDayDTO } from "shared";
+import { AssembledDayDTO, FakeMealDTO } from "shared";
 
-import { FakeMealDTO } from "../../application-layer/dtos/FakeMealDTO";
 import { MealDTO } from "../../application-layer/dtos/MealDTO";
 import { DayEntry } from "../../application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase";
 import { dateToDayId } from "../../domain/value-objects/DayId/DayId";

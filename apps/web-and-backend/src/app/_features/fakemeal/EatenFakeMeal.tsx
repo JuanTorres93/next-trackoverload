@@ -2,10 +2,10 @@
 import { useState } from "react";
 
 import { HiBolt } from "react-icons/hi2";
+import { FakeMealDTO } from "shared";
 
 import { showErrorToast } from "@/app/_ui/showErrorToast";
 
-import { FakeMealDTO } from "../../../application-layer/dtos/FakeMealDTO";
 import FoodReminderContainer from "../common/FoodReminderContainer";
 import FoodReminderMacros from "../common/FoodReminderMacros";
 import { removeFakeMealFromDay } from "./actions";
