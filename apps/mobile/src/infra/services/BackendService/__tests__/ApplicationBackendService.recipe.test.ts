@@ -140,5 +140,28 @@ describe("ApplicationBackendService", () => {
 
       expect(deleteIngredientResponse.status).toBe("success");
     });
+
+    it("should get a recipe for a user", async () => {
+      const recipeName = "Recipe to Get";
+
+      const createdRecipeResponse = await backendService.createRecipe(
+        baseRequest.userId,
+        recipeName,
+        baseRequest.ingredientLinesInfo,
+        baseRequest.imageBuffer,
+      );
+
+      const createdRecipe = createdRecipeResponse.data as RecipeDTO;
+
+      const getRecipeResponse = await backendService.getRecipeForUser(
+        createdRecipe.id,
+        baseRequest.userId,
+      );
+
+      expect(getRecipeResponse.status).toBe("success");
+      const retrievedRecipe = getRecipeResponse.data as RecipeDTO;
+
+      expect(retrievedRecipe.name).toBe(recipeName);
+    });
   });
 });

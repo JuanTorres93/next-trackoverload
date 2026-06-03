@@ -43,4 +43,8 @@ export interface BackendService {
     ingredientId: string,
     userId: string,
   ): Promise<JSENDResponse<RecipeDTO>>;
+  getRecipeForUser(
+    recipeId: string,
+    userId: string,
+  ): Promise<JSENDResponse<RecipeDTO>>;
 }
