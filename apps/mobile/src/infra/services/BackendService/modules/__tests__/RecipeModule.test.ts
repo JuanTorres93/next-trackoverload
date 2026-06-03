@@ -163,5 +163,23 @@ describe("ApplicationBackendService - Recipes", () => {
 
       expect(retrievedRecipe.name).toBe(recipeName);
     });
+
+    it("should delete recipe", async () => {
+      const createdRecipeResponse = await backendService.createRecipe(
+        baseRequest.userId,
+        baseRequest.recipeName,
+        baseRequest.ingredientLinesInfo,
+        baseRequest.imageBuffer,
+      );
+
+      const createdRecipe = createdRecipeResponse.data as RecipeDTO;
+
+      const deleteResponse = await backendService.deleteRecipe(
+        createdRecipe.id,
+        baseRequest.userId,
+      );
+
+      expect(deleteResponse.status).toBe("success");
+    });
   });
 });

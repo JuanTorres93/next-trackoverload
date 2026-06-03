@@ -10,13 +10,15 @@ import { BackendService } from "@/application-layer/services/BackendService.port
 
 import { AuthModule } from "./modules/AuthModule";
 import { ExerciseModule } from "./modules/ExerciseModule";
+import { MealModule } from "./modules/MealModule";
 import { RecipeModule } from "./modules/RecipeModule";
 
 export class ApplicationBackendService implements BackendService {
   private baseUrl: string;
 
-  private recipeModule: RecipeModule;
   private authModule: AuthModule;
+  private recipeModule: RecipeModule;
+  private mealModule: MealModule;
   private exerciseModule: ExerciseModule;
 
   constructor(baseUrl: string) {
@@ -25,8 +27,10 @@ export class ApplicationBackendService implements BackendService {
     }
 
     this.baseUrl = baseUrl;
-    this.recipeModule = new RecipeModule(this.baseUrl);
+
     this.authModule = new AuthModule(this.baseUrl);
+    this.recipeModule = new RecipeModule(this.baseUrl);
+    this.mealModule = new MealModule(this.baseUrl);
     this.exerciseModule = new ExerciseModule(this.baseUrl);
   }
 
@@ -90,6 +94,12 @@ export class ApplicationBackendService implements BackendService {
     return this.recipeModule.getRecipeForUser(recipeId, userId);
   }
 
+  async deleteRecipe(
+    recipeId: string,
+    userId: string,
+  ): Promise<JSENDResponse<null>> {
+    return this.recipeModule.deleteRecipe(recipeId, userId);
+  }
   async deleteIngredientFromRecipe(
     recipeId: string,
     ingredientId: string,

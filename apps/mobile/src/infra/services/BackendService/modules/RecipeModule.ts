@@ -76,6 +76,25 @@ export class RecipeModule {
   }
 
   ///////////// DELETE
+  async deleteRecipe(
+    recipeId: string,
+    userId: string,
+  ): Promise<JSENDResponse<null>> {
+    const response = await fetch(`${this.baseUrl}/recipe/${recipeId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId,
+      }),
+    });
+
+    const jsend = await response.json();
+
+    return jsend;
+  }
+
   async deleteIngredientFromRecipe(
     recipeId: string,
     ingredientId: string,
