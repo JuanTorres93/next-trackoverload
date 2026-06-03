@@ -1,7 +1,12 @@
-import { ExerciseFinderResult, JSENDResponse, UserDTO } from "shared";
+import {
+  CreateIngredientLineData,
+  ExerciseFinderResult,
+  JSENDResponse,
+  RecipeDTO,
+  UserDTO,
+} from "shared";
 
 import { BackendService } from "@/application-layer/services/BackendService.port";
-import { FetchInfraError } from "@/infra/common/infraErrors";
 
 export class ApplicationBackendService implements BackendService {
   private baseUrl: string;
@@ -19,15 +24,9 @@ export class ApplicationBackendService implements BackendService {
   ): Promise<JSENDResponse<ExerciseFinderResult[]>> {
     const response = await fetch(`${this.baseUrl}/exercise/fuzzy/${name}`);
 
-    if (!response.ok) {
-      throw new FetchInfraError(
-        `Failed to fetch exercise: ${response.statusText}`,
-      );
-    }
+    const jsend = await response.json();
 
-    const data = await response.json();
-
-    return data;
+    return jsend;
   }
 
   async createUser(
@@ -43,14 +42,32 @@ export class ApplicationBackendService implements BackendService {
       body: JSON.stringify({ name, plainPassword, email }),
     });
 
-    if (!response.ok) {
-      throw new FetchInfraError(
-        `Failed to create user: ${response.statusText}`,
-      );
-    }
+    const jsend = await response.json();
 
-    const data = await response.json();
+    return jsend;
+  }
 
-    return data;
+  async createRecipe(
+    userId: string,
+    recipeName: string,
+    ingredientLinesInfo: CreateIngredientLineData[],
+    imageBuffer?: Buffer,
+  ): Promise<JSENDResponse<RecipeDTO>> {
+    const response = await fetch(`${this.baseUrl}/recipe`, {
+      method: "POST",
+      body: JSON.stringify({
+        userId,
+        name: recipeName,
+        ingredientLinesInfo,
+        imageBuffer,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const jsend = await response.json();
+
+    return jsend;
   }
 }

@@ -1,4 +1,5 @@
 import {
+  CreateIngredientLineData,
   ExerciseFinderResult,
   JSENDResponse,
   RecipeDTO,
@@ -19,8 +20,7 @@ export interface BackendService {
   createRecipe(
     userId: string,
     recipeName: string,
-    // TODO NEXT: export CreateIngredientLineData to shared and use it here
-    ingredientLinesInfo: { line: string; ingredients: string[] }[],
+    ingredientLinesInfo: CreateIngredientLineData[],
     imageBuffer?: Buffer,
   ): Promise<JSENDResponse<RecipeDTO>>;
 }

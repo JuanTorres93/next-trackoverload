@@ -15,6 +15,7 @@ export async function POST(
 ): Promise<NextResponse<JSENDResponse<RecipeDTO>>> {
   try {
     const { currentUserId, notLoggedInResponse } = await ensureLoggedInUser();
+
     if (notLoggedInResponse) return notLoggedInResponse;
 
     const body: CreateRecipeBody = await req.json();

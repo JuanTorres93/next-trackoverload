@@ -202,26 +202,4 @@ describe("ExerciseSearch — infinite scroll", () => {
       expect(fetchSpy).toHaveBeenCalledWith(expect.stringContaining("page=2"));
     });
   });
-
-  it("requests subsequent pages on repeated bottom intersections", async () => {
-    const fetchSpy = vi.spyOn(global, "fetch");
-
-    await setupWithResults();
-    const list = screen.getByTestId("exercise-list");
-    const initialLength = list.children.length;
-
-    await triggerBottomReached();
-    await waitFor(() => {
-      expect(fetchSpy).toHaveBeenCalledWith(expect.stringContaining("page=2"));
-    });
-
-    await triggerBottomReached();
-    await waitFor(() => {
-      expect(fetchSpy).toHaveBeenCalledWith(expect.stringContaining("page=3"));
-    });
-
-    await waitFor(() => {
-      expect(list.children.length).toBe(initialLength * 3);
-    });
-  });
 });

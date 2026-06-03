@@ -9,6 +9,7 @@ export async function ensureLoggedInUser(): Promise<{
   notLoggedInResponse: NextResponse<JSENDFailure> | null;
 }> {
   const currentUserId = await getCurrentUserId();
+
   let notLoggedInResponse: NextResponse<JSENDFailure> | null = null;
 
   if (!currentUserId) {

@@ -5,6 +5,7 @@ import { JSENDFailure } from "shared";
 import { isTestRuntime } from "../../../application-layer/utils/isTestRuntime";
 import {
   AlreadyExistsError,
+  AuthError,
   DomainError,
   NotFoundError,
   PermissionError,
@@ -36,10 +37,11 @@ export function handleKnownErrors(error: Error): NextResponse<JSENDFailure> {
 }
 
 function getStatusForApplicationError(err: DomainError): number {
+  if (err instanceof ValidationError) return 400;
+  if (err instanceof AuthError) return 401;
   if (err instanceof AlreadyExistsError) return 409;
   if (err instanceof NotFoundError) return 404;
   if (err instanceof PermissionError) return 404;
-  if (err instanceof ValidationError) return 400;
 
   return 500;
 }
