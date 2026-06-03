@@ -1,16 +1,9 @@
-import makeFetchCookie from "fetch-cookie";
 import { CreateIngredientLineData, RecipeDTO, UserDTO } from "shared";
-import { CookieJar } from "tough-cookie";
+
+import "@/../tests/mocks/fetchWithCookies";
 
 import { createUniqueUserProps } from "../../../../../tests/mocks/user";
 import { TestApplicationBackendService } from "../TestApplicationBackendService";
-
-const cookieJar = new CookieJar();
-const fetchWithCookies = makeFetchCookie(fetch, cookieJar);
-
-beforeAll(() => {
-  global.fetch = fetchWithCookies as typeof fetch;
-});
 
 describe("ApplicationBackendService", () => {
   let backendService: TestApplicationBackendService;
