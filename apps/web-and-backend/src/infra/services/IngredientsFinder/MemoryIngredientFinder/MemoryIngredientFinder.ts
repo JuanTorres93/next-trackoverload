@@ -1,3 +1,6 @@
+import { isTestingMobile } from "@/application-layer/utils/isTestRuntime";
+
+import { mockIngredientsForIngredientFinder } from "../../../../../tests/mocks/ingredients";
 import {
   IngredientFinder,
   IngredientFinderResult,
@@ -7,7 +10,11 @@ export class MemoryIngredientFinder implements IngredientFinder {
   constructor(
     private seed: IngredientFinderResult[] = [],
     private pageSize = 1000,
-  ) {}
+  ) {
+    if (isTestingMobile()) {
+      this.seed = mockIngredientsForIngredientFinder;
+    }
+  }
 
   async findIngredientsByFuzzyName(
     name: string,

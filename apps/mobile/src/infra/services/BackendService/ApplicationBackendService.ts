@@ -87,7 +87,7 @@ export class ApplicationBackendService implements BackendService {
     const response = await fetch(`${this.baseUrl}/recipe`, {
       method: "POST",
       body: JSON.stringify({
-        userId,
+        targetUserId: userId,
         name: recipeName,
         ingredientLinesInfo,
         imageBuffer,

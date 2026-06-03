@@ -1,7 +1,16 @@
-import { CreateIngredientLineData, UserDTO } from "shared";
+import makeFetchCookie from "fetch-cookie";
+import { CreateIngredientLineData, RecipeDTO, UserDTO } from "shared";
+import { CookieJar } from "tough-cookie";
 
 import { createUniqueUserProps } from "../../../../../tests/mocks/user";
 import { TestApplicationBackendService } from "../TestApplicationBackendService";
+
+const cookieJar = new CookieJar();
+const fetchWithCookies = makeFetchCookie(fetch, cookieJar);
+
+beforeAll(() => {
+  global.fetch = fetchWithCookies as typeof fetch;
+});
 
 describe("ApplicationBackendService", () => {
   let backendService: TestApplicationBackendService;
@@ -13,14 +22,21 @@ describe("ApplicationBackendService", () => {
     imageBuffer?: Buffer;
   };
 
-  beforeAll(() => {
+  beforeAll(async () => {
     backendService = new TestApplicationBackendService();
 
     const userTestProps = createUniqueUserProps();
-    user = {
-      name: userTestProps.name,
-      email: userTestProps.email,
-    } as UserDTO;
+    const userResponse = await backendService.createUser(
+      userTestProps.name,
+      userTestProps.plainPassword,
+      userTestProps.email,
+    );
+    user = userResponse.data as UserDTO;
+
+    await backendService.loginUser(
+      userTestProps.email,
+      userTestProps.plainPassword,
+    );
 
     baseRequest = {
       userId: user.id,
@@ -28,7 +44,7 @@ describe("ApplicationBackendService", () => {
       ingredientLinesInfo: [
         {
           externalIngredientId: "123",
-          source: "test",
+          source: "openfoodfacts",
           name: "Test Ingredient",
           caloriesPer100g: 200,
           proteinPer100g: 10,
@@ -41,7 +57,6 @@ describe("ApplicationBackendService", () => {
 
   describe("Recipes", () => {
     it("should create recipe", async () => {
-      // TODO NEXT: Create login and logout methods and make this test pass
       const newRecipeResponse = await backendService.createRecipe(
         baseRequest.userId,
         baseRequest.recipeName,
@@ -49,10 +64,12 @@ describe("ApplicationBackendService", () => {
         baseRequest.imageBuffer,
       );
 
-      // expect(newRecipeResponse.status).toBe("success");
-      //
-      // expect(newRecipeResponse.data).toHaveProperty("id");
-      // expect(newRecipeResponse.data.name).toBe(baseRequest.recipeName);
+      expect(newRecipeResponse.status).toBe("success");
+
+      const createdRecipe = newRecipeResponse.data as RecipeDTO;
+
+      expect(createdRecipe).toHaveProperty("id");
+      expect(createdRecipe.name).toBe(baseRequest.recipeName);
     });
   });
 });
