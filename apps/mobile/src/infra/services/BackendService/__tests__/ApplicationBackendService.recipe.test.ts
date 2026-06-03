@@ -64,5 +64,28 @@ describe("ApplicationBackendService", () => {
       expect(createdRecipe).toHaveProperty("id");
       expect(createdRecipe.name).toBe(baseRequest.recipeName);
     });
+
+    it("should get all recipes for user", async () => {
+      // create recipes
+      const recipeNames = ["Recipe 1", "Recipe 2"];
+      for (const name of recipeNames) {
+        await backendService.createRecipe(
+          baseRequest.userId,
+          name,
+          baseRequest.ingredientLinesInfo,
+          baseRequest.imageBuffer,
+        );
+      }
+
+      const allRecipesResponse = await backendService.getAllRecipesForUser(
+        baseRequest.userId,
+      );
+
+      expect(allRecipesResponse.status).toBe("success");
+
+      const recipes = allRecipesResponse.data as RecipeDTO[];
+
+      expect(recipes.length).toBeGreaterThanOrEqual(recipeNames.length);
+    });
   });
 });

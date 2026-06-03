@@ -23,10 +23,12 @@ export interface BackendService {
   ): Promise<JSENDResponse<string>>;
   logoutUser(): Promise<string>;
 
+  // Recipes
   createRecipe(
     userId: string,
     recipeName: string,
     ingredientLinesInfo: CreateIngredientLineData[],
     imageBuffer?: Buffer,
   ): Promise<JSENDResponse<RecipeDTO>>;
+  getAllRecipesForUser(userId: string): Promise<JSENDResponse<RecipeDTO[]>>;
 }

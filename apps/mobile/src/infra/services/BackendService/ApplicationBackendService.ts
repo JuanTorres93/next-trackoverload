@@ -101,4 +101,14 @@ export class ApplicationBackendService implements BackendService {
 
     return jsend;
   }
+
+  async getAllRecipesForUser(
+    userId: string,
+  ): Promise<JSENDResponse<RecipeDTO[]>> {
+    const response = await fetch(`${this.baseUrl}/recipe/all/${userId}`);
+
+    const jsend = await response.json();
+
+    return jsend;
+  }
 }
