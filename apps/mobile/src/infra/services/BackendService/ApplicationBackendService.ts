@@ -82,6 +82,18 @@ export class ApplicationBackendService implements BackendService {
     return this.recipeModule.duplicateRecipe(recipeId, userId, newName);
   }
 
+  async addIngredientToRecipe(
+    recipeId: string,
+    userId: string,
+    ingredient: CreateIngredientLineData,
+  ): Promise<JSENDResponse<RecipeDTO>> {
+    return this.recipeModule.addIngredientToRecipe(
+      recipeId,
+      userId,
+      ingredient,
+    );
+  }
+
   async getAllRecipesForUser(
     userId: string,
   ): Promise<JSENDResponse<RecipeDTO[]>> {

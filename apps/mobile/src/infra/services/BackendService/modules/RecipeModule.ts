@@ -52,6 +52,27 @@ export class RecipeModule {
     return jsend;
   }
 
+  async addIngredientToRecipe(
+    recipeId: string,
+    userId: string,
+    ingredient: CreateIngredientLineData,
+  ): Promise<JSENDResponse<RecipeDTO>> {
+    const response = await fetch(`${this.baseUrl}/recipe/${recipeId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId,
+        ...ingredient,
+      }),
+    });
+
+    const jsend = await response.json();
+
+    return jsend;
+  }
+
   //////////// READ
   async getAllRecipesForUser(
     userId: string,

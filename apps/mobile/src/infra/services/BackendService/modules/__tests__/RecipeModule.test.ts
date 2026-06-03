@@ -60,6 +60,38 @@ describe("ApplicationBackendService - Recipes", () => {
       expect(createdRecipe.name).toBe(request.recipeName);
     });
 
+    it("should add ingredient to existing recipe", async () => {
+      const { recipe } = await createRecipeInTestBackend(
+        backendService,
+        user.id,
+      );
+
+      const newIngredient = {
+        externalIngredientId: "456",
+        source: "openfoodfacts",
+        name: "New Ingredient to be added",
+        caloriesPer100g: 100,
+        proteinPer100g: 5,
+        quantityInGrams: 50,
+      };
+
+      const addIngredientResponse = await backendService.addIngredientToRecipe(
+        recipe.id,
+        user.id,
+        newIngredient,
+      );
+
+      expect(addIngredientResponse.status).toBe("success");
+
+      const updatedRecipe = addIngredientResponse.data as RecipeDTO;
+
+      const addedIngredientLine = updatedRecipe.ingredientLines.find(
+        (line) => line.ingredient.name === newIngredient.name,
+      );
+
+      expect(addedIngredientLine).not.toBeUndefined();
+    });
+
     it("should get all recipes for user", async () => {
       const recipeNames = ["Recipe 1", "Recipe 2"];
 
