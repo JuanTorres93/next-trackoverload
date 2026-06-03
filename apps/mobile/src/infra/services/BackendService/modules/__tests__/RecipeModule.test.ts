@@ -2,10 +2,10 @@ import { CreateIngredientLineData, RecipeDTO, UserDTO } from "shared";
 
 import "@/../tests/mocks/fetchWithCookies";
 
-import { createUniqueUserProps } from "../../../../../tests/mocks/user";
-import { TestApplicationBackendService } from "../TestApplicationBackendService";
+import { createUniqueUserProps } from "../../../../../../tests/mocks/user";
+import { TestApplicationBackendService } from "../../TestApplicationBackendService";
 
-describe("ApplicationBackendService", () => {
+describe("ApplicationBackendService - Recipes", () => {
   let backendService: TestApplicationBackendService;
   let user: UserDTO;
   let baseRequest: {

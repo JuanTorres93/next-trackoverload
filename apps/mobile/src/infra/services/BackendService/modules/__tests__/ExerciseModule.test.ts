@@ -1,8 +1,8 @@
-import { ExerciseFinderResult } from "shared/src/application-layer/types/ExerciseFinderResult";
+import { ExerciseFinderResult } from "shared";
 
-import { TestApplicationBackendService } from "../TestApplicationBackendService";
+import { TestApplicationBackendService } from "../../TestApplicationBackendService";
 
-describe("ApplicationBackendService", () => {
+describe("ApplicationBackendService - Exercises", () => {
   let backendService: TestApplicationBackendService;
 
   beforeAll(() => {

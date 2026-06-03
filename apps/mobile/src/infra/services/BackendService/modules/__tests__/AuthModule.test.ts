@@ -1,10 +1,10 @@
-import { UserDTO } from "shared/src/application-layer/dtos/UserDTO";
+import { UserDTO } from "shared";
 
 import {
   createUniqueUserProps,
   userTestProps,
-} from "../../../../../tests/mocks/user";
-import { TestApplicationBackendService } from "../TestApplicationBackendService";
+} from "../../../../../../tests/mocks/user";
+import { TestApplicationBackendService } from "../../TestApplicationBackendService";
 
 describe("ApplicationBackendService - Authentication", () => {
   let backendService: TestApplicationBackendService;

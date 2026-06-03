@@ -14,6 +14,7 @@ import { RecipeModule } from "./modules/RecipeModule";
 
 export class ApplicationBackendService implements BackendService {
   private baseUrl: string;
+
   private recipeModule: RecipeModule;
   private authModule: AuthModule;
   private exerciseModule: ExerciseModule;
