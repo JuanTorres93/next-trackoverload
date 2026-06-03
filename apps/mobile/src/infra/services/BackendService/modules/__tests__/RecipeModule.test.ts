@@ -1,19 +1,14 @@
-import { CreateIngredientLineData, RecipeDTO, UserDTO } from "shared";
+import { RecipeDTO, UserDTO } from "shared";
 
 import "@/../tests/mocks/fetchWithCookies";
 
+import { createRecipeInTestBackend } from "../../../../../../tests/mocks/recipe";
 import { createUniqueUserProps } from "../../../../../../tests/mocks/user";
 import { TestApplicationBackendService } from "../../TestApplicationBackendService";
 
 describe("ApplicationBackendService - Recipes", () => {
   let backendService: TestApplicationBackendService;
   let user: UserDTO;
-  let baseRequest: {
-    userId: string;
-    recipeName: string;
-    ingredientLinesInfo: CreateIngredientLineData[];
-    imageBuffer?: Buffer;
-  };
 
   beforeAll(async () => {
     backendService = new TestApplicationBackendService();
@@ -30,31 +25,31 @@ describe("ApplicationBackendService - Recipes", () => {
       userTestProps.email,
       userTestProps.plainPassword,
     );
-
-    baseRequest = {
-      userId: user.id,
-      recipeName: "Test Recipe",
-      ingredientLinesInfo: [
-        {
-          externalIngredientId: "123",
-          source: "openfoodfacts",
-          name: "Test Ingredient",
-          caloriesPer100g: 200,
-          proteinPer100g: 10,
-          quantityInGrams: 150,
-        },
-      ],
-      imageBuffer: undefined,
-    };
   });
 
   describe("Recipes", () => {
     it("should create recipe", async () => {
+      const request = {
+        userId: user.id,
+        recipeName: "Test Recipe",
+        ingredientLinesInfo: [
+          {
+            externalIngredientId: "123",
+            source: "openfoodfacts",
+            name: "Test Ingredient",
+            caloriesPer100g: 200,
+            proteinPer100g: 10,
+            quantityInGrams: 150,
+          },
+        ],
+        imageBuffer: undefined,
+      };
+
       const newRecipeResponse = await backendService.createRecipe(
-        baseRequest.userId,
-        baseRequest.recipeName,
-        baseRequest.ingredientLinesInfo,
-        baseRequest.imageBuffer,
+        request.userId,
+        request.recipeName,
+        request.ingredientLinesInfo,
+        request.imageBuffer,
       );
 
       expect(newRecipeResponse.status).toBe("success");
@@ -62,23 +57,20 @@ describe("ApplicationBackendService - Recipes", () => {
       const createdRecipe = newRecipeResponse.data as RecipeDTO;
 
       expect(createdRecipe).toHaveProperty("id");
-      expect(createdRecipe.name).toBe(baseRequest.recipeName);
+      expect(createdRecipe.name).toBe(request.recipeName);
     });
 
     it("should get all recipes for user", async () => {
-      // create recipes
       const recipeNames = ["Recipe 1", "Recipe 2"];
+
       for (const name of recipeNames) {
-        await backendService.createRecipe(
-          baseRequest.userId,
-          name,
-          baseRequest.ingredientLinesInfo,
-          baseRequest.imageBuffer,
-        );
+        await createRecipeInTestBackend(backendService, user.id, {
+          recipeName: name,
+        });
       }
 
       const allRecipesResponse = await backendService.getAllRecipesForUser(
-        baseRequest.userId,
+        user.id,
       );
 
       expect(allRecipesResponse.status).toBe("success");
@@ -91,43 +83,50 @@ describe("ApplicationBackendService - Recipes", () => {
     it("should duplicate an existing recipe", async () => {
       const name = "Original Recipe";
 
-      const originalRecipeResponse = await backendService.createRecipe(
-        baseRequest.userId,
-        name,
-        baseRequest.ingredientLinesInfo,
-        baseRequest.imageBuffer,
+      const { recipe: originalRecipe } = await createRecipeInTestBackend(
+        backendService,
+        user.id,
+        {
+          recipeName: name,
+        },
       );
 
-      const originalRecipeId = (originalRecipeResponse.data as RecipeDTO).id;
+      const originalRecipeId = originalRecipe.id;
 
       const duplicatedRecipeResponse = await backendService.duplicateRecipe(
         originalRecipeId,
-        baseRequest.userId,
+        user.id,
       );
 
       expect(duplicatedRecipeResponse.status).toBe("success");
     });
 
     it("should delete an ingredient from a recipe", async () => {
-      const recipeWithTwoIngredientsResponse =
-        await backendService.createRecipe(
-          baseRequest.userId,
-          "Recipe with 2 Ingredients",
-          [
-            ...baseRequest.ingredientLinesInfo,
+      const { recipe } = await createRecipeInTestBackend(
+        backendService,
+        user.id,
+        {
+          recipeName: "Recipe with 2 Ingredients",
+          ingredientLinesInfo: [
             {
               externalIngredientId: "456",
               source: "openfoodfacts",
-              name: "Second Test Ingredient",
+              name: "Test Ingredient",
               caloriesPer100g: 100,
               proteinPer100g: 5,
               quantityInGrams: 50,
             },
+            {
+              externalIngredientId: "789",
+              source: "openfoodfacts",
+              name: "Another Test Ingredient",
+              caloriesPer100g: 150,
+              proteinPer100g: 7.5,
+              quantityInGrams: 50,
+            },
           ],
-          baseRequest.imageBuffer,
-        );
-
-      const recipe = recipeWithTwoIngredientsResponse.data as RecipeDTO;
+        },
+      );
 
       const ingredientToDelete = recipe.ingredientLines[0].ingredient;
 
@@ -144,18 +143,17 @@ describe("ApplicationBackendService - Recipes", () => {
     it("should get a recipe for a user", async () => {
       const recipeName = "Recipe to Get";
 
-      const createdRecipeResponse = await backendService.createRecipe(
-        baseRequest.userId,
-        recipeName,
-        baseRequest.ingredientLinesInfo,
-        baseRequest.imageBuffer,
+      const { recipe: createdRecipe } = await createRecipeInTestBackend(
+        backendService,
+        user.id,
+        {
+          recipeName,
+        },
       );
-
-      const createdRecipe = createdRecipeResponse.data as RecipeDTO;
 
       const getRecipeResponse = await backendService.getRecipeForUser(
         createdRecipe.id,
-        baseRequest.userId,
+        user.id,
       );
 
       expect(getRecipeResponse.status).toBe("success");
@@ -165,38 +163,33 @@ describe("ApplicationBackendService - Recipes", () => {
     });
 
     it("should delete recipe", async () => {
-      const createdRecipeResponse = await backendService.createRecipe(
-        baseRequest.userId,
-        baseRequest.recipeName,
-        baseRequest.ingredientLinesInfo,
-        baseRequest.imageBuffer,
+      const { recipe: createdRecipe } = await createRecipeInTestBackend(
+        backendService,
+        user.id,
       );
-
-      const createdRecipe = createdRecipeResponse.data as RecipeDTO;
 
       const deleteResponse = await backendService.deleteRecipe(
         createdRecipe.id,
-        baseRequest.userId,
+        user.id,
       );
 
       expect(deleteResponse.status).toBe("success");
     });
 
     it("should update recipe name", async () => {
-      const createdRecipeResponse = await backendService.createRecipe(
-        baseRequest.userId,
-        "Recipe to Update",
-        baseRequest.ingredientLinesInfo,
-        baseRequest.imageBuffer,
+      const { recipe: createdRecipe } = await createRecipeInTestBackend(
+        backendService,
+        user.id,
+        {
+          recipeName: "Recipe to Update",
+        },
       );
-
-      const createdRecipe = createdRecipeResponse.data as RecipeDTO;
 
       const newName = "Updated Recipe Name";
 
       const updateResponse = await backendService.updateRecipeName(
         createdRecipe.id,
-        baseRequest.userId,
+        user.id,
         newName,
       );
 
@@ -208,14 +201,10 @@ describe("ApplicationBackendService - Recipes", () => {
     });
 
     it("should update recipe image", async () => {
-      const createdRecipeResponse = await backendService.createRecipe(
-        baseRequest.userId,
-        baseRequest.recipeName,
-        baseRequest.ingredientLinesInfo,
-        baseRequest.imageBuffer,
+      const { recipe: createdRecipe } = await createRecipeInTestBackend(
+        backendService,
+        user.id,
       );
-
-      const createdRecipe = createdRecipeResponse.data as RecipeDTO;
 
       const pngBuffer = Buffer.from(
         "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jK3sAAAAASUVORK5CYII=",
@@ -224,7 +213,7 @@ describe("ApplicationBackendService - Recipes", () => {
 
       const updateResponse = await backendService.updateRecipeImage(
         createdRecipe.id,
-        baseRequest.userId,
+        user.id,
         pngBuffer,
       );
 
