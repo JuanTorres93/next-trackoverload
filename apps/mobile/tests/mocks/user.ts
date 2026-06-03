@@ -3,3 +3,13 @@ export const userTestProps = {
   email: "test@test.com",
   plainPassword: "P@ssword123",
 };
+
+export function createUniqueUserProps() {
+  const uniqueSuffix = crypto.randomUUID();
+
+  return {
+    name: `Test User ${uniqueSuffix}`,
+    email: `test${uniqueSuffix}@test.com`,
+    plainPassword: "P@ssword123",
+  };
+}

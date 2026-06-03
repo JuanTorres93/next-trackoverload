@@ -1,6 +1,6 @@
 import { UserDTO } from "shared/src/application-layer/dtos/UserDTO";
 
-import { userTestProps } from "../../../../../tests/mocks/user";
+import { createUniqueUserProps } from "../../../../../tests/mocks/user";
 import { TestApplicationBackendService } from "../TestApplicationBackendService";
 
 describe("ApplicationBackendService - Authentication", () => {
@@ -11,14 +11,12 @@ describe("ApplicationBackendService - Authentication", () => {
   });
 
   it("Creates a new user", async () => {
-    const noDuplicate = crypto.randomUUID();
-
-    const email = `${noDuplicate}-${userTestProps.email}`;
+    const userTestProps = createUniqueUserProps();
 
     const response = await backendService.createUser(
       userTestProps.name,
       userTestProps.plainPassword,
-      email,
+      userTestProps.email,
     );
 
     const user = response!.data as UserDTO;
@@ -26,6 +24,6 @@ describe("ApplicationBackendService - Authentication", () => {
     expect(response.status).toBe("success");
 
     expect(user.name).toBe(userTestProps.name);
-    expect(user.email).toBe(email);
+    expect(user.email).toBe(userTestProps.email);
   });
 });
