@@ -135,4 +135,27 @@ export class ApplicationBackendService implements BackendService {
 
     return jsend;
   }
+
+  async deleteIngredientFromRecipe(
+    recipeId: string,
+    ingredientId: string,
+    userId: string,
+  ): Promise<JSENDResponse<RecipeDTO>> {
+    const response = await fetch(
+      `${this.baseUrl}/recipe/${recipeId}/ingredient/${ingredientId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId,
+        }),
+      },
+    );
+
+    const jsend = await response.json();
+
+    return jsend;
+  }
 }

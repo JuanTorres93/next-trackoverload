@@ -107,5 +107,38 @@ describe("ApplicationBackendService", () => {
 
       expect(duplicatedRecipeResponse.status).toBe("success");
     });
+
+    it("should delete an ingredient from a recipe", async () => {
+      const recipeWithTwoIngredientsResponse =
+        await backendService.createRecipe(
+          baseRequest.userId,
+          "Recipe with 2 Ingredients",
+          [
+            ...baseRequest.ingredientLinesInfo,
+            {
+              externalIngredientId: "456",
+              source: "openfoodfacts",
+              name: "Second Test Ingredient",
+              caloriesPer100g: 100,
+              proteinPer100g: 5,
+              quantityInGrams: 50,
+            },
+          ],
+          baseRequest.imageBuffer,
+        );
+
+      const recipe = recipeWithTwoIngredientsResponse.data as RecipeDTO;
+
+      const ingredientToDelete = recipe.ingredientLines[0].ingredient;
+
+      const deleteIngredientResponse =
+        await backendService.deleteIngredientFromRecipe(
+          recipe.id,
+          ingredientToDelete.id,
+          user.id,
+        );
+
+      expect(deleteIngredientResponse.status).toBe("success");
+    });
   });
 });
