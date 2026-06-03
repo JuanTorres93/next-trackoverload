@@ -102,6 +102,30 @@ export class ApplicationBackendService implements BackendService {
     return jsend;
   }
 
+  async duplicateRecipe(
+    recipeId: string,
+    userId: string,
+    newName?: string,
+  ): Promise<JSENDResponse<RecipeDTO>> {
+    const response = await fetch(
+      `${this.baseUrl}/recipe/${recipeId}/duplicate`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId,
+          newName,
+        }),
+      },
+    );
+
+    const jsend = await response.json();
+
+    return jsend;
+  }
+
   async getAllRecipesForUser(
     userId: string,
   ): Promise<JSENDResponse<RecipeDTO[]>> {

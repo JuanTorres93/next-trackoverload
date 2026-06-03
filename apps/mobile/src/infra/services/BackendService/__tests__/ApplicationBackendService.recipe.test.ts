@@ -87,5 +87,25 @@ describe("ApplicationBackendService", () => {
 
       expect(recipes.length).toBeGreaterThanOrEqual(recipeNames.length);
     });
+
+    it("should duplicate an existing recipe", async () => {
+      const name = "Original Recipe";
+
+      const originalRecipeResponse = await backendService.createRecipe(
+        baseRequest.userId,
+        name,
+        baseRequest.ingredientLinesInfo,
+        baseRequest.imageBuffer,
+      );
+
+      const originalRecipeId = (originalRecipeResponse.data as RecipeDTO).id;
+
+      const duplicatedRecipeResponse = await backendService.duplicateRecipe(
+        originalRecipeId,
+        baseRequest.userId,
+      );
+
+      expect(duplicatedRecipeResponse.status).toBe("success");
+    });
   });
 });

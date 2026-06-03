@@ -30,5 +30,10 @@ export interface BackendService {
     ingredientLinesInfo: CreateIngredientLineData[],
     imageBuffer?: Buffer,
   ): Promise<JSENDResponse<RecipeDTO>>;
+  duplicateRecipe(
+    recipeId: string,
+    userId: string,
+    newName?: string,
+  ): Promise<JSENDResponse<RecipeDTO>>;
   getAllRecipesForUser(userId: string): Promise<JSENDResponse<RecipeDTO[]>>;
 }
