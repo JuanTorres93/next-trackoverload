@@ -94,6 +94,14 @@ export class ApplicationBackendService implements BackendService {
     return this.recipeModule.getRecipeForUser(recipeId, userId);
   }
 
+  async updateRecipeName(
+    recipeId: string,
+    userId: string,
+    newName: string,
+  ): Promise<JSENDResponse<RecipeDTO>> {
+    return this.recipeModule.updateRecipeName(recipeId, userId, newName);
+  }
+
   async deleteRecipe(
     recipeId: string,
     userId: string,

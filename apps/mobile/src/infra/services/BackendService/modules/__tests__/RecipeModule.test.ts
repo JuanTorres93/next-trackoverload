@@ -181,5 +181,32 @@ describe("ApplicationBackendService - Recipes", () => {
 
       expect(deleteResponse.status).toBe("success");
     });
+
+    it("should update recipe name", async () => {
+      const createdRecipeResponse = await backendService.createRecipe(
+        baseRequest.userId,
+        "Recipe to Update",
+        baseRequest.ingredientLinesInfo,
+        baseRequest.imageBuffer,
+      );
+
+      const createdRecipe = createdRecipeResponse.data as RecipeDTO;
+
+      const newName = "Updated Recipe Name";
+
+      const updateResponse = await backendService.updateRecipeName(
+        createdRecipe.id,
+        baseRequest.userId,
+        newName,
+      );
+
+      expect(updateResponse.status).toBe("success");
+
+      const updatedRecipe = updateResponse.data as RecipeDTO;
+
+      expect(updatedRecipe.name).toBe(newName);
+    });
+
+    // TODO NEXT Test update image
   });
 });

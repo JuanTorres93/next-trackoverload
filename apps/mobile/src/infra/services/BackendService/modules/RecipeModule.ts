@@ -75,6 +75,28 @@ export class RecipeModule {
     return jsend;
   }
 
+  ///////////// UPDATE
+  async updateRecipeName(
+    recipeId: string,
+    userId: string,
+    newName: string,
+  ): Promise<JSENDResponse<RecipeDTO>> {
+    const response = await fetch(`${this.baseUrl}/recipe/${recipeId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId,
+        name: newName,
+      }),
+    });
+
+    const jsend = await response.json();
+
+    return jsend;
+  }
+
   ///////////// DELETE
   async deleteRecipe(
     recipeId: string,
