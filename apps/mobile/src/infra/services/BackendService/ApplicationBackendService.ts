@@ -19,6 +19,7 @@ export class ApplicationBackendService implements BackendService {
     this.baseUrl = baseUrl;
   }
 
+  /////////////// EXERCISES
   async getExerciseByFuzzyName(
     name: string,
   ): Promise<JSENDResponse<ExerciseFinderResult[]>> {
@@ -29,6 +30,7 @@ export class ApplicationBackendService implements BackendService {
     return jsend;
   }
 
+  /////////////// AUTH
   async createUser(
     name: string,
     plainPassword: string,
@@ -46,7 +48,36 @@ export class ApplicationBackendService implements BackendService {
 
     return jsend;
   }
+  async loginUser(
+    email: string,
+    plainPassword: string,
+  ): Promise<JSENDResponse<string>> {
+    const response = await fetch(`${this.baseUrl}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, plainPassword }),
+    });
 
+    const jsend = await response.json();
+
+    return jsend;
+  }
+  async logoutUser(): Promise<string> {
+    const response = await fetch(`${this.baseUrl}/auth/logout`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const jsend = await response.json();
+
+    return jsend.message;
+  }
+
+  /////////////// RECIPES
   async createRecipe(
     userId: string,
     recipeName: string,

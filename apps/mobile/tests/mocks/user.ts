@@ -8,8 +8,8 @@ export function createUniqueUserProps() {
   const uniqueSuffix = crypto.randomUUID();
 
   return {
-    name: `Test User ${uniqueSuffix}`,
+    name: `${userTestProps.name} ${uniqueSuffix}`,
     email: `test${uniqueSuffix}@test.com`,
-    plainPassword: "P@ssword123",
+    plainPassword: userTestProps.plainPassword,
   };
 }

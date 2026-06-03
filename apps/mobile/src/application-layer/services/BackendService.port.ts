@@ -11,11 +11,17 @@ export interface BackendService {
     name: string,
   ): Promise<JSENDResponse<ExerciseFinderResult[]>>;
 
+  // Auth
   createUser(
     name: string,
     plainPassword: string,
     email: string,
   ): Promise<JSENDResponse<UserDTO>>;
+  loginUser(
+    email: string,
+    plainPassword: string,
+  ): Promise<JSENDResponse<string>>;
+  logoutUser(): Promise<string>;
 
   createRecipe(
     userId: string,
