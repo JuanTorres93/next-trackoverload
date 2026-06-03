@@ -8,8 +8,15 @@ import {
 
 import { BackendService } from "@/application-layer/services/BackendService.port";
 
+import { AuthModule } from "./modules/AuthModule";
+import { ExerciseModule } from "./modules/ExerciseModule";
+import { RecipeModule } from "./modules/RecipeModule";
+
 export class ApplicationBackendService implements BackendService {
   private baseUrl: string;
+  private recipeModule: RecipeModule;
+  private authModule: AuthModule;
+  private exerciseModule: ExerciseModule;
 
   constructor(baseUrl: string) {
     if (baseUrl.endsWith("/")) {
@@ -17,17 +24,16 @@ export class ApplicationBackendService implements BackendService {
     }
 
     this.baseUrl = baseUrl;
+    this.recipeModule = new RecipeModule(this.baseUrl);
+    this.authModule = new AuthModule(this.baseUrl);
+    this.exerciseModule = new ExerciseModule(this.baseUrl);
   }
 
   /////////////// EXERCISES
   async getExerciseByFuzzyName(
     name: string,
   ): Promise<JSENDResponse<ExerciseFinderResult[]>> {
-    const response = await fetch(`${this.baseUrl}/exercise/fuzzy/${name}`);
-
-    const jsend = await response.json();
-
-    return jsend;
+    return this.exerciseModule.getExerciseByFuzzyName(name);
   }
 
   /////////////// AUTH
@@ -36,45 +42,16 @@ export class ApplicationBackendService implements BackendService {
     plainPassword: string,
     email: string,
   ): Promise<JSENDResponse<UserDTO>> {
-    const response = await fetch(`${this.baseUrl}/auth/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name, plainPassword, email }),
-    });
-
-    const jsend = await response.json();
-
-    return jsend;
+    return this.authModule.createUser(name, plainPassword, email);
   }
   async loginUser(
     email: string,
     plainPassword: string,
   ): Promise<JSENDResponse<string>> {
-    const response = await fetch(`${this.baseUrl}/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, plainPassword }),
-    });
-
-    const jsend = await response.json();
-
-    return jsend;
+    return this.authModule.loginUser(email, plainPassword);
   }
   async logoutUser(): Promise<string> {
-    const response = await fetch(`${this.baseUrl}/auth/logout`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    const jsend = await response.json();
-
-    return jsend.message;
+    return this.authModule.logoutUser();
   }
 
   /////////////// RECIPES
@@ -84,22 +61,12 @@ export class ApplicationBackendService implements BackendService {
     ingredientLinesInfo: CreateIngredientLineData[],
     imageBuffer?: Buffer,
   ): Promise<JSENDResponse<RecipeDTO>> {
-    const response = await fetch(`${this.baseUrl}/recipe`, {
-      method: "POST",
-      body: JSON.stringify({
-        targetUserId: userId,
-        name: recipeName,
-        ingredientLinesInfo,
-        imageBuffer,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    const jsend = await response.json();
-
-    return jsend;
+    return this.recipeModule.createRecipe(
+      userId,
+      recipeName,
+      ingredientLinesInfo,
+      imageBuffer,
+    );
   }
 
   async duplicateRecipe(
@@ -107,45 +74,19 @@ export class ApplicationBackendService implements BackendService {
     userId: string,
     newName?: string,
   ): Promise<JSENDResponse<RecipeDTO>> {
-    const response = await fetch(
-      `${this.baseUrl}/recipe/${recipeId}/duplicate`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId,
-          newName,
-        }),
-      },
-    );
-
-    const jsend = await response.json();
-
-    return jsend;
+    return this.recipeModule.duplicateRecipe(recipeId, userId, newName);
   }
 
   async getAllRecipesForUser(
     userId: string,
   ): Promise<JSENDResponse<RecipeDTO[]>> {
-    const response = await fetch(`${this.baseUrl}/recipe/all/${userId}`);
-
-    const jsend = await response.json();
-
-    return jsend;
+    return this.recipeModule.getAllRecipesForUser(userId);
   }
   async getRecipeForUser(
     recipeId: string,
     userId: string,
   ): Promise<JSENDResponse<RecipeDTO>> {
-    const response = await fetch(
-      `${this.baseUrl}/recipe/${recipeId}/user/${userId}`,
-    );
-
-    const jsend = await response.json();
-
-    return jsend;
+    return this.recipeModule.getRecipeForUser(recipeId, userId);
   }
 
   async deleteIngredientFromRecipe(
@@ -153,21 +94,10 @@ export class ApplicationBackendService implements BackendService {
     ingredientId: string,
     userId: string,
   ): Promise<JSENDResponse<RecipeDTO>> {
-    const response = await fetch(
-      `${this.baseUrl}/recipe/${recipeId}/ingredient/${ingredientId}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId,
-        }),
-      },
+    return this.recipeModule.deleteIngredientFromRecipe(
+      recipeId,
+      ingredientId,
+      userId,
     );
-
-    const jsend = await response.json();
-
-    return jsend;
   }
 }
