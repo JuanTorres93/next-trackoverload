@@ -207,6 +207,32 @@ describe("ApplicationBackendService - Recipes", () => {
       expect(updatedRecipe.name).toBe(newName);
     });
 
-    // TODO NEXT Test update image
+    it("should update recipe image", async () => {
+      const createdRecipeResponse = await backendService.createRecipe(
+        baseRequest.userId,
+        baseRequest.recipeName,
+        baseRequest.ingredientLinesInfo,
+        baseRequest.imageBuffer,
+      );
+
+      const createdRecipe = createdRecipeResponse.data as RecipeDTO;
+
+      const pngBuffer = Buffer.from(
+        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jK3sAAAAASUVORK5CYII=",
+        "base64",
+      );
+
+      const updateResponse = await backendService.updateRecipeImage(
+        createdRecipe.id,
+        baseRequest.userId,
+        pngBuffer,
+      );
+
+      expect(updateResponse.status).toBe("success");
+
+      const updatedRecipe = updateResponse.data as RecipeDTO;
+
+      expect(updatedRecipe.imageUrl).not.toBeUndefined();
+    });
   });
 });

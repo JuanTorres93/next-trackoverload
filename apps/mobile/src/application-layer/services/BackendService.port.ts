@@ -44,6 +44,11 @@ export interface BackendService {
     userId: string,
     newName: string,
   ): Promise<JSENDResponse<RecipeDTO>>;
+  updateRecipeImage(
+    recipeId: string,
+    userId: string,
+    newImageBuffer: Buffer,
+  ): Promise<JSENDResponse<RecipeDTO>>;
 
   deleteRecipe(recipeId: string, userId: string): Promise<JSENDResponse<null>>;
   deleteIngredientFromRecipe(

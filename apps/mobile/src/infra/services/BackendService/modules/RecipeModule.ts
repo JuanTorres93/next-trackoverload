@@ -97,6 +97,27 @@ export class RecipeModule {
     return jsend;
   }
 
+  async updateRecipeImage(
+    recipeId: string,
+    userId: string,
+    newImageBuffer: Buffer,
+  ): Promise<JSENDResponse<RecipeDTO>> {
+    const response = await fetch(`${this.baseUrl}/recipe/${recipeId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId,
+        imageData: newImageBuffer,
+      }),
+    });
+
+    const jsend = await response.json();
+
+    return jsend;
+  }
+
   ///////////// DELETE
   async deleteRecipe(
     recipeId: string,
