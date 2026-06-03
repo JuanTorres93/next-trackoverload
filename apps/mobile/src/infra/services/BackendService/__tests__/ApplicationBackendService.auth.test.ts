@@ -6,7 +6,7 @@ import { TestApplicationBackendService } from "../TestApplicationBackendService"
 describe("ApplicationBackendService - Authentication", () => {
   let backendService: TestApplicationBackendService;
 
-  beforeEach(() => {
+  beforeAll(() => {
     backendService = new TestApplicationBackendService();
   });
 

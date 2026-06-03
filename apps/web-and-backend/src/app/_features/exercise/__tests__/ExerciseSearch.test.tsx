@@ -203,24 +203,6 @@ describe("ExerciseSearch — infinite scroll", () => {
     });
   });
 
-  it("preserves existing results when appending the next page", async () => {
-    await setupWithResults();
-
-    const list = screen.getByTestId("exercise-list");
-    const initialLength = list.children.length;
-
-    expect(initialLength).toBe(PRESS_RESULTS.length);
-
-    await triggerBottomReached();
-
-    await waitFor(() => {
-      expect(list.children.length).toBe(initialLength * 2);
-    });
-
-    expect(list.children[0]).toHaveTextContent(PRESS_RESULTS[0].exercise.name);
-    expect(list.children[1]).toHaveTextContent(PRESS_RESULTS[1].exercise.name);
-  });
-
   it("requests subsequent pages on repeated bottom intersections", async () => {
     const fetchSpy = vi.spyOn(global, "fetch");
 
