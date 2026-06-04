@@ -1,4 +1,4 @@
-import { DayDTO, RecipeDTO, UserDTO } from "shared";
+import { DayDTO, DayEntry, RecipeDTO, UserDTO } from "shared";
 
 import "@/../tests/mocks/fetchWithCookies";
 
@@ -87,5 +87,22 @@ describe("ApplicationBackendService - Day", () => {
 
     expect(updatedDay?.mealIds.length).toBeGreaterThanOrEqual(2);
     expect(updatedOtherDay?.mealIds.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it("should return the last day with a calories goal", async () => {
+    const response = await backendService.getLastDayWithCaloriesGoal();
+
+    expect(response.status).toBe("success");
+
+    // TODO IMPORTANT: CHeck calories goal value once that feature is implemented
+  });
+
+  it("should return the last N days including non-existent ones", async () => {
+    const numberOfDays = 7;
+
+    const response = await backendService.getLastNumberOfDays(numberOfDays);
+
+    expect(response.status).toBe("success");
+    expect(response.data).toHaveLength(numberOfDays);
   });
 });

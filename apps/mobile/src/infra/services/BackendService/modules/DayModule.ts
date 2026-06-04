@@ -1,4 +1,4 @@
-import { DayDTO } from "shared";
+import { DayDTO, DayEntry } from "shared";
 import { JSENDResponse } from "shared/src/infra/types/JSEND";
 
 export class DayModule {
@@ -43,6 +43,20 @@ export class DayModule {
         targetUserId: userId,
       }),
     });
+
+    return response.json();
+  }
+
+  async getLastDayWithCaloriesGoal(): Promise<JSENDResponse<DayDTO | null>> {
+    const response = await fetch(`${this.baseUrl}/day/last/calories`);
+
+    return response.json();
+  }
+
+  async getLastNumberOfDays(
+    numberOfDays: number,
+  ): Promise<JSENDResponse<DayEntry[]>> {
+    const response = await fetch(`${this.baseUrl}/day/last/${numberOfDays}`);
 
     return response.json();
   }

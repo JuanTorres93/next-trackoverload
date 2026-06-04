@@ -1,6 +1,7 @@
 import {
   CreateIngredientLineData,
   DayDTO,
+  DayEntry,
   ExerciseFinderResult,
   JSENDResponse,
   RecipeDTO,
@@ -164,5 +165,15 @@ export class ApplicationBackendService implements BackendService {
       dayIds,
       userId,
     );
+  }
+
+  async getLastDayWithCaloriesGoal(): Promise<JSENDResponse<DayDTO | null>> {
+    return this.dayModule.getLastDayWithCaloriesGoal();
+  }
+
+  async getLastNumberOfDays(
+    numberOfDays: number,
+  ): Promise<JSENDResponse<DayEntry[]>> {
+    return this.dayModule.getLastNumberOfDays(numberOfDays);
   }
 }
