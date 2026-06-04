@@ -1,5 +1,6 @@
 import {
   CreateIngredientLineData,
+  DayDTO,
   ExerciseFinderResult,
   JSENDResponse,
   RecipeDTO,
@@ -64,4 +65,12 @@ export interface BackendService {
     recipeId: string,
     userId: string,
   ): Promise<JSENDResponse<RecipeDTO>>;
+
+  // Days
+  createDay(
+    day: number,
+    month: number,
+    year: number,
+    userId: string,
+  ): Promise<JSENDResponse<DayDTO>>;
 }

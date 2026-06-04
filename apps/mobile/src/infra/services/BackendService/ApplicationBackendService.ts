@@ -1,5 +1,6 @@
 import {
   CreateIngredientLineData,
+  DayDTO,
   ExerciseFinderResult,
   JSENDResponse,
   RecipeDTO,
@@ -9,8 +10,8 @@ import {
 import { BackendService } from "@/application-layer/services/BackendService.port";
 
 import { AuthModule } from "./modules/AuthModule";
+import { DayModule } from "./modules/DayModule";
 import { ExerciseModule } from "./modules/ExerciseModule";
-import { MealModule } from "./modules/MealModule";
 import { RecipeModule } from "./modules/RecipeModule";
 
 export class ApplicationBackendService implements BackendService {
@@ -18,7 +19,7 @@ export class ApplicationBackendService implements BackendService {
 
   private authModule: AuthModule;
   private recipeModule: RecipeModule;
-  private mealModule: MealModule;
+  private dayModule: DayModule;
   private exerciseModule: ExerciseModule;
 
   constructor(baseUrl: string) {
@@ -30,7 +31,7 @@ export class ApplicationBackendService implements BackendService {
 
     this.authModule = new AuthModule(this.baseUrl);
     this.recipeModule = new RecipeModule(this.baseUrl);
-    this.mealModule = new MealModule(this.baseUrl);
+    this.dayModule = new DayModule(this.baseUrl);
     this.exerciseModule = new ExerciseModule(this.baseUrl);
   }
 
@@ -141,5 +142,15 @@ export class ApplicationBackendService implements BackendService {
       ingredientId,
       userId,
     );
+  }
+
+  /////////////// DAYS
+  async createDay(
+    day: number,
+    month: number,
+    year: number,
+    userId: string,
+  ): Promise<JSENDResponse<DayDTO>> {
+    return this.dayModule.createDay(day, month, year, userId);
   }
 }
