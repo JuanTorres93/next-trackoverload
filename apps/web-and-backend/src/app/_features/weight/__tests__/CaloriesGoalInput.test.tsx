@@ -1,10 +1,10 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { DayEntry } from "shared";
 
 import { createAndPersistMultipleTestDaysWithWeights } from "../../../../../tests/mocks/days";
 import { TestDaysRepo } from "../../../../../tests/repos/TestDaysRepo";
 import { fromDayDTO } from "../../../../application-layer/dtos/DayDTO";
-import { DayEntry } from "../../../../application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase";
 import { AppSetCaloriesGoalForDayAndUserUsecase } from "../../../../interface-adapters/app/use-cases/day";
 import CaloriesGoalInput from "../CaloriesGoalInput";
 

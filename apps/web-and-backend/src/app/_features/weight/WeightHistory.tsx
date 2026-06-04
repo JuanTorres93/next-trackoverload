@@ -1,9 +1,5 @@
-'use client';
+"use client";
 
-import { extractCssVariable } from '../../_common/extractCssVariableFromGlobalsCssFile';
-import InfoBox from '../../_ui/InfoBox';
-import { DayEntry } from '../../../application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase';
-import { dayIdToDayMonthYear } from '../../../domain/value-objects/DayId/DayId';
 import {
   Area,
   AreaChart,
@@ -11,13 +7,18 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-} from 'recharts';
+} from "recharts";
+import { DayEntry } from "shared";
+
+import { dayIdToDayMonthYear } from "../../../domain/value-objects/DayId/DayId";
+import { extractCssVariable } from "../../_common/extractCssVariableFromGlobalsCssFile";
+import InfoBox from "../../_ui/InfoBox";
 
 function WeightHistory({ days }: { days: DayEntry[] }) {
-  const colorPrimary = extractCssVariable('--color-primary');
-  const colorPrimaryLight = extractCssVariable('--color-primary-light');
-  const colorNeutral = extractCssVariable('--color-text-minor-emphasis');
-  const colorCaloriesGoal = extractCssVariable('--color-error');
+  const colorPrimary = extractCssVariable("--color-primary");
+  const colorPrimaryLight = extractCssVariable("--color-primary-light");
+  const colorNeutral = extractCssVariable("--color-text-minor-emphasis");
+  const colorCaloriesGoal = extractCssVariable("--color-error");
 
   const data = processWeightHistoryForChart(days);
   const weightEntries = data.filter((d) => d.weight !== null);
@@ -30,9 +31,9 @@ function WeightHistory({ days }: { days: DayEntry[] }) {
       <InfoBox>
         <span>
           Registra tu peso durante al menos 2 días para ver la evolución aquí
-        </span>{' '}
+        </span>{" "}
         <span>
-          (Te queda {remainingDays} {isPlural ? 'días' : 'día'}).
+          (Te queda {remainingDays} {isPlural ? "días" : "día"}).
         </span>
       </InfoBox>
     );
@@ -113,7 +114,7 @@ function WeightHistory({ days }: { days: DayEntry[] }) {
           activeDot={{
             r: 5,
             fill: colorPrimary,
-            stroke: 'white',
+            stroke: "white",
             strokeWidth: 2,
           }}
         />
@@ -253,7 +254,7 @@ function CustomTooltip({
         </p>
         {dataPoint.caloriesGoal != null && (
           <p className="m-0">
-            Objetivo calórico:{' '}
+            Objetivo calórico:{" "}
             <span className="font-semibold text-error">
               {dataPoint.caloriesGoal} kcal
             </span>
@@ -267,7 +268,7 @@ function CustomTooltip({
     <div className="px-3 py-2 font-normal bg-white rounded-lg shadow-md text-text">
       <p className="m-0">{label}</p>
       <p className="m-0">
-        Peso:{' '}
+        Peso:{" "}
         <span className="font-semibold text-primary">
           {dataPoint.weight!.toFixed(1)} kg
         </span>
@@ -275,7 +276,7 @@ function CustomTooltip({
 
       {dataPoint.caloriesGoal != null && (
         <p className="m-0">
-          Objetivo calórico:{' '}
+          Objetivo calórico:{" "}
           <span className="font-semibold text-error">
             {dataPoint.caloriesGoal} kcal
           </span>

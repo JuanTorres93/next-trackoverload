@@ -1,8 +1,8 @@
 "use client";
 
+import { DayEntry } from "shared";
 import { twMerge } from "tailwind-merge";
 
-import { DayEntry } from "../../../application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase";
 import CaloriesGoalInput from "./CaloriesGoalInput";
 import WeightHistory from "./WeightHistory";
 import WeightInput from "./WeightInput";

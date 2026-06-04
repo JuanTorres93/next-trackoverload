@@ -1,4 +1,4 @@
-import { DayDTO } from "shared";
+import { DayEntry } from "shared";
 
 import { logNoTest } from "@/utils/logNoTest";
 
@@ -13,11 +13,6 @@ export type GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecaseReq
     numberOfDays: number;
     userId: string;
   };
-
-export type DayEntry = {
-  date: string;
-  day: DayDTO | null;
-};
 
 export class GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase {
   constructor(

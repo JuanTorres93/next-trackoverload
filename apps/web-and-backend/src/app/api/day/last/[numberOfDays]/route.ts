@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 
-import { JSENDResponse } from "shared";
+import { DayEntry, JSENDResponse } from "shared";
 
-import { DayEntry } from "../../../../../application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase";
 import { AppGetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays } from "../../../../../interface-adapters/app/use-cases/day";
 import { ensureLoggedInUser } from "../../../_common/ensureLoggedInUser";
 import { handleKnownErrors } from "../../../_common/handleKnownErrors";

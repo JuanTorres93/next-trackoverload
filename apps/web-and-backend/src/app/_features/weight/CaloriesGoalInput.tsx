@@ -1,10 +1,10 @@
 "use client";
 
 import { HiFire } from "react-icons/hi2";
+import { DayEntry } from "shared";
 
 import { showErrorToast } from "@/app/_ui/showErrorToast";
 
-import { DayEntry } from "../../../application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase";
 import { useDebounce } from "../../_hooks/useDebounce";
 import Input from "../../_ui/Input";
 import { setCaloriesGoalForDay } from "../day/actions";

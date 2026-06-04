@@ -1,11 +1,8 @@
 "use server";
 import { refresh, revalidatePath } from "next/cache";
 
-import { AssembledDayDTO } from "shared";
-import { DayDTO } from "shared";
-import { JSENDResponse } from "shared";
+import { AssembledDayDTO, DayDTO, DayEntry, JSENDResponse } from "shared";
 
-import { DayEntry } from "../../../application-layer/use-cases/day/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays/GetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase";
 import {
   AppAddMultipleMealsToDayUsecase,
   AppAddMultipleMealsToMultipleDaysUsecase,
