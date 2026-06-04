@@ -2,6 +2,7 @@ import { UserDTO } from "shared";
 
 import {
   createUniqueUserProps,
+  createUserInTestBackend,
   userTestProps,
 } from "../../../../../../tests/mocks/user";
 import { TestApplicationBackendService } from "../../TestApplicationBackendService";
@@ -13,15 +14,8 @@ describe("ApplicationBackendService - Authentication", () => {
   beforeAll(async () => {
     backendService = new TestApplicationBackendService();
 
-    const userTestProps = createUniqueUserProps();
-
-    const userResponse = await backendService.createUser(
-      userTestProps.name,
-      userTestProps.plainPassword,
-      userTestProps.email,
-    );
-
-    user = userResponse.data as UserDTO;
+    const { user: createdUser } = await createUserInTestBackend(backendService);
+    user = createdUser;
   });
 
   it("Creates a new user", async () => {

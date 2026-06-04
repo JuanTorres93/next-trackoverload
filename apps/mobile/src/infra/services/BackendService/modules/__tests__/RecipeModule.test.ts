@@ -3,7 +3,10 @@ import { RecipeDTO, UserDTO } from "shared";
 import "@/../tests/mocks/fetchWithCookies";
 
 import { createRecipeInTestBackend } from "../../../../../../tests/mocks/recipe";
-import { createUniqueUserProps } from "../../../../../../tests/mocks/user";
+import {
+  createUserInTestBackend,
+  userTestProps,
+} from "../../../../../../tests/mocks/user";
 import { TestApplicationBackendService } from "../../TestApplicationBackendService";
 
 describe("ApplicationBackendService - Recipes", () => {
@@ -13,18 +16,10 @@ describe("ApplicationBackendService - Recipes", () => {
   beforeAll(async () => {
     backendService = new TestApplicationBackendService();
 
-    const userTestProps = createUniqueUserProps();
-    const userResponse = await backendService.createUser(
-      userTestProps.name,
-      userTestProps.plainPassword,
-      userTestProps.email,
-    );
-    user = userResponse.data as UserDTO;
+    const { user: createdUser } = await createUserInTestBackend(backendService);
+    user = createdUser;
 
-    await backendService.loginUser(
-      userTestProps.email,
-      userTestProps.plainPassword,
-    );
+    await backendService.loginUser(user.email, userTestProps.plainPassword);
   });
 
   describe("Recipes", () => {

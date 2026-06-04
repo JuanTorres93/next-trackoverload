@@ -2,42 +2,35 @@ import { UserDTO } from "shared";
 
 import "@/../tests/mocks/fetchWithCookies";
 
-import { createUniqueUserProps } from "../../../../../../tests/mocks/user";
+import {
+  createUserInTestBackend,
+  userTestProps,
+} from "../../../../../../tests/mocks/user";
 import { TestApplicationBackendService } from "../../TestApplicationBackendService";
 
-describe.only("ApplicationBackendService - Day", () => {
+describe("ApplicationBackendService - Day", () => {
   let backendService: TestApplicationBackendService;
   let user: UserDTO;
 
   beforeAll(async () => {
     backendService = new TestApplicationBackendService();
 
-    // TODO NEXT: create function to DRY this logic
-    const userTestProps = createUniqueUserProps();
-    const userResponse = await backendService.createUser(
-      userTestProps.name,
-      userTestProps.plainPassword,
-      userTestProps.email,
-    );
-    user = userResponse.data as UserDTO;
+    const { user: createdUser } = await createUserInTestBackend(backendService);
+    user = createdUser;
 
-    await backendService.loginUser(
-      userTestProps.email,
-      userTestProps.plainPassword,
-    );
+    await backendService.loginUser(user.email, userTestProps.plainPassword);
   });
 
   it("should create a day", async () => {
     const day = 1;
     const month = 1;
     const year = 2024;
-    const userId = user.id;
 
     const createDayResponse = await backendService.createDay(
       day,
       month,
       year,
-      userId,
+      user.id,
     );
 
     expect(createDayResponse.status).toBe("success");
