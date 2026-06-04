@@ -4,6 +4,7 @@ import { JSENDResponse } from "shared/src/infra/types/JSEND";
 export class DayModule {
   constructor(private baseUrl: string) {}
 
+  // CREATE
   async createDay(
     day: number,
     month: number,
@@ -19,6 +20,26 @@ export class DayModule {
         day,
         month,
         year,
+        targetUserId: userId,
+      }),
+    });
+
+    return response.json();
+  }
+
+  async addMultipleMealsToMultipleDays(
+    recipeIds: string[],
+    dayIds: string[],
+    userId: string,
+  ): Promise<JSENDResponse<DayDTO[]>> {
+    const response = await fetch(`${this.baseUrl}/day/meal/batch`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        recipeIds,
+        dayIds,
         targetUserId: userId,
       }),
     });

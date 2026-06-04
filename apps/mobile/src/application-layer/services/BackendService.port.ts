@@ -73,4 +73,9 @@ export interface BackendService {
     year: number,
     userId: string,
   ): Promise<JSENDResponse<DayDTO>>;
+  addMultipleMealsToMultipleDays(
+    recipeIds: string[],
+    dayIds: string[],
+    userId: string,
+  ): Promise<JSENDResponse<DayDTO[]>>;
 }

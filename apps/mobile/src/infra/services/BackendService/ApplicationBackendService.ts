@@ -153,4 +153,16 @@ export class ApplicationBackendService implements BackendService {
   ): Promise<JSENDResponse<DayDTO>> {
     return this.dayModule.createDay(day, month, year, userId);
   }
+
+  async addMultipleMealsToMultipleDays(
+    recipeIds: string[],
+    dayIds: string[],
+    userId: string,
+  ): Promise<JSENDResponse<DayDTO[]>> {
+    return this.dayModule.addMultipleMealsToMultipleDays(
+      recipeIds,
+      dayIds,
+      userId,
+    );
+  }
 }
