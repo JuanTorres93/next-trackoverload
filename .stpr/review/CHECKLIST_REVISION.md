@@ -27,7 +27,7 @@ This checklist is a guide for human review. AI may help inspect the codebase, co
 
 - [ ] Unit tests exist under `./__tests__/`.
 - [ ] All relevant suites pass: `npm run test`.
-- [ ] Existing
+- [ ] Run npm run test in the affected app(s) and attach results
 
 ## Code cleanliness
 
