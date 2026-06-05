@@ -114,7 +114,7 @@ Do not invent patterns if the template already provides a valid reference.
 Use this prompt after implementation.
 
 ```text
-Finalize the implemented change for the existing NestJS project.
+Finalize the implemented change for the existing project.
 
 Review the change against:
 1. `.stpr/work/changes/<change-slug>/plan.md`

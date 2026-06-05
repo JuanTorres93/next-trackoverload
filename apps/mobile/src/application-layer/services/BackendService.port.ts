@@ -1,4 +1,5 @@
 import {
+  AssembledDayDTO,
   CreateIngredientLineData,
   DayDTO,
   DayEntry,
@@ -81,4 +82,45 @@ export interface BackendService {
   ): Promise<JSENDResponse<DayDTO[]>>;
   getLastDayWithCaloriesGoal(): Promise<JSENDResponse<DayDTO | null>>;
   getLastNumberOfDays(numberOfDays: number): Promise<JSENDResponse<DayEntry[]>>;
+
+  setCaloriesGoalForDayAndUser(
+    dayId: string,
+    userId: string,
+    newCaloriesGoal: number,
+  ): Promise<JSENDResponse<DayDTO>>;
+
+  updateUserWeightForDay(
+    dayId: string,
+    userId: string,
+    newWeightInKg: number,
+  ): Promise<JSENDResponse<DayDTO>>;
+
+  addMultipleMealsToDay(
+    dayId: string,
+    recipeIds: string[],
+    userId: string,
+  ): Promise<JSENDResponse<DayDTO>>;
+
+  removeMealFromDay(
+    dayId: string,
+    mealId: string,
+    userId: string,
+  ): Promise<JSENDResponse<DayDTO>>;
+
+  addFakeMealToDay(
+    dayId: string,
+    name: string,
+    calories: number,
+    protein: number,
+  ): Promise<JSENDResponse<DayDTO>>;
+
+  removeFakeMealFromDay(
+    dayId: string,
+    fakeMealId: string,
+    userId: string,
+  ): Promise<JSENDResponse<DayDTO>>;
+
+  getAssembledDayById(
+    dayId: string,
+  ): Promise<JSENDResponse<AssembledDayDTO | null>>;
 }

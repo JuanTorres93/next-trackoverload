@@ -155,6 +155,26 @@ export class ApplicationBackendService implements BackendService {
     return this.dayModule.createDay(day, month, year, userId);
   }
 
+  async setCaloriesGoalForDayAndUser(
+    dayId: string,
+    userId: string,
+    newCaloriesGoal: number,
+  ): Promise<JSENDResponse<DayDTO>> {
+    return this.dayModule.setCaloriesGoalForDayAndUser(
+      dayId,
+      userId,
+      newCaloriesGoal,
+    );
+  }
+
+  async updateUserWeightForDay(
+    dayId: string,
+    userId: string,
+    newWeightInKg: number,
+  ): Promise<JSENDResponse<DayDTO>> {
+    return this.dayModule.updateUserWeightForDay(dayId, userId, newWeightInKg);
+  }
+
   async addMultipleMealsToMultipleDays(
     recipeIds: string[],
     dayIds: string[],
@@ -167,6 +187,13 @@ export class ApplicationBackendService implements BackendService {
     );
   }
 
+  async addMultipleMealsToDay(
+    dayId: string,
+    recipeIds: string[],
+  ): Promise<JSENDResponse<DayDTO>> {
+    return this.dayModule.addMultipleMealsToDay(dayId, recipeIds);
+  }
+
   async getLastDayWithCaloriesGoal(): Promise<JSENDResponse<DayDTO | null>> {
     return this.dayModule.getLastDayWithCaloriesGoal();
   }
@@ -175,5 +202,34 @@ export class ApplicationBackendService implements BackendService {
     numberOfDays: number,
   ): Promise<JSENDResponse<DayEntry[]>> {
     return this.dayModule.getLastNumberOfDays(numberOfDays);
+  }
+
+  async removeMealFromDay(
+    dayId: string,
+    mealId: string,
+  ): Promise<JSENDResponse<DayDTO>> {
+    return this.dayModule.removeMealFromDay(dayId, mealId);
+  }
+
+  async addFakeMealToDay(
+    dayId: string,
+    name: string,
+    calories: number,
+    protein: number,
+  ): Promise<JSENDResponse<DayDTO>> {
+    return this.dayModule.addFakeMealToDay(dayId, name, calories, protein);
+  }
+
+  async removeFakeMealFromDay(
+    dayId: string,
+    fakeMealId: string,
+  ): Promise<JSENDResponse<DayDTO>> {
+    return this.dayModule.removeFakeMealFromDay(dayId, fakeMealId);
+  }
+
+  async getAssembledDayById(
+    dayId: string,
+  ): Promise<JSENDResponse<import("shared").AssembledDayDTO | null>> {
+    return this.dayModule.getAssembledDayById(dayId);
   }
 }

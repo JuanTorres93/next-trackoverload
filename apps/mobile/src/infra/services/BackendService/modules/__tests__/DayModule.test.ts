@@ -1,4 +1,4 @@
-import { DayDTO, DayEntry, RecipeDTO, UserDTO } from "shared";
+import { DayDTO, RecipeDTO, UserDTO } from "shared";
 
 import "@/../tests/mocks/fetchWithCookies";
 
@@ -104,5 +104,97 @@ describe("ApplicationBackendService - Day", () => {
 
     expect(response.status).toBe("success");
     expect(response.data).toHaveLength(numberOfDays);
+  });
+
+  it("should set calories goal", async () => {
+    const createdDayResp = await backendService.createDay(1, 1, 1994, user.id);
+    expect(createdDayResp.status).toBe("success");
+
+    const createdDay = createdDayResp.data as DayDTO;
+
+    const setCalResp = await backendService.setCaloriesGoalForDayAndUser(
+      createdDay.id,
+      user.id,
+      2000,
+    );
+
+    expect(setCalResp.status).toBe("success");
+    expect(setCalResp.data).toHaveProperty("updatedCaloriesGoal", 2000);
+  });
+
+  it("should update user weight for day", async () => {
+    const createdDayResp = await backendService.createDay(2, 1, 2024, user.id);
+    const createdDay = createdDayResp.data as DayDTO;
+
+    const updateResp = await backendService.updateUserWeightForDay(
+      createdDay.id,
+      user.id,
+      75,
+    );
+
+    expect(updateResp.status).toBe("success");
+    expect(updateResp.data).toHaveProperty("userWeightInKg", 75);
+  });
+
+  it("should add and remove meals", async () => {
+    const createdDayResp = await backendService.createDay(3, 1, 2024, user.id);
+    const createdDay = createdDayResp.data as DayDTO;
+
+    const addResp = await backendService.addMultipleMealsToDay(createdDay.id, [
+      recipe.id,
+    ]);
+
+    expect(addResp.status).toBe("success");
+    expect(addResp.data).toHaveProperty("mealIds");
+    expect(addResp.data!.mealIds.length).toBeGreaterThanOrEqual(1);
+
+    const dayAfterAdd = addResp.data as DayDTO;
+    const mealId = dayAfterAdd.mealIds[0];
+
+    const removeResp = await backendService.removeMealFromDay(
+      createdDay.id,
+      mealId,
+    );
+    expect(removeResp.status).toBe("success");
+    expect(removeResp.data).toHaveProperty("mealIds");
+    expect(removeResp.data!.mealIds.length).toBe(0);
+  });
+
+  it("should add and remove fake meal", async () => {
+    const createdDayResp = await backendService.createDay(4, 1, 2024, user.id);
+    const createdDay = createdDayResp.data as DayDTO;
+
+    const addFakeResp = await backendService.addFakeMealToDay(
+      createdDay.id,
+      "Test Fake",
+      100,
+      5,
+    );
+
+    expect(addFakeResp.status).toBe("success");
+    expect(addFakeResp.data).toHaveProperty("fakeMealIds");
+    expect(addFakeResp.data!.fakeMealIds.length).toBe(1);
+
+    const dayAfterAdd = addFakeResp.data as DayDTO;
+    const fakeMealId = dayAfterAdd.fakeMealIds[0];
+
+    const removeFakeResp = await backendService.removeFakeMealFromDay(
+      createdDay.id,
+      fakeMealId,
+    );
+
+    expect(removeFakeResp.status).toBe("success");
+    expect(removeFakeResp.data!.fakeMealIds.length).toBe(0);
+  });
+
+  it("should get assembled day by id", async () => {
+    const createdDayResp = await backendService.createDay(5, 1, 2024, user.id);
+    const createdDay = createdDayResp.data as DayDTO;
+
+    const assembledResp = await backendService.getAssembledDayById(
+      createdDay.id,
+    );
+    expect(assembledResp.status).toBe("success");
+    expect(assembledResp.data).toHaveProperty("meals");
   });
 });

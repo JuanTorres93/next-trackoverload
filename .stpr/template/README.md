@@ -40,7 +40,6 @@ When selecting a reference, first decide whether it is:
     - `use-cases`: definition and implementation (using abstractions) of the core orchestration of domain entities, application servicies and repos.
       - `CreateUserUsecase`: simple use case with repo and application services.
       - `MatchUserUsecase`: use case with transactions.
-      <!-- TODO IMPORTANT REALLY: Create a transaction test file -->
     - `common`: application errors for better error handling in outer layers
 
   - `infra`
