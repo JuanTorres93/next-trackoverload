@@ -17,7 +17,7 @@ export default async function SidebarLayout({
   return (
     <div
       id="sidebar-layout"
-      className="grid grid-cols-[16rem_1fr] h-screen max-bp-navbar-mobile:flex max-bp-navbar-mobile:flex-col"
+      className="grid grid-cols-[16rem_1fr] h-screen max-bp-navbar-mobile:flex max-bp-navbar-mobile:flex-col font-app bg-background-app"
     >
       <aside className="max-bp-navbar-mobile:absolute">
         <SideNav>

@@ -10,8 +10,11 @@
 
   --color-primary-shade: #0d542b;
 
-  /* Neutral */
+  --color-primary-app: #bcf779;
+  --color-gradient-app: #a6f948;
+  --color-background-app: #f5f6f0;
 
+  /* Neutral */
   --color-text: #18181b;
   --color-text-minor-emphasis: #646466;
 
@@ -49,6 +52,7 @@
 
   /* Secondary fonts */
   --font-secondary: var(--font-secondary);
+  --font-app: var(--font-app);
 
   /* Breakpoints */
   --breakpoint-bp-landing-navbar: 1136px;

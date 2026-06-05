@@ -1,4 +1,4 @@
-import { Inter, Plus_Jakarta_Sans } from "next/font/google";
+import { Inter, Nata_Sans, Plus_Jakarta_Sans } from "next/font/google";
 
 import type { Metadata, Viewport } from "next";
 
@@ -21,6 +21,12 @@ const secondaryFont = Plus_Jakarta_Sans({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-secondary",
+});
+
+export const appFont = Nata_Sans({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-app",
 });
 
 export const metadata: Metadata = {
@@ -72,7 +78,7 @@ export default function RootLayout({
       style={{ backgroundColor: "#fafafa" }}
     >
       <body
-        className={`${primaryFont.className} ${secondaryFont.variable} antialiased overflow-y-scroll text-text bg-background`}
+        className={`${primaryFont.className} ${secondaryFont.variable} ${appFont.variable} antialiased overflow-y-scroll text-text bg-background`}
       >
         <NextIntlClientProvider>
           <Providers>
