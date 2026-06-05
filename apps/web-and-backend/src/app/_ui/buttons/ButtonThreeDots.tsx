@@ -1,16 +1,18 @@
-import { FiPlus } from "react-icons/fi";
+import { BsThreeDots } from "react-icons/bs";
 import { twMerge } from "tailwind-merge";
 
 import ButtonCircle from "./ButtonCircle";
 
-function ButtonPlus({ ...props }: React.HTMLAttributes<HTMLButtonElement>) {
+function ButtonThreeDots({
+  ...props
+}: React.HTMLAttributes<HTMLButtonElement>) {
   const { className, ...rest } = props;
 
   return (
     <ButtonCircle className={twMerge("", className)} {...rest}>
-      <FiPlus size={22} />
+      <BsThreeDots size={17} />
     </ButtonCircle>
   );
 }
 
-export default ButtonPlus;
+export default ButtonThreeDots;
