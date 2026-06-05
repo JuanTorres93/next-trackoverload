@@ -1,4 +1,5 @@
 import {
+  AssembledDayDTO,
   CreateIngredientLineData,
   DayDTO,
   DayEntry,
@@ -185,6 +186,12 @@ export class ApplicationBackendService implements BackendService {
       dayIds,
       userId,
     );
+  }
+
+  async getMultipleAssembledDaysByIds(
+    dayIds: string[],
+  ): Promise<JSENDResponse<AssembledDayDTO[]>> {
+    return this.dayModule.getMultipleAssembledDaysByIds(dayIds);
   }
 
   async addMultipleMealsToDay(

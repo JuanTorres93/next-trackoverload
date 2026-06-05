@@ -123,4 +123,8 @@ export interface BackendService {
   getAssembledDayById(
     dayId: string,
   ): Promise<JSENDResponse<AssembledDayDTO | null>>;
+
+  getMultipleAssembledDaysByIds(
+    dayIds: string[],
+  ): Promise<JSENDResponse<AssembledDayDTO[]>>;
 }

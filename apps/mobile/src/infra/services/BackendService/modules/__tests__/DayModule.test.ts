@@ -197,4 +197,33 @@ describe("ApplicationBackendService - Day", () => {
     expect(assembledResp.status).toBe("success");
     expect(assembledResp.data).toHaveProperty("meals");
   });
+
+  it("should return null for non-existent assembled day id", async () => {
+    const assembledResp =
+      await backendService.getAssembledDayById("non-existent-id");
+
+    expect(assembledResp.status).toBe("success");
+    expect(assembledResp.data).toBeNull();
+  });
+
+  it("should get multiple assembled days by ids", async () => {
+    const resp1 = await backendService.createDay(10, 1, 2024, user.id);
+    const resp2 = await backendService.createDay(11, 1, 2024, user.id);
+
+    const day1 = resp1.data as DayDTO;
+    const day2 = resp2.data as DayDTO;
+
+    await backendService.addMultipleMealsToDay(day1.id, [recipe.id]);
+    await backendService.addMultipleMealsToDay(day2.id, [otherRecipe.id]);
+
+    const assembledResp = await backendService.getMultipleAssembledDaysByIds([
+      day1.id,
+      day2.id,
+    ]);
+
+    expect(assembledResp.status).toBe("success");
+    expect(Array.isArray(assembledResp.data)).toBe(true);
+    expect(assembledResp.data!.length).toBeGreaterThanOrEqual(2);
+    expect(assembledResp.data![0]).toHaveProperty("meals");
+  });
 });

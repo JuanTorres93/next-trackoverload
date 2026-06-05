@@ -156,4 +156,16 @@ export class DayModule {
 
     return response.json();
   }
+
+  async getMultipleAssembledDaysByIds(
+    dayIds: string[],
+  ): Promise<JSENDResponse<import("shared").AssembledDayDTO[]>> {
+    const idsParam = encodeURIComponent(dayIds.join(","));
+
+    const response = await fetch(
+      `${this.baseUrl}/day/assembled?ids=${idsParam}`,
+    );
+
+    return response.json();
+  }
 }
