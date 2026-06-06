@@ -3,11 +3,18 @@ import { twMerge } from "tailwind-merge";
 
 import ButtonCircle from "./ButtonCircle";
 
-function ButtonClose({ ...props }: React.HTMLAttributes<HTMLButtonElement>) {
+function ButtonClose({
+  popupVariant = false,
+  ...props
+}: { popupVariant?: boolean } & React.HTMLAttributes<HTMLButtonElement>) {
   const { className, ...rest } = props;
 
   return (
-    <ButtonCircle className={twMerge("bg-background", className)} {...rest}>
+    <ButtonCircle
+      className={twMerge("bg-background", className)}
+      popupVariant={popupVariant}
+      {...rest}
+    >
       <RxCross2 size={17} />
     </ButtonCircle>
   );

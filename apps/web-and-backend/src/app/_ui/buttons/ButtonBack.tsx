@@ -3,11 +3,18 @@ import { twMerge } from "tailwind-merge";
 
 import ButtonCircle from "./ButtonCircle";
 
-function ButtonBack({ ...props }: React.HTMLAttributes<HTMLButtonElement>) {
+function ButtonBack({
+  popupVariant = false,
+  ...props
+}: { popupVariant?: boolean } & React.HTMLAttributes<HTMLButtonElement>) {
   const { className, ...rest } = props;
 
   return (
-    <ButtonCircle className={twMerge("", className)} {...rest}>
+    <ButtonCircle
+      className={twMerge("", className)}
+      popupVariant={popupVariant}
+      {...rest}
+    >
       <MdOutlineArrowBack size={22} />
     </ButtonCircle>
   );

@@ -3,12 +3,21 @@ import { twMerge } from "tailwind-merge";
 
 import ButtonCircle from "./ButtonCircle";
 
-function ButtonPlus({ ...props }: React.HTMLAttributes<HTMLButtonElement>) {
+function ButtonPlus({
+  popupVariant = false,
+  ...props
+}: { popupVariant?: boolean } & React.HTMLAttributes<HTMLButtonElement>) {
   const { className, ...rest } = props;
 
+  const size = popupVariant ? 15 : 22;
+
   return (
-    <ButtonCircle className={twMerge("", className)} {...rest}>
-      <FiPlus size={22} />
+    <ButtonCircle
+      className={twMerge("", className)}
+      popupVariant={popupVariant}
+      {...rest}
+    >
+      <FiPlus size={size} />
     </ButtonCircle>
   );
 }
