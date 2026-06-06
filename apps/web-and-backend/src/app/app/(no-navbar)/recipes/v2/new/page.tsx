@@ -3,6 +3,7 @@ import { IngredientLineDTO } from "shared";
 import IngredientLine from "@/app/_features/recipe/redesign/IngredientLine";
 import MacroSummary from "@/app/_features/recipe/redesign/MacroSummary";
 import Screen from "@/app/_ui/Screen";
+import ButtonAction from "@/app/_ui/buttons/ButtonAction";
 import AppSectionTitle from "@/app/_ui/typography/AppSectionTitle";
 import AppSubsectionTitle from "@/app/_ui/typography/AppSubsectionTitle";
 import FormLabelInput from "@/app/_ui/user-input/FormLabelInput";
@@ -50,6 +51,8 @@ export default async function CreateRecipePage() {
         </div>
 
         <MacroSummary calories={calories} protein={protein} />
+
+        <ButtonAction>Guardar Receta</ButtonAction>
       </form>
     </Screen>
   );
