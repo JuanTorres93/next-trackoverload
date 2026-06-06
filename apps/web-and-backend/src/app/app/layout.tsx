@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import Navbar from "../_ui/Navbar/Navbar";
 import SideNav, {
   NavBar as SideNavNavBar,
   ToggleButton as SideNavToggle,
@@ -17,7 +18,7 @@ export default async function SidebarLayout({
   return (
     <div
       id="sidebar-layout"
-      className="grid grid-cols-[16rem_1fr] h-screen max-bp-navbar-mobile:flex max-bp-navbar-mobile:flex-col font-app bg-background-app"
+      className="grid grid-cols-[16rem_1fr] h-screen max-bp-navbar-mobile:flex max-bp-navbar-mobile:flex-col font-app bg-background-app relative"
     >
       <aside className="max-bp-navbar-mobile:absolute">
         <SideNav>
@@ -27,6 +28,8 @@ export default async function SidebarLayout({
       </aside>
 
       <main className="h-full overflow-y-auto">{children}</main>
+
+      <Navbar className="fixed bottom-0 w-full" />
     </div>
   );
 }

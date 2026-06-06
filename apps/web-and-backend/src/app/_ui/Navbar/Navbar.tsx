@@ -12,7 +12,7 @@ function Navbar({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={twMerge(
-        "flex flex-col items-center justify-end pb-5 h-36.5 relative",
+        "flex flex-col items-center justify-end pb-5 relative",
         className,
       )}
       {...rest}
@@ -53,7 +53,7 @@ function NavbarBackdrop({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={twMerge(
-        "absolute inset-0 bg-linear-to-t from-background-app to-transparent backdrop-blur-2xl mask-[linear-gradient(to_top,black,transparent)]",
+        "absolute bottom-0 left-0 h-36.5! w-full  bg-linear-to-t from-background-app from-13% to-transparent backdrop-blur-2xl mask-[linear-gradient(to_top,black_0%,black_13%,transparent)] pointer-events-none",
         className,
       )}
       {...rest}
