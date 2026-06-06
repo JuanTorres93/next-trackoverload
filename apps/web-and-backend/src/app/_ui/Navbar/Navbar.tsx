@@ -10,11 +10,19 @@ function Navbar({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
   return (
-    <div className={twMerge("", className)} {...rest}>
+    <div
+      className={twMerge(
+        "p-2.5 bg-secondary-app w-fit rounded-full gap-2.5 flex items-center",
+        className,
+      )}
+      {...rest}
+    >
       <ButtonRecipes isActive />
       <ButtonMeals />
 
+      <div></div>
       <ButtonHome />
+      <div></div>
 
       <ButtonExercise />
       <ButtonWeight />

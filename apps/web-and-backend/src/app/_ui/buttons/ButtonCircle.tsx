@@ -13,7 +13,7 @@ function ButtonCircle({
   return (
     <button
       className={twMerge(
-        `rounded-full ${popupVariant ? "bg-background-app p-1.5" : "p-2.5 bg-white"}`,
+        `rounded-full hover:cursor-pointer transition ${popupVariant ? "bg-background-app p-1.5" : "p-2.5 bg-white"}`,
         className,
       )}
       {...rest}

@@ -15,8 +15,9 @@ function ButtonNavbar({
   return (
     <ButtonCircle
       className={twMerge(
-        "p-4.25 bg-secondary-light-app text-white",
-        isActive && "bg-active-navbar text-secondary-app",
+        "p-4.25 bg-secondary-light-app text-white hover:bg-secondary-light-app/80",
+        isActive &&
+          "bg-active-navbar text-secondary-app hover:bg-active-navbar",
         className,
       )}
       {...rest}
