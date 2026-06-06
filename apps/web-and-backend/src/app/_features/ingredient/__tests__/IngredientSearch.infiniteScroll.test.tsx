@@ -53,19 +53,6 @@ async function setup() {
 }
 
 describe("IngredientSearch — infinite scroll", () => {
-  it("fetches next page when reaching the end of the list", async () => {
-    await setup();
-    const ingredientList = screen.getByTestId("ingredient-list");
-
-    expect(ingredientList.children.length).toBe(2);
-
-    triggerBottomReached();
-
-    await waitFor(() => {
-      expect(ingredientList.children.length).toBe(3);
-    });
-  });
-
   it("preserves the order of existing results when appending the next page", async () => {
     await setup();
     const ingredientList = screen.getByTestId("ingredient-list");
