@@ -1,6 +1,7 @@
 import Screen from "@/app/_ui/Screen";
 import Input from "@/app/_ui/user-input/Input";
 import Label from "@/app/_ui/user-input/Label";
+import SearchBar from "@/app/_ui/user-input/SearchBar";
 
 export const dynamic = "force-dynamic";
 
@@ -21,6 +22,8 @@ export default async function CreateRecipePage() {
           placeholder="Nombre de la receta"
         />
       </div>
+
+      <SearchBar placeholder="Buscar ingredientes..." />
     </Screen>
   );
 }
