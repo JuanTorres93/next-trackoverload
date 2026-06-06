@@ -1,4 +1,5 @@
 import Screen from "@/app/_ui/Screen";
+import FormLabelInput from "@/app/_ui/user-input/FormLabelInput";
 import Input from "@/app/_ui/user-input/Input";
 import Label from "@/app/_ui/user-input/Label";
 import SearchBar from "@/app/_ui/user-input/SearchBar";
@@ -13,15 +14,11 @@ export const metadata = {
 export default async function CreateRecipePage() {
   return (
     <Screen title="Crear Receta">
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="name">Nombre de la receta</Label>
-        <Input
-          type="text"
-          id="name"
-          name="name"
-          placeholder="Nombre de la receta"
-        />
-      </div>
+      <FormLabelInput
+        label="Nombre de la receta"
+        id="name"
+        placeholder="Nombre de la receta"
+      />
 
       <SearchBar placeholder="Buscar ingredientes..." />
     </Screen>
