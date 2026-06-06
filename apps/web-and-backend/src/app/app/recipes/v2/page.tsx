@@ -4,6 +4,7 @@ import { JSENDResponse } from "shared";
 import { getAllRecipesForLoggedInUser } from "@/app/_features/recipe/actions";
 import ErrorBox from "@/app/_ui/ErrorBox";
 import Header from "@/app/_ui/Header";
+import Navbar from "@/app/_ui/Navbar/Navbar";
 import PageWrapper from "@/app/_ui/PageWrapper";
 
 import RecipesDisplay from "../RecipesDisplay";
@@ -24,6 +25,7 @@ export default async function RecipesPage() {
   return (
     <PageWrapper className="max-w-5xl">
       <Header title="Recetas" />
+      <Navbar />
     </PageWrapper>
   );
 }
