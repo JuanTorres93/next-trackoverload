@@ -93,6 +93,19 @@
   --breakpoint-bp-new-recipe-page: 1024px;
 
   --breakpoint-bp-ingredient-search: 400px;
+
+  /* Animations */
+  --animate-slide-up: slide-up 250ms ease-out;
+
+  @keyframes slide-up {
+    from {
+      transform: translateY(100%);
+    }
+
+    to {
+      transform: translateY(0);
+    }
+  }
 }
 
 ::selection {

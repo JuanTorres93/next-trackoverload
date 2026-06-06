@@ -5,7 +5,7 @@ function PageWrapper({
   const { className, ...rest } = props;
 
   return (
-    <div className={`p-6 ${className}`} {...rest}>
+    <div className={`p-1.5 relative h-screen ${className}`} {...rest}>
       {children}
     </div>
   );
