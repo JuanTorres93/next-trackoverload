@@ -11,7 +11,7 @@ function Header({
   return (
     <header
       className={twMerge(
-        "relative h-33 max-w-95.25 w-full rounded-[26px] p-5 flex flex-col justify-end overflow-hidden",
+        "relative h-33 w-full rounded-[26px] p-5 flex flex-col justify-end overflow-hidden",
         className,
       )}
       {...rest}
