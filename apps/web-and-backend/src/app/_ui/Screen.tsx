@@ -23,7 +23,7 @@ function Screen({
     >
       <Header title={title} />
 
-      <div className="overflow-y-scroll">{children}</div>
+      <div className="px-5 overflow-y-scroll">{children}</div>
     </PageWrapper>
   );
 }

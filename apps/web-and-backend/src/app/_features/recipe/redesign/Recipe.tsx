@@ -18,7 +18,7 @@ function Recipe({
 
   return (
     <article
-      className={twMerge("max-w-42 flex flex-col gap-1.5", className)}
+      className={twMerge("min-w-42 flex flex-col gap-1.5", className)}
       {...rest}
     >
       <div className="relative overflow-hidden rounded-lg w-42 h-31.25">
