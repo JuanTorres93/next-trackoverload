@@ -6,7 +6,9 @@ import ButtonCircle from "./ButtonCircle";
 function ButtonNotifications({
   hasNotifications = true,
   ...props
-}: { hasNotifications?: boolean } & React.HTMLAttributes<HTMLButtonElement>) {
+}: {
+  hasNotifications?: boolean;
+} & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   const { className, ...rest } = props;
 
   return (

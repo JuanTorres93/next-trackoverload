@@ -6,7 +6,7 @@ import ButtonCircle from "./ButtonCircle";
 function ButtonClose({
   popupVariant = false,
   ...props
-}: { popupVariant?: boolean } & React.HTMLAttributes<HTMLButtonElement>) {
+}: { popupVariant?: boolean } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   const { className, ...rest } = props;
 
   return (

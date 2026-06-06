@@ -14,7 +14,7 @@ function SearchBar({ ...props }: React.InputHTMLAttributes<HTMLInputElement>) {
       )}
     >
       <HiMiniMagnifyingGlass className="" size={20} />
-      <Input className="px-0 border-none rounded-none" {...rest} />
+      <Input className="w-full px-0 border-none rounded-none" {...rest} />
     </div>
   );
 }

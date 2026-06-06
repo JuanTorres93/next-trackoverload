@@ -7,7 +7,7 @@ function ButtonCircle({
 }: {
   children?: React.ReactNode;
   popupVariant?: boolean;
-} & React.HTMLAttributes<HTMLButtonElement>) {
+} & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   const { className, ...rest } = props;
 
   return (

@@ -97,6 +97,12 @@ The reference architecture is Clean Architecture. These rules must remain in pla
 
 ## 4. Stack Invariants: TypeScript + ...
 
+- Keep names meaningfull and human readable. Use full names:
+  - Bad: `const g = Garment.create(...)`
+  - Good: `const garment = Garment.create(...)`
+  - Bad: `const setCalResp = await ...`
+  - Good: `const setCaloriesResponse = await ...`
+
 <!-- TODO IMPORTANT: Write as revisions are made -->
 
 ## 5. Invariants of This Reference Template

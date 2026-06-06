@@ -31,9 +31,6 @@ This checklist is a guide for human review. AI may help inspect the codebase, co
 
 ## Code cleanliness
 
-- [] Flag any single-character local identifiers; prefer full names:
-  - Bad: `const g = Garment.create(...)`
-  - Good: `const garment = Garment.create(...)`
 - [] No unused imports skeleton runtime and test environment conventions were preserved unless the plan explicitly changed them.
 
 ## Reference parity
