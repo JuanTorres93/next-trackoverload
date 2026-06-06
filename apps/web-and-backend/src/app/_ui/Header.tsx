@@ -1,11 +1,16 @@
 import { twMerge } from "tailwind-merge";
 
+import ButtonBack from "./buttons/ButtonBack";
 import ButtonPlus from "./buttons/ButtonPlus";
 
 function Header({
   title,
+  hasBackButton = false,
   ...props
-}: { title: string } & React.HTMLAttributes<HTMLDivElement>) {
+}: {
+  title: string;
+  hasBackButton?: boolean;
+} & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
   return (
@@ -17,7 +22,11 @@ function Header({
       {...rest}
     >
       <div className="relative z-10 flex items-center justify-between">
-        <h1 className="font-bold text-[22px]">{title}</h1>
+        <div className="flex items-center gap-3.75">
+          {hasBackButton && <ButtonBack />}
+
+          <h1 className="font-bold text-[22px]">{title}</h1>
+        </div>
 
         <ButtonPlus />
       </div>

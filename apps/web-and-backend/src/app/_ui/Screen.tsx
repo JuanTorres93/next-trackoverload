@@ -5,10 +5,12 @@ import PageWrapper from "./PageWrapper";
 
 function Screen({
   title,
+  hasBackButton = false,
   children,
   ...props
 }: {
   title: string;
+  hasBackButton?: boolean;
   children: React.ReactNode;
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
@@ -21,7 +23,7 @@ function Screen({
       )}
       {...rest}
     >
-      <Header title={title} />
+      <Header title={title} hasBackButton={hasBackButton} />
 
       <div className="px-5 overflow-y-scroll">{children}</div>
     </PageWrapper>

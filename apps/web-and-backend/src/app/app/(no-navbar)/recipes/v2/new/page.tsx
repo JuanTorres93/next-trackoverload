@@ -16,7 +16,7 @@ export const metadata = {
 
 export default async function CreateRecipePage() {
   return (
-    <Screen title="Crear Receta">
+    <Screen title="Crear Receta" hasBackButton>
       <form className="flex flex-col gap-6.5" action="">
         <FormLabelInput
           label="Nombre de la receta"
