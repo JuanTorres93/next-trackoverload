@@ -1,11 +1,13 @@
 import { IngredientLineDTO } from "shared";
 
 import IngredientLine from "@/app/_features/recipe/redesign/IngredientLine";
+import MacroSummary from "@/app/_features/recipe/redesign/MacroSummary";
 import Screen from "@/app/_ui/Screen";
 import AppSectionTitle from "@/app/_ui/typography/AppSectionTitle";
 import AppSubsectionTitle from "@/app/_ui/typography/AppSubsectionTitle";
 import FormLabelInput from "@/app/_ui/user-input/FormLabelInput";
 import SearchBar from "@/app/_ui/user-input/SearchBar";
+import { formatToInteger } from "@/app/_utils/format/formatToInteger";
 
 export const dynamic = "force-dynamic";
 
@@ -15,6 +17,13 @@ export const metadata = {
 };
 
 export default async function CreateRecipePage() {
+  const calories = formatToInteger(
+    mockIngredientLines.reduce((sum, line) => sum + line.calories, 0),
+  );
+  const protein = formatToInteger(
+    mockIngredientLines.reduce((sum, line) => sum + line.protein, 0),
+  );
+
   return (
     <Screen title="Crear Receta" hasBackButton>
       <form className="flex flex-col gap-6.5" action="">
@@ -39,6 +48,8 @@ export default async function CreateRecipePage() {
             </div>
           </div>
         </div>
+
+        <MacroSummary calories={calories} protein={protein} />
       </form>
     </Screen>
   );
