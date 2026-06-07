@@ -1,25 +1,24 @@
-import { RecipeDTO } from "shared";
+import { MealDTO } from "shared";
 import { twMerge } from "tailwind-merge";
 
-import Recipe from "@/app/_features/recipe/redesign/Recipe";
-
 import FoodGrid from "../../common/redesign/FoodGrid";
+import Meal from "./Meal";
 
-function RecipesGrid({
-  recipes,
+function MealsGrid({
+  meals,
   ...props
 }: {
-  recipes: RecipeDTO[];
+  meals: MealDTO[];
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
   return (
     <FoodGrid className={twMerge("", className)} {...rest}>
-      {recipes.map((recipe) => (
-        <Recipe key={recipe.id} recipe={recipe} />
+      {meals.map((meal) => (
+        <Meal key={meal.id} meal={meal} />
       ))}
     </FoodGrid>
   );
 }
 
-export default RecipesGrid;
+export default MealsGrid;

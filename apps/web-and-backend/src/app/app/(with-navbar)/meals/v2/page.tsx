@@ -4,7 +4,7 @@ import {
   AssembledDayResult,
   getAssembledDayById,
 } from "@/app/_features/day/actions";
-import Meal from "@/app/_features/meal/redesign/Meal";
+import MealsGrid from "@/app/_features/meal/redesign/MealsGrid";
 import Screen from "@/app/_ui/Screen";
 import { dateToDayId } from "@/domain/value-objects/DayId/DayId";
 
@@ -55,9 +55,7 @@ export default async function RecipesPage() {
     <Screen title="Comidas">
       <DateHeader />
 
-      {meals.map((meal) => (
-        <Meal key={meal.id} meal={meal} />
-      ))}
+      <MealsGrid meals={meals} />
     </Screen>
   );
 }
