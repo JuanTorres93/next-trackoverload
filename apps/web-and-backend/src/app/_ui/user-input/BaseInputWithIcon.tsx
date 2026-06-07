@@ -4,8 +4,12 @@ import Input from "./Input";
 
 function BaseInputWithIcon({
   icon,
+  iconAfter,
   ...props
-}: { icon: React.ReactNode } & React.InputHTMLAttributes<HTMLInputElement>) {
+}: {
+  icon: React.ReactNode;
+  iconAfter?: React.ReactNode;
+} & React.InputHTMLAttributes<HTMLInputElement>) {
   const { className, ...rest } = props;
 
   return (
@@ -18,6 +22,8 @@ function BaseInputWithIcon({
       {icon}
 
       <Input className="w-full px-0 border-none rounded-none" {...rest} />
+
+      {iconAfter}
     </div>
   );
 }
