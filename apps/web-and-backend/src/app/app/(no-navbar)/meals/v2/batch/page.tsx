@@ -1,4 +1,7 @@
-import DaySelector from "@/app/_features/meal/redesign/DaySelector";
+import DaySelector, {
+  DaySelectorProvider,
+  SelectedDays,
+} from "@/app/_features/meal/redesign/DaySelector";
 import Screen from "@/app/_ui/Screen";
 import ButtonAction from "@/app/_ui/buttons/ButtonAction";
 import AppSectionTitle from "@/app/_ui/typography/AppSectionTitle";
@@ -19,7 +22,10 @@ export default async function BatchLoggingPage() {
       >
         <AppSectionTitle>Selecciona un rango de fechas</AppSectionTitle>
 
-        <DaySelector />
+        <DaySelectorProvider>
+          <DaySelector />
+          <SelectedDays />
+        </DaySelectorProvider>
 
         <ButtonAction className="self-end">Seleccionar comidas</ButtonAction>
       </form>
