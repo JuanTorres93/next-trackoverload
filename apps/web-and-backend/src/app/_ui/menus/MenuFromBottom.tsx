@@ -1,6 +1,6 @@
 import { twMerge } from "tailwind-merge";
 
-import ButtonClose from "../buttons/ButtonClose";
+import SliderMenu from "./SliderMenu";
 
 function MenuFromBottom({
   title,
@@ -18,31 +18,8 @@ function MenuFromBottom({
 
   return (
     <Backdrop className={twMerge("", className)} {...rest}>
-      <Menu title={title}>{children}</Menu>
+      <SliderMenu title={title}>{children}</SliderMenu>
     </Backdrop>
-  );
-}
-
-function Menu({
-  title,
-  children,
-  ...props
-}: {
-  title: string;
-  children?: React.ReactNode;
-} & React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div
-      className="absolute bottom-0 flex flex-col gap-5 w-full p-5 bg-white rounded-t-[30px] animate-slide-up"
-      {...props}
-    >
-      <header className="flex items-center justify-between">
-        <h2 className="font-bold text-[20px]">{title}</h2>
-
-        <ButtonClose />
-      </header>
-      {children}
-    </div>
   );
 }
 
