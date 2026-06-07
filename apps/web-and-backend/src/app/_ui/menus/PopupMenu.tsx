@@ -9,7 +9,7 @@ function PopupMenu({
   return (
     <div
       className={twMerge(
-        "p-2.5 absolute rounded-xl shadow-md bg-white flex flex-col gap-2 font-medium text-[14px] min-w-34.25",
+        "p-2.5 z-20 absolute rounded-xl shadow-lg bg-white flex flex-col gap-2 font-medium text-[14px] min-w-34.25",
         className,
       )}
       {...rest}
