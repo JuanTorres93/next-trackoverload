@@ -10,6 +10,7 @@ function EmailInput({ ...props }: React.InputHTMLAttributes<HTMLInputElement>) {
     <BaseInputWithIcon
       className={twMerge("", className)}
       icon={<HiOutlineEnvelope className="" size={20} />}
+      placeholder="Introduce tu email"
       {...rest}
     />
   );
