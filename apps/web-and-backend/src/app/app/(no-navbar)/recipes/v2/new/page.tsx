@@ -1,6 +1,7 @@
 import { IngredientLineDTO } from "shared";
 
 import IngredientLine from "@/app/_features/recipe/redesign/IngredientLine";
+import ListFoundIngredient from "@/app/_features/recipe/redesign/ListFoundIngredient";
 import MacroSummary from "@/app/_features/recipe/redesign/MacroSummary";
 import Screen from "@/app/_ui/Screen";
 import ButtonAction from "@/app/_ui/buttons/ButtonAction";
@@ -42,6 +43,13 @@ export default async function CreateRecipePage() {
 
           <SearchBar placeholder="Buscar ingredientes..." />
 
+          <ListFoundIngredient
+            ingredients={[
+              mockIngredient,
+              { ...mockIngredient, id: "2", name: "Lechuga" },
+            ]}
+          />
+
           <div className="pt-3">
             <AppSubsectionTitle>Ingredientes seleccionados:</AppSubsectionTitle>
 
@@ -61,19 +69,23 @@ export default async function CreateRecipePage() {
   );
 }
 
+const mockIngredient = {
+  id: "1",
+  category: "Vegetales",
+  name: "Tomate",
+  nutritionalInfoPer100g: {
+    calories: 18,
+    protein: 0.9,
+  },
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+};
+
 const mockIngredientLines: IngredientLineDTO[] = [
   {
     id: "1",
     ingredient: {
-      id: "1",
-      category: "Vegetales",
-      name: "Tomate",
-      nutritionalInfoPer100g: {
-        calories: 18,
-        protein: 0.9,
-      },
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      ...mockIngredient,
     },
     calories: 18,
     protein: 0.9,

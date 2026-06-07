@@ -11,7 +11,7 @@ function BaseButton({
   return (
     <button
       className={twMerge(
-        "font-semibold py-2.5 border border-secondary-app rounded-full text-[16px]",
+        "font-semibold py-2.5 border border-secondary-app rounded-full text-[16px] hover:cursor-pointer",
         className,
       )}
       {...rest}
