@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { DateRange, DayPicker, getDefaultClassNames } from "@daypicker/react";
 import "@daypicker/react/style.css";
@@ -11,10 +11,6 @@ function DaySelector({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const defaultClassNames = getDefaultClassNames();
 
   const [selected, setSelected] = useState<DateRange>();
-
-  useEffect(() => {
-    console.log("Selected range:", selected);
-  }, [selected]);
 
   return (
     <div className={twMerge("", className)} {...rest}>
@@ -28,6 +24,9 @@ function DaySelector({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
           range_start: `bg-primary-light-app rounded-none rounded-l-full`,
           range_end: `bg-primary-light-app rounded-none rounded-r-full`,
           range_middle: `bg-primary-light-app rounded-none`,
+
+          caption_label: `${defaultClassNames.caption_label} font-semibold text-[18px]`,
+          weekday: `${defaultClassNames.weekday} text-text-minor-emphasis-app font-semibold text-[14px]`,
 
           chevron: `${defaultClassNames.chevron} fill-secondary-app!`,
 
