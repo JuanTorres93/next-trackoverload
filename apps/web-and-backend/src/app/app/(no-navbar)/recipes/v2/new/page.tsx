@@ -27,7 +27,10 @@ export default async function CreateRecipePage() {
 
   return (
     <Screen title="Crear Receta" hasBackButton>
-      <form className="flex flex-col gap-6.5" action="">
+      <form
+        className="grid grid-cols-1 grid-rows-[min-content_min-content_min-content_1fr] gap-6.5 h-full"
+        action=""
+      >
         <FormLabelInput
           label="Nombre de la receta"
           id="name"
@@ -52,7 +55,7 @@ export default async function CreateRecipePage() {
 
         <MacroSummary calories={calories} protein={protein} />
 
-        <ButtonAction>Guardar Receta</ButtonAction>
+        <ButtonAction className="self-end">Guardar Receta</ButtonAction>
       </form>
     </Screen>
   );
