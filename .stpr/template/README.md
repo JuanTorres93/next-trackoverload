@@ -47,6 +47,9 @@ When selecting a reference, first decide whether it is:
     - `__tests__`: general repository contract for all implementations of a given repo type to fulfill
     - `services`: implementation of the services interfaces defined in lower layers.
     - `react`: implementation and general styling and use of react components, reusable patterns, DRY, tests, etc.
+      - `FoundIngredient`: example of using a DTO in a react component
+      - `MacroSummary`: use of gradients and masks of artistic effect
+      - `buttons, menus`: example of separating responsibilities in UI elements
 
   - `interface-adapters`
     - `common`:
