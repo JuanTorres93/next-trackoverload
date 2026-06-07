@@ -46,6 +46,7 @@ When selecting a reference, first decide whether it is:
     - `repos`: repository implementations
     - `__tests__`: general repository contract for all implementations of a given repo type to fulfill
     - `services`: implementation of the services interfaces defined in lower layers.
+    - `react`: implementation and general styling and use of react components, reusable patterns, DRY, tests, etc.
 
   - `interface-adapters`
     - `common`:

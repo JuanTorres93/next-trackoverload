@@ -95,13 +95,15 @@ The reference architecture is Clean Architecture. These rules must remain in pla
 - Every new value object with `create()` must have a unit test unless the plan explicitly waives it.
 - Missing tests required by the change invalidate completion of execution.
 
-## 4. Stack Invariants: TypeScript + ...
+## 4. Stack Invariants: TypeScript + NextJS ...
 
 - Keep names meaningfull and human readable. Use full names:
   - Bad: `const g = Garment.create(...)`
   - Good: `const garment = Garment.create(...)`
   - Bad: `const setCalResp = await ...`
   - Good: `const setCaloriesResponse = await ...`
+
+- Use full DTOs in components.
 
 <!-- TODO IMPORTANT: Write as revisions are made -->
 
