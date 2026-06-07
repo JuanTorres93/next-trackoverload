@@ -3,5 +3,5 @@ export default function AuthLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <div className="bg-primary-app">{children}</div>;
+  return <div className="bg-primary-app font-app">{children}</div>;
 }

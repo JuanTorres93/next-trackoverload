@@ -27,6 +27,7 @@ function SliderMenu({
 
         {showCloseButton && <ButtonClose />}
       </header>
+
       {children}
     </div>
   );

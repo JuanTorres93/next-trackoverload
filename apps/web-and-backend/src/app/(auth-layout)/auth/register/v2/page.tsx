@@ -5,13 +5,13 @@ export const metadata = {
   description: "Página de inicio de sesión",
 };
 
-export default function LoginPage() {
+export default function RegisterPage() {
   return (
     <AuthPageWrapper
-      title="Bienvenido de nuevo!"
+      title="Bienvenido a Cimientos"
       subtitle="Introduce tu email y contraseña para continuar."
     >
-      LOGIN
+      REGISTER
     </AuthPageWrapper>
   );
 }
