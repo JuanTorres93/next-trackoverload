@@ -1,3 +1,5 @@
+import LoginForm from "@/app/_features/auth/redesign/LoginForm";
+
 import AuthPageWrapper from "../../redesign/AuthPageWrapper";
 
 export const metadata = {
@@ -11,7 +13,7 @@ export default function LoginPage() {
       title="Bienvenido de nuevo!"
       subtitle="Introduce tu email y contraseña para continuar."
     >
-      LOGIN
+      <LoginForm />
     </AuthPageWrapper>
   );
 }

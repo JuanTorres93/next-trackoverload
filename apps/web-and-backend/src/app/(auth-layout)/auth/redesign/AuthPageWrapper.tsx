@@ -19,7 +19,7 @@ function AuthPageWrapper({
     <div className={twMerge("", className)} {...rest}>
       <PageWrapper className="h-screen p-0!">
         <SliderMenu
-          className="h-[75%] animate-none! pt-7.5"
+          className="h-[75%] animate-none! pt-7.5 [&_h2]:text-[24px]"
           title={title}
           showCloseButton={false}
         >

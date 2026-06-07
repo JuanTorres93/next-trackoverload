@@ -1,8 +1,10 @@
+import RegisterForm from "@/app/_features/auth/redesign/RegisterForm";
+
 import AuthPageWrapper from "../../redesign/AuthPageWrapper";
 
 export const metadata = {
-  title: "Iniciar sesión",
-  description: "Página de inicio de sesión",
+  title: "Registrarse",
+  description: "Página de registro",
 };
 
 export default function RegisterPage() {
@@ -11,7 +13,7 @@ export default function RegisterPage() {
       title="Bienvenido a Cimientos"
       subtitle="Introduce tu email y contraseña para continuar."
     >
-      REGISTER
+      <RegisterForm />
     </AuthPageWrapper>
   );
 }
