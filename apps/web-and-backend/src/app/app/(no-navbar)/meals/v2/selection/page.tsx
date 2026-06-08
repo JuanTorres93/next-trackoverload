@@ -1,11 +1,8 @@
 import { JSENDResponse, RecipeDTO } from "shared";
 
 import { getAllRecipesForLoggedInUser } from "@/app/_features/recipe/actions";
-import RecipeSelector from "@/app/_features/recipe/redesign/RecipeSelector";
+import RecipeSelectionForm from "@/app/_features/recipe/redesign/RecipeSelectionForm";
 import Screen from "@/app/_ui/Screen";
-import ButtonAction from "@/app/_ui/buttons/ButtonAction";
-
-import DateHeader from "./DateHeader";
 
 export const dynamic = "force-dynamic";
 
@@ -25,37 +22,7 @@ export default async function SelectMealsPage() {
 
   return (
     <Screen title="Selecciona recetas para registrar" hasBackButton>
-      <form
-        className="grid grid-cols-1 grid-rows-[min-content_min-content_min-content_1fr] gap-3 h-full"
-        action=""
-      >
-        <DateHeader />
-
-        <section className="flex flex-col gap-4.5">
-          <h2 className="text-[20px] font-semibold">
-            Selecciona las comidas a registrar
-          </h2>
-
-          {hasError && (
-            <span>
-              Hubo un error al cargar tus recetas. Por favor, inténtalo de nuevo
-              más tarde.
-            </span>
-          )}
-
-          {!hasError && (
-            <ul className="flex flex-col items-stretch gap-3">
-              {recipes.map((recipe) => (
-                <li key={recipe.id}>
-                  <RecipeSelector recipe={recipe} />
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
-
-        <ButtonAction className="self-end">Registrar comidas</ButtonAction>
-      </form>
+      <RecipeSelectionForm hasError={hasError} recipes={recipes} />
     </Screen>
   );
 }
