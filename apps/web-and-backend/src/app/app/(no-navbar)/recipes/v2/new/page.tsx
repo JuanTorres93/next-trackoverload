@@ -33,7 +33,7 @@ export default async function CreateRecipePage() {
         className="grid grid-cols-1 grid-rows-[min-content_min-content_min-content_1fr] gap-6.5 h-full"
         action=""
       >
-        <FormLabelInput label="Nombre de la receta">
+        <FormLabelInput htmlFor="name" label="Nombre de la receta">
           <Input id="name" placeholder="Nombre de la receta" type="text" />
         </FormLabelInput>
 
