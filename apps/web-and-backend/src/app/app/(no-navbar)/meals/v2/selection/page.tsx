@@ -1,9 +1,7 @@
 import { JSENDResponse, RecipeDTO } from "shared";
 
-import DaySelector, {
-  SelectedDays,
-} from "@/app/_features/meal/redesign/DaySelector";
 import { getAllRecipesForLoggedInUser } from "@/app/_features/recipe/actions";
+import RecipeSelector from "@/app/_features/recipe/redesign/RecipeSelector";
 import Screen from "@/app/_ui/Screen";
 import ButtonAction from "@/app/_ui/buttons/ButtonAction";
 
@@ -49,7 +47,7 @@ export default async function SelectMealsPage() {
             <ul>
               {recipes.map((recipe) => (
                 <li key={recipe.id} className="flex items-center gap-4">
-                  <span>{recipe.name}</span>
+                  <RecipeSelector recipe={recipe} />
                 </li>
               ))}
             </ul>
