@@ -1,3 +1,4 @@
+import AuthFooter from "@/app/_features/auth/redesign/AuthFooter";
 import LoginForm from "@/app/_features/auth/redesign/LoginForm";
 
 import AuthPageWrapper from "../../redesign/AuthPageWrapper";
@@ -14,6 +15,13 @@ export default function LoginPage() {
       subtitle="Introduce tu email y contraseña para continuar."
     >
       <LoginForm />
+
+      <AuthFooter
+        className="mt-auto"
+        text="¿No tienes una cuenta? "
+        linkText="Regístrate"
+        linkHref="/auth/register"
+      />
     </AuthPageWrapper>
   );
 }

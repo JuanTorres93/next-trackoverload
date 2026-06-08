@@ -8,11 +8,11 @@ import TextLink from "@/app/_ui/typography/TextLink";
 import EmailInput from "@/app/_ui/user-input/EmailInput";
 import PasswordInput from "@/app/_ui/user-input/PasswordInput";
 
-function LoginForm({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
+function LoginForm({ ...props }: React.FormHTMLAttributes<HTMLFormElement>) {
   const { className, ...rest } = props;
 
   return (
-    <div className={twMerge("flex flex-col gap-4.5", className)} {...rest}>
+    <form className={twMerge("flex flex-col gap-4.5", className)} {...rest}>
       <FormLabelInput htmlFor="email" label="Correo electrónico">
         <EmailInput id="email" />
       </FormLabelInput>
@@ -22,13 +22,14 @@ function LoginForm({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
           <PasswordInput id="password" />
         </FormLabelInput>
 
-        <TextLink className="ml-auto">Forgot password?</TextLink>
+        {/* TODO IMPORTANT: uncomment when implementing password recovery */}
+        {/* <TextLink className="ml-auto">Forgot password?</TextLink> */}
       </div>
 
       <div></div>
 
       <ButtonAction>Iniciar sesión</ButtonAction>
-    </div>
+    </form>
   );
 }
 
