@@ -52,18 +52,11 @@ export function SelectedDays({
 }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
-  const { selected } = useDaySelector();
+  const { daysCount, getFormattedRangeString } = useDaySelector();
 
-  if (!selected) return null;
+  const daysRangeString = getFormattedRangeString();
 
-  const from = selected.from;
-  const to = selected.to;
-
-  if (!from || !to) return null;
-
-  const daysRangeString = formatDateRange(from, to);
-  const daysCount =
-    Math.round((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+  if (!daysRangeString) return null;
 
   return (
     <aside
@@ -93,9 +86,13 @@ export function SelectedDays({
 const DaySelectorContext = createContext<{
   selected: DateRange | undefined;
   setSelected: React.Dispatch<React.SetStateAction<DateRange | undefined>>;
+  daysCount: number;
+  getFormattedRangeString: () => string;
 }>({
   selected: undefined,
   setSelected: () => {},
+  daysCount: 0,
+  getFormattedRangeString: () => "",
 });
 
 export function DaySelectorProvider({
@@ -105,14 +102,36 @@ export function DaySelectorProvider({
 }) {
   const [selected, setSelected] = useState<DateRange>();
 
+  const daysCount =
+    selected?.from && selected?.to
+      ? Math.round(
+          (selected.to.getTime() - selected.from.getTime()) /
+            (1000 * 60 * 60 * 24),
+        ) + 1
+      : 0;
+
+  function getFormattedRangeString() {
+    if (!selected) return "";
+
+    const from = selected.from;
+    const to = selected.to;
+
+    if (!from || !to) return "";
+
+    const daysRangeString = formatDateRange(from, to);
+    return daysRangeString;
+  }
+
   return (
-    <DaySelectorContext.Provider value={{ selected, setSelected }}>
+    <DaySelectorContext.Provider
+      value={{ selected, setSelected, daysCount, getFormattedRangeString }}
+    >
       {children}
     </DaySelectorContext.Provider>
   );
 }
 
-function useDaySelector() {
+export function useDaySelector() {
   const context = useContext(DaySelectorContext);
   if (context === undefined) {
     throw new Error("useDaySelector must be used within a DaySelectorProvider");
