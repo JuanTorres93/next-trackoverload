@@ -21,7 +21,7 @@ function Food({
       className={twMerge("min-w-42 flex flex-col gap-1.5", className)}
       {...rest}
     >
-      <div className="relative overflow-hidden rounded-lg w-42 h-31.25">
+      <figure className="relative overflow-hidden rounded-lg w-42 h-31.25">
         <Image
           src={food.imageUrl || defaultImage}
           alt={food.name}
@@ -30,15 +30,15 @@ function Food({
         />
 
         <ButtonThreeDots className="absolute top-2 right-2" />
-      </div>
+      </figure>
 
-      <div className="flex flex-col gap-0.5">
+      <hgroup className="flex flex-col gap-0.5">
         <h3 className="font-semibold text-[16px]">{food.name}</h3>
 
         <span className="text-[14px] text-text-minor-emphasis-app">
           {calories} kcal · {protein} g proteína
         </span>
-      </div>
+      </hgroup>
     </article>
   );
 }

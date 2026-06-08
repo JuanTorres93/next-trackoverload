@@ -8,6 +8,7 @@ function SearchBar({ ...props }: React.InputHTMLAttributes<HTMLInputElement>) {
 
   return (
     <BaseInputWithIcon
+      as="search"
       className={twMerge("", className)}
       icon={<HiMiniMagnifyingGlass className="" size={20} />}
       {...rest}

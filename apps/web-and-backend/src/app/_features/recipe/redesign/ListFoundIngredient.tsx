@@ -8,11 +8,11 @@ function ListFoundIngredient({
   ...props
 }: {
   ingredients: IngredientDTO[];
-} & React.HTMLAttributes<HTMLDivElement>) {
+} & React.HTMLAttributes<HTMLUListElement>) {
   const { className, ...rest } = props;
 
   return (
-    <div
+    <ul
       className={twMerge(
         "bg-white p-2.5 rounded-xl shadow-md flex flex-col gap-2.5",
         className,
@@ -20,9 +20,11 @@ function ListFoundIngredient({
       {...rest}
     >
       {ingredients.map((ingredient) => (
-        <FoundIngredient key={ingredient.id} ingredient={ingredient} />
+        <li key={ingredient.id}>
+          <FoundIngredient ingredient={ingredient} />
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }
 

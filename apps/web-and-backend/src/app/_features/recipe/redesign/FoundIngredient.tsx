@@ -14,7 +14,7 @@ function FoundIngredient({
   const protein = formatToInteger(ingredient.nutritionalInfoPer100g.protein);
 
   return (
-    <div
+    <aside
       className={twMerge(
         "grid grid-cols-[1fr_max-content] bg-background-app p-2.5 rounded-xl",
         className,
@@ -30,7 +30,7 @@ function FoundIngredient({
       </div>
 
       <ButtonAdd type="button" />
-    </div>
+    </aside>
   );
 }
 

@@ -66,7 +66,7 @@ export function SelectedDays({
     Math.round((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24)) + 1;
 
   return (
-    <div
+    <aside
       className={twMerge(
         "grid grid-cols-[max-content_1fr_max-content] items-center gap-2.5 p-2.5 bg-white rounded-xl",
         className,
@@ -81,11 +81,12 @@ export function SelectedDays({
         <span className="text-text-minor-emphasis-app font-medium text-[12px]">
           Rango seleccionado
         </span>
-        <span className="font-semibold text-[16px]">{daysRangeString}</span>
+
+        <time className="font-semibold text-[16px]">{daysRangeString}</time>
       </div>
 
       <span className="font-medium text-[12px]">{daysCount} días</span>
-    </div>
+    </aside>
   );
 }
 

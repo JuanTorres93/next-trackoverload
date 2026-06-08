@@ -15,7 +15,7 @@ function SliderMenu({
   const { className, ...rest } = props;
 
   return (
-    <div
+    <menu
       className={twMerge(
         "absolute bottom-0 flex flex-col gap-5 w-full p-5 bg-white rounded-t-[30px] animate-slide-up",
         className,
@@ -29,7 +29,7 @@ function SliderMenu({
       </header>
 
       {children}
-    </div>
+    </menu>
   );
 }
 

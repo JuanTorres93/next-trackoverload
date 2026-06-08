@@ -7,7 +7,7 @@ function PopupMenu({
   const { className, ...rest } = props;
 
   return (
-    <div
+    <menu
       className={twMerge(
         "p-2.5 z-20 absolute rounded-xl shadow-lg bg-white flex flex-col gap-2 font-medium text-[14px] min-w-34.25",
         className,
@@ -15,7 +15,7 @@ function PopupMenu({
       {...rest}
     >
       {children}
-    </div>
+    </menu>
   );
 }
 
@@ -26,15 +26,15 @@ export function PopupMenuItem({
 }: {
   icon: React.ReactNode;
   text: string;
-} & React.HTMLAttributes<HTMLDivElement>) {
+} & React.HTMLAttributes<HTMLLIElement>) {
   const { className, ...rest } = props;
 
   return (
-    <div className={twMerge("flex items-center gap-2", className)} {...rest}>
+    <li className={twMerge("flex items-center gap-2", className)} {...rest}>
       <span className="">{icon}</span>
 
       <span>{text}</span>
-    </div>
+    </li>
   );
 }
 

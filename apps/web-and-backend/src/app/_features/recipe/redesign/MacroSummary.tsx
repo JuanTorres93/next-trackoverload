@@ -56,13 +56,13 @@ function SquaresPattern({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
   return (
-    <div
+    <summary
       className={twMerge(
         "size-36.5 opacity-11 [background:repeating-conic-gradient(transparent_0_90deg,white_0_180deg)_0_0/50%_50%] mask-[linear-gradient(to_left,black_0%,black_10%,transparent)]",
         className,
       )}
       {...rest}
-    ></div>
+    ></summary>
   );
 }
 
