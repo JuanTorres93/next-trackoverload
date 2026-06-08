@@ -1,6 +1,6 @@
 import { twMerge } from "tailwind-merge";
 
-import Header from "./Header";
+import ScreenHeader from "./Header";
 import PageWrapper from "./PageWrapper";
 
 function Screen({
@@ -23,7 +23,7 @@ function Screen({
       )}
       {...rest}
     >
-      <Header title={title} hasBackButton={hasBackButton} />
+      <ScreenHeader title={title} hasBackButton={hasBackButton} />
 
       <div className="px-5 overflow-y-scroll">{children}</div>
     </PageWrapper>

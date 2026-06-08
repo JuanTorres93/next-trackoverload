@@ -3,7 +3,7 @@ import { twMerge } from "tailwind-merge";
 import ButtonBack from "./buttons/ButtonBack";
 import ButtonPlus from "./buttons/ButtonPlus";
 
-function Header({
+function ScreenHeader({
   title,
   hasBackButton = false,
   ...props
@@ -37,4 +37,4 @@ function Header({
   );
 }
 
-export default Header;
+export default ScreenHeader;

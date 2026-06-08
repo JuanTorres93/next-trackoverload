@@ -6,8 +6,10 @@ import { RecipeDTO } from "shared";
 import { twMerge } from "tailwind-merge";
 
 import ButtonAction from "@/app/_ui/buttons/ButtonAction";
-import DateHeader from "@/app/app/(with-navbar)/meals/v2/DateHeader";
+import AppSectionTitle from "@/app/_ui/typography/AppSectionTitle";
+import AppSubsectionTitle from "@/app/_ui/typography/AppSubsectionTitle";
 
+import { useDaySelector } from "../../meal/redesign/DaySelector";
 import RecipeSelector from "./RecipeSelector";
 
 function RecipeSelectionForm({
@@ -21,6 +23,7 @@ function RecipeSelectionForm({
   const { className, ...rest } = props;
 
   const [selectedRecipesIds, setSelectedRecipesIds] = useState<string[]>([]);
+  const { getFormattedRangeString, daysCount } = useDaySelector();
 
   const selectedRecipesCount = selectedRecipesIds.length;
 
@@ -41,12 +44,21 @@ function RecipeSelectionForm({
   return (
     <form
       className={twMerge(
-        "grid grid-cols-1 grid-rows-[min-content_1fr_min-content] gap-3 h-full",
+        "grid grid-cols-1 grid-rows-[min-content_1fr_min-content] gap-5.5 h-full",
         className,
       )}
       {...rest}
     >
-      <DateHeader />
+      <section>
+        <AppSubsectionTitle className="pb-1.5">
+          {daysCount} día{daysCount > 1 && "s"} seleccionado
+          {daysCount > 1 && "s"}
+        </AppSubsectionTitle>
+
+        <AppSectionTitle className="pb-0">
+          {getFormattedRangeString()}
+        </AppSectionTitle>
+      </section>
 
       <section className="grid grid-cols-1 grid-rows-[min-content_1fr] gap-4.5 overflow-hidden">
         <h2 className="text-[20px] font-semibold">

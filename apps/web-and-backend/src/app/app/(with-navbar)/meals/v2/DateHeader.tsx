@@ -12,6 +12,7 @@ function DateHeader({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div className={twMerge("", className)} {...rest}>
       <AppSubsectionTitle className="pb-1.5">Hoy</AppSubsectionTitle>
+
       <AppSectionTitle className="pb-5.5">{todayFormatted}</AppSectionTitle>
     </div>
   );
