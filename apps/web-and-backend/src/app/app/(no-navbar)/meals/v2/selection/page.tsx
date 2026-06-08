@@ -44,9 +44,9 @@ export default async function SelectMealsPage() {
           )}
 
           {!hasError && (
-            <ul>
+            <ul className="flex flex-col items-stretch gap-3">
               {recipes.map((recipe) => (
-                <li key={recipe.id} className="flex items-center gap-4">
+                <li key={recipe.id}>
                   <RecipeSelector recipe={recipe} />
                 </li>
               ))}
