@@ -12,6 +12,7 @@ function BaseButton({
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   const { className, ...rest } = props;
 
+  // TODO: disabled state for links and button
   if (href) {
     return (
       <Link
