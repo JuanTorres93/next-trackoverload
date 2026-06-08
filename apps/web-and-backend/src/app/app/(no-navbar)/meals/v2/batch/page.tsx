@@ -24,7 +24,13 @@ export default async function BatchLoggingPage() {
         <DaySelector />
         <SelectedDays />
 
-        <ButtonAction className="self-end">Seleccionar comidas</ButtonAction>
+        <ButtonAction
+          // TODO: remove v2 when redesign is done
+          href="/app/meals/v2/selection"
+          className="self-end"
+        >
+          Ir a seleccionar comidas
+        </ButtonAction>
       </form>
     </Screen>
   );

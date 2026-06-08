@@ -33,7 +33,7 @@ export default async function SelectMealsPage() {
       >
         <DateHeader />
 
-        <section>
+        <section className="flex flex-col gap-4.5">
           <h2 className="text-[20px] font-semibold">
             Selecciona las comidas a registrar
           </h2>

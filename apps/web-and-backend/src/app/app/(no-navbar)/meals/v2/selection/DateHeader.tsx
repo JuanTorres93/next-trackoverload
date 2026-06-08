@@ -18,7 +18,7 @@ function DateHeader({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
         {daysCount} días seleccionados
       </AppSubsectionTitle>
 
-      <AppSectionTitle className="pb-5.5">{daysRangeString}</AppSectionTitle>
+      <AppSectionTitle className="pb-0">{daysRangeString}</AppSectionTitle>
     </header>
   );
 }
