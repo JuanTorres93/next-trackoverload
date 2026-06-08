@@ -8,6 +8,7 @@ import ButtonAction from "@/app/_ui/buttons/ButtonAction";
 import FormLabelInput from "@/app/_ui/form/redesign/FormLabelInput";
 import AppSectionTitle from "@/app/_ui/typography/AppSectionTitle";
 import AppSubsectionTitle from "@/app/_ui/typography/AppSubsectionTitle";
+import Input from "@/app/_ui/user-input/Input";
 import SearchBar from "@/app/_ui/user-input/SearchBar";
 import { formatToInteger } from "@/app/_utils/format/formatToInteger";
 
@@ -32,11 +33,9 @@ export default async function CreateRecipePage() {
         className="grid grid-cols-1 grid-rows-[min-content_min-content_min-content_1fr] gap-6.5 h-full"
         action=""
       >
-        <FormLabelInput
-          label="Nombre de la receta"
-          id="name"
-          placeholder="Nombre de la receta"
-        />
+        <FormLabelInput label="Nombre de la receta">
+          <Input id="name" placeholder="Nombre de la receta" type="text" />
+        </FormLabelInput>
 
         <div>
           <AppSectionTitle>Ingredientes:</AppSectionTitle>

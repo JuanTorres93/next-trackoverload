@@ -1,12 +1,15 @@
 import { twMerge } from "tailwind-merge";
 
-import Input from "../../user-input/Input";
 import Label from "../../user-input/Label";
 
 function FormLabelInput({
   label,
+  children,
   ...props
-}: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
+}: {
+  label: string;
+  children: React.ReactNode;
+} & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
   const id = props.id;
@@ -15,7 +18,7 @@ function FormLabelInput({
     <div className={twMerge("flex flex-col gap-1.5", className)} {...rest}>
       <Label htmlFor={id}>{label}</Label>
 
-      <Input type="text" id={id} {...rest} />
+      {children}
     </div>
   );
 }
