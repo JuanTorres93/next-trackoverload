@@ -5,9 +5,9 @@ import ListFoundIngredient from "@/app/_features/recipe/redesign/ListFoundIngred
 import MacroSummary from "@/app/_features/recipe/redesign/MacroSummary";
 import Screen from "@/app/_ui/Screen";
 import ButtonAction from "@/app/_ui/buttons/ButtonAction";
+import FormLabelInput from "@/app/_ui/form/redesign/FormLabelInput";
 import AppSectionTitle from "@/app/_ui/typography/AppSectionTitle";
 import AppSubsectionTitle from "@/app/_ui/typography/AppSubsectionTitle";
-import FormLabelInput from "@/app/_ui/user-input/FormLabelInput";
 import SearchBar from "@/app/_ui/user-input/SearchBar";
 import { formatToInteger } from "@/app/_utils/format/formatToInteger";
 

@@ -1,7 +1,7 @@
 import { twMerge } from "tailwind-merge";
 
-import Input from "./Input";
-import Label from "./Label";
+import Input from "../../user-input/Input";
+import Label from "../../user-input/Label";
 
 function FormLabelInput({
   label,
