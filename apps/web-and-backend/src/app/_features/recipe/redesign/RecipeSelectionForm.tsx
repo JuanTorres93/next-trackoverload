@@ -28,6 +28,8 @@ function RecipeSelectionForm({
     useRecipeSelection();
   const { getFormattedRangeString, daysCount } = useDaySelector();
 
+  const isButtonDisabled = selectedRecipesCount === 0 || daysCount === 0;
+
   return (
     <form
       className={twMerge(
@@ -75,7 +77,12 @@ function RecipeSelectionForm({
         )}
       </section>
 
-      <ButtonAction className="self-end" disabled={selectedRecipesCount === 0}>
+      <ButtonAction
+        // TODO: remove v2 when redesign is done
+        href={isButtonDisabled ? undefined : "/app/meals/v2/batch-confirm"}
+        className="self-end"
+        disabled={isButtonDisabled}
+      >
         Registrar comidas
         {selectedRecipesCount > 0 && <span> ({selectedRecipesCount})</span>}
       </ButtonAction>

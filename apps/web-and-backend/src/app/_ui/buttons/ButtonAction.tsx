@@ -15,7 +15,10 @@ function ButtonAction({
   return (
     <BaseButton
       href={href}
-      className={twMerge("bg-secondary-app text-white", className)}
+      className={twMerge(
+        "bg-secondary-app text-white disabled:bg-text-minor-emphasis-app disabled:border-text-minor-emphasis-app disabled:cursor-not-allowed",
+        className,
+      )}
       {...rest}
     >
       {children}
