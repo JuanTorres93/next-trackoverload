@@ -5,7 +5,10 @@ import { twMerge } from "tailwind-merge";
 
 import { useDaySelector } from "../../meal/redesign/DaySelector";
 
-function SelectedDays({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
+function SelectedDays({
+  iconContainerClassName,
+  ...props
+}: { iconContainerClassName?: string } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
   const { daysCount, getFormattedRangeString } = useDaySelector();
@@ -22,7 +25,12 @@ function SelectedDays({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       )}
       {...rest}
     >
-      <div className="flex items-center justify-center p-2.5 bg-background-app rounded-full">
+      <div
+        className={twMerge(
+          "flex items-center justify-center p-2.5 bg-background-app rounded-full",
+          iconContainerClassName,
+        )}
+      >
         <HiOutlineCalendarDays size={22} />
       </div>
 
