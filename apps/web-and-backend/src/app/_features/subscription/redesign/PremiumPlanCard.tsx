@@ -1,5 +1,8 @@
 import { GiQueenCrown } from "react-icons/gi";
+import { HiOutlineCheck } from "react-icons/hi2";
 import { twMerge } from "tailwind-merge";
+
+import ButtonAction from "@/app/_ui/buttons/ButtonAction";
 
 import { getPlanInfo } from "../actions";
 import { formatPriceInEurCentsToString } from "../formatPriceInEurCentsToString";
@@ -11,10 +14,19 @@ async function PremiumPlanCard({
 
   return (
     <article
-      className={twMerge("bg-white rounded-2xl p-3.75", className)}
+      className={twMerge(
+        "flex flex-col gap-4 bg-white rounded-2xl p-3.75",
+        className,
+      )}
       {...rest}
     >
       <CardHeader />
+
+      <div></div>
+
+      <Features />
+
+      <ButtonAction>Subscribirse a Premium</ButtonAction>
     </article>
   );
 }
@@ -48,6 +60,38 @@ async function CardHeader({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
         <GiQueenCrown className="text-yellow-500" size={61} />
       </figure>
     </header>
+  );
+}
+
+function Features({ ...props }: React.HTMLAttributes<HTMLUListElement>) {
+  const { className, ...rest } = props;
+
+  const features = [
+    "Seguimiento de macros relevantes",
+    "Recetas personalizadas",
+    "Planificación de comidas",
+    "Plantillas de entrenamiento personalizadas",
+    "Análisis de progreso",
+    "Soporte prioritario",
+  ];
+
+  return (
+    <ul
+      className={twMerge(
+        "text-[14px] font-medium flex flex-col gap-2",
+        className,
+      )}
+      {...rest}
+    >
+      {features.map((feature, index) => (
+        <li key={index} className="flex items-center gap-1.5">
+          <div className="flex items-center justify-center rounded-full size-5 bg-primary-app">
+            <HiOutlineCheck size={10} strokeWidth={3} className="text-text" />
+          </div>
+          {feature}
+        </li>
+      ))}
+    </ul>
   );
 }
 
