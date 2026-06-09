@@ -2,6 +2,7 @@ import { GiQueenCrown } from "react-icons/gi";
 import { HiOutlineCheck } from "react-icons/hi2";
 import { twMerge } from "tailwind-merge";
 
+import SquaresPattern from "@/app/_ui/SquaresPattern";
 import ButtonAction from "@/app/_ui/buttons/ButtonAction";
 
 import { getPlanInfo } from "../actions";
@@ -15,18 +16,23 @@ async function PremiumPlanCard({
   return (
     <article
       className={twMerge(
-        "flex flex-col gap-4 bg-white rounded-2xl p-3.75",
+        "relative flex flex-col gap-4 bg-white rounded-2xl p-3.75",
         className,
       )}
       {...rest}
     >
-      <CardHeader />
+      <CardHeader className="z-10" />
 
       <div></div>
 
-      <Features />
+      <Features className="z-10" />
 
-      <ButtonAction>Subscribirse a Premium</ButtonAction>
+      <ButtonAction className="z-10">Subscribirse a Premium</ButtonAction>
+
+      <SquaresPattern
+        color="#EBEDE6"
+        className="absolute right-1 z-0 -top-2 size-54.75 opacity-40 mask-[linear-gradient(to_bottom_left,black_0%,transparent_90%,transparent)]"
+      />
     </article>
   );
 }
