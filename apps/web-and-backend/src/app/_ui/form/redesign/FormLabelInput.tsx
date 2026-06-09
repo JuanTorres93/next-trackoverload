@@ -17,7 +17,10 @@ function FormLabelInput({
   const id = htmlFor || props.id;
 
   return (
-    <div className={twMerge("flex flex-col gap-1.5", className)} {...rest}>
+    <div
+      className={twMerge("flex flex-col gap-1.5 w-full", className)}
+      {...rest}
+    >
       <Label htmlFor={id}>{label}</Label>
 
       {children}
