@@ -1,3 +1,6 @@
+import { JSENDResponse, RecipeDTO } from "shared";
+
+import { getAllRecipesForLoggedInUser } from "@/app/_features/recipe/actions";
 import BatchConfirmForm from "@/app/_features/recipe/redesign/BatchConfirmForm";
 import Screen from "@/app/_ui/Screen";
 
@@ -9,9 +12,17 @@ export const metadata = {
 };
 
 export default async function BatchLoggingPage() {
+  const recipesResponse: JSENDResponse<RecipeDTO[]> =
+    await getAllRecipesForLoggedInUser();
+
+  const hasError = recipesResponse.status !== "success";
+
+  const recipes =
+    recipesResponse.status === "success" ? recipesResponse.data : [];
+
   return (
     <Screen title="Confirmar y registrar" hasBackButton>
-      <BatchConfirmForm />
+      <BatchConfirmForm hasError={hasError} recipes={recipes} />
     </Screen>
   );
 }
