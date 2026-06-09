@@ -1,6 +1,6 @@
 import { twMerge } from "tailwind-merge";
 
-import ButtonAction from "@/app/_ui/buttons/ButtonAction";
+import RingPattern from "@/app/_ui/RingPattern";
 import { addDaysToDate, differenceInDays } from "@/app/_utils/compute/dates";
 import { formatDate } from "@/app/_utils/format/formatDate";
 import { FREE_TRIAL_DAYS } from "@/domain/common/constants";
@@ -41,12 +41,12 @@ async function FreeTrialCountdown({
   return (
     <section
       className={twMerge(
-        "flex flex-col gap-4.5 bg-white p-3.75 rounded-2xl",
+        "relative overflow-hidden flex flex-col gap-4.5 bg-white p-3.75 rounded-2xl",
         className,
       )}
       {...rest}
     >
-      <section className="flex flex-col gap-3">
+      <section className="z-10 flex flex-col gap-3">
         <ActiveSubscriptionTag />
 
         <h2 className="flex flex-col gap-1">
@@ -70,6 +70,8 @@ async function FreeTrialCountdown({
       <p className="text-text-minor-emphasis-app font-medium text-[14px] text-center">
         Tu periodo de prueba termina el {formattedDateTrialEnds}.
       </p>
+
+      <RingPattern className="absolute z-0 -top-14 -right-12 size-40" />
     </section>
   );
 }
