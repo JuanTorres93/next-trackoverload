@@ -10,6 +10,7 @@ import AppSectionTitle from "@/app/_ui/typography/AppSectionTitle";
 import AppSubsectionTitle from "@/app/_ui/typography/AppSubsectionTitle";
 
 import { useDaySelector } from "../../meal/redesign/DaySelector";
+import MealSelectionList from "../../meal/redesign/MealSelectionList";
 import RecipeSelector from "./RecipeSelector";
 
 function RecipeSelectionForm({
@@ -73,7 +74,7 @@ function RecipeSelectionForm({
         )}
 
         {!hasError && (
-          <ul className="flex flex-col items-stretch gap-3 overflow-y-scroll">
+          <MealSelectionList>
             {recipes.map((recipe) => (
               <li key={recipe.id}>
                 <RecipeSelector
@@ -84,7 +85,7 @@ function RecipeSelectionForm({
                 />
               </li>
             ))}
-          </ul>
+          </MealSelectionList>
         )}
       </section>
 
