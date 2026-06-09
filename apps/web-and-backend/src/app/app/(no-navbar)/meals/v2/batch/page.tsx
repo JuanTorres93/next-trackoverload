@@ -1,6 +1,5 @@
-import DaySelector, {
-  SelectedDays,
-} from "@/app/_features/meal/redesign/DaySelector";
+import SelectedDays from "@/app/_features/day/redesign/SelectedDays";
+import DaySelector from "@/app/_features/meal/redesign/DaySelector";
 import Screen from "@/app/_ui/Screen";
 import ButtonAction from "@/app/_ui/buttons/ButtonAction";
 import AppSectionTitle from "@/app/_ui/typography/AppSectionTitle";
