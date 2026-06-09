@@ -11,7 +11,7 @@ import AppSectionTitle from "@/app/_ui/typography/AppSectionTitle";
 import AppSubsectionTitle from "@/app/_ui/typography/AppSubsectionTitle";
 
 import { useDaySelector } from "../../meal/redesign/DaySelector";
-import MealSelectionList from "../../meal/redesign/MealSelectionList";
+import MealSelectionSection from "../../meal/redesign/MealSelectionList";
 import RecipeSelector from "./RecipeSelector";
 
 function RecipeSelectionForm({
@@ -49,33 +49,21 @@ function RecipeSelectionForm({
         </AppSectionTitle>
       </section>
 
-      <section className="grid grid-cols-1 grid-rows-[min-content_1fr] gap-4.5 overflow-hidden">
-        <h2 className="text-[20px] font-semibold">
-          Selecciona las comidas a registrar
-        </h2>
-
-        {hasError && (
-          <span>
-            Hubo un error al cargar tus recetas. Por favor, inténtalo de nuevo
-            más tarde.
-          </span>
-        )}
-
-        {!hasError && (
-          <MealSelectionList>
-            {recipes.map((recipe) => (
-              <li key={recipe.id}>
-                <RecipeSelector
-                  recipe={recipe}
-                  checked={isRecipeSelected(recipe.id)}
-                  onChange={() => toggleRecipeSelection(recipe.id)}
-                  onSelect={() => toggleRecipeSelection(recipe.id)}
-                />
-              </li>
-            ))}
-          </MealSelectionList>
-        )}
-      </section>
+      <MealSelectionSection
+        sectionTitle="Selecciona las comidas a registrar"
+        hasError={hasError}
+      >
+        {recipes.map((recipe) => (
+          <li key={recipe.id}>
+            <RecipeSelector
+              recipe={recipe}
+              checked={isRecipeSelected(recipe.id)}
+              onChange={() => toggleRecipeSelection(recipe.id)}
+              onSelect={() => toggleRecipeSelection(recipe.id)}
+            />
+          </li>
+        ))}
+      </MealSelectionSection>
 
       <ButtonAction
         // TODO: remove v2 when redesign is done
