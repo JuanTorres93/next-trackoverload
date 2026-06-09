@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { createContext } from "react";
 
 import { RecipeDTO } from "shared";
 import { twMerge } from "tailwind-merge";
@@ -23,24 +24,9 @@ function RecipeSelectionForm({
 } & React.FormHTMLAttributes<HTMLFormElement>) {
   const { className, ...rest } = props;
 
-  const [selectedRecipesIds, setSelectedRecipesIds] = useState<string[]>([]);
+  const { toggleRecipeSelection, isRecipeSelected, selectedRecipesCount } =
+    useRecipeSelection();
   const { getFormattedRangeString, daysCount } = useDaySelector();
-
-  const selectedRecipesCount = selectedRecipesIds.length;
-
-  function toggleRecipeSelection(recipeId: string) {
-    setSelectedRecipesIds((prevIds) => {
-      if (prevIds.includes(recipeId)) {
-        return prevIds.filter((id) => id !== recipeId);
-      } else {
-        return [...prevIds, recipeId];
-      }
-    });
-  }
-
-  function isRecipeSelected(recipeId: string) {
-    return selectedRecipesIds.includes(recipeId);
-  }
 
   return (
     <form
@@ -98,3 +84,67 @@ function RecipeSelectionForm({
 }
 
 export default RecipeSelectionForm;
+
+const RecipeSelectionContext = createContext<{
+  selectedRecipesIds: string[];
+  setSelectedRecipesIds: React.Dispatch<React.SetStateAction<string[]>>;
+  toggleRecipeSelection: (recipeId: string) => void;
+  isRecipeSelected: (recipeId: string) => boolean;
+  selectedRecipesCount: number;
+}>({
+  selectedRecipesIds: [],
+  setSelectedRecipesIds: () => {},
+  toggleRecipeSelection: () => {},
+  isRecipeSelected: () => false,
+  selectedRecipesCount: 0,
+});
+
+export function RecipeSelectionProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [selectedRecipesIds, setSelectedRecipesIds] = useState<string[]>([]);
+
+  const selectedRecipesCount = selectedRecipesIds.length;
+
+  function toggleRecipeSelection(recipeId: string) {
+    setSelectedRecipesIds((prevIds) => {
+      if (prevIds.includes(recipeId)) {
+        return prevIds.filter((id) => id !== recipeId);
+      } else {
+        return [...prevIds, recipeId];
+      }
+    });
+  }
+
+  function isRecipeSelected(recipeId: string) {
+    return selectedRecipesIds.includes(recipeId);
+  }
+
+  return (
+    <RecipeSelectionContext.Provider
+      value={{
+        selectedRecipesIds,
+        toggleRecipeSelection,
+        selectedRecipesCount,
+        setSelectedRecipesIds,
+        isRecipeSelected,
+      }}
+    >
+      {children}
+    </RecipeSelectionContext.Provider>
+  );
+}
+
+export function useRecipeSelection() {
+  const context = useContext(RecipeSelectionContext);
+
+  if (!context) {
+    throw new Error(
+      "useRecipeSelection must be used within a RecipeSelectionProvider",
+    );
+  }
+
+  return context;
+}
