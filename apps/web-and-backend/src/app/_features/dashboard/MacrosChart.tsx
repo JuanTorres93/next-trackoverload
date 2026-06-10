@@ -16,6 +16,7 @@ function MacrosChart({
   const clampedPercentage = Math.min(100, Math.max(0, Math.round(percentage)));
   const trackColor = extractCssVariable("--color-secondary-light-app");
   const progressColor = extractCssVariable("--color-primary-app");
+  const proteinColor = extractCssVariable("--color-active-navbar");
 
   const progressData = [
     { value: clampedPercentage },
@@ -26,8 +27,9 @@ function MacrosChart({
   const cx = width / 2;
   const cy = 100;
 
-  const innerRadius = 68;
   const outerRadius = 92;
+  const innerRadius = 68;
+  const proteinInnerRadius = 86;
   const cornerRadius = 8;
 
   const marginForCornerRadiusCrop = 15;
@@ -36,6 +38,20 @@ function MacrosChart({
   return (
     <div className={twMerge("", className)} {...rest}>
       <PieChart width={width} height={height}>
+        <Pie
+          data={[{ value: 100 }]}
+          cx={cx}
+          cy={cy}
+          startAngle={180}
+          endAngle={0}
+          innerRadius={innerRadius}
+          outerRadius={outerRadius}
+          fill={trackColor}
+          dataKey="value"
+          stroke="none"
+          isAnimationActive={false}
+          cornerRadius={cornerRadius}
+        />
         <Pie
           data={[{ value: 100 }]}
           cx={cx}
@@ -97,6 +113,22 @@ function MacrosChart({
               );
             }}
           />
+        </Pie>
+
+        <Pie
+          data={progressData}
+          cx={cx}
+          cy={cy}
+          startAngle={180}
+          endAngle={0}
+          innerRadius={proteinInnerRadius}
+          outerRadius={outerRadius}
+          dataKey="value"
+          stroke="none"
+          cornerRadius={cornerRadius}
+        >
+          <Cell fill={proteinColor} />
+          <Cell fill="transparent" />
         </Pie>
       </PieChart>
     </div>
