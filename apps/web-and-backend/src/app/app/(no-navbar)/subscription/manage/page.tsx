@@ -5,6 +5,8 @@ import PremiumPlanCard from "@/app/_features/subscription/redesign/PremiumPlanCa
 import { getLoggedInUser } from "@/app/_features/user/actions";
 import Screen from "@/app/_ui/Screen";
 
+import CancelSubscriptionMenu from "./CancelSubscriptionMenu";
+
 export const dynamic = "force-dynamic";
 
 export const metadata = {
@@ -44,6 +46,8 @@ export default async function ManageSubscriptionPage() {
           <PremiumPlanActiveSubscription />
         )}
       </div>
+
+      <CancelSubscriptionMenu show={false} />
     </Screen>
   );
 }
