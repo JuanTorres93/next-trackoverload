@@ -1,10 +1,13 @@
-import { JSENDResponse, RecipeDTO } from "shared";
+import { JSENDResponse } from "shared";
 
 import DaySummary from "@/app/_features/dashboard/DaySummary";
 import TodaysMacros from "@/app/_features/dashboard/TodaysMacros";
 import TodaysMeals from "@/app/_features/dashboard/TodaysMeals";
-import { getAssembledDayById } from "@/app/_features/day/actions";
-import { AssembledDayResult } from "@/app/_features/day/actions";
+import WeightProgress from "@/app/_features/dashboard/WeightProgress";
+import {
+  AssembledDayResult,
+  getAssembledDayById,
+} from "@/app/_features/day/actions";
 import { getAllRecipesForLoggedInUser } from "@/app/_features/recipe/actions";
 import Screen from "@/app/_ui/screen/Screen";
 import { dateToDayId } from "@/domain/value-objects/DayId/DayId";
@@ -61,6 +64,8 @@ export default async function DashboardPage() {
           />
 
           <TodaysMeals meals={todayAssembledDay?.meals || []} />
+
+          <WeightProgress />
         </div>
       </div>
     </Screen>
