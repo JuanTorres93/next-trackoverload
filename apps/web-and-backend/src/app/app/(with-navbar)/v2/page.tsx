@@ -1,5 +1,6 @@
 import { JSENDResponse, RecipeDTO } from "shared";
 
+import DaySummary from "@/app/_features/dashboard/DaySummary";
 import TodaysMacros from "@/app/_features/dashboard/TodaysMacros";
 import { getAllRecipesForLoggedInUser } from "@/app/_features/recipe/actions";
 import Screen from "@/app/_ui/screen/Screen";
@@ -33,14 +34,25 @@ export default async function DashboardPage() {
 
   return (
     <Screen title="" isDashboard>
-      <TodaysMacros
-        todaysMacrosProps={{
-          totalCalories: 2500,
-          totalProtein: 180,
-          currentCalories: 1850,
-          currentProtein: 145,
-        }}
-      />
+      <div className="flex flex-col gap-7.5 pb-35">
+        <div className="flex flex-col gap-4.5">
+          <TodaysMacros
+            todaysMacrosProps={{
+              totalCalories: 2500,
+              totalProtein: 180,
+              currentCalories: 1850,
+              currentProtein: 145,
+            }}
+          />
+
+          <DaySummary
+            caloriesLeft={650}
+            proteinLeft={35}
+            mealsToday={3}
+            currentWeight={70}
+          />
+        </div>
+      </div>
     </Screen>
   );
 }
