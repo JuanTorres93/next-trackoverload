@@ -2,6 +2,7 @@ import { HiOutlineFire, HiPlus } from "react-icons/hi2";
 import { TbMeat } from "react-icons/tb";
 import { twMerge } from "tailwind-merge";
 
+import MacrosChart from "@/app/_features/dashboard/MacrosChart";
 import RingPattern from "@/app/_ui/RingPattern";
 import ButtonActionWhite from "@/app/_ui/buttons/ButtonActionWhite";
 import { formatToInteger } from "@/app/_utils/format/formatToInteger";
@@ -29,8 +30,15 @@ function TodaysMacros({
       </h2>
 
       <figure className="flex flex-col items-center gap-3">
-        {/*  TODO implement progress chart */}
-        <div>GRÁFICO</div>
+        <MacrosChart
+          percentage={
+            todaysMacrosProps.totalCalories > 0
+              ? (todaysMacrosProps.currentCalories /
+                  todaysMacrosProps.totalCalories) *
+                100
+              : 0
+          }
+        />
 
         <div className="grid grid-cols-2 items-center gap-2.5">
           <MacroCard
