@@ -11,7 +11,7 @@ export const metadata = {
   description: "Todas tus recetas",
 };
 
-export default async function RecipesPage() {
+export default async function DashboardPage() {
   const recipesResponse: JSENDResponse<RecipeDTO[]> =
     await getAllRecipesForLoggedInUser();
 
@@ -32,7 +32,7 @@ export default async function RecipesPage() {
   const recipes = recipesResponse.data;
 
   return (
-    <Screen title="Recetas">
+    <Screen title="" isDashboard>
       <RecipesGrid recipes={recipes} />
     </Screen>
   );

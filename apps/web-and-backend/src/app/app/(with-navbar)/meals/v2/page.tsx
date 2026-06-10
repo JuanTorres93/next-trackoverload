@@ -5,7 +5,7 @@ import {
   getAssembledDayById,
 } from "@/app/_features/day/actions";
 import MealsGrid from "@/app/_features/meal/redesign/MealsGrid";
-import Screen from "@/app/_ui/Screen";
+import Screen from "@/app/_ui/screen/Screen";
 import { dateToDayId } from "@/domain/value-objects/DayId/DayId";
 
 import DateHeader from "./DateHeader";

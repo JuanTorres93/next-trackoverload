@@ -2,7 +2,7 @@ import { JSENDResponse, RecipeDTO } from "shared";
 
 import { getAllRecipesForLoggedInUser } from "@/app/_features/recipe/actions";
 import BatchConfirmForm from "@/app/_features/recipe/redesign/BatchConfirmForm";
-import Screen from "@/app/_ui/Screen";
+import Screen from "@/app/_ui/screen/Screen";
 
 export const dynamic = "force-dynamic";
 

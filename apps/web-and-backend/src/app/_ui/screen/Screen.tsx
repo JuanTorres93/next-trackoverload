@@ -2,15 +2,18 @@ import { twMerge } from "tailwind-merge";
 
 import PageWrapper from "../PageWrapper";
 import ScreenHeader from "../screen/ScreenHeader";
+import DashboardHeader from "./DashboardHeader";
 
 function Screen({
   title,
   hasBackButton = false,
+  isDashboard = false,
   children,
   ...props
 }: {
   title: string;
   hasBackButton?: boolean;
+  isDashboard?: boolean;
   children: React.ReactNode;
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
@@ -23,7 +26,10 @@ function Screen({
       )}
       {...rest}
     >
-      <ScreenHeader title={title} hasBackButton={hasBackButton} />
+      {!isDashboard && (
+        <ScreenHeader title={title} hasBackButton={hasBackButton} />
+      )}
+      {isDashboard && <DashboardHeader />}
 
       <div className="px-5 overflow-y-scroll">{children}</div>
     </PageWrapper>
