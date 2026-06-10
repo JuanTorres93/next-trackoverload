@@ -31,13 +31,10 @@ function TodaysMacros({
 
       <figure className="flex flex-col items-center gap-3">
         <MacrosChart
-          percentage={
-            todaysMacrosProps.totalCalories > 0
-              ? (todaysMacrosProps.currentCalories /
-                  todaysMacrosProps.totalCalories) *
-                100
-              : 0
-          }
+          totalCalories={todaysMacrosProps.totalCalories}
+          totalProtein={todaysMacrosProps.totalProtein}
+          currentCalories={todaysMacrosProps.currentCalories}
+          currentProtein={todaysMacrosProps.currentProtein}
         />
 
         <div className="grid grid-cols-2 items-center gap-2.5">
