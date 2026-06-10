@@ -3,7 +3,7 @@ import FreeTrialCountdown from "@/app/_features/subscription/redesign/FreeTrialC
 import PremiumPlanActiveSubscription from "@/app/_features/subscription/redesign/PremiumPlanActiveSubscription";
 import PremiumPlanCard from "@/app/_features/subscription/redesign/PremiumPlanCard";
 import { getLoggedInUser } from "@/app/_features/user/actions";
-import Screen from "@/app/_ui/Screen";
+import Screen from "@/app/_ui/screen/Screen";
 
 import CancelSubscriptionMenu from "./CancelSubscriptionMenu";
 

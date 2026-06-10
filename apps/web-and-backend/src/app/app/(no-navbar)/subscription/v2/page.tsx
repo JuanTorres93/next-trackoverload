@@ -1,6 +1,6 @@
 import FreeTrialCountdown from "@/app/_features/subscription/redesign/FreeTrialCountdown";
 import PremiumPlanCard from "@/app/_features/subscription/redesign/PremiumPlanCard";
-import Screen from "@/app/_ui/Screen";
+import Screen from "@/app/_ui/screen/Screen";
 
 export const dynamic = "force-dynamic";
 

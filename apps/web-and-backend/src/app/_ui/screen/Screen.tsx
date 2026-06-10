@@ -1,7 +1,7 @@
 import { twMerge } from "tailwind-merge";
 
-import ScreenHeader from "./Header";
-import PageWrapper from "./PageWrapper";
+import PageWrapper from "../PageWrapper";
+import ScreenHeader from "../screen/ScreenHeader";
 
 function Screen({
   title,

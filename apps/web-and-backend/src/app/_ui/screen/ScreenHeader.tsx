@@ -1,7 +1,7 @@
 import { twMerge } from "tailwind-merge";
 
-import ButtonBack from "./buttons/ButtonBack";
-import ButtonPlus from "./buttons/ButtonPlus";
+import ButtonBack from "../buttons/ButtonBack";
+import ButtonPlus from "../buttons/ButtonPlus";
 
 function ScreenHeader({
   title,
