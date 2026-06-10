@@ -8,7 +8,8 @@ export const metadata = {
   title: "Suscripción",
 };
 
-export default async function SelectMealsPage() {
+export default async function SubscriptionPage() {
+  // TODO: This page should probably be completely replaced by subscription/manage page
   return (
     <Screen title="Suscripción" hasBackButton>
       <div className="flex flex-col gap-5">
