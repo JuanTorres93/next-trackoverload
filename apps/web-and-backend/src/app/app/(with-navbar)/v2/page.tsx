@@ -1,7 +1,7 @@
 import { JSENDResponse, RecipeDTO } from "shared";
 
+import TodaysMacros from "@/app/_features/dashboard/TodaysMacros";
 import { getAllRecipesForLoggedInUser } from "@/app/_features/recipe/actions";
-import RecipesGrid from "@/app/_features/recipe/redesign/RecipesGrid";
 import Screen from "@/app/_ui/screen/Screen";
 
 export const dynamic = "force-dynamic";
@@ -33,7 +33,14 @@ export default async function DashboardPage() {
 
   return (
     <Screen title="" isDashboard>
-      <RecipesGrid recipes={recipes} />
+      <TodaysMacros
+        todaysMacrosProps={{
+          totalCalories: 2500,
+          totalProtein: 180,
+          currentCalories: 1850,
+          currentProtein: 145,
+        }}
+      />
     </Screen>
   );
 }
