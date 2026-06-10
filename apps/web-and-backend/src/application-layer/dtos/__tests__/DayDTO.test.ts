@@ -41,11 +41,16 @@ describe("DayDTO", () => {
       expect(dayDTO).toEqual({
         id: day.id,
         userId: day.userId,
+
         mealIds: [...day.mealIds],
         fakeMealIds: [...day.fakeMealIds],
+
         day: day.day,
         month: day.month,
         year: day.year,
+
+        userWeightInKg: day.userWeightInKg,
+
         createdAt: day.createdAt.toISOString(),
         updatedAt: day.updatedAt.toISOString(),
       });

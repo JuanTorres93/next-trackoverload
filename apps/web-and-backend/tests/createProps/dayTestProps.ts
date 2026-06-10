@@ -60,7 +60,10 @@ export function createEmptyTestDay(props?: Partial<DayCreateProps>): Day {
     day: props?.day || dateId.getDate(),
     month: props?.month || dateId.getMonth() + 1,
     year: props?.year || dateId.getFullYear(),
+
     userId: props?.userId || userId,
+    userWeightInKg: props?.userWeightInKg,
+
     createdAt: props?.createdAt || new Date(),
     updatedAt: props?.updatedAt || new Date(),
   });
