@@ -5,11 +5,6 @@ import { twMerge } from "tailwind-merge";
 
 import { extractCssVariable } from "@/app/_common/extractCssVariableFromGlobalsCssFile";
 
-function clampPercentage(current: number, total: number): number {
-  if (total <= 0) return 0;
-  return Math.min(100, Math.max(0, Math.round((current / total) * 100)));
-}
-
 function MacrosChart({
   totalCalories,
   totalProtein,
@@ -26,6 +21,11 @@ function MacrosChart({
 
   const caloriesPercentage = clampPercentage(currentCalories, totalCalories);
   const proteinPercentage = clampPercentage(currentProtein, totalProtein);
+
+  const combinedPercentage = getCombinedPercentage(
+    caloriesPercentage,
+    proteinPercentage,
+  );
 
   const trackColor = extractCssVariable("--color-secondary-light-app");
   const progressColor = extractCssVariable("--color-primary-app");
@@ -116,7 +116,7 @@ function MacrosChart({
                     fontSize="30"
                     fontWeight="600"
                   >
-                    {caloriesPercentage}%
+                    {combinedPercentage}%
                   </text>
                   <text
                     x={centeredX}
@@ -151,6 +151,19 @@ function MacrosChart({
       </PieChart>
     </div>
   );
+}
+
+function clampPercentage(current: number, total: number): number {
+  if (total <= 0) return 0;
+  return Math.min(100, Math.max(0, Math.round((current / total) * 100)));
+}
+
+function getCombinedPercentage(
+  caloriesPercentage: number,
+  proteinPercentage: number,
+): number {
+  const combined = (caloriesPercentage + proteinPercentage) / 2;
+  return Math.min(100, Math.max(0, Math.round(combined)));
 }
 
 export default MacrosChart;
