@@ -2,8 +2,12 @@ import { JSENDResponse, RecipeDTO } from "shared";
 
 import DaySummary from "@/app/_features/dashboard/DaySummary";
 import TodaysMacros from "@/app/_features/dashboard/TodaysMacros";
+import TodaysMeals from "@/app/_features/dashboard/TodaysMeals";
+import { getAssembledDayById } from "@/app/_features/day/actions";
+import { AssembledDayResult } from "@/app/_features/day/actions";
 import { getAllRecipesForLoggedInUser } from "@/app/_features/recipe/actions";
 import Screen from "@/app/_ui/screen/Screen";
+import { dateToDayId } from "@/domain/value-objects/DayId/DayId";
 
 export const dynamic = "force-dynamic";
 
@@ -13,10 +17,14 @@ export const metadata = {
 };
 
 export default async function DashboardPage() {
-  const recipesResponse: JSENDResponse<RecipeDTO[]> =
-    await getAllRecipesForLoggedInUser();
+  const today = new Date();
+  const todayId = dateToDayId(today).value;
 
-  const hasError = recipesResponse.status !== "success";
+  const todayAssembledDayJSEND: JSENDResponse<AssembledDayResult> =
+    await getAssembledDayById(todayId);
+  await getAllRecipesForLoggedInUser();
+
+  const hasError = todayAssembledDayJSEND.status !== "success";
 
   if (hasError) {
     return (
@@ -30,7 +38,7 @@ export default async function DashboardPage() {
     );
   }
 
-  const recipes = recipesResponse.data;
+  const todayAssembledDay = todayAssembledDayJSEND.data.assembledDay;
 
   return (
     <Screen title="" isDashboard>
@@ -51,6 +59,8 @@ export default async function DashboardPage() {
             mealsToday={3}
             currentWeight={70}
           />
+
+          <TodaysMeals meals={todayAssembledDay?.meals || []} />
         </div>
       </div>
     </Screen>

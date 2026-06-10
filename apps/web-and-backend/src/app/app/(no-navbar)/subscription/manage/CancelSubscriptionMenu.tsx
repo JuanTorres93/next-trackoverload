@@ -3,6 +3,7 @@ import { twMerge } from "tailwind-merge";
 import ButtonAction from "@/app/_ui/buttons/ButtonAction";
 import ButtonActionWeak from "@/app/_ui/buttons/ButtonActionWeak";
 import MenuFromBottom from "@/app/_ui/menus/MenuFromBottom";
+import AppHeader from "@/app/_ui/typography/AppHeader";
 
 function CancelSubscriptionMenu({
   show,
@@ -19,7 +20,7 @@ function CancelSubscriptionMenu({
     >
       <figure>TODO ICON</figure>
 
-      <h2 className="text-[20px] font-bold">¿Cancelar suscripción?</h2>
+      <AppHeader className="font-bold">¿Cancelar suscripción?</AppHeader>
 
       <div className="text-[14px] text-text-minor-emphasis-app font-medium flex flex-col gap-1.5">
         <p>

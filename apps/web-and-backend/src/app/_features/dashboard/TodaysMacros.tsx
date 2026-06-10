@@ -5,6 +5,7 @@ import { twMerge } from "tailwind-merge";
 import MacrosChart from "@/app/_features/dashboard/MacrosChart";
 import RingPattern from "@/app/_ui/RingPattern";
 import ButtonActionWhite from "@/app/_ui/buttons/ButtonActionWhite";
+import AppHeader from "@/app/_ui/typography/AppHeader";
 import { formatToInteger } from "@/app/_utils/format/formatToInteger";
 
 function TodaysMacros({
@@ -26,7 +27,7 @@ function TodaysMacros({
       <h2 className="flex flex-col gap-0.5">
         <span className="text-[12px] opacity-70 ">Macros de hoy</span>
 
-        <span className="text-[20px]">Registra tus macros</span>
+        <AppHeader as="span">Registra tus macros</AppHeader>
       </h2>
 
       <figure className="flex flex-col items-center gap-3">

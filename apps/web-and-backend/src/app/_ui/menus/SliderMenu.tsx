@@ -1,6 +1,7 @@
 import { twMerge } from "tailwind-merge";
 
 import ButtonClose from "../buttons/ButtonClose";
+import AppHeader from "../typography/AppHeader";
 
 function SliderMenu({
   title,
@@ -23,7 +24,7 @@ function SliderMenu({
       {...rest}
     >
       <header className="flex items-center justify-between">
-        <h2 className="font-bold text-[20px]">{title}</h2>
+        <AppHeader className="font-bold">{title}</AppHeader>
 
         {showCloseButton && <ButtonClose />}
       </header>

@@ -1,5 +1,7 @@
 import { twMerge } from "tailwind-merge";
 
+import AppHeader from "@/app/_ui/typography/AppHeader";
+
 function MealSelectionSection({
   sectionTitle,
   hasError,
@@ -14,7 +16,7 @@ function MealSelectionSection({
 
   return (
     <section className="grid grid-cols-1 grid-rows-[min-content_1fr] gap-4.5 overflow-hidden">
-      <h2 className="text-[20px] font-semibold">{sectionTitle}</h2>
+      <AppHeader>{sectionTitle}</AppHeader>
 
       {hasError && (
         <span>
