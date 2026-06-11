@@ -3,6 +3,7 @@ import { DayEntry, JSENDResponse } from "shared";
 import { handleJSENDResponse } from "@/app/_features/common/handleJSENDResponse";
 import WeightProgress from "@/app/_features/dashboard/WeightProgress";
 import { getLastNumberOfDaysIncludingTodayAndNonExistingDays } from "@/app/_features/day/actions";
+import DailyGoals from "@/app/_features/weight/redesign/DailyGoals";
 import UpdateTodaysWeight from "@/app/_features/weight/redesign/UpdateTodaysWeight";
 import Screen from "@/app/_ui/screen/Screen";
 
@@ -30,6 +31,8 @@ export default async function WeightPage() {
     <Screen title="Progreso de peso">
       <div className="flex flex-col gap-6.25 pb-35">
         <UpdateTodaysWeight />
+
+        <DailyGoals />
 
         {handledLast90Days.isSuccess && (
           <WeightProgress
