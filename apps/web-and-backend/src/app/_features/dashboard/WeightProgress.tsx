@@ -71,12 +71,12 @@ function WeightProgress({
 
           <span>
             <WeightTrendTag
-              dayEntries={
+              numberOfDays={
                 shownTimeframe === "short"
-                  ? daysShortTerm
+                  ? daysShortTerm.length
                   : shownTimeframe === "medium"
-                    ? daysMediumTerm
-                    : daysLongTerm
+                    ? daysMediumTerm.length
+                    : daysLongTerm.length
               }
             />
           </span>

@@ -1,20 +1,41 @@
+"use client";
+import { useEffect, useState } from "react";
+
 import { FaArrowDown, FaArrowUp } from "react-icons/fa6";
 import { GoDash } from "react-icons/go";
-import { DayEntry } from "shared";
 import { twMerge } from "tailwind-merge";
 
-import { analyzeWeightTrend } from "@/application-layer/use-cases/day/GetWeightFeedbackForLastNDaysUsecase/GetWeightFeedbackForLastNDaysUsecase";
+import { handleJSENDResponse } from "../common/handleJSENDResponse";
+import { getWeightFeedbackForLastNDays } from "../day/actions";
 
 function WeightTrendTag({
-  dayEntries,
+  numberOfDays,
   ...props
-}: { dayEntries: DayEntry[] } & React.HTMLAttributes<HTMLDivElement>) {
+}: {
+  numberOfDays: number;
+} & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
-  const weights = dayEntries
-    .filter((day) => day.day?.userWeightInKg !== undefined)
-    .map((day) => day.day!.userWeightInKg!);
-  const trend = analyzeWeightTrend(weights);
+  const [trend, setTrend] = useState<string | null>("stable");
+  const [errorInTrend, setErrorInTrend] = useState(false);
+
+  useEffect(() => {
+    async function fetchFeedback() {
+      const feedbackJSEND = await getWeightFeedbackForLastNDays(numberOfDays);
+
+      const handledFeedback = handleJSENDResponse(feedbackJSEND);
+
+      if (!handledFeedback.isSuccess) {
+        setErrorInTrend(true);
+      } else {
+        setErrorInTrend(false);
+      }
+
+      setTrend(handledFeedback.isSuccess ? handledFeedback.data : "stable");
+    }
+
+    fetchFeedback();
+  }, [numberOfDays]);
 
   let trendIcon = <GoDash size={16} strokeWidth={1} />;
 
@@ -53,7 +74,10 @@ function WeightTrendTag({
       )}
       {...rest}
     >
-      {trendIcon}
+      {errorInTrend && (
+        <span className="font-medium text-notification/50">Error</span>
+      )}
+      {!errorInTrend && trendIcon}
     </div>
   );
 }
