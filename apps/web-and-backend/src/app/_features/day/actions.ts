@@ -10,6 +10,7 @@ import {
   AppGetLastDayWithCaloriesGoalForUserUsecase,
   AppGetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays,
   AppGetMultipleAssembledDaysByIds,
+  AppGetWeightFeedbackForLastNDaysUsecase,
   AppRemoveMealFromDayUsecase,
   AppSetCaloriesGoalForDayAndUserUsecase,
   AppUpdateUserWeightForDayUsecase,
@@ -220,6 +221,24 @@ export async function setCaloriesGoalForDay(
     return {
       status: "success",
       data: undefined,
+    };
+  } catch (error) {
+    return handleActionErrors(error as Error);
+  }
+}
+
+export async function getWeightFeedbackForLastNDays(
+  numberOfDays: number,
+): Promise<JSENDResponse<string>> {
+  try {
+    const feedback = await AppGetWeightFeedbackForLastNDaysUsecase.execute({
+      numberOfDays,
+      userId: await getCurrentUserId(),
+    });
+
+    return {
+      status: "success",
+      data: feedback,
     };
   } catch (error) {
     return handleActionErrors(error as Error);

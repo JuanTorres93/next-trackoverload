@@ -21,7 +21,7 @@ describe("GetWeightFeedbackForLastNDaysUsecase", () => {
     lastNDays: number,
   ): GetWeightFeedbackForLastNDaysUsecaseRequest => ({
     userId,
-    lastNDays,
+    numberOfDays: lastNDays,
   });
 
   describe("stable", () => {

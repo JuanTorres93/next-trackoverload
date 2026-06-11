@@ -10,6 +10,7 @@ export { AppGetAssembledDayById } from "./AppGetAssembledDayByIdUsecase";
 export { AppGetMultipleAssembledDaysByIds } from "./AppGetMultipleAssembledDaysByIdsUsecase";
 export { AppGetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays } from "./AppGetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase";
 export { AppGetLastDayWithCaloriesGoalForUserUsecase } from "./AppGetLastDayWithCaloriesGoalForUserUsecase";
+export { AppGetWeightFeedbackForLastNDaysUsecase } from "./AppGetWeightFeedbackForLastNDaysUsecase";
 
 // UPDATE Operations
 export { AppAddMultipleMealsToDayUsecase } from "./AppAddMultipleMealsToDayUsecase";

@@ -4,7 +4,7 @@ import { dateToDayId } from "@/domain/value-objects/DayId/DayId";
 
 export type GetWeightFeedbackForLastNDaysUsecaseRequest = {
   userId: string;
-  lastNDays: number;
+  numberOfDays: number;
 };
 
 export class GetWeightFeedbackForLastNDaysUsecase {
@@ -16,7 +16,7 @@ export class GetWeightFeedbackForLastNDaysUsecase {
     const endDayId = dateToDayId(new Date()).value;
 
     const startDate = new Date();
-    startDate.setDate(startDate.getDate() - (request.lastNDays - 1));
+    startDate.setDate(startDate.getDate() - (request.numberOfDays - 1));
 
     const startDayId = dateToDayId(startDate).value;
 
