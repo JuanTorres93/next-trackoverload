@@ -8,9 +8,8 @@ import WeightProgress from "@/app/_features/dashboard/WeightProgress";
 import {
   AssembledDayResult,
   getAssembledDayById,
+  getLastNumberOfDaysIncludingTodayAndNonExistingDays,
 } from "@/app/_features/day/actions";
-import { getLastNumberOfDaysIncludingTodayAndNonExistingDays } from "@/app/_features/day/actions";
-import { getAllRecipesForLoggedInUser } from "@/app/_features/recipe/actions";
 import Screen from "@/app/_ui/screen/Screen";
 import { dateToDayId } from "@/domain/value-objects/DayId/DayId";
 
@@ -33,11 +32,14 @@ export default async function DashboardPage() {
     getLastNumberOfDaysIncludingTodayAndNonExistingDays(90),
   ];
 
-  const [todayAssembledDayJSEND, last90DaysJSEND] = await Promise.all(promises);
+  const [todayResponse, last90DaysResponse] = await Promise.all(promises);
 
-  // await getAllRecipesForLoggedInUser();
+  const handledTodayAssembledDay = handleJSENDResponse(todayResponse);
+  const handledLast90Days = handleJSENDResponse(last90DaysResponse);
 
-  const handledTodayAssembledDay = handleJSENDResponse(todayAssembledDayJSEND);
+  const last90Days = handledLast90Days.isSuccess ? handledLast90Days.data : [];
+  const last30Days = last90Days!.slice(-30);
+  const last14Days = last90Days!.slice(-14);
 
   return (
     <Screen title="" isDashboard>
@@ -68,7 +70,15 @@ export default async function DashboardPage() {
                 meals={handledTodayAssembledDay.data?.assembledDay?.meals || []}
               />
 
-              <WeightProgress />
+              {!handledLast90Days.isSuccess && handledLast90Days.errorComponent}
+
+              {handledLast90Days.isSuccess && (
+                <WeightProgress
+                  daysShortTerm={last14Days}
+                  daysMediumTerm={last30Days}
+                  daysLongTerm={handledLast90Days.data || []}
+                />
+              )}
             </>
           )}
         </div>
