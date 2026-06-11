@@ -125,9 +125,9 @@ const timeframes: {
   label: string;
   value: "short" | "medium" | "long";
 }[] = [
-  { label: "Corto", value: "short" },
-  { label: "Medio", value: "medium" },
-  { label: "Largo", value: "long" },
+  { label: "14D", value: "short" },
+  { label: "1M", value: "medium" },
+  { label: "3M", value: "long" },
 ];
 
 export default WeightProgress;
