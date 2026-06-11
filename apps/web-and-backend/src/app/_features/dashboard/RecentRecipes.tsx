@@ -42,7 +42,7 @@ function RecentRecipes({
       )}
 
       {hasRecipes && (
-        <ul className="flex flex-col items-stretch gap-3 overflow-y-scroll">
+        <ul className="flex flex-col items-stretch gap-3">
           {last3Recipes.map((recipe) => (
             <li
               key={recipe.id}
