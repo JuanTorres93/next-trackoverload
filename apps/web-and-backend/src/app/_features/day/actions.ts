@@ -117,7 +117,7 @@ export async function updateUserWeightForDay(
   }
 }
 
-export async function getLastNumberOfDaysIncludingToday(
+export async function getLastNumberOfDaysIncludingTodayAndNonExistingDays(
   numberOfDays: number,
 ): Promise<JSENDResponse<DayEntry[]>> {
   try {

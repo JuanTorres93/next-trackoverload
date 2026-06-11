@@ -1,5 +1,6 @@
-import { JSENDResponse } from "shared";
+import { DayEntry, JSENDResponse } from "shared";
 
+import { handleJSENDResponse } from "@/app/_features/common/handleJSENDResponse";
 import DaySummary from "@/app/_features/dashboard/DaySummary";
 import TodaysMacros from "@/app/_features/dashboard/TodaysMacros";
 import TodaysMeals from "@/app/_features/dashboard/TodaysMeals";
@@ -8,6 +9,7 @@ import {
   AssembledDayResult,
   getAssembledDayById,
 } from "@/app/_features/day/actions";
+import { getLastNumberOfDaysIncludingTodayAndNonExistingDays } from "@/app/_features/day/actions";
 import { getAllRecipesForLoggedInUser } from "@/app/_features/recipe/actions";
 import Screen from "@/app/_ui/screen/Screen";
 import { dateToDayId } from "@/domain/value-objects/DayId/DayId";
@@ -23,49 +25,52 @@ export default async function DashboardPage() {
   const today = new Date();
   const todayId = dateToDayId(today).value;
 
-  const todayAssembledDayJSEND: JSENDResponse<AssembledDayResult> =
-    await getAssembledDayById(todayId);
-  await getAllRecipesForLoggedInUser();
+  const promises: [
+    Promise<JSENDResponse<AssembledDayResult>>,
+    Promise<JSENDResponse<DayEntry[]>>,
+  ] = [
+    getAssembledDayById(todayId),
+    getLastNumberOfDaysIncludingTodayAndNonExistingDays(90),
+  ];
 
-  const hasError = todayAssembledDayJSEND.status !== "success";
+  const [todayAssembledDayJSEND, last90DaysJSEND] = await Promise.all(promises);
 
-  if (hasError) {
-    return (
-      <Screen title="Recetas">
-        {/* TODO: return an styled error message if has error */}
-        <span>
-          Hubo un error al cargar tus recetas. Por favor, inténtalo de nuevo más
-          tarde.
-        </span>
-      </Screen>
-    );
-  }
+  // await getAllRecipesForLoggedInUser();
 
-  const todayAssembledDay = todayAssembledDayJSEND.data.assembledDay;
+  const handledTodayAssembledDay = handleJSENDResponse(todayAssembledDayJSEND);
 
   return (
     <Screen title="" isDashboard>
       <div className="flex flex-col gap-7.5 pb-35">
         <div className="flex flex-col gap-4.5">
-          <TodaysMacros
-            todaysMacrosProps={{
-              totalCalories: 2500,
-              totalProtein: 180,
-              currentCalories: 1850,
-              currentProtein: 145,
-            }}
-          />
+          {!handledTodayAssembledDay.isSuccess &&
+            handledTodayAssembledDay.errorComponent}
 
-          <DaySummary
-            caloriesLeft={650}
-            proteinLeft={35}
-            mealsToday={3}
-            currentWeight={70}
-          />
+          {handledTodayAssembledDay.isSuccess && (
+            <>
+              <TodaysMacros
+                todaysMacrosProps={{
+                  totalCalories: 2500,
+                  totalProtein: 180,
+                  currentCalories: 1850,
+                  currentProtein: 145,
+                }}
+              />
 
-          <TodaysMeals meals={todayAssembledDay?.meals || []} />
+              <DaySummary
+                caloriesLeft={650}
+                proteinLeft={35}
+                mealsToday={3}
+                currentWeight={70}
+              />
 
-          <WeightProgress />
+              <TodaysMeals
+                meals={handledTodayAssembledDay.data?.assembledDay?.meals || []}
+              />
+
+              <WeightProgress />
+            </>
+          )}
         </div>
       </div>
     </Screen>
