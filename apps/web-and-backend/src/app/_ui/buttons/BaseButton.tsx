@@ -17,7 +17,7 @@ function BaseButton({
       <Link
         href={href}
         className={twMerge(
-          "font-semibold py-2.5 border border-secondary-app rounded-full text-[16px] hover:cursor-pointer text-center inline-block",
+          "font-semibold py-2.5 px-3 border border-secondary-app rounded-full text-[16px] hover:cursor-pointer text-center inline-block",
           className,
         )}
       >
@@ -29,7 +29,7 @@ function BaseButton({
   return (
     <button
       className={twMerge(
-        "font-semibold py-2.5 border border-secondary-app rounded-full text-[16px] hover:cursor-pointer",
+        "font-semibold py-2.5 px-3 border border-secondary-app rounded-full text-[16px] hover:cursor-pointer",
         className,
       )}
       {...rest}

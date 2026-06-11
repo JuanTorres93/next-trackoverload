@@ -1,7 +1,8 @@
-import { DayEntry, JSENDResponse } from "shared";
+import { DayEntry, JSENDResponse, RecipeDTO } from "shared";
 
 import { handleJSENDResponse } from "@/app/_features/common/handleJSENDResponse";
 import DaySummary from "@/app/_features/dashboard/DaySummary";
+import RecentRecipes from "@/app/_features/dashboard/RecentRecipes";
 import TodaysMacros from "@/app/_features/dashboard/TodaysMacros";
 import TodaysMeals from "@/app/_features/dashboard/TodaysMeals";
 import WeightProgress from "@/app/_features/dashboard/WeightProgress";
@@ -10,6 +11,7 @@ import {
   getAssembledDayById,
   getLastNumberOfDaysIncludingTodayAndNonExistingDays,
 } from "@/app/_features/day/actions";
+import { getAllRecipesForLoggedInUser } from "@/app/_features/recipe/actions";
 import Screen from "@/app/_ui/screen/Screen";
 import { dateToDayId } from "@/domain/value-objects/DayId/DayId";
 
@@ -27,15 +29,19 @@ export default async function DashboardPage() {
   const promises: [
     Promise<JSENDResponse<AssembledDayResult>>,
     Promise<JSENDResponse<DayEntry[]>>,
+    Promise<JSENDResponse<RecipeDTO[]>>,
   ] = [
     getAssembledDayById(todayId),
     getLastNumberOfDaysIncludingTodayAndNonExistingDays(90),
+    getAllRecipesForLoggedInUser(),
   ];
 
-  const [todayResponse, last90DaysResponse] = await Promise.all(promises);
+  const [todayResponse, last90DaysResponse, recipesResponse] =
+    await Promise.all(promises);
 
   const handledTodayAssembledDay = handleJSENDResponse(todayResponse);
   const handledLast90Days = handleJSENDResponse(last90DaysResponse);
+  const handledRecipes = handleJSENDResponse(recipesResponse);
 
   const last90Days = handledLast90Days.isSuccess ? handledLast90Days.data : [];
   const last30Days = last90Days!.slice(-30);
@@ -78,6 +84,11 @@ export default async function DashboardPage() {
                   daysMediumTerm={last30Days}
                   daysLongTerm={handledLast90Days.data || []}
                 />
+              )}
+
+              {!handledRecipes.isSuccess && handledRecipes.errorComponent}
+              {handledRecipes.isSuccess && (
+                <RecentRecipes recipes={handledRecipes.data || []} />
               )}
             </>
           )}
