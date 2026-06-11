@@ -9,6 +9,7 @@ import AppHeader from "@/app/_ui/typography/AppHeader";
 import { formatWeight } from "@/app/_utils/format/formatWeight";
 
 import WeightHistory from "../weight/WeightHistory";
+import WeightTrendTag from "../weight/WeightTrendTag";
 
 function WeightProgress({
   daysShortTerm,
@@ -68,7 +69,17 @@ function WeightProgress({
             </span>
           </div>
 
-          <span>FEEDBACK</span>
+          <span>
+            <WeightTrendTag
+              dayEntries={
+                shownTimeframe === "short"
+                  ? daysShortTerm
+                  : shownTimeframe === "medium"
+                    ? daysMediumTerm
+                    : daysLongTerm
+              }
+            />
+          </span>
         </header>
 
         {shownTimeframe === "short" && (
