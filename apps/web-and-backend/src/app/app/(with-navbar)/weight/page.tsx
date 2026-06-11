@@ -4,7 +4,9 @@ import { handleJSENDResponse } from "@/app/_features/common/handleJSENDResponse"
 import WeightProgress from "@/app/_features/dashboard/WeightProgress";
 import { getLastNumberOfDaysIncludingTodayAndNonExistingDays } from "@/app/_features/day/actions";
 import DailyGoals from "@/app/_features/weight/redesign/DailyGoals";
+import UpdateGoalsForm from "@/app/_features/weight/redesign/UpdateGoalsForm";
 import UpdateTodaysWeight from "@/app/_features/weight/redesign/UpdateTodaysWeight";
+import UpdateWeightForm from "@/app/_features/weight/redesign/UpdateWeightForm";
 import Screen from "@/app/_ui/screen/Screen";
 
 export const dynamic = "force-dynamic";
@@ -42,6 +44,9 @@ export default async function WeightPage() {
           />
         )}
       </div>
+
+      <UpdateWeightForm show={false} />
+      <UpdateGoalsForm show={false} />
     </Screen>
   );
 }

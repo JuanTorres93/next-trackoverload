@@ -32,7 +32,7 @@ function Backdrop({
   return (
     <div
       className={twMerge(
-        "z-20 absolute inset-0 bg-black/50 backdrop-blur-[2px]",
+        "z-30 fixed inset-0 bg-black/50 backdrop-blur-[2px]",
         className,
       )}
       {...rest}
