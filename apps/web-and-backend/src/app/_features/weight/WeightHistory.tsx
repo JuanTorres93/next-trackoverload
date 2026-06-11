@@ -15,10 +15,10 @@ import { extractCssVariable } from "../../_common/extractCssVariableFromGlobalsC
 import InfoBox from "../../_ui/InfoBox";
 
 function WeightHistory({ days }: { days: DayEntry[] }) {
-  const colorPrimary = extractCssVariable("--color-primary");
-  const colorPrimaryLight = extractCssVariable("--color-primary-light");
-  const colorNeutral = extractCssVariable("--color-text-minor-emphasis");
-  const colorCaloriesGoal = extractCssVariable("--color-error");
+  const colorPrimary = extractCssVariable("--color-primary-app");
+  const colorPrimaryLight = extractCssVariable("--color-primary-light-app");
+  const colorNeutral = extractCssVariable("--color-text-minor-emphasis-app");
+  const colorCaloriesGoal = extractCssVariable("--color-secondary-light-app");
 
   const data = processWeightHistoryForChart(days);
   const weightEntries = data.filter((d) => d.weight !== null);
@@ -40,7 +40,7 @@ function WeightHistory({ days }: { days: DayEntry[] }) {
   }
 
   return (
-    <ResponsiveContainer className="text-primary" width="100%" height={180}>
+    <ResponsiveContainer className="text-primary-app" width="100%" height={180}>
       <AreaChart
         data={data}
         margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
@@ -255,7 +255,7 @@ function CustomTooltip({
         {dataPoint.caloriesGoal != null && (
           <p className="m-0">
             Objetivo calórico:{" "}
-            <span className="font-semibold text-error">
+            <span className="font-semibold text-secondary-light-app">
               {dataPoint.caloriesGoal} kcal
             </span>
           </p>
@@ -269,7 +269,7 @@ function CustomTooltip({
       <p className="m-0">{label}</p>
       <p className="m-0">
         Peso:{" "}
-        <span className="font-semibold text-primary">
+        <span className="font-semibold text-secondary-app">
           {dataPoint.weight!.toFixed(1)} kg
         </span>
       </p>
@@ -277,7 +277,7 @@ function CustomTooltip({
       {dataPoint.caloriesGoal != null && (
         <p className="m-0">
           Objetivo calórico:{" "}
-          <span className="font-semibold text-error">
+          <span className="font-semibold text-secondary-light-app">
             {dataPoint.caloriesGoal} kcal
           </span>
         </p>
