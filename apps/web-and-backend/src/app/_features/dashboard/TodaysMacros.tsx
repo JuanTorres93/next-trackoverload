@@ -19,7 +19,7 @@ function TodaysMacros({
   return (
     <div
       className={twMerge(
-        "relative bg-secondary-app text-white p-3.75 rounded-[20px] flex flex-col gap-3.75 font-semibold",
+        "relative bg-secondary-app text-white p-3.75 rounded-[20px] flex flex-col gap-3.75 font-semibold overflow-hidden",
         className,
       )}
       {...rest}
