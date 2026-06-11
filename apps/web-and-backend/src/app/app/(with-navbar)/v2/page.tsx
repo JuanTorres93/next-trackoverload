@@ -11,9 +11,9 @@ import {
   getAssembledDayById,
   getLastNumberOfDaysIncludingTodayAndNonExistingDays,
 } from "@/app/_features/day/actions";
+import { getTodayDayId } from "@/app/_features/day/utils/getTodayDayId";
 import { getAllRecipesForLoggedInUser } from "@/app/_features/recipe/actions";
 import Screen from "@/app/_ui/screen/Screen";
-import { dateToDayId } from "@/domain/value-objects/DayId/DayId";
 
 export const dynamic = "force-dynamic";
 
@@ -22,9 +22,10 @@ export const metadata = {
   description: "Todas tus recetas",
 };
 
+// TODO NEXT: Wire all logic to redesign
+
 export default async function DashboardPage() {
-  const today = new Date();
-  const todayId = dateToDayId(today).value;
+  const todayId = getTodayDayId();
 
   const promises: [
     Promise<JSENDResponse<AssembledDayResult>>,

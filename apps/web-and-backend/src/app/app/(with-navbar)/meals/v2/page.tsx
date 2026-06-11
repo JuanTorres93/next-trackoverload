@@ -4,9 +4,9 @@ import {
   AssembledDayResult,
   getAssembledDayById,
 } from "@/app/_features/day/actions";
+import { getTodayDayId } from "@/app/_features/day/utils/getTodayDayId";
 import MealsGrid from "@/app/_features/meal/redesign/MealsGrid";
 import Screen from "@/app/_ui/screen/Screen";
-import { dateToDayId } from "@/domain/value-objects/DayId/DayId";
 
 import DateHeader from "./DateHeader";
 
@@ -18,8 +18,7 @@ export const metadata = {
 };
 
 export default async function RecipesPage() {
-  const today = new Date();
-  const todayId = dateToDayId(today).value;
+  const todayId = getTodayDayId();
 
   const todayAssembledDay: JSENDResponse<AssembledDayResult> =
     await getAssembledDayById(todayId);
