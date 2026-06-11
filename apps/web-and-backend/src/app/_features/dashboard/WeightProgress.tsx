@@ -6,6 +6,7 @@ import { DayEntry } from "shared";
 import { twMerge } from "tailwind-merge";
 
 import AppHeader from "@/app/_ui/typography/AppHeader";
+import { formatWeight } from "@/app/_utils/format/formatWeight";
 
 import WeightHistory from "../weight/WeightHistory";
 
@@ -24,6 +25,14 @@ function WeightProgress({
   const [shownTimeframe, setShownTimeframe] = useState<
     "short" | "medium" | "long"
   >("short");
+
+  const lastLoggedWeight = [
+    ...daysShortTerm,
+    ...daysMediumTerm,
+    ...daysLongTerm,
+  ]
+    .filter((day) => day.day?.userWeightInKg)
+    .sort((a, b) => b.date.localeCompare(a.date))[0]?.day?.userWeightInKg;
 
   function handleTimeframeChange(timeframe: "short" | "medium" | "long") {
     setShownTimeframe(timeframe);
@@ -47,13 +56,33 @@ function WeightProgress({
         </div>
       </AppHeader>
 
-      <div>
-        {shownTimeframe === "short" && <WeightHistory days={daysShortTerm} />}
+      <section className="flex flex-col gap-2.5 p-3.75 pb-0 bg-white rounded-2xl">
+        <header className="flex items-center justify-between">
+          <div className="flex flex-col gap-1">
+            <span className="font-semibold text-[20px]">
+              {formatWeight(lastLoggedWeight)}
+            </span>
 
-        {shownTimeframe === "medium" && <WeightHistory days={daysMediumTerm} />}
+            <span className="text-text-minor-emphasis-app text-[14px] font-medium">
+              Peso actual
+            </span>
+          </div>
 
-        {shownTimeframe === "long" && <WeightHistory days={daysLongTerm} />}
-      </div>
+          <span>FEEDBACK</span>
+        </header>
+
+        {shownTimeframe === "short" && (
+          <WeightHistory days={daysShortTerm} hideAxis />
+        )}
+
+        {shownTimeframe === "medium" && (
+          <WeightHistory days={daysMediumTerm} hideAxis />
+        )}
+
+        {shownTimeframe === "long" && (
+          <WeightHistory days={daysLongTerm} hideAxis />
+        )}
+      </section>
     </div>
   );
 }

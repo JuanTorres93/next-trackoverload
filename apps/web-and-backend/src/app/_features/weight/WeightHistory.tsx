@@ -14,7 +14,13 @@ import { dayIdToDayMonthYear } from "../../../domain/value-objects/DayId/DayId";
 import { extractCssVariable } from "../../_common/extractCssVariableFromGlobalsCssFile";
 import InfoBox from "../../_ui/InfoBox";
 
-function WeightHistory({ days }: { days: DayEntry[] }) {
+function WeightHistory({
+  days,
+  hideAxis = false,
+}: {
+  days: DayEntry[];
+  hideAxis?: boolean;
+}) {
   const colorPrimary = extractCssVariable("--color-primary-app");
   const colorPrimaryLight = extractCssVariable("--color-primary-light-app");
   const colorNeutral = extractCssVariable("--color-text-minor-emphasis-app");
@@ -43,7 +49,12 @@ function WeightHistory({ days }: { days: DayEntry[] }) {
     <ResponsiveContainer className="text-primary-app" width="100%" height={180}>
       <AreaChart
         data={data}
-        margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+        margin={{
+          top: 10,
+          right: 10,
+          left: hideAxis ? -60 : 0,
+          bottom: 0,
+        }}
       >
         <defs>
           <linearGradient id="weightGradient" x1="0" y1="0" x2="0" y2="1">
@@ -63,7 +74,7 @@ function WeightHistory({ days }: { days: DayEntry[] }) {
 
         <XAxis
           dataKey="label"
-          tick={{ fontSize: 12, fill: colorNeutral }}
+          tick={hideAxis ? false : { fontSize: 12, fill: colorNeutral }}
           axisLine={false}
           tickLine={false}
           interval="preserveStartEnd"
@@ -75,13 +86,12 @@ function WeightHistory({ days }: { days: DayEntry[] }) {
             (max: number) => Math.ceil(max + 0.5),
           ]}
           tickFormatter={(v) => `${Number(v).toFixed(1)} kg`}
-          tick={{ fontSize: 12, fill: colorNeutral }}
+          tick={hideAxis ? false : { fontSize: 12, fill: colorNeutral }}
           axisLine={false}
           tickLine={false}
           tickCount={4}
           width={70}
         />
-
         <Tooltip content={<CustomTooltip />} />
 
         {/* Estimated line — bottom layer */}
