@@ -11,9 +11,13 @@ export type DayCreateProps = {
   day: number;
   month: number;
   year: number;
+
   userId: string;
+
   userWeightInKg?: number;
   updatedCaloriesGoal?: number;
+  updatedProteinGoal?: number;
+
   createdAt?: Date;
   updatedAt?: Date;
 };
@@ -21,10 +25,14 @@ export type DayCreateProps = {
 export type DayProps = {
   id: DayId;
   userId: Id;
+
   mealIds: Id[];
   fakeMealIds: Id[];
+
   userWeightInKg?: WeightInKg;
   updatedCaloriesGoal?: Integer;
+  updatedProteinGoal?: Integer;
+
   createdAt: DomainDate;
   updatedAt: DomainDate;
 };
@@ -49,6 +57,9 @@ export class Day {
         : undefined,
       updatedCaloriesGoal: props.updatedCaloriesGoal
         ? Integer.create(props.updatedCaloriesGoal)
+        : undefined,
+      updatedProteinGoal: props.updatedProteinGoal
+        ? Integer.create(props.updatedProteinGoal)
         : undefined,
 
       createdAt: DomainDate.create(props.createdAt),
@@ -139,9 +150,13 @@ export class Day {
       day: this.day,
       month: this.month,
       year: this.year,
+
       userId: this.userId,
+
       userWeightInKg: this.userWeightInKg,
       updatedCaloriesGoal: this.updatedCaloriesGoal,
+      updatedProteinGoal: this.updatedProteinGoal,
+
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
     };
@@ -182,6 +197,10 @@ export class Day {
 
   get updatedCaloriesGoal() {
     return this.props.updatedCaloriesGoal?.value;
+  }
+
+  get updatedProteinGoal() {
+    return this.props.updatedProteinGoal?.value;
   }
 
   get createdAt() {

@@ -1,5 +1,6 @@
-import mongoose from 'mongoose';
-import { DayCreateProps } from '../../../../domain/entities/day/Day';
+import mongoose from "mongoose";
+
+import { DayCreateProps } from "../../../../domain/entities/day/Day";
 
 export type DayMongoProps = DayCreateProps & {
   mealIds: string[];
@@ -19,10 +20,12 @@ const daySchema = new mongoose.Schema<DayMongoProps>({
     type: Number,
     required: true,
   },
+
   userId: {
     type: String,
     required: true,
   },
+
   mealIds: {
     type: [String],
     required: true,
@@ -33,6 +36,7 @@ const daySchema = new mongoose.Schema<DayMongoProps>({
     required: true,
     default: [],
   },
+
   userWeightInKg: {
     type: Number,
     required: false,
@@ -41,6 +45,11 @@ const daySchema = new mongoose.Schema<DayMongoProps>({
     type: Number,
     required: false,
   },
+  updatedProteinGoal: {
+    type: Number,
+    required: false,
+  },
+
   createdAt: {
     type: Date,
     required: true,
@@ -56,6 +65,6 @@ daySchema.index({ userId: 1 });
 daySchema.index({ userId: 1, year: 1, month: 1, day: 1 }, { unique: true });
 
 const DayMongo =
-  mongoose.models.Day || mongoose.model<DayMongoProps>('Day', daySchema);
+  mongoose.models.Day || mongoose.model<DayMongoProps>("Day", daySchema);
 
 export default DayMongo;

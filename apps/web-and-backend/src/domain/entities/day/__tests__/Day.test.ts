@@ -46,6 +46,16 @@ describe("Day", () => {
       expect(dayWithWeight).toHaveProperty("userWeightInKg");
       expect(dayWithWeight.userWeightInKg).toBe(75);
     });
+
+    it("may have updatedProteinGoal property", async () => {
+      const dayWithProteinGoal = Day.create({
+        ...dayTestProps.validDayProps(),
+        updatedProteinGoal: 150,
+      });
+
+      expect(dayWithProteinGoal).toHaveProperty("updatedProteinGoal");
+      expect(dayWithProteinGoal.updatedProteinGoal).toBe(150);
+    });
   });
 
   describe("meal management", () => {
