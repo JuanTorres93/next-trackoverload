@@ -8,11 +8,13 @@ import {
   AppAddMultipleMealsToMultipleDaysUsecase,
   AppGetAssembledDayById,
   AppGetLastDayWithCaloriesGoalForUserUsecase,
+  AppGetLastDayWithProteinGoalForUserUsecase,
   AppGetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays,
   AppGetMultipleAssembledDaysByIds,
   AppGetWeightFeedbackForLastNDaysUsecase,
   AppRemoveMealFromDayUsecase,
   AppSetCaloriesGoalForDayAndUserUsecase,
+  AppSetProteinGoalForDayAndUserUsecase,
   AppUpdateUserWeightForDayUsecase,
 } from "../../../interface-adapters/app/use-cases/day";
 import { getCurrentUserId } from "../../_utils/auth/getCurrentUserId";
@@ -217,6 +219,47 @@ export async function setCaloriesGoalForDay(
     });
 
     revalidatePath(`/app`);
+    revalidatePath(`/app/weight`);
+
+    return {
+      status: "success",
+      data: undefined,
+    };
+  } catch (error) {
+    return handleActionErrors(error as Error);
+  }
+}
+
+export async function getLastDayWithProteinGoalForUser(): Promise<
+  JSENDResponse<DayDTO | null>
+> {
+  try {
+    const lastDay = await AppGetLastDayWithProteinGoalForUserUsecase.execute({
+      userId: await getCurrentUserId(),
+    });
+
+    return {
+      status: "success",
+      data: lastDay,
+    };
+  } catch (error) {
+    return handleActionErrors(error as Error);
+  }
+}
+
+export async function setProteinGoalForDay(
+  dayId: string,
+  newProteinGoal: number,
+): Promise<JSENDResponse<void>> {
+  try {
+    await AppSetProteinGoalForDayAndUserUsecase.execute({
+      dayId,
+      userId: await getCurrentUserId(),
+      newProteinGoal,
+    });
+
+    revalidatePath(`/app`);
+    revalidatePath(`/app/weight`);
 
     return {
       status: "success",

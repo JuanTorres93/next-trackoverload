@@ -1,5 +1,5 @@
-import { Day } from '../../../domain/entities/day/Day';
-import { DaysRepo } from '../../../domain/repos/DaysRepo.port';
+import { Day } from "../../../domain/entities/day/Day";
+import { DaysRepo } from "../../../domain/repos/DaysRepo.port";
 
 export class MemoryDaysRepo implements DaysRepo {
   private days: Day[] = [];
@@ -87,6 +87,16 @@ export class MemoryDaysRepo implements DaysRepo {
     const userDays = this.days
       .filter(
         (day) => day.userId === userId && day.updatedCaloriesGoal !== undefined,
+      )
+      .sort((a, b) => b.id.localeCompare(a.id));
+
+    return userDays.length > 0 ? userDays[0] : null;
+  }
+
+  async getLastDayWithProteinGoalForUser(userId: string): Promise<Day | null> {
+    const userDays = this.days
+      .filter(
+        (day) => day.userId === userId && day.updatedProteinGoal !== undefined,
       )
       .sort((a, b) => b.id.localeCompare(a.id));
 

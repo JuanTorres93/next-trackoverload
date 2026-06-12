@@ -1,6 +1,5 @@
 import { Day } from "../../../domain/entities/day/Day";
 import { DaysRepo } from "../../../domain/repos/DaysRepo.port";
-
 import { withTransaction } from "./common/withTransaction";
 import DayMongo, { DayMongoProps } from "./models/DayMongo";
 
@@ -138,6 +137,17 @@ export class MongoDaysRepo implements DaysRepo {
     const doc = await DayMongo.findOne({
       userId,
       updatedCaloriesGoal: { $exists: true, $ne: null },
+    })
+      .sort({ year: -1, month: -1, day: -1 })
+      .lean();
+
+    return doc ? this.toDayEntity(doc) : null;
+  }
+
+  async getLastDayWithProteinGoalForUser(userId: string): Promise<Day | null> {
+    const doc = await DayMongo.findOne({
+      userId,
+      updatedProteinGoal: { $exists: true, $ne: null },
     })
       .sort({ year: -1, month: -1, day: -1 })
       .lean();

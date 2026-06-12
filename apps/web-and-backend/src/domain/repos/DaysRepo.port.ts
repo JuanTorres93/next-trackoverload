@@ -1,4 +1,4 @@
-import { Day } from '../entities/day/Day';
+import { Day } from "../entities/day/Day";
 
 export interface DaysRepo {
   getAllDays(): Promise<Day[]>;
@@ -16,6 +16,7 @@ export interface DaysRepo {
   ): Promise<Day[]>;
 
   getLastDayWithCaloriesGoalForUser(userId: string): Promise<Day | null>;
+  getLastDayWithProteinGoalForUser(userId: string): Promise<Day | null>;
 
   saveDay(day: Day): Promise<void>;
   saveMultipleDays(days: Day[]): Promise<void>;

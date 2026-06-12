@@ -145,6 +145,12 @@ export class Day {
     this.props.updatedAt = DomainDate.create(new Date());
   }
 
+  updateProteinGoal(newProteinGoal: number): void {
+    this.props.updatedProteinGoal = Integer.create(newProteinGoal);
+
+    this.props.updatedAt = DomainDate.create(new Date());
+  }
+
   toCreateProps(): DayCreateProps {
     return {
       day: this.day,

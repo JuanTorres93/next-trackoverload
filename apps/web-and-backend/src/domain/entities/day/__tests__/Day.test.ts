@@ -199,4 +199,24 @@ describe("Day", () => {
       expect(dayWithCaloriesGoal.updatedCaloriesGoal).toBe(2500);
     });
   });
+
+  describe("protein goal setting", () => {
+    let dayWithProteinGoal: Day;
+    const PROTEIN_GOAL = 150;
+
+    beforeEach(() => {
+      dayWithProteinGoal = Day.create({
+        ...dayTestProps.validDayProps(),
+        updatedProteinGoal: PROTEIN_GOAL,
+      });
+    });
+
+    it("should update protein goal", async () => {
+      expect(dayWithProteinGoal.updatedProteinGoal).toBe(PROTEIN_GOAL);
+
+      dayWithProteinGoal.updateProteinGoal(180);
+
+      expect(dayWithProteinGoal.updatedProteinGoal).toBe(180);
+    });
+  });
 });

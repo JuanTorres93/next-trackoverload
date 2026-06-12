@@ -10,6 +10,7 @@ export { AppGetAssembledDayById } from "./AppGetAssembledDayByIdUsecase";
 export { AppGetMultipleAssembledDaysByIds } from "./AppGetMultipleAssembledDaysByIdsUsecase";
 export { AppGetLastNumberOfDaysForUserIncludingTodayAndNonExistentDays } from "./AppGetLastNumberOfDaysForUserIncludingTodayAndNonExistentDaysUsecase";
 export { AppGetLastDayWithCaloriesGoalForUserUsecase } from "./AppGetLastDayWithCaloriesGoalForUserUsecase";
+export { AppGetLastDayWithProteinGoalForUserUsecase } from "./AppGetLastDayWithProteinGoalForUserUsecase";
 export { AppGetWeightFeedbackForLastNDaysUsecase } from "./AppGetWeightFeedbackForLastNDaysUsecase";
 
 // UPDATE Operations
@@ -20,3 +21,4 @@ export { AppRemoveFakeMealFromDayUsecase } from "./AppRemoveFakeMealFromDayUseca
 export { AppRemoveMealFromDayUsecase } from "./AppRemoveMealFromDayUsecase";
 export { AppUpdateUserWeightForDayUsecase } from "./AppUpdateUserWeightForDayUsecase";
 export { AppSetCaloriesGoalForDayAndUserUsecase } from "./AppSetCaloriesGoalForDayAndUserUsecase";
+export { AppSetProteinGoalForDayAndUserUsecase } from "./AppSetProteinGoalForDayAndUserUsecase";
