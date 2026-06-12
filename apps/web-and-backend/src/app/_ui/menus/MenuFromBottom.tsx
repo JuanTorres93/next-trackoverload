@@ -1,4 +1,8 @@
+"use client";
+
 import { twMerge } from "tailwind-merge";
+
+import { useOutsideClick } from "@/app/_hooks/useOutsideClick";
 
 import SliderMenu from "./SliderMenu";
 
@@ -16,11 +20,15 @@ function MenuFromBottom({
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
+  const ref = useOutsideClick<HTMLDivElement>(() => {
+    onClose?.();
+  });
+
   if (!show) return null;
 
   return (
     <Backdrop className={twMerge("", className)} {...rest}>
-      <SliderMenu title={title} onClose={onClose}>
+      <SliderMenu title={title} onClose={onClose} ref={ref}>
         {children}
       </SliderMenu>
     </Backdrop>

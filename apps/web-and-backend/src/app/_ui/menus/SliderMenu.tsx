@@ -10,12 +10,14 @@ function SliderMenu({
   children,
   showCloseButton = true,
   onClose,
+  ref,
   ...props
 }: {
   title: string;
   children?: React.ReactNode;
   showCloseButton?: boolean;
   onClose?: () => void;
+  ref?: React.Ref<HTMLDivElement>;
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
@@ -25,6 +27,7 @@ function SliderMenu({
         "absolute text-text bottom-0 flex flex-col gap-5 w-full p-5 bg-white rounded-t-[30px] animate-slide-up",
         className,
       )}
+      ref={ref}
       {...rest}
     >
       <header className="flex items-center justify-between">
