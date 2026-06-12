@@ -6,7 +6,8 @@ import { formatWeight } from "@/app/_utils/format/formatWeight";
 import { handleJSENDResponse } from "../../common/handleJSENDResponse";
 import { getAssembledDayById } from "../../day/actions";
 import { getTodayDayId } from "../../day/utils/getTodayDayId";
-import UpdateWeightToggleForm from "./UpdateWeightToggleForm";
+import ToggleForm from "./ToggleForm";
+import UpdateWeightForm from "./UpdateWeightForm";
 
 async function UpdateTodaysWeight({
   ...props
@@ -40,7 +41,9 @@ async function UpdateTodaysWeight({
         )}
       </div>
 
-      <UpdateWeightToggleForm />
+      <ToggleForm label="Actualizar peso">
+        <UpdateWeightForm />
+      </ToggleForm>
 
       <SquaresPattern className="absolute top-0 right-0 size-50" />
     </section>
