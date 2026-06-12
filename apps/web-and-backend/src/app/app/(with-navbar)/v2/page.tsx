@@ -1,4 +1,4 @@
-import { DayEntry, JSENDResponse, RecipeDTO } from "shared";
+import { DayDTO, DayEntry, JSENDResponse, RecipeDTO } from "shared";
 
 import { handleJSENDResponse } from "@/app/_features/common/handleJSENDResponse";
 import DaySummary from "@/app/_features/dashboard/DaySummary";
@@ -9,11 +9,14 @@ import WeightProgress from "@/app/_features/dashboard/WeightProgress";
 import {
   AssembledDayResult,
   getAssembledDayById,
+  getLastDayWithCaloriesGoalForUser,
+  getLastDayWithProteinGoalForUser,
   getLastNumberOfDaysIncludingTodayAndNonExistingDays,
 } from "@/app/_features/day/actions";
 import { getTodayDayId } from "@/app/_features/day/utils/getTodayDayId";
 import { getAllRecipesForLoggedInUser } from "@/app/_features/recipe/actions";
 import Screen from "@/app/_ui/screen/Screen";
+import { formatToInteger } from "@/app/_utils/format/formatToInteger";
 
 export const dynamic = "force-dynamic";
 
@@ -22,8 +25,6 @@ export const metadata = {
   description: "Todas tus recetas",
 };
 
-// TODO NEXT: Wire all logic to redesign
-
 export default async function DashboardPage() {
   const todayId = getTodayDayId();
 
@@ -31,18 +32,33 @@ export default async function DashboardPage() {
     Promise<JSENDResponse<AssembledDayResult>>,
     Promise<JSENDResponse<DayEntry[]>>,
     Promise<JSENDResponse<RecipeDTO[]>>,
+    Promise<JSENDResponse<DayDTO | null>>,
+    Promise<JSENDResponse<DayDTO | null>>,
   ] = [
     getAssembledDayById(todayId),
     getLastNumberOfDaysIncludingTodayAndNonExistingDays(90),
     getAllRecipesForLoggedInUser(),
+    getLastDayWithCaloriesGoalForUser(),
+    getLastDayWithProteinGoalForUser(),
   ];
 
-  const [todayResponse, last90DaysResponse, recipesResponse] =
-    await Promise.all(promises);
+  const [
+    todayResponse,
+    last90DaysResponse,
+    recipesResponse,
+    lastDayWithCaloriesGoalResponse,
+    lastDayWithProteinGoalResponse,
+  ] = await Promise.all(promises);
 
   const handledTodayAssembledDay = handleJSENDResponse(todayResponse);
   const handledLast90Days = handleJSENDResponse(last90DaysResponse);
   const handledRecipes = handleJSENDResponse(recipesResponse);
+  const handledLastDayWithCaloriesGoal = handleJSENDResponse(
+    lastDayWithCaloriesGoalResponse,
+  );
+  const handledLastDayWithProteinGoal = handleJSENDResponse(
+    lastDayWithProteinGoalResponse,
+  );
 
   const last90Days = handledLast90Days.isSuccess ? handledLast90Days.data : [];
   const last30Days = last90Days!.slice(-30);
@@ -59,8 +75,13 @@ export default async function DashboardPage() {
             <>
               <TodaysMacros
                 todaysMacrosProps={{
-                  totalCalories: 2500,
-                  totalProtein: 180,
+                  totalCalories: formatToInteger(
+                    handledLastDayWithCaloriesGoal.data?.updatedCaloriesGoal ||
+                      0,
+                  ),
+                  totalProtein: formatToInteger(
+                    handledLastDayWithProteinGoal.data?.updatedProteinGoal || 0,
+                  ),
                   currentCalories: 1850,
                   currentProtein: 145,
                 }}
