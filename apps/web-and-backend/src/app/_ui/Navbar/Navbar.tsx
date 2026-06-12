@@ -34,7 +34,7 @@ function NavbarMenu({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       )}
       {...rest}
     >
-      <ButtonRecipes isActive />
+      <ButtonRecipes />
       <ButtonMeals />
 
       <div></div>

@@ -3,16 +3,13 @@ import { twMerge } from "tailwind-merge";
 
 import ButtonNavbar from "./ButtonNavbar";
 
-function ButtonMeals({
-  isActive = false,
-  ...props
-}: { isActive?: boolean } & React.HTMLAttributes<HTMLButtonElement>) {
+function ButtonMeals({ ...props }: React.HTMLAttributes<HTMLButtonElement>) {
   const { className, ...rest } = props;
 
   return (
     <ButtonNavbar
+      // TODO include href
       icon={<SiMealie size={22} />}
-      isActive={isActive}
       className={twMerge("", className)}
       {...rest}
     ></ButtonNavbar>

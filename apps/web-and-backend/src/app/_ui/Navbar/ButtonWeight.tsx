@@ -3,16 +3,13 @@ import { twMerge } from "tailwind-merge";
 
 import ButtonNavbar from "./ButtonNavbar";
 
-function ButtonWeight({
-  isActive = false,
-  ...props
-}: { isActive?: boolean } & React.HTMLAttributes<HTMLButtonElement>) {
+function ButtonWeight({ ...props }: React.HTMLAttributes<HTMLButtonElement>) {
   const { className, ...rest } = props;
 
   return (
     <ButtonNavbar
+      href="/app/weight"
       icon={<LuWeight size={22} />}
-      isActive={isActive}
       className={twMerge("", className)}
       {...rest}
     ></ButtonNavbar>

@@ -3,16 +3,13 @@ import { twMerge } from "tailwind-merge";
 
 import ButtonNavbar from "./ButtonNavbar";
 
-function ButtonRecipes({
-  isActive = false,
-  ...props
-}: { isActive?: boolean } & React.HTMLAttributes<HTMLButtonElement>) {
+function ButtonRecipes({ ...props }: React.HTMLAttributes<HTMLButtonElement>) {
   const { className, ...rest } = props;
 
   return (
     <ButtonNavbar
+      // TODO include href
       icon={<PiChefHat size={22} />}
-      isActive={isActive}
       className={twMerge("", className)}
       {...rest}
     ></ButtonNavbar>
