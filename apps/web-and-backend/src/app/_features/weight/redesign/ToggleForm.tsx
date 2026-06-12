@@ -2,50 +2,40 @@
 
 import {
   ButtonHTMLAttributes,
+  ReactElement,
   cloneElement,
-  createContext,
   useCallback,
-  useContext,
   useState,
 } from "react";
 
-type ToggleFormContextValue = {
-  show: boolean;
-  onClose: () => void;
+type ToggleFormProps = {
+  toggleButton: ReactElement<ButtonHTMLAttributes<HTMLButtonElement>>;
+  children: ReactElement<{
+    show: boolean;
+    onClose: () => void;
+  }>;
 };
 
-export const ToggleFormContext = createContext<ToggleFormContextValue>({
-  show: false,
-  onClose: () => {},
-});
-
-export function useToggleForm() {
-  return useContext(ToggleFormContext);
-}
-
-function ToggleForm({
-  toggleButton,
-  children,
-}: {
-  children?: React.ReactNode;
-  toggleButton: React.ReactNode;
-} & React.ButtonHTMLAttributes<HTMLButtonElement>) {
+function ToggleForm({ toggleButton, children }: ToggleFormProps) {
   const [show, setShow] = useState(false);
+
   const onClose = useCallback(() => setShow(false), []);
 
-  const toggleButtonWithProps = cloneElement(
-    toggleButton as React.ReactElement<ButtonHTMLAttributes<HTMLButtonElement>>,
-    {
-      onClick: () => setShow((prev) => !prev),
-    },
-  );
+  const toggleButtonWithProps = cloneElement(toggleButton, {
+    onClick: () => setShow((prev) => !prev),
+  });
+
+  const formWithProps = cloneElement(children, {
+    show,
+    onClose,
+  });
 
   return (
-    <ToggleFormContext.Provider value={{ show, onClose }}>
+    <>
       {toggleButtonWithProps}
 
-      {children}
-    </ToggleFormContext.Provider>
+      {formWithProps}
+    </>
   );
 }
 

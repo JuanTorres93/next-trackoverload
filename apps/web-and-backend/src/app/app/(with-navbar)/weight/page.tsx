@@ -44,9 +44,6 @@ export default async function WeightPage() {
           />
         )}
       </div>
-
-      <UpdateWeightForm show={false} />
-      <UpdateGoalsForm show={false} />
     </Screen>
   );
 }

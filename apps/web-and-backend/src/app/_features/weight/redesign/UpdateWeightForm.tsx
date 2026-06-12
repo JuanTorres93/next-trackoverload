@@ -11,7 +11,6 @@ import { parseDecimalInput } from "@/app/_utils/format/parseDecimalInput";
 
 import { updateUserWeightForDay } from "../../day/actions";
 import { getTodayDayId } from "../../day/utils/getTodayDayId";
-import { useToggleForm } from "./ToggleForm";
 
 export type UpdateWeightFormState = {
   weightInKg: string;
@@ -22,19 +21,14 @@ const INITIAL_FORM_STATE: UpdateWeightFormState = {
 };
 
 function UpdateWeightForm({
-  show: showProp,
-  onClose: onCloseProp,
+  show = false,
+  onClose,
   ...props
 }: {
   show?: boolean;
   onClose?: () => void;
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
-
-  const { show: contextShow, onClose: contextOnClose } = useToggleForm();
-
-  const show = showProp ?? contextShow;
-  const onClose = onCloseProp ?? contextOnClose;
 
   const { formState, setField, isLoading, resetForm, setIsLoading } =
     useFormSetup<UpdateWeightFormState>(INITIAL_FORM_STATE);
