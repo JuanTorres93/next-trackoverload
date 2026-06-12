@@ -51,7 +51,9 @@ describe("UpdateTodaysWeight", () => {
 
       await userEvent.click(updateWeightButton);
 
-      const weightInput = screen.getByPlaceholderText(/introduce tu peso/i);
+      const weightInput = screen.getByRole("textbox", {
+        name: /peso/i,
+      });
 
       await userEvent.type(weightInput, "80.5");
 
@@ -70,7 +72,9 @@ describe("UpdateTodaysWeight", () => {
 
       await userEvent.click(updateWeightButton);
 
-      const weightInput = screen.getByPlaceholderText(/introduce tu peso/i);
+      const weightInput = screen.getByRole("textbox", {
+        name: /peso/i,
+      });
 
       await userEvent.type(weightInput, "80,9");
 

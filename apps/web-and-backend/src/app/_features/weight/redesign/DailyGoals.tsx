@@ -6,8 +6,20 @@ import ButtonAction from "@/app/_ui/buttons/ButtonAction";
 import AppHeader from "@/app/_ui/typography/AppHeader";
 import { formatToInteger } from "@/app/_utils/format/formatToInteger";
 
-function DailyGoals({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
+import { handleJSENDResponse } from "../../common/handleJSENDResponse";
+import { getLastDayWithCaloriesGoalForUser } from "../../day/actions";
+import ToggleForm from "./ToggleForm";
+import UpdateGoalsForm from "./UpdateGoalsForm";
+
+async function DailyGoals({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
+
+  const lastDayWithCaloriesGoalJSEND =
+    await getLastDayWithCaloriesGoalForUser();
+
+  const handledLastDayWithCalories = handleJSENDResponse(
+    lastDayWithCaloriesGoalJSEND,
+  );
 
   return (
     <section
@@ -20,11 +32,24 @@ function DailyGoals({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       <AppHeader>Objetivos diarios</AppHeader>
 
       <div className="grid grid-cols-2 gap-3.75 mb-2">
-        <GoalCard type="calories" value={2000} maxValue={2500} />
-        <GoalCard type="protein" value={150} maxValue={200} />
+        {!handledLastDayWithCalories.isSuccess &&
+          handledLastDayWithCalories.errorComponent}
+
+        {handledLastDayWithCalories.isSuccess && (
+          <GoalCard
+            type="calories"
+            value={handledLastDayWithCalories?.data?.updatedCaloriesGoal ?? -1}
+          />
+        )}
+
+        <GoalCard type="protein" value={150} />
       </div>
 
-      <ButtonAction>Actualizar objetivos</ButtonAction>
+      <ToggleForm
+        toggleButton={<ButtonAction>Actualizar objetivos</ButtonAction>}
+      >
+        <UpdateGoalsForm />
+      </ToggleForm>
     </section>
   );
 }
@@ -32,18 +57,17 @@ function DailyGoals({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
 function GoalCard({
   type,
   value,
-  maxValue,
   ...props
 }: {
   type: "calories" | "protein";
   value: number;
-  maxValue: number;
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
   const label = type === "calories" ? "Calorías" : "Proteínas";
 
-  const formattedValue = formatToInteger(value);
+  const formattedValue = value < 0 ? "-" : formatToInteger(value);
+
   const unit = type === "calories" ? "kcal" : "g";
 
   const Icon =
@@ -72,6 +96,7 @@ function GoalCard({
 
         <span>
           <span className="font-semibold text-[18px]">{formattedValue}</span>
+
           <span className="opacity-60 text-[14px]"> {unit}</span>
         </span>
       </div>
