@@ -1,10 +1,13 @@
 "use client";
 
-import { createContext, useCallback, useContext, useState } from "react";
-
-import { twMerge } from "tailwind-merge";
-
-import ButtonActionWhite from "@/app/_ui/buttons/ButtonActionWhite";
+import {
+  ButtonHTMLAttributes,
+  cloneElement,
+  createContext,
+  useCallback,
+  useContext,
+  useState,
+} from "react";
 
 type ToggleFormContextValue = {
   show: boolean;
@@ -21,27 +24,25 @@ export function useToggleForm() {
 }
 
 function ToggleForm({
+  toggleButton,
   children,
-  label,
-  ...props
 }: {
   children?: React.ReactNode;
-  label: React.ReactNode;
+  toggleButton: React.ReactNode;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
-  const { className, ...rest } = props;
-
   const [show, setShow] = useState(false);
   const onClose = useCallback(() => setShow(false), []);
 
+  const toggleButtonWithProps = cloneElement(
+    toggleButton as React.ReactElement<ButtonHTMLAttributes<HTMLButtonElement>>,
+    {
+      onClick: () => setShow((prev) => !prev),
+    },
+  );
+
   return (
     <ToggleFormContext.Provider value={{ show, onClose }}>
-      <ButtonActionWhite
-        className={twMerge("text-secondary-app", className)}
-        onClick={() => setShow((prev) => !prev)}
-        {...rest}
-      >
-        {label}
-      </ButtonActionWhite>
+      {toggleButtonWithProps}
 
       {children}
     </ToggleFormContext.Provider>

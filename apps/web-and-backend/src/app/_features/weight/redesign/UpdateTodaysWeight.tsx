@@ -1,6 +1,7 @@
 import { twMerge } from "tailwind-merge";
 
 import SquaresPattern from "@/app/_ui/SquaresPattern";
+import ButtonActionWhite from "@/app/_ui/buttons/ButtonActionWhite";
 import { formatWeight } from "@/app/_utils/format/formatWeight";
 
 import { handleJSENDResponse } from "../../common/handleJSENDResponse";
@@ -41,7 +42,13 @@ async function UpdateTodaysWeight({
         )}
       </div>
 
-      <ToggleForm label="Actualizar peso">
+      <ToggleForm
+        toggleButton={
+          <ButtonActionWhite className="text-secondary-app">
+            Actualizar peso
+          </ButtonActionWhite>
+        }
+      >
         <UpdateWeightForm />
       </ToggleForm>
 
