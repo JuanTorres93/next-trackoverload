@@ -77,15 +77,23 @@ export default async function DashboardPage() {
   const weight = handledTodayAssembledDay.data?.assembledDay?.userWeightInKg;
 
   const caloriesToday =
-    handledTodayAssembledDay.data?.assembledDay?.meals.reduce(
+    (handledTodayAssembledDay.data?.assembledDay?.meals.reduce(
       (acc, meal) => acc + meal.calories,
       0,
-    );
+    ) || 0) +
+    (handledTodayAssembledDay.data?.assembledDay?.fakeMeals.reduce(
+      (acc, meal) => acc + meal.calories,
+      0,
+    ) || 0);
   const proteinToday =
-    handledTodayAssembledDay.data?.assembledDay?.meals.reduce(
+    (handledTodayAssembledDay.data?.assembledDay?.meals.reduce(
       (acc, meal) => acc + meal.protein,
       0,
-    );
+    ) || 0) +
+    (handledTodayAssembledDay.data?.assembledDay?.fakeMeals.reduce(
+      (acc, meal) => acc + meal.protein,
+      0,
+    ) || 0);
 
   const caloriesLeft = formatToInteger(totalCalories - (caloriesToday || 0));
   const proteinLeft = formatToInteger(totalProtein - (proteinToday || 0));
