@@ -7,14 +7,19 @@ import Input from "@/app/_ui/user-input/Input";
 
 function UpdateWeightForm({
   show = false,
+  onClose,
   ...props
-}: { show: boolean } & React.HTMLAttributes<HTMLDivElement>) {
+}: {
+  show: boolean;
+  onClose?: () => void;
+} & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
   return (
     <MenuFromBottom
       title="Actualizar peso"
       show={show}
+      onClose={onClose}
       className={twMerge("", className)}
       {...rest}
     >

@@ -29,7 +29,7 @@ function UpdateWeightToggleForm({
         Actualizar peso
       </ButtonActionWhite>
 
-      <UpdateWeightForm show={showForm} />
+      <UpdateWeightForm show={showForm} onClose={toggleForm} />
     </>
   );
 }

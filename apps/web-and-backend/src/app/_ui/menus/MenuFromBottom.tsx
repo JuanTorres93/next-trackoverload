@@ -5,12 +5,14 @@ import SliderMenu from "./SliderMenu";
 function MenuFromBottom({
   title,
   show,
+  onClose,
   children,
   ...props
 }: {
   title: string;
   show?: boolean;
   children?: React.ReactNode;
+  onClose?: () => void;
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
@@ -18,7 +20,9 @@ function MenuFromBottom({
 
   return (
     <Backdrop className={twMerge("", className)} {...rest}>
-      <SliderMenu title={title}>{children}</SliderMenu>
+      <SliderMenu title={title} onClose={onClose}>
+        {children}
+      </SliderMenu>
     </Backdrop>
   );
 }

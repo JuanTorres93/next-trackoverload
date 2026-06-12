@@ -1,3 +1,5 @@
+"use client";
+
 import { twMerge } from "tailwind-merge";
 
 import ButtonClose from "../buttons/ButtonClose";
@@ -7,11 +9,13 @@ function SliderMenu({
   title,
   children,
   showCloseButton = true,
+  onClose,
   ...props
 }: {
   title: string;
   children?: React.ReactNode;
   showCloseButton?: boolean;
+  onClose?: () => void;
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
@@ -26,7 +30,7 @@ function SliderMenu({
       <header className="flex items-center justify-between">
         <AppHeader className="font-bold">{title}</AppHeader>
 
-        {showCloseButton && <ButtonClose />}
+        {showCloseButton && <ButtonClose onClick={onClose} />}
       </header>
 
       {children}
