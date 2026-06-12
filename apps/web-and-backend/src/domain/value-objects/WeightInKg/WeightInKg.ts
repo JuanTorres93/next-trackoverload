@@ -1,5 +1,5 @@
-import { Float } from '../Float/Float';
-import { ValueObject } from '../ValueObject';
+import { Float } from "../Float/Float";
+import { ValueObject } from "../ValueObject";
 
 type WeightInKgProps = {
   value: number;
