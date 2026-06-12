@@ -8,7 +8,7 @@ function ButtonExercise({ ...props }: React.HTMLAttributes<HTMLButtonElement>) {
 
   return (
     <ButtonNavbar
-      // TODO include href
+      href="/app/templates"
       icon={<LiaDumbbellSolid size={22} />}
       className={twMerge("", className)}
       {...rest}

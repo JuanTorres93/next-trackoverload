@@ -8,7 +8,7 @@ function ButtonMeals({ ...props }: React.HTMLAttributes<HTMLButtonElement>) {
 
   return (
     <ButtonNavbar
-      // TODO include href
+      href="/app/meals"
       icon={<SiMealie size={22} />}
       className={twMerge("", className)}
       {...rest}

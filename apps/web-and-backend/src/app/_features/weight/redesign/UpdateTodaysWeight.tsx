@@ -44,7 +44,7 @@ async function UpdateTodaysWeight({
 
       <ToggleForm
         toggleButton={
-          <ButtonActionWhite className="text-secondary-app">
+          <ButtonActionWhite className="z-10 text-secondary-app">
             Actualizar peso
           </ButtonActionWhite>
         }
@@ -52,7 +52,7 @@ async function UpdateTodaysWeight({
         <UpdateWeightForm />
       </ToggleForm>
 
-      <SquaresPattern className="absolute top-0 right-0 size-50" />
+      <SquaresPattern className="absolute top-0 right-0 z-0 size-50" />
     </section>
   );
 }

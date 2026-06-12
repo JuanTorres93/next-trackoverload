@@ -8,7 +8,7 @@ function ButtonRecipes({ ...props }: React.HTMLAttributes<HTMLButtonElement>) {
 
   return (
     <ButtonNavbar
-      // TODO include href
+      href="/app/recipes"
       icon={<PiChefHat size={22} />}
       className={twMerge("", className)}
       {...rest}

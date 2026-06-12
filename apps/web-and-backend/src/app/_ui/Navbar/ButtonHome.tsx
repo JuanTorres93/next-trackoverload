@@ -8,6 +8,7 @@ function ButtonHome({ ...props }: React.HTMLAttributes<HTMLButtonElement>) {
 
   return (
     <ButtonCircle
+      href="/app"
       className={twMerge("p-4.25 bg-primary-app", className)}
       {...rest}
     >
