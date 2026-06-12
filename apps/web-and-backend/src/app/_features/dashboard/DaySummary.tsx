@@ -14,7 +14,7 @@ function DaySummary({
   caloriesLeft: number;
   proteinLeft: number;
   mealsToday: number;
-  currentWeight: number;
+  currentWeight: number | undefined;
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
@@ -37,7 +37,7 @@ function SummaryCard({
   ...props
 }: {
   type: "calories" | "protein" | "meals" | "weight";
-  value: number;
+  value: number | undefined;
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
@@ -61,7 +61,9 @@ function SummaryCard({
         <span>{label}</span>
 
         <span>
-          <span className="text-text text-[18px]">{value}</span>
+          <span className="text-text text-[18px]">
+            {value !== undefined ? value : "-"}
+          </span>
           <span> {unit}</span>
         </span>
       </div>

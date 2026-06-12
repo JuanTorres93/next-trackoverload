@@ -64,6 +64,32 @@ export default async function DashboardPage() {
   const last30Days = last90Days!.slice(-30);
   const last14Days = last90Days!.slice(-14);
 
+  const totalCalories = formatToInteger(
+    handledLastDayWithCaloriesGoal.data?.updatedCaloriesGoal || 0,
+  );
+  const totalProtein = formatToInteger(
+    handledLastDayWithProteinGoal.data?.updatedProteinGoal || 0,
+  );
+  const mealsTodayCount =
+    (handledTodayAssembledDay.data?.assembledDay?.meals.length || 0) +
+    (handledTodayAssembledDay.data?.assembledDay?.fakeMeals.length || 0);
+
+  const weight = handledTodayAssembledDay.data?.assembledDay?.userWeightInKg;
+
+  const caloriesToday =
+    handledTodayAssembledDay.data?.assembledDay?.meals.reduce(
+      (acc, meal) => acc + meal.calories,
+      0,
+    );
+  const proteinToday =
+    handledTodayAssembledDay.data?.assembledDay?.meals.reduce(
+      (acc, meal) => acc + meal.protein,
+      0,
+    );
+
+  const caloriesLeft = formatToInteger(totalCalories - (caloriesToday || 0));
+  const proteinLeft = formatToInteger(totalProtein - (proteinToday || 0));
+
   return (
     <Screen title="" isDashboard>
       <div className="flex flex-col gap-7.5 pb-35">
@@ -75,23 +101,18 @@ export default async function DashboardPage() {
             <>
               <TodaysMacros
                 todaysMacrosProps={{
-                  totalCalories: formatToInteger(
-                    handledLastDayWithCaloriesGoal.data?.updatedCaloriesGoal ||
-                      0,
-                  ),
-                  totalProtein: formatToInteger(
-                    handledLastDayWithProteinGoal.data?.updatedProteinGoal || 0,
-                  ),
-                  currentCalories: 1850,
-                  currentProtein: 145,
+                  totalCalories,
+                  totalProtein,
+                  currentCalories: caloriesToday || 0,
+                  currentProtein: proteinToday || 0,
                 }}
               />
 
               <DaySummary
-                caloriesLeft={650}
-                proteinLeft={35}
-                mealsToday={3}
-                currentWeight={70}
+                caloriesLeft={caloriesLeft}
+                proteinLeft={proteinLeft}
+                mealsToday={mealsTodayCount}
+                currentWeight={weight}
               />
 
               <TodaysMeals
