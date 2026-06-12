@@ -19,7 +19,7 @@ import DailyGoals from "../DailyGoals";
 
 async function setup() {
   const today = new Date();
-  await createAndPersistTest_Day_Recipes_Ingredients_User(
+  const testDayDTO = await createAndPersistTest_Day_Recipes_Ingredients_User(
     today.getDate(),
     today.getMonth() + 1,
     today.getFullYear(),
@@ -33,7 +33,7 @@ async function setup() {
     name: /actualizar objetivos/i,
   });
 
-  return { updateGoalsButton };
+  return { updateGoalsButton, testDayDTO };
 }
 
 afterEach(() => {
@@ -77,6 +77,28 @@ describe("DailyGoals", () => {
     expect(caloriesGoal).toBeInTheDocument();
   });
 
+  it("should show last protein value", async () => {
+    const dayWithProtein = new Date(12, 12, 2000);
+
+    const dayDTO: DayDTO =
+      await createAndPersistTest_Day_Recipes_Ingredients_User(
+        dayWithProtein.getDate(),
+        dayWithProtein.getMonth() + 1,
+        dayWithProtein.getFullYear(),
+      );
+
+    const day = fromDayDTO(dayDTO);
+    day.updateProteinGoal(77);
+
+    await TestDaysRepo.saveDay(day);
+
+    await setup();
+
+    const proteinGoal = await screen.findByText(/77/i);
+
+    expect(proteinGoal).toBeInTheDocument();
+  });
+
   describe("Side effects", () => {
     it("should update users calories goal in repo", async () => {
       const { updateGoalsButton } = await setup();
@@ -118,6 +140,79 @@ describe("DailyGoals", () => {
       const updatedDay = await TestDaysRepo.getDayById(todayId);
 
       expect(updatedDay!.updatedCaloriesGoal).toBe(1000);
+    });
+
+    it("should update users protein goal in repo", async () => {
+      const { updateGoalsButton } = await setup();
+
+      await userEvent.click(updateGoalsButton);
+
+      const proteinInput = screen.getByRole("textbox", {
+        name: /proteínas/i,
+      });
+
+      await userEvent.type(proteinInput, "180");
+
+      const saveButton = screen.getByRole("button", { name: /guardar/i });
+      await userEvent.click(saveButton);
+
+      const todayId = getTodayDayId();
+
+      const updatedDay = await TestDaysRepo.getDayById(todayId);
+
+      expect(updatedDay!.updatedProteinGoal).toBe(180);
+    });
+
+    it("should not affect protein if only updating calories", async () => {
+      const { updateGoalsButton, testDayDTO } = await setup();
+
+      const day = fromDayDTO(testDayDTO);
+      day.updateProteinGoal(30);
+
+      await TestDaysRepo.saveDay(day);
+
+      await userEvent.click(updateGoalsButton);
+
+      const caloriesInput = screen.getByRole("textbox", {
+        name: /calorías/i,
+      });
+
+      await userEvent.type(caloriesInput, "999");
+
+      const saveButton = screen.getByRole("button", { name: /guardar/i });
+      await userEvent.click(saveButton);
+
+      const todayId = getTodayDayId();
+
+      const updatedDay = await TestDaysRepo.getDayById(todayId);
+
+      expect(updatedDay!.updatedProteinGoal).toBe(30);
+    });
+
+    it("should not affect calories if only updating protein", async () => {
+      const { updateGoalsButton, testDayDTO } = await setup();
+
+      const day = fromDayDTO(testDayDTO);
+      day.updateCaloriesGoal(3000);
+
+      await TestDaysRepo.saveDay(day);
+
+      await userEvent.click(updateGoalsButton);
+
+      const proteinInput = screen.getByRole("textbox", {
+        name: /proteínas/i,
+      });
+
+      await userEvent.type(proteinInput, "180");
+
+      const saveButton = screen.getByRole("button", { name: /guardar/i });
+      await userEvent.click(saveButton);
+
+      const todayId = getTodayDayId();
+
+      const updatedDay = await TestDaysRepo.getDayById(todayId);
+
+      expect(updatedDay!.updatedCaloriesGoal).toBe(3000);
     });
   });
 });

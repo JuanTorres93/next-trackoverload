@@ -1,5 +1,6 @@
 import { HiOutlineFire } from "react-icons/hi2";
 import { TbMeat } from "react-icons/tb";
+import { DayDTO, JSENDResponse } from "shared";
 import { twMerge } from "tailwind-merge";
 
 import ButtonAction from "@/app/_ui/buttons/ButtonAction";
@@ -7,18 +8,29 @@ import AppHeader from "@/app/_ui/typography/AppHeader";
 import { formatToInteger } from "@/app/_utils/format/formatToInteger";
 
 import { handleJSENDResponse } from "../../common/handleJSENDResponse";
-import { getLastDayWithCaloriesGoalForUser } from "../../day/actions";
+import {
+  getLastDayWithCaloriesGoalForUser,
+  getLastDayWithProteinGoalForUser,
+} from "../../day/actions";
 import ToggleForm from "./ToggleForm";
 import UpdateGoalsForm from "./UpdateGoalsForm";
 
 async function DailyGoals({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
-  const lastDayWithCaloriesGoalJSEND =
-    await getLastDayWithCaloriesGoalForUser();
+  const promises: [
+    Promise<JSENDResponse<DayDTO | null>>,
+    Promise<JSENDResponse<DayDTO | null>>,
+  ] = [getLastDayWithCaloriesGoalForUser(), getLastDayWithProteinGoalForUser()];
+
+  const [lastDayWithCaloriesGoalJSEND, lastDayWithProteinGoalJSEND] =
+    await Promise.all(promises);
 
   const handledLastDayWithCalories = handleJSENDResponse(
     lastDayWithCaloriesGoalJSEND,
+  );
+  const handledLastDayWithProtein = handleJSENDResponse(
+    lastDayWithProteinGoalJSEND,
   );
 
   return (
@@ -32,6 +44,7 @@ async function DailyGoals({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       <AppHeader>Objetivos diarios</AppHeader>
 
       <div className="grid grid-cols-2 gap-3.75 mb-2">
+        {/* Calories */}
         {!handledLastDayWithCalories.isSuccess &&
           handledLastDayWithCalories.errorComponent}
 
@@ -42,7 +55,16 @@ async function DailyGoals({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
           />
         )}
 
-        <GoalCard type="protein" value={150} />
+        {/* Protein */}
+        {!handledLastDayWithProtein.isSuccess &&
+          handledLastDayWithProtein.errorComponent}
+
+        {handledLastDayWithProtein.isSuccess && (
+          <GoalCard
+            type="protein"
+            value={handledLastDayWithProtein?.data?.updatedProteinGoal ?? -1}
+          />
+        )}
       </div>
 
       <ToggleForm

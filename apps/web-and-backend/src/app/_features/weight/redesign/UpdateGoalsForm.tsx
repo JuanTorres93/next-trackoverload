@@ -9,7 +9,7 @@ import MenuFromBottom from "@/app/_ui/menus/MenuFromBottom";
 import Input from "@/app/_ui/user-input/Input";
 import { parseDecimalInput } from "@/app/_utils/format/parseDecimalInput";
 
-import { setCaloriesGoalForDay } from "../../day/actions";
+import { setCaloriesGoalForDay, setProteinGoalForDay } from "../../day/actions";
 import { getTodayDayId } from "../../day/utils/getTodayDayId";
 
 export type UpdateCaloriesFormState = {
@@ -50,10 +50,19 @@ function UpdateGoalsForm({
         parseDecimalInput(formState.newCalories),
       );
 
-      // const parsedProtein = parseDecimalInput(formState.newProtein);
+      const parsedProtein = Math.round(parseDecimalInput(formState.newProtein));
 
-      await setCaloriesGoalForDay(todayId, parsedCalories);
-      // await setProteinGoalForDay(todayId, parsedProtein);
+      const promises = [
+        formState.newCalories
+          ? setCaloriesGoalForDay(todayId, parsedCalories)
+          : Promise.resolve(),
+
+        formState.newProtein
+          ? setProteinGoalForDay(todayId, parsedProtein)
+          : Promise.resolve(),
+      ];
+
+      await Promise.all(promises);
 
       onClose?.();
       resetForm();
