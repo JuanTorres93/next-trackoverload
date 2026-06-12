@@ -18,7 +18,7 @@ function SliderMenu({
   return (
     <menu
       className={twMerge(
-        "absolute bottom-0 flex flex-col gap-5 w-full p-5 bg-white rounded-t-[30px] animate-slide-up",
+        "absolute text-text bottom-0 flex flex-col gap-5 w-full p-5 bg-white rounded-t-[30px] animate-slide-up",
         className,
       )}
       {...rest}
