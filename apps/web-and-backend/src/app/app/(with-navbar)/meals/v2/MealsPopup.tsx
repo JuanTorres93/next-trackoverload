@@ -1,12 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { createPortal } from "react-dom";
 
-import { autoUpdate, useFloating } from "@floating-ui/react";
 import { twMerge } from "tailwind-merge";
 
-import { useOutsideClick } from "@/app/_hooks/useOutsideClick";
+import { usePopupPlacement } from "@/app/_hooks/usePopupPlacement";
 import ButtonBatchLogging from "@/app/_ui/buttons/ButtonBatchLogging";
 import ButtonPlus from "@/app/_ui/buttons/ButtonPlus";
 import PopupMenu, { PopupMenuItem } from "@/app/_ui/menus/PopupMenu";
@@ -14,31 +12,17 @@ import PopupMenu, { PopupMenuItem } from "@/app/_ui/menus/PopupMenu";
 function MealsPopup({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
-  const [isOpen, setIsOpen] = useState(false);
-
-  const outsideClickRef = useOutsideClick(() => setIsOpen(false));
-
-  const { refs, floatingStyles } = useFloating({
-    whileElementsMounted: autoUpdate,
-    placement: "bottom-end",
-    open: isOpen,
-  });
-
-  function togglePopup() {
-    setIsOpen((prev) => !prev);
-  }
+  const { isOpen, togglePopup, referenceRef, floatingStyles, floatingRef } =
+    usePopupPlacement();
 
   return (
     <>
-      <ButtonPlus ref={refs.setReference} onClick={togglePopup} />
+      <ButtonPlus ref={referenceRef} onClick={togglePopup} />
 
       {isOpen &&
         createPortal(
           <PopupMenu
-            ref={(node) => {
-              refs.setFloating(node);
-              outsideClickRef.current = node;
-            }}
+            ref={floatingRef}
             style={floatingStyles}
             className={twMerge("", className)}
             {...rest}
