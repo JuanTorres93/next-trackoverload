@@ -6,10 +6,10 @@ import {
 } from "@/app/_features/day/actions";
 import { getTodayDayId } from "@/app/_features/day/utils/getTodayDayId";
 import MealsGrid from "@/app/_features/meal/redesign/MealsGrid";
-import ButtonPlus from "@/app/_ui/buttons/ButtonPlus";
 import Screen from "@/app/_ui/screen/Screen";
 
 import DateHeader from "./DateHeader";
+import MealsPopup from "./MealsPopup";
 
 export const dynamic = "force-dynamic";
 
@@ -52,7 +52,7 @@ export default async function RecipesPage() {
   const meals = todayAssembledDayData.assembledDay?.meals || [];
 
   return (
-    <Screen title="Comidas" screenMenuOpener={<ButtonPlus />}>
+    <Screen title="Comidas" screenMenuOpener={<MealsPopup />}>
       <DateHeader />
 
       <MealsGrid meals={meals} />

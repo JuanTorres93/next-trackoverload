@@ -30,7 +30,13 @@ export function PopupMenuItem({
   const { className, ...rest } = props;
 
   return (
-    <li className={twMerge("flex items-center gap-2", className)} {...rest}>
+    <li
+      className={twMerge(
+        "flex items-center rounded-sm gap-2 transition cursor-pointer hover:bg-background-dark-app/30",
+        className,
+      )}
+      {...rest}
+    >
       <span className="">{icon}</span>
 
       <span>{text}</span>
