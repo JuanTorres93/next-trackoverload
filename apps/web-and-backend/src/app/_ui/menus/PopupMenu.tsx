@@ -2,8 +2,12 @@ import { twMerge } from "tailwind-merge";
 
 function PopupMenu({
   children,
+  ref,
   ...props
-}: { children: React.ReactNode } & React.HTMLAttributes<HTMLDivElement>) {
+}: {
+  children: React.ReactNode;
+  ref?: React.Ref<HTMLDivElement>;
+} & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
   return (
@@ -12,6 +16,7 @@ function PopupMenu({
         "p-2.5 z-20 absolute rounded-xl shadow-lg bg-white flex flex-col gap-2 font-medium text-[14px] min-w-34.25",
         className,
       )}
+      ref={ref}
       {...rest}
     >
       {children}

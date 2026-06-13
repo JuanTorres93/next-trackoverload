@@ -5,8 +5,13 @@ import ButtonCircle from "./ButtonCircle";
 
 function ButtonPlus({
   popupVariant = false,
+  ref,
   ...props
-}: { popupVariant?: boolean } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
+}: {
+  popupVariant?: boolean;
+
+  ref?: React.Ref<HTMLButtonElement>;
+} & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   const { className, ...rest } = props;
 
   const size = popupVariant ? 15 : 22;
@@ -15,6 +20,7 @@ function ButtonPlus({
     <ButtonCircle
       className={twMerge("", className)}
       popupVariant={popupVariant}
+      ref={ref}
       {...rest}
     >
       <FiPlus size={size} />
