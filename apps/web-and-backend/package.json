@@ -39,6 +39,7 @@
     "simple-statistics": "^7.8.9",
     "stripe": "^20.4.1",
     "tailwind-merge": "^3.5.0",
+    "@floating-ui/react": "^0.27.19",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
