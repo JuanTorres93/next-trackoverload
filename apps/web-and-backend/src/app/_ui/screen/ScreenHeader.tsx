@@ -1,16 +1,17 @@
 import { twMerge } from "tailwind-merge";
 
 import ButtonBack from "../buttons/ButtonBack";
-import ButtonPlus from "../buttons/ButtonPlus";
 import HeaderContainer from "./HeaderContainer";
 
 function ScreenHeader({
   title,
   hasBackButton = false,
+  screenMenuOpener,
   ...props
 }: {
   title: string;
   hasBackButton?: boolean;
+  screenMenuOpener?: React.ReactNode;
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
@@ -23,7 +24,7 @@ function ScreenHeader({
           <h1 className="font-bold text-[22px]">{title}</h1>
         </div>
 
-        <ButtonPlus />
+        {screenMenuOpener && screenMenuOpener}
       </div>
 
       <div className="absolute -right-10 -top-5 h-50.25 w-50.25 bg-radial from-gradient-app from-30% to-transparent to-80% blur-[224px]"></div>

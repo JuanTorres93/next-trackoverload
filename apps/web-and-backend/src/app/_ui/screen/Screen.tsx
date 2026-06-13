@@ -8,12 +8,14 @@ function Screen({
   title,
   hasBackButton = false,
   isDashboard = false,
+  screenMenuOpener,
   children,
   ...props
 }: {
   title: string;
   hasBackButton?: boolean;
   isDashboard?: boolean;
+  screenMenuOpener?: React.ReactNode;
   children: React.ReactNode;
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
@@ -27,7 +29,11 @@ function Screen({
       {...rest}
     >
       {!isDashboard && (
-        <ScreenHeader title={title} hasBackButton={hasBackButton} />
+        <ScreenHeader
+          title={title}
+          hasBackButton={hasBackButton}
+          screenMenuOpener={screenMenuOpener}
+        />
       )}
       {isDashboard && <DashboardHeader />}
 
