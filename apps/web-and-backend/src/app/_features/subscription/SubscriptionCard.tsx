@@ -97,7 +97,6 @@ function NoSubscriptionContent({
       if (json.status === "success") {
         window.location.assign(json.data.redirectUrl);
       }
-    } catch {
     } finally {
       setIsLoading(false);
     }
@@ -138,7 +137,6 @@ function ExpiredFreeTrialContent({
       if (json.status === "success") {
         window.location.assign(json.data.redirectUrl);
       }
-    } catch {
     } finally {
       setIsLoading(false);
     }
@@ -183,7 +181,6 @@ function ActiveSubscriptionContent({
       if (json.status === "success") {
         window.location.assign(json.data.redirectUrl);
       }
-    } catch {
     } finally {
       setIsLoading(false);
     }
@@ -239,7 +236,6 @@ function CanceledSubscriptionContent({
       if (json.status === "success") {
         window.location.assign(json.data.redirectUrl);
       }
-    } catch {
     } finally {
       setIsLoading(false);
     }

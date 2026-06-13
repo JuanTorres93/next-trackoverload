@@ -50,7 +50,6 @@ function MealReminder({
         jsend.data?.message ||
           "Ha ocurrido un error al marcar la comida como comida. Por favor, intenta nuevamente.",
       );
-    } catch {
     } finally {
       setIsToggleingEaten(false);
     }

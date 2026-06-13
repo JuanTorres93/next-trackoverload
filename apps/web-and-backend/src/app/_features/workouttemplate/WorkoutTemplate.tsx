@@ -37,7 +37,6 @@ function WorkoutTemplate({
 
       // MOck wait for tests (IMPORTANT: remove this when implemented)
       await new Promise((resolve) => setTimeout(resolve, 100));
-    } catch {
     } finally {
       setIsStartingWorkout(false);
     }

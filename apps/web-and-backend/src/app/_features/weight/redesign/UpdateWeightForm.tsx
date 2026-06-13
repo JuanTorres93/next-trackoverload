@@ -49,7 +49,6 @@ function UpdateWeightForm({
 
       onClose?.();
       resetForm();
-    } catch (error) {
     } finally {
       setIsLoading(false);
     }

@@ -66,7 +66,6 @@ function UpdateGoalsForm({
 
       onClose?.();
       resetForm();
-    } catch (error) {
     } finally {
       setIsLoading(false);
     }
