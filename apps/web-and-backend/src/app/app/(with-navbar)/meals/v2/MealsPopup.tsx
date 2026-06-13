@@ -6,13 +6,17 @@ import { createPortal } from "react-dom";
 import { autoUpdate, useFloating } from "@floating-ui/react";
 import { twMerge } from "tailwind-merge";
 
+import { useOutsideClick } from "@/app/_hooks/useOutsideClick";
 import ButtonBatchLogging from "@/app/_ui/buttons/ButtonBatchLogging";
 import ButtonPlus from "@/app/_ui/buttons/ButtonPlus";
 import PopupMenu, { PopupMenuItem } from "@/app/_ui/menus/PopupMenu";
 
 function MealsPopup({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
+
   const [isOpen, setIsOpen] = useState(false);
+
+  const outsideClickRef = useOutsideClick(() => setIsOpen(false));
 
   const { refs, floatingStyles } = useFloating({
     whileElementsMounted: autoUpdate,
@@ -31,7 +35,10 @@ function MealsPopup({ ...props }: React.HTMLAttributes<HTMLDivElement>) {
       {isOpen &&
         createPortal(
           <PopupMenu
-            ref={refs.setFloating}
+            ref={(node) => {
+              refs.setFloating(node);
+              outsideClickRef.current = node;
+            }}
             style={floatingStyles}
             className={twMerge("", className)}
             {...rest}
