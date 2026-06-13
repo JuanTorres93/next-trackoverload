@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { vi } from "vitest";
 
 import { formatToInteger } from "@/app/_utils/format/formatToInteger";
@@ -86,5 +86,27 @@ describe("dashboardPage", () => {
     const proteinLeftElement = await screen.findByText(proteinLeft.toString());
 
     expect(proteinLeftElement).toBeInTheDocument();
+  });
+
+  it("should add recent meal to todays meals when clicking button", async () => {
+    const { day } = await setup();
+
+    const dayMealsCount = day.mealIds.length;
+
+    const addButtons = await screen.findAllByRole("button", {
+      name: /^añadir$/i,
+    });
+
+    const addButton = addButtons[0];
+
+    expect(addButton).toBeInTheDocument();
+
+    addButton.click();
+
+    await waitFor(async () => {
+      const updatedDay = await TestDaysRepo.getDayById(day.id);
+
+      expect(updatedDay!.mealIds.length).toBe(dayMealsCount + 1);
+    });
   });
 });

@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+
+import { useState } from "react";
 
 import { HiPlus } from "react-icons/hi2";
 import { RecipeDTO } from "shared";
@@ -8,6 +12,8 @@ import ButtonActionWeak from "@/app/_ui/buttons/ButtonActionWeak";
 import AppHeader from "@/app/_ui/typography/AppHeader";
 import TextLink from "@/app/_ui/typography/TextLink";
 
+import { addMealsToDay } from "../day/actions";
+import { getTodayDayId } from "../day/utils/getTodayDayId";
 import RecipeSummary from "../recipe/redesign/RecipeSummary";
 
 function RecentRecipes({
@@ -18,9 +24,25 @@ function RecentRecipes({
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...rest } = props;
 
+  const [isLoading, setIsLoading] = useState(false);
+
+  const todayId = getTodayDayId();
+
   const hasRecipes = recipes.length > 0;
 
   const last3Recipes = recipes.slice(-3).reverse();
+
+  async function handleAddMeal(recipeId: string) {
+    if (isLoading) return;
+
+    try {
+      setIsLoading(true);
+
+      await addMealsToDay(todayId, [recipeId]);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   return (
     <section className={twMerge("flex flex-col gap-3", className)} {...rest}>
@@ -53,7 +75,12 @@ function RecentRecipes({
                 recipe={recipe}
               />
 
-              <ButtonActionWeak>Añadir</ButtonActionWeak>
+              <ButtonActionWeak
+                disabled={isLoading}
+                onClick={() => handleAddMeal(recipe.id)}
+              >
+                Añadir
+              </ButtonActionWeak>
             </li>
           ))}
         </ul>

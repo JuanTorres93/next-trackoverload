@@ -16,7 +16,7 @@ function ButtonActionWeak({
     <BaseButton
       href={href}
       className={twMerge(
-        "bg-transparent text-secondary-app disabled:border-text-minor-emphasis-app disabled:text-text-minor-emphasis-app disabled:cursor-not-allowed",
+        "bg-transparent text-secondary-app disabled:border-text-minor-emphasis-app disabled:text-text-minor-emphasis-app disabled:cursor-not-allowed hover:bg-background-app/80",
         className,
       )}
       {...rest}

@@ -98,6 +98,10 @@ export default async function DashboardPage() {
   const caloriesLeft = formatToInteger(totalCalories - (caloriesToday || 0));
   const proteinLeft = formatToInteger(totalProtein - (proteinToday || 0));
 
+  const recentRecipes = handledRecipes.isSuccess
+    ? handledRecipes.data?.slice(0, 3)
+    : [];
+
   return (
     <Screen title="" isDashboard>
       <div className="flex flex-col gap-7.5 pb-35">
@@ -139,7 +143,7 @@ export default async function DashboardPage() {
 
               {!handledRecipes.isSuccess && handledRecipes.errorComponent}
               {handledRecipes.isSuccess && (
-                <RecentRecipes recipes={handledRecipes.data || []} />
+                <RecentRecipes recipes={recentRecipes || []} />
               )}
             </>
           )}

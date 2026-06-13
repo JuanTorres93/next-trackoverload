@@ -27,6 +27,7 @@ export const appFont = Nata_Sans({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-app",
+  fallback: ["sans-serif"],
 });
 
 export const metadata: Metadata = {
